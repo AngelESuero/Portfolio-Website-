@@ -25,7 +25,7 @@
   --line2: rgba(255, 255, 255, 0.08);
   --panel: rgba(255, 255, 255, 0.04);
   --street-noise: 0.04;
-  --street-vignette: 0.32;
+  --street-vignette: 0.28;
   --street-warm: rgba(242, 184, 75, 0.07);
   --street-cool: rgba(111, 183, 255, 0.06);
   --phi: 1.618;
@@ -36,6 +36,8 @@
   --s4: calc(var(--s3) * var(--phi));
   --s5: calc(var(--s4) * var(--phi));
   --radius: 16px;
+  --tri-collage-opacity: 0.28;
+  --tri-collage-mobile-opacity: 0.16;
   --tri-photo-1: linear-gradient(145deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.02));
   --tri-photo-2: linear-gradient(135deg, rgba(111, 183, 255, 0.22), rgba(15, 26, 42, 0.2));
   --tri-photo-3: linear-gradient(160deg, rgba(242, 184, 75, 0.22), rgba(23, 31, 46, 0.18));
@@ -106,7 +108,14 @@ body::after {
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
-  opacity: 0.42;
+  opacity: var(--tri-collage-opacity);
+}
+
+#triangle-collage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 25%, transparent 0 42%, rgba(0, 0, 0, 0.38) 76%);
 }
 
 #triangle-collage .tri {
@@ -115,9 +124,9 @@ body::after {
   background-size: cover;
   background-position: center;
   clip-path: polygon(50% 0, 0 100%, 100% 100%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.35);
-  filter: saturate(0.9) contrast(1.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+  filter: saturate(0.78) contrast(1) brightness(0.9);
 }
 
 #triangle-collage .tri-1 {
@@ -201,7 +210,7 @@ footer {
 
 @media (pointer: fine) {
   #cursor-aura {
-    opacity: 0.14;
+    opacity: 0.1;
     background:
       radial-gradient(
         520px circle at var(--aura-x) var(--aura-y),
@@ -457,7 +466,7 @@ html[data-view='3'] .view-3 {
 
 @media (max-width: 860px) {
   #triangle-collage {
-    opacity: 0.26;
+    opacity: var(--tri-collage-mobile-opacity);
   }
 
   .view-surface {
