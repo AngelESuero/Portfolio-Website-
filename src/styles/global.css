@@ -24,6 +24,10 @@
   --line: rgba(255, 255, 255, 0.1);
   --line2: rgba(255, 255, 255, 0.06);
   --panel: rgba(255, 255, 255, 0.03);
+  --street-noise: 0.09;
+  --street-vignette: 0.55;
+  --street-warm: rgba(255, 150, 80, 0.1);
+  --street-cool: rgba(120, 220, 255, 0.08);
 }
 
 :root.dark {
@@ -39,12 +43,35 @@ body {
   color: var(--tone-text);
   background-color: var(--tone-bg);
   background-image:
+    radial-gradient(1100px 700px at 15% 15%, var(--street-cool), transparent 55%),
+    radial-gradient(900px 600px at 80% 20%, var(--street-warm), transparent 55%),
     radial-gradient(1200px 420px at 60% 0%, rgba(214, 168, 53, 0.12), transparent 56%),
     linear-gradient(180deg, #06142d 0%, var(--tone-bg) 55%, var(--tone-bg-deep) 100%),
     radial-gradient(rgba(147, 197, 253, 0.16) 0.55px, transparent 0.55px);
   background-size: auto, auto, 7px 7px;
   position: relative;
   isolation: isolate;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: var(--street-noise);
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: var(--street-vignette);
+  background: radial-gradient(circle at 50% 25%, transparent 0 45%, rgba(0, 0, 0, 0.65) 75%);
 }
 
 #cursor-aura {
