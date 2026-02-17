@@ -2,6 +2,10 @@
 
 A modern, lo-fi, content-first personal site for **Angel Suero (a_e.s_)** built with Astro + Tailwind and designed to scale into a larger creative hub.
 
+## Live
+- **Live site:** https://angel-suero.pages.dev
+- **Repo:** https://github.com/AngelESuero/Portfolio-Website-
+
 ## Stack
 - Astro
 - Tailwind CSS
