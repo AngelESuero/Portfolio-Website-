@@ -1,20 +1,19 @@
 ---
 import links from '../data/links.json';
 
-const currentPath = Astro.url.pathname;
-const primaryOrder = ['Link Hub', 'YouTube', 'Press Kit', 'Contact'];
+const externalLinks = links.filter((entry) => entry.external);
+const primaryOrder = ['Link Hub', 'YouTube', 'Instagram', 'GitHub', 'Untitled Stream'];
 const primaryLinks = primaryOrder
-  .map((label) => links.find((entry) => entry.label === label))
+  .map((label) => externalLinks.find((entry) => entry.label === label))
   .filter(Boolean);
-const secondaryLinks = links.filter((entry) => !primaryOrder.includes(entry.label));
+const secondaryLinks = externalLinks.filter((entry) => !primaryOrder.includes(entry.label));
 ---
 
 <nav aria-label="Linktree tabs" class="link-tabs-shell">
-  <p class="link-tabs-label">Quick links</p>
+  <p class="link-tabs-label">External links</p>
   <div class="link-tabs-scroll" role="tablist" aria-label="Link tabs">
     {primaryLinks.map((link) => {
-      const isActive = !link.external && currentPath === link.href;
-      const classes = `link-tab-pill pill${isActive ? ' is-active' : ''}`;
+      const classes = 'link-tab-pill pill';
       return (
         <a
           href={link.href}
