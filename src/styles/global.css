@@ -5,13 +5,24 @@
 
 :root {
   color-scheme: dark;
-  --tone-bg: #070b12;
-  --tone-bg-deep: #05070c;
-  --tone-surface: rgba(13, 18, 28, 0.8);
+  --bg0: #05060a;
+  --bg1: #070a12;
+  --paper: rgba(10, 12, 18, 0.62);
+  --line: rgba(255, 255, 255, 0.1);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.62);
+  --neon: #7be7ff;
+  --amber: #ffcc7a;
+  --accent: var(--neon);
+  --cursor: #ff9a3c;
+
+  --tone-bg: var(--bg1);
+  --tone-bg-deep: var(--bg0);
+  --tone-surface: var(--paper);
   --tone-surface-strong: rgba(10, 14, 22, 0.9);
-  --tone-text: #f3f6ff;
-  --tone-muted: rgba(208, 216, 231, 0.84);
-  --tone-line: rgba(193, 206, 230, 0.26);
+  --tone-text: var(--text);
+  --tone-muted: var(--muted);
+  --tone-line: var(--line);
   --tone-accent: #f2b84b;
   --tone-accent-bright: #ffd07a;
   --tone-accent-glow: #ffe4ae;
@@ -19,13 +30,14 @@
   --tone-sky-bright: #9fceff;
   --accent-1: var(--tone-accent);
   --accent-2: var(--tone-sky);
-  --accent: var(--accent-1);
   --accent2: var(--accent-2);
   --mx: 50vw;
   --my: 30vh;
   --aura-x: 50vw;
   --aura-y: 30vh;
-  --line: var(--tone-line);
+  --hallway-x: 50vw;
+  --hallway-y: 34vh;
+  --line: rgba(255, 255, 255, 0.1);
   --line2: rgba(255, 255, 255, 0.08);
   --panel: rgba(255, 255, 255, 0.04);
   --street-noise: 0.04;
@@ -40,16 +52,6 @@
   --s4: calc(var(--s3) * var(--phi));
   --s5: calc(var(--s4) * var(--phi));
   --radius: 16px;
-  --tri-collage-opacity: 0.28;
-  --tri-collage-mobile-opacity: 0.16;
-  --tri-photo-1: linear-gradient(145deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.02));
-  --tri-photo-2: linear-gradient(135deg, rgba(111, 183, 255, 0.22), rgba(15, 26, 42, 0.2));
-  --tri-photo-3: linear-gradient(160deg, rgba(242, 184, 75, 0.22), rgba(23, 31, 46, 0.18));
-  --tri-photo-4: linear-gradient(120deg, rgba(180, 200, 226, 0.2), rgba(11, 17, 27, 0.2));
-  --tri-photo-5: linear-gradient(150deg, rgba(255, 255, 255, 0.1), rgba(25, 34, 50, 0.2));
-  --tri-photo-6: linear-gradient(130deg, rgba(125, 168, 232, 0.2), rgba(12, 19, 31, 0.2));
-  --tri-photo-7: linear-gradient(145deg, rgba(255, 210, 122, 0.2), rgba(16, 22, 34, 0.2));
-  --tri-photo-8: linear-gradient(155deg, rgba(213, 226, 247, 0.16), rgba(14, 21, 34, 0.2));
 }
 
 :root.dark {
@@ -131,48 +133,13 @@ body[data-theme] {
 
 body {
   @apply font-body leading-relaxed;
-  color: var(--tone-text);
-  background-color: var(--tone-bg);
+  color: var(--text);
   background-image:
-    radial-gradient(1100px 700px at 15% 15%, var(--street-cool), transparent 55%),
-    radial-gradient(900px 600px at 80% 20%, var(--street-warm), transparent 55%),
-    linear-gradient(180deg, #0a1220 0%, var(--tone-bg) 52%, var(--tone-bg-deep) 100%),
-    radial-gradient(rgba(159, 206, 255, 0.08) 0.55px, transparent 0.55px);
-  background-size: auto, auto, auto, 8px 8px;
+    radial-gradient(1200px 700px at 50% 0%, rgba(123, 231, 255, 0.08), transparent 60%),
+    radial-gradient(900px 600px at 50% 15%, rgba(255, 204, 122, 0.06), transparent 55%),
+    linear-gradient(180deg, var(--bg1), var(--bg0));
   position: relative;
   isolation: isolate;
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background:
-    radial-gradient(
-      520px circle at var(--mx) var(--my),
-      color-mix(in oklab, var(--accent-2) 32%, transparent),
-      transparent 60%
-    ),
-    radial-gradient(
-      900px circle at 20% 10%,
-      color-mix(in oklab, var(--accent-1) 10%, transparent),
-      transparent 60%
-    );
-  opacity: 0.28;
-  filter: saturate(1.02);
-  mix-blend-mode: screen;
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  opacity: var(--street-vignette);
-  background: radial-gradient(circle at 50% 25%, transparent 0 45%, rgba(0, 0, 0, 0.65) 75%);
 }
 
 #cursor-aura {
@@ -186,105 +153,6 @@ body::after {
   mix-blend-mode: screen;
 }
 
-#triangle-collage {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
-  opacity: var(--tri-collage-opacity);
-}
-
-#triangle-collage::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 25%, transparent 0 42%, rgba(0, 0, 0, 0.38) 76%);
-}
-
-#triangle-collage .tri {
-  position: absolute;
-  background-image: var(--tri-photo);
-  background-size: cover;
-  background-position: center;
-  clip-path: polygon(50% 0, 0 100%, 100% 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
-  filter: saturate(0.78) contrast(1) brightness(0.9);
-}
-
-#triangle-collage .tri-1 {
-  --tri-photo: var(--tri-photo-1);
-  width: min(34vw, 380px);
-  height: min(34vw, 380px);
-  left: -4vw;
-  top: 11vh;
-  transform: rotate(-5deg);
-}
-
-#triangle-collage .tri-2 {
-  --tri-photo: var(--tri-photo-2);
-  width: min(26vw, 300px);
-  height: min(26vw, 300px);
-  left: 18vw;
-  top: 3vh;
-  transform: rotate(7deg);
-}
-
-#triangle-collage .tri-3 {
-  --tri-photo: var(--tri-photo-3);
-  width: min(30vw, 340px);
-  height: min(30vw, 340px);
-  right: 9vw;
-  top: 6vh;
-  transform: rotate(-11deg);
-}
-
-#triangle-collage .tri-4 {
-  --tri-photo: var(--tri-photo-4);
-  width: min(24vw, 280px);
-  height: min(24vw, 280px);
-  right: -3vw;
-  top: 30vh;
-  transform: rotate(14deg);
-}
-
-#triangle-collage .tri-5 {
-  --tri-photo: var(--tri-photo-5);
-  width: min(29vw, 320px);
-  height: min(29vw, 320px);
-  left: 7vw;
-  bottom: 10vh;
-  transform: rotate(10deg);
-}
-
-#triangle-collage .tri-6 {
-  --tri-photo: var(--tri-photo-6);
-  width: min(24vw, 270px);
-  height: min(24vw, 270px);
-  left: 36vw;
-  bottom: 4vh;
-  transform: rotate(-8deg);
-}
-
-#triangle-collage .tri-7 {
-  --tri-photo: var(--tri-photo-7);
-  width: min(22vw, 250px);
-  height: min(22vw, 250px);
-  right: 28vw;
-  bottom: 14vh;
-  transform: rotate(9deg);
-}
-
-#triangle-collage .tri-8 {
-  --tri-photo: var(--tri-photo-8);
-  width: min(28vw, 310px);
-  height: min(28vw, 310px);
-  right: 2vw;
-  bottom: 3vh;
-  transform: rotate(-12deg);
-}
-
 header,
 main,
 footer {
@@ -294,19 +162,34 @@ footer {
 
 @media (pointer: fine) {
   #cursor-aura {
-    opacity: 0.12;
+    opacity: 0.18;
     background:
       radial-gradient(
-        680px circle at var(--aura-x) var(--aura-y),
-        color-mix(in srgb, var(--accent-2) 22%, transparent) 0%,
-        transparent 70%
+        520px circle at var(--aura-x) var(--aura-y),
+        color-mix(in srgb, var(--cursor) 24%, transparent) 0%,
+        transparent 66%
+      ),
+      radial-gradient(
+        760px circle at var(--aura-x) var(--aura-y),
+        color-mix(in srgb, var(--accent) 12%, transparent) 0%,
+        transparent 74%
       );
   }
 }
 
-.site-header {
-  background: rgba(8, 11, 17, 0.76);
+.card,
+.panel,
+header,
+nav {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--line);
+  box-shadow:
+    0 18px 60px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(0, 0, 0, 0.35) inset;
   backdrop-filter: blur(10px);
+}
+
+.site-header {
   border-bottom: 1px solid var(--line2);
 }
 
@@ -334,32 +217,17 @@ button:hover {
 }
 
 .card {
-  background: var(--panel);
-  border: 1px solid var(--line);
   border-radius: var(--radius);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.05) inset,
-    0 16px 42px rgba(0, 0, 0, 0.38);
-  transform: translateZ(0);
-  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
   position: relative;
   overflow: hidden;
 }
 
-.card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent 35%),
-    radial-gradient(500px 140px at 20% 0%, rgba(255, 255, 255, 0.06), transparent 60%);
-  opacity: 0.25;
-  pointer-events: none;
-}
-
 .card:hover {
-  transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--accent2) 22%, var(--line));
+  border-color: color-mix(in oklab, var(--accent) 40%, var(--line));
+  box-shadow:
+    0 22px 80px rgba(0, 0, 0, 0.55),
+    0 0 28px color-mix(in oklab, var(--accent) 25%, transparent);
 }
 
 .card img {
@@ -389,25 +257,25 @@ select:focus-visible {
   @apply outline outline-2 outline-offset-2 outline-accent;
 }
 
-.view-1 {
+.mode-normal {
   display: block;
 }
 
-.view-2,
-.view-3 {
+.mode-walk,
+.mode-explore {
   display: none;
 }
 
-html[data-view='2'] .view-1,
-html[data-view='3'] .view-1 {
+html[data-mode='walk'] .mode-normal,
+html[data-mode='explore'] .mode-normal {
   display: none;
 }
 
-html[data-view='2'] .view-2 {
+html[data-mode='walk'] .mode-walk {
   display: block;
 }
 
-html[data-view='3'] .view-3 {
+html[data-mode='explore'] .mode-explore {
   display: block;
 }
 
@@ -542,10 +410,6 @@ html[data-view='3'] .view-3 {
 }
 
 @media (max-width: 860px) {
-  #triangle-collage {
-    opacity: var(--tri-collage-mobile-opacity);
-  }
-
   .view-surface {
     padding: 0.95rem;
   }
@@ -784,5 +648,10 @@ html[data-view='3'] .view-3 {
 @media (prefers-reduced-motion: reduce) {
   #cursor-aura {
     display: none !important;
+  }
+
+  .hallway__fog,
+  .hallway__cursorLight {
+    opacity: 0.35;
   }
 }

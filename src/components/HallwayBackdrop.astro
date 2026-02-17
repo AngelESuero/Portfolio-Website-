@@ -1,0 +1,131 @@
+---
+const { accent = '#7BE7FF' } = Astro.props;
+---
+
+<!-- Backdrop layers -->
+<div class="hallway" style={`--accent:${accent};`} aria-hidden="true">
+  <div class="hallway__vignette"></div>
+  <div class="hallway__fog"></div>
+  <div class="hallway__walls"></div>
+  <div class="hallway__neon"></div>
+  <div class="hallway__grain"></div>
+
+  <!-- cursor light (moves with pointer) -->
+  <div class="hallway__cursorLight" id="cursorLight"></div>
+</div>
+
+<style>
+  .hallway {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  /* vignette (like camera/scene) */
+  .hallway__vignette {
+    position: absolute;
+    inset: -10%;
+    background: radial-gradient(closest-side at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.72) 95%);
+    opacity: 0.9;
+  }
+
+  /* fog/mist */
+  .hallway__fog {
+    position: absolute;
+    inset: -20%;
+    background:
+      radial-gradient(600px 260px at 35% 35%, rgba(255, 255, 255, 0.06), transparent 60%),
+      radial-gradient(700px 320px at 70% 45%, rgba(255, 255, 255, 0.05), transparent 65%),
+      radial-gradient(900px 420px at 50% 70%, rgba(255, 255, 255, 0.04), transparent 70%);
+    filter: blur(10px);
+    opacity: 0.55;
+  }
+
+  /* corridor "walls" / subtle perspective */
+  .hallway__walls {
+    position: absolute;
+    inset: -30%;
+    background:
+      linear-gradient(
+        90deg,
+        rgba(123, 231, 255, 0.08),
+        transparent 18%,
+        transparent 82%,
+        rgba(123, 231, 255, 0.08)
+      ),
+      linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.35) 55%, rgba(0, 0, 0, 0.65));
+    transform: perspective(900px) rotateX(8deg);
+    opacity: 0.75;
+  }
+
+  /* neon tubes + glow edges */
+  .hallway__neon {
+    position: absolute;
+    inset: -10%;
+    background:
+      radial-gradient(600px 220px at 50% 12%, rgba(255, 204, 122, 0.12), transparent 60%),
+      radial-gradient(
+        800px 360px at 50% 20%,
+        color-mix(in oklab, var(--accent) 40%, transparent),
+        transparent 70%
+      ),
+      linear-gradient(
+        90deg,
+        color-mix(in oklab, var(--accent) 22%, transparent),
+        transparent 20%,
+        transparent 80%,
+        color-mix(in oklab, var(--accent) 22%, transparent)
+      );
+    filter: blur(0px);
+    opacity: 0.9;
+  }
+
+  /* grain (world texture) */
+  .hallway__grain {
+    position: absolute;
+    inset: -10%;
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.03) 0px,
+        rgba(255, 255, 255, 0.03) 1px,
+        transparent 2px,
+        transparent 4px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.02) 0px,
+        rgba(255, 255, 255, 0.02) 1px,
+        transparent 2px,
+        transparent 6px
+      );
+    mix-blend-mode: overlay;
+    opacity: 0.12;
+  }
+
+  /* cursor "flashlight" reveal */
+  .hallway__cursorLight {
+    position: absolute;
+    width: 520px;
+    height: 520px;
+    left: var(--mx, 50%);
+    top: var(--my, 45%);
+    transform: translate(-50%, -50%);
+    background: radial-gradient(
+      circle at center,
+      color-mix(in oklab, var(--cursor) 35%, transparent) 0%,
+      transparent 65%
+    );
+    filter: blur(0px);
+    opacity: 0.9;
+    mix-blend-mode: screen;
+  }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .hallway__fog,
+    .hallway__cursorLight { opacity: 0.35; }
+  }
+</style>

@@ -2,25 +2,39 @@
 import profile from '../data/profile.json';
 
 const nav = [
-  ['Home', '/'],
-  ['Link Hub', '/link-hub'],
-  ['About', '/about'],
-  ['Work', '/work'],
-  ['Writing', '/writing'],
-  ['Social', '/social'],
-  ['AGI Timeline', '/agi'],
-  ['Map', '/map'],
-  ['Now', '/now'],
-  ['Contact', '/contact']
+  { label: 'Home', href: '/', color: 'blue' },
+  { label: 'Link Hub', href: '/link-hub', color: 'yellow' },
+  { label: 'About', href: '/about', color: 'blue' },
+  { label: 'Work', href: '/work', color: 'orange' },
+  { label: 'Writing', href: '/writing', color: 'red' },
+  { label: 'Social', href: '/social', color: 'white' },
+  { label: 'AGI Timeline', href: '/agi', color: 'black' },
+  { label: 'Map', href: '/map', color: 'blue' },
+  { label: 'Now', href: '/now', color: 'yellow' },
+  { label: 'Contact', href: '/contact', color: 'orange' }
 ];
+
+const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const normalize = (path: string) => path.replace(/\/+$/, '') || '/';
+const isActive = (href: string) => {
+  const target = normalize(href);
+  return currentPath === target || (target !== '/' && currentPath.startsWith(`${target}/`));
+};
 ---
 
 <header class="site-header sticky top-0 z-50">
   <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
     <a href="/" class="font-display text-lg font-bold tracking-tight text-accent">a_e.s_</a>
     <nav aria-label="Main navigation" class="hidden gap-4 md:flex">
-      {nav.map(([label, href]) => (
-        <a href={href} class="text-sm hover:text-accent">{label}</a>
+      {nav.map((item) => (
+        <a
+          href={item.href}
+          class="text-sm hover:text-accent"
+          {...(item.color ? { 'data-color': item.color } : {})}
+          {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
+        >
+          {item.label}
+        </a>
       ))}
     </nav>
     <div class="flex items-center gap-2">
