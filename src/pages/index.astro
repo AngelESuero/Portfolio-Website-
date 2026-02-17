@@ -4,6 +4,7 @@ import profile from '../data/profile.json';
 import featuredThreads from '../data/featured_threads.json';
 import { getCollection } from 'astro:content';
 import MobileTOC from '../components/MobileTOC.astro';
+import UntitledPlayer from '../components/UntitledPlayer.astro';
 
 const allProjects = await getCollection('projects');
 const posts = (await getCollection('posts'))
@@ -49,6 +50,8 @@ const threads = featuredThreads.featured_threads;
         {sections.map((section) => <span class="tag rounded px-2 py-1 text-sm">{section}</span>)}
       </div>
     </section>
+
+    <UntitledPlayer title="Listen" subtitle="untitled.stream" />
   </div>
 
   <article class="mobile-editorial" aria-label="Mobile editorial layout">
