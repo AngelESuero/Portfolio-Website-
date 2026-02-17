@@ -17,6 +17,10 @@
   --tone-accent-glow: #ffd884;
   --tone-sky: #2f66b3;
   --tone-sky-bright: #5f8fd7;
+  --accent: #f97316;
+  --accent2: #8ee6ff;
+  --aura-x: 50vw;
+  --aura-y: 30vh;
 }
 
 :root.dark {
@@ -36,27 +40,43 @@ body {
     linear-gradient(180deg, #06142d 0%, var(--tone-bg) 55%, var(--tone-bg-deep) 100%),
     radial-gradient(rgba(147, 197, 253, 0.16) 0.55px, transparent 0.55px);
   background-size: auto, auto, 7px 7px;
+  position: relative;
+  isolation: isolate;
 }
 
 #cursor-aura {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 22rem;
-  height: 22rem;
-  border-radius: 999px;
+  inset: 0;
   pointer-events: none;
-  z-index: 60;
+  z-index: 0;
   opacity: 0;
-  transform: translate3d(-999px, -999px, 0);
-  transition: opacity 180ms ease;
-  filter: blur(12px);
-  background:
-    radial-gradient(circle, rgba(95, 143, 215, 0.16) 0%, rgba(215, 170, 47, 0.14) 42%, rgba(5, 13, 27, 0) 72%);
+  transition: opacity 260ms ease;
+  filter: blur(14px) saturate(1.1);
+  mix-blend-mode: screen;
 }
 
-html.cursor-aura-visible #cursor-aura {
-  opacity: 0.7;
+header,
+main,
+footer {
+  position: relative;
+  z-index: 1;
+}
+
+@media (pointer: fine) {
+  #cursor-aura {
+    opacity: 0.22;
+    background:
+      radial-gradient(
+        520px circle at var(--aura-x) var(--aura-y),
+        color-mix(in srgb, var(--accent) 28%, transparent) 0%,
+        transparent 62%
+      ),
+      radial-gradient(
+        720px circle at var(--aura-x) var(--aura-y),
+        color-mix(in srgb, var(--accent2) 22%, transparent) 0%,
+        transparent 70%
+      );
+  }
 }
 
 a:focus-visible,
@@ -220,10 +240,6 @@ html[data-view='3'] .view-3 {
 }
 
 @media (max-width: 860px) {
-  #cursor-aura {
-    display: none !important;
-  }
-
   .view-surface {
     padding: 0.95rem;
   }
@@ -459,7 +475,7 @@ html[data-view='3'] .view-3 {
   }
 }
 
-@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce) {
   #cursor-aura {
     display: none !important;
   }
