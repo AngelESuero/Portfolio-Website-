@@ -115,21 +115,22 @@ footer {
   border-bottom: 1px solid var(--line2);
 }
 
+nav a,
 .pill,
 .chip,
-.tag,
 button {
-  border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.02);
-  transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  backdrop-filter: blur(8px);
+  transition: border-color 180ms ease;
 }
 
+nav a:hover,
 .pill:hover,
 .chip:hover,
 button:hover {
-  border-color: color-mix(in srgb, var(--accent) 28%, var(--line));
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
-  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--accent2) 22%, rgba(255, 255, 255, 0.12));
 }
 
 .card {
