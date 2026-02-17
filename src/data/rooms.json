@@ -1,0 +1,116 @@
+[
+  {
+    "slug": "music",
+    "title": "Music Room",
+    "description": "Playback consoles for in-progress sessions, references, and release prep.",
+    "color": "yellow",
+    "room_type": "embed",
+    "destination": "/link-hub",
+    "machines": [
+      {
+        "title": "Untitled Console",
+        "summary": "Live stream player for sessions and rough sets.",
+        "kind": "embed",
+        "url": "https://untitled.stream/m8IEX655GwMH",
+        "embed_url": "https://untitled.stream/embed/m8IEX655GwMH"
+      },
+      {
+        "title": "Spotify Console",
+        "summary": "Now Listening playlist in a native wrapper.",
+        "kind": "embed",
+        "url": "https://open.spotify.com/playlist/SPOTIFY_PLAYLIST_ID",
+        "embed_url": "https://open.spotify.com/embed/playlist/SPOTIFY_PLAYLIST_ID"
+      },
+      {
+        "title": "SoundCloud Bay",
+        "summary": "Audio sketches and release-adjacent cuts.",
+        "kind": "external",
+        "url": "https://soundcloud.com/a_e-s_"
+      }
+    ]
+  },
+  {
+    "slug": "writing",
+    "title": "Writing Room",
+    "description": "Essays, notes, RSS streams, and archival dispatches.",
+    "color": "red",
+    "room_type": "native",
+    "destination": "/writing",
+    "machines": [
+      {
+        "title": "Writing Archive",
+        "summary": "Read all on-site posts.",
+        "kind": "native",
+        "url": "/writing"
+      },
+      {
+        "title": "Substack Feed",
+        "summary": "Publication feed and subscription touchpoint.",
+        "kind": "external",
+        "url": "https://aesarchive.substack.com"
+      },
+      {
+        "title": "RSS Feed",
+        "summary": "Subscribe via RSS.",
+        "kind": "native",
+        "url": "/rss.xml"
+      }
+    ]
+  },
+  {
+    "slug": "work",
+    "title": "Work Room",
+    "description": "Project threads, install notes, and production logs.",
+    "color": "orange",
+    "room_type": "native",
+    "destination": "/work",
+    "machines": [
+      {
+        "title": "Project Index",
+        "summary": "Filter and browse all work entries.",
+        "kind": "native",
+        "url": "/work"
+      },
+      {
+        "title": "AV / Museum Thread",
+        "summary": "Installation notes and AV constraints.",
+        "kind": "native",
+        "url": "/threads/av-museum-work"
+      },
+      {
+        "title": "Music Session Thread",
+        "summary": "Session-by-session production process.",
+        "kind": "native",
+        "url": "/threads/music-production-sessions"
+      }
+    ]
+  },
+  {
+    "slug": "social",
+    "title": "Social Room",
+    "description": "Platform exits, profile paths, and quick handoff links.",
+    "color": "white",
+    "room_type": "external",
+    "destination": "https://linktr.ee/a_e.s_",
+    "machines": [
+      {
+        "title": "Instagram",
+        "summary": "Visual stream and archive updates.",
+        "kind": "external",
+        "url": "https://instagram.com/a_e.s_"
+      },
+      {
+        "title": "YouTube",
+        "summary": "Video and music uploads.",
+        "kind": "external",
+        "url": "https://www.youtube.com/@a_e.s_4"
+      },
+      {
+        "title": "Contact",
+        "summary": "Direct email and inquiry form.",
+        "kind": "native",
+        "url": "/contact"
+      }
+    ]
+  }
+]

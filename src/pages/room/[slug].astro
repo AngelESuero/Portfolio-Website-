@@ -1,0 +1,216 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import rooms from '../../data/rooms.json';
+
+interface RoomMachine {
+  title: string;
+  summary?: string;
+  kind: 'native' | 'embed' | 'external';
+  url: string;
+  embed_url?: string;
+}
+
+interface Room {
+  slug: string;
+  title: string;
+  description?: string;
+  color?: string;
+  room_type: 'native' | 'embed' | 'external';
+  destination: string;
+  machines: RoomMachine[];
+}
+
+const roomList = rooms as Room[];
+
+export function getStaticPaths() {
+  return roomList.map((room) => ({
+    params: { slug: room.slug },
+    props: { room }
+  }));
+}
+
+const { room } = Astro.props as { room: Room };
+const isExternal = (url: string) => /^https?:\/\//i.test(url);
+const embedMachines = room.machines.filter((machine) => machine.kind === 'embed' && machine.embed_url);
+---
+
+<BaseLayout title={`${room.title} — Room`} description={room.description || `${room.title} arcade room.`} theme="social">
+  <section class="room-page">
+    <header class="room-header">
+      <p class="room-kicker">Room</p>
+      <h1>{room.title}</h1>
+      <p>{room.description}</p>
+    </header>
+
+    {room.room_type === 'external' && (
+      <aside class="room-cta">
+        <h2>External destination</h2>
+        <p>This room exits the arcade. Continue through the main portal.</p>
+        <a href={room.destination} target="_blank" rel="noopener">Open destination</a>
+      </aside>
+    )}
+
+    {room.room_type === 'native' && (
+      <aside class="room-cta">
+        <h2>Native destination</h2>
+        <p>This room maps directly to a local page in the site.</p>
+        <a href={room.destination}>Open destination</a>
+      </aside>
+    )}
+
+    {room.room_type === 'embed' && embedMachines.length > 0 && (
+      <section class="room-embed-stack" aria-label="Embedded machines">
+        {embedMachines.map((machine) => (
+          <article class="room-embed-card">
+            <h2>{machine.title}</h2>
+            {machine.summary && <p>{machine.summary}</p>}
+            <iframe
+              src={machine.embed_url}
+              title={machine.title}
+              loading="lazy"
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            ></iframe>
+            <p>
+              <a href={machine.url} target="_blank" rel="noopener">Open source</a>
+            </p>
+          </article>
+        ))}
+      </section>
+    )}
+
+    <section class="room-machines-full" aria-label="Room machines">
+      {room.machines.map((machine) => (
+        <article class="machine-card">
+          <p class="machine-kind">{machine.kind}</p>
+          <h3>{machine.title}</h3>
+          <p>{machine.summary || 'Open machine'}</p>
+          <a href={machine.url} {...(isExternal(machine.url) ? { target: '_blank', rel: 'noopener' } : {})}>
+            Open machine
+          </a>
+        </article>
+      ))}
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  .room-page {
+    max-width: 68rem;
+    margin: 0 auto;
+  }
+
+  .room-kicker {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.72rem;
+    color: var(--tone-muted);
+  }
+
+  .room-header h1 {
+    margin: 0.35rem 0 0.72rem;
+    font-size: clamp(2rem, 4.2vw, 3rem);
+    line-height: 1.08;
+  }
+
+  .room-header p {
+    margin: 0;
+    max-width: 70ch;
+    color: var(--tone-muted);
+  }
+
+  .room-cta {
+    margin-top: 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 0.82rem;
+  }
+
+  .room-cta h2,
+  .room-cta p {
+    margin: 0;
+  }
+
+  .room-cta p {
+    margin-top: 0.48rem;
+  }
+
+  .room-cta a {
+    display: inline-flex;
+    margin-top: 0.72rem;
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 35%, transparent);
+  }
+
+  .room-embed-stack {
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.72rem;
+  }
+
+  .room-embed-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 0.82rem;
+  }
+
+  .room-embed-card h2,
+  .room-embed-card p {
+    margin: 0;
+  }
+
+  .room-embed-card p {
+    margin-top: 0.5rem;
+  }
+
+  .room-embed-card iframe {
+    width: 100%;
+    min-height: 320px;
+    border: 0;
+    border-radius: 12px;
+    margin-top: 0.72rem;
+    background: rgba(0, 0, 0, 0.35);
+  }
+
+  .room-machines-full {
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.72rem;
+  }
+
+  .machine-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 0.76rem;
+  }
+
+  .machine-kind {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    font-size: 0.72rem;
+    color: var(--tone-muted);
+  }
+
+  .machine-card h3 {
+    margin: 0.45rem 0 0;
+    font-size: 1rem;
+  }
+
+  .machine-card p {
+    margin: 0.45rem 0 0;
+  }
+
+  .machine-card a {
+    display: inline-flex;
+    margin-top: 0.68rem;
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 35%, transparent);
+  }
+</style>
