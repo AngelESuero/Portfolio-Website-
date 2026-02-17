@@ -222,25 +222,28 @@ const exploreLinks = [
     <script is:inline>
       (() => {
         const root = document.documentElement;
-        let raf = null;
-        let x = window.innerWidth * 0.5;
-        let y = window.innerHeight * 0.3;
+        let tx = innerWidth * 0.5;
+        let ty = innerHeight * 0.3;
+        let x = tx;
+        let y = ty;
 
-        function update() {
-          raf = null;
+        function tick() {
+          x += (tx - x) * 0.12;
+          y += (ty - y) * 0.12;
           root.style.setProperty('--aura-x', x + 'px');
           root.style.setProperty('--aura-y', y + 'px');
+          requestAnimationFrame(tick);
         }
 
-        window.addEventListener(
+        addEventListener(
           'pointermove',
           (e) => {
-            x = e.clientX;
-            y = e.clientY;
-            if (!raf) raf = requestAnimationFrame(update);
+            tx = e.clientX;
+            ty = e.clientY;
           },
           { passive: true }
         );
+        tick();
       })();
     </script>
     <script is:inline define:vars={{ walkthroughCount: walkthroughSteps.length }}>
