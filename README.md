@@ -6,7 +6,7 @@ A modern, lo-fi, content-first personal site for **Angel Suero (a_e.s_)** built 
 - Astro
 - Tailwind CSS
 - Astro Content Collections (projects + writing)
-- Cloudflare Pages Functions (`/contact`, `/api/agi`)
+- Cloudflare Pages Functions (`/contact`, `/api/agi`, `/api/agi-x`)
 
 ## Local development
 ```bash
@@ -26,46 +26,55 @@ npm run build
 3. Use these build settings:
    - Build command: `npm run build`
    - Build output directory: `dist`
-4. Ensure the `functions/` directory is included so `/contact` and `/api/agi` are deployed as Pages Functions.
+4. Ensure the `functions/` directory is included so `/contact`, `/api/agi`, and `/api/agi-x` are deployed as Pages Functions.
 
 ## AGI Timeline setup
 The AGI timeline uses two pieces:
-- Pages Function API: `GET /api/agi` (reads from KV)
-- Scheduled Worker: `workers/agi-sync.ts` (hourly fetch from official X API and writes to KV)
+- Pages Function APIs:
+  - `GET /api/agi` for web-source timeline (enabled now)
+  - `GET /api/agi-x` for optional researcher timeline from X (disabled by default)
+- Scheduled Worker: `workers/agi-sync.ts` (parses sources and writes normalized items to KV)
 
 ### 1) Create KV namespace
 Create a KV namespace and bind it as `AGI_KV`:
 - In Cloudflare Pages project settings: add KV binding `AGI_KV`
 - In worker config: update `wrangler.agi.toml` with the namespace id
 
-### 2) Configure X API bearer token
-Set the secret on the sync worker:
-```bash
-npx wrangler secret put X_BEARER_TOKEN -c wrangler.agi.toml
-```
-
-Optional manual sync token (for `POST/GET /sync` on worker):
+### 2) Optional manual sync token (for `/sync` on worker)
 ```bash
 npx wrangler secret put AGI_SYNC_TOKEN -c wrangler.agi.toml
 ```
 
-### 3) Deploy the hourly sync worker
+### 3) Deploy the scheduled sync worker
 ```bash
 npx wrangler deploy -c wrangler.agi.toml
 ```
 
-Cron is configured hourly in `wrangler.agi.toml`:
+Cron is configured every 3 hours in `wrangler.agi.toml`:
 ```toml
 [triggers]
-crons = ["0 * * * *"]
+crons = ["0 */3 * * *"]
 ```
 
-### 4) Curated allowlist
-Edit handles in:
+### 4) Source lists
+Web sources:
+- `src/data/agi-web-sources.ts`
+
+Optional X handle allowlist:
 - `src/data/agi-handles.ts`
 
-Each new item is stored in KV with shape:
-- `id`, `author_name`, `author_handle`, `created_at`, `text`, `url`, optional `metrics`, optional `tags`
+Each item in KV follows:
+- `id`, `source_name`, `title`, `date`, `summary`, `url`, `tags[]`
+- optional for X items: `author_handle`, `tweet_url`
+
+### 5) Optional X module (disabled by default)
+When you want to enable X ingestion:
+1. Set worker secret:
+```bash
+npx wrangler secret put X_BEARER_TOKEN -c wrangler.agi.toml
+```
+2. Set worker variable `AGI_X_ENABLED=true`
+3. Set Pages env var `AGI_X_ENABLED=true` so `/api/agi-x` serves data
 
 ## Content editing
 ### Identity/profile

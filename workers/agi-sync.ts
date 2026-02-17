@@ -1,8 +1,9 @@
-import { syncAgiTimeline } from '../functions/_lib/agi';
+import { syncAllAgiPipelines, syncAgiWebTimeline, syncAgiXTimeline } from '../functions/_lib/agi';
 
 interface Env {
   AGI_KV: KVNamespace;
-  X_BEARER_TOKEN: string;
+  X_BEARER_TOKEN?: string;
+  AGI_X_ENABLED?: string;
   AGI_SYNC_TOKEN?: string;
 }
 
@@ -21,7 +22,7 @@ function json(data: unknown, status = 200): Response {
 
 export default {
   async scheduled(_controller: ScheduledController, env: Env, ctx: ExecutionContext) {
-    ctx.waitUntil(syncAgiTimeline(env));
+    ctx.waitUntil(syncAllAgiPipelines(env));
   },
 
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -37,7 +38,13 @@ export default {
         return unauthorized();
       }
 
-      const result = await syncAgiTimeline(env);
+      const mode = url.searchParams.get('mode');
+      const result =
+        mode === 'web'
+          ? await syncAgiWebTimeline(env)
+          : mode === 'x'
+            ? await syncAgiXTimeline(env)
+            : await syncAllAgiPipelines(env);
       return json(result, result.ok ? 200 : 207);
     }
 
