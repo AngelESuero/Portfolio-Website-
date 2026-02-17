@@ -148,8 +148,8 @@ button:hover {
 }
 
 .card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--panel);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.05) inset,
@@ -184,15 +184,9 @@ button:hover {
   display: block;
   text-decoration: none;
   color: inherit;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.03);
-  overflow: hidden;
-  transition: transform 180ms ease, border-color 180ms ease;
 }
 
 .threadCard:hover {
-  transform: translateY(-1px);
   border-color: color-mix(in srgb, var(--accent) 28%, var(--line));
 }
 
