@@ -10,7 +10,8 @@
     "ig:manifest": "node scripts/generate-ig-manifest.mjs",
     "sync:agi": "node scripts/sync-agi-timeline.mjs",
     "sync:youtube": "node scripts/sync-youtube.mjs",
-    "sync:data": "npm run sync:agi && npm run sync:youtube"
+    "sync:chess": "node scripts/sync-chess.mjs",
+    "sync:data": "npm run sync:agi && npm run sync:youtube && npm run sync:chess"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",

@@ -22,6 +22,14 @@ npm run dev
 ```
 Open `http://localhost:4321`.
 
+### Chess Elo Tracker setup
+- Non-secret env var:
+  - `CHESSCOM_USERNAME=Trid3nt`
+- Data file:
+  - `src/data/chess.json` (seeded; daily snapshots append via sync workflow)
+- Page:
+  - `/chess`
+
 ## Build
 ```bash
 npm run build

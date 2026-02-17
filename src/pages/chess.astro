@@ -1,0 +1,216 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const seedChess = {
+  meta: {
+    schemaVersion: 1,
+    generatedAt: null,
+    player: {
+      platform: 'chess.com',
+      username: 'Trid3nt',
+      profileUrl: 'https://www.chess.com/member/Trid3nt'
+    },
+    sources: [{ name: 'Chess.com Published Data API', url: 'https://api.chess.com/pub/' }]
+  },
+  snapshots: [
+    {
+      date: new Date().toISOString().slice(0, 10),
+      rapid: null,
+      blitz: null,
+      bullet: null
+    }
+  ]
+};
+
+async function safeJsonImport(path, fallback) {
+  try {
+    const mod = await import(path);
+    return mod?.default ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+const chessData = await safeJsonImport('../data/chess.json', seedChess);
+const meta = chessData?.meta ?? seedChess.meta;
+const snapshotList = Array.isArray(chessData?.snapshots) && chessData.snapshots.length
+  ? chessData.snapshots
+  : seedChess.snapshots;
+const snapshots = [...snapshotList].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+const latest = snapshots[0] ?? null;
+const isSeedOnly = snapshots.every(
+  (item) => item?.rapid == null && item?.blitz == null && item?.bullet == null
+);
+
+const ratingLabel = (value) => (typeof value === 'number' ? String(value) : '—');
+---
+
+<BaseLayout title="Chess Elo Tracker" description="Living archive chess rating snapshots." theme="agi">
+  <section class="chess-page">
+    <header class="chess-header">
+      <p class="chess-kicker">Living archive</p>
+      <h1>Chess Elo Tracker</h1>
+      <p class="chess-dek">
+        Build-time cached snapshots from Chess.com.
+      </p>
+      <p class="chess-meta">
+        Last updated: <span>{meta.generatedAt ?? 'unknown'}</span>
+      </p>
+      <p class="chess-meta">
+        Player: <a href={meta?.player?.profileUrl ?? 'https://www.chess.com/'} target="_blank" rel="noopener">
+          {meta?.player?.username ?? 'unknown'}
+        </a>
+      </p>
+    </header>
+
+    {isSeedOnly && (
+      <aside class="chess-note">
+        Seed loaded. No rating data yet.
+      </aside>
+    )}
+
+    {latest && (
+      <section class="chess-current" aria-label="Current ratings">
+        <article class="chess-card">
+          <p>Rapid</p>
+          <strong>{ratingLabel(latest.rapid)}</strong>
+        </article>
+        <article class="chess-card">
+          <p>Blitz</p>
+          <strong>{ratingLabel(latest.blitz)}</strong>
+        </article>
+        <article class="chess-card">
+          <p>Bullet</p>
+          <strong>{ratingLabel(latest.bullet)}</strong>
+        </article>
+      </section>
+    )}
+
+    <section class="chess-history" aria-label="Snapshot history">
+      <h2>History</h2>
+      {snapshots.length > 0 ? (
+        <ul>
+          {snapshots.map((snap) => (
+            <li>
+              <span class="date">{snap.date || 'unknown date'}</span>
+              <span>Rapid {ratingLabel(snap.rapid)}</span>
+              <span>Blitz {ratingLabel(snap.blitz)}</span>
+              <span>Bullet {ratingLabel(snap.bullet)}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="chess-empty">No snapshots available yet.</p>
+      )}
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  .chess-page {
+    max-width: 64rem;
+    margin: 0 auto;
+  }
+
+  .chess-kicker {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.72rem;
+    color: var(--tone-muted);
+  }
+
+  .chess-header h1 {
+    margin: 0.35rem 0 0.68rem;
+    font-size: clamp(2rem, 4.4vw, 3rem);
+    line-height: 1.08;
+  }
+
+  .chess-dek,
+  .chess-meta {
+    margin: 0.42rem 0 0;
+    color: var(--tone-muted);
+  }
+
+  .chess-meta a {
+    color: var(--tone-accent-glow);
+  }
+
+  .chess-note {
+    margin-top: 0.92rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 0.72rem;
+    color: var(--tone-muted);
+  }
+
+  .chess-current {
+    margin-top: 0.92rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.72rem;
+  }
+
+  .chess-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 0.8rem;
+  }
+
+  .chess-card p {
+    margin: 0;
+    color: var(--tone-muted);
+    font-size: 0.86rem;
+  }
+
+  .chess-card strong {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  .chess-history {
+    margin-top: 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 0.82rem;
+  }
+
+  .chess-history h2 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .chess-history ul {
+    margin: 0.8rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.52rem;
+  }
+
+  .chess-history li {
+    border: 1px solid var(--line2);
+    border-radius: 12px;
+    padding: 0.56rem 0.64rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+    align-items: center;
+  }
+
+  .chess-history .date {
+    min-width: 7.4rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    color: var(--tone-muted);
+  }
+
+  .chess-empty {
+    margin: 0.72rem 0 0;
+    color: var(--tone-muted);
+  }
+</style>
