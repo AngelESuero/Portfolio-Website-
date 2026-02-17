@@ -7,7 +7,10 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "ig:manifest": "node scripts/generate-ig-manifest.mjs"
+    "ig:manifest": "node scripts/generate-ig-manifest.mjs",
+    "sync:agi": "node scripts/sync-agi-timeline.mjs",
+    "sync:youtube": "node scripts/sync-youtube.mjs",
+    "sync:data": "npm run sync:agi && npm run sync:youtube"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",

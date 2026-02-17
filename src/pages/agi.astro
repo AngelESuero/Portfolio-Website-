@@ -1,242 +1,301 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import agiEvents from '../data/agi.events.json';
+import agi from '../data/agi-timeline.json';
+import yt from '../data/youtube.json';
 
-interface AgiEvent {
-  date: string;
-  type?: string;
-  title: string;
-  summary: string;
-  tags: string[];
-  source_url: string;
-}
+const items = Array.isArray(agi?.items) ? agi.items : [];
+const lastUpdated = agi?.meta?.generatedAt ?? null;
 
-const events = (agiEvents as AgiEvent[])
-  .slice()
-  .sort((a, b) => new Date(b.date).valueOf() - new Date(a.date).valueOf());
+const sources = Array.from(new Set(items.map((i) => i.sourceName).filter(Boolean))).sort();
+const tags = Array.from(new Set(items.flatMap((i) => i.tags || []))).sort();
 
-const typeOptions = [...new Set(events.map((event) => (event.type || 'general').toLowerCase()))].sort();
-const tagOptions = [...new Set(events.flatMap((event) => event.tags || []).map((tag) => tag.toLowerCase()))].sort();
+const ytItems = Array.isArray(yt?.items) ? yt.items : [];
+const ytSeries = Array.from(new Set(ytItems.flatMap((v) => v.series || []))).sort();
 ---
 
 <BaseLayout
   title="AGI Timeline — a_e.s_"
-  description="Local-first AGI timeline MVP with source citations and lightweight filters."
+  description="Cached AGI timeline and YouTube activity, rendered at build time with no runtime feed dependency."
   theme="agi"
 >
-  <section class="agi-mvp">
-    <header class="agi-mvp__hero">
-      <p class="agi-mvp__kicker">Timeline MVP</p>
+  <main class="archive">
+    <header class="archive__header">
+      <p class="kicker">Living archive</p>
       <h1>AGI Timeline</h1>
-      <p>
-        Citation-first timeline powered by <code>src/data/agi.events.json</code>. Free-first and deploy-safe for Cloudflare
-        Pages.
+      <p class="muted">
+        Cached dataset committed to the repo. No runtime fetch dependency.
+        {lastUpdated && <span> Last updated: <span class="mono">{new Date(lastUpdated).toLocaleString()}</span>.</span>}
       </p>
     </header>
 
-    <aside class="agi-mvp__todo" aria-label="Automation notes">
-      <h2>TODO (optional automation)</h2>
-      <ul>
-        <li>Add a GitHub Action to refresh <code>src/data/agi.events.json</code> from approved feeds.</li>
-        <li>Add schema validation in CI before deploying updated timeline data.</li>
-      </ul>
-    </aside>
-
-    <div class="agi-mvp__filters" aria-label="Timeline filters">
-      <label>
-        <span>Type</span>
-        <select id="agi-type-filter">
-          <option value="">All types</option>
-          {typeOptions.map((type) => <option value={type}>{type}</option>)}
+    <section class="panel">
+      <div class="controls">
+        <input id="agiSearch" class="input" type="search" placeholder="Search title/summary..." autocomplete="off" />
+        <select id="agiSource" class="select">
+          <option value="">All sources</option>
+          {sources.map((s) => <option value={s}>{s}</option>)}
         </select>
-      </label>
-
-      <label>
-        <span>Tag</span>
-        <select id="agi-tag-filter">
+        <select id="agiTag" class="select">
           <option value="">All tags</option>
-          {tagOptions.map((tag) => <option value={tag}>{tag}</option>)}
+          {tags.map((t) => <option value={t}>{t}</option>)}
         </select>
-      </label>
-    </div>
+        <button id="agiReset" class="button" type="button">Reset</button>
+      </div>
 
-    <ol id="agi-list" class="agi-mvp__list" aria-live="polite">
-      {events.map((event) => (
-        <li
-          class="agi-mvp__item"
-          data-type={(event.type || 'general').toLowerCase()}
-          data-tags={event.tags.map((tag) => tag.toLowerCase()).join('|')}
-        >
-          <article>
-            <p class="agi-mvp__meta">
-              <time datetime={event.date}>{new Date(event.date).toLocaleDateString()}</time>
-              <span aria-hidden="true">•</span>
-              <span>{event.type || 'general'}</span>
-            </p>
-            <h2>{event.title}</h2>
-            <p>{event.summary}</p>
-            <p class="agi-mvp__tags">{event.tags.map((tag) => `#${tag}`).join(' ')}</p>
-            <p class="agi-mvp__source">
-              <a href={event.source_url} target="_blank" rel="noopener">Source citation</a>
-            </p>
-          </article>
-        </li>
-      ))}
-    </ol>
+      <p id="agiStatus" class="muted"></p>
 
-    <p id="agi-empty" class="agi-mvp__empty" hidden>No events match these filters.</p>
-  </section>
+      {items.length > 0 ? (
+        <ol id="agiList" class="list">
+          {items.map((it) => {
+            const dateLabel = it.publishedAt ? new Date(it.publishedAt).toLocaleDateString() : 'Undated';
+            const tagStr = (it.tags || []).join(',');
+            const cite = Array.isArray(it.citations) ? it.citations : [];
+            return (
+              <li
+                class="entry"
+                data-title={`${it.title} ${(it.summary || '')}`.toLowerCase()}
+                data-source={it.sourceName}
+                data-tags={tagStr}
+              >
+                <details class="details">
+                  <summary class="summary">
+                    <span class="summary__date mono">{dateLabel}</span>
+                    <span class="summary__title">{it.title}</span>
+                    <span class="summary__source mono">{it.sourceName}</span>
+                  </summary>
+
+                  <div class="body">
+                    {it.summary && <p class="body__summary">{it.summary}</p>}
+
+                    <div class="meta">
+                      <div class="chips">
+                        {(it.tags || []).map((t) => (
+                          <span class="chip mono" data-chip={t}>{t}</span>
+                        ))}
+                      </div>
+
+                      <div class="links">
+                        <a class="link mono" href={it.url} target="_blank" rel="noreferrer">Open</a>
+                        {cite.map((c) => (
+                          <a class="link mono" href={c.url} target="_blank" rel="noreferrer">
+                            {c.label || 'Citation'}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              </li>
+            );
+          })}
+        </ol>
+      ) : (
+        <div class="empty">
+          <p><strong>Cached timeline is empty.</strong></p>
+          <p class="muted">
+            Run <span class="mono">npm run sync:data</span> locally or trigger the workflow to populate.
+            The site still renders (no broken state).
+          </p>
+        </div>
+      )}
+    </section>
+
+    <section class="panel">
+      <h2>YouTube — Latest uploads</h2>
+      <p class="muted">
+        Pulled from the channel RSS feed and cached to <span class="mono">src/data/youtube.json</span>.
+      </p>
+
+      <div class="controls">
+        <select id="ytSeries" class="select">
+          <option value="">All series</option>
+          {ytSeries.map((s) => <option value={s}>{s}</option>)}
+        </select>
+        <button id="ytReset" class="button" type="button">Reset</button>
+      </div>
+
+      {ytItems.length > 0 ? (
+        <ul id="ytList" class="grid">
+          {ytItems.map((v) => {
+            const dateLabel = v.publishedAt ? new Date(v.publishedAt).toLocaleDateString() : 'Undated';
+            const seriesStr = (v.series || []).join(',');
+            return (
+              <li class="card" data-series={seriesStr}>
+                <details class="details">
+                  <summary class="card__summary">
+                    {v.thumbnailUrl ? <img class="thumb" src={v.thumbnailUrl} alt="" loading="lazy" /> : null}
+                    <div class="card__text">
+                      <div class="mono muted">{dateLabel}</div>
+                      <div class="card__title">{v.title}</div>
+                      <div class="mono muted">{(v.series || []).join(' · ')}</div>
+                    </div>
+                  </summary>
+
+                  <div class="card__body">
+                    {v.videoId ? (
+                      <iframe
+                        class="player"
+                        src={`https://www.youtube.com/embed/${v.videoId}`}
+                        title={v.title}
+                        loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen
+                      />
+                    ) : (
+                      <p class="muted">No videoId available.</p>
+                    )}
+                    <p><a class="link mono" href={v.url} target="_blank" rel="noreferrer">Open on YouTube</a></p>
+                  </div>
+                </details>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <div class="empty">
+          <p><strong>No cached uploads yet.</strong></p>
+          <p class="muted">Run <span class="mono">npm run sync:data</span> to populate.</p>
+        </div>
+      )}
+    </section>
+  </main>
 </BaseLayout>
 
 <script is:inline>
-  (() => {
-    const typeFilter = document.getElementById('agi-type-filter');
-    const tagFilter = document.getElementById('agi-tag-filter');
-    const items = Array.from(document.querySelectorAll('.agi-mvp__item'));
-    const empty = document.getElementById('agi-empty');
-    if (!typeFilter || !tagFilter || !items.length || !empty) return;
+  function setupTimelineFilters() {
+    const search = document.getElementById('agiSearch');
+    const source = document.getElementById('agiSource');
+    const tag = document.getElementById('agiTag');
+    const reset = document.getElementById('agiReset');
+    const list = document.getElementById('agiList');
+    const status = document.getElementById('agiStatus');
 
-    const applyFilters = () => {
-      const selectedType = typeFilter.value;
-      const selectedTag = tagFilter.value;
-      let visibleCount = 0;
+    if (!list || !search || !source || !tag || !reset || !status) return;
 
-      items.forEach((item) => {
-        const type = item.getAttribute('data-type') || '';
-        const tags = item.getAttribute('data-tags') || '';
-        const typeOk = !selectedType || selectedType === type;
-        const tagOk = !selectedTag || tags.split('|').includes(selectedTag);
-        const visible = typeOk && tagOk;
-        item.hidden = !visible;
-        if (visible) visibleCount += 1;
-      });
+    const entries = Array.from(list.querySelectorAll('.entry'));
 
-      empty.hidden = visibleCount > 0;
-    };
+    function apply() {
+      const q = (search.value || '').trim().toLowerCase();
+      const s = source.value || '';
+      const t = tag.value || '';
 
-    typeFilter.addEventListener('change', applyFilters);
-    tagFilter.addEventListener('change', applyFilters);
-    applyFilters();
-  })();
+      let visible = 0;
+      for (const el of entries) {
+        const title = el.dataset.title || '';
+        const src = el.dataset.source || '';
+        const tags = (el.dataset.tags || '').split(',').filter(Boolean);
+
+        const okQ = !q || title.includes(q);
+        const okS = !s || src === s;
+        const okT = !t || tags.includes(t);
+
+        const show = okQ && okS && okT;
+        el.hidden = !show;
+        if (show) visible += 1;
+      }
+      status.textContent = `${visible} / ${entries.length} entries`;
+    }
+
+    search.addEventListener('input', apply);
+    source.addEventListener('change', apply);
+    tag.addEventListener('change', apply);
+    reset.addEventListener('click', () => {
+      search.value = '';
+      source.value = '';
+      tag.value = '';
+      apply();
+    });
+
+    apply();
+  }
+
+  function setupYouTubeFilters() {
+    const series = document.getElementById('ytSeries');
+    const reset = document.getElementById('ytReset');
+    const list = document.getElementById('ytList');
+    if (!list || !series || !reset) return;
+
+    const cards = Array.from(list.querySelectorAll('.card'));
+
+    function apply() {
+      const s = series.value || '';
+
+      for (const el of cards) {
+        const seriesStr = el.dataset.series || '';
+        const seriesList = seriesStr.split(',').filter(Boolean);
+        const show = !s || seriesList.includes(s);
+        el.hidden = !show;
+      }
+    }
+
+    series.addEventListener('change', apply);
+    reset.addEventListener('click', () => {
+      series.value = '';
+      apply();
+    });
+
+    apply();
+  }
+
+  setupTimelineFilters();
+  setupYouTubeFilters();
 </script>
 
 <style>
-  .agi-mvp {
-    max-width: 56rem;
-    margin: 0 auto;
-  }
+  .archive { max-width: 900px; margin: 0 auto; padding: 2rem 1rem 4rem; line-height: 1.5; }
+  .archive__header h1 { font-size: 2rem; margin: 0.25rem 0 0.5rem; }
+  .kicker { letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.8rem; opacity: 0.7; margin: 0; }
+  .muted { opacity: 0.75; }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 
-  .agi-mvp__kicker {
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    font-size: 0.72rem;
-    color: var(--tone-muted);
-  }
+  .panel { border: 1px solid var(--line); border-radius: 10px; padding: 1rem; margin-top: 1.25rem; background: var(--panel); }
+  .controls { display: grid; grid-template-columns: 1fr 200px 160px auto; gap: 0.5rem; margin: 0.75rem 0; }
+  @media (max-width: 720px) { .controls { grid-template-columns: 1fr; } }
 
-  .agi-mvp__hero h1 {
-    margin: 0.35rem 0 0.72rem;
-    font-size: clamp(2rem, 4.1vw, 2.9rem);
-    line-height: 1.08;
-  }
-
-  .agi-mvp__hero p {
-    margin: 0;
-    max-width: 72ch;
-    color: var(--tone-muted);
-  }
-
-  .agi-mvp__todo {
-    margin-top: 1rem;
+  .input, .select, .button {
     border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: var(--panel);
-    padding: 0.82rem;
-  }
-
-  .agi-mvp__todo h2 {
-    margin: 0;
-    font-size: 1rem;
-  }
-
-  .agi-mvp__todo ul {
-    margin: 0.6rem 0 0;
-    padding-left: 1.1rem;
-  }
-
-  .agi-mvp__filters {
-    margin-top: 0.9rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.7rem;
-  }
-
-  .agi-mvp__filters label {
-    display: grid;
-    gap: 0.25rem;
-  }
-
-  .agi-mvp__filters span {
-    color: var(--tone-muted);
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-
-  .agi-mvp__filters select {
-    border: 1px solid var(--line);
-    border-radius: 0.55rem;
-    background: rgba(11, 16, 25, 0.74);
+    border-radius: 8px;
+    padding: 0.55rem 0.65rem;
+    background: transparent;
     color: var(--tone-text);
-    padding: 0.42rem 0.55rem;
+    font: inherit;
   }
+  .button { cursor: pointer; }
+  .button:hover { border-color: var(--tone-accent-bright); }
 
-  .agi-mvp__list {
-    margin: 1rem 0 0;
-    padding: 0;
-    list-style: none;
-    display: grid;
-    gap: 0.72rem;
-  }
+  .list { list-style: none; padding: 0; margin: 0.75rem 0 0; }
+  .entry { border-top: 1px dashed var(--line2); padding: 0.65rem 0; }
+  .entry:first-child { border-top: 0; }
 
-  .agi-mvp__item article {
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: var(--panel);
-    padding: 0.85rem;
-  }
+  .details { border-radius: 8px; }
+  .summary { display: grid; grid-template-columns: 120px 1fr 180px; gap: 0.75rem; cursor: pointer; align-items: baseline; }
+  @media (max-width: 720px) { .summary { grid-template-columns: 1fr; } }
 
-  .agi-mvp__meta {
-    margin: 0;
-    display: flex;
-    gap: 0.42rem;
-    color: var(--tone-muted);
-    font-size: 0.8rem;
-  }
+  .summary__date { opacity: 0.7; }
+  .summary__source { opacity: 0.7; text-align: right; }
+  @media (max-width: 720px) { .summary__source { text-align: left; } }
 
-  .agi-mvp__item h2 {
-    margin: 0.52rem 0 0;
-    font-size: 1.12rem;
-    line-height: 1.3;
-  }
+  .body { margin-top: 0.6rem; }
+  .body__summary { margin: 0.4rem 0 0.75rem; }
 
-  .agi-mvp__item p {
-    margin: 0.58rem 0 0;
-  }
+  .meta { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .chip { border: 1px solid var(--line); border-radius: 999px; padding: 0.15rem 0.5rem; font-size: 0.78rem; opacity: 0.85; }
 
-  .agi-mvp__tags {
-    color: var(--tone-muted);
-    font-size: 0.82rem;
-  }
+  .links { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .link { text-decoration: underline; text-underline-offset: 3px; }
 
-  .agi-mvp__source a {
-    color: var(--tone-accent-glow);
-    text-decoration: none;
-    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 35%, transparent);
-  }
+  .empty { padding: 0.5rem 0; }
 
-  .agi-mvp__empty {
-    margin-top: 0.9rem;
-    color: var(--tone-muted);
-  }
+  .grid { list-style: none; padding: 0; margin: 0.75rem 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+
+  .card { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: rgba(0, 0, 0, 0.08); }
+  .card__summary { display: grid; grid-template-columns: 160px 1fr; gap: 0.75rem; cursor: pointer; align-items: stretch; padding: 0.75rem; }
+  @media (max-width: 720px) { .card__summary { grid-template-columns: 1fr; } }
+
+  .thumb { width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--line2); }
+  .card__title { font-weight: 600; margin-top: 0.15rem; }
+  .card__body { padding: 0.75rem; border-top: 1px dashed var(--line2); }
+  .player { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 10px; }
 </style>

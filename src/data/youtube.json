@@ -1,0 +1,22 @@
+{
+  "meta": {
+    "schemaVersion": 1,
+    "generatedAt": "2026-02-17T21:31:20.914Z",
+    "channelUrl": "https://www.youtube.com/@a_e.s_4",
+    "channelId": null,
+    "feedUrl": null
+  },
+  "items": [
+    {
+      "id": "a04be4077bd152f7369d69e075ca00b3d180d938",
+      "title": "YouTube seed: run sync to populate uploads.",
+      "url": "https://www.youtube.com/@a_e.s_4",
+      "videoId": null,
+      "publishedAt": "2026-02-17T21:31:20.914Z",
+      "series": [
+        "Seed"
+      ],
+      "thumbnailUrl": null
+    }
+  ]
+}

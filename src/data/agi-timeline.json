@@ -1,0 +1,59 @@
+{
+  "meta": {
+    "schemaVersion": 1,
+    "generatedAt": "2026-02-17T21:31:20.732Z",
+    "note": "Seed dataset written (no sources fetched yet).",
+    "sources": [
+      {
+        "id": "openai_news",
+        "name": "OpenAI — News",
+        "type": "rss",
+        "url": "https://openai.com/news/rss.xml"
+      },
+      {
+        "id": "anthropic_news",
+        "name": "Anthropic — News",
+        "type": "html_anthropic_news",
+        "url": "https://www.anthropic.com/news"
+      },
+      {
+        "id": "deepmind_blog",
+        "name": "Google DeepMind — Blog",
+        "type": "rss",
+        "url": "https://deepmind.com/blog/feed/basic"
+      },
+      {
+        "id": "arxiv_cs_ai",
+        "name": "arXiv — cs.AI",
+        "type": "rss",
+        "url": "https://rss.arxiv.org/rss/cs.AI"
+      },
+      {
+        "id": "arxiv_cs_cl",
+        "name": "arXiv — cs.CL",
+        "type": "rss",
+        "url": "https://rss.arxiv.org/rss/cs.CL"
+      }
+    ]
+  },
+  "items": [
+    {
+      "id": "a719443a1b30ede8e60c4b2c836df54860bc5e7a",
+      "title": "Timeline seed: dataset initialized (run sync to populate).",
+      "url": "https://github.com/AngelESuero/Portfolio-Website-",
+      "sourceId": "seed",
+      "sourceName": "Local",
+      "publishedAt": "2026-02-17T21:31:20.732Z",
+      "summary": "This is a placeholder so the /agi page never renders empty.",
+      "tags": [
+        "seed"
+      ],
+      "citations": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/AngelESuero/Portfolio-Website-"
+        }
+      ]
+    }
+  ]
+}
