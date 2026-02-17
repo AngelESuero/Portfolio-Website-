@@ -1,0 +1,28 @@
+{
+  "featured_threads": [
+    {
+      "title": "Scraps Archive Index",
+      "year": "2026",
+      "type": "writing",
+      "blurb": "[Add description]",
+      "href": "/writing/scraps-archive",
+      "external": false
+    },
+    {
+      "title": "AV/Museum Work",
+      "year": "2025",
+      "type": "video",
+      "blurb": "[Add description]",
+      "href": "/work#av",
+      "external": false
+    },
+    {
+      "title": "Music/Production Sessions",
+      "year": "2026",
+      "type": "music",
+      "blurb": "[Add description]",
+      "href": "https://youtube.com/@a_e.s_4",
+      "external": true
+    }
+  ]
+}
