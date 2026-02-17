@@ -17,8 +17,10 @@
   --tone-accent-glow: #ffe4ae;
   --tone-sky: #6fb7ff;
   --tone-sky-bright: #9fceff;
-  --accent: var(--tone-accent);
-  --accent2: var(--tone-sky);
+  --accent: #ff6a00;
+  --accent2: #12d6ff;
+  --mx: 50vw;
+  --my: 30vh;
   --aura-x: 50vw;
   --aura-y: 30vh;
   --line: var(--tone-line);
@@ -76,9 +78,20 @@ body::before {
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  opacity: var(--street-noise);
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  background:
+    radial-gradient(
+      520px circle at var(--mx) var(--my),
+      color-mix(in oklab, var(--accent2) 30%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px circle at 20% 10%,
+      color-mix(in oklab, var(--accent) 14%, transparent),
+      transparent 60%
+    );
+  opacity: 0.9;
+  filter: saturate(1.05);
+  mix-blend-mode: screen;
 }
 
 body::after {

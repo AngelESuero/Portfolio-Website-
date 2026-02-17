@@ -240,6 +240,8 @@ const exploreLinks = [
         function tick() {
           x += (tx - x) * 0.12;
           y += (ty - y) * 0.12;
+          root.style.setProperty('--mx', x + 'px');
+          root.style.setProperty('--my', y + 'px');
           root.style.setProperty('--aura-x', x + 'px');
           root.style.setProperty('--aura-y', y + 'px');
           requestAnimationFrame(tick);
