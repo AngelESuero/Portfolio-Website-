@@ -1,12 +1,14 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import SubstackPanel from '../../components/SubstackPanel.astro';
 
 const posts = (await getCollection('posts')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 <BaseLayout title="Writing — a_e.s_">
   <h1 class="font-display text-4xl">Writing</h1>
   <a class="mt-2 inline-block text-sm underline" href="/rss.xml">RSS feed</a>
+  <SubstackPanel />
   <ul class="mt-6 space-y-4">
     {posts.map((post) => (
       <li class="rounded border border-zinc-300 p-4 dark:border-zinc-700">
