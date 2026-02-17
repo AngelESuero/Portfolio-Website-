@@ -21,6 +21,9 @@
   --accent2: #8ee6ff;
   --aura-x: 50vw;
   --aura-y: 30vh;
+  --line: rgba(255, 255, 255, 0.1);
+  --line2: rgba(255, 255, 255, 0.06);
+  --panel: rgba(255, 255, 255, 0.03);
 }
 
 :root.dark {
@@ -77,6 +80,45 @@ footer {
         transparent 70%
       );
   }
+}
+
+.site-header {
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line2);
+}
+
+.pill,
+.chip,
+.tag,
+button {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.02);
+  transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.pill:hover,
+.chip:hover,
+button:hover {
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--line));
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px);
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 0 var(--line2) inset;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.card:hover {
+  border-color: color-mix(in srgb, var(--accent2) 22%, var(--line));
+}
+
+.card img {
+  transform: scale(1.01);
 }
 
 a:focus-visible,

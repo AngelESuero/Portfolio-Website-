@@ -2,7 +2,7 @@
 const { project } = Astro.props;
 const { slug, data } = project;
 ---
-<article class="min-w-[270px] rounded-xl border border-zinc-300 bg-white/70 p-4 dark:border-zinc-700 dark:bg-zinc-900/70">
+<article class="card min-w-[270px] p-4">
   <img src={data.cover_image} alt={data.title} class="mb-3 h-36 w-full rounded object-cover" loading="lazy"/>
   <p class="text-xs uppercase tracking-wide text-zinc-500">{data.year} · {data.type}</p>
   <h3 class="font-display text-lg">{data.title}</h3>

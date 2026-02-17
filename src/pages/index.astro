@@ -21,7 +21,7 @@ const sections = ['Music', 'Visual', 'Video', 'Newark', 'Scraps'];
       <h1 class="max-w-3xl font-display text-4xl font-bold md:text-6xl">{profile.name} <span class="text-accent">(a_e.s_)</span></h1>
       <p class="max-w-3xl text-lg">{profile.long_bio}</p>
       <div class="flex flex-wrap gap-2" aria-label="Identity chips">
-        {profile.roles.map((role) => <span class="rounded-full border border-zinc-400 px-3 py-1 text-sm dark:border-zinc-600">{role}</span>)}
+        {profile.roles.map((role) => <span class="chip rounded-full px-3 py-1 text-sm">{role}</span>)}
       </div>
     </section>
 
@@ -35,7 +35,7 @@ const sections = ['Music', 'Visual', 'Video', 'Newark', 'Scraps'];
     <section class="mt-10">
       <h2 class="font-display text-2xl">Sections</h2>
       <div class="mt-3 flex flex-wrap gap-2">
-        {sections.map((section) => <span class="rounded border border-zinc-400 px-2 py-1 text-sm dark:border-zinc-600">{section}</span>)}
+        {sections.map((section) => <span class="tag rounded px-2 py-1 text-sm">{section}</span>)}
       </div>
     </section>
   </div>

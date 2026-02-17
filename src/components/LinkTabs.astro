@@ -14,7 +14,7 @@ const secondaryLinks = links.filter((entry) => !primaryOrder.includes(entry.labe
   <div class="link-tabs-scroll" role="tablist" aria-label="Link tabs">
     {primaryLinks.map((link) => {
       const isActive = !link.external && currentPath === link.href;
-      const classes = `link-tab-pill${isActive ? ' is-active' : ''}`;
+      const classes = `link-tab-pill pill${isActive ? ' is-active' : ''}`;
       return (
         <a
           href={link.href}
@@ -29,7 +29,7 @@ const secondaryLinks = links.filter((entry) => !primaryOrder.includes(entry.labe
 
     {secondaryLinks.length > 0 && (
       <details class="link-tabs-more">
-        <summary class="link-tab-pill link-tab-more">More</summary>
+        <summary class="link-tab-pill link-tab-more pill">More</summary>
         <div class="link-tabs-popover" aria-label="More links">
           {secondaryLinks.map((link) => (
             <a
@@ -84,15 +84,13 @@ const secondaryLinks = links.filter((entry) => !primaryOrder.includes(entry.labe
     display: inline-flex;
     align-items: center;
     border-radius: 999px;
-    border: 1px solid rgba(113, 113, 122, 0.45);
-    background: rgba(255, 255, 255, 0.52);
     color: #1f2937;
     padding: 0.36rem 0.74rem;
     font-size: 0.78rem;
     line-height: 1;
     text-decoration: none;
     white-space: nowrap;
-    transition: border-color 130ms ease, color 130ms ease, background-color 130ms ease;
+    transition: color 130ms ease, background-color 130ms ease;
   }
 
   .link-tab-pill:hover,
@@ -155,8 +153,6 @@ const secondaryLinks = links.filter((entry) => !primaryOrder.includes(entry.labe
   }
 
   :root.dark .link-tab-pill {
-    border-color: rgba(161, 161, 170, 0.45);
-    background: rgba(24, 24, 27, 0.75);
     color: #e4e4e7;
   }
 

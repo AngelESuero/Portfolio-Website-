@@ -14,7 +14,7 @@ const nav = [
 ];
 ---
 
-<header class="sticky top-0 z-50 border-b border-zinc-300/60 bg-paper/90 backdrop-blur dark:border-zinc-700 dark:bg-zinc-950/90">
+<header class="site-header sticky top-0 z-50">
   <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
     <a href="/" class="font-display text-lg font-bold tracking-tight">{profile.name} <span class="text-accent">/ a_e.s_</span></a>
     <nav aria-label="Main navigation" class="hidden gap-4 md:flex">
@@ -22,7 +22,7 @@ const nav = [
         <a href={href} class="text-sm hover:text-accent">{label}</a>
       ))}
     </nav>
-    <button id="theme-toggle" aria-label="Toggle dark mode" class="rounded border border-zinc-400 px-3 py-1 text-sm dark:border-zinc-600">Theme</button>
+    <button id="theme-toggle" aria-label="Toggle dark mode" class="pill rounded px-3 py-1 text-sm">Theme</button>
   </div>
   <LinkTabs />
 </header>
