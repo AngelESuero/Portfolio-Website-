@@ -28,9 +28,8 @@ interface WritingPost {
   pubDate?: string;
 }
 
-const roomList = rooms as Room[];
-
 export function getStaticPaths() {
+  const roomList = rooms as Room[];
   return roomList.map((room) => ({
     params: { slug: room.slug },
     props: { room }
