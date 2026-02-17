@@ -115,6 +115,12 @@ footer {
   border-bottom: 1px solid var(--line2);
 }
 
+.page-shell {
+  background:
+    linear-gradient(to right, rgba(255, 255, 255, 0.04), transparent 25%),
+    linear-gradient(to left, rgba(0, 0, 0, 0.35), transparent 35%);
+}
+
 nav a,
 .pill,
 .chip,
