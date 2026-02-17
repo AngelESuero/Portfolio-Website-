@@ -3,7 +3,6 @@ import profile from '../data/profile.json';
 
 const nav = [
   { label: 'Home', href: '/', color: 'blue' },
-  { label: 'Link Hub', href: '/link-hub', color: 'yellow' },
   { label: 'About', href: '/about', color: 'blue' },
   { label: 'Work', href: '/work', color: 'orange' },
   { label: 'Writing', href: '/writing', color: 'red' },
@@ -11,7 +10,8 @@ const nav = [
   { label: 'AGI Timeline', href: '/agi', color: 'black' },
   { label: 'Map', href: '/map', color: 'blue' },
   { label: 'Now', href: '/now', color: 'yellow' },
-  { label: 'Contact', href: '/contact', color: 'orange' }
+  { label: 'Contact', href: '/contact', color: 'orange' },
+  { label: 'Link Hub', href: '/link-hub', color: 'yellow' }
 ];
 
 const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';

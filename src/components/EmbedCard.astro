@@ -16,12 +16,28 @@ const providerFromUrl = (urlValue: string): LinkHubProvider | null => {
   }
 
   const host = parsed.hostname.toLowerCase();
+  if (host.includes('instagram.com')) return 'instagram';
   if (host.includes('youtube.com') || host.includes('youtu.be')) return 'youtube';
   if (host.includes('spotify.com')) return 'spotify';
   if (host.includes('soundcloud.com')) return 'soundcloud';
   if (host.includes('untitled.stream')) return 'untitled';
   if (host.includes('substack.com')) return 'substack';
   return null;
+};
+
+const instagramEmbed = (urlValue: string): string | null => {
+  let parsed: URL;
+  try {
+    parsed = new URL(urlValue);
+  } catch {
+    return null;
+  }
+
+  const match = parsed.pathname.match(/^\/(p|reel|tv)\/([^/]+)/);
+  if (!match?.[1] || !match?.[2]) return null;
+  const kind = match[1];
+  const code = match[2];
+  return `https://www.instagram.com/${kind}/${code}/embed`;
 };
 
 const youtubeEmbed = (urlValue: string): string | null => {
@@ -100,6 +116,9 @@ let embedHeight = 220;
 if (provider === 'youtube') {
   embedUrl = youtubeEmbed(item.url);
   embedHeight = 300;
+} else if (provider === 'instagram') {
+  embedUrl = instagramEmbed(item.url);
+  embedHeight = 420;
 } else if (provider === 'spotify' && !isPlaceholderSpotify) {
   embedUrl = spotifyEmbed(item.url);
   embedHeight = 152;
@@ -138,7 +157,11 @@ const isEmbeddable = Boolean(embedUrl) && !isPlaceholderSpotify;
     </div>
   ) : (
     <div class="reader-frame">
-      <p>Embed unavailable for this source.</p>
+      <p>
+        {provider === 'instagram'
+          ? 'Instagram profile links do not embed here. Use a specific post or reel URL.'
+          : 'Embed unavailable for this source.'}
+      </p>
     </div>
   )}
 

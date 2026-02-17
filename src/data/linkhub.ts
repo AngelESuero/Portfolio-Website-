@@ -1,4 +1,4 @@
-export type LinkHubProvider = 'spotify' | 'youtube' | 'soundcloud' | 'untitled' | 'substack';
+export type LinkHubProvider = 'spotify' | 'youtube' | 'soundcloud' | 'untitled' | 'substack' | 'instagram';
 export type LinkHubCategoryId = 'music' | 'writing' | 'video' | 'resources' | 'legal' | 'social';
 
 export interface LinkHubItem {
