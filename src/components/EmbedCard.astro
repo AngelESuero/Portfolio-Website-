@@ -92,6 +92,7 @@ const untitledEmbed = (urlValue: string): string | null => {
 
 const provider = item.preferredEmbed ?? providerFromUrl(item.url);
 const isExternal = /^https?:\/\//i.test(item.url);
+const isPlaceholderSpotify = provider === 'spotify' && /SPOTIFY_PLAYLIST_ID/i.test(item.url || '');
 
 let embedUrl: string | null = null;
 let embedHeight = 220;
@@ -99,7 +100,7 @@ let embedHeight = 220;
 if (provider === 'youtube') {
   embedUrl = youtubeEmbed(item.url);
   embedHeight = 300;
-} else if (provider === 'spotify') {
+} else if (provider === 'spotify' && !isPlaceholderSpotify) {
   embedUrl = spotifyEmbed(item.url);
   embedHeight = 152;
 } else if (provider === 'soundcloud') {
@@ -110,7 +111,7 @@ if (provider === 'youtube') {
   embedHeight = 344;
 }
 
-const isEmbeddable = Boolean(embedUrl);
+const isEmbeddable = Boolean(embedUrl) && !isPlaceholderSpotify;
 ---
 
 <article class="card hub-card">
@@ -137,7 +138,7 @@ const isEmbeddable = Boolean(embedUrl);
     </div>
   ) : (
     <div class="reader-frame">
-      <p>No direct embed available for this source.</p>
+      <p>Embed unavailable for this source.</p>
     </div>
   )}
 

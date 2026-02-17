@@ -8,7 +8,7 @@
   --bg0: #05060a;
   --bg1: #070a12;
   --paper: rgba(10, 12, 18, 0.62);
-  --line: rgba(255, 255, 255, 0.1);
+  --line: rgba(232, 239, 255, 0.1);
   --text: rgba(255, 255, 255, 0.92);
   --muted: rgba(255, 255, 255, 0.62);
   --neon: #7be7ff;
@@ -37,8 +37,8 @@
   --aura-y: 30vh;
   --hallway-x: 50vw;
   --hallway-y: 34vh;
-  --line: rgba(255, 255, 255, 0.1);
-  --line2: rgba(255, 255, 255, 0.08);
+  --line: rgba(232, 239, 255, 0.1);
+  --line2: rgba(232, 239, 255, 0.07);
   --panel: rgba(255, 255, 255, 0.04);
   --street-noise: 0.04;
   --street-vignette: 0.28;
@@ -140,6 +140,11 @@ body {
     linear-gradient(180deg, var(--bg1), var(--bg0));
   position: relative;
   isolation: isolate;
+}
+
+hr {
+  border-color: var(--line2);
+  opacity: 1;
 }
 
 #cursor-aura {
