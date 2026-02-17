@@ -2,11 +2,17 @@
 import links from '../data/links.json';
 
 const currentPath = Astro.url.pathname;
+const primaryOrder = ['Link Hub', 'YouTube', 'Press Kit', 'Contact'];
+const primaryLinks = primaryOrder
+  .map((label) => links.find((entry) => entry.label === label))
+  .filter(Boolean);
+const secondaryLinks = links.filter((entry) => !primaryOrder.includes(entry.label));
 ---
 
 <nav aria-label="Linktree tabs" class="link-tabs-shell">
+  <p class="link-tabs-label">Quick links</p>
   <div class="link-tabs-scroll" role="tablist" aria-label="Link tabs">
-    {links.map((link) => {
+    {primaryLinks.map((link) => {
       const isActive = !link.external && currentPath === link.href;
       const classes = `link-tab-pill${isActive ? ' is-active' : ''}`;
       return (
@@ -20,13 +26,41 @@ const currentPath = Astro.url.pathname;
         </a>
       );
     })}
+
+    {secondaryLinks.length > 0 && (
+      <details class="link-tabs-more">
+        <summary class="link-tab-pill link-tab-more">More</summary>
+        <div class="link-tabs-popover" aria-label="More links">
+          {secondaryLinks.map((link) => (
+            <a
+              href={link.href}
+              class="link-tabs-popover-link"
+              aria-label={`Open ${link.label}`}
+              {...(link.external ? { target: '_blank', rel: 'noopener' } : {})}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+      </details>
+    )}
   </div>
 </nav>
 
 <style>
   .link-tabs-shell {
     border-top: 1px solid rgba(113, 113, 122, 0.28);
-    padding: 0.55rem 0;
+    padding: 0.45rem 0 0.55rem;
+  }
+
+  .link-tabs-label {
+    margin: 0 auto 0.38rem;
+    max-width: 72rem;
+    padding: 0 1rem;
+    font-size: 0.69rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(82, 82, 91, 0.78);
   }
 
   .link-tabs-scroll {
@@ -69,8 +103,55 @@ const currentPath = Astro.url.pathname;
     background: rgba(194, 65, 12, 0.08);
   }
 
+  .link-tabs-more {
+    position: relative;
+  }
+
+  .link-tab-more {
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .link-tab-more::-webkit-details-marker {
+    display: none;
+  }
+
+  .link-tabs-popover {
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    right: 0;
+    min-width: 10.25rem;
+    z-index: 20;
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.38rem;
+    border: 1px solid rgba(113, 113, 122, 0.45);
+    border-radius: 0.7rem;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+  }
+
+  .link-tabs-popover-link {
+    display: block;
+    border-radius: 0.45rem;
+    padding: 0.35rem 0.5rem;
+    text-decoration: none;
+    color: #1f2937;
+    font-size: 0.78rem;
+  }
+
+  .link-tabs-popover-link:hover,
+  .link-tabs-popover-link:focus-visible {
+    background: rgba(194, 65, 12, 0.08);
+    color: #c2410c;
+  }
+
   :root.dark .link-tabs-shell {
     border-top-color: rgba(161, 161, 170, 0.32);
+  }
+
+  :root.dark .link-tabs-label {
+    color: rgba(212, 212, 216, 0.74);
   }
 
   :root.dark .link-tab-pill {
@@ -87,10 +168,26 @@ const currentPath = Astro.url.pathname;
     background: rgba(194, 65, 12, 0.18);
   }
 
+  :root.dark .link-tabs-popover {
+    border-color: rgba(161, 161, 170, 0.45);
+    background: rgba(24, 24, 27, 0.97);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.32);
+  }
+
+  :root.dark .link-tabs-popover-link {
+    color: #e4e4e7;
+  }
+
+  :root.dark .link-tabs-popover-link:hover,
+  :root.dark .link-tabs-popover-link:focus-visible {
+    background: rgba(194, 65, 12, 0.18);
+    color: #fdba74;
+  }
+
   @media (min-width: 861px) {
     .link-tabs-scroll {
-      overflow: hidden;
-      flex-wrap: wrap;
+      overflow: visible;
+      flex-wrap: nowrap;
       padding-bottom: 0.1rem;
     }
   }
