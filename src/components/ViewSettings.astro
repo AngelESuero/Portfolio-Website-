@@ -12,16 +12,11 @@
       <button type="button" class="view-settings-close" data-close-view-settings aria-label="Close">×</button>
     </header>
 
-    <div class="view-settings-modes" role="group" aria-label="View mode">
-      <button type="button" class="view-mode-btn" data-mode="1">1 · Standard</button>
-      <button type="button" class="view-mode-btn" data-mode="2">2 · Walkthrough</button>
-      <button type="button" class="view-mode-btn" data-mode="3">3 · Explore</button>
+    <div class="view-settings-modes" role="group" aria-label="Site mode">
+      <button type="button" class="view-mode-btn" data-mode="normal">Normal</button>
+      <button type="button" class="view-mode-btn" data-mode="walk">Walkthrough</button>
+      <button type="button" class="view-mode-btn" data-mode="explore">Explore</button>
     </div>
-
-    <label class="view-settings-remember">
-      <input id="view-settings-remember" type="checkbox" />
-      <span>Remember my choice</span>
-    </label>
 
     <div class="view-settings-actions">
       <button id="view-settings-reset" type="button">Reset</button>
@@ -33,21 +28,20 @@
   (() => {
     const openBtn = document.getElementById('view-settings-open');
     const modal = document.getElementById('view-settings-modal');
-    const rememberInput = document.getElementById('view-settings-remember');
     const resetBtn = document.getElementById('view-settings-reset');
-    if (!openBtn || !modal || !rememberInput || !resetBtn) return;
+    if (!openBtn || !modal || !resetBtn) return;
 
     const closeTargets = Array.from(modal.querySelectorAll('[data-close-view-settings]'));
     const modeButtons = Array.from(modal.querySelectorAll('.view-mode-btn'));
 
-    const getApi = () => window.__viewSettings;
-    const getState = () => (typeof getApi()?.getState === 'function' ? getApi().getState() : { view: '1', remember: false });
+    const getApi = () => window.__modeSettings;
+    const getState = () =>
+      typeof getApi()?.getState === 'function' ? getApi().getState() : { mode: 'normal' };
 
     const syncUi = () => {
       const state = getState();
-      rememberInput.checked = Boolean(state.remember);
       modeButtons.forEach((button) => {
-        const selected = button.getAttribute('data-mode') === state.view;
+        const selected = button.getAttribute('data-mode') === state.mode;
         button.classList.toggle('is-active', selected);
         button.setAttribute('aria-pressed', String(selected));
       });
@@ -72,15 +66,10 @@
 
     modeButtons.forEach((button) => {
       button.addEventListener('click', () => {
-        const mode = button.getAttribute('data-mode') || '1';
-        getApi()?.setView?.(mode);
+        const mode = button.getAttribute('data-mode') || 'normal';
+        getApi()?.setMode?.(mode);
         syncUi();
       });
-    });
-
-    rememberInput.addEventListener('change', () => {
-      getApi()?.setRemember?.(rememberInput.checked);
-      syncUi();
     });
 
     resetBtn.addEventListener('click', () => {
@@ -88,7 +77,7 @@
       syncUi();
     });
 
-    window.addEventListener('viewsettings:change', syncUi);
+    window.addEventListener('modesettings:change', syncUi);
     syncUi();
   })();
 </script>
@@ -183,15 +172,6 @@
     border-color: var(--tone-accent);
     color: var(--tone-accent-glow);
     background: rgba(214, 168, 53, 0.14);
-  }
-
-  .view-settings-remember {
-    margin-top: 0.82rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--tone-muted);
-    font-size: 0.85rem;
   }
 
   .view-settings-actions {

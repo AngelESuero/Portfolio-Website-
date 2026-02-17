@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import HallwayBackdrop from '../components/HallwayBackdrop.astro';
 
 interface Props {
   title: string;
@@ -60,10 +61,9 @@ const exploreLinks = [
     <meta name="viewport" content="width=device-width" />
     <script is:inline>
       (() => {
-        const KEY_VIEW = 'viewMode';
+        const KEY_MODE = 'siteMode';
         const KEY_WALK = 'walkStep';
-        const KEY_REMEMBER = 'viewRemember';
-        const DEFAULTS = { view: '1', remember: false, walkStep: 1 };
+        const DEFAULTS = { mode: 'normal', walkStep: 1 };
 
         const safeGet = (storage, key) => {
           try {
@@ -79,32 +79,24 @@ const exploreLinks = [
           } catch {}
         };
 
-        const safeRemove = (storage, key) => {
-          try {
-            storage.removeItem(key);
-          } catch {}
-        };
-
-        const normalizeView = (value) => (value === '2' || value === '3' ? value : '1');
+        const normalizeMode = (value) =>
+          value === 'walk' || value === 'explore' || value === 'normal' ? value : 'normal';
         const normalizeWalkStep = (value) => {
           const parsed = Number.parseInt(String(value || ''), 10);
           if (Number.isNaN(parsed)) return 1;
           return Math.min(9, Math.max(1, parsed));
         };
 
-        const initialRemember = safeGet(localStorage, KEY_REMEMBER) === '1';
-        const activeStorage = initialRemember ? localStorage : sessionStorage;
-        const initialView = normalizeView(safeGet(activeStorage, KEY_VIEW));
-        const initialWalkStep = normalizeWalkStep(safeGet(activeStorage, KEY_WALK));
+        const initialMode = normalizeMode(safeGet(localStorage, KEY_MODE));
+        const initialWalkStep = normalizeWalkStep(safeGet(localStorage, KEY_WALK));
         const state = {
-          view: initialView,
-          remember: initialRemember,
+          mode: initialMode,
           walkStep: initialWalkStep
         };
 
         const applyToDom = () => {
-          document.documentElement.dataset.view = state.view;
-          if (state.view === '2') {
+          document.documentElement.dataset.mode = state.mode;
+          if (state.mode === 'walk') {
             document.documentElement.dataset.walkStep = String(state.walkStep);
           } else {
             delete document.documentElement.dataset.walkStep;
@@ -112,19 +104,13 @@ const exploreLinks = [
         };
 
         const persist = () => {
-          const primary = state.remember ? localStorage : sessionStorage;
-          const secondary = state.remember ? sessionStorage : localStorage;
-          safeSet(primary, KEY_VIEW, state.view);
-          safeSet(primary, KEY_WALK, String(state.walkStep));
-          safeSet(primary, KEY_REMEMBER, state.remember ? '1' : '0');
-          safeRemove(secondary, KEY_VIEW);
-          safeRemove(secondary, KEY_WALK);
-          safeRemove(secondary, KEY_REMEMBER);
+          safeSet(localStorage, KEY_MODE, state.mode);
+          safeSet(localStorage, KEY_WALK, String(state.walkStep));
         };
 
         const emit = () => {
           window.dispatchEvent(
-            new CustomEvent('viewsettings:change', {
+            new CustomEvent('modesettings:change', {
               detail: { ...state }
             })
           );
@@ -134,14 +120,9 @@ const exploreLinks = [
           getState() {
             return { ...state };
           },
-          setView(nextView) {
-            state.view = normalizeView(nextView);
+          setMode(nextMode) {
+            state.mode = normalizeMode(nextMode);
             applyToDom();
-            persist();
-            emit();
-          },
-          setRemember(remember) {
-            state.remember = Boolean(remember);
             persist();
             emit();
           },
@@ -152,21 +133,16 @@ const exploreLinks = [
             emit();
           },
           reset() {
-            safeRemove(localStorage, KEY_VIEW);
-            safeRemove(localStorage, KEY_WALK);
-            safeRemove(localStorage, KEY_REMEMBER);
-            safeRemove(sessionStorage, KEY_VIEW);
-            safeRemove(sessionStorage, KEY_WALK);
-            safeRemove(sessionStorage, KEY_REMEMBER);
-            state.view = DEFAULTS.view;
-            state.remember = DEFAULTS.remember;
+            localStorage.removeItem(KEY_MODE);
+            localStorage.removeItem(KEY_WALK);
+            state.mode = DEFAULTS.mode;
             state.walkStep = DEFAULTS.walkStep;
             applyToDom();
             emit();
           }
         };
 
-        window.__viewSettings = api;
+        window.__modeSettings = api;
         applyToDom();
       })();
     </script>
@@ -180,25 +156,16 @@ const exploreLinks = [
   </head>
   <body data-theme={theme}>
     <div id="cursor-aura" aria-hidden="true"></div>
-    <div id="triangle-collage" aria-hidden="true">
-      <span class="tri tri-1"></span>
-      <span class="tri tri-2"></span>
-      <span class="tri tri-3"></span>
-      <span class="tri tri-4"></span>
-      <span class="tri tri-5"></span>
-      <span class="tri tri-6"></span>
-      <span class="tri tri-7"></span>
-      <span class="tri tri-8"></span>
-    </div>
+    <HallwayBackdrop accent="var(--accent-2)" />
     <Header />
     <main class="page-shell mx-auto max-w-6xl px-4 py-8">
-      <div class="view-1">
+      <div class="mode-normal">
         <slot />
       </div>
 
-      <section class="view-2 view-surface" aria-labelledby="walkthrough-heading">
+      <section class="mode-walk view-surface" aria-labelledby="walkthrough-heading">
         <header class="view-surface-header">
-          <p class="view-surface-kicker">Mode 2</p>
+          <p class="view-surface-kicker">Walkthrough mode</p>
           <h1 id="walkthrough-heading">Walkthrough</h1>
           <p>Use Next and Back to follow a simple guided sequence. Your current step is saved.</p>
         </header>
@@ -221,9 +188,9 @@ const exploreLinks = [
         </div>
       </section>
 
-      <section class="view-3 view-surface" aria-labelledby="explore-heading">
+      <section class="mode-explore view-surface" aria-labelledby="explore-heading">
         <header class="view-surface-header">
-          <p class="view-surface-kicker">Mode 3</p>
+          <p class="view-surface-kicker">Explore mode</p>
           <h1 id="explore-heading">Explore</h1>
           <p>Scan sections quickly, then jump directly to the page you want.</p>
         </header>
@@ -238,32 +205,63 @@ const exploreLinks = [
     <script is:inline>
       (() => {
         const root = document.documentElement;
-        let tx = innerWidth * 0.5;
-        let ty = innerHeight * 0.3;
-        let x = tx;
-        let y = ty;
+        const light = document.getElementById('cursorLight');
 
-        function tick() {
-          x += (tx - x) * 0.12;
-          y += (ty - y) * 0.12;
-          root.style.setProperty('--mx', x + 'px');
-          root.style.setProperty('--my', y + 'px');
-          root.style.setProperty('--aura-x', x + 'px');
-          root.style.setProperty('--aura-y', y + 'px');
-          requestAnimationFrame(tick);
+        const isha = {
+          yellow: '#F5D547',
+          blue: '#45C7FF',
+          orange: '#FF8A2A',
+          red: '#FF3B3B',
+          white: '#EDEDED',
+          black: '#0B0B0E'
+        };
+
+        function hexToRgb(hex) {
+          const h = String(hex).replace('#', '');
+          const n = parseInt(h.length === 3 ? h.split('').map((c) => c + c).join('') : h, 16);
+          return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
         }
 
-        addEventListener(
+        function rgbToHex(rgb) {
+          const to = (v) => Math.max(0, Math.min(255, Number(v) || 0)).toString(16).padStart(2, '0');
+          return `#${to(rgb.r)}${to(rgb.g)}${to(rgb.b)}`;
+        }
+
+        function complement(hex) {
+          const c = hexToRgb(hex);
+          return rgbToHex({ r: 255 - c.r, g: 255 - c.g, b: 255 - c.b });
+        }
+
+        function setAccentFromActiveLink() {
+          const active =
+            document.querySelector("nav a[aria-current='page']") || document.querySelector('nav a[data-color]');
+          if (!active) return;
+          const key = active.getAttribute('data-color');
+          const base = isha[key] || isha.blue;
+          root.style.setProperty('--accent', base);
+          root.style.setProperty('--cursor', complement(base));
+        }
+
+        setAccentFromActiveLink();
+
+        window.addEventListener(
           'pointermove',
           (e) => {
-            tx = e.clientX;
-            ty = e.clientY;
-            document.documentElement.style.setProperty('--mx', `${e.clientX}px`);
-            document.documentElement.style.setProperty('--my', `${e.clientY}px`);
+            const px = `${e.clientX}px`;
+            const py = `${e.clientY}px`;
+            root.style.setProperty('--mx', px);
+            root.style.setProperty('--my', py);
+            root.style.setProperty('--aura-x', px);
+            root.style.setProperty('--aura-y', py);
+            root.style.setProperty('--hallway-x', px);
+            root.style.setProperty('--hallway-y', py);
+            if (light) {
+              light.style.left = px;
+              light.style.top = py;
+            }
           },
           { passive: true }
         );
-        tick();
       })();
     </script>
     <script is:inline define:vars={{ walkthroughCount: walkthroughSteps.length }}>
@@ -283,7 +281,7 @@ const exploreLinks = [
         };
 
         const paint = () => {
-          const state = window.__viewSettings?.getState?.() || { walkStep: 1 };
+          const state = window.__modeSettings?.getState?.() || { walkStep: 1 };
           const step = clampStep(state.walkStep);
           list.forEach((item, index) => {
             const active = index + 1 === step;
@@ -296,20 +294,43 @@ const exploreLinks = [
         };
 
         backBtn.addEventListener('click', () => {
-          const state = window.__viewSettings?.getState?.() || { walkStep: 1 };
-          window.__viewSettings?.setWalkStep?.(clampStep(state.walkStep - 1));
+          const state = window.__modeSettings?.getState?.() || { walkStep: 1 };
+          window.__modeSettings?.setWalkStep?.(clampStep(state.walkStep - 1));
           paint();
         });
 
         nextBtn.addEventListener('click', () => {
-          const state = window.__viewSettings?.getState?.() || { walkStep: 1 };
-          window.__viewSettings?.setWalkStep?.(clampStep(state.walkStep + 1));
+          const state = window.__modeSettings?.getState?.() || { walkStep: 1 };
+          window.__modeSettings?.setWalkStep?.(clampStep(state.walkStep + 1));
           paint();
         });
 
-        window.addEventListener('viewsettings:change', paint);
+        window.addEventListener('modesettings:change', paint);
         paint();
       })();
     </script>
+    <style is:global>
+      .mode-normal {
+        display: block;
+      }
+
+      .mode-walk,
+      .mode-explore {
+        display: none;
+      }
+
+      html[data-mode='walk'] .mode-normal,
+      html[data-mode='explore'] .mode-normal {
+        display: none;
+      }
+
+      html[data-mode='walk'] .mode-walk {
+        display: block;
+      }
+
+      html[data-mode='explore'] .mode-explore {
+        display: block;
+      }
+    </style>
   </body>
 </html>
