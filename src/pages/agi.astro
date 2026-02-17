@@ -1,301 +1,321 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import agi from '../data/agi-timeline.json';
-import yt from '../data/youtube.json';
 
-const items = Array.isArray(agi?.items) ? agi.items : [];
-const lastUpdated = agi?.meta?.generatedAt ?? null;
+const seedAgi = {
+  meta: { schemaVersion: 1, generatedAt: null, sources: [] },
+  items: [
+    {
+      id: 'seed',
+      title: 'AGI timeline seed (data sync not yet populated).',
+      url: 'https://github.com/AngelESuero/Portfolio-Website-',
+      sourceId: 'seed',
+      sourceName: 'Local',
+      publishedAt: new Date().toISOString(),
+      summary: 'This placeholder guarantees the page never renders empty.',
+      tags: ['seed'],
+      citations: [{ label: 'Repo', url: 'https://github.com/AngelESuero/Portfolio-Website-' }]
+    }
+  ]
+};
 
-const sources = Array.from(new Set(items.map((i) => i.sourceName).filter(Boolean))).sort();
-const tags = Array.from(new Set(items.flatMap((i) => i.tags || []))).sort();
+const seedYT = {
+  meta: {
+    schemaVersion: 1,
+    generatedAt: null,
+    channelUrl: 'https://www.youtube.com/@a_e.s_4',
+    channelId: 'UCQeJiBS72gxrZXw5GmqtocA',
+    feedUrl: 'https://www.youtube.com/feeds/videos.xml?channel_id=UCQeJiBS72gxrZXw5GmqtocA'
+  },
+  items: []
+};
 
-const ytItems = Array.isArray(yt?.items) ? yt.items : [];
-const ytSeries = Array.from(new Set(ytItems.flatMap((v) => v.series || []))).sort();
+async function safeJsonImport(path, fallback) {
+  try {
+    const mod = await import(path);
+    return mod?.default ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+const agiData = await safeJsonImport('../data/agi-timeline.json', seedAgi);
+const youtubeData = await safeJsonImport('../data/youtube.json', seedYT);
+
+const agiItems = Array.isArray(agiData.items) ? agiData.items : seedAgi.items;
+const agiMeta = agiData.meta ?? seedAgi.meta;
+
+const ytItems = Array.isArray(youtubeData.items) ? youtubeData.items : [];
+const ytMeta = youtubeData.meta ?? seedYT.meta;
+
+const allSources = Array.from(new Set(agiItems.map((i) => i.sourceName).filter(Boolean))).sort();
+const allTags = Array.from(new Set(agiItems.flatMap((i) => i.tags ?? []))).sort();
+
+const allSeries = Array.from(new Set(ytItems.flatMap((v) => v.series ?? []))).sort();
 ---
 
-<BaseLayout
-  title="AGI Timeline — a_e.s_"
-  description="Cached AGI timeline and YouTube activity, rendered at build time with no runtime feed dependency."
-  theme="agi"
->
-  <main class="archive">
-    <header class="archive__header">
-      <p class="kicker">Living archive</p>
-      <h1>AGI Timeline</h1>
-      <p class="muted">
-        Cached dataset committed to the repo. No runtime fetch dependency.
-        {lastUpdated && <span> Last updated: <span class="mono">{new Date(lastUpdated).toLocaleString()}</span>.</span>}
-      </p>
+<BaseLayout title="AGI Timeline" description="Living archive AGI timeline with cached feeds." theme="agi">
+  <section class="mx-auto max-w-4xl px-4 py-10">
+    <header class="space-y-3">
+      <h1 class="text-2xl font-semibold tracking-tight">AGI Timeline</h1>
+      <p class="text-sm opacity-80">Living archive. Cached dataset (build-time). Process over polish.</p>
+
+      <div class="flex flex-wrap items-center gap-3 text-xs opacity-80">
+        <span class="font-mono">Last updated: {agiMeta.generatedAt ?? 'unknown'}</span>
+        <span class="font-mono">Entries: {agiItems.length}</span>
+      </div>
     </header>
 
-    <section class="panel">
-      <div class="controls">
-        <input id="agiSearch" class="input" type="search" placeholder="Search title/summary..." autocomplete="off" />
-        <select id="agiSource" class="select">
-          <option value="">All sources</option>
-          {sources.map((s) => <option value={s}>{s}</option>)}
-        </select>
-        <select id="agiTag" class="select">
-          <option value="">All tags</option>
-          {tags.map((t) => <option value={t}>{t}</option>)}
-        </select>
-        <button id="agiReset" class="button" type="button">Reset</button>
+    <div class="mt-6 grid gap-3 rounded-xl border border-white/10 p-4">
+      <div class="grid gap-3 md:grid-cols-3">
+        <label class="grid gap-1">
+          <span class="text-xs opacity-70">Search</span>
+          <input
+            id="agiSearch"
+            class="rounded-lg border border-white/10 bg-transparent px-3 py-2 text-sm"
+            placeholder="title / summary / tag..."
+          />
+        </label>
+
+        <label class="grid gap-1">
+          <span class="text-xs opacity-70">Source</span>
+          <select id="agiSource" class="rounded-lg border border-white/10 bg-transparent px-3 py-2 text-sm">
+            <option value="">All sources</option>
+            {allSources.map((s) => <option value={s}>{s}</option>)}
+          </select>
+        </label>
+
+        <div class="grid gap-1">
+          <span class="text-xs opacity-70">Tags</span>
+          <details class="rounded-lg border border-white/10 p-2">
+            <summary class="cursor-pointer text-sm opacity-80">Toggle tags</summary>
+            <div class="mt-2 flex flex-wrap gap-2">
+              {allTags.map((t) => (
+                <label class="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1 text-xs">
+                  <input class="agiTag" type="checkbox" value={t} />
+                  <span>{t}</span>
+                </label>
+              ))}
+            </div>
+          </details>
+        </div>
       </div>
 
-      <p id="agiStatus" class="muted"></p>
-
-      {items.length > 0 ? (
-        <ol id="agiList" class="list">
-          {items.map((it) => {
-            const dateLabel = it.publishedAt ? new Date(it.publishedAt).toLocaleDateString() : 'Undated';
-            const tagStr = (it.tags || []).join(',');
-            const cite = Array.isArray(it.citations) ? it.citations : [];
-            return (
-              <li
-                class="entry"
-                data-title={`${it.title} ${(it.summary || '')}`.toLowerCase()}
-                data-source={it.sourceName}
-                data-tags={tagStr}
-              >
-                <details class="details">
-                  <summary class="summary">
-                    <span class="summary__date mono">{dateLabel}</span>
-                    <span class="summary__title">{it.title}</span>
-                    <span class="summary__source mono">{it.sourceName}</span>
-                  </summary>
-
-                  <div class="body">
-                    {it.summary && <p class="body__summary">{it.summary}</p>}
-
-                    <div class="meta">
-                      <div class="chips">
-                        {(it.tags || []).map((t) => (
-                          <span class="chip mono" data-chip={t}>{t}</span>
-                        ))}
-                      </div>
-
-                      <div class="links">
-                        <a class="link mono" href={it.url} target="_blank" rel="noreferrer">Open</a>
-                        {cite.map((c) => (
-                          <a class="link mono" href={c.url} target="_blank" rel="noreferrer">
-                            {c.label || 'Citation'}
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </details>
-              </li>
-            );
-          })}
-        </ol>
-      ) : (
-        <div class="empty">
-          <p><strong>Cached timeline is empty.</strong></p>
-          <p class="muted">
-            Run <span class="mono">npm run sync:data</span> locally or trigger the workflow to populate.
-            The site still renders (no broken state).
-          </p>
+      <div class="flex items-center justify-between">
+        <div class="font-mono text-xs opacity-70">
+          Showing <span id="agiShown">0</span> / <span id="agiTotal">{agiItems.length}</span>
         </div>
-      )}
-    </section>
+        <button id="agiReset" class="rounded-lg border border-white/10 px-3 py-2 text-xs">Reset</button>
+      </div>
+    </div>
 
-    <section class="panel">
-      <h2>YouTube — Latest uploads</h2>
-      <p class="muted">
-        Pulled from the channel RSS feed and cached to <span class="mono">src/data/youtube.json</span>.
-      </p>
+    <div id="agiList" class="mt-6 space-y-3">
+      {agiItems.map((item) => {
+        const text = `${item.title ?? ''} ${item.summary ?? ''} ${(item.tags ?? []).join(' ')} ${item.sourceName ?? ''}`.toLowerCase();
+        const tagStr = (item.tags ?? []).join('|');
+        return (
+          <details
+            class="agiItem rounded-xl border border-white/10 p-4"
+            data-source={item.sourceName ?? ''}
+            data-tags={tagStr}
+            data-text={text}
+          >
+            <summary class="list-none cursor-pointer">
+              <div class="flex flex-wrap items-baseline justify-between gap-2">
+                <div class="space-y-1">
+                  <div class="text-sm font-medium">{item.title ?? 'Untitled'}</div>
+                  <div class="font-mono text-xs opacity-70">
+                    {item.publishedAt ? new Date(item.publishedAt).toISOString().slice(0, 10) : 'unknown date'}
+                    {' · '}
+                    {item.sourceName ?? 'Unknown source'}
+                  </div>
+                </div>
+                <a class="text-xs opacity-80 underline" href={item.url} target="_blank" rel="noreferrer">
+                  Open
+                </a>
+              </div>
+            </summary>
 
-      <div class="controls">
-        <select id="ytSeries" class="select">
-          <option value="">All series</option>
-          {ytSeries.map((s) => <option value={s}>{s}</option>)}
-        </select>
-        <button id="ytReset" class="button" type="button">Reset</button>
+            {item.summary && <p class="mt-3 text-sm opacity-90">{item.summary}</p>}
+
+            <div class="mt-3 flex flex-wrap gap-2">
+              {(item.tags ?? []).map((t) => (
+                <span class="rounded-full border border-white/10 px-3 py-1 text-xs opacity-80">{t}</span>
+              ))}
+            </div>
+
+            <div class="mt-3 space-y-1">
+              <div class="text-xs opacity-70">Citations</div>
+              <ul class="list-inside list-disc text-xs">
+                {(item.citations ?? []).map((c) => (
+                  <li>
+                    <a class="underline" href={c.url} target="_blank" rel="noreferrer">{c.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </details>
+        );
+      })}
+    </div>
+
+    <div id="agiEmpty" class="mt-6 hidden rounded-xl border border-white/10 p-4 text-sm opacity-80">
+      No matches. Try clearing filters.
+    </div>
+
+    <hr class="my-12 border-white/10" />
+
+    <section class="space-y-4">
+      <header class="space-y-2">
+        <h2 class="text-xl font-semibold tracking-tight">Latest uploads</h2>
+        <div class="font-mono text-xs opacity-80">
+          Feed:
+          <a class="underline" href={ytMeta.feedUrl} target="_blank" rel="noreferrer">{ytMeta.feedUrl}</a>
+        </div>
+      </header>
+
+      <div class="grid gap-3 rounded-xl border border-white/10 p-4">
+        <label class="grid gap-1 md:max-w-xs">
+          <span class="text-xs opacity-70">Series</span>
+          <select id="ytSeries" class="rounded-lg border border-white/10 bg-transparent px-3 py-2 text-sm">
+            <option value="">All</option>
+            {allSeries.map((s) => <option value={s}>{s}</option>)}
+          </select>
+        </label>
+
+        <div id="ytPlayerWrap" class="hidden rounded-xl border border-white/10 p-3">
+          <div class="flex items-center justify-between gap-2">
+            <div id="ytPlayerTitle" class="text-sm font-medium"></div>
+            <button id="ytClose" class="text-xs opacity-80 underline">Close</button>
+          </div>
+          <div class="mt-3 aspect-video w-full overflow-hidden rounded-lg border border-white/10">
+            <iframe
+              id="ytPlayer"
+              class="h-full w-full"
+              src=""
+              title="YouTube player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            />
+          </div>
+        </div>
       </div>
 
-      {ytItems.length > 0 ? (
-        <ul id="ytList" class="grid">
-          {ytItems.map((v) => {
-            const dateLabel = v.publishedAt ? new Date(v.publishedAt).toLocaleDateString() : 'Undated';
-            const seriesStr = (v.series || []).join(',');
-            return (
-              <li class="card" data-series={seriesStr}>
-                <details class="details">
-                  <summary class="card__summary">
-                    {v.thumbnailUrl ? <img class="thumb" src={v.thumbnailUrl} alt="" loading="lazy" /> : null}
-                    <div class="card__text">
-                      <div class="mono muted">{dateLabel}</div>
-                      <div class="card__title">{v.title}</div>
-                      <div class="mono muted">{(v.series || []).join(' · ')}</div>
-                    </div>
-                  </summary>
-
-                  <div class="card__body">
-                    {v.videoId ? (
-                      <iframe
-                        class="player"
-                        src={`https://www.youtube.com/embed/${v.videoId}`}
-                        title={v.title}
-                        loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen
-                      />
-                    ) : (
-                      <p class="muted">No videoId available.</p>
-                    )}
-                    <p><a class="link mono" href={v.url} target="_blank" rel="noreferrer">Open on YouTube</a></p>
-                  </div>
-                </details>
-              </li>
-            );
-          })}
-        </ul>
-      ) : (
-        <div class="empty">
-          <p><strong>No cached uploads yet.</strong></p>
-          <p class="muted">Run <span class="mono">npm run sync:data</span> to populate.</p>
-        </div>
-      )}
+      <div id="ytGrid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {ytItems.map((v) => {
+          const series = (v.series ?? []).join('|');
+          return (
+            <button
+              class="ytCard rounded-xl border border-white/10 p-3 text-left hover:border-white/20"
+              data-video={v.videoId ?? ''}
+              data-title={v.title ?? ''}
+              data-series={series}
+            >
+              <div class="aspect-video w-full overflow-hidden rounded-lg border border-white/10">
+                <img class="h-full w-full object-cover" src={v.thumbnailUrl ?? ''} alt={v.title ?? 'Video thumbnail'} loading="lazy" />
+              </div>
+              <div class="mt-3 space-y-1">
+                <div class="text-sm font-medium">{v.title ?? 'Untitled'}</div>
+                <div class="font-mono text-xs opacity-70">
+                  {v.publishedAt ? new Date(v.publishedAt).toISOString().slice(0, 10) : 'unknown date'}
+                  {v.series?.length ? ` · ${v.series.join(', ')}` : ''}
+                </div>
+              </div>
+            </button>
+          );
+        })}
+      </div>
     </section>
-  </main>
-</BaseLayout>
+  </section>
 
-<script is:inline>
-  function setupTimelineFilters() {
-    const search = document.getElementById('agiSearch');
-    const source = document.getElementById('agiSource');
-    const tag = document.getElementById('agiTag');
-    const reset = document.getElementById('agiReset');
-    const list = document.getElementById('agiList');
-    const status = document.getElementById('agiStatus');
+  <script type="module" is:inline>
+    const $ = (id) => document.getElementById(id);
 
-    if (!list || !search || !source || !tag || !reset || !status) return;
+    const search = $('agiSearch');
+    const sourceSel = $('agiSource');
+    const resetBtn = $('agiReset');
+    const shownEl = $('agiShown');
+    const totalEl = $('agiTotal');
+    const emptyEl = $('agiEmpty');
 
-    const entries = Array.from(list.querySelectorAll('.entry'));
+    const tagBoxes = Array.from(document.querySelectorAll('.agiTag'));
+    const items = Array.from(document.querySelectorAll('.agiItem'));
 
-    function apply() {
+    function selectedTags() {
+      return tagBoxes.filter((b) => b.checked).map((b) => b.value);
+    }
+
+    function applyFilters() {
       const q = (search.value || '').trim().toLowerCase();
-      const s = source.value || '';
-      const t = tag.value || '';
+      const src = sourceSel.value || '';
+      const tags = selectedTags();
 
-      let visible = 0;
-      for (const el of entries) {
-        const title = el.dataset.title || '';
-        const src = el.dataset.source || '';
-        const tags = (el.dataset.tags || '').split(',').filter(Boolean);
+      let shown = 0;
 
-        const okQ = !q || title.includes(q);
-        const okS = !s || src === s;
-        const okT = !t || tags.includes(t);
+      for (const el of items) {
+        const elSrc = el.dataset.source || '';
+        const elTags = (el.dataset.tags || '').split('|').filter(Boolean);
+        const elText = el.dataset.text || '';
 
-        const show = okQ && okS && okT;
-        el.hidden = !show;
-        if (show) visible += 1;
+        const okQ = !q || elText.includes(q);
+        const okSrc = !src || elSrc === src;
+        const okTags = tags.length === 0 || tags.every((t) => elTags.includes(t));
+
+        const ok = okQ && okSrc && okTags;
+        el.hidden = !ok;
+        if (ok) shown += 1;
       }
-      status.textContent = `${visible} / ${entries.length} entries`;
+
+      shownEl.textContent = String(shown);
+      totalEl.textContent = String(items.length);
+      emptyEl.classList.toggle('hidden', shown !== 0);
     }
 
-    search.addEventListener('input', apply);
-    source.addEventListener('change', apply);
-    tag.addEventListener('change', apply);
-    reset.addEventListener('click', () => {
+    [search, sourceSel].forEach((el) => el.addEventListener('input', applyFilters));
+    tagBoxes.forEach((b) => b.addEventListener('change', applyFilters));
+    resetBtn.addEventListener('click', () => {
       search.value = '';
-      source.value = '';
-      tag.value = '';
-      apply();
+      sourceSel.value = '';
+      tagBoxes.forEach((b) => {
+        b.checked = false;
+      });
+      applyFilters();
     });
 
-    apply();
-  }
+    applyFilters();
 
-  function setupYouTubeFilters() {
-    const series = document.getElementById('ytSeries');
-    const reset = document.getElementById('ytReset');
-    const list = document.getElementById('ytList');
-    if (!list || !series || !reset) return;
+    const ytSeries = $('ytSeries');
+    const ytCards = Array.from(document.querySelectorAll('.ytCard'));
+    const playerWrap = $('ytPlayerWrap');
+    const player = $('ytPlayer');
+    const playerTitle = $('ytPlayerTitle');
+    const ytClose = $('ytClose');
 
-    const cards = Array.from(list.querySelectorAll('.card'));
-
-    function apply() {
-      const s = series.value || '';
-
-      for (const el of cards) {
-        const seriesStr = el.dataset.series || '';
-        const seriesList = seriesStr.split(',').filter(Boolean);
-        const show = !s || seriesList.includes(s);
-        el.hidden = !show;
+    function applyYTFilter() {
+      const series = ytSeries.value || '';
+      for (const c of ytCards) {
+        const has = (c.dataset.series || '').split('|').includes(series);
+        c.hidden = !!series && !has;
       }
     }
 
-    series.addEventListener('change', apply);
-    reset.addEventListener('click', () => {
-      series.value = '';
-      apply();
+    ytSeries.addEventListener('change', applyYTFilter);
+    applyYTFilter();
+
+    function openYT(videoId, title) {
+      if (!videoId) return;
+      player.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(videoId);
+      playerTitle.textContent = title || 'Now playing';
+      playerWrap.classList.remove('hidden');
+      playerWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    ytCards.forEach((c) => {
+      c.addEventListener('click', () => openYT(c.dataset.video, c.dataset.title));
     });
 
-    apply();
-  }
-
-  setupTimelineFilters();
-  setupYouTubeFilters();
-</script>
-
-<style>
-  .archive { max-width: 900px; margin: 0 auto; padding: 2rem 1rem 4rem; line-height: 1.5; }
-  .archive__header h1 { font-size: 2rem; margin: 0.25rem 0 0.5rem; }
-  .kicker { letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.8rem; opacity: 0.7; margin: 0; }
-  .muted { opacity: 0.75; }
-  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-
-  .panel { border: 1px solid var(--line); border-radius: 10px; padding: 1rem; margin-top: 1.25rem; background: var(--panel); }
-  .controls { display: grid; grid-template-columns: 1fr 200px 160px auto; gap: 0.5rem; margin: 0.75rem 0; }
-  @media (max-width: 720px) { .controls { grid-template-columns: 1fr; } }
-
-  .input, .select, .button {
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 0.55rem 0.65rem;
-    background: transparent;
-    color: var(--tone-text);
-    font: inherit;
-  }
-  .button { cursor: pointer; }
-  .button:hover { border-color: var(--tone-accent-bright); }
-
-  .list { list-style: none; padding: 0; margin: 0.75rem 0 0; }
-  .entry { border-top: 1px dashed var(--line2); padding: 0.65rem 0; }
-  .entry:first-child { border-top: 0; }
-
-  .details { border-radius: 8px; }
-  .summary { display: grid; grid-template-columns: 120px 1fr 180px; gap: 0.75rem; cursor: pointer; align-items: baseline; }
-  @media (max-width: 720px) { .summary { grid-template-columns: 1fr; } }
-
-  .summary__date { opacity: 0.7; }
-  .summary__source { opacity: 0.7; text-align: right; }
-  @media (max-width: 720px) { .summary__source { text-align: left; } }
-
-  .body { margin-top: 0.6rem; }
-  .body__summary { margin: 0.4rem 0 0.75rem; }
-
-  .meta { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-  .chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
-  .chip { border: 1px solid var(--line); border-radius: 999px; padding: 0.15rem 0.5rem; font-size: 0.78rem; opacity: 0.85; }
-
-  .links { display: flex; flex-wrap: wrap; gap: 0.6rem; }
-  .link { text-decoration: underline; text-underline-offset: 3px; }
-
-  .empty { padding: 0.5rem 0; }
-
-  .grid { list-style: none; padding: 0; margin: 0.75rem 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-  @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
-
-  .card { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: rgba(0, 0, 0, 0.08); }
-  .card__summary { display: grid; grid-template-columns: 160px 1fr; gap: 0.75rem; cursor: pointer; align-items: stretch; padding: 0.75rem; }
-  @media (max-width: 720px) { .card__summary { grid-template-columns: 1fr; } }
-
-  .thumb { width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--line2); }
-  .card__title { font-weight: 600; margin-top: 0.15rem; }
-  .card__body { padding: 0.75rem; border-top: 1px dashed var(--line2); }
-  .player { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 10px; }
-</style>
+    ytClose.addEventListener('click', () => {
+      player.src = '';
+      playerWrap.classList.add('hidden');
+    });
+  </script>
+</BaseLayout>

@@ -1,279 +1,216 @@
-import fs from "node:fs/promises";
-import path from "node:path";
-import crypto from "node:crypto";
 import Parser from "rss-parser";
+import { createHash } from "node:crypto";
+import { readFile, writeFile } from "node:fs/promises";
 
-const OUT_FILE = path.resolve("src/data/agi-timeline.json");
-const MAX_ITEMS = 300;
+const OUT_PATH = "src/data/agi-timeline.json";
+const MAX_ITEMS = 600;
 
-// Lo-fi, reliable: prefer RSS/Atom; parse HTML only when needed.
 const SOURCES = [
   {
     id: "openai_news",
     name: "OpenAI — News",
     type: "rss",
     url: "https://openai.com/news/rss.xml",
-  },
-  {
-    id: "anthropic_news",
-    name: "Anthropic — News",
-    type: "html_anthropic_news",
-    url: "https://www.anthropic.com/news",
+    defaultTags: ["primary", "release"]
   },
   {
     id: "deepmind_blog",
     name: "Google DeepMind — Blog",
     type: "rss",
-    url: "https://deepmind.com/blog/feed/basic",
+    url: "https://deepmind.google/blog/feed/basic",
+    defaultTags: ["primary", "research"]
+  },
+  {
+    id: "msr_blog",
+    name: "Microsoft Research — Blog",
+    type: "rss",
+    url: "https://www.microsoft.com/en-us/research/blog/feed/",
+    defaultTags: ["research"]
+  },
+  {
+    id: "hf_blog",
+    name: "Hugging Face — Blog",
+    type: "rss",
+    url: "https://huggingface.co/blog/feed.xml",
+    defaultTags: ["open-source"]
+  },
+  {
+    id: "nvidia_dev_blog",
+    name: "NVIDIA Developer — Blog",
+    type: "rss",
+    url: "https://developer.nvidia.com/blog/feed/",
+    defaultTags: ["compute"]
   },
   {
     id: "arxiv_cs_ai",
     name: "arXiv — cs.AI",
     type: "rss",
     url: "https://rss.arxiv.org/rss/cs.AI",
+    defaultTags: ["papers"]
   },
   {
     id: "arxiv_cs_cl",
     name: "arXiv — cs.CL",
     type: "rss",
     url: "https://rss.arxiv.org/rss/cs.CL",
-  },
+    defaultTags: ["papers", "language"]
+  }
 ];
 
 const parser = new Parser();
 
-function sha1(input) {
-  return crypto.createHash("sha1").update(input).digest("hex");
-}
-
-function isoOrNull(d) {
-  if (!d) return null;
-  const dt = new Date(d);
-  return Number.isNaN(dt.getTime()) ? null : dt.toISOString();
+function sha256(s) {
+  return createHash("sha256").update(s).digest("hex");
 }
 
 function stripHtml(s = "") {
-  return s
-    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, "")
-    .replace(/<style[\s\S]*?>[\s\S]*?<\/style>/gi, "")
-    .replace(/<\/?[^>]+>/g, " ")
+  return String(s)
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]*>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
 
-function inferTags({ title = "", summary = "" }) {
-  const t = `${title} ${summary}`.toLowerCase();
-  const tags = new Set();
-
-  // Capability / releases
-  if (/(release|launch|introducing|announc|preview|beta|api|model)/.test(t)) tags.add("models");
-  if (/(agent|tool|workflow|sdk|developer|platform)/.test(t)) tags.add("product");
-
-  // Safety / governance
-  if (/(safety|alignment|red team|eval|evaluation|security|misuse)/.test(t)) tags.add("safety");
-  if (/(policy|regulation|executive order|ai act|nist|white house|law)/.test(t)) tags.add("policy");
-
-  // Research
-  if (/(paper|arxiv|dataset|benchmark|metric|sota)/.test(t)) tags.add("research");
-
-  // Compute / infra
-  if (/(compute|gpu|datacenter|inference|training|energy)/.test(t)) tags.add("compute");
-
-  // Default if nothing matched
-  if (tags.size === 0) tags.add("update");
-
-  return [...tags];
-}
-
-async function fetchText(url, { timeoutMs = 20000 } = {}) {
-  const ctrl = new AbortController();
-  const id = setTimeout(() => ctrl.abort(), timeoutMs);
-
+function canonicalUrl(u) {
   try {
-    const res = await fetch(url, {
-      signal: ctrl.signal,
-      headers: {
-        "user-agent": "AngelESuero-PortfolioTimelineBot/1.0 (+https://github.com/AngelESuero/Portfolio-Website-)",
-        "accept": "text/html,application/xml;q=0.9,*/*;q=0.8",
-      },
-    });
-
-    if (!res.ok) throw new Error(`Fetch failed ${res.status} ${res.statusText} for ${url}`);
-    return await res.text();
-  } finally {
-    clearTimeout(id);
+    const url = new URL(u);
+    url.hash = "";
+    return url.toString();
+  } catch {
+    return null;
   }
 }
 
-async function loadExisting() {
+function guessTags(text, base = []) {
+  const t = (text || "").toLowerCase();
+  const tags = new Set(base);
+
+  const rules = [
+    ["agents", ["agents"]],
+    ["agent", ["agents"]],
+    ["reasoning", ["reasoning"]],
+    ["benchmark", ["eval"]],
+    ["evaluation", ["eval"]],
+    ["safety", ["safety"]],
+    ["alignment", ["safety"]],
+    ["policy", ["policy"]],
+    ["regulation", ["policy"]],
+    ["governance", ["policy"]],
+    ["compute", ["compute"]],
+    ["gpu", ["compute"]],
+    ["inference", ["inference"]],
+    ["training", ["training"]],
+    ["model", ["model"]],
+    ["release", ["release"]],
+    ["launch", ["release"]],
+    ["paper", ["papers"]],
+    ["arxiv", ["papers"]],
+    ["dataset", ["data"]]
+  ];
+
+  for (const [needle, add] of rules) {
+    if (t.includes(needle)) add.forEach((x) => tags.add(x));
+  }
+
+  return Array.from(tags);
+}
+
+async function readExisting() {
   try {
-    const raw = await fs.readFile(OUT_FILE, "utf8");
+    const raw = await readFile(OUT_PATH, "utf8");
     return JSON.parse(raw);
   } catch {
     return null;
   }
 }
 
-async function writeJson(filePath, obj) {
-  await fs.mkdir(path.dirname(filePath), { recursive: true });
-  await fs.writeFile(filePath, JSON.stringify(obj, null, 2) + "\n", "utf8");
-}
-
-async function fromRss(source) {
-  const xml = await fetchText(source.url);
-  const feed = await parser.parseString(xml);
-
+async function fetchSource(source) {
+  const feed = await parser.parseURL(source.url);
   const items = (feed.items || []).map((it) => {
-    const url = it.link?.trim();
-    const title = (it.title || "").trim();
-    const summary = stripHtml(it.contentSnippet || it.content || it.summary || "");
-    const publishedAt = isoOrNull(it.isoDate || it.pubDate || it.date);
+    const url = canonicalUrl(it.link || it.guid || "");
+    if (!url) return null;
 
-    if (!url || !title) return null;
+    const publishedAt = it.isoDate
+      ? new Date(it.isoDate).toISOString()
+      : it.pubDate
+      ? new Date(it.pubDate).toISOString()
+      : null;
+
+    const title = (it.title || "").trim();
+    const summary = stripHtml(it.contentSnippet || it.content || "");
 
     return {
-      id: sha1(`${source.id}|${url}`),
-      title,
+      id: sha256(`${source.id}|${url}`),
+      title: title || "Untitled",
       url,
       sourceId: source.id,
       sourceName: source.name,
       publishedAt,
-      summary: summary.slice(0, 600),
-      tags: inferTags({ title, summary }),
-      citations: [{ label: "Primary source", url }],
+      summary: summary || null,
+      tags: guessTags(`${title} ${summary}`, source.defaultTags),
+      citations: [
+        { label: "Original", url },
+        { label: "Feed", url: source.url }
+      ]
     };
   });
 
   return items.filter(Boolean);
 }
 
-// Minimal-but-robust HTML parse for Anthropic /news list.
-// We keep only anchors that start with a month-date prefix after stripping tags.
-async function fromAnthropicNews(source) {
-  const html = await fetchText(source.url);
-  const anchors = [...html.matchAll(/<a[^>]+href="(\/news\/[^"]+)"[^>]*>([\s\S]*?)<\/a>/gim)];
-
-  const monthRe = /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2},\s+\d{4}\s+/;
-
-  const items = anchors
-    .map((m) => {
-      const href = m[1];
-      const text = stripHtml(m[2]);
-      if (!monthRe.test(text)) return null;
-
-      // Pattern: "Feb 17, 2026 Category Title..."
-      const [datePart, rest] = (() => {
-        const match = text.match(/^([A-Za-z]{3}\s+\d{1,2},\s+\d{4})\s+([\s\S]+)$/);
-        return match ? [match[1], match[2]] : [null, null];
-      })();
-
-      if (!datePart || !rest) return null;
-
-      const parts = rest.split(" ");
-      const category = parts[0] || "News";
-      const title = rest.slice(category.length).trim();
-
-      const url = `https://www.anthropic.com${href}`;
-      const publishedAt = isoOrNull(datePart);
-
-      return {
-        id: sha1(`${source.id}|${url}`),
-        title: title || text,
-        url,
-        sourceId: source.id,
-        sourceName: source.name,
-        publishedAt,
-        summary: "",
-        tags: [...new Set(["update", category.toLowerCase()])],
-        citations: [{ label: "Primary source", url }],
-      };
-    })
-    .filter(Boolean);
-
-  return items;
-}
-
-function dedupeAndSort(items) {
-  const byUrl = new Map();
-  for (const it of items) {
-    const prev = byUrl.get(it.url);
-    if (!prev) {
-      byUrl.set(it.url, it);
-      continue;
-    }
-    // Keep the one with a newer publishedAt if both exist
-    const a = prev.publishedAt ? Date.parse(prev.publishedAt) : 0;
-    const b = it.publishedAt ? Date.parse(it.publishedAt) : 0;
-    if (b > a) byUrl.set(it.url, it);
-  }
-
-  const unique = [...byUrl.values()];
-  unique.sort((x, y) => {
-    const a = x.publishedAt ? Date.parse(x.publishedAt) : 0;
-    const b = y.publishedAt ? Date.parse(y.publishedAt) : 0;
-    return b - a;
-  });
-
-  return unique.slice(0, MAX_ITEMS);
-}
-
 async function main() {
-  const existing = await loadExisting();
-  const generatedAt = new Date().toISOString();
+  const existing = await readExisting();
+  const existingItems = Array.isArray(existing?.items) ? existing.items : [];
 
-  const collected = [];
-  for (const src of SOURCES) {
+  const byId = new Map(existingItems.map((x) => [x.id, x]));
+  const merged = [...existingItems];
+
+  for (const source of SOURCES) {
     try {
-      if (src.type === "rss") {
-        collected.push(...(await fromRss(src)));
-      } else if (src.type === "html_anthropic_news") {
-        collected.push(...(await fromAnthropicNews(src)));
+      const got = await fetchSource(source);
+      for (const item of got) {
+        if (!byId.has(item.id)) {
+          byId.set(item.id, item);
+          merged.push(item);
+        }
       }
-    } catch (err) {
-      console.warn(`[warn] ${src.id} failed:`, err?.message || err);
+    } catch (e) {
+      console.warn(`[warn] source failed: ${source.id}`, e?.message || e);
     }
   }
 
-  let items = dedupeAndSort(collected);
+  const sorted = merged
+    .sort((a, b) => (b.publishedAt || "").localeCompare(a.publishedAt || ""))
+    .slice(0, MAX_ITEMS);
 
-  // Never write an empty dataset: if fetch fails, keep last known-good items.
-  let note = "Daily sync via GitHub Actions.";
-  if (items.length === 0 && existing?.items?.length) {
-    items = existing.items;
-    note = "Fetch failed; reusing last known-good cached dataset to avoid empty renders.";
-  }
-
-  // Still never "blank page": if no existing either, write a seed marker entry.
-  if (items.length === 0) {
-    const url = "https://github.com/AngelESuero/Portfolio-Website-";
-    items = [
-      {
-        id: sha1(`seed|${url}`),
-        title: "Timeline seed: dataset initialized (run sync to populate).",
-        url,
-        sourceId: "seed",
-        sourceName: "Local",
-        publishedAt: generatedAt,
-        summary: "This is a placeholder so the /agi page never renders empty.",
-        tags: ["seed"],
-        citations: [{ label: "Repo", url }],
-      },
-    ];
-    note = "Seed dataset written (no sources fetched yet).";
-  }
+  // Never-empty guarantee (seed if somehow all sources fail + no existing file)
+  const items = sorted.length
+    ? sorted
+    : [
+        {
+          id: "seed",
+          title: "AGI timeline seed (data sync not yet populated).",
+          url: "https://github.com/AngelESuero/Portfolio-Website-",
+          sourceId: "seed",
+          sourceName: "Local",
+          publishedAt: new Date().toISOString(),
+          summary: "This placeholder guarantees the page never renders empty.",
+          tags: ["seed"],
+          citations: [{ label: "Repo", url: "https://github.com/AngelESuero/Portfolio-Website-" }]
+        }
+      ];
 
   const out = {
     meta: {
       schemaVersion: 1,
-      generatedAt,
-      note,
-      sources: SOURCES.map(({ id, name, type, url }) => ({ id, name, type, url })),
+      generatedAt: new Date().toISOString(),
+      sources: SOURCES.map(({ id, name, type, url }) => ({ id, name, type, url }))
     },
-    items,
+    items
   };
 
-  await writeJson(OUT_FILE, out);
-  console.log(`[ok] wrote ${OUT_FILE} (${items.length} items)`);
+  await writeFile(OUT_PATH, JSON.stringify(out, null, 2) + "\n", "utf8");
 }
 
 main().catch((e) => {

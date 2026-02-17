@@ -1,8 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-17T21:31:20.732Z",
-    "note": "Seed dataset written (no sources fetched yet).",
+    "generatedAt": "2026-02-17T22:21:45.701Z",
     "sources": [
       {
         "id": "openai_news",
@@ -11,16 +10,28 @@
         "url": "https://openai.com/news/rss.xml"
       },
       {
-        "id": "anthropic_news",
-        "name": "Anthropic — News",
-        "type": "html_anthropic_news",
-        "url": "https://www.anthropic.com/news"
-      },
-      {
         "id": "deepmind_blog",
         "name": "Google DeepMind — Blog",
         "type": "rss",
-        "url": "https://deepmind.com/blog/feed/basic"
+        "url": "https://deepmind.google/blog/feed/basic"
+      },
+      {
+        "id": "msr_blog",
+        "name": "Microsoft Research — Blog",
+        "type": "rss",
+        "url": "https://www.microsoft.com/en-us/research/blog/feed/"
+      },
+      {
+        "id": "hf_blog",
+        "name": "Hugging Face — Blog",
+        "type": "rss",
+        "url": "https://huggingface.co/blog/feed.xml"
+      },
+      {
+        "id": "nvidia_dev_blog",
+        "name": "NVIDIA Developer — Blog",
+        "type": "rss",
+        "url": "https://developer.nvidia.com/blog/feed/"
       },
       {
         "id": "arxiv_cs_ai",

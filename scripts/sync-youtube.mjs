@@ -1,150 +1,93 @@
-import fs from "node:fs/promises";
-import path from "node:path";
-import crypto from "node:crypto";
 import Parser from "rss-parser";
+import { createHash } from "node:crypto";
+import { readFile, writeFile } from "node:fs/promises";
 
-const OUT_FILE = path.resolve("src/data/youtube.json");
 const CHANNEL_URL = "https://www.youtube.com/@a_e.s_4";
+const CHANNEL_ID = "UCQeJiBS72gxrZXw5GmqtocA";
+const FEED_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
+
+const OUT_PATH = "src/data/youtube.json";
 const MAX_ITEMS = 24;
 
-const parser = new Parser();
+const parser = new Parser({
+  customFields: {
+    item: [["yt:videoId", "ytVideoId"], ["media:group", "mediaGroup"]]
+  }
+});
 
-function sha1(input) {
-  return crypto.createHash("sha1").update(input).digest("hex");
+function sha256(s) {
+  return createHash("sha256").update(s).digest("hex");
 }
 
-async function writeJson(filePath, obj) {
-  await fs.mkdir(path.dirname(filePath), { recursive: true });
-  await fs.writeFile(filePath, JSON.stringify(obj, null, 2) + "\n", "utf8");
+function seriesTags(title = "") {
+  const t = title.toLowerCase();
+  const out = [];
+  if (t.includes("rap demo")) out.push("Rap Demo");
+  if (t.includes("beat demo")) out.push("Beat Demo");
+  if (t.includes("idea collage")) out.push("Idea Collage");
+  if (t.includes("stream")) out.push("Streams");
+  return out.length ? out : ["Uploads"];
 }
 
-async function loadExisting() {
+function thumb(videoId) {
+  return videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : null;
+}
+
+async function readExisting() {
   try {
-    const raw = await fs.readFile(OUT_FILE, "utf8");
+    const raw = await readFile(OUT_PATH, "utf8");
     return JSON.parse(raw);
   } catch {
     return null;
   }
 }
 
-async function fetchText(url, { timeoutMs = 20000 } = {}) {
-  const ctrl = new AbortController();
-  const id = setTimeout(() => ctrl.abort(), timeoutMs);
-
-  try {
-    const res = await fetch(url, {
-      signal: ctrl.signal,
-      headers: {
-        "user-agent": "AngelESuero-PortfolioYouTubeBot/1.0 (+https://github.com/AngelESuero/Portfolio-Website-)",
-        "accept": "text/html,application/xml;q=0.9,*/*;q=0.8",
-      },
-    });
-    if (!res.ok) throw new Error(`Fetch failed ${res.status} ${res.statusText} for ${url}`);
-    return await res.text();
-  } finally {
-    clearTimeout(id);
-  }
-}
-
-function inferSeries(title = "") {
-  const t = title.toLowerCase();
-  const series = [];
-
-  if (t.includes("rap demo")) series.push("Rap Demo");
-  if (t.includes("beat demo")) series.push("Beat Demo");
-  if (t.includes("idea collage")) series.push("Idea Collage");
-  if (t.includes("stream") || t.includes("live")) series.push("Streams");
-
-  return series.length ? series : ["Uploads"];
-}
-
-function getVideoId(url) {
-  try {
-    const u = new URL(url);
-    return u.searchParams.get("v");
-  } catch {
-    return null;
-  }
-}
-
-async function discoverChannelId() {
-  const html = await fetchText(CHANNEL_URL);
-  const m = html.match(/"channelId":"(UC[a-zA-Z0-9_-]{10,})"/);
-  if (!m) throw new Error("Could not discover channelId from channel page HTML.");
-  return m[1];
-}
-
 async function main() {
-  const existing = await loadExisting();
-  const generatedAt = new Date().toISOString();
+  const existing = await readExisting();
 
-  let channelId = null;
-  let feedUrl = null;
-  let items = [];
-
+  let feed;
   try {
-    channelId = await discoverChannelId();
-    feedUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
-
-    const xml = await fetchText(feedUrl);
-    const feed = await parser.parseString(xml);
-
-    items = (feed.items || [])
-      .map((it) => {
-        const url = it.link?.trim();
-        const title = (it.title || "").trim();
-        const publishedAt = it.isoDate ? new Date(it.isoDate).toISOString() : null;
-        const videoId = url ? getVideoId(url) : null;
-        if (!url || !title || !videoId) return null;
-
-        return {
-          id: sha1(`youtube|${videoId}`),
-          title,
-          url,
-          videoId,
-          publishedAt,
-          series: inferSeries(title),
-          thumbnailUrl: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
-        };
-      })
-      .filter(Boolean)
-      .slice(0, MAX_ITEMS);
-  } catch (err) {
-    console.warn("[warn] youtube sync failed:", err?.message || err);
-    if (existing?.items?.length) {
-      items = existing.items;
-      feedUrl = existing?.meta?.feedUrl || null;
-      channelId = existing?.meta?.channelId || null;
-    }
+    feed = await parser.parseURL(FEED_URL);
+  } catch (e) {
+    // Keep last known-good file
+    if (existing) return;
+    throw e;
   }
 
-  if (!items.length) {
-    items = [
-      {
-        id: sha1("youtube|seed"),
-        title: "YouTube seed: run sync to populate uploads.",
-        url: CHANNEL_URL,
-        videoId: null,
-        publishedAt: generatedAt,
-        series: ["Seed"],
-        thumbnailUrl: null,
-      },
-    ];
-  }
+  const items = (feed.items || [])
+    .map((it) => {
+      const url = it.link || "";
+      const videoId = it.ytVideoId || (url.match(/[?&]v=([^&]+)/)?.[1] ?? null);
+
+      const publishedAt =
+        it.isoDate || it.pubDate ? new Date(it.isoDate || it.pubDate).toISOString() : null;
+
+      return {
+        id: sha256(`yt|${videoId || url}`),
+        title: it.title || "Untitled",
+        url,
+        videoId,
+        publishedAt,
+        series: seriesTags(it.title || ""),
+        thumbnailUrl: thumb(videoId)
+      };
+    })
+    .filter((x) => x.videoId && x.url)
+    .sort((a, b) => (b.publishedAt || "").localeCompare(a.publishedAt || ""))
+    .slice(0, MAX_ITEMS);
 
   const out = {
     meta: {
       schemaVersion: 1,
-      generatedAt,
+      generatedAt: new Date().toISOString(),
       channelUrl: CHANNEL_URL,
-      channelId,
-      feedUrl,
+      channelId: CHANNEL_ID,
+      feedUrl: FEED_URL
     },
-    items,
+    items
   };
 
-  await writeJson(OUT_FILE, out);
-  console.log(`[ok] wrote ${OUT_FILE} (${items.length} items)`);
+  await writeFile(OUT_PATH, JSON.stringify(out, null, 2) + "\n", "utf8");
 }
 
 main().catch((e) => {
