@@ -252,6 +252,8 @@ const exploreLinks = [
           (e) => {
             tx = e.clientX;
             ty = e.clientY;
+            document.documentElement.style.setProperty('--mx', `${e.clientX}px`);
+            document.documentElement.style.setProperty('--my', `${e.clientY}px`);
           },
           { passive: true }
         );
