@@ -153,7 +153,7 @@ hr {
   pointer-events: none;
   z-index: 0;
   opacity: 0;
-  transition: opacity 260ms ease;
+  transition: opacity 900ms ease;
   filter: blur(14px) saturate(1.1);
   mix-blend-mode: screen;
 }
@@ -167,7 +167,7 @@ footer {
 
 @media (pointer: fine) {
   #cursor-aura {
-    opacity: 0.18;
+    opacity: calc(var(--cursor-aura-visibility, 1) * 0.18);
     background:
       radial-gradient(
         520px circle at var(--aura-x) var(--aura-y),
@@ -180,6 +180,16 @@ footer {
         transparent 74%
       );
   }
+}
+
+html[data-cursor-idle='true'] {
+  --cursor-aura-visibility: 0;
+  --cursor-light-visibility: 0;
+}
+
+html[data-cursor-idle='false'] {
+  --cursor-aura-visibility: 1;
+  --cursor-light-visibility: 1;
 }
 
 .card,

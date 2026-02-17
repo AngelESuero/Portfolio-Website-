@@ -243,6 +243,36 @@ const exploreLinks = [
         }
 
         setAccentFromActiveLink();
+        const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const CURSOR_IDLE_MS = 12000;
+        let idleTimer = null;
+
+        const setCursorIdle = (isIdle) => {
+          root.dataset.cursorIdle = isIdle ? 'true' : 'false';
+        };
+
+        const resetCursorIdleTimer = () => {
+          if (!hasFinePointer || prefersReducedMotion) return;
+          setCursorIdle(false);
+          if (idleTimer) window.clearTimeout(idleTimer);
+          idleTimer = window.setTimeout(() => {
+            setCursorIdle(true);
+          }, CURSOR_IDLE_MS);
+        };
+
+        if (!hasFinePointer || prefersReducedMotion) {
+          setCursorIdle(true);
+        } else {
+          resetCursorIdleTimer();
+          document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+              setCursorIdle(true);
+            } else {
+              resetCursorIdleTimer();
+            }
+          });
+        }
 
         window.addEventListener(
           'pointermove',
@@ -259,6 +289,7 @@ const exploreLinks = [
               light.style.left = px;
               light.style.top = py;
             }
+            resetCursorIdleTimer();
           },
           { passive: true }
         );
