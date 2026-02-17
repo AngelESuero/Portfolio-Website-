@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://angel-suero.pages.dev/sitemap-index.xml

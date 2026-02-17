@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NeuralMap from '../components/NeuralMap.astro';
+---
+
+<BaseLayout title="Map — Angel Suero">
+  <header class="mb-6">
+    <h1 class="font-display text-4xl">Neural Map</h1>
+    <p class="mt-2 max-w-2xl text-zinc-600 dark:text-zinc-300">
+      Zoom, pan, and open nodes. Click a node to focus. Double-click to “expand” its neighborhood.
+    </p>
+  </header>
+
+  <NeuralMap client:load />
+</BaseLayout>

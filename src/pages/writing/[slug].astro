@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+<BaseLayout title={`${post.data.title} — Writing`}>
+  <a href="/writing" class="text-sm underline">← Back to Writing</a>
+  <h1 class="mt-2 font-display text-4xl">{post.data.title}</h1>
+  <p class="text-sm text-zinc-500">{post.data.date.toLocaleDateString()}</p>
+  <article class="prose mt-6 dark:prose-invert"><Content /></article>
+</BaseLayout>
