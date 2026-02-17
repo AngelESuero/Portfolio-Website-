@@ -1,4 +1,5 @@
 import { AGI_HANDLES } from '../../src/data/agi-handles';
+import { AGI_MANUAL_QUOTES } from '../../src/data/agi-manual-quotes';
 import { AGI_WEB_SOURCES } from '../../src/data/agi-web-sources';
 
 export interface AgiTimelineItem {
@@ -51,6 +52,7 @@ interface ParsedCandidate {
   summary: string;
   url: string;
   date?: string | null;
+  tags?: string[];
 }
 
 const X_API_BASE = 'https://api.x.com/2';
@@ -62,6 +64,7 @@ const MAX_STORED_ITEMS = 500;
 const MAX_API_ITEMS = 200;
 const MAX_ITEMS_PER_SOURCE = 220;
 const MAX_ITEMS_PER_REQUEST = 40;
+const FETCH_TIMEOUT_MS = 12000;
 
 function newestFirst(a: AgiTimelineItem, b: AgiTimelineItem): number {
   return new Date(b.date).valueOf() - new Date(a.date).valueOf();
@@ -180,6 +183,20 @@ function dedupeAndSort(items: AgiTimelineItem[], maxItems = MAX_STORED_ITEMS): A
   return deduped;
 }
 
+function getManualQuoteItems(fallbackDate = new Date().toISOString()): AgiTimelineItem[] {
+  return AGI_MANUAL_QUOTES.map((quote) => ({
+    id: quote.id,
+    source_name: quote.source_name,
+    title: trimText(quote.title, 180),
+    date: toIsoDate(quote.date) ?? fallbackDate,
+    summary: trimText(quote.summary, 360),
+    url: quote.url,
+    tags: quote.tags,
+    author_handle: quote.author_handle,
+    tweet_url: quote.url
+  }));
+}
+
 function buildTimelineItem(
   sourceName: string,
   candidate: ParsedCandidate,
@@ -198,7 +215,7 @@ function buildTimelineItem(
     date,
     summary,
     url,
-    tags: inferTags(title, summary, url)
+    tags: Array.from(new Set([...(candidate.tags ?? []), ...inferTags(title, summary, url)])).slice(0, 10)
   };
 }
 
@@ -292,8 +309,68 @@ function extractAnchorCandidates(html: string, sourceUrl: string): ParsedCandida
   return candidates;
 }
 
+async function fetchWithTimeout(url: string, init: RequestInit = {}, timeoutMs = FETCH_TIMEOUT_MS): Promise<Response> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function pickTag(block: string, tags: string[]): string {
+  for (const tag of tags) {
+    const regex = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, 'i');
+    const match = block.match(regex);
+    if (match?.[1]) return trimText(stripHtml(match[1]), 360);
+  }
+  return '';
+}
+
+function pickAtomLink(block: string): string {
+  const hrefMatch = block.match(/<link[^>]*href=["']([^"']+)["'][^>]*>/i);
+  if (hrefMatch?.[1]) return decodeHtml(hrefMatch[1]);
+  return pickTag(block, ['link']);
+}
+
+function parseRssCandidates(xml: string, baseUrl: string): ParsedCandidate[] {
+  const candidates: ParsedCandidate[] = [];
+  const rssItems = xml.match(/<item[\\s\\S]*?<\\/item>/gi) ?? [];
+  const atomEntries = xml.match(/<entry[\\s\\S]*?<\\/entry>/gi) ?? [];
+
+  rssItems.forEach((block) => {
+    const title = pickTag(block, ['title']);
+    const summary = pickTag(block, ['description', 'content:encoded', 'summary']) || title;
+    const rawUrl = pickTag(block, ['link', 'guid']);
+    const date = pickTag(block, ['pubDate', 'dc:date', 'published', 'updated']);
+    const url = canonicalizeUrl(rawUrl, baseUrl);
+    if (title && summary && url) {
+      candidates.push({ title, summary, url, date });
+    }
+  });
+
+  atomEntries.forEach((block) => {
+    const title = pickTag(block, ['title']);
+    const summary = pickTag(block, ['summary', 'content']) || title;
+    const rawUrl = pickAtomLink(block);
+    const date = pickTag(block, ['published', 'updated', 'pubDate']);
+    const url = canonicalizeUrl(rawUrl, baseUrl);
+    if (title && summary && url) {
+      candidates.push({ title, summary, url, date });
+    }
+  });
+
+  const seen = new Set<string>();
+  return candidates.filter((candidate) => {
+    if (seen.has(candidate.url)) return false;
+    seen.add(candidate.url);
+    return true;
+  });
+}
+
 async function fetchSourceCandidates(sourceName: string, sourceUrl: string): Promise<ParsedCandidate[]> {
-  const response = await fetch(sourceUrl, {
+  const response = await fetchWithTimeout(sourceUrl, {
     headers: {
       'user-agent': 'Mozilla/5.0 (compatible; AGI Timeline Worker/1.0; +https://angel-suero.pages.dev)',
       accept: 'text/html,application/xhtml+xml'
@@ -306,6 +383,22 @@ async function fetchSourceCandidates(sourceName: string, sourceUrl: string): Pro
 
   const html = await response.text();
   return [...extractJsonLdCandidates(html, sourceUrl), ...extractAnchorCandidates(html, sourceUrl)];
+}
+
+async function fetchRssCandidates(sourceUrl: string): Promise<ParsedCandidate[]> {
+  const response = await fetchWithTimeout(sourceUrl, {
+    headers: {
+      'user-agent': 'Mozilla/5.0 (compatible; AGI Timeline Worker/1.0; +https://angel-suero.pages.dev)',
+      accept: 'application/rss+xml,application/atom+xml,text/xml,application/xml'
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+
+  const xml = await response.text();
+  return parseRssCandidates(xml, sourceUrl);
 }
 
 async function readItemsFromKv(env: AgiEnv, key: string): Promise<AgiTimelineItem[]> {
@@ -327,7 +420,7 @@ async function readItemsFromKv(env: AgiEnv, key: string): Promise<AgiTimelineIte
 
 export async function getLatestAgiItems(env: AgiEnv, limit = MAX_API_ITEMS): Promise<AgiTimelineItem[]> {
   const items = await readItemsFromKv(env, WEB_ITEMS_KEY);
-  return items.sort(newestFirst).slice(0, limit);
+  return dedupeAndSort([...items, ...getManualQuoteItems()], MAX_STORED_ITEMS).slice(0, limit);
 }
 
 export async function getLatestAgiXItems(env: AgiEnv, limit = MAX_API_ITEMS): Promise<AgiTimelineItem[]> {
@@ -342,19 +435,36 @@ export async function syncAgiWebTimeline(env: AgiEnv): Promise<AgiSyncResult> {
   const errors: string[] = [];
 
   for (const source of AGI_WEB_SOURCES) {
-    try {
-      const candidates = await fetchSourceCandidates(source.name, source.url);
-      const normalized = candidates
-        .map((candidate) => buildTimelineItem(source.name, candidate, nowIso))
-        .filter((item): item is AgiTimelineItem => Boolean(item))
-        .slice(0, MAX_ITEMS_PER_SOURCE);
+    const sourceCandidates: ParsedCandidate[] = [];
 
-      incoming.push(...normalized);
+    if (source.rss_url) {
+      try {
+        sourceCandidates.push(...(await fetchRssCandidates(source.rss_url)));
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        errors.push(`${source.name} RSS: ${message}`);
+      }
+    }
+
+    try {
+      sourceCandidates.push(...(await fetchSourceCandidates(source.name, source.url)));
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      errors.push(`${source.name}: ${message}`);
+      errors.push(`${source.name} HTML: ${message}`);
+    }
+
+    if (sourceCandidates.length > 0) {
+      const normalized = sourceCandidates
+        .map((candidate) =>
+          buildTimelineItem(source.name, { ...candidate, tags: [...(candidate.tags ?? []), ...(source.tags ?? [])] }, nowIso)
+        )
+        .filter((item): item is AgiTimelineItem => Boolean(item))
+        .slice(0, MAX_ITEMS_PER_SOURCE);
+      incoming.push(...normalized);
     }
   }
+
+  incoming.push(...getManualQuoteItems(nowIso));
 
   const merged = dedupeAndSort([...incoming, ...existing], MAX_STORED_ITEMS);
   await env.AGI_KV.put(WEB_ITEMS_KEY, JSON.stringify(merged));

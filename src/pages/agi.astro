@@ -2,19 +2,23 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="AGI Timeline — a_e.s_" description="Live AGI timeline aggregated from public sources, with optional researcher feed from X.">
+<BaseLayout
+  title="AGI Timeline — a_e.s_"
+  description="Live AGI timeline aggregated from public sources, with optional researcher feed from X."
+  theme="agi"
+>
   <section class="agi-page">
     <header class="agi-hero">
       <p class="agi-kicker">Research stream</p>
       <h1>AGI Timeline</h1>
       <p class="agi-dek">
-        Live updates from selected AGI sources, normalized into one timeline and published as citations with direct links.
+        Auto-updating feed from curated AGI sources (RSS + web parsing) plus manually cited notable quote links.
       </p>
     </header>
 
     <div class="agi-tabs" role="tablist" aria-label="AGI data feeds">
       <button id="tab-web" type="button" class="agi-tab is-active" role="tab" aria-selected="true">Web Sources</button>
-      <button id="tab-x" type="button" class="agi-tab" role="tab" aria-selected="false">Researchers (X)</button>
+      <button id="tab-x" type="button" class="agi-tab" role="tab" aria-selected="false">Researchers (X API optional)</button>
     </div>
 
     <div class="agi-filters" aria-label="Timeline filters">
@@ -79,6 +83,28 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     };
 
     const getCurrentItems = () => (state.activeTab === 'x' ? state.xItems : state.webItems);
+    let widgetsRequested = false;
+
+    const ensureTweetEmbeds = () => {
+      if (!listEl.querySelector('.twitter-tweet')) return;
+
+      if (window.twttr?.widgets?.load) {
+        window.twttr.widgets.load(listEl);
+        return;
+      }
+
+      if (widgetsRequested) return;
+      widgetsRequested = true;
+
+      const script = document.createElement('script');
+      script.src = 'https://platform.twitter.com/widgets.js';
+      script.async = true;
+      script.charset = 'utf-8';
+      script.onload = () => {
+        window.twttr?.widgets?.load?.(listEl);
+      };
+      document.body.appendChild(script);
+    };
 
     const setStatus = (message, isError = false) => {
       statusEl.textContent = message;
@@ -144,6 +170,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         const tags = Array.isArray(item.tags) && item.tags.length
           ? `<p class="agi-extra">${item.tags.slice(0, 6).map((tag) => `#${escapeHtml(tag)}`).join(' ')}</p>`
           : '';
+        const tweetUrl = item.tweet_url || '';
+        const hasTweet = /^https?:\\/\\/x\\.com\\//i.test(tweetUrl);
+        const tweetEmbed = hasTweet
+          ? `<blockquote class=\"twitter-tweet\"><a href=\"${escapeHtml(tweetUrl)}\">View quote on X</a></blockquote>`
+          : '';
 
         const author = item.author_handle
           ? `<span>@${escapeHtml(item.author_handle)}</span><span aria-hidden="true">•</span>`
@@ -160,8 +191,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <h2 class="agi-title">${escapeHtml(item.title || 'Untitled')}</h2>
             <p class="agi-excerpt">${escapeHtml(clamp(item.summary || '', 380))}</p>
             ${tags}
+            ${tweetEmbed}
             <p class="agi-source-row">
-              <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">Source</a>
+              <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">Source citation</a>
             </p>
           </article>
         `;
@@ -170,6 +202,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       });
 
       setStatus(`Showing ${items.length} item${items.length === 1 ? '' : 's'}.`);
+      ensureTweetEmbeds();
     };
 
     const applyFiltersAndRender = () => {
@@ -203,7 +236,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       if (tab === 'x' && !state.xEnabled) {
         state.activeTab = 'web';
         updateTabUi();
-        setStatus('Researchers (X) is disabled right now.');
+        setStatus('Researchers (X API) is disabled. Web timeline still includes curated quote citations.');
         return;
       }
       state.activeTab = tab;
@@ -383,6 +416,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     margin: 0.68rem 0 0;
   }
 
+  .twitter-tweet {
+    margin: 0.72rem 0 0 !important;
+    border: 1px solid rgba(113, 113, 122, 0.28);
+    border-radius: 0.62rem;
+    padding: 0.45rem 0.55rem !important;
+    background: rgba(255, 255, 255, 0.38);
+  }
+
   .agi-source-row a {
     color: var(--tone-accent);
     font-size: 0.88rem;
@@ -415,6 +456,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   :root.dark .agi-source-row a {
     color: var(--tone-accent-glow);
+  }
+
+  :root.dark .twitter-tweet {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.16);
   }
 
   @media (max-width: 860px) {

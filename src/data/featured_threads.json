@@ -4,25 +4,25 @@
       "title": "Scraps Archive Index",
       "year": "2026",
       "type": "writing",
-      "blurb": "[Add description]",
-      "href": "/writing/scraps-archive",
+      "blurb": "Field notes on process, unfinished ideas, and archive hygiene practices.",
+      "href": "/threads/scraps-archive",
       "external": false
     },
     {
       "title": "AV/Museum Work",
       "year": "2025",
       "type": "video",
-      "blurb": "[Add description]",
-      "href": "/work#av",
+      "blurb": "Installation context, projection studies, and museum-floor AV constraints.",
+      "href": "/threads/av-museum-work",
       "external": false
     },
     {
       "title": "Music/Production Sessions",
       "year": "2026",
       "type": "music",
-      "blurb": "[Add description]",
-      "href": "https://youtube.com/@a_e.s_4",
-      "external": true
+      "blurb": "Session-by-session production log with revisions, references, and release notes.",
+      "href": "/threads/music-production-sessions",
+      "external": false
     }
   ]
 }

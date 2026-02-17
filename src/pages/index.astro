@@ -16,10 +16,10 @@ const tools = [...new Set(allProjects.flatMap((project) => project.data.tools))]
 const sections = ['Music', 'Visual', 'Video', 'Newark', 'Scraps'];
 const threads = featuredThreads.featured_threads;
 const musicCategory = LINK_HUB_CATEGORIES.find((category) => category.id === 'music');
-const nowListeningItem = musicCategory?.items.find((item) => item.tag === 'Now Listening');
+const nowListeningItem = musicCategory?.items.find((item) => item.id === 'now-listening');
 ---
 
-<BaseLayout title="a_e.s_ — Archive" description={profile.short_bio}>
+<BaseLayout title="a_e.s_ — Archive" description={profile.short_bio} theme="archive">
   <div class="desktop-home">
     <section class="space-y-6">
       <p class="text-xs uppercase tracking-[0.2em] text-zinc-500">Timeline / Archive</p>

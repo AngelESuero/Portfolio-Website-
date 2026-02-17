@@ -10,7 +10,7 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await project.render();
 ---
-<BaseLayout title={`${project.data.title} — Work`}>
+<BaseLayout title={`${project.data.title} — Work`} theme="work">
   <a href="/work" class="text-sm underline">← Back to Work</a>
   <h1 class="mt-2 font-display text-4xl">{project.data.title}</h1>
   <p class="mt-1 text-zinc-600 dark:text-zinc-300">{project.data.year} · {project.data.status}</p>

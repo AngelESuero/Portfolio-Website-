@@ -5,6 +5,7 @@
     "description": "Local-first archive page with curated posts from Google Photos exports.",
     "primary_url": "https://instagram.com/a_e.s_",
     "mode": "manual",
+    "local_preview": "instagram",
     "featured": [
       { "label": "Open local archive", "url": "/instagram" }
     ]
@@ -14,8 +15,7 @@
     "title": "YouTube",
     "description": "Videos, visual essays, and process uploads.",
     "primary_url": "https://www.youtube.com/@a_e.s_4",
-    "mode": "rss",
-    "rss_url": "https://www.youtube.com/feeds/videos.xml?user=a_e.s_4",
+    "mode": "manual",
     "featured": [
       { "label": "Channel home", "url": "https://www.youtube.com/@a_e.s_4" }
     ],
@@ -42,6 +42,32 @@
     "rss_url": "https://aesarchive.substack.com/feed",
     "featured": [
       { "label": "Publication", "url": "https://aesarchive.substack.com" }
+    ]
+  },
+  {
+    "slug": "spotify",
+    "title": "Spotify",
+    "description": "Now Listening playlist and release-adjacent references.",
+    "primary_url": "https://open.spotify.com/playlist/SPOTIFY_PLAYLIST_ID",
+    "mode": "manual",
+    "featured": [
+      { "label": "Open playlist", "url": "https://open.spotify.com/playlist/SPOTIFY_PLAYLIST_ID" }
+    ],
+    "embeds": [
+      { "label": "Now Listening", "url": "https://open.spotify.com/embed/playlist/SPOTIFY_PLAYLIST_ID" }
+    ]
+  },
+  {
+    "slug": "untitled",
+    "title": "Untitled",
+    "description": "Direct stream player for live and in-progress music sets.",
+    "primary_url": "https://untitled.stream/m8IEX655GwMH",
+    "mode": "manual",
+    "featured": [
+      { "label": "Open stream page", "url": "https://untitled.stream/m8IEX655GwMH" }
+    ],
+    "embeds": [
+      { "label": "Untitled Stream", "url": "https://untitled.stream/embed/m8IEX655GwMH" }
     ]
   },
   {

@@ -16,20 +16,23 @@ interface SocialConfig {
   primary_url: string;
   mode: 'rss' | 'manual';
   rss_url?: string;
+  local_preview?: 'instagram';
   featured?: SocialFeaturedLink[];
   embeds?: SocialEmbed[];
 }
 
 interface Props {
   config: SocialConfig;
+  igPreview?: Array<{ src: string; caption?: string; date?: string }>;
 }
 
-const { config } = Astro.props;
+const { config, igPreview = [] } = Astro.props;
 const feedId = `social-feed-${config.slug}`;
 const statusId = `${feedId}-status`;
 const hasRss = config.mode === 'rss' && Boolean(config.rss_url);
 const featuredLinks = Array.isArray(config.featured) ? config.featured : [];
 const embeds = Array.isArray(config.embeds) ? config.embeds : [];
+const showInstagramPreview = config.local_preview === 'instagram' && igPreview.length > 0;
 ---
 
 <section class="social-page">
@@ -65,25 +68,75 @@ const embeds = Array.isArray(config.embeds) ? config.embeds : [];
     )}
   </section>
 
+  {showInstagramPreview && (
+    <section class="social-block" aria-label="Instagram local preview">
+      <h2>Local Archive Preview</h2>
+      <div class="social-local-grid">
+        {igPreview.map((item) => (
+          <a href="/instagram" class="social-local-card">
+            <img src={item.src} alt={item.caption || 'Instagram archive preview'} loading="lazy" decoding="async" />
+            <span>{item.caption || item.date || 'Open archive'}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
   {embeds.length > 0 && (
     <section class="social-block" aria-label={`${config.title} embeds`}>
       <h2>Embeds</h2>
       <div class="social-embed-grid">
         {embeds.map((embed) => {
-          const isYoutube = /youtube\.com\/embed|youtu\.be/.test(embed.url);
+          const isYoutube = /youtube\.com\/embed|youtube\.com|youtu\.be/.test(embed.url);
           const isSoundCloud = /soundcloud\.com/.test(embed.url) && !/w\.soundcloud\.com\/player/.test(embed.url);
-          const source = isSoundCloud
-            ? `https://w.soundcloud.com/player/?url=${encodeURIComponent(embed.url)}`
-            : embed.url;
+          const isSpotify = /spotify\.com/.test(embed.url);
+          const isUntitled = /untitled\.stream/.test(embed.url);
+          let source = embed.url;
+
+          if (isYoutube && !/youtube\.com\/embed/.test(source)) {
+            try {
+              const parsed = new URL(source);
+              if (parsed.hostname.includes('youtu.be')) {
+                const id = parsed.pathname.split('/').filter(Boolean)[0];
+                if (id) source = `https://www.youtube.com/embed/${id}`;
+              } else {
+                const id = parsed.searchParams.get('v');
+                if (id) source = `https://www.youtube.com/embed/${id}`;
+              }
+            } catch {}
+          }
+
+          if (isSpotify && !/spotify\.com\/embed/.test(source)) {
+            try {
+              const parsed = new URL(source);
+              const segments = parsed.pathname.split('/').filter(Boolean);
+              if (segments.length >= 2) source = `https://open.spotify.com/embed/${segments[0]}/${segments[1]}`;
+            } catch {}
+          }
+
+          if (isUntitled && !/untitled\.stream\/embed\//.test(source)) {
+            try {
+              const parsed = new URL(source);
+              const segments = parsed.pathname.split('/').filter(Boolean);
+              const id = segments[segments.length - 1];
+              if (id) source = `https://untitled.stream/embed/${id}`;
+            } catch {}
+          }
+
+          const embedSource = isSoundCloud
+            ? `https://w.soundcloud.com/player/?url=${encodeURIComponent(source)}`
+            : source;
+          const height = isSpotify ? 152 : isUntitled ? 344 : 288;
 
           return (
             <figure class="social-embed-card">
               <iframe
-                src={source}
+                src={embedSource}
                 title={embed.label || `${config.title} embed`}
                 loading="lazy"
                 allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
                 allowfullscreen={isYoutube}
+                height={height}
               ></iframe>
               {embed.label && <figcaption>{embed.label}</figcaption>}
             </figure>
@@ -277,10 +330,40 @@ const embeds = Array.isArray(config.embeds) ? config.embeds : [];
 
   .social-embed-card iframe {
     width: 100%;
-    min-height: 18rem;
+    min-height: 12rem;
     border: 1px solid rgba(113, 113, 122, 0.36);
     border-radius: 0.72rem;
     background: #020617;
+  }
+
+  .social-local-grid {
+    margin-top: 0.72rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: 0.58rem;
+  }
+
+  .social-local-card {
+    border: 1px solid rgba(113, 113, 122, 0.32);
+    border-radius: 0.65rem;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .social-local-card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+  }
+
+  .social-local-card span {
+    display: block;
+    padding: 0.42rem 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1.35;
   }
 
   .social-embed-card figcaption {

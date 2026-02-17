@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SocialFeedPage from '../../components/SocialFeedPage.astro';
 import socialConfig from '../../data/social.json';
+import igManifest from '../../data/ig.json';
 
 interface SocialConfigItem {
   slug: string;
@@ -10,6 +11,7 @@ interface SocialConfigItem {
   primary_url: string;
   mode: 'rss' | 'manual';
   rss_url?: string;
+  local_preview?: 'instagram';
   featured?: Array<{ label: string; url: string }>;
   embeds?: Array<{ label?: string; url: string }>;
 }
@@ -22,8 +24,16 @@ export function getStaticPaths() {
 }
 
 const { config } = Astro.props as { config: SocialConfigItem };
+const igPreview =
+  config.local_preview === 'instagram' && Array.isArray(igManifest)
+    ? igManifest.slice(0, 8).filter((item) => typeof item?.src === 'string' && item.src)
+    : [];
 ---
 
-<BaseLayout title={`${config.title} — Social`} description={config.description || `Updates from ${config.title}.`}>
-  <SocialFeedPage config={config} />
+<BaseLayout
+  title={`${config.title} — Social`}
+  description={config.description || `Updates from ${config.title}.`}
+  theme="social"
+>
+  <SocialFeedPage config={config} igPreview={igPreview} />
 </BaseLayout>

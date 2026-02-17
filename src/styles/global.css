@@ -17,8 +17,10 @@
   --tone-accent-glow: #ffe4ae;
   --tone-sky: #6fb7ff;
   --tone-sky-bright: #9fceff;
-  --accent: var(--tone-accent);
-  --accent2: var(--tone-sky);
+  --accent-1: var(--tone-accent);
+  --accent-2: var(--tone-sky);
+  --accent: var(--accent-1);
+  --accent2: var(--accent-2);
   --mx: 50vw;
   --my: 30vh;
   --aura-x: 50vw;
@@ -58,6 +60,75 @@
   --tone-surface-strong: rgba(8, 12, 20, 0.92);
 }
 
+body[data-theme='archive'] {
+  --tone-accent: #f2b84b;
+  --tone-accent-bright: #ffd07a;
+  --tone-accent-glow: #ffe4ae;
+  --tone-sky: #6fb7ff;
+  --tone-sky-bright: #9fceff;
+}
+
+body[data-theme='hub'] {
+  --tone-accent: #ffbe55;
+  --tone-accent-bright: #ffd480;
+  --tone-accent-glow: #ffe7b8;
+  --tone-sky: #61c2ff;
+  --tone-sky-bright: #9ad9ff;
+}
+
+body[data-theme='social'] {
+  --tone-accent: #f6c15f;
+  --tone-accent-bright: #ffd992;
+  --tone-accent-glow: #ffeccb;
+  --tone-sky: #54c5ec;
+  --tone-sky-bright: #a7e7ff;
+}
+
+body[data-theme='agi'] {
+  --tone-accent: #f5c05a;
+  --tone-accent-bright: #ffd786;
+  --tone-accent-glow: #ffecc0;
+  --tone-sky: #48c4ff;
+  --tone-sky-bright: #9ddeff;
+}
+
+body[data-theme='threads'] {
+  --tone-accent: #efb455;
+  --tone-accent-bright: #ffd289;
+  --tone-accent-glow: #ffe8bc;
+  --tone-sky: #79b3ff;
+  --tone-sky-bright: #b8d6ff;
+}
+
+body[data-theme='writing'] {
+  --tone-accent: #f0b861;
+  --tone-accent-bright: #ffd595;
+  --tone-accent-glow: #ffecc8;
+  --tone-sky: #78a6ff;
+  --tone-sky-bright: #b6cfff;
+}
+
+body[data-theme='work'] {
+  --tone-accent: #ebb25d;
+  --tone-accent-bright: #ffd28e;
+  --tone-accent-glow: #fee8c3;
+  --tone-sky: #5bbef0;
+  --tone-sky-bright: #9fdfff;
+}
+
+body[data-theme='contact'] {
+  --tone-accent: #f3be66;
+  --tone-accent-bright: #ffd898;
+  --tone-accent-glow: #ffeccc;
+  --tone-sky: #66c7ff;
+  --tone-sky-bright: #ace4ff;
+}
+
+body[data-theme] {
+  --accent-1: var(--tone-accent);
+  --accent-2: var(--tone-sky);
+}
+
 body {
   @apply font-body leading-relaxed;
   color: var(--tone-text);
@@ -81,12 +152,12 @@ body::before {
   background:
     radial-gradient(
       520px circle at var(--mx) var(--my),
-      color-mix(in oklab, var(--accent2) 30%, transparent),
+      color-mix(in oklab, var(--accent-2) 32%, transparent),
       transparent 60%
     ),
     radial-gradient(
       900px circle at 20% 10%,
-      color-mix(in oklab, var(--accent) 14%, transparent),
+      color-mix(in oklab, var(--accent-1) 10%, transparent),
       transparent 60%
     );
   opacity: 0.28;
@@ -223,16 +294,11 @@ footer {
 
 @media (pointer: fine) {
   #cursor-aura {
-    opacity: 0.1;
+    opacity: 0.12;
     background:
       radial-gradient(
-        520px circle at var(--aura-x) var(--aura-y),
-        color-mix(in srgb, var(--accent) 28%, transparent) 0%,
-        transparent 62%
-      ),
-      radial-gradient(
-        720px circle at var(--aura-x) var(--aura-y),
-        color-mix(in srgb, var(--accent2) 22%, transparent) 0%,
+        680px circle at var(--aura-x) var(--aura-y),
+        color-mix(in srgb, var(--accent-2) 22%, transparent) 0%,
         transparent 70%
       );
   }

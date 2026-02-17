@@ -1,3 +1,93 @@
 ---
-return Astro.redirect('/social/threads');
+import BaseLayout from '../layouts/BaseLayout.astro';
+import featuredThreads from '../data/featured_threads.json';
+
+const threads = featuredThreads.featured_threads;
 ---
+
+<BaseLayout title="Threads — a_e.s_" description="Long-form process threads." theme="threads">
+  <section class="threads-page">
+    <header>
+      <p class="threads-kicker">Editorial index</p>
+      <h1>Threads</h1>
+      <p class="threads-dek">Long-form process logs for writing, AV work, and music production.</p>
+    </header>
+
+    <div class="threads-grid">
+      {threads.map((thread) => (
+        <a href={thread.href} class="thread-entry" {...(thread.external ? { target: '_blank', rel: 'noopener' } : {})}>
+          <p class="thread-meta">{thread.year} · {thread.type}</p>
+          <h2>{thread.title}</h2>
+          <p>{thread.blurb}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .threads-page {
+    max-width: 64rem;
+    margin: 0 auto;
+  }
+
+  .threads-kicker {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.72rem;
+    color: var(--tone-muted);
+  }
+
+  .threads-page h1 {
+    margin: 0.38rem 0 0.68rem;
+    font-size: clamp(2rem, 4.4vw, 3rem);
+    line-height: 1.08;
+  }
+
+  .threads-dek {
+    margin: 0;
+    color: var(--tone-muted);
+    max-width: 68ch;
+  }
+
+  .threads-grid {
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.72rem;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+
+  .thread-entry {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--tone-text);
+    background: var(--panel);
+    padding: 0.86rem;
+  }
+
+  .thread-entry:hover,
+  .thread-entry:focus-visible {
+    border-color: var(--tone-accent-bright);
+  }
+
+  .thread-meta {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    font-size: 0.72rem;
+    color: var(--tone-muted);
+  }
+
+  .thread-entry h2 {
+    margin: 0.5rem 0 0;
+    font-size: 1.1rem;
+    line-height: 1.3;
+  }
+
+  .thread-entry p {
+    margin: 0.56rem 0 0;
+    line-height: 1.56;
+  }
+</style>

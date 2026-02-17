@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Scraps Archive Index — Threads" description="Process notes and archive hygiene." theme="threads">
+  <article class="thread-doc">
+    <a href="/threads" class="thread-back">← Back to threads</a>
+    <h1>Scraps Archive Index</h1>
+    <p class="thread-lede">A running ledger of in-progress ideas, unfinished prototypes, and what each revision taught me.</p>
+
+    <h2>Current structure</h2>
+    <p>Each scrap gets a date, medium, and one sentence on why it still matters. The rule is simple: document the attempt, then connect it to the next move.</p>
+
+    <h2>Why this thread exists</h2>
+    <p>Shipping clean final outputs hides how the work was actually formed. This thread keeps the intermediate logic visible.</p>
+
+    <h2>Related pages</h2>
+    <ul>
+      <li><a href="/writing">Writing archive</a></li>
+      <li><a href="/work">Work index</a></li>
+      <li><a href="/link-hub">Link hub</a></li>
+    </ul>
+  </article>
+</BaseLayout>
+
+<style>
+  .thread-doc { max-width: 62ch; margin: 0 auto; }
+  .thread-back { color: var(--tone-accent-glow); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 32%, transparent); }
+  .thread-doc h1 { margin: 0.75rem 0 0.7rem; font-size: clamp(2rem, 4vw, 2.7rem); line-height: 1.1; }
+  .thread-lede { margin: 0; font-size: 1.08rem; color: var(--tone-muted); }
+  .thread-doc h2 { margin-top: 1.3rem; font-size: 1.2rem; }
+  .thread-doc p { line-height: 1.7; }
+</style>

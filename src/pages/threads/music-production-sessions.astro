@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Music/Production Sessions — Threads" description="Session log and release prep notes." theme="threads">
+  <article class="thread-doc">
+    <a href="/threads" class="thread-back">← Back to threads</a>
+    <h1>Music / Production Sessions</h1>
+    <p class="thread-lede">Session-by-session notes for arrangement, sound design, and release sequencing.</p>
+
+    <h2>Session workflow</h2>
+    <p>Each session closes with one bounce, one note about what failed, and one next-step prompt for the following session.</p>
+
+    <h2>Release readiness</h2>
+    <p>Tracks move to release once arrangement, loudness targets, and visual packaging are all documented in one place.</p>
+
+    <h2>Related pages</h2>
+    <ul>
+      <li><a href="/link-hub">Link hub</a></li>
+      <li><a href="/social/spotify">Spotify social page</a></li>
+      <li><a href="/social/untitled">Untitled social page</a></li>
+    </ul>
+  </article>
+</BaseLayout>
+
+<style>
+  .thread-doc { max-width: 62ch; margin: 0 auto; }
+  .thread-back { color: var(--tone-accent-glow); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 32%, transparent); }
+  .thread-doc h1 { margin: 0.75rem 0 0.7rem; font-size: clamp(2rem, 4vw, 2.7rem); line-height: 1.1; }
+  .thread-lede { margin: 0; font-size: 1.08rem; color: var(--tone-muted); }
+  .thread-doc h2 { margin-top: 1.3rem; font-size: 1.2rem; }
+  .thread-doc p { line-height: 1.7; }
+</style>

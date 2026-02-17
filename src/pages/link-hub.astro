@@ -1,53 +1,24 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Parser from 'rss-parser';
 import EmbedCard from '../components/EmbedCard.astro';
-import { LINK_HUB_CATEGORIES, LINK_HUB_ICONS, SUBSTACK_FEED_URL } from '../data/linkhub';
+import { LINK_HUB_CATEGORIES, LINK_HUB_ICONS } from '../data/linkhub';
 
 const categoryIds = LINK_HUB_CATEGORIES.map((category) => category.id);
-const writingCategory = LINK_HUB_CATEGORIES.find((category) => category.id === 'writing');
-const hasSubstack = Boolean(writingCategory?.items.some((item) => item.preferredEmbed === 'substack'));
-
-let substackLatest: Array<{ title: string; link: string; date: string }> = [];
-
-if (hasSubstack) {
-  try {
-    const parser = new Parser();
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
-    let xml = '';
-
-    try {
-      const response = await fetch(SUBSTACK_FEED_URL, { signal: controller.signal });
-      if (response.ok) {
-        xml = await response.text();
-      }
-    } finally {
-      clearTimeout(timeoutId);
-    }
-
-    if (xml) {
-      const feed = await parser.parseString(xml);
-      substackLatest = (feed.items ?? [])
-        .slice(0, 5)
-        .map((item) => ({
-          title: item.title || 'Untitled post',
-          link: item.link || SUBSTACK_FEED_URL,
-          date: item.pubDate ? new Date(item.pubDate).toLocaleDateString() : ''
-        }));
-    }
-  } catch (error) {
-    console.warn('Substack feed unavailable for /link-hub');
-  }
-}
+const defaultItems = Object.fromEntries(
+  LINK_HUB_CATEGORIES.map((category) => [category.id, category.items[0]?.id || ''])
+);
 ---
 
-<BaseLayout title="Link Hub — a_e.s_" description="Timeline-style link hub with embeds and category tabs.">
+<BaseLayout
+  title="Link Hub — a_e.s_"
+  description="Timeline-style link hub with category tabs and embeddable links."
+  theme="hub"
+>
   <section class="hub-page">
     <header class="hub-header">
       <p class="hub-kicker">Timeline hub</p>
       <h1>Link Hub</h1>
-      <p class="hub-dek">One place for music, writing, video, resources, legal, and social links. Embeds are shown when available.</p>
+      <p class="hub-dek">Every primary link gets its own sub-tab. Embeds are shown when providers support them.</p>
     </header>
 
     <nav class="hub-icons" aria-label="Primary links">
@@ -74,60 +45,164 @@ if (hasSubstack) {
     </div>
 
     {LINK_HUB_CATEGORIES.map((category, index) => (
-      <section
-        class:list={['hub-panel', index === 0 && 'is-active']}
-        data-hub-panel={category.id}
-        aria-label={`${category.label} items`}
-      >
-        <div class="hub-grid">
-          {category.items.map((item) => <EmbedCard item={item} />)}
+      <section class:list={['hub-panel', index === 0 && 'is-active']} data-hub-panel={category.id} aria-label={`${category.label} links`}>
+        <div class="hub-subtabs" role="tablist" aria-label={`${category.label} links`}>
+          {category.items.map((item, itemIndex) => (
+            <button
+              type="button"
+              role="tab"
+              data-hub-link-tab={item.id}
+              data-hub-link-category={category.id}
+              aria-selected={itemIndex === 0 ? 'true' : 'false'}
+              class:list={[itemIndex === 0 && 'is-active']}
+            >
+              {item.title}
+            </button>
+          ))}
         </div>
 
-        {category.id === 'writing' && substackLatest.length > 0 && (
-          <aside class="hub-latest">
-            <h3>Latest Substack posts</h3>
-            <ul>
-              {substackLatest.map((post) => (
-                <li>
-                  <a href={post.link} target="_blank" rel="noopener">{post.title}</a>
-                  {post.date && <span>{post.date}</span>}
-                </li>
-              ))}
-            </ul>
-          </aside>
-        )}
+        {category.items.map((item, itemIndex) => (
+          <div
+            class:list={['hub-link-panel', itemIndex === 0 && 'is-active']}
+            data-hub-link-panel={item.id}
+            data-hub-link-category={category.id}
+            aria-label={`${item.title} panel`}
+          >
+            <EmbedCard item={item} />
+
+            {category.id === 'writing' && item.id === 'substack' && (
+              <aside class="hub-latest" data-substack-latest>
+                <h3>Latest Substack posts</h3>
+                <p class="hub-latest-status" data-substack-status>Loading latest entries…</p>
+                <ul data-substack-list></ul>
+              </aside>
+            )}
+          </div>
+        ))}
       </section>
     ))}
   </section>
 
-  <script is:inline define:vars={{ categoryIds }}>
+  <script is:inline define:vars={{ categoryIds, defaultItems }}>
     (() => {
       const tabs = Array.from(document.querySelectorAll('[data-hub-tab]'));
       const panels = Array.from(document.querySelectorAll('[data-hub-panel]'));
       if (!tabs.length || !panels.length) return;
 
-      const validIds = Array.isArray(categoryIds) ? categoryIds : [];
+      const categoryState = { ...(defaultItems || {}) };
 
-      const setActive = (id) => {
-        if (!validIds.includes(id)) return;
+      const setActiveLink = (categoryId, itemId) => {
+        const linkTabs = Array.from(document.querySelectorAll(`[data-hub-link-category="${categoryId}"][data-hub-link-tab]`));
+        const linkPanels = Array.from(document.querySelectorAll(`[data-hub-link-category="${categoryId}"][data-hub-link-panel]`));
+
+        linkTabs.forEach((tab) => {
+          const active = tab.getAttribute('data-hub-link-tab') === itemId;
+          tab.classList.toggle('is-active', active);
+          tab.setAttribute('aria-selected', String(active));
+        });
+
+        linkPanels.forEach((panel) => {
+          const active = panel.getAttribute('data-hub-link-panel') === itemId;
+          panel.classList.toggle('is-active', active);
+        });
+
+        categoryState[categoryId] = itemId;
+      };
+
+      const setActiveCategory = (categoryId) => {
+        if (!Array.isArray(categoryIds) || !categoryIds.includes(categoryId)) return;
+
         tabs.forEach((tab) => {
-          const active = tab.getAttribute('data-hub-tab') === id;
+          const active = tab.getAttribute('data-hub-tab') === categoryId;
           tab.classList.toggle('is-active', active);
           tab.setAttribute('aria-selected', String(active));
         });
 
         panels.forEach((panel) => {
-          const active = panel.getAttribute('data-hub-panel') === id;
+          const active = panel.getAttribute('data-hub-panel') === categoryId;
           panel.classList.toggle('is-active', active);
         });
+
+        const itemId = categoryState[categoryId];
+        if (itemId) setActiveLink(categoryId, itemId);
       };
 
       tabs.forEach((tab) => {
         tab.addEventListener('click', () => {
-          const id = tab.getAttribute('data-hub-tab');
-          if (id) setActive(id);
+          const categoryId = tab.getAttribute('data-hub-tab');
+          if (categoryId) setActiveCategory(categoryId);
         });
       });
+
+      const allLinkTabs = Array.from(document.querySelectorAll('[data-hub-link-tab]'));
+      allLinkTabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const categoryId = tab.getAttribute('data-hub-link-category');
+          const itemId = tab.getAttribute('data-hub-link-tab');
+          if (!categoryId || !itemId) return;
+          setActiveLink(categoryId, itemId);
+        });
+      });
+
+      const latestBlocks = Array.from(document.querySelectorAll('[data-substack-latest]'));
+      const loadSubstack = async () => {
+        if (!latestBlocks.length) return;
+
+        const setStatus = (message) => {
+          latestBlocks.forEach((block) => {
+            const status = block.querySelector('[data-substack-status]');
+            if (status) status.textContent = message;
+          });
+        };
+
+        try {
+          const response = await fetch('/api/social-rss?slug=substack');
+          if (!response.ok) throw new Error(`RSS endpoint returned ${response.status}`);
+          const payload = await response.json();
+          const items = Array.isArray(payload?.items) ? payload.items.slice(0, 5) : [];
+
+          latestBlocks.forEach((block) => {
+            const list = block.querySelector('[data-substack-list]');
+            if (!(list instanceof HTMLElement)) return;
+            list.innerHTML = '';
+
+            if (!items.length) {
+              const status = block.querySelector('[data-substack-status]');
+              if (status) status.textContent = payload?.message || 'No recent entries available.';
+              return;
+            }
+
+            items.forEach((item) => {
+              const li = document.createElement('li');
+              const link = document.createElement('a');
+              link.href = item.url || '#';
+              link.target = '_blank';
+              link.rel = 'noopener';
+              link.textContent = item.title || item.url || 'Untitled post';
+
+              const meta = document.createElement('span');
+              if (item.date) {
+                const date = new Date(item.date);
+                meta.textContent = Number.isNaN(date.valueOf())
+                  ? item.date
+                  : new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(date);
+              }
+
+              li.appendChild(link);
+              if (meta.textContent) li.appendChild(meta);
+              list.appendChild(li);
+            });
+
+            const status = block.querySelector('[data-substack-status]');
+            if (status) status.textContent = `Showing ${items.length} latest item${items.length === 1 ? '' : 's'}.`;
+          });
+        } catch {
+          setStatus('Could not load Substack latest posts right now.');
+        }
+      };
+
+      setActiveCategory(Array.isArray(categoryIds) && categoryIds[0] ? categoryIds[0] : 'music');
+      loadSubstack();
     })();
   </script>
 </BaseLayout>
@@ -195,39 +270,38 @@ if (hasSubstack) {
     letter-spacing: 0.01em;
   }
 
-  .hub-tabs {
+  .hub-tabs,
+  .hub-subtabs {
     margin-top: 1rem;
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
   }
 
-  .hub-tabs button {
+  .hub-tabs button,
+  .hub-subtabs button {
     border-radius: 999px;
     padding: 0.38rem 0.72rem;
     font-size: 0.8rem;
     color: var(--tone-text);
   }
 
-  .hub-tabs button.is-active {
+  .hub-tabs button.is-active,
+  .hub-subtabs button.is-active {
     border-color: var(--tone-accent-bright);
     color: var(--tone-accent-glow);
     background: color-mix(in srgb, var(--tone-accent) 18%, transparent);
   }
 
-  .hub-panel {
+  .hub-panel,
+  .hub-link-panel {
     margin-top: 1rem;
     display: none;
   }
 
-  .hub-panel.is-active {
+  .hub-panel.is-active,
+  .hub-link-panel.is-active {
     display: block;
-  }
-
-  .hub-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 0.7rem;
   }
 
   .hub-latest {
@@ -241,6 +315,12 @@ if (hasSubstack) {
   .hub-latest h3 {
     margin: 0;
     font-size: 1rem;
+  }
+
+  .hub-latest-status {
+    margin: 0.6rem 0 0;
+    color: var(--tone-muted);
+    font-size: 0.8rem;
   }
 
   .hub-latest ul {
@@ -278,6 +358,7 @@ if (hasSubstack) {
     color: var(--tone-muted);
     font-size: 0.75rem;
   }
+
   @media (max-width: 860px) {
     .hub-page {
       margin: -2rem calc(50% - 50vw) 0;
@@ -286,6 +367,30 @@ if (hasSubstack) {
         linear-gradient(180deg, #080d16 0%, #0a101a 44%, #080d16 100%),
         radial-gradient(circle at 12% 8%, rgba(47, 102, 179, 0.18), transparent 42%);
       border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .hub-tabs,
+    .hub-subtabs,
+    .hub-icons {
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      scroll-snap-type: x proximity;
+      padding-bottom: 0.25rem;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .hub-tabs::-webkit-scrollbar,
+    .hub-subtabs::-webkit-scrollbar,
+    .hub-icons::-webkit-scrollbar {
+      display: none;
+    }
+
+    .hub-tabs button,
+    .hub-subtabs button,
+    .hub-icons a {
+      scroll-snap-align: start;
+      white-space: nowrap;
     }
   }
 </style>

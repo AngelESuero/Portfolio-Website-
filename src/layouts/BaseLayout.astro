@@ -7,9 +7,15 @@ interface Props {
   title: string;
   description?: string;
   image?: string;
+  theme?: string;
 }
 
-const { title, description = 'Timeline and archive for a_e.s_', image = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80' } = Astro.props;
+const {
+  title,
+  description = 'Timeline and archive for a_e.s_',
+  image = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80',
+  theme = 'archive'
+} = Astro.props;
 const walkthroughSteps = [
   {
     title: 'Start in Standard',
@@ -172,7 +178,7 @@ const exploreLinks = [
     <meta name="twitter:card" content="summary_large_image" />
     <title>{title}</title>
   </head>
-  <body>
+  <body data-theme={theme}>
     <div id="cursor-aura" aria-hidden="true"></div>
     <div id="triangle-collage" aria-hidden="true">
       <span class="tri tri-1"></span>
