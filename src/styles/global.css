@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+:root.dark {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-paper text-ink dark:bg-zinc-950 dark:text-zinc-100 font-body leading-relaxed;
+  background-image: radial-gradient(rgba(17, 17, 17, 0.06) 0.6px, transparent 0.6px);
+  background-size: 7px 7px;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  @apply outline outline-2 outline-offset-2 outline-accent;
+}

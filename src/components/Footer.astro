@@ -1,0 +1,10 @@
+---
+import profile from '../content/profile.json';
+---
+
+<footer class="mt-20 border-t border-zinc-300 py-8 text-sm dark:border-zinc-700">
+  <div class="mx-auto flex max-w-6xl flex-col gap-3 px-4 md:flex-row md:items-center md:justify-between">
+    <p>© {new Date().getFullYear()} {profile.name}. Timeline/archive in progress.</p>
+    <a class="underline decoration-accent" href={profile.link_hub_url}>Link hub</a>
+  </div>
+</footer>
