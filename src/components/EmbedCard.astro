@@ -1,0 +1,216 @@
+---
+import type { LinkHubItem, LinkHubProvider } from '../data/linkhub';
+
+interface Props {
+  item: LinkHubItem;
+}
+
+const { item } = Astro.props as Props;
+
+const providerFromUrl = (urlValue: string): LinkHubProvider | null => {
+  let parsed: URL;
+  try {
+    parsed = new URL(urlValue);
+  } catch {
+    return null;
+  }
+
+  const host = parsed.hostname.toLowerCase();
+  if (host.includes('youtube.com') || host.includes('youtu.be')) return 'youtube';
+  if (host.includes('spotify.com')) return 'spotify';
+  if (host.includes('soundcloud.com')) return 'soundcloud';
+  if (host.includes('untitled.stream')) return 'untitled';
+  if (host.includes('substack.com')) return 'substack';
+  return null;
+};
+
+const youtubeEmbed = (urlValue: string): string | null => {
+  let parsed: URL;
+  try {
+    parsed = new URL(urlValue);
+  } catch {
+    return null;
+  }
+
+  const host = parsed.hostname.toLowerCase();
+  if (parsed.pathname.includes('/embed/')) return urlValue;
+
+  if (host.includes('youtu.be')) {
+    const id = parsed.pathname.split('/').filter(Boolean)[0];
+    if (id) return `https://www.youtube.com/embed/${id}`;
+  }
+
+  const shortsMatch = parsed.pathname.match(/\/shorts\/([^/]+)/);
+  if (shortsMatch?.[1]) return `https://www.youtube.com/embed/${shortsMatch[1]}`;
+
+  const id = parsed.searchParams.get('v');
+  if (id) return `https://www.youtube.com/embed/${id}`;
+  return null;
+};
+
+const spotifyEmbed = (urlValue: string): string | null => {
+  let parsed: URL;
+  try {
+    parsed = new URL(urlValue);
+  } catch {
+    return null;
+  }
+
+  if (parsed.pathname.startsWith('/embed/')) return urlValue;
+  const segments = parsed.pathname.split('/').filter(Boolean);
+  if (segments.length >= 2) {
+    const [kind, id] = segments;
+    if (kind && id) return `https://open.spotify.com/embed/${kind}/${id}`;
+  }
+  return null;
+};
+
+const soundCloudEmbed = (urlValue: string): string | null => {
+  try {
+    const parsed = new URL(urlValue);
+    if (parsed.hostname.toLowerCase().includes('w.soundcloud.com')) return urlValue;
+    return `https://w.soundcloud.com/player/?url=${encodeURIComponent(urlValue)}`;
+  } catch {
+    return null;
+  }
+};
+
+const untitledEmbed = (urlValue: string): string | null => {
+  let parsed: URL;
+  try {
+    parsed = new URL(urlValue);
+  } catch {
+    return null;
+  }
+
+  if (parsed.pathname.startsWith('/embed/')) return urlValue;
+  const segments = parsed.pathname.split('/').filter(Boolean);
+  const id = segments[segments.length - 1];
+  if (id) return `https://untitled.stream/embed/${id}`;
+  return null;
+};
+
+const provider = item.preferredEmbed ?? providerFromUrl(item.url);
+const isExternal = /^https?:\/\//i.test(item.url);
+
+let embedUrl: string | null = null;
+let embedHeight = 220;
+
+if (provider === 'youtube') {
+  embedUrl = youtubeEmbed(item.url);
+  embedHeight = 300;
+} else if (provider === 'spotify') {
+  embedUrl = spotifyEmbed(item.url);
+  embedHeight = 152;
+} else if (provider === 'soundcloud') {
+  embedUrl = soundCloudEmbed(item.url);
+  embedHeight = 180;
+} else if (provider === 'untitled') {
+  embedUrl = untitledEmbed(item.url);
+  embedHeight = 344;
+}
+
+const isEmbeddable = Boolean(embedUrl);
+---
+
+<article class="card hub-card">
+  <div class="hub-meta">
+    {item.tag && <span class="hub-tag">{item.tag}</span>}
+    {item.year && <span class="hub-year">{item.year}</span>}
+  </div>
+
+  <h3>{item.title}</h3>
+
+  {isEmbeddable ? (
+    <div class="hub-embed">
+      <iframe
+        src={embedUrl || undefined}
+        width="100%"
+        height={embedHeight}
+        frameborder="0"
+        loading="lazy"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        allowFullScreen
+        title={`${item.title} embed`}
+      ></iframe>
+      <p class="hub-note">If the embed fails, open source below.</p>
+    </div>
+  ) : (
+    <div class="reader-frame">
+      <p>No direct embed available for this source.</p>
+    </div>
+  )}
+
+  <a class="hub-link" href={item.url} {...(isExternal ? { target: '_blank', rel: 'noopener' } : {})}>Open source</a>
+</article>
+
+<style>
+  .hub-card {
+    padding: 0.82rem;
+    display: grid;
+    gap: 0.68rem;
+  }
+
+  .hub-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    min-height: 1.1rem;
+  }
+
+  .hub-tag,
+  .hub-year {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tone-muted);
+  }
+
+  .hub-card h3 {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.28;
+  }
+
+  .hub-embed {
+    border: 1px solid var(--line2);
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(4, 7, 12, 0.62);
+  }
+
+  .hub-embed iframe {
+    display: block;
+  }
+
+  .hub-note {
+    margin: 0;
+    padding: 0.42rem 0.58rem;
+    font-size: 0.72rem;
+    color: var(--tone-muted);
+    border-top: 1px solid var(--line2);
+  }
+
+  .reader-frame {
+    border: 1px dashed var(--line);
+    border-radius: 12px;
+    padding: 0.75rem;
+    color: var(--tone-muted);
+    font-size: 0.83rem;
+    background: rgba(6, 10, 17, 0.4);
+  }
+
+  .reader-frame p {
+    margin: 0;
+  }
+
+  .hub-link {
+    display: inline-flex;
+    width: fit-content;
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 38%, transparent);
+    font-size: 0.84rem;
+  }
+</style>

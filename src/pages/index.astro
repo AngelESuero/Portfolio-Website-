@@ -5,6 +5,8 @@ import featuredThreads from '../data/featured_threads.json';
 import { getCollection } from 'astro:content';
 import MobileTOC from '../components/MobileTOC.astro';
 import UntitledPlayer from '../components/UntitledPlayer.astro';
+import EmbedCard from '../components/EmbedCard.astro';
+import { LINK_HUB_CATEGORIES } from '../data/linkhub';
 
 const allProjects = await getCollection('projects');
 const posts = (await getCollection('posts'))
@@ -13,6 +15,8 @@ const posts = (await getCollection('posts'))
 const tools = [...new Set(allProjects.flatMap((project) => project.data.tools))].slice(0, 10);
 const sections = ['Music', 'Visual', 'Video', 'Newark', 'Scraps'];
 const threads = featuredThreads.featured_threads;
+const musicCategory = LINK_HUB_CATEGORIES.find((category) => category.id === 'music');
+const nowListeningItem = musicCategory?.items.find((item) => item.tag === 'Now Listening');
 ---
 
 <BaseLayout title="a_e.s_ — Archive" description={profile.short_bio}>
@@ -52,6 +56,12 @@ const threads = featuredThreads.featured_threads;
     </section>
 
     <UntitledPlayer title="Listen" subtitle="untitled.stream" />
+    {nowListeningItem && (
+      <section class="mt-4">
+        <h2 class="mb-3 font-display text-xl">Now Listening</h2>
+        <EmbedCard item={nowListeningItem} />
+      </section>
+    )}
   </div>
 
   <article class="mobile-editorial" aria-label="Mobile editorial layout">

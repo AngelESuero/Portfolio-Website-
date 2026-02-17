@@ -1,0 +1,291 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Parser from 'rss-parser';
+import EmbedCard from '../components/EmbedCard.astro';
+import { LINK_HUB_CATEGORIES, LINK_HUB_ICONS, SUBSTACK_FEED_URL } from '../data/linkhub';
+
+const categoryIds = LINK_HUB_CATEGORIES.map((category) => category.id);
+const writingCategory = LINK_HUB_CATEGORIES.find((category) => category.id === 'writing');
+const hasSubstack = Boolean(writingCategory?.items.some((item) => item.preferredEmbed === 'substack'));
+
+let substackLatest: Array<{ title: string; link: string; date: string }> = [];
+
+if (hasSubstack) {
+  try {
+    const parser = new Parser();
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    let xml = '';
+
+    try {
+      const response = await fetch(SUBSTACK_FEED_URL, { signal: controller.signal });
+      if (response.ok) {
+        xml = await response.text();
+      }
+    } finally {
+      clearTimeout(timeoutId);
+    }
+
+    if (xml) {
+      const feed = await parser.parseString(xml);
+      substackLatest = (feed.items ?? [])
+        .slice(0, 5)
+        .map((item) => ({
+          title: item.title || 'Untitled post',
+          link: item.link || SUBSTACK_FEED_URL,
+          date: item.pubDate ? new Date(item.pubDate).toLocaleDateString() : ''
+        }));
+    }
+  } catch (error) {
+    console.warn('Substack feed unavailable for /link-hub');
+  }
+}
+---
+
+<BaseLayout title="Link Hub — a_e.s_" description="Timeline-style link hub with embeds and category tabs.">
+  <section class="hub-page">
+    <header class="hub-header">
+      <p class="hub-kicker">Timeline hub</p>
+      <h1>Link Hub</h1>
+      <p class="hub-dek">One place for music, writing, video, resources, legal, and social links. Embeds are shown when available.</p>
+    </header>
+
+    <nav class="hub-icons" aria-label="Primary links">
+      {LINK_HUB_ICONS.map((item) => (
+        <a href={item.url} {...(/^https?:\/\//i.test(item.url) ? { target: '_blank', rel: 'noopener' } : {})} aria-label={`Open ${item.title}`}>
+          <span>{item.icon}</span>
+          <small>{item.title}</small>
+        </a>
+      ))}
+    </nav>
+
+    <div class="hub-tabs" role="tablist" aria-label="Link categories">
+      {LINK_HUB_CATEGORIES.map((category, index) => (
+        <button
+          type="button"
+          role="tab"
+          data-hub-tab={category.id}
+          aria-selected={index === 0 ? 'true' : 'false'}
+          class:list={[index === 0 && 'is-active']}
+        >
+          {category.label}
+        </button>
+      ))}
+    </div>
+
+    {LINK_HUB_CATEGORIES.map((category, index) => (
+      <section
+        class:list={['hub-panel', index === 0 && 'is-active']}
+        data-hub-panel={category.id}
+        aria-label={`${category.label} items`}
+      >
+        <div class="hub-grid">
+          {category.items.map((item) => <EmbedCard item={item} />)}
+        </div>
+
+        {category.id === 'writing' && substackLatest.length > 0 && (
+          <aside class="hub-latest">
+            <h3>Latest Substack posts</h3>
+            <ul>
+              {substackLatest.map((post) => (
+                <li>
+                  <a href={post.link} target="_blank" rel="noopener">{post.title}</a>
+                  {post.date && <span>{post.date}</span>}
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )}
+      </section>
+    ))}
+  </section>
+
+  <script is:inline define:vars={{ categoryIds }}>
+    (() => {
+      const tabs = Array.from(document.querySelectorAll('[data-hub-tab]'));
+      const panels = Array.from(document.querySelectorAll('[data-hub-panel]'));
+      if (!tabs.length || !panels.length) return;
+
+      const validIds = Array.isArray(categoryIds) ? categoryIds : [];
+
+      const setActive = (id) => {
+        if (!validIds.includes(id)) return;
+        tabs.forEach((tab) => {
+          const active = tab.getAttribute('data-hub-tab') === id;
+          tab.classList.toggle('is-active', active);
+          tab.setAttribute('aria-selected', String(active));
+        });
+
+        panels.forEach((panel) => {
+          const active = panel.getAttribute('data-hub-panel') === id;
+          panel.classList.toggle('is-active', active);
+        });
+      };
+
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const id = tab.getAttribute('data-hub-tab');
+          if (id) setActive(id);
+        });
+      });
+    })();
+  </script>
+</BaseLayout>
+
+<style>
+  .hub-page {
+    max-width: 72rem;
+    margin: 0 auto;
+  }
+
+  .hub-header h1 {
+    margin: 0.4rem 0 0.75rem;
+    font-size: clamp(2rem, 4.6vw, 3.1rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .hub-kicker {
+    margin: 0;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    color: var(--tone-muted);
+  }
+
+  .hub-dek {
+    margin: 0;
+    color: var(--tone-muted);
+    max-width: 70ch;
+  }
+
+  .hub-icons {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.52rem;
+  }
+
+  .hub-icons a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    text-decoration: none;
+    color: var(--tone-text);
+    background: rgba(10, 14, 22, 0.54);
+    padding: 0.36rem 0.6rem;
+  }
+
+  .hub-icons span {
+    width: 1.26rem;
+    height: 1.26rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.64rem;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .hub-icons small {
+    font-size: 0.76rem;
+    letter-spacing: 0.01em;
+  }
+
+  .hub-tabs {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .hub-tabs button {
+    border-radius: 999px;
+    padding: 0.38rem 0.72rem;
+    font-size: 0.8rem;
+    color: var(--tone-text);
+  }
+
+  .hub-tabs button.is-active {
+    border-color: var(--tone-accent-bright);
+    color: var(--tone-accent-glow);
+    background: color-mix(in srgb, var(--tone-accent) 18%, transparent);
+  }
+
+  .hub-panel {
+    margin-top: 1rem;
+    display: none;
+  }
+
+  .hub-panel.is-active {
+    display: block;
+  }
+
+  .hub-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 0.7rem;
+  }
+
+  .hub-latest {
+    margin-top: 0.9rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 0.85rem;
+  }
+
+  .hub-latest h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .hub-latest ul {
+    margin: 0.7rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.52rem;
+  }
+
+  .hub-latest li {
+    display: grid;
+    gap: 0.16rem;
+    border-bottom: 1px solid var(--line2);
+    padding-bottom: 0.46rem;
+  }
+
+  .hub-latest li:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .hub-latest a {
+    color: var(--tone-text);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .hub-latest a:hover,
+  .hub-latest a:focus-visible {
+    color: var(--tone-accent-glow);
+  }
+
+  .hub-latest span {
+    color: var(--tone-muted);
+    font-size: 0.75rem;
+  }
+  @media (max-width: 860px) {
+    .hub-page {
+      margin: -2rem calc(50% - 50vw) 0;
+      padding: 2.2rem 1.1rem 3.2rem;
+      background:
+        linear-gradient(180deg, #080d16 0%, #0a101a 44%, #080d16 100%),
+        radial-gradient(circle at 12% 8%, rgba(47, 102, 179, 0.18), transparent 42%);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  }
+</style>

@@ -17,8 +17,8 @@
   --tone-accent-glow: #ffe4ae;
   --tone-sky: #6fb7ff;
   --tone-sky-bright: #9fceff;
-  --accent: #ff6a00;
-  --accent2: #12d6ff;
+  --accent: var(--tone-accent);
+  --accent2: var(--tone-sky);
   --mx: 50vw;
   --my: 30vh;
   --aura-x: 50vw;
@@ -89,8 +89,8 @@ body::before {
       color-mix(in oklab, var(--accent) 14%, transparent),
       transparent 60%
     );
-  opacity: 0.9;
-  filter: saturate(1.05);
+  opacity: 0.28;
+  filter: saturate(1.02);
   mix-blend-mode: screen;
 }
 
