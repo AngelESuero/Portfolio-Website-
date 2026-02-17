@@ -3,32 +3,118 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import profile from '../data/profile.json';
 import { getCollection } from 'astro:content';
 import ProjectCard from '../components/ProjectCard.astro';
+import MobileTOC from '../components/MobileTOC.astro';
 
-const projects = (await getCollection('projects')).filter((p) => p.data.featured).slice(0, 5);
+const allProjects = await getCollection('projects');
+const projects = allProjects.filter((p) => p.data.featured).slice(0, 5);
+const posts = (await getCollection('posts'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+const tools = [...new Set(allProjects.flatMap((project) => project.data.tools))].slice(0, 10);
 const sections = ['Music', 'Visual', 'Video', 'Newark', 'Scraps'];
 ---
 
 <BaseLayout title="Angel Suero — Archive" description={profile.short_bio}>
-  <section class="space-y-6">
-    <p class="text-xs uppercase tracking-[0.2em] text-zinc-500">Timeline / Archive</p>
-    <h1 class="max-w-3xl font-display text-4xl font-bold md:text-6xl">{profile.name} <span class="text-accent">(a_e.s_)</span></h1>
-    <p class="max-w-3xl text-lg">{profile.long_bio}</p>
-    <div class="flex flex-wrap gap-2" aria-label="Identity chips">
-      {profile.roles.map((role) => <span class="rounded-full border border-zinc-400 px-3 py-1 text-sm dark:border-zinc-600">{role}</span>)}
-    </div>
-  </section>
+  <div class="desktop-home">
+    <section class="space-y-6">
+      <p class="text-xs uppercase tracking-[0.2em] text-zinc-500">Timeline / Archive</p>
+      <h1 class="max-w-3xl font-display text-4xl font-bold md:text-6xl">{profile.name} <span class="text-accent">(a_e.s_)</span></h1>
+      <p class="max-w-3xl text-lg">{profile.long_bio}</p>
+      <div class="flex flex-wrap gap-2" aria-label="Identity chips">
+        {profile.roles.map((role) => <span class="rounded-full border border-zinc-400 px-3 py-1 text-sm dark:border-zinc-600">{role}</span>)}
+      </div>
+    </section>
 
-  <section class="mt-10">
-    <h2 class="font-display text-2xl">Featured Threads</h2>
-    <div class="mt-4 flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:overflow-visible">
-      {projects.map((project) => <ProjectCard project={project} />)}
-    </div>
-  </section>
+    <section class="mt-10">
+      <h2 class="font-display text-2xl">Featured Threads</h2>
+      <div class="mt-4 flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:overflow-visible">
+        {projects.map((project) => <ProjectCard project={project} />)}
+      </div>
+    </section>
 
-  <section class="mt-10">
-    <h2 class="font-display text-2xl">Sections</h2>
-    <div class="mt-3 flex flex-wrap gap-2">
-      {sections.map((section) => <span class="rounded border border-zinc-400 px-2 py-1 text-sm dark:border-zinc-600">{section}</span>)}
-    </div>
-  </section>
+    <section class="mt-10">
+      <h2 class="font-display text-2xl">Sections</h2>
+      <div class="mt-3 flex flex-wrap gap-2">
+        {sections.map((section) => <span class="rounded border border-zinc-400 px-2 py-1 text-sm dark:border-zinc-600">{section}</span>)}
+      </div>
+    </section>
+  </div>
+
+  <article class="mobile-editorial" aria-label="Mobile editorial layout">
+    <header class="mobile-hero" id="home">
+      <p class="mobile-kicker">Timeline / Archive</p>
+      <h1>{profile.name} <span class="mobile-accent">(a_e.s_)</span></h1>
+      <p class="mobile-dek">{profile.long_bio}</p>
+      <div class="mobile-role-row" aria-label="Identity chips">
+        {profile.roles.map((role) => <span>{role}</span>)}
+      </div>
+    </header>
+
+    <MobileTOC />
+
+    <section id="about" class="mobile-story-section">
+      <h2>About</h2>
+      <p>{profile.short_bio}</p>
+      <p>{profile.long_bio}</p>
+    </section>
+
+    <section id="work" class="mobile-story-section">
+      <h2>Work / Projects</h2>
+      <ul class="mobile-project-list">
+        {projects.slice(0, 4).map((project) => (
+          <li>
+            <a href={`/work/${project.slug}`}>{project.data.title}</a>
+            <p>{project.data.description}</p>
+            <p class="meta">{project.data.year} · {project.data.type} · {project.data.status}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section id="experience" class="mobile-story-section">
+      <h2>Experience</h2>
+      <p>Built cross-disciplinary work streams in music production, visual storytelling, and civic collaboration across Newark communities.</p>
+      <p>Current focus: documenting process in public, shipping creative studies, and evolving this archive into a living portfolio timeline.</p>
+    </section>
+
+    <section id="skills" class="mobile-story-section">
+      <h2>Skills / Tools</h2>
+      <div class="mobile-pill-grid">
+        {tools.map((tool) => <span>{tool}</span>)}
+      </div>
+    </section>
+
+    <section id="media" class="mobile-story-section">
+      <h2>Media</h2>
+      <ul class="mobile-post-list">
+        {posts.map((post) => (
+          <li>
+            <a href={`/writing/${post.slug}`}>{post.data.title}</a>
+            <p>{post.data.summary}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section id="resume" class="mobile-story-section">
+      <h2>Resume / CV</h2>
+      <p>For speaking, collaborations, and portfolio details, use the press kit and updated project index.</p>
+      <p><a href="/press-kit">Open press kit</a></p>
+    </section>
+
+    <section id="contact" class="mobile-story-section">
+      <h2>Contact</h2>
+      <p>Use the form for inquiries, collaborations, and project commissions.</p>
+      <p><a href="/contact">Open contact form</a></p>
+    </section>
+
+    <section id="links" class="mobile-story-section">
+      <h2>Links</h2>
+      <ul class="mobile-link-list">
+        <li><a href={profile.social_links.instagram}>Instagram</a></li>
+        <li><a href={profile.social_links.youtube}>YouTube</a></li>
+        <li><a href={profile.link_hub_url}>Link hub</a></li>
+      </ul>
+    </section>
+  </article>
 </BaseLayout>

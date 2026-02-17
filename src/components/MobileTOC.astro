@@ -1,0 +1,96 @@
+---
+const tocItems = [
+  { id: 'about', label: 'About' },
+  { id: 'work', label: 'Work / Projects' },
+  { id: 'experience', label: 'Experience' },
+  { id: 'skills', label: 'Skills / Tools' },
+  { id: 'media', label: 'Media' },
+  { id: 'resume', label: 'Resume / CV' },
+  { id: 'contact', label: 'Contact' },
+  { id: 'links', label: 'Links' }
+];
+
+const publishedDate = new Intl.DateTimeFormat('en-US', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric'
+}).format(new Date());
+---
+
+<nav class="mobile-toc" aria-label="Table of contents">
+  <div class="mobile-meta-row">
+    <span>{publishedDate}</span>
+    <span>Portfolio</span>
+  </div>
+  <p class="mobile-toc-title">Table of contents</p>
+  <ol class="mobile-toc-list">
+    {tocItems.map((item) => (
+      <li>
+        <a href={`#${item.id}`} data-toc-link={item.id}>
+          {item.label}
+        </a>
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<script is:inline>
+  (() => {
+    if (!window.matchMedia('(max-width: 860px)').matches) return;
+
+    const links = Array.from(document.querySelectorAll('.mobile-toc a[href^="#"]'));
+    if (!links.length) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const setActiveLink = (id) => {
+      links.forEach((link) => {
+        link.classList.toggle('is-active', link.dataset.tocLink === id);
+      });
+    };
+
+    links.forEach((link) => {
+      link.addEventListener('click', (event) => {
+        const href = link.getAttribute('href');
+        if (!href) return;
+        const id = href.replace('#', '');
+        const target = document.getElementById(id);
+        if (!target) return;
+        event.preventDefault();
+        target.scrollIntoView({
+          behavior: prefersReducedMotion ? 'auto' : 'smooth',
+          block: 'start'
+        });
+        history.replaceState(null, '', `#${id}`);
+        setActiveLink(id);
+      });
+    });
+
+    if ('IntersectionObserver' in window) {
+      const sections = links
+        .map((link) => {
+          const id = link.dataset.tocLink;
+          return id ? document.getElementById(id) : null;
+        })
+        .filter(Boolean);
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+          if (visible?.target?.id) {
+            setActiveLink(visible.target.id);
+          }
+        },
+        {
+          rootMargin: '-25% 0px -60% 0px',
+          threshold: [0.15, 0.35, 0.6]
+        }
+      );
+
+      sections.forEach((section) => observer.observe(section));
+    }
+  })();
+</script>
