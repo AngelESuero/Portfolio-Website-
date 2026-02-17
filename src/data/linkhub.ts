@@ -26,7 +26,7 @@ export const LINK_HUB_ICONS: LinkHubIconLink[] = [
   { title: 'YouTube', url: 'https://www.youtube.com/@a_e.s_4', icon: 'YT' },
   { title: 'Instagram', url: 'https://instagram.com/a_e.s_', icon: 'IG' },
   { title: 'Substack', url: 'https://aesarchive.substack.com', icon: 'SB' },
-  { title: 'Spotify', url: 'https://open.spotify.com/playlist/SPOTIFY_PLAYLIST_ID', icon: 'SP' },
+  { title: 'Spotify', url: 'https://open.spotify.com/', icon: 'SP' },
   { title: 'Untitled', url: 'https://untitled.stream/m8IEX655GwMH', icon: 'UN' },
   { title: 'Email', url: '/contact', icon: '@' }
 ];
@@ -39,7 +39,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
       {
         id: 'now-listening',
         title: 'Now Listening',
-        url: 'https://open.spotify.com/playlist/SPOTIFY_PLAYLIST_ID',
+        url: 'https://open.spotify.com/',
         year: '2026',
         tag: 'Playlist',
         preferredEmbed: 'spotify'

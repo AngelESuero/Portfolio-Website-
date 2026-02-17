@@ -18,8 +18,8 @@
         "title": "Spotify Console",
         "summary": "Now Listening playlist in a native wrapper.",
         "kind": "embed",
-        "url": "https://open.spotify.com/playlist/SPOTIFY_PLAYLIST_ID",
-        "embed_url": "https://open.spotify.com/embed/playlist/SPOTIFY_PLAYLIST_ID"
+        "url": "https://open.spotify.com/",
+        "embed_url": "https://open.spotify.com/"
       },
       {
         "title": "SoundCloud Bay",

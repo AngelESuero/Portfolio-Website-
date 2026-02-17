@@ -20,7 +20,7 @@
       { "label": "Channel home", "url": "https://www.youtube.com/@a_e.s_4" }
     ],
     "embeds": [
-      { "label": "Channel", "url": "https://www.youtube.com/embed?listType=user_uploads&list=a_e.s_4" }
+      { "label": "Channel", "url": "https://www.youtube.com/embed?listType=playlist&list=UUQeJiBS72gxrZXw5GmqtocA" }
     ]
   },
   {
@@ -48,13 +48,10 @@
     "slug": "spotify",
     "title": "Spotify",
     "description": "Now Listening playlist and release-adjacent references.",
-    "primary_url": "https://open.spotify.com/playlist/SPOTIFY_PLAYLIST_ID",
+    "primary_url": "https://open.spotify.com/",
     "mode": "manual",
     "featured": [
-      { "label": "Open playlist", "url": "https://open.spotify.com/playlist/SPOTIFY_PLAYLIST_ID" }
-    ],
-    "embeds": [
-      { "label": "Now Listening", "url": "https://open.spotify.com/embed/playlist/SPOTIFY_PLAYLIST_ID" }
+      { "label": "Open Spotify", "url": "https://open.spotify.com/" }
     ]
   },
   {

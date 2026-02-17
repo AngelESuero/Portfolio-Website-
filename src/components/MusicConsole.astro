@@ -1,5 +1,6 @@
 ---
-const spotifyPlaylistId = Astro.props.spotifyPlaylistId ?? 'SPOTIFY_PLAYLIST_ID';
+const spotifyPlaylistId = Astro.props.spotifyPlaylistId ?? '';
+const hasSpotifyPlaylist = /^[A-Za-z0-9]{10,}$/.test(spotifyPlaylistId);
 ---
 
 <section class="music-console" id="music-console" aria-label="Music console">
@@ -26,16 +27,22 @@ const spotifyPlaylistId = Astro.props.spotifyPlaylistId ?? 'SPOTIFY_PLAYLIST_ID'
 
     <article class="music-console__card">
       <h3>Spotify Playlist</h3>
-      <iframe
-        style="border-radius: 12px"
-        src={`https://open.spotify.com/embed/playlist/${spotifyPlaylistId}`}
-        width="100%"
-        height="152"
-        frameborder="0"
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        loading="lazy"
-        title="Spotify embed playlist"
-      ></iframe>
+      {hasSpotifyPlaylist ? (
+        <iframe
+          style="border-radius: 12px"
+          src={`https://open.spotify.com/embed/playlist/${spotifyPlaylistId}`}
+          width="100%"
+          height="152"
+          frameborder="0"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+          title="Spotify embed playlist"
+        ></iframe>
+      ) : (
+        <p class="music-console__fallback">
+          Playlist not set yet. <a href="https://open.spotify.com/" target="_blank" rel="noopener">Open Spotify</a>
+        </p>
+      )}
     </article>
   </div>
 </section>
@@ -76,5 +83,14 @@ const spotifyPlaylistId = Astro.props.spotifyPlaylistId ?? 'SPOTIFY_PLAYLIST_ID'
   .music-console__card h3 {
     margin-bottom: 0.5rem;
     font-size: 0.95rem;
+  }
+
+  .music-console__fallback {
+    margin: 0;
+    color: var(--tone-muted);
+  }
+
+  .music-console__fallback a {
+    color: var(--tone-accent-glow);
   }
 </style>

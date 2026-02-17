@@ -4,7 +4,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://angel-suero.pages.dev/',
+  site: 'https://portfolio-website-9c9.pages.dev/',
   integrations: [tailwind(), mdx(), sitemap()],
   output: 'static'
 });

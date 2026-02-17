@@ -3,7 +3,7 @@
 A modern, lo-fi, content-first personal site for **Angel Suero (a_e.s_)** built with Astro + Tailwind and designed to scale into a larger creative hub.
 
 ## Live
-- **Live site:** https://angel-suero.pages.dev
+- **Live site:** https://portfolio-website-9c9.pages.dev
 - **Repo:** https://github.com/AngelESuero/Portfolio-Website-
 
 ## Design Docs
