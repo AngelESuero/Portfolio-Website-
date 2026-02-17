@@ -3,10 +3,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import igManifest from '../data/ig.json';
 
 const items = Array.isArray(igManifest) ? igManifest : [];
+const backgroundImage =
+  items.length > 0 && typeof items[0]?.src === 'string'
+    ? items[0].src
+    : '/ig/2026/2026-01-10_archive-note.svg';
 ---
 
 <BaseLayout title="Instagram Archive — Angel Suero" description="Local-first Instagram archive sourced from exported files.">
-  <section class="ig-page">
+  <section class="ig-page" style={`--ig-bg-image: url('${backgroundImage}')`}>
     <header class="ig-hero">
       <p class="ig-kicker">Local archive</p>
       <h1>Instagram Archive</h1>
@@ -307,6 +311,46 @@ const items = Array.isArray(igManifest) ? igManifest : [];
   .ig-page {
     max-width: 72rem;
     margin: 0 auto;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    border-radius: 1rem;
+    padding: 1.1rem;
+  }
+
+  .ig-page::before {
+    content: '';
+    position: absolute;
+    inset: -1.5%;
+    z-index: -2;
+    background-image: var(--ig-bg-image);
+    background-size: cover;
+    background-position: center;
+    transform: scale(1.05);
+    filter: saturate(1.1) contrast(1.05);
+  }
+
+  .ig-page::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(2, 6, 23, 0.86) 0%,
+        rgba(2, 6, 23, 0.78) 42%,
+        rgba(2, 6, 23, 0.9) 100%
+      ),
+      radial-gradient(circle at 15% 10%, rgba(56, 128, 255, 0.22), transparent 42%),
+      radial-gradient(rgba(255, 255, 255, 0.14) 0.5px, transparent 0.5px);
+    background-size: auto, auto, 2px 2px;
+  }
+
+  .ig-page > * {
+    position: relative;
+    z-index: 1;
   }
 
   .ig-kicker {
@@ -314,7 +358,7 @@ const items = Array.isArray(igManifest) ? igManifest : [];
     text-transform: uppercase;
     letter-spacing: 0.15em;
     font-size: 0.72rem;
-    color: rgba(82, 82, 91, 0.82);
+    color: rgba(220, 228, 245, 0.82);
   }
 
   .ig-hero h1 {
@@ -326,7 +370,7 @@ const items = Array.isArray(igManifest) ? igManifest : [];
 
   .ig-dek {
     margin: 0;
-    color: rgba(63, 63, 70, 0.94);
+    color: rgba(236, 243, 255, 0.94);
     max-width: 68ch;
   }
 
@@ -346,16 +390,17 @@ const items = Array.isArray(igManifest) ? igManifest : [];
     font-size: 0.72rem;
     letter-spacing: 0.11em;
     text-transform: uppercase;
-    color: rgba(82, 82, 91, 0.84);
+    color: rgba(194, 208, 236, 0.9);
   }
 
   .ig-filter select,
   .ig-filter input {
-    border: 1px solid rgba(113, 113, 122, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 0.58rem;
-    background: rgba(255, 255, 255, 0.74);
-    color: #18181b;
+    background: rgba(15, 23, 42, 0.58);
+    color: rgba(236, 243, 255, 0.94);
     padding: 0.48rem 0.58rem;
+    backdrop-filter: blur(4px);
   }
 
   .ig-type-chips {
@@ -366,23 +411,23 @@ const items = Array.isArray(igManifest) ? igManifest : [];
   }
 
   .ig-chip {
-    border: 1px solid rgba(113, 113, 122, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.74);
-    color: #27272a;
+    background: rgba(15, 23, 42, 0.56);
+    color: rgba(227, 237, 255, 0.94);
     padding: 0.32rem 0.76rem;
     font-size: 0.79rem;
   }
 
   .ig-chip.is-active {
-    border-color: #c2410c;
-    color: #c2410c;
-    background: rgba(194, 65, 12, 0.08);
+    border-color: #4d8dff;
+    color: #a7c8ff;
+    background: rgba(77, 141, 255, 0.15);
   }
 
   .ig-status {
     margin: 0.88rem 0 0;
-    color: rgba(63, 63, 70, 0.95);
+    color: rgba(210, 222, 246, 0.9);
     font-size: 0.9rem;
   }
 
@@ -394,13 +439,14 @@ const items = Array.isArray(igManifest) ? igManifest : [];
   }
 
   .ig-card {
-    border: 1px solid rgba(113, 113, 122, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 0.85rem;
-    background: rgba(255, 255, 255, 0.62);
+    background: rgba(15, 23, 42, 0.5);
     padding: 0;
     text-align: left;
     overflow: hidden;
     cursor: pointer;
+    backdrop-filter: blur(3px);
   }
 
   .ig-thumb {
@@ -418,14 +464,14 @@ const items = Array.isArray(igManifest) ? igManifest : [];
   .ig-card-meta {
     margin: 0;
     font-size: 0.72rem;
-    color: rgba(82, 82, 91, 0.88);
+    color: rgba(194, 208, 236, 0.86);
   }
 
   .ig-card-title {
     margin: 0.34rem 0 0;
     font-size: 0.86rem;
     line-height: 1.42;
-    color: #111827;
+    color: rgba(239, 245, 255, 0.95);
   }
 
   .ig-modal[hidden] {
@@ -515,36 +561,6 @@ const items = Array.isArray(igManifest) ? igManifest : [];
     text-underline-offset: 2px;
   }
 
-  :root.dark .ig-kicker,
-  :root.dark .ig-status,
-  :root.dark .ig-filter span,
-  :root.dark .ig-card-meta,
-  :root.dark .ig-modal-meta {
-    color: rgba(212, 212, 216, 0.88);
-  }
-
-  :root.dark .ig-dek,
-  :root.dark .ig-card-title,
-  :root.dark .ig-modal-caption {
-    color: rgba(244, 244, 245, 0.94);
-  }
-
-  :root.dark .ig-filter select,
-  :root.dark .ig-filter input,
-  :root.dark .ig-chip,
-  :root.dark .ig-card,
-  :root.dark .ig-modal-panel {
-    background: rgba(24, 24, 27, 0.78);
-    border-color: rgba(161, 161, 170, 0.42);
-    color: rgba(244, 244, 245, 0.95);
-  }
-
-  :root.dark .ig-chip.is-active {
-    color: #fdba74;
-    border-color: #fb923c;
-    background: rgba(194, 65, 12, 0.17);
-  }
-
   :root.dark .ig-modal-close,
   :root.dark .ig-modal-links a {
     color: #fdba74;
@@ -558,30 +574,16 @@ const items = Array.isArray(igManifest) ? igManifest : [];
 
   @media (max-width: 860px) {
     .ig-page {
-      position: relative;
       margin: -2rem calc(50% - 50vw) 0;
+      border-left: 0;
+      border-right: 0;
+      border-radius: 0;
       padding: 2.25rem 1.25rem 4rem;
       max-width: none;
-      color: #edf2fc;
-      background:
-        linear-gradient(180deg, #090b11 0%, #0c0f16 45%, #090b11 100%),
-        radial-gradient(circle at 14% 8%, rgba(56, 128, 255, 0.15), transparent 45%);
       border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .ig-page::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0.08;
-      background-image: radial-gradient(rgba(255, 255, 255, 0.58) 0.45px, transparent 0.45px);
-      background-size: 2px 2px;
-    }
-
     .ig-page > * {
-      position: relative;
-      z-index: 1;
       max-width: 68ch;
       margin-inline: auto;
     }
