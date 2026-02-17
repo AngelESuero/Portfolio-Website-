@@ -5,29 +5,29 @@
 
 :root {
   color-scheme: dark;
-  --tone-bg: #050d1b;
-  --tone-bg-deep: #030914;
-  --tone-surface: rgba(9, 22, 44, 0.72);
-  --tone-surface-strong: rgba(6, 16, 34, 0.84);
-  --tone-text: #e8efff;
-  --tone-muted: rgba(198, 212, 238, 0.82);
-  --tone-line: rgba(158, 177, 212, 0.34);
-  --tone-accent: #d7aa2f;
-  --tone-accent-bright: #f0c55a;
-  --tone-accent-glow: #ffd884;
-  --tone-sky: #2f66b3;
-  --tone-sky-bright: #5f8fd7;
-  --accent: #f97316;
-  --accent2: #8ee6ff;
+  --tone-bg: #070b12;
+  --tone-bg-deep: #05070c;
+  --tone-surface: rgba(13, 18, 28, 0.8);
+  --tone-surface-strong: rgba(10, 14, 22, 0.9);
+  --tone-text: #f3f6ff;
+  --tone-muted: rgba(208, 216, 231, 0.84);
+  --tone-line: rgba(193, 206, 230, 0.26);
+  --tone-accent: #f2b84b;
+  --tone-accent-bright: #ffd07a;
+  --tone-accent-glow: #ffe4ae;
+  --tone-sky: #6fb7ff;
+  --tone-sky-bright: #9fceff;
+  --accent: var(--tone-accent);
+  --accent2: var(--tone-sky);
   --aura-x: 50vw;
   --aura-y: 30vh;
-  --line: rgba(255, 255, 255, 0.1);
-  --line2: rgba(255, 255, 255, 0.06);
-  --panel: rgba(255, 255, 255, 0.03);
-  --street-noise: 0.09;
-  --street-vignette: 0.55;
-  --street-warm: rgba(255, 150, 80, 0.1);
-  --street-cool: rgba(120, 220, 255, 0.08);
+  --line: var(--tone-line);
+  --line2: rgba(255, 255, 255, 0.08);
+  --panel: rgba(255, 255, 255, 0.04);
+  --street-noise: 0.04;
+  --street-vignette: 0.32;
+  --street-warm: rgba(242, 184, 75, 0.07);
+  --street-cool: rgba(111, 183, 255, 0.06);
   --phi: 1.618;
   --s0: 8px;
   --s1: calc(var(--s0) * var(--phi));
@@ -40,10 +40,10 @@
 
 :root.dark {
   color-scheme: dark;
-  --tone-bg: #040b17;
-  --tone-bg-deep: #020712;
-  --tone-surface: rgba(8, 18, 36, 0.78);
-  --tone-surface-strong: rgba(4, 11, 24, 0.88);
+  --tone-bg: #060911;
+  --tone-bg-deep: #04070d;
+  --tone-surface: rgba(11, 16, 25, 0.84);
+  --tone-surface-strong: rgba(8, 12, 20, 0.92);
 }
 
 body {
@@ -53,10 +53,9 @@ body {
   background-image:
     radial-gradient(1100px 700px at 15% 15%, var(--street-cool), transparent 55%),
     radial-gradient(900px 600px at 80% 20%, var(--street-warm), transparent 55%),
-    radial-gradient(1200px 420px at 60% 0%, rgba(214, 168, 53, 0.12), transparent 56%),
-    linear-gradient(180deg, #06142d 0%, var(--tone-bg) 55%, var(--tone-bg-deep) 100%),
-    radial-gradient(rgba(147, 197, 253, 0.16) 0.55px, transparent 0.55px);
-  background-size: auto, auto, 7px 7px;
+    linear-gradient(180deg, #0a1220 0%, var(--tone-bg) 52%, var(--tone-bg-deep) 100%),
+    radial-gradient(rgba(159, 206, 255, 0.08) 0.55px, transparent 0.55px);
+  background-size: auto, auto, auto, 8px 8px;
   position: relative;
   isolation: isolate;
 }
@@ -102,7 +101,7 @@ footer {
 
 @media (pointer: fine) {
   #cursor-aura {
-    opacity: 0.22;
+    opacity: 0.14;
     background:
       radial-gradient(
         520px circle at var(--aura-x) var(--aura-y),
@@ -118,33 +117,34 @@ footer {
 }
 
 .site-header {
-  background: rgba(0, 0, 0, 0.62);
+  background: rgba(8, 11, 17, 0.76);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line2);
 }
 
 .page-shell {
   background:
-    linear-gradient(to right, rgba(255, 255, 255, 0.04), transparent 25%),
-    linear-gradient(to left, rgba(0, 0, 0, 0.35), transparent 35%);
+    linear-gradient(to right, rgba(255, 255, 255, 0.02), transparent 26%),
+    linear-gradient(to left, rgba(0, 0, 0, 0.2), transparent 36%);
 }
 
 nav a,
 .pill,
 .chip,
 button {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--line);
+  background: rgba(10, 14, 22, 0.62);
+  color: var(--tone-text);
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
   backdrop-filter: blur(8px);
-  transition: border-color 180ms ease;
+  transition: border-color 180ms ease, color 180ms ease;
 }
 
 nav a:hover,
 .pill:hover,
 .chip:hover,
 button:hover {
-  border-color: color-mix(in srgb, var(--accent2) 22%, rgba(255, 255, 255, 0.12));
+  border-color: color-mix(in srgb, var(--accent2) 30%, var(--line));
 }
 
 .card {
@@ -153,7 +153,7 @@ button:hover {
   border-radius: var(--radius);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.05) inset,
-    0 20px 60px rgba(0, 0, 0, 0.45);
+    0 16px 42px rgba(0, 0, 0, 0.38);
   transform: translateZ(0);
   transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
   position: relative;
@@ -187,7 +187,7 @@ button:hover {
 }
 
 .threadCard:hover {
-  border-color: color-mix(in srgb, var(--accent) 28%, var(--line));
+  border-color: color-mix(in srgb, var(--accent2) 30%, var(--line));
 }
 
 .threadCard:focus-visible {
