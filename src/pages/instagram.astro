@@ -1,0 +1,649 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import igManifest from '../data/ig.json';
+
+const items = Array.isArray(igManifest) ? igManifest : [];
+---
+
+<BaseLayout title="Instagram Archive — Angel Suero" description="Local-first Instagram archive sourced from exported files.">
+  <section class="ig-page">
+    <header class="ig-hero">
+      <p class="ig-kicker">Local archive</p>
+      <h1>Instagram Archive</h1>
+      <p class="ig-dek">
+        Curated timeline powered by local media files in <code>/public/ig</code>. No external APIs.
+      </p>
+    </header>
+
+    <section class="ig-filters" aria-label="Instagram archive filters">
+      <label class="ig-filter">
+        <span>Year</span>
+        <select id="ig-year">
+          <option value="">All years</option>
+        </select>
+      </label>
+
+      <label class="ig-filter">
+        <span>Series</span>
+        <select id="ig-series">
+          <option value="">All series</option>
+        </select>
+      </label>
+
+      <label class="ig-filter">
+        <span>Tag search</span>
+        <input id="ig-tag-query" type="text" placeholder="e.g. studio, reel, collage" />
+      </label>
+    </section>
+
+    <div class="ig-type-chips" id="ig-type-chips" aria-label="Type filters"></div>
+    <p id="ig-status" class="ig-status">Loading archive…</p>
+    <div id="ig-grid" class="ig-grid" aria-live="polite"></div>
+  </section>
+
+  <div id="ig-modal" class="ig-modal" hidden>
+    <button type="button" class="ig-modal-backdrop" data-close-modal aria-label="Close media details"></button>
+    <div class="ig-modal-panel" role="dialog" aria-modal="true" aria-labelledby="ig-modal-title">
+      <button type="button" class="ig-modal-close" data-close-modal aria-label="Close">×</button>
+      <div id="ig-modal-media" class="ig-modal-media"></div>
+      <h2 id="ig-modal-title" class="ig-modal-title"></h2>
+      <p id="ig-modal-meta" class="ig-modal-meta"></p>
+      <p id="ig-modal-caption" class="ig-modal-caption"></p>
+      <div class="ig-modal-links">
+        <a id="ig-modal-file-link" href="#" target="_blank" rel="noopener">Open File</a>
+        <a id="ig-modal-ig-link" href="#" target="_blank" rel="noopener">View on Instagram</a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script is:inline define:vars={{ items }}>
+  (() => {
+    const yearEl = document.getElementById('ig-year');
+    const seriesEl = document.getElementById('ig-series');
+    const tagQueryEl = document.getElementById('ig-tag-query');
+    const typeChipsEl = document.getElementById('ig-type-chips');
+    const statusEl = document.getElementById('ig-status');
+    const gridEl = document.getElementById('ig-grid');
+    const modalEl = document.getElementById('ig-modal');
+    const modalMediaEl = document.getElementById('ig-modal-media');
+    const modalTitleEl = document.getElementById('ig-modal-title');
+    const modalMetaEl = document.getElementById('ig-modal-meta');
+    const modalCaptionEl = document.getElementById('ig-modal-caption');
+    const modalFileLinkEl = document.getElementById('ig-modal-file-link');
+    const modalIgLinkEl = document.getElementById('ig-modal-ig-link');
+    if (
+      !yearEl ||
+      !seriesEl ||
+      !tagQueryEl ||
+      !typeChipsEl ||
+      !statusEl ||
+      !gridEl ||
+      !modalEl ||
+      !modalMediaEl ||
+      !modalTitleEl ||
+      !modalMetaEl ||
+      !modalCaptionEl ||
+      !modalFileLinkEl ||
+      !modalIgLinkEl
+    ) {
+      return;
+    }
+
+    const normalizeType = (value) => String(value || '').toLowerCase();
+    const normalizeDate = (value) => {
+      const parsed = new Date(value);
+      return Number.isNaN(parsed.valueOf()) ? null : parsed;
+    };
+
+    const formatDate = (value) => {
+      const parsed = normalizeDate(value);
+      if (!parsed) return value;
+      return new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      }).format(parsed);
+    };
+
+    const normalizeItem = (item) => {
+      const date = String(item?.date || '');
+      const year = Number(item?.year || (date ? date.slice(0, 4) : 0));
+      const id = String(item?.id || `${date}_${String(item?.src || '')}`);
+      const type = normalizeType(item?.type) || 'photo';
+      const series = String(item?.series || '').trim();
+      const tags = Array.isArray(item?.tags) ? item.tags.map((tag) => String(tag).toLowerCase()).filter(Boolean) : [];
+      const src = String(item?.src || '');
+      const caption = String(item?.caption || '').trim();
+      const igUrl = String(item?.ig_url || '').trim();
+      return { id, date, year, type, series, tags, src, caption, ig_url: igUrl };
+    };
+
+    const state = {
+      items: (Array.isArray(items) ? items : [])
+        .map(normalizeItem)
+        .filter((item) => item.id && item.src && item.date)
+        .sort((a, b) => String(b.date).localeCompare(String(a.date))),
+      activeType: 'all'
+    };
+
+    const itemById = new Map(state.items.map((item) => [item.id, item]));
+    const typeOptions = ['all', 'photo', 'reel', 'carousel', 'video'];
+
+    const makeMedia = (item, className) => {
+      if (item.type === 'video' || item.type === 'reel') {
+        const video = document.createElement('video');
+        video.src = item.src;
+        video.className = className;
+        video.muted = true;
+        video.playsInline = true;
+        video.preload = 'metadata';
+        video.controls = true;
+        return video;
+      }
+      const image = document.createElement('img');
+      image.src = item.src;
+      image.alt = item.caption || item.id;
+      image.className = className;
+      image.loading = 'lazy';
+      image.decoding = 'async';
+      return image;
+    };
+
+    const closeModal = () => {
+      modalEl.hidden = true;
+      document.body.style.removeProperty('overflow');
+      modalMediaEl.innerHTML = '';
+    };
+
+    const openModal = (item) => {
+      modalMediaEl.innerHTML = '';
+      modalMediaEl.appendChild(makeMedia(item, 'ig-modal-media-inner'));
+      modalTitleEl.textContent = item.caption || item.id;
+      modalMetaEl.textContent = `${formatDate(item.date)} • ${item.type}${item.series ? ` • ${item.series}` : ''}`;
+      modalCaptionEl.textContent = item.caption || 'No caption provided.';
+      modalFileLinkEl.href = item.src;
+      modalFileLinkEl.textContent = 'Open File';
+
+      if (item.ig_url) {
+        modalIgLinkEl.href = item.ig_url;
+        modalIgLinkEl.hidden = false;
+      } else {
+        modalIgLinkEl.hidden = true;
+      }
+
+      modalEl.hidden = false;
+      document.body.style.overflow = 'hidden';
+    };
+
+    const renderTypeChips = () => {
+      typeChipsEl.innerHTML = '';
+      typeOptions.forEach((type) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `ig-chip${state.activeType === type ? ' is-active' : ''}`;
+        btn.dataset.type = type;
+        btn.setAttribute('aria-pressed', String(state.activeType === type));
+        btn.textContent = type === 'all' ? 'All types' : type;
+        typeChipsEl.appendChild(btn);
+      });
+    };
+
+    const updateFilterOptions = () => {
+      const years = [...new Set(state.items.map((item) => item.year).filter(Boolean))].sort((a, b) => b - a);
+      const seriesValues = [...new Set(state.items.map((item) => item.series).filter(Boolean))].sort();
+      const prevYear = yearEl.value;
+      const prevSeries = seriesEl.value;
+
+      yearEl.innerHTML = '<option value="">All years</option>';
+      seriesEl.innerHTML = '<option value="">All series</option>';
+
+      years.forEach((year) => {
+        const option = document.createElement('option');
+        option.value = String(year);
+        option.textContent = String(year);
+        yearEl.appendChild(option);
+      });
+
+      seriesValues.forEach((series) => {
+        const option = document.createElement('option');
+        option.value = series;
+        option.textContent = series;
+        seriesEl.appendChild(option);
+      });
+
+      if ([...yearEl.options].some((opt) => opt.value === prevYear)) yearEl.value = prevYear;
+      if ([...seriesEl.options].some((opt) => opt.value === prevSeries)) seriesEl.value = prevSeries;
+    };
+
+    const filteredItems = () => {
+      const year = yearEl.value;
+      const series = seriesEl.value;
+      const query = tagQueryEl.value.trim().toLowerCase();
+
+      return state.items.filter((item) => {
+        if (year && String(item.year) !== year) return false;
+        if (state.activeType !== 'all' && item.type !== state.activeType) return false;
+        if (series && item.series !== series) return false;
+        if (!query) return true;
+        const haystack = `${item.caption} ${item.series} ${item.tags.join(' ')}`.toLowerCase();
+        return haystack.includes(query);
+      });
+    };
+
+    const renderGrid = () => {
+      gridEl.innerHTML = '';
+      const itemsToRender = filteredItems();
+      statusEl.textContent = itemsToRender.length
+        ? `Showing ${itemsToRender.length} item${itemsToRender.length === 1 ? '' : 's'}`
+        : 'No posts match these filters.';
+
+      itemsToRender.forEach((item) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'ig-card';
+        button.dataset.id = item.id;
+        button.appendChild(makeMedia(item, 'ig-thumb'));
+
+        const body = document.createElement('div');
+        body.className = 'ig-card-body';
+
+        const meta = document.createElement('p');
+        meta.className = 'ig-card-meta';
+        meta.textContent = `${formatDate(item.date)} • ${item.type}`;
+
+        const title = document.createElement('p');
+        title.className = 'ig-card-title';
+        title.textContent = item.caption || item.id;
+
+        body.appendChild(meta);
+        body.appendChild(title);
+        button.appendChild(body);
+        gridEl.appendChild(button);
+      });
+    };
+
+    typeChipsEl.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const chip = target.closest('.ig-chip');
+      if (!(chip instanceof HTMLButtonElement)) return;
+      state.activeType = chip.dataset.type || 'all';
+      renderTypeChips();
+      renderGrid();
+    });
+
+    yearEl.addEventListener('change', renderGrid);
+    seriesEl.addEventListener('change', renderGrid);
+    tagQueryEl.addEventListener('input', renderGrid);
+
+    gridEl.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const card = target.closest('.ig-card');
+      if (!(card instanceof HTMLButtonElement)) return;
+      const id = card.dataset.id || '';
+      const item = itemById.get(id);
+      if (item) openModal(item);
+    });
+
+    modalEl.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      if (target.hasAttribute('data-close-modal')) closeModal();
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !modalEl.hidden) closeModal();
+    });
+
+    updateFilterOptions();
+    renderTypeChips();
+    renderGrid();
+  })();
+</script>
+
+<style>
+  .ig-page {
+    max-width: 72rem;
+    margin: 0 auto;
+  }
+
+  .ig-kicker {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 0.72rem;
+    color: rgba(82, 82, 91, 0.82);
+  }
+
+  .ig-hero h1 {
+    margin: 0.35rem 0 0.72rem;
+    font-size: clamp(2rem, 4.4vw, 3rem);
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+  }
+
+  .ig-dek {
+    margin: 0;
+    color: rgba(63, 63, 70, 0.94);
+    max-width: 68ch;
+  }
+
+  .ig-filters {
+    margin-top: 1.15rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.7rem;
+  }
+
+  .ig-filter {
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .ig-filter span {
+    font-size: 0.72rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: rgba(82, 82, 91, 0.84);
+  }
+
+  .ig-filter select,
+  .ig-filter input {
+    border: 1px solid rgba(113, 113, 122, 0.4);
+    border-radius: 0.58rem;
+    background: rgba(255, 255, 255, 0.74);
+    color: #18181b;
+    padding: 0.48rem 0.58rem;
+  }
+
+  .ig-type-chips {
+    margin-top: 0.78rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .ig-chip {
+    border: 1px solid rgba(113, 113, 122, 0.45);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.74);
+    color: #27272a;
+    padding: 0.32rem 0.76rem;
+    font-size: 0.79rem;
+  }
+
+  .ig-chip.is-active {
+    border-color: #c2410c;
+    color: #c2410c;
+    background: rgba(194, 65, 12, 0.08);
+  }
+
+  .ig-status {
+    margin: 0.88rem 0 0;
+    color: rgba(63, 63, 70, 0.95);
+    font-size: 0.9rem;
+  }
+
+  .ig-grid {
+    margin-top: 0.88rem;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.72rem;
+  }
+
+  .ig-card {
+    border: 1px solid rgba(113, 113, 122, 0.35);
+    border-radius: 0.85rem;
+    background: rgba(255, 255, 255, 0.62);
+    padding: 0;
+    text-align: left;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .ig-thumb {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    background: #0b1120;
+  }
+
+  .ig-card-body {
+    padding: 0.55rem 0.62rem 0.7rem;
+  }
+
+  .ig-card-meta {
+    margin: 0;
+    font-size: 0.72rem;
+    color: rgba(82, 82, 91, 0.88);
+  }
+
+  .ig-card-title {
+    margin: 0.34rem 0 0;
+    font-size: 0.86rem;
+    line-height: 1.42;
+    color: #111827;
+  }
+
+  .ig-modal[hidden] {
+    display: none;
+  }
+
+  .ig-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+  }
+
+  .ig-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.72);
+    border: 0;
+    padding: 0;
+  }
+
+  .ig-modal-panel {
+    position: relative;
+    width: min(60rem, calc(100vw - 2rem));
+    max-height: calc(100vh - 2rem);
+    overflow: auto;
+    border: 1px solid rgba(113, 113, 122, 0.4);
+    border-radius: 0.95rem;
+    background: #f8fafc;
+    padding: 0.9rem;
+  }
+
+  .ig-modal-close {
+    position: absolute;
+    right: 0.55rem;
+    top: 0.4rem;
+    border: 0;
+    background: transparent;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: #475569;
+  }
+
+  .ig-modal-media {
+    border-radius: 0.65rem;
+    overflow: hidden;
+    background: #020617;
+  }
+
+  .ig-modal-media-inner {
+    display: block;
+    width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    margin: 0 auto;
+  }
+
+  .ig-modal-title {
+    margin: 0.66rem 0 0;
+    font-size: 1.03rem;
+  }
+
+  .ig-modal-meta {
+    margin: 0.34rem 0 0;
+    font-size: 0.8rem;
+    color: #52525b;
+  }
+
+  .ig-modal-caption {
+    margin: 0.46rem 0 0;
+    line-height: 1.58;
+    color: #1f2937;
+  }
+
+  .ig-modal-links {
+    margin-top: 0.7rem;
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .ig-modal-links a {
+    color: #c2410c;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  :root.dark .ig-kicker,
+  :root.dark .ig-status,
+  :root.dark .ig-filter span,
+  :root.dark .ig-card-meta,
+  :root.dark .ig-modal-meta {
+    color: rgba(212, 212, 216, 0.88);
+  }
+
+  :root.dark .ig-dek,
+  :root.dark .ig-card-title,
+  :root.dark .ig-modal-caption {
+    color: rgba(244, 244, 245, 0.94);
+  }
+
+  :root.dark .ig-filter select,
+  :root.dark .ig-filter input,
+  :root.dark .ig-chip,
+  :root.dark .ig-card,
+  :root.dark .ig-modal-panel {
+    background: rgba(24, 24, 27, 0.78);
+    border-color: rgba(161, 161, 170, 0.42);
+    color: rgba(244, 244, 245, 0.95);
+  }
+
+  :root.dark .ig-chip.is-active {
+    color: #fdba74;
+    border-color: #fb923c;
+    background: rgba(194, 65, 12, 0.17);
+  }
+
+  :root.dark .ig-modal-close,
+  :root.dark .ig-modal-links a {
+    color: #fdba74;
+  }
+
+  @media (max-width: 1024px) {
+    .ig-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 860px) {
+    .ig-page {
+      position: relative;
+      margin: -2rem calc(50% - 50vw) 0;
+      padding: 2.25rem 1.25rem 4rem;
+      max-width: none;
+      color: #edf2fc;
+      background:
+        linear-gradient(180deg, #090b11 0%, #0c0f16 45%, #090b11 100%),
+        radial-gradient(circle at 14% 8%, rgba(56, 128, 255, 0.15), transparent 45%);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .ig-page::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.08;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.58) 0.45px, transparent 0.45px);
+      background-size: 2px 2px;
+    }
+
+    .ig-page > * {
+      position: relative;
+      z-index: 1;
+      max-width: 68ch;
+      margin-inline: auto;
+    }
+
+    .ig-kicker {
+      color: rgba(220, 228, 245, 0.74);
+      letter-spacing: 0.18em;
+      font-size: 0.66rem;
+    }
+
+    .ig-hero h1 {
+      font-size: clamp(2.12rem, 9.2vw, 3rem);
+      line-height: 1.04;
+      margin: 0.66rem 0 0.9rem;
+    }
+
+    .ig-dek {
+      color: rgba(236, 243, 255, 0.94);
+      line-height: 1.62;
+      font-size: 1.02rem;
+    }
+
+    .ig-filters {
+      grid-template-columns: 1fr;
+    }
+
+    .ig-filter select,
+    .ig-filter input {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.22);
+      color: rgba(236, 243, 255, 0.94);
+    }
+
+    .ig-chip {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.18);
+      color: rgba(227, 237, 255, 0.94);
+    }
+
+    .ig-chip.is-active {
+      border-color: #4d8dff;
+      color: #a7c8ff;
+      background: rgba(77, 141, 255, 0.15);
+    }
+
+    .ig-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.62rem;
+    }
+
+    .ig-card {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: rgba(255, 255, 255, 0.16);
+      border-radius: 0.5rem;
+    }
+
+    .ig-card-meta {
+      color: rgba(194, 208, 236, 0.86);
+    }
+
+    .ig-card-title {
+      color: rgba(239, 245, 255, 0.95);
+    }
+  }
+</style>

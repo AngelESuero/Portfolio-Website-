@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1500" viewBox="0 0 1200 1500">
+  <rect width="1200" height="1500" fill="#111827"/>
+  <rect x="72" y="72" width="1056" height="1356" fill="#0f172a" stroke="#334155" stroke-width="6"/>
+  <text x="96" y="180" fill="#e5e7eb" font-size="52" font-family="Arial, sans-serif" font-weight="700">Instagram Archive</text>
+  <text x="96" y="250" fill="#93c5fd" font-size="30" font-family="Arial, sans-serif">Sample local media placeholder</text>
+  <text x="96" y="330" fill="#9ca3af" font-size="26" font-family="Arial, sans-serif">Replace this file with your exported Google Photos assets.</text>
+</svg>

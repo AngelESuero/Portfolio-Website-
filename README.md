@@ -96,6 +96,20 @@ Add/edit `src/content/posts/*.mdx`:
 ### Seasonal updates
 Edit `src/pages/now.astro`.
 
+### Instagram archive (local files)
+1. Put exported media in:
+   - `public/ig/<year>/YYYY-MM-DD_slug.ext`
+2. Generate/update manifest:
+```bash
+npm run ig:manifest
+```
+3. Curate metadata in:
+   - `src/data/ig.json`
+
+Item schema:
+- `id`, `date`, `year`, `type` (`photo|reel|carousel|video`), `series`, `tags[]`, `src`
+- optional: `caption`, `ig_url`
+
 ## Notes
 - SEO basics are included via shared layout metadata.
 - RSS feed is available at `/rss.xml`.
