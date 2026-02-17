@@ -173,6 +173,7 @@ const exploreLinks = [
     <title>{title}</title>
   </head>
   <body>
+    <div id="cursor-aura" aria-hidden="true"></div>
     <Header />
     <main class="mx-auto max-w-6xl px-4 py-8">
       <div class="view-1">
@@ -218,6 +219,44 @@ const exploreLinks = [
       </section>
     </main>
     <Footer />
+    <script is:inline>
+      (() => {
+        const aura = document.getElementById('cursor-aura');
+        if (!aura) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (!window.matchMedia('(pointer: fine)').matches) return;
+
+        const root = document.documentElement;
+        root.classList.add('has-cursor-aura');
+
+        let x = window.innerWidth / 2;
+        let y = window.innerHeight / 2;
+        let targetX = x;
+        let targetY = y;
+        let rafId = 0;
+
+        const render = () => {
+          x += (targetX - x) * 0.16;
+          y += (targetY - y) * 0.16;
+          aura.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+          rafId = window.requestAnimationFrame(render);
+        };
+
+        const onMove = (event) => {
+          targetX = event.clientX;
+          targetY = event.clientY;
+          root.classList.add('cursor-aura-visible');
+          if (!rafId) rafId = window.requestAnimationFrame(render);
+        };
+
+        const onLeave = () => root.classList.remove('cursor-aura-visible');
+        const onEnter = () => root.classList.add('cursor-aura-visible');
+
+        window.addEventListener('pointermove', onMove, { passive: true });
+        window.addEventListener('pointerleave', onLeave);
+        window.addEventListener('pointerenter', onEnter);
+      })();
+    </script>
     <script is:inline define:vars={{ walkthroughCount: walkthroughSteps.length }}>
       (() => {
         const list = Array.from(document.querySelectorAll('.walkthrough-step'));

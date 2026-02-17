@@ -38,6 +38,27 @@ body {
   background-size: auto, auto, 7px 7px;
 }
 
+#cursor-aura {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 22rem;
+  height: 22rem;
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0;
+  transform: translate3d(-999px, -999px, 0);
+  transition: opacity 180ms ease;
+  filter: blur(12px);
+  background:
+    radial-gradient(circle, rgba(95, 143, 215, 0.16) 0%, rgba(215, 170, 47, 0.14) 42%, rgba(5, 13, 27, 0) 72%);
+}
+
+html.cursor-aura-visible #cursor-aura {
+  opacity: 0.7;
+}
+
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
@@ -199,6 +220,10 @@ html[data-view='3'] .view-3 {
 }
 
 @media (max-width: 860px) {
+  #cursor-aura {
+    display: none !important;
+  }
+
   .view-surface {
     padding: 0.95rem;
   }
@@ -431,5 +456,11 @@ html[data-view='3'] .view-3 {
     font-size: 0.76rem;
     line-height: 1;
     padding: 0.44rem 0.75rem;
+  }
+}
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  #cursor-aura {
+    display: none !important;
   }
 }
