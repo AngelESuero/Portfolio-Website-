@@ -1,0 +1,11 @@
+name = "portfolio-agi-sync"
+main = "workers/agi-sync.ts"
+compatibility_date = "2026-02-17"
+workers_dev = true
+
+kv_namespaces = [
+  { binding = "AGI_KV", id = "REPLACE_WITH_KV_NAMESPACE_ID" }
+]
+
+[triggers]
+crons = ["0 * * * *"]

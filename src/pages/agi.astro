@@ -1,0 +1,296 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="AGI Timeline — Angel Suero" description="Curated AGI timeline sourced from notable researchers on X.">
+  <section class="agi-page">
+    <header class="agi-hero">
+      <p class="agi-kicker">Research stream</p>
+      <h1>AGI Timeline</h1>
+      <p class="agi-dek">
+        Live timeline of public updates from a curated list of AI researchers. Data is fetched from the official X API.
+      </p>
+    </header>
+
+    <p id="agi-status" class="agi-status">Loading latest posts...</p>
+    <ol id="agi-timeline-list" class="agi-list" aria-live="polite"></ol>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+  (() => {
+    const statusEl = document.getElementById('agi-status');
+    const listEl = document.getElementById('agi-timeline-list');
+    if (!statusEl || !listEl) return;
+
+    const escapeHtml = (value) =>
+      String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+
+    const formatDate = (value) => {
+      const date = new Date(value);
+      if (Number.isNaN(date.valueOf())) return value;
+      return new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      }).format(date);
+    };
+
+    const clampText = (value, maxLength = 320) => {
+      if (!value || value.length <= maxLength) return value;
+      return `${value.slice(0, maxLength - 1)}…`;
+    };
+
+    const renderItem = (item) => {
+      const li = document.createElement('li');
+      li.className = 'agi-entry';
+
+      const tags = Array.isArray(item.tags) && item.tags.length > 0
+        ? `<p class="agi-extra">${item.tags.slice(0, 5).map((tag) => `#${escapeHtml(tag)}`).join(' ')}</p>`
+        : '';
+
+      const metrics = item.metrics && typeof item.metrics.like_count === 'number'
+        ? `<p class="agi-extra">Likes: ${item.metrics.like_count}</p>`
+        : '';
+
+      li.innerHTML = `
+        <article class="agi-card">
+          <p class="agi-meta">
+            <span>@${escapeHtml(item.author_handle)}</span>
+            <span aria-hidden="true">•</span>
+            <time datetime="${escapeHtml(item.created_at)}">${escapeHtml(formatDate(item.created_at))}</time>
+          </p>
+          <p class="agi-excerpt">${escapeHtml(clampText(item.text || ''))}</p>
+          ${tags}
+          ${metrics}
+          <p class="agi-source-row">
+            <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">Source</a>
+          </p>
+        </article>
+      `;
+
+      return li;
+    };
+
+    const showError = (message) => {
+      statusEl.textContent = message;
+      statusEl.classList.add('is-error');
+    };
+
+    fetch('/api/agi')
+      .then((response) => {
+        if (!response.ok) throw new Error(`API returned ${response.status}`);
+        return response.json();
+      })
+      .then((items) => {
+        if (!Array.isArray(items)) throw new Error('Invalid API payload');
+        listEl.innerHTML = '';
+        items.forEach((item) => listEl.appendChild(renderItem(item)));
+        statusEl.textContent = items.length ? `Showing ${items.length} latest posts` : 'No posts yet. Check back soon.';
+      })
+      .catch((error) => {
+        console.error(error);
+        showError('Could not load timeline right now.');
+      });
+  })();
+</script>
+
+<style>
+  .agi-page {
+    max-width: 52rem;
+    margin: 0 auto;
+  }
+
+  .agi-hero h1 {
+    margin: 0.3rem 0 0.75rem;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .agi-kicker {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.72rem;
+    color: rgba(63, 63, 70, 0.85);
+  }
+
+  .agi-dek {
+    margin: 0;
+    max-width: 65ch;
+    color: rgba(63, 63, 70, 0.95);
+  }
+
+  .agi-status {
+    margin: 1.25rem 0 0.75rem;
+    font-size: 0.9rem;
+    color: rgba(82, 82, 91, 0.95);
+  }
+
+  .agi-status.is-error {
+    color: #b91c1c;
+  }
+
+  .agi-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .agi-entry {
+    position: relative;
+    padding-left: 1.15rem;
+  }
+
+  .agi-entry::before {
+    content: '';
+    position: absolute;
+    left: 0.12rem;
+    top: 0.95rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: #c2410c;
+  }
+
+  .agi-card {
+    border: 1px solid rgba(113, 113, 122, 0.35);
+    border-radius: 0.8rem;
+    padding: 0.85rem 0.95rem;
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  .agi-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: 0.78rem;
+    color: rgba(82, 82, 91, 0.95);
+  }
+
+  .agi-excerpt {
+    margin: 0.65rem 0 0;
+    line-height: 1.55;
+    white-space: pre-wrap;
+  }
+
+  .agi-extra {
+    margin: 0.4rem 0 0;
+    font-size: 0.78rem;
+    color: rgba(82, 82, 91, 0.95);
+  }
+
+  .agi-source-row {
+    margin: 0.65rem 0 0;
+  }
+
+  .agi-source-row a {
+    color: #c2410c;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-size: 0.88rem;
+  }
+
+  @media (max-width: 860px) {
+    .agi-page {
+      position: relative;
+      margin: -2rem calc(50% - 50vw) 0;
+      padding: 2.25rem 1.25rem 4rem;
+      max-width: none;
+      color: #edf2fc;
+      background:
+        linear-gradient(180deg, #090b11 0%, #0c0f16 45%, #090b11 100%),
+        radial-gradient(circle at 14% 8%, rgba(56, 128, 255, 0.15), transparent 45%);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .agi-page::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.08;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.6) 0.45px, transparent 0.45px);
+      background-size: 2px 2px;
+    }
+
+    .agi-page > * {
+      position: relative;
+      z-index: 1;
+      max-width: 68ch;
+      margin-inline: auto;
+    }
+
+    .agi-kicker {
+      color: rgba(220, 228, 245, 0.74);
+      letter-spacing: 0.18em;
+      font-size: 0.66rem;
+    }
+
+    .agi-hero h1 {
+      font-size: clamp(2.1rem, 9.2vw, 3rem);
+      line-height: 1.04;
+      margin: 0.65rem 0 0.9rem;
+    }
+
+    .agi-dek {
+      color: rgba(236, 243, 255, 0.92);
+      line-height: 1.62;
+      font-size: 1.02rem;
+    }
+
+    .agi-status,
+    .agi-status.is-error {
+      color: rgba(210, 222, 246, 0.88);
+      margin-top: 1.35rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .agi-list {
+      gap: 1.25rem;
+    }
+
+    .agi-entry {
+      padding-left: 0;
+    }
+
+    .agi-entry::before {
+      display: none;
+    }
+
+    .agi-card {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: rgba(255, 255, 255, 0.16);
+      border-radius: 0.35rem;
+      border-left-width: 3px;
+      border-left-color: #4d8dff;
+      padding: 0.95rem 0.9rem 1rem;
+    }
+
+    .agi-meta {
+      color: rgba(203, 217, 244, 0.84);
+    }
+
+    .agi-excerpt {
+      color: rgba(239, 245, 255, 0.94);
+      line-height: 1.72;
+    }
+
+    .agi-extra {
+      color: rgba(193, 208, 236, 0.84);
+    }
+
+    .agi-source-row a {
+      color: #70a5ff;
+    }
+  }
+</style>
