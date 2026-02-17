@@ -1,0 +1,9 @@
+[
+  { "label": "YouTube", "href": "https://youtube.com/@a_e.s_4", "external": true },
+  { "label": "Instagram", "href": "https://instagram.com/a_e.s_", "external": true },
+  { "label": "Linktree", "href": "https://linktr.ee/a_e.s_", "external": true },
+  { "label": "Untitled Stream", "href": "https://untitled.stream", "external": true },
+  { "label": "GitHub", "href": "https://github.com/AngelESuero", "external": true },
+  { "label": "Press Kit", "href": "/press-kit", "external": false },
+  { "label": "Contact", "href": "/contact", "external": false }
+]

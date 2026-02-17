@@ -1,0 +1,97 @@
+---
+import links from '../data/links.json';
+
+const currentPath = Astro.url.pathname;
+---
+
+<nav aria-label="Linktree tabs" class="link-tabs-shell">
+  <div class="link-tabs-scroll" role="tablist" aria-label="Link tabs">
+    {links.map((link) => {
+      const isActive = !link.external && currentPath === link.href;
+      const classes = `link-tab-pill${isActive ? ' is-active' : ''}`;
+      return (
+        <a
+          href={link.href}
+          class={classes}
+          aria-label={`Open ${link.label}`}
+          {...(link.external ? { target: '_blank', rel: 'noopener' } : {})}
+        >
+          {link.label}
+        </a>
+      );
+    })}
+  </div>
+</nav>
+
+<style>
+  .link-tabs-shell {
+    border-top: 1px solid rgba(113, 113, 122, 0.28);
+    padding: 0.55rem 0;
+  }
+
+  .link-tabs-scroll {
+    margin: 0 auto;
+    max-width: 72rem;
+    padding: 0 1rem;
+    display: flex;
+    gap: 0.55rem;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .link-tabs-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .link-tab-pill {
+    scroll-snap-align: start;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    border: 1px solid rgba(113, 113, 122, 0.45);
+    background: rgba(255, 255, 255, 0.52);
+    color: #1f2937;
+    padding: 0.36rem 0.74rem;
+    font-size: 0.78rem;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: border-color 130ms ease, color 130ms ease, background-color 130ms ease;
+  }
+
+  .link-tab-pill:hover,
+  .link-tab-pill:focus-visible,
+  .link-tab-pill.is-active {
+    border-color: #c2410c;
+    color: #c2410c;
+    background: rgba(194, 65, 12, 0.08);
+  }
+
+  :root.dark .link-tabs-shell {
+    border-top-color: rgba(161, 161, 170, 0.32);
+  }
+
+  :root.dark .link-tab-pill {
+    border-color: rgba(161, 161, 170, 0.45);
+    background: rgba(24, 24, 27, 0.75);
+    color: #e4e4e7;
+  }
+
+  :root.dark .link-tab-pill:hover,
+  :root.dark .link-tab-pill:focus-visible,
+  :root.dark .link-tab-pill.is-active {
+    border-color: #fb923c;
+    color: #fdba74;
+    background: rgba(194, 65, 12, 0.18);
+  }
+
+  @media (min-width: 861px) {
+    .link-tabs-scroll {
+      overflow: hidden;
+      flex-wrap: wrap;
+      padding-bottom: 0.1rem;
+    }
+  }
+</style>

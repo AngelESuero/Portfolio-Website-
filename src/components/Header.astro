@@ -1,5 +1,6 @@
 ---
 import profile from '../data/profile.json';
+import LinkTabs from './LinkTabs.astro';
 const nav = [
   ['Home', '/'],
   ['About', '/about'],
@@ -22,6 +23,7 @@ const nav = [
     </nav>
     <button id="theme-toggle" aria-label="Toggle dark mode" class="rounded border border-zinc-400 px-3 py-1 text-sm dark:border-zinc-600">Theme</button>
   </div>
+  <LinkTabs />
 </header>
 
 <script is:inline>
