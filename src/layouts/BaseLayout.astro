@@ -10,6 +10,41 @@ interface Props {
 }
 
 const { title, description = 'Timeline and archive for Angel Suero (a_e.s_)', image = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80' } = Astro.props;
+const walkthroughSteps = [
+  {
+    title: 'Start in Standard',
+    text: 'Use mode 1 to browse the site as-is with the original page layouts.',
+    href: '/',
+    cta: 'Open home'
+  },
+  {
+    title: 'Review core pages',
+    text: 'Read about the work flow, project threads, and current writing in sequence.',
+    href: '/work',
+    cta: 'Open work'
+  },
+  {
+    title: 'Track the timeline',
+    text: 'Check AGI updates and social archives to follow new additions over time.',
+    href: '/agi',
+    cta: 'Open AGI timeline'
+  },
+  {
+    title: 'Close the loop',
+    text: 'Use contact details and link hubs to continue the conversation.',
+    href: '/contact',
+    cta: 'Open contact'
+  }
+];
+
+const exploreLinks = [
+  { label: 'About', href: '/about' },
+  { label: 'Work', href: '/work' },
+  { label: 'Writing', href: '/writing' },
+  { label: 'AGI Timeline', href: '/agi' },
+  { label: 'Social hub', href: '/social' },
+  { label: 'Contact', href: '/contact' }
+];
 ---
 
 <!doctype html>
@@ -17,6 +52,118 @@ const { title, description = 'Timeline and archive for Angel Suero (a_e.s_)', im
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
+    <script is:inline>
+      (() => {
+        const KEY_VIEW = 'viewMode';
+        const KEY_WALK = 'walkStep';
+        const KEY_REMEMBER = 'viewRemember';
+        const DEFAULTS = { view: '1', remember: false, walkStep: 1 };
+
+        const safeGet = (storage, key) => {
+          try {
+            return storage.getItem(key);
+          } catch {
+            return null;
+          }
+        };
+
+        const safeSet = (storage, key, value) => {
+          try {
+            storage.setItem(key, value);
+          } catch {}
+        };
+
+        const safeRemove = (storage, key) => {
+          try {
+            storage.removeItem(key);
+          } catch {}
+        };
+
+        const normalizeView = (value) => (value === '2' || value === '3' ? value : '1');
+        const normalizeWalkStep = (value) => {
+          const parsed = Number.parseInt(String(value || ''), 10);
+          if (Number.isNaN(parsed)) return 1;
+          return Math.min(9, Math.max(1, parsed));
+        };
+
+        const initialRemember = safeGet(localStorage, KEY_REMEMBER) === '1';
+        const activeStorage = initialRemember ? localStorage : sessionStorage;
+        const initialView = normalizeView(safeGet(activeStorage, KEY_VIEW));
+        const initialWalkStep = normalizeWalkStep(safeGet(activeStorage, KEY_WALK));
+        const state = {
+          view: initialView,
+          remember: initialRemember,
+          walkStep: initialWalkStep
+        };
+
+        const applyToDom = () => {
+          document.documentElement.dataset.view = state.view;
+          if (state.view === '2') {
+            document.documentElement.dataset.walkStep = String(state.walkStep);
+          } else {
+            delete document.documentElement.dataset.walkStep;
+          }
+        };
+
+        const persist = () => {
+          const primary = state.remember ? localStorage : sessionStorage;
+          const secondary = state.remember ? sessionStorage : localStorage;
+          safeSet(primary, KEY_VIEW, state.view);
+          safeSet(primary, KEY_WALK, String(state.walkStep));
+          safeSet(primary, KEY_REMEMBER, state.remember ? '1' : '0');
+          safeRemove(secondary, KEY_VIEW);
+          safeRemove(secondary, KEY_WALK);
+          safeRemove(secondary, KEY_REMEMBER);
+        };
+
+        const emit = () => {
+          window.dispatchEvent(
+            new CustomEvent('viewsettings:change', {
+              detail: { ...state }
+            })
+          );
+        };
+
+        const api = {
+          getState() {
+            return { ...state };
+          },
+          setView(nextView) {
+            state.view = normalizeView(nextView);
+            applyToDom();
+            persist();
+            emit();
+          },
+          setRemember(remember) {
+            state.remember = Boolean(remember);
+            persist();
+            emit();
+          },
+          setWalkStep(nextStep) {
+            state.walkStep = normalizeWalkStep(nextStep);
+            applyToDom();
+            persist();
+            emit();
+          },
+          reset() {
+            safeRemove(localStorage, KEY_VIEW);
+            safeRemove(localStorage, KEY_WALK);
+            safeRemove(localStorage, KEY_REMEMBER);
+            safeRemove(sessionStorage, KEY_VIEW);
+            safeRemove(sessionStorage, KEY_WALK);
+            safeRemove(sessionStorage, KEY_REMEMBER);
+            state.view = DEFAULTS.view;
+            state.remember = DEFAULTS.remember;
+            state.walkStep = DEFAULTS.walkStep;
+            applyToDom();
+            emit();
+          }
+        };
+
+        window.__viewSettings = api;
+        applyToDom();
+      })();
+    </script>
     <meta name="description" content={description} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -28,8 +175,93 @@ const { title, description = 'Timeline and archive for Angel Suero (a_e.s_)', im
   <body>
     <Header />
     <main class="mx-auto max-w-6xl px-4 py-8">
-      <slot />
+      <div class="view-1">
+        <slot />
+      </div>
+
+      <section class="view-2 view-surface" aria-labelledby="walkthrough-heading">
+        <header class="view-surface-header">
+          <p class="view-surface-kicker">Mode 2</p>
+          <h1 id="walkthrough-heading">Walkthrough</h1>
+          <p>Use Next and Back to follow a simple guided sequence. Your current step is saved.</p>
+        </header>
+
+        <ol class="walkthrough-list" aria-live="polite">
+          {walkthroughSteps.map((step, index) => (
+            <li class="walkthrough-step" data-step={String(index + 1)} hidden={index !== 0}>
+              <p class="walkthrough-step-meta">Step {index + 1} of {walkthroughSteps.length}</p>
+              <h2>{step.title}</h2>
+              <p>{step.text}</p>
+              <a href={step.href} class="walkthrough-step-link">{step.cta}</a>
+            </li>
+          ))}
+        </ol>
+
+        <div class="walkthrough-controls">
+          <button type="button" id="walkthrough-back">Back</button>
+          <p id="walkthrough-step-indicator">Step 1 / {walkthroughSteps.length}</p>
+          <button type="button" id="walkthrough-next">Next</button>
+        </div>
+      </section>
+
+      <section class="view-3 view-surface" aria-labelledby="explore-heading">
+        <header class="view-surface-header">
+          <p class="view-surface-kicker">Mode 3</p>
+          <h1 id="explore-heading">Explore</h1>
+          <p>Scan sections quickly, then jump directly to the page you want.</p>
+        </header>
+        <div class="explore-grid">
+          {exploreLinks.map((item) => (
+            <a href={item.href} class="explore-card">{item.label}</a>
+          ))}
+        </div>
+      </section>
     </main>
     <Footer />
+    <script is:inline define:vars={{ walkthroughCount: walkthroughSteps.length }}>
+      (() => {
+        const list = Array.from(document.querySelectorAll('.walkthrough-step'));
+        const backBtn = document.getElementById('walkthrough-back');
+        const nextBtn = document.getElementById('walkthrough-next');
+        const indicator = document.getElementById('walkthrough-step-indicator');
+        if (!list.length || !backBtn || !nextBtn || !indicator) return;
+
+        const max = Number(walkthroughCount) || 1;
+
+        const clampStep = (value) => {
+          const parsed = Number.parseInt(String(value || ''), 10);
+          if (Number.isNaN(parsed)) return 1;
+          return Math.min(max, Math.max(1, parsed));
+        };
+
+        const paint = () => {
+          const state = window.__viewSettings?.getState?.() || { walkStep: 1 };
+          const step = clampStep(state.walkStep);
+          list.forEach((item, index) => {
+            const active = index + 1 === step;
+            item.hidden = !active;
+            item.setAttribute('aria-current', active ? 'step' : 'false');
+          });
+          indicator.textContent = `Step ${step} / ${max}`;
+          backBtn.disabled = step <= 1;
+          nextBtn.disabled = step >= max;
+        };
+
+        backBtn.addEventListener('click', () => {
+          const state = window.__viewSettings?.getState?.() || { walkStep: 1 };
+          window.__viewSettings?.setWalkStep?.(clampStep(state.walkStep - 1));
+          paint();
+        });
+
+        nextBtn.addEventListener('click', () => {
+          const state = window.__viewSettings?.getState?.() || { walkStep: 1 };
+          window.__viewSettings?.setWalkStep?.(clampStep(state.walkStep + 1));
+          paint();
+        });
+
+        window.addEventListener('viewsettings:change', paint);
+        paint();
+      })();
+    </script>
   </body>
 </html>
