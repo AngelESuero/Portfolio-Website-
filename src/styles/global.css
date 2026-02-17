@@ -133,14 +133,31 @@ button:hover {
 }
 
 .card {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  box-shadow: 0 1px 0 var(--line2) inset;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 20px 60px rgba(0, 0, 0, 0.45);
+  transform: translateZ(0);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  position: relative;
   overflow: hidden;
 }
 
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent 35%),
+    radial-gradient(500px 140px at 20% 0%, rgba(255, 255, 255, 0.06), transparent 60%);
+  opacity: 0.25;
+  pointer-events: none;
+}
+
 .card:hover {
+  transform: translateY(-1px);
   border-color: color-mix(in srgb, var(--accent2) 22%, var(--line));
 }
 
