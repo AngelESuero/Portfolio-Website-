@@ -36,6 +36,14 @@
   --s4: calc(var(--s3) * var(--phi));
   --s5: calc(var(--s4) * var(--phi));
   --radius: 16px;
+  --tri-photo-1: linear-gradient(145deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.02));
+  --tri-photo-2: linear-gradient(135deg, rgba(111, 183, 255, 0.22), rgba(15, 26, 42, 0.2));
+  --tri-photo-3: linear-gradient(160deg, rgba(242, 184, 75, 0.22), rgba(23, 31, 46, 0.18));
+  --tri-photo-4: linear-gradient(120deg, rgba(180, 200, 226, 0.2), rgba(11, 17, 27, 0.2));
+  --tri-photo-5: linear-gradient(150deg, rgba(255, 255, 255, 0.1), rgba(25, 34, 50, 0.2));
+  --tri-photo-6: linear-gradient(130deg, rgba(125, 168, 232, 0.2), rgba(12, 19, 31, 0.2));
+  --tri-photo-7: linear-gradient(145deg, rgba(255, 210, 122, 0.2), rgba(16, 22, 34, 0.2));
+  --tri-photo-8: linear-gradient(155deg, rgba(213, 226, 247, 0.16), rgba(14, 21, 34, 0.2));
 }
 
 :root.dark {
@@ -90,6 +98,98 @@ body::after {
   transition: opacity 260ms ease;
   filter: blur(14px) saturate(1.1);
   mix-blend-mode: screen;
+}
+
+#triangle-collage {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.42;
+}
+
+#triangle-collage .tri {
+  position: absolute;
+  background-image: var(--tri-photo);
+  background-size: cover;
+  background-position: center;
+  clip-path: polygon(50% 0, 0 100%, 100% 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.35);
+  filter: saturate(0.9) contrast(1.03);
+}
+
+#triangle-collage .tri-1 {
+  --tri-photo: var(--tri-photo-1);
+  width: min(34vw, 380px);
+  height: min(34vw, 380px);
+  left: -4vw;
+  top: 11vh;
+  transform: rotate(-5deg);
+}
+
+#triangle-collage .tri-2 {
+  --tri-photo: var(--tri-photo-2);
+  width: min(26vw, 300px);
+  height: min(26vw, 300px);
+  left: 18vw;
+  top: 3vh;
+  transform: rotate(7deg);
+}
+
+#triangle-collage .tri-3 {
+  --tri-photo: var(--tri-photo-3);
+  width: min(30vw, 340px);
+  height: min(30vw, 340px);
+  right: 9vw;
+  top: 6vh;
+  transform: rotate(-11deg);
+}
+
+#triangle-collage .tri-4 {
+  --tri-photo: var(--tri-photo-4);
+  width: min(24vw, 280px);
+  height: min(24vw, 280px);
+  right: -3vw;
+  top: 30vh;
+  transform: rotate(14deg);
+}
+
+#triangle-collage .tri-5 {
+  --tri-photo: var(--tri-photo-5);
+  width: min(29vw, 320px);
+  height: min(29vw, 320px);
+  left: 7vw;
+  bottom: 10vh;
+  transform: rotate(10deg);
+}
+
+#triangle-collage .tri-6 {
+  --tri-photo: var(--tri-photo-6);
+  width: min(24vw, 270px);
+  height: min(24vw, 270px);
+  left: 36vw;
+  bottom: 4vh;
+  transform: rotate(-8deg);
+}
+
+#triangle-collage .tri-7 {
+  --tri-photo: var(--tri-photo-7);
+  width: min(22vw, 250px);
+  height: min(22vw, 250px);
+  right: 28vw;
+  bottom: 14vh;
+  transform: rotate(9deg);
+}
+
+#triangle-collage .tri-8 {
+  --tri-photo: var(--tri-photo-8);
+  width: min(28vw, 310px);
+  height: min(28vw, 310px);
+  right: 2vw;
+  bottom: 3vh;
+  transform: rotate(-12deg);
 }
 
 header,
@@ -356,6 +456,10 @@ html[data-view='3'] .view-3 {
 }
 
 @media (max-width: 860px) {
+  #triangle-collage {
+    opacity: 0.26;
+  }
+
   .view-surface {
     padding: 0.95rem;
   }
