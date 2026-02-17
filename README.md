@@ -6,6 +6,9 @@ A modern, lo-fi, content-first personal site for **Angel Suero (a_e.s_)** built 
 - **Live site:** https://angel-suero.pages.dev
 - **Repo:** https://github.com/AngelESuero/Portfolio-Website-
 
+## Design Docs
+- [Spatial Web Architecture](docs/spatial-web-architecture.md)
+
 ## Stack
 - Astro
 - Tailwind CSS
