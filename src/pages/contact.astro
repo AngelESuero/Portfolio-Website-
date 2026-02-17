@@ -8,7 +8,7 @@ import CopyButton from '../components/CopyButton.astro';
   <h1 class="font-display text-4xl">Contact</h1>
   <p class="mt-2">Use the form for inquiries. Logs are captured via Cloudflare Pages Function.</p>
 
-  <form class="mt-6 grid max-w-xl gap-3" method="post" action="/functions/contact">
+  <form class="mt-6 grid max-w-xl gap-3" method="post" action="/contact">
     <label>Name <input required name="name" class="mt-1 w-full rounded border p-2 text-black" /></label>
     <label>Email <input required type="email" name="email" class="mt-1 w-full rounded border p-2 text-black" /></label>
     <label>Message <textarea required name="message" rows="5" class="mt-1 w-full rounded border p-2 text-black"></textarea></label>
