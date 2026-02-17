@@ -1,4 +1,6 @@
 ---
+import profile from '../data/profile.json';
+
 const nav = [
   ['Home', '/'],
   ['Link Hub', '/link-hub'],
@@ -21,7 +23,12 @@ const nav = [
         <a href={href} class="text-sm hover:text-accent">{label}</a>
       ))}
     </nav>
-    <button id="theme-toggle" aria-label="Toggle dark mode" class="pill rounded px-3 py-1 text-sm">Theme</button>
+    <div class="flex items-center gap-2">
+      <a href={profile.site_url} class="pill rounded px-3 py-1 text-sm" aria-label="Open live site">
+        Live
+      </a>
+      <button id="theme-toggle" aria-label="Toggle dark mode" class="pill rounded px-3 py-1 text-sm">Theme</button>
+    </div>
   </div>
 </header>
 
