@@ -1,13 +1,15 @@
+---
 import BaseLayout from '../layouts/BaseLayout.astro';
-    import profile from '../data/profile.json';
-    
-    <BaseLayout title="About - Angel Suero">
-    	<h1 class="text-4xl">About</h1>
-    	<p class="mt-4 max-w-3xl">{profile.long_bio}</p>
-    	<h2 class="mt-8 font-display text-2xl">Principles</h2>
-    	<ul class="list-disc space-y-2 pl-6">
-    		{profile.mottos.map((motto) => <li>{motto}</li>)}
-    	</ul>
-    	<h2 class="mt-8 font-display text-2xl">Current Focus</h2>
-    	<p class="mt-2">Building a timeline-forward home for sound, visuals, essays, and civic collaborations.</p>
-    </BaseLayout>
+import profile from '../data/profile.json';
+---
+
+<BaseLayout title="About - Angel Suero">
+  <h1 class="text-4xl">About</h1>
+  <p class="mt-4 max-w-3xl">{profile.long_bio}</p>
+  <h2 class="mt-8 font-display text-2xl">Principles</h2>
+  <ul class="list-disc space-y-2 pl-6">
+    {profile.mottos.map((motto) => <li>{motto}</li>)}
+  </ul>
+  <h2 class="mt-8 font-display text-2xl">Current Focus</h2>
+  <p class="mt-2">Building a timeline-forward home for sound, visuals, essays, and civic collaborations.</p>
+</BaseLayout>
