@@ -42,7 +42,9 @@ const isExternal = (url: string) => /^https?:\/\//i.test(url);
     <h1>{config.title}</h1>
     <p class="social-dek">{config.description || `Updates from ${config.title}.`}</p>
     <p class="social-actions">
-      <a href={config.primary_url} target="_blank" rel="noopener">Visit {config.title}</a>
+      <a href={config.primary_url} {...(isExternal(config.primary_url) ? { target: '_blank', rel: 'noopener' } : {})}>
+        Visit {config.title}
+      </a>
     </p>
   </header>
 

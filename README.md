@@ -127,12 +127,15 @@ Item schema:
   - `GET /api/social-rss?slug=<platform>`
 
 ### Discord local-only gate
-- Route: `/join/community` (Cloudflare Pages Function)
+- Routes: `/community-corner` (primary) and `/join/community` (legacy alias)
 - File:
+  - `functions/community-corner.ts`
   - `functions/join/community.ts`
 - Required env vars in Cloudflare Pages:
-  - `COMMUNITY_DISCORD_INVITE=https://discord.gg/<your-invite>`
-  - `ALLOWED_REGION_CODES=NJ,NY` (optional; defaults to `NJ,NY`)
+  - `DISCORD_COMMUNITY_INVITE=https://discord.gg/<your-invite>`
+  - `DISCORD_COMMUNITY_ALLOWED_COUNTRY=US` (optional; defaults to `US`)
+  - `DISCORD_COMMUNITY_ALLOWED_REGION_CODES=NJ,NY` (optional; defaults to `NJ,NY`)
+  - Legacy names still supported: `COMMUNITY_DISCORD_INVITE`, `ALLOWED_REGION_CODES`
 
 ## Notes
 - SEO basics are included via shared layout metadata.

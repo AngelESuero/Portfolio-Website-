@@ -25,6 +25,7 @@ export interface LinkHubIconLink {
 export const LINK_HUB_ICONS: LinkHubIconLink[] = [
   { title: 'YouTube', url: 'https://www.youtube.com/@a_e.s_4', icon: 'YT' },
   { title: 'Instagram', url: 'https://instagram.com/a_e.s_', icon: 'IG' },
+  { title: 'Discord', url: '/discord', icon: 'DC' },
   { title: 'Substack', url: 'https://aesarchive.substack.com', icon: 'SB' },
   { title: 'Spotify', url: 'https://open.spotify.com/', icon: 'SP' },
   { title: 'Untitled', url: 'https://untitled.stream/m8IEX655GwMH', icon: 'UN' },
@@ -138,6 +139,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
     label: 'Social',
     items: [
       { id: 'instagram', title: 'Instagram', url: 'https://instagram.com/a_e.s_', year: '2026', tag: 'Visual' },
+      { id: 'discord', title: 'Discord', url: '/discord', year: '2026', tag: 'Servers' },
       { id: 'x', title: 'X', url: 'https://x.com/AngelESuero', year: '2026', tag: 'Threads' },
       { id: 'github', title: 'GitHub', url: 'https://github.com/AngelESuero', year: '2026', tag: 'Code' },
       { id: 'contact', title: 'Contact', url: '/contact', year: '2026', tag: 'Email' }

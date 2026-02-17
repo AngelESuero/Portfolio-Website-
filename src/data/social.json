@@ -71,12 +71,12 @@
     "slug": "discord",
     "title": "Discord",
     "description": "Three hubs: creators, news, and a local-only community living room.",
-    "primary_url": "https://discord.gg/bB6uFZSH",
+    "primary_url": "/discord",
     "mode": "manual",
     "featured": [
       { "label": "Creators Corner", "url": "https://discord.gg/bB6uFZSH" },
       { "label": "News Corner", "url": "https://discord.gg/sN5qnk4R" },
-      { "label": "Community Corner (local-only)", "url": "/join/community" }
+      { "label": "Community Corner (local-only)", "url": "/community-corner" }
     ]
   },
   {

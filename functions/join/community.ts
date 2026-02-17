@@ -13,8 +13,11 @@ export const onRequestGet = async ({ request, env }) => {
   const cf = request?.cf || {};
   const country = String(cf.country || '').toUpperCase();
   const regionCode = String(cf.regionCode || cf.region || '').toUpperCase();
-  const allowedRegions = parseAllowedRegions(env.ALLOWED_REGION_CODES);
-  const inviteUrl = String(env.COMMUNITY_DISCORD_INVITE || '').trim();
+  const allowedRegions = parseAllowedRegions(
+    env.DISCORD_COMMUNITY_ALLOWED_REGION_CODES || env.ALLOWED_REGION_CODES
+  );
+  const allowedCountry = String(env.DISCORD_COMMUNITY_ALLOWED_COUNTRY || 'US').toUpperCase();
+  const inviteUrl = String(env.DISCORD_COMMUNITY_INVITE || env.COMMUNITY_DISCORD_INVITE || '').trim();
 
   if (!inviteUrl) {
     return new Response('Community invite is not configured.', {
@@ -23,7 +26,7 @@ export const onRequestGet = async ({ request, env }) => {
     });
   }
 
-  const allowed = country === 'US' && regionCode && allowedRegions.includes(regionCode);
+  const allowed = country === allowedCountry && regionCode && allowedRegions.includes(regionCode);
 
   if (!allowed) {
     return new Response(

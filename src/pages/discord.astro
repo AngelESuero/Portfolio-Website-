@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import profile from '../data/profile.json';
+---
+
+<BaseLayout title="Discord — a_e.s_" description="Discord hub for creators, news, and local community." theme="social">
+  <section class="discord-page">
+    <header>
+      <p class="discord-kicker">Community hub</p>
+      <h1>Discord</h1>
+      <p class="discord-dek">Three spaces connected to this archive.</p>
+    </header>
+
+    <div class="discord-grid">
+      <a class="discord-card" href={profile.social_links.discord_creators} target="_blank" rel="noopener">
+        <h2>Creators Corner</h2>
+        <p>Focused creation/workshop space for WIPs, feedback, shipping, and collabs.</p>
+      </a>
+
+      <a class="discord-card" href={profile.social_links.discord_news} target="_blank" rel="noopener">
+        <h2>News Corner</h2>
+        <p>Real-world news and discussion.</p>
+      </a>
+
+      <a class="discord-card" href={profile.social_links.discord_community}>
+        <h2>Community Corner</h2>
+        <p>Casual living-room plus resources. This route is local-only.</p>
+      </a>
+    </div>
+
+    <p class="discord-note">
+      If you are local and blocked, disable VPN/private relay and try again.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .discord-page {
+    max-width: 64rem;
+    margin: 0 auto;
+  }
+
+  .discord-kicker {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.72rem;
+    color: var(--tone-muted);
+  }
+
+  .discord-page h1 {
+    margin: 0.38rem 0 0.68rem;
+    font-size: clamp(2rem, 4.4vw, 3rem);
+    line-height: 1.08;
+  }
+
+  .discord-dek {
+    margin: 0;
+    color: var(--tone-muted);
+  }
+
+  .discord-grid {
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.72rem;
+  }
+
+  .discord-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    color: var(--tone-text);
+    text-decoration: none;
+    padding: 0.86rem;
+  }
+
+  .discord-card:hover,
+  .discord-card:focus-visible {
+    border-color: var(--tone-accent-bright);
+  }
+
+  .discord-card h2 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+
+  .discord-card p {
+    margin: 0.56rem 0 0;
+    line-height: 1.56;
+    color: var(--tone-muted);
+  }
+
+  .discord-note {
+    margin: 1rem 0 0;
+    color: var(--tone-muted);
+  }
+</style>
