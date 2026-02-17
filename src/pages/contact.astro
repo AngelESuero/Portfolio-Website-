@@ -1,22 +1,21 @@
----
 import BaseLayout from '../layouts/BaseLayout.astro';
-import profile from '../content/profile.json';
-import CopyButton from '../components/CopyButton.astro';
----
-<BaseLayout title="Contact — Angel Suero">
-  <h1 class="font-display text-4xl">Contact</h1>
-  <p class="mt-2">Use the form for inquiries. Logs are captured via Cloudflare Pages Function.</p>
-
-  <form class="mt-6 grid max-w-xl gap-3" method="post" action="/functions/contact">
-    <label>Name <input required name="name" class="mt-1 w-full rounded border p-2 text-black" /></label>
-    <label>Email <input required type="email" name="email" class="mt-1 w-full rounded border p-2 text-black" /></label>
-    <label>Message <textarea required name="message" rows="5" class="mt-1 w-full rounded border p-2 text-black"></textarea></label>
-    <button class="rounded bg-accent px-4 py-2 text-white">Send</button>
-  </form>
-
-  <div class="mt-8 space-y-2">
-    <p><a href={profile.social_links.instagram} class="underline">Instagram @a_e.s_</a> <CopyButton value={profile.social_links.instagram} /></p>
-    <p><a href={profile.social_links.youtube} class="underline">YouTube @a_e.s_4</a> <CopyButton value={profile.social_links.youtube} /></p>
-    <p><a href={profile.link_hub_url} class="underline">Link hub</a> <CopyButton value={profile.link_hub_url} /></p>
-  </div>
-</BaseLayout>
+    import profile from '../data/profile.json';
+    import CopyButton from '../components/CopyButton.astro';
+    
+    <BaseLayout title="Contact - Angel Suero">
+    	<h1 class="font-display text-4xl">Contact</h1>
+    	<p class="mt-2">Use the form for inquiries. Logs are captured via Cloudflare Pages Function.</p>
+    
+    	<form class="mt-6 grid max-w-xl gap-3" method="post" action="/functions/contact">
+    		<label>Name <input required name="name" class="mt-1 w-full rounded border p-2 text-black" /></label>
+    		<label>Email <input required type="email" name="email" class="mt-1 w-full rounded border p-2 text-black" /></label>
+    		<label>Message <textarea required name="message" rows="5" class="mt-1 w-full rounded border p-2 text-black"></textarea></label>
+    		<button class="rounded bg-accent px-4 py-2 text-white">Send</button>
+    	</form>
+    
+    	<div class="mt-8 space-y-2">
+    		<p><a href={profile.social_links.instagram} class="underline">Instagram @a_e_s_</a> <CopyButton value={profile.social_links.instagram} /></p>
+    		<p><a href={profile.social_links.youtube} class="underline">YouTube @a_e_s_</a> <CopyButton value={profile.social_links.youtube} /></p>
+    		<p><a href={profile.hub_link.url} class="underline">Link hub</a> <CopyButton value={profile.hub_link.url} /></p>
+    	</div>
+    </BaseLayout>
