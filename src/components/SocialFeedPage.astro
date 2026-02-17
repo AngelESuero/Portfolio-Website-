@@ -33,6 +33,7 @@ const hasRss = config.mode === 'rss' && Boolean(config.rss_url);
 const featuredLinks = Array.isArray(config.featured) ? config.featured : [];
 const embeds = Array.isArray(config.embeds) ? config.embeds : [];
 const showInstagramPreview = config.local_preview === 'instagram' && igPreview.length > 0;
+const isExternal = (url: string) => /^https?:\/\//i.test(url);
 ---
 
 <section class="social-page">
@@ -59,7 +60,7 @@ const showInstagramPreview = config.local_preview === 'instagram' && igPreview.l
       <ul class="social-list">
         {featuredLinks.map((item) => (
           <li>
-            <a href={item.url} target="_blank" rel="noopener">{item.label}</a>
+            <a href={item.url} {...(isExternal(item.url) ? { target: '_blank', rel: 'noopener' } : {})}>{item.label}</a>
           </li>
         ))}
       </ul>

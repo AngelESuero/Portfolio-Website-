@@ -120,11 +120,19 @@ Item schema:
 ### Social pages (free-first)
 - Hub: `/social`
 - Dynamic platform pages: `/social/[slug]`
-- Direct routes: `/youtube`, `/soundcloud`, `/substack`, `/x`, `/threads`, `/tiktok`, `/twitch`
+- Direct routes: `/youtube`, `/soundcloud`, `/substack`, `/discord`, `/x`, `/threads`, `/tiktok`, `/twitch`
 - Config:
   - `src/data/social.json`
 - RSS proxy endpoint for supported platforms:
   - `GET /api/social-rss?slug=<platform>`
+
+### Discord local-only gate
+- Route: `/join/community` (Cloudflare Pages Function)
+- File:
+  - `functions/join/community.ts`
+- Required env vars in Cloudflare Pages:
+  - `COMMUNITY_DISCORD_INVITE=https://discord.gg/<your-invite>`
+  - `ALLOWED_REGION_CODES=NJ,NY` (optional; defaults to `NJ,NY`)
 
 ## Notes
 - SEO basics are included via shared layout metadata.
