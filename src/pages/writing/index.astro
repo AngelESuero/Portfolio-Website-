@@ -4,7 +4,7 @@ import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('posts')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
-<BaseLayout title="Writing — Angel Suero">
+<BaseLayout title="Writing — a_e.s_">
   <h1 class="font-display text-4xl">Writing</h1>
   <a class="mt-2 inline-block text-sm underline" href="/rss.xml">RSS feed</a>
   <ul class="mt-6 space-y-4">

@@ -15,11 +15,11 @@ const sections = ['Music', 'Visual', 'Video', 'Newark', 'Scraps'];
 const threads = featuredThreads.featured_threads;
 ---
 
-<BaseLayout title="Angel Suero — Archive" description={profile.short_bio}>
+<BaseLayout title="a_e.s_ — Archive" description={profile.short_bio}>
   <div class="desktop-home">
     <section class="space-y-6">
       <p class="text-xs uppercase tracking-[0.2em] text-zinc-500">Timeline / Archive</p>
-      <h1 class="max-w-3xl font-display text-4xl font-bold md:text-6xl">{profile.name} <span class="text-accent">(a_e.s_)</span></h1>
+      <h1 class="max-w-3xl font-display text-4xl font-bold md:text-6xl text-accent">a_e.s_</h1>
       <p class="max-w-3xl text-lg">{profile.long_bio}</p>
       <div class="flex flex-wrap gap-2" aria-label="Identity chips">
         {profile.roles.map((role) => <span class="chip rounded-full px-3 py-1 text-sm">{role}</span>)}
@@ -57,7 +57,7 @@ const threads = featuredThreads.featured_threads;
   <article class="mobile-editorial" aria-label="Mobile editorial layout">
     <header class="mobile-hero" id="home">
       <p class="mobile-kicker">Timeline / Archive</p>
-      <h1>{profile.name} <span class="mobile-accent">(a_e.s_)</span></h1>
+      <h1><span class="mobile-accent">a_e.s_</span></h1>
       <p class="mobile-dek">{profile.long_bio}</p>
       <div class="mobile-role-row" aria-label="Identity chips">
         {profile.roles.map((role) => <span>{role}</span>)}
