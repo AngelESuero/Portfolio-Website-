@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SocialFeedPage from '../../components/SocialFeedPage.astro';
+import socialConfig from '../../data/social.json';
+
+interface SocialConfigItem {
+  slug: string;
+  title: string;
+  description?: string;
+  primary_url: string;
+  mode: 'rss' | 'manual';
+  rss_url?: string;
+  featured?: Array<{ label: string; url: string }>;
+  embeds?: Array<{ label?: string; url: string }>;
+}
+
+export function getStaticPaths() {
+  return (socialConfig as SocialConfigItem[]).map((config) => ({
+    params: { slug: config.slug },
+    props: { config }
+  }));
+}
+
+const { config } = Astro.props as { config: SocialConfigItem };
+---
+
+<BaseLayout title={`${config.title} — Social`} description={config.description || `Updates from ${config.title}.`}>
+  <SocialFeedPage config={config} />
+</BaseLayout>

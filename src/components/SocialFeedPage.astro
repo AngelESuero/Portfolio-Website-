@@ -1,0 +1,394 @@
+---
+interface SocialFeaturedLink {
+  label: string;
+  url: string;
+}
+
+interface SocialEmbed {
+  label?: string;
+  url: string;
+}
+
+interface SocialConfig {
+  slug: string;
+  title: string;
+  description?: string;
+  primary_url: string;
+  mode: 'rss' | 'manual';
+  rss_url?: string;
+  featured?: SocialFeaturedLink[];
+  embeds?: SocialEmbed[];
+}
+
+interface Props {
+  config: SocialConfig;
+}
+
+const { config } = Astro.props;
+const feedId = `social-feed-${config.slug}`;
+const statusId = `${feedId}-status`;
+const hasRss = config.mode === 'rss' && Boolean(config.rss_url);
+const featuredLinks = Array.isArray(config.featured) ? config.featured : [];
+const embeds = Array.isArray(config.embeds) ? config.embeds : [];
+---
+
+<section class="social-page">
+  <header class="social-hero">
+    <p class="social-kicker">Social feed</p>
+    <h1>{config.title}</h1>
+    <p class="social-dek">{config.description || `Updates from ${config.title}.`}</p>
+    <p class="social-actions">
+      <a href={config.primary_url} target="_blank" rel="noopener">Visit {config.title}</a>
+    </p>
+  </header>
+
+  {hasRss && (
+    <section class="social-block" aria-label={`${config.title} latest feed`}>
+      <h2>Latest</h2>
+      <p id={statusId} class="social-status">Loading latest entries…</p>
+      <ul id={feedId} class="social-list"></ul>
+    </section>
+  )}
+
+  <section class="social-block" aria-label={`${config.title} featured links`}>
+    <h2>Featured</h2>
+    {featuredLinks.length > 0 ? (
+      <ul class="social-list">
+        {featuredLinks.map((item) => (
+          <li>
+            <a href={item.url} target="_blank" rel="noopener">{item.label}</a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="social-empty">Add featured links in <code>src/data/social.json</code>.</p>
+    )}
+  </section>
+
+  {embeds.length > 0 && (
+    <section class="social-block" aria-label={`${config.title} embeds`}>
+      <h2>Embeds</h2>
+      <div class="social-embed-grid">
+        {embeds.map((embed) => {
+          const isYoutube = /youtube\.com\/embed|youtu\.be/.test(embed.url);
+          const isSoundCloud = /soundcloud\.com/.test(embed.url) && !/w\.soundcloud\.com\/player/.test(embed.url);
+          const source = isSoundCloud
+            ? `https://w.soundcloud.com/player/?url=${encodeURIComponent(embed.url)}`
+            : embed.url;
+
+          return (
+            <figure class="social-embed-card">
+              <iframe
+                src={source}
+                title={embed.label || `${config.title} embed`}
+                loading="lazy"
+                allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+                allowfullscreen={isYoutube}
+              ></iframe>
+              {embed.label && <figcaption>{embed.label}</figcaption>}
+            </figure>
+          );
+        })}
+      </div>
+    </section>
+  )}
+</section>
+
+{hasRss && (
+  <script is:inline define:vars={{ slug: config.slug, feedId, statusId }}>
+    (() => {
+      const listEl = document.getElementById(feedId);
+      const statusEl = document.getElementById(statusId);
+      if (!listEl || !statusEl) return;
+
+      const formatDate = (value) => {
+        const date = new Date(value);
+        if (Number.isNaN(date.valueOf())) return value;
+        return new Intl.DateTimeFormat('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        }).format(date);
+      };
+
+      fetch(`/api/social-rss?slug=${encodeURIComponent(slug)}`)
+        .then((response) => {
+          if (!response.ok) throw new Error(`RSS API error ${response.status}`);
+          return response.json();
+        })
+        .then((payload) => {
+          const items = Array.isArray(payload?.items) ? payload.items : [];
+          listEl.innerHTML = '';
+
+          if (!items.length) {
+            statusEl.textContent = payload?.message || 'No recent items available.';
+            return;
+          }
+
+          items.forEach((item) => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = item.url || '#';
+            a.target = '_blank';
+            a.rel = 'noopener';
+            a.textContent = item.title || item.url || 'Untitled';
+
+            const meta = document.createElement('p');
+            meta.className = 'social-meta';
+            meta.textContent = formatDate(item.date || '');
+
+            li.appendChild(a);
+            li.appendChild(meta);
+            listEl.appendChild(li);
+          });
+
+          statusEl.textContent = `Showing ${items.length} latest item${items.length === 1 ? '' : 's'}.`;
+        })
+        .catch((error) => {
+          console.error(error);
+          statusEl.textContent = 'Could not load feed right now.';
+          statusEl.classList.add('is-error');
+        });
+    })();
+  </script>
+)}
+
+<style>
+  .social-page {
+    max-width: 66rem;
+    margin: 0 auto;
+  }
+
+  .social-kicker {
+    margin: 0;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: rgba(82, 82, 91, 0.84);
+  }
+
+  .social-hero h1 {
+    margin: 0.35rem 0 0.7rem;
+    font-size: clamp(2rem, 4.2vw, 2.95rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+  }
+
+  .social-dek {
+    margin: 0;
+    max-width: 68ch;
+    color: rgba(63, 63, 70, 0.95);
+  }
+
+  .social-actions {
+    margin: 0.9rem 0 0;
+  }
+
+  .social-actions a {
+    display: inline-flex;
+    border: 1px solid rgba(113, 113, 122, 0.45);
+    border-radius: 999px;
+    padding: 0.42rem 0.82rem;
+    text-decoration: none;
+    color: #27272a;
+    background: rgba(255, 255, 255, 0.72);
+  }
+
+  .social-actions a:hover,
+  .social-actions a:focus-visible {
+    border-color: #c2410c;
+    color: #c2410c;
+    background: rgba(194, 65, 12, 0.08);
+  }
+
+  .social-block {
+    margin-top: 1.25rem;
+    border: 1px solid rgba(113, 113, 122, 0.32);
+    border-radius: 0.82rem;
+    padding: 0.82rem;
+    background: rgba(255, 255, 255, 0.58);
+  }
+
+  .social-block h2 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .social-status {
+    margin: 0.56rem 0 0;
+    font-size: 0.86rem;
+    color: rgba(82, 82, 91, 0.92);
+  }
+
+  .social-status.is-error {
+    color: #b91c1c;
+  }
+
+  .social-list {
+    margin: 0.7rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .social-list li {
+    padding-bottom: 0.52rem;
+    border-bottom: 1px solid rgba(113, 113, 122, 0.24);
+  }
+
+  .social-list li:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .social-list a {
+    color: #18181b;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .social-list a:hover,
+  .social-list a:focus-visible {
+    color: #c2410c;
+  }
+
+  .social-meta {
+    margin: 0.22rem 0 0;
+    font-size: 0.74rem;
+    color: rgba(82, 82, 91, 0.92);
+  }
+
+  .social-empty {
+    margin: 0.65rem 0 0;
+    color: rgba(82, 82, 91, 0.9);
+  }
+
+  .social-embed-grid {
+    margin-top: 0.72rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: 0.72rem;
+  }
+
+  .social-embed-card {
+    margin: 0;
+  }
+
+  .social-embed-card iframe {
+    width: 100%;
+    min-height: 18rem;
+    border: 1px solid rgba(113, 113, 122, 0.36);
+    border-radius: 0.72rem;
+    background: #020617;
+  }
+
+  .social-embed-card figcaption {
+    margin-top: 0.35rem;
+    font-size: 0.78rem;
+    color: rgba(82, 82, 91, 0.9);
+  }
+
+  :root.dark .social-kicker,
+  :root.dark .social-dek,
+  :root.dark .social-status,
+  :root.dark .social-meta,
+  :root.dark .social-empty,
+  :root.dark .social-embed-card figcaption {
+    color: rgba(212, 212, 216, 0.9);
+  }
+
+  :root.dark .social-actions a,
+  :root.dark .social-block {
+    background: rgba(24, 24, 27, 0.76);
+    border-color: rgba(161, 161, 170, 0.4);
+    color: rgba(244, 244, 245, 0.95);
+  }
+
+  :root.dark .social-actions a:hover,
+  :root.dark .social-actions a:focus-visible,
+  :root.dark .social-list a:hover,
+  :root.dark .social-list a:focus-visible {
+    color: #fdba74;
+    border-color: #fb923c;
+  }
+
+  :root.dark .social-list a {
+    color: rgba(244, 244, 245, 0.95);
+  }
+
+  @media (max-width: 860px) {
+    .social-page {
+      position: relative;
+      margin: -2rem calc(50% - 50vw) 0;
+      padding: 2.25rem 1.25rem 4rem;
+      max-width: none;
+      color: #edf2fc;
+      background:
+        linear-gradient(180deg, #090b11 0%, #0c0f16 45%, #090b11 100%),
+        radial-gradient(circle at 14% 8%, rgba(56, 128, 255, 0.15), transparent 45%);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .social-page::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.08;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.58) 0.45px, transparent 0.45px);
+      background-size: 2px 2px;
+    }
+
+    .social-page > * {
+      position: relative;
+      z-index: 1;
+      max-width: 68ch;
+      margin-inline: auto;
+    }
+
+    .social-kicker {
+      color: rgba(220, 228, 245, 0.74);
+      letter-spacing: 0.18em;
+      font-size: 0.66rem;
+    }
+
+    .social-hero h1 {
+      font-size: clamp(2.12rem, 9.2vw, 3rem);
+      line-height: 1.04;
+      margin: 0.66rem 0 0.9rem;
+    }
+
+    .social-dek {
+      color: rgba(236, 243, 255, 0.94);
+      line-height: 1.62;
+      font-size: 1.02rem;
+    }
+
+    .social-actions a,
+    .social-block {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.18);
+      color: rgba(236, 243, 255, 0.94);
+    }
+
+    .social-actions a:hover,
+    .social-actions a:focus-visible,
+    .social-list a:hover,
+    .social-list a:focus-visible {
+      color: #a7c8ff;
+      border-color: #4d8dff;
+    }
+
+    .social-list li {
+      border-bottom-color: rgba(255, 255, 255, 0.14);
+    }
+
+    .social-list a,
+    .social-status,
+    .social-meta,
+    .social-empty {
+      color: rgba(228, 238, 255, 0.9);
+    }
+  }
+</style>

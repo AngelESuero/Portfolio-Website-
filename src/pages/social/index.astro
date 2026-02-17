@@ -1,0 +1,197 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import socialConfig from '../../data/social.json';
+
+interface SocialConfigItem {
+  slug: string;
+  title: string;
+  description?: string;
+  mode: 'rss' | 'manual';
+}
+
+const items = socialConfig as SocialConfigItem[];
+---
+
+<BaseLayout title="Social — Angel Suero" description="Platform-by-platform social feeds and curated links.">
+  <section class="social-hub">
+    <header class="social-hub-hero">
+      <p class="social-hub-kicker">Social section</p>
+      <h1>Social</h1>
+      <p class="social-hub-dek">
+        One page per platform. RSS feeds where possible, curated links where APIs are not available for free.
+      </p>
+    </header>
+
+    <div class="social-hub-grid">
+      {items.map((item) => (
+        <a href={`/social/${item.slug}`} class="social-hub-card">
+          <p class="social-hub-mode">{item.mode === 'rss' ? 'RSS mode' : 'Manual mode'}</p>
+          <h2>{item.title}</h2>
+          <p>{item.description || 'Open feed page'}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .social-hub {
+    max-width: 66rem;
+    margin: 0 auto;
+  }
+
+  .social-hub-kicker {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    font-size: 0.72rem;
+    color: rgba(82, 82, 91, 0.84);
+  }
+
+  .social-hub-hero h1 {
+    margin: 0.35rem 0 0.72rem;
+    font-size: clamp(2rem, 4.2vw, 3rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+  }
+
+  .social-hub-dek {
+    margin: 0;
+    max-width: 68ch;
+    color: rgba(63, 63, 70, 0.95);
+  }
+
+  .social-hub-grid {
+    margin-top: 1.1rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.72rem;
+  }
+
+  .social-hub-card {
+    border: 1px solid rgba(113, 113, 122, 0.34);
+    border-radius: 0.82rem;
+    background: rgba(255, 255, 255, 0.62);
+    padding: 0.8rem;
+    text-decoration: none;
+    color: #18181b;
+  }
+
+  .social-hub-card:hover,
+  .social-hub-card:focus-visible {
+    border-color: #c2410c;
+    background: rgba(194, 65, 12, 0.08);
+  }
+
+  .social-hub-mode {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    font-size: 0.7rem;
+    color: rgba(82, 82, 91, 0.9);
+  }
+
+  .social-hub-card h2 {
+    margin: 0.45rem 0 0;
+    font-size: 1.03rem;
+  }
+
+  .social-hub-card p {
+    margin: 0.45rem 0 0;
+    line-height: 1.5;
+  }
+
+  :root.dark .social-hub-kicker,
+  :root.dark .social-hub-dek,
+  :root.dark .social-hub-mode {
+    color: rgba(212, 212, 216, 0.9);
+  }
+
+  :root.dark .social-hub-card {
+    background: rgba(24, 24, 27, 0.76);
+    border-color: rgba(161, 161, 170, 0.4);
+    color: rgba(244, 244, 245, 0.95);
+  }
+
+  :root.dark .social-hub-card:hover,
+  :root.dark .social-hub-card:focus-visible {
+    border-color: #fb923c;
+    background: rgba(194, 65, 12, 0.16);
+  }
+
+  @media (max-width: 1024px) {
+    .social-hub-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 860px) {
+    .social-hub {
+      position: relative;
+      margin: -2rem calc(50% - 50vw) 0;
+      padding: 2.25rem 1.25rem 4rem;
+      max-width: none;
+      color: #edf2fc;
+      background:
+        linear-gradient(180deg, #090b11 0%, #0c0f16 45%, #090b11 100%),
+        radial-gradient(circle at 14% 8%, rgba(56, 128, 255, 0.15), transparent 45%);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .social-hub::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.08;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.58) 0.45px, transparent 0.45px);
+      background-size: 2px 2px;
+    }
+
+    .social-hub > * {
+      position: relative;
+      z-index: 1;
+      max-width: 68ch;
+      margin-inline: auto;
+    }
+
+    .social-hub-kicker {
+      color: rgba(220, 228, 245, 0.74);
+      letter-spacing: 0.18em;
+      font-size: 0.66rem;
+    }
+
+    .social-hub-hero h1 {
+      font-size: clamp(2.12rem, 9.2vw, 3rem);
+      line-height: 1.04;
+      margin: 0.66rem 0 0.9rem;
+    }
+
+    .social-hub-dek {
+      color: rgba(236, 243, 255, 0.94);
+      line-height: 1.62;
+      font-size: 1.02rem;
+    }
+
+    .social-hub-grid {
+      grid-template-columns: 1fr;
+      gap: 0.62rem;
+    }
+
+    .social-hub-card {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.18);
+      color: rgba(236, 243, 255, 0.94);
+    }
+
+    .social-hub-mode {
+      color: rgba(194, 208, 236, 0.86);
+    }
+
+    .social-hub-card:hover,
+    .social-hub-card:focus-visible {
+      border-color: #4d8dff;
+      background: rgba(77, 141, 255, 0.14);
+    }
+  }
+</style>

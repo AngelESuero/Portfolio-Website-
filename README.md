@@ -110,6 +110,15 @@ Item schema:
 - `id`, `date`, `year`, `type` (`photo|reel|carousel|video`), `series`, `tags[]`, `src`
 - optional: `caption`, `ig_url`
 
+### Social pages (free-first)
+- Hub: `/social`
+- Dynamic platform pages: `/social/[slug]`
+- Direct routes: `/youtube`, `/soundcloud`, `/substack`, `/x`, `/threads`, `/tiktok`, `/twitch`
+- Config:
+  - `src/data/social.json`
+- RSS proxy endpoint for supported platforms:
+  - `GET /api/social-rss?slug=<platform>`
+
 ## Notes
 - SEO basics are included via shared layout metadata.
 - RSS feed is available at `/rss.xml`.
