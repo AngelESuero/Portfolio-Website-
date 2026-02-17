@@ -5,9 +5,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        ink: '#111111',
-        paper: '#f6f4ef',
-        accent: '#c2410c'
+        ink: '#e8efff',
+        paper: '#071426',
+        accent: '#d7aa2f'
       },
       fontFamily: {
         display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],

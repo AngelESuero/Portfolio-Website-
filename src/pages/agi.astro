@@ -273,9 +273,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   .agi-tab.is-active {
-    border-color: #c2410c;
-    color: #c2410c;
-    background: rgba(194, 65, 12, 0.08);
+    border-color: var(--tone-accent);
+    color: var(--tone-accent);
+    background: rgba(214, 168, 53, 0.08);
   }
 
   .agi-tab.is-disabled {
@@ -341,7 +341,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 999px;
-    background: #c2410c;
+    background: var(--tone-accent);
   }
 
   .agi-card {
@@ -384,7 +384,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   .agi-source-row a {
-    color: #c2410c;
+    color: var(--tone-accent);
     font-size: 0.88rem;
     text-decoration: underline;
     text-underline-offset: 2px;
@@ -408,13 +408,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   :root.dark .agi-tab.is-active {
-    color: #fdba74;
-    border-color: #fb923c;
-    background: rgba(194, 65, 12, 0.17);
+    color: var(--tone-accent-glow);
+    border-color: var(--tone-accent-bright);
+    background: rgba(214, 168, 53, 0.17);
   }
 
   :root.dark .agi-source-row a {
-    color: #fdba74;
+    color: var(--tone-accent-glow);
   }
 
   @media (max-width: 860px) {
@@ -426,7 +426,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       color: #edf2fc;
       background:
         linear-gradient(180deg, #090b11 0%, #0c0f16 45%, #090b11 100%),
-        radial-gradient(circle at 14% 8%, rgba(56, 128, 255, 0.15), transparent 45%);
+        radial-gradient(circle at 14% 8%, rgba(35, 95, 176, 0.15), transparent 45%);
       border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
@@ -472,9 +472,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
 
     .agi-tab.is-active {
-      border-color: #4d8dff;
+      border-color: var(--tone-sky);
       color: #a7c8ff;
-      background: rgba(77, 141, 255, 0.15);
+      background: rgba(52, 108, 186, 0.15);
     }
 
     .agi-filter span {
@@ -509,7 +509,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       border-color: rgba(255, 255, 255, 0.16);
       border-radius: 0.35rem;
       border-left-width: 3px;
-      border-left-color: #4d8dff;
+      border-left-color: var(--tone-sky);
       padding: 0.95rem 0.9rem 1rem;
     }
 
@@ -524,7 +524,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
 
     .agi-source-row a {
-      color: #70a5ff;
+      color: var(--tone-sky-bright);
     }
   }
 </style>

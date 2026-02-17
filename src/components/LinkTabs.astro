@@ -98,9 +98,9 @@ const secondaryLinks = links.filter((entry) => !primaryOrder.includes(entry.labe
   .link-tab-pill:hover,
   .link-tab-pill:focus-visible,
   .link-tab-pill.is-active {
-    border-color: #c2410c;
-    color: #c2410c;
-    background: rgba(194, 65, 12, 0.08);
+    border-color: var(--tone-accent);
+    color: var(--tone-accent);
+    background: rgba(214, 168, 53, 0.08);
   }
 
   .link-tabs-more {
@@ -142,8 +142,8 @@ const secondaryLinks = links.filter((entry) => !primaryOrder.includes(entry.labe
 
   .link-tabs-popover-link:hover,
   .link-tabs-popover-link:focus-visible {
-    background: rgba(194, 65, 12, 0.08);
-    color: #c2410c;
+    background: rgba(214, 168, 53, 0.08);
+    color: var(--tone-accent);
   }
 
   :root.dark .link-tabs-shell {
@@ -163,9 +163,9 @@ const secondaryLinks = links.filter((entry) => !primaryOrder.includes(entry.labe
   :root.dark .link-tab-pill:hover,
   :root.dark .link-tab-pill:focus-visible,
   :root.dark .link-tab-pill.is-active {
-    border-color: #fb923c;
-    color: #fdba74;
-    background: rgba(194, 65, 12, 0.18);
+    border-color: var(--tone-accent-bright);
+    color: var(--tone-accent-glow);
+    background: rgba(214, 168, 53, 0.18);
   }
 
   :root.dark .link-tabs-popover {
@@ -180,8 +180,8 @@ const secondaryLinks = links.filter((entry) => !primaryOrder.includes(entry.labe
 
   :root.dark .link-tabs-popover-link:hover,
   :root.dark .link-tabs-popover-link:focus-visible {
-    background: rgba(194, 65, 12, 0.18);
-    color: #fdba74;
+    background: rgba(214, 168, 53, 0.18);
+    color: var(--tone-accent-glow);
   }
 
   @media (min-width: 861px) {

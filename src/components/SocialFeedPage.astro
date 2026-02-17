@@ -196,9 +196,9 @@ const embeds = Array.isArray(config.embeds) ? config.embeds : [];
 
   .social-actions a:hover,
   .social-actions a:focus-visible {
-    border-color: #c2410c;
-    color: #c2410c;
-    background: rgba(194, 65, 12, 0.08);
+    border-color: var(--tone-accent);
+    color: var(--tone-accent);
+    background: rgba(214, 168, 53, 0.08);
   }
 
   .social-block {
@@ -250,7 +250,7 @@ const embeds = Array.isArray(config.embeds) ? config.embeds : [];
 
   .social-list a:hover,
   .social-list a:focus-visible {
-    color: #c2410c;
+    color: var(--tone-accent);
   }
 
   .social-meta {
@@ -309,8 +309,8 @@ const embeds = Array.isArray(config.embeds) ? config.embeds : [];
   :root.dark .social-actions a:focus-visible,
   :root.dark .social-list a:hover,
   :root.dark .social-list a:focus-visible {
-    color: #fdba74;
-    border-color: #fb923c;
+    color: var(--tone-accent-glow);
+    border-color: var(--tone-accent-bright);
   }
 
   :root.dark .social-list a {
@@ -326,7 +326,7 @@ const embeds = Array.isArray(config.embeds) ? config.embeds : [];
       color: #edf2fc;
       background:
         linear-gradient(180deg, #090b11 0%, #0c0f16 45%, #090b11 100%),
-        radial-gradient(circle at 14% 8%, rgba(56, 128, 255, 0.15), transparent 45%);
+        radial-gradient(circle at 14% 8%, rgba(35, 95, 176, 0.15), transparent 45%);
       border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
@@ -377,7 +377,7 @@ const embeds = Array.isArray(config.embeds) ? config.embeds : [];
     .social-list a:hover,
     .social-list a:focus-visible {
       color: #a7c8ff;
-      border-color: #4d8dff;
+      border-color: var(--tone-sky);
     }
 
     .social-list li {

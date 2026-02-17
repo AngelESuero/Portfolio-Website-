@@ -343,7 +343,7 @@ const backgroundImage =
         rgba(2, 6, 23, 0.78) 42%,
         rgba(2, 6, 23, 0.9) 100%
       ),
-      radial-gradient(circle at 15% 10%, rgba(56, 128, 255, 0.22), transparent 42%),
+      radial-gradient(circle at 15% 10%, rgba(35, 95, 176, 0.22), transparent 42%),
       radial-gradient(rgba(255, 255, 255, 0.14) 0.5px, transparent 0.5px);
     background-size: auto, auto, 2px 2px;
   }
@@ -420,9 +420,9 @@ const backgroundImage =
   }
 
   .ig-chip.is-active {
-    border-color: #4d8dff;
+    border-color: var(--tone-sky);
     color: #a7c8ff;
-    background: rgba(77, 141, 255, 0.15);
+    background: rgba(52, 108, 186, 0.15);
   }
 
   .ig-status {
@@ -556,14 +556,14 @@ const backgroundImage =
   }
 
   .ig-modal-links a {
-    color: #c2410c;
+    color: var(--tone-accent);
     text-decoration: underline;
     text-underline-offset: 2px;
   }
 
   :root.dark .ig-modal-close,
   :root.dark .ig-modal-links a {
-    color: #fdba74;
+    color: var(--tone-accent-glow);
   }
 
   @media (max-width: 1024px) {
@@ -624,9 +624,9 @@ const backgroundImage =
     }
 
     .ig-chip.is-active {
-      border-color: #4d8dff;
+      border-color: var(--tone-sky);
       color: #a7c8ff;
-      background: rgba(77, 141, 255, 0.15);
+      background: rgba(52, 108, 186, 0.15);
     }
 
     .ig-grid {

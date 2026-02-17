@@ -4,17 +4,38 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
+  --tone-bg: #050d1b;
+  --tone-bg-deep: #030914;
+  --tone-surface: rgba(9, 22, 44, 0.72);
+  --tone-surface-strong: rgba(6, 16, 34, 0.84);
+  --tone-text: #e8efff;
+  --tone-muted: rgba(198, 212, 238, 0.82);
+  --tone-line: rgba(158, 177, 212, 0.34);
+  --tone-accent: #d7aa2f;
+  --tone-accent-bright: #f0c55a;
+  --tone-accent-glow: #ffd884;
+  --tone-sky: #2f66b3;
+  --tone-sky-bright: #5f8fd7;
 }
 
 :root.dark {
   color-scheme: dark;
+  --tone-bg: #040b17;
+  --tone-bg-deep: #020712;
+  --tone-surface: rgba(8, 18, 36, 0.78);
+  --tone-surface-strong: rgba(4, 11, 24, 0.88);
 }
 
 body {
-  @apply bg-paper text-ink dark:bg-zinc-950 dark:text-zinc-100 font-body leading-relaxed;
-  background-image: radial-gradient(rgba(17, 17, 17, 0.06) 0.6px, transparent 0.6px);
-  background-size: 7px 7px;
+  @apply font-body leading-relaxed;
+  color: var(--tone-text);
+  background-color: var(--tone-bg);
+  background-image:
+    radial-gradient(1200px 420px at 60% 0%, rgba(214, 168, 53, 0.12), transparent 56%),
+    linear-gradient(180deg, #06142d 0%, var(--tone-bg) 55%, var(--tone-bg-deep) 100%),
+    radial-gradient(rgba(147, 197, 253, 0.16) 0.55px, transparent 0.55px);
+  background-size: auto, auto, 7px 7px;
 }
 
 a:focus-visible,
@@ -41,10 +62,10 @@ select:focus-visible {
     padding: 2.25rem 1.25rem 5rem;
     color: #ecf0f6;
     background:
-      linear-gradient(180deg, #0a0c12 0%, #0d0f14 42%, #0a0b10 100%),
-      radial-gradient(circle at 12% 8%, rgba(56, 128, 255, 0.15), transparent 40%);
+      linear-gradient(180deg, #081328 0%, #071124 42%, #050d1b 100%),
+      radial-gradient(circle at 12% 8%, rgba(35, 95, 176, 0.15), transparent 40%);
     border-top: 1px solid rgba(255, 255, 255, 0.08);
-    --mobile-accent: #4d8dff;
+    --mobile-accent: var(--tone-accent);
   }
 
   .mobile-editorial::before {
@@ -106,13 +127,13 @@ select:focus-visible {
   }
 
   .mobile-role-row span {
-    border: 1px solid rgba(125, 164, 255, 0.5);
+    border: 1px solid rgba(214, 168, 53, 0.5);
     border-radius: 999px;
     padding: 0.3rem 0.68rem;
     font-size: 0.75rem;
     letter-spacing: 0.01em;
     color: rgba(222, 235, 255, 0.95);
-    background: rgba(77, 141, 255, 0.12);
+    background: rgba(214, 168, 53, 0.14);
   }
 
   .mobile-toc {
@@ -159,7 +180,7 @@ select:focus-visible {
   .mobile-toc-list a.is-active,
   .mobile-toc-list a:focus-visible {
     color: var(--mobile-accent);
-    border-color: rgba(77, 141, 255, 0.55);
+    border-color: rgba(214, 168, 53, 0.55);
   }
 
   .mobile-story-section {
@@ -248,8 +269,8 @@ select:focus-visible {
     display: inline-flex;
     align-items: center;
     border-radius: 999px;
-    border: 1px solid rgba(116, 152, 239, 0.5);
-    background: rgba(60, 114, 232, 0.14);
+    border: 1px solid rgba(214, 168, 53, 0.5);
+    background: rgba(214, 168, 53, 0.14);
     color: rgba(231, 239, 255, 0.95);
     font-size: 0.76rem;
     line-height: 1;
