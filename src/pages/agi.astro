@@ -1,576 +1,242 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import agiEvents from '../data/agi.events.json';
+
+interface AgiEvent {
+  date: string;
+  type?: string;
+  title: string;
+  summary: string;
+  tags: string[];
+  source_url: string;
+}
+
+const events = (agiEvents as AgiEvent[])
+  .slice()
+  .sort((a, b) => new Date(b.date).valueOf() - new Date(a.date).valueOf());
+
+const typeOptions = [...new Set(events.map((event) => (event.type || 'general').toLowerCase()))].sort();
+const tagOptions = [...new Set(events.flatMap((event) => event.tags || []).map((tag) => tag.toLowerCase()))].sort();
 ---
 
 <BaseLayout
   title="AGI Timeline — a_e.s_"
-  description="Live AGI timeline aggregated from public sources, with optional researcher feed from X."
+  description="Local-first AGI timeline MVP with source citations and lightweight filters."
   theme="agi"
 >
-  <section class="agi-page">
-    <header class="agi-hero">
-      <p class="agi-kicker">Research stream</p>
+  <section class="agi-mvp">
+    <header class="agi-mvp__hero">
+      <p class="agi-mvp__kicker">Timeline MVP</p>
       <h1>AGI Timeline</h1>
-      <p class="agi-dek">
-        Auto-updating feed from curated AGI sources (RSS + web parsing) plus manually cited notable quote links.
+      <p>
+        Citation-first timeline powered by <code>src/data/agi.events.json</code>. Free-first and deploy-safe for Cloudflare
+        Pages.
       </p>
     </header>
 
-    <div class="agi-tabs" role="tablist" aria-label="AGI data feeds">
-      <button id="tab-web" type="button" class="agi-tab is-active" role="tab" aria-selected="true">Web Sources</button>
-      <button id="tab-x" type="button" class="agi-tab" role="tab" aria-selected="false">Researchers (X API optional)</button>
-    </div>
+    <aside class="agi-mvp__todo" aria-label="Automation notes">
+      <h2>TODO (optional automation)</h2>
+      <ul>
+        <li>Add a GitHub Action to refresh <code>src/data/agi.events.json</code> from approved feeds.</li>
+        <li>Add schema validation in CI before deploying updated timeline data.</li>
+      </ul>
+    </aside>
 
-    <div class="agi-filters" aria-label="Timeline filters">
-      <label class="agi-filter">
-        <span>Source</span>
-        <select id="agi-source-filter">
-          <option value="">All sources</option>
+    <div class="agi-mvp__filters" aria-label="Timeline filters">
+      <label>
+        <span>Type</span>
+        <select id="agi-type-filter">
+          <option value="">All types</option>
+          {typeOptions.map((type) => <option value={type}>{type}</option>)}
         </select>
       </label>
 
-      <label class="agi-filter">
-        <span>Tags</span>
+      <label>
+        <span>Tag</span>
         <select id="agi-tag-filter">
           <option value="">All tags</option>
+          {tagOptions.map((tag) => <option value={tag}>{tag}</option>)}
         </select>
       </label>
     </div>
 
-    <p id="agi-status" class="agi-status">Loading timeline…</p>
-    <ol id="agi-timeline-list" class="agi-list" aria-live="polite"></ol>
+    <ol id="agi-list" class="agi-mvp__list" aria-live="polite">
+      {events.map((event) => (
+        <li
+          class="agi-mvp__item"
+          data-type={(event.type || 'general').toLowerCase()}
+          data-tags={event.tags.map((tag) => tag.toLowerCase()).join('|')}
+        >
+          <article>
+            <p class="agi-mvp__meta">
+              <time datetime={event.date}>{new Date(event.date).toLocaleDateString()}</time>
+              <span aria-hidden="true">•</span>
+              <span>{event.type || 'general'}</span>
+            </p>
+            <h2>{event.title}</h2>
+            <p>{event.summary}</p>
+            <p class="agi-mvp__tags">{event.tags.map((tag) => `#${tag}`).join(' ')}</p>
+            <p class="agi-mvp__source">
+              <a href={event.source_url} target="_blank" rel="noopener">Source citation</a>
+            </p>
+          </article>
+        </li>
+      ))}
+    </ol>
+
+    <p id="agi-empty" class="agi-mvp__empty" hidden>No events match these filters.</p>
   </section>
 </BaseLayout>
 
 <script is:inline>
   (() => {
-    const listEl = document.getElementById('agi-timeline-list');
-    const statusEl = document.getElementById('agi-status');
-    const sourceFilterEl = document.getElementById('agi-source-filter');
-    const tagFilterEl = document.getElementById('agi-tag-filter');
-    const tabWeb = document.getElementById('tab-web');
-    const tabX = document.getElementById('tab-x');
-    if (!listEl || !statusEl || !sourceFilterEl || !tagFilterEl || !tabWeb || !tabX) return;
+    const typeFilter = document.getElementById('agi-type-filter');
+    const tagFilter = document.getElementById('agi-tag-filter');
+    const items = Array.from(document.querySelectorAll('.agi-mvp__item'));
+    const empty = document.getElementById('agi-empty');
+    if (!typeFilter || !tagFilter || !items.length || !empty) return;
 
-    const state = {
-      activeTab: 'web',
-      webItems: [],
-      xItems: [],
-      xEnabled: false
-    };
-
-    const escapeHtml = (value) =>
-      String(value)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-
-    const clamp = (value, max = 360) => {
-      if (!value || value.length <= max) return value;
-      return `${value.slice(0, max - 1)}…`;
-    };
-
-    const formatDate = (value) => {
-      const date = new Date(value);
-      if (Number.isNaN(date.valueOf())) return value;
-      return new Intl.DateTimeFormat('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-      }).format(date);
-    };
-
-    const getCurrentItems = () => (state.activeTab === 'x' ? state.xItems : state.webItems);
-    let widgetsRequested = false;
-
-    const ensureTweetEmbeds = () => {
-      if (!listEl.querySelector('.twitter-tweet')) return;
-
-      if (window.twttr?.widgets?.load) {
-        window.twttr.widgets.load(listEl);
-        return;
-      }
-
-      if (widgetsRequested) return;
-      widgetsRequested = true;
-
-      const script = document.createElement('script');
-      script.src = 'https://platform.twitter.com/widgets.js';
-      script.async = true;
-      script.charset = 'utf-8';
-      script.onload = () => {
-        window.twttr?.widgets?.load?.(listEl);
-      };
-      document.body.appendChild(script);
-    };
-
-    const setStatus = (message, isError = false) => {
-      statusEl.textContent = message;
-      statusEl.classList.toggle('is-error', Boolean(isError));
-    };
-
-    const updateTabUi = () => {
-      const webActive = state.activeTab === 'web';
-      tabWeb.classList.toggle('is-active', webActive);
-      tabX.classList.toggle('is-active', !webActive);
-      tabWeb.setAttribute('aria-selected', webActive ? 'true' : 'false');
-      tabX.setAttribute('aria-selected', webActive ? 'false' : 'true');
-      tabX.classList.toggle('is-disabled', !state.xEnabled);
-    };
-
-    const updateFilterOptions = () => {
-      const items = getCurrentItems();
-      const sourceValues = [...new Set(items.map((item) => item.source_name).filter(Boolean))].sort();
-      const tagValues = [...new Set(items.flatMap((item) => Array.isArray(item.tags) ? item.tags : []))].sort();
-
-      const selectedSource = sourceFilterEl.value;
-      const selectedTag = tagFilterEl.value;
-
-      sourceFilterEl.innerHTML = '<option value="">All sources</option>';
-      tagFilterEl.innerHTML = '<option value="">All tags</option>';
-
-      sourceValues.forEach((source) => {
-        const option = document.createElement('option');
-        option.value = source;
-        option.textContent = source;
-        sourceFilterEl.appendChild(option);
-      });
-
-      tagValues.forEach((tag) => {
-        const option = document.createElement('option');
-        option.value = tag;
-        option.textContent = tag;
-        tagFilterEl.appendChild(option);
-      });
-
-      sourceFilterEl.value = sourceValues.includes(selectedSource) ? selectedSource : '';
-      tagFilterEl.value = tagValues.includes(selectedTag) ? selectedTag : '';
-    };
-
-    const renderList = () => {
-      const selectedSource = sourceFilterEl.value;
-      const selectedTag = tagFilterEl.value;
-      const items = getCurrentItems()
-        .filter((item) => !selectedSource || item.source_name === selectedSource)
-        .filter((item) => !selectedTag || (Array.isArray(item.tags) && item.tags.includes(selectedTag)));
-
-      listEl.innerHTML = '';
-
-      if (!items.length) {
-        setStatus('No timeline entries match these filters.');
-        return;
-      }
+    const applyFilters = () => {
+      const selectedType = typeFilter.value;
+      const selectedTag = tagFilter.value;
+      let visibleCount = 0;
 
       items.forEach((item) => {
-        const li = document.createElement('li');
-        li.className = 'agi-entry';
-
-        const tags = Array.isArray(item.tags) && item.tags.length
-          ? `<p class="agi-extra">${item.tags.slice(0, 6).map((tag) => `#${escapeHtml(tag)}`).join(' ')}</p>`
-          : '';
-        const tweetUrl = item.tweet_url || '';
-        const hasTweet = /^https?:\\/\\/x\\.com\\//i.test(tweetUrl);
-        const tweetEmbed = hasTweet
-          ? `<blockquote class=\"twitter-tweet\"><a href=\"${escapeHtml(tweetUrl)}\">View quote on X</a></blockquote>`
-          : '';
-
-        const author = item.author_handle
-          ? `<span>@${escapeHtml(item.author_handle)}</span><span aria-hidden="true">•</span>`
-          : '';
-
-        li.innerHTML = `
-          <article class="agi-card">
-            <p class="agi-meta">
-              ${author}
-              <span>${escapeHtml(item.source_name || 'Source')}</span>
-              <span aria-hidden="true">•</span>
-              <time datetime="${escapeHtml(item.date)}">${escapeHtml(formatDate(item.date))}</time>
-            </p>
-            <h2 class="agi-title">${escapeHtml(item.title || 'Untitled')}</h2>
-            <p class="agi-excerpt">${escapeHtml(clamp(item.summary || '', 380))}</p>
-            ${tags}
-            ${tweetEmbed}
-            <p class="agi-source-row">
-              <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">Source citation</a>
-            </p>
-          </article>
-        `;
-
-        listEl.appendChild(li);
+        const type = item.getAttribute('data-type') || '';
+        const tags = item.getAttribute('data-tags') || '';
+        const typeOk = !selectedType || selectedType === type;
+        const tagOk = !selectedTag || tags.split('|').includes(selectedTag);
+        const visible = typeOk && tagOk;
+        item.hidden = !visible;
+        if (visible) visibleCount += 1;
       });
 
-      setStatus(`Showing ${items.length} item${items.length === 1 ? '' : 's'}.`);
-      ensureTweetEmbeds();
+      empty.hidden = visibleCount > 0;
     };
 
-    const applyFiltersAndRender = () => {
-      updateFilterOptions();
-      renderList();
-    };
-
-    const fetchJson = async (url) => {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(`${url} returned ${response.status}`);
-      return response.json();
-    };
-
-    const loadWeb = async () => {
-      const payload = await fetchJson('/api/agi');
-      state.webItems = Array.isArray(payload) ? payload : [];
-    };
-
-    const loadX = async () => {
-      const payload = await fetchJson('/api/agi-x');
-      if (payload && typeof payload === 'object' && 'enabled' in payload) {
-        state.xEnabled = Boolean(payload.enabled);
-        state.xItems = Array.isArray(payload.items) ? payload.items : [];
-      } else {
-        state.xEnabled = false;
-        state.xItems = [];
-      }
-    };
-
-    const switchTab = (tab) => {
-      if (tab === 'x' && !state.xEnabled) {
-        state.activeTab = 'web';
-        updateTabUi();
-        setStatus('Researchers (X API) is disabled. Web timeline still includes curated quote citations.');
-        return;
-      }
-      state.activeTab = tab;
-      updateTabUi();
-      applyFiltersAndRender();
-    };
-
-    sourceFilterEl.addEventListener('change', renderList);
-    tagFilterEl.addEventListener('change', renderList);
-    tabWeb.addEventListener('click', () => switchTab('web'));
-    tabX.addEventListener('click', () => switchTab('x'));
-
-    Promise.all([loadWeb(), loadX()])
-      .then(() => {
-        updateTabUi();
-        applyFiltersAndRender();
-      })
-      .catch((error) => {
-        console.error(error);
-        setStatus('Could not load AGI timeline right now.', true);
-      });
+    typeFilter.addEventListener('change', applyFilters);
+    tagFilter.addEventListener('change', applyFilters);
+    applyFilters();
   })();
 </script>
 
 <style>
-  .agi-page {
+  .agi-mvp {
     max-width: 56rem;
     margin: 0 auto;
   }
 
-  .agi-kicker {
+  .agi-mvp__kicker {
     margin: 0;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     font-size: 0.72rem;
-    color: rgba(63, 63, 70, 0.86);
+    color: var(--tone-muted);
   }
 
-  .agi-hero h1 {
+  .agi-mvp__hero h1 {
     margin: 0.35rem 0 0.72rem;
-    font-size: clamp(2rem, 4.2vw, 2.85rem);
-    line-height: 1.06;
-    letter-spacing: -0.02em;
+    font-size: clamp(2rem, 4.1vw, 2.9rem);
+    line-height: 1.08;
   }
 
-  .agi-dek {
+  .agi-mvp__hero p {
     margin: 0;
-    max-width: 70ch;
-    color: rgba(63, 63, 70, 0.95);
+    max-width: 72ch;
+    color: var(--tone-muted);
   }
 
-  .agi-tabs {
-    margin-top: 1.15rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.55rem;
+  .agi-mvp__todo {
+    margin-top: 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 0.82rem;
   }
 
-  .agi-tab {
-    border: 1px solid rgba(113, 113, 122, 0.45);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.72);
-    color: #27272a;
-    padding: 0.34rem 0.8rem;
-    font-size: 0.82rem;
-    cursor: pointer;
+  .agi-mvp__todo h2 {
+    margin: 0;
+    font-size: 1rem;
   }
 
-  .agi-tab.is-active {
-    border-color: var(--tone-accent);
-    color: var(--tone-accent);
-    background: rgba(214, 168, 53, 0.08);
+  .agi-mvp__todo ul {
+    margin: 0.6rem 0 0;
+    padding-left: 1.1rem;
   }
 
-  .agi-tab.is-disabled {
-    opacity: 0.55;
-  }
-
-  .agi-filters {
+  .agi-mvp__filters {
     margin-top: 0.9rem;
     display: flex;
     flex-wrap: wrap;
     gap: 0.7rem;
   }
 
-  .agi-filter {
+  .agi-mvp__filters label {
     display: grid;
     gap: 0.25rem;
-    min-width: 11rem;
   }
 
-  .agi-filter span {
-    font-size: 0.72rem;
+  .agi-mvp__filters span {
+    color: var(--tone-muted);
+    font-size: 0.78rem;
     text-transform: uppercase;
-    letter-spacing: 0.11em;
-    color: rgba(82, 82, 91, 0.86);
+    letter-spacing: 0.08em;
   }
 
-  .agi-filter select {
-    border: 1px solid rgba(113, 113, 122, 0.4);
+  .agi-mvp__filters select {
+    border: 1px solid var(--line);
     border-radius: 0.55rem;
-    padding: 0.42rem 0.56rem;
-    background: rgba(255, 255, 255, 0.72);
-    color: #27272a;
+    background: rgba(11, 16, 25, 0.74);
+    color: var(--tone-text);
+    padding: 0.42rem 0.55rem;
   }
 
-  .agi-status {
-    margin: 1rem 0 0.8rem;
-    color: rgba(82, 82, 91, 0.95);
-    font-size: 0.9rem;
-  }
-
-  .agi-status.is-error {
-    color: #b91c1c;
-  }
-
-  .agi-list {
-    list-style: none;
-    margin: 0;
+  .agi-mvp__list {
+    margin: 1rem 0 0;
     padding: 0;
+    list-style: none;
     display: grid;
-    gap: 0.95rem;
+    gap: 0.72rem;
   }
 
-  .agi-entry {
-    position: relative;
-    padding-left: 1.1rem;
+  .agi-mvp__item article {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 0.85rem;
   }
 
-  .agi-entry::before {
-    content: '';
-    position: absolute;
-    left: 0.1rem;
-    top: 0.92rem;
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 999px;
-    background: var(--tone-accent);
-  }
-
-  .agi-card {
-    border: 1px solid rgba(113, 113, 122, 0.35);
-    border-radius: 0.78rem;
-    padding: 0.86rem 0.95rem;
-    background: rgba(255, 255, 255, 0.62);
-  }
-
-  .agi-meta {
+  .agi-mvp__meta {
     margin: 0;
     display: flex;
-    flex-wrap: wrap;
     gap: 0.42rem;
-    align-items: center;
-    color: rgba(82, 82, 91, 0.9);
-    font-size: 0.77rem;
+    color: var(--tone-muted);
+    font-size: 0.8rem;
   }
 
-  .agi-title {
-    margin: 0.55rem 0 0;
-    font-size: 1rem;
-    line-height: 1.4;
+  .agi-mvp__item h2 {
+    margin: 0.52rem 0 0;
+    font-size: 1.12rem;
+    line-height: 1.3;
   }
 
-  .agi-excerpt {
-    margin: 0.55rem 0 0;
-    line-height: 1.55;
-    white-space: pre-wrap;
+  .agi-mvp__item p {
+    margin: 0.58rem 0 0;
   }
 
-  .agi-extra {
-    margin: 0.4rem 0 0;
-    color: rgba(82, 82, 91, 0.88);
-    font-size: 0.78rem;
+  .agi-mvp__tags {
+    color: var(--tone-muted);
+    font-size: 0.82rem;
   }
 
-  .agi-source-row {
-    margin: 0.68rem 0 0;
-  }
-
-  .twitter-tweet {
-    margin: 0.72rem 0 0 !important;
-    border: 1px solid rgba(113, 113, 122, 0.28);
-    border-radius: 0.62rem;
-    padding: 0.45rem 0.55rem !important;
-    background: rgba(255, 255, 255, 0.38);
-  }
-
-  .agi-source-row a {
-    color: var(--tone-accent);
-    font-size: 0.88rem;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-  }
-
-  :root.dark .agi-kicker,
-  :root.dark .agi-dek,
-  :root.dark .agi-status,
-  :root.dark .agi-meta,
-  :root.dark .agi-extra,
-  :root.dark .agi-filter span {
-    color: rgba(212, 212, 216, 0.9);
-  }
-
-  :root.dark .agi-tab,
-  :root.dark .agi-filter select,
-  :root.dark .agi-card {
-    background: rgba(24, 24, 27, 0.76);
-    border-color: rgba(161, 161, 170, 0.4);
-    color: rgba(244, 244, 245, 0.95);
-  }
-
-  :root.dark .agi-tab.is-active {
+  .agi-mvp__source a {
     color: var(--tone-accent-glow);
-    border-color: var(--tone-accent-bright);
-    background: rgba(214, 168, 53, 0.17);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 35%, transparent);
   }
 
-  :root.dark .agi-source-row a {
-    color: var(--tone-accent-glow);
-  }
-
-  :root.dark .twitter-tweet {
-    background: rgba(255, 255, 255, 0.03);
-    border-color: rgba(255, 255, 255, 0.16);
-  }
-
-  @media (max-width: 860px) {
-    .agi-page {
-      position: relative;
-      margin: -2rem calc(50% - 50vw) 0;
-      padding: 2.25rem 1.25rem 4rem;
-      max-width: none;
-      color: #edf2fc;
-      background:
-        linear-gradient(180deg, #090b11 0%, #0c0f16 45%, #090b11 100%),
-        radial-gradient(circle at 14% 8%, rgba(35, 95, 176, 0.15), transparent 45%);
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .agi-page::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0.08;
-      background-image: radial-gradient(rgba(255, 255, 255, 0.58) 0.45px, transparent 0.45px);
-      background-size: 2px 2px;
-    }
-
-    .agi-page > * {
-      position: relative;
-      z-index: 1;
-      max-width: 68ch;
-      margin-inline: auto;
-    }
-
-    .agi-kicker {
-      color: rgba(220, 228, 245, 0.73);
-      letter-spacing: 0.18em;
-      font-size: 0.66rem;
-    }
-
-    .agi-hero h1 {
-      font-size: clamp(2.12rem, 9.2vw, 3rem);
-      line-height: 1.04;
-      margin: 0.66rem 0 0.9rem;
-    }
-
-    .agi-dek {
-      color: rgba(236, 243, 255, 0.93);
-      line-height: 1.63;
-      font-size: 1.02rem;
-    }
-
-    .agi-tab {
-      background: rgba(255, 255, 255, 0.06);
-      border-color: rgba(255, 255, 255, 0.18);
-      color: rgba(227, 237, 255, 0.95);
-    }
-
-    .agi-tab.is-active {
-      border-color: var(--tone-sky);
-      color: #a7c8ff;
-      background: rgba(52, 108, 186, 0.15);
-    }
-
-    .agi-filter span {
-      color: rgba(194, 208, 236, 0.88);
-    }
-
-    .agi-filter select {
-      background: rgba(255, 255, 255, 0.04);
-      border-color: rgba(255, 255, 255, 0.22);
-      color: rgba(236, 243, 255, 0.94);
-    }
-
-    .agi-status,
-    .agi-status.is-error {
-      color: rgba(210, 222, 246, 0.88);
-    }
-
-    .agi-list {
-      gap: 1.2rem;
-    }
-
-    .agi-entry {
-      padding-left: 0;
-    }
-
-    .agi-entry::before {
-      display: none;
-    }
-
-    .agi-card {
-      background: rgba(255, 255, 255, 0.03);
-      border-color: rgba(255, 255, 255, 0.16);
-      border-radius: 0.35rem;
-      border-left-width: 3px;
-      border-left-color: var(--tone-sky);
-      padding: 0.95rem 0.9rem 1rem;
-    }
-
-    .agi-meta,
-    .agi-extra {
-      color: rgba(194, 208, 236, 0.85);
-    }
-
-    .agi-title,
-    .agi-excerpt {
-      color: rgba(239, 245, 255, 0.95);
-    }
-
-    .agi-source-row a {
-      color: var(--tone-sky-bright);
-    }
+  .agi-mvp__empty {
+    margin-top: 0.9rem;
+    color: var(--tone-muted);
   }
 </style>
