@@ -28,6 +28,14 @@
   --street-vignette: 0.55;
   --street-warm: rgba(255, 150, 80, 0.1);
   --street-cool: rgba(120, 220, 255, 0.08);
+  --phi: 1.618;
+  --s0: 8px;
+  --s1: calc(var(--s0) * var(--phi));
+  --s2: calc(var(--s1) * var(--phi));
+  --s3: calc(var(--s2) * var(--phi));
+  --s4: calc(var(--s3) * var(--phi));
+  --s5: calc(var(--s4) * var(--phi));
+  --radius: 16px;
 }
 
 :root.dark {
@@ -142,7 +150,7 @@ button:hover {
 .card {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  border-radius: var(--radius);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.05) inset,
     0 20px 60px rgba(0, 0, 0, 0.45);
@@ -177,7 +185,7 @@ button:hover {
   text-decoration: none;
   color: inherit;
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.03);
   overflow: hidden;
   transition: transform 180ms ease, border-color 180ms ease;
