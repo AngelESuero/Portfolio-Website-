@@ -1,0 +1,80 @@
+---
+const spotifyPlaylistId = Astro.props.spotifyPlaylistId ?? 'SPOTIFY_PLAYLIST_ID';
+---
+
+<section class="music-console" id="music-console" aria-label="Music console">
+  <header class="music-console__head">
+    <h2>Music Console</h2>
+    <p>Untitled stream + Spotify now listening</p>
+  </header>
+
+  <div class="music-console__grid">
+    <article class="music-console__card">
+      <h3>Untitled Stream</h3>
+      <iframe
+        style="border-radius: 12px"
+        src="https://untitled.stream/embed/m8IEX655GwMH"
+        width="100%"
+        height="344"
+        allowFullScreen
+        allow="picture-in-picture"
+        frameborder="0"
+        loading="lazy"
+        title="untitled.stream player"
+      ></iframe>
+    </article>
+
+    <article class="music-console__card">
+      <h3>Spotify Playlist</h3>
+      <iframe
+        style="border-radius: 12px"
+        src={`https://open.spotify.com/embed/playlist/${spotifyPlaylistId}`}
+        width="100%"
+        height="152"
+        frameborder="0"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy"
+        title="Spotify embed playlist"
+      ></iframe>
+    </article>
+  </div>
+</section>
+
+<style>
+  .music-console {
+    margin-top: 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 0.9rem;
+  }
+
+  .music-console__head h2,
+  .music-console__head p,
+  .music-console__card h3 {
+    margin: 0;
+  }
+
+  .music-console__head p {
+    margin-top: 0.45rem;
+    color: var(--tone-muted);
+  }
+
+  .music-console__grid {
+    margin-top: 0.75rem;
+    display: grid;
+    gap: 0.72rem;
+  }
+
+  .music-console__card {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.18);
+    padding: 0.7rem;
+  }
+
+  .music-console__card h3 {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+  }
+</style>

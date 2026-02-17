@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Parser from 'rss-parser';
+import MusicConsole from '../../components/MusicConsole.astro';
 import rooms from '../../data/rooms.json';
 
 interface RoomMachine {
@@ -20,6 +22,12 @@ interface Room {
   machines: RoomMachine[];
 }
 
+interface WritingPost {
+  title: string;
+  link: string;
+  pubDate?: string;
+}
+
 const roomList = rooms as Room[];
 
 export function getStaticPaths() {
@@ -32,6 +40,30 @@ export function getStaticPaths() {
 const { room } = Astro.props as { room: Room };
 const isExternal = (url: string) => /^https?:\/\//i.test(url);
 const embedMachines = room.machines.filter((machine) => machine.kind === 'embed' && machine.embed_url);
+const parser = new Parser();
+const SUBSTACK_FEED_URL = 'https://aesarchive.substack.com/feed';
+let writingPosts: WritingPost[] = [];
+let writingFeedNote = '';
+
+if (room.slug === 'writing') {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+  try {
+    const xml = await fetch(SUBSTACK_FEED_URL, { signal: controller.signal }).then((response) => response.text());
+    const feed = await parser.parseString(xml);
+    writingPosts = (feed.items || [])
+      .slice(0, 5)
+      .map((item) => ({
+        title: item.title || 'Untitled post',
+        link: item.link || SUBSTACK_FEED_URL,
+        pubDate: item.pubDate
+      }));
+  } catch {
+    writingFeedNote = 'Could not load Substack feed during build. Open publication directly below.';
+  } finally {
+    clearTimeout(timeout);
+  }
+}
 ---
 
 <BaseLayout title={`${room.title} — Room`} description={room.description || `${room.title} arcade room.`} theme="social">
@@ -58,7 +90,9 @@ const embedMachines = room.machines.filter((machine) => machine.kind === 'embed'
       </aside>
     )}
 
-    {room.room_type === 'embed' && embedMachines.length > 0 && (
+    {room.slug === 'music' && <MusicConsole />}
+
+    {room.room_type === 'embed' && room.slug !== 'music' && embedMachines.length > 0 && (
       <section class="room-embed-stack" aria-label="Embedded machines">
         {embedMachines.map((machine) => (
           <article class="room-embed-card">
@@ -75,6 +109,26 @@ const embedMachines = room.machines.filter((machine) => machine.kind === 'embed'
             </p>
           </article>
         ))}
+      </section>
+    )}
+
+    {room.slug === 'writing' && (
+      <section class="writing-rss" aria-label="Latest Substack posts">
+        <header class="writing-rss__head">
+          <h2>Latest Substack Posts</h2>
+          <a href="https://aesarchive.substack.com" target="_blank" rel="noopener">Open publication</a>
+        </header>
+        {writingFeedNote && <p class="writing-rss__note">{writingFeedNote}</p>}
+        {writingPosts.length > 0 && (
+          <ul class="writing-rss__list">
+            {writingPosts.map((post) => (
+              <li>
+                <a href={post.link} target="_blank" rel="noopener">{post.title}</a>
+                {post.pubDate && <time datetime={post.pubDate}>{new Date(post.pubDate).toLocaleDateString()}</time>}
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
     )}
 
@@ -212,5 +266,72 @@ const embedMachines = room.machines.filter((machine) => machine.kind === 'embed'
     color: var(--tone-accent-glow);
     text-decoration: none;
     border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 35%, transparent);
+  }
+
+  .writing-rss {
+    margin-top: 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 0.82rem;
+  }
+
+  .writing-rss__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.65rem;
+  }
+
+  .writing-rss__head h2 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .writing-rss__head a {
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 35%, transparent);
+  }
+
+  .writing-rss__note {
+    margin: 0.65rem 0 0;
+    color: var(--tone-muted);
+  }
+
+  .writing-rss__list {
+    margin: 0.65rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .writing-rss__list li {
+    display: grid;
+    gap: 0.2rem;
+    border-bottom: 1px solid var(--line2);
+    padding-bottom: 0.45rem;
+  }
+
+  .writing-rss__list li:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .writing-rss__list a {
+    color: var(--tone-text);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .writing-rss__list a:hover,
+  .writing-rss__list a:focus-visible {
+    color: var(--tone-accent-glow);
+  }
+
+  .writing-rss__list time {
+    color: var(--tone-muted);
+    font-size: 0.76rem;
   }
 </style>
