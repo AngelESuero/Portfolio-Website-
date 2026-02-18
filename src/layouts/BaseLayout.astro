@@ -71,7 +71,8 @@ const exploreLinks = [
       (() => {
         const KEY_MODE = 'siteMode';
         const KEY_WALK = 'walkStep';
-        const DEFAULTS = { mode: 'normal', walkStep: 1 };
+        const KEY_SIZE = 'siteSize';
+        const DEFAULTS = { mode: 'normal', walkStep: 1, size: 'standard' };
 
         const safeGet = (storage, key) => {
           try {
@@ -94,16 +95,21 @@ const exploreLinks = [
           if (Number.isNaN(parsed)) return 1;
           return Math.min(9, Math.max(1, parsed));
         };
+        const normalizeSize = (value) =>
+          value === 'compact' || value === 'spacious' || value === 'standard' ? value : 'standard';
 
         const initialMode = normalizeMode(safeGet(localStorage, KEY_MODE));
         const initialWalkStep = normalizeWalkStep(safeGet(localStorage, KEY_WALK));
+        const initialSize = normalizeSize(safeGet(localStorage, KEY_SIZE));
         const state = {
           mode: initialMode,
-          walkStep: initialWalkStep
+          walkStep: initialWalkStep,
+          size: initialSize
         };
 
         const applyToDom = () => {
           document.documentElement.dataset.mode = state.mode;
+          document.documentElement.dataset.size = state.size;
           if (state.mode === 'walk') {
             document.documentElement.dataset.walkStep = String(state.walkStep);
           } else {
@@ -114,6 +120,7 @@ const exploreLinks = [
         const persist = () => {
           safeSet(localStorage, KEY_MODE, state.mode);
           safeSet(localStorage, KEY_WALK, String(state.walkStep));
+          safeSet(localStorage, KEY_SIZE, state.size);
         };
 
         const emit = () => {
@@ -140,11 +147,19 @@ const exploreLinks = [
             persist();
             emit();
           },
+          setSize(nextSize) {
+            state.size = normalizeSize(nextSize);
+            applyToDom();
+            persist();
+            emit();
+          },
           reset() {
             localStorage.removeItem(KEY_MODE);
             localStorage.removeItem(KEY_WALK);
+            localStorage.removeItem(KEY_SIZE);
             state.mode = DEFAULTS.mode;
             state.walkStep = DEFAULTS.walkStep;
+            state.size = DEFAULTS.size;
             applyToDom();
             emit();
           }
