@@ -101,7 +101,7 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
 <style>
   .garland-real {
     position: fixed;
-    inset: 8px calc(var(--shell-gutter) - 14px) 8px;
+    inset: 4px;
     z-index: 0;
     pointer-events: none;
     opacity: 0.58;
@@ -116,8 +116,8 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
 
   .wire-top,
   .wire-bottom {
-    left: 2%;
-    right: 2%;
+    left: 0.8%;
+    right: 0.8%;
     border-top: 3px solid rgba(112, 142, 100, 0.48);
     border-radius: 999px;
   }
@@ -159,15 +159,15 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
 
   .leaf-track-top {
     top: 2px;
-    left: 2%;
-    right: 2%;
+    left: 0.8%;
+    right: 0.8%;
     height: 64px;
   }
 
   .leaf-track-bottom {
     bottom: 1px;
-    left: 2%;
-    right: 2%;
+    left: 0.8%;
+    right: 0.8%;
     height: 62px;
   }
 
@@ -179,11 +179,11 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
   }
 
   .leaf-track-left {
-    left: -10px;
+    left: -14px;
   }
 
   .leaf-track-right {
-    right: -10px;
+    right: -14px;
   }
 
   .leaf {
@@ -244,11 +244,11 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
   }
 
   .vine-lane-left {
-    left: -6px;
+    left: -12px;
   }
 
   .vine-lane-right {
-    right: -6px;
+    right: -12px;
   }
 
   .vine-main {
@@ -338,7 +338,7 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
 
   @media (max-width: 860px) {
     .garland-real {
-      inset: 6px 6px;
+      inset: 2px;
       opacity: 0.52;
     }
 
