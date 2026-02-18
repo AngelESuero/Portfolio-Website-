@@ -58,7 +58,10 @@ const youtubeEmbed = (urlValue: string): string | null => {
   }
 
   const host = parsed.hostname.toLowerCase();
-  if (parsed.pathname.includes('/embed/')) return urlValue;
+  if (parsed.pathname.startsWith('/embed')) return urlValue;
+
+  const playlistId = parsed.searchParams.get('list');
+  if (playlistId) return `https://www.youtube.com/embed/videoseries?list=${encodeURIComponent(playlistId)}`;
 
   if (host.includes('youtu.be')) {
     const id = parsed.pathname.split('/').filter(Boolean)[0];
@@ -108,6 +111,7 @@ const untitledEmbed = (urlValue: string): string | null => {
     return null;
   }
 
+  if (parsed.pathname.includes('/invite/')) return null;
   if (parsed.pathname.startsWith('/embed/')) return urlValue;
   const segments = parsed.pathname.split('/').filter(Boolean);
   const id = segments[segments.length - 1];

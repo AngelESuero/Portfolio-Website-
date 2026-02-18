@@ -94,6 +94,14 @@ body[data-theme='agi'] {
   --tone-sky-bright: #9ddeff;
 }
 
+body[data-theme='survival'] {
+  --tone-accent: #ffb35c;
+  --tone-accent-bright: #ffd29a;
+  --tone-accent-glow: #ffe7c7;
+  --tone-sky: #61c2ff;
+  --tone-sky-bright: #9ad9ff;
+}
+
 body[data-theme='threads'] {
   --tone-accent: #efb455;
   --tone-accent-bright: #ffd289;

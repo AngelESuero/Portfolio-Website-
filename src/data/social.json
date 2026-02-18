@@ -3,10 +3,11 @@
     "slug": "instagram",
     "title": "Instagram",
     "description": "Local-first archive page with curated posts from Google Photos exports.",
-    "primary_url": "https://instagram.com/a_e.s_",
+    "primary_url": "https://www.instagram.com/a_e.s",
     "mode": "manual",
     "local_preview": "instagram",
     "featured": [
+      { "label": "Profile", "url": "https://www.instagram.com/a_e.s" },
       { "label": "Open local archive", "url": "/instagram" }
     ]
   },
@@ -17,54 +18,66 @@
     "primary_url": "https://www.youtube.com/@a_e.s_4",
     "mode": "manual",
     "featured": [
-      { "label": "Channel home", "url": "https://www.youtube.com/@a_e.s_4" }
+      { "label": "Channel home", "url": "https://www.youtube.com/@a_e.s_4" },
+      { "label": "The Everyday Life Video", "url": "https://youtu.be/KWDgWpSDlrM?si=-3TuP0xU0t5egiZA" }
     ],
     "embeds": [
-      { "label": "Channel", "url": "https://www.youtube.com/embed?listType=playlist&list=UUQeJiBS72gxrZXw5GmqtocA" }
+      { "label": "The Everyday Life Video", "url": "https://youtu.be/KWDgWpSDlrM?si=-3TuP0xU0t5egiZA" }
     ]
   },
   {
     "slug": "soundcloud",
     "title": "SoundCloud",
     "description": "Audio sketches, references, and publish-ready cuts.",
-    "primary_url": "https://soundcloud.com/a_e-s_",
+    "primary_url": "https://soundcloud.com/aesuero",
     "mode": "manual",
     "featured": [
-      { "label": "Profile", "url": "https://soundcloud.com/a_e-s_" }
+      { "label": "Profile", "url": "https://soundcloud.com/aesuero" },
+      { "label": "Volume 4 set", "url": "https://soundcloud.com/aesuero/sets/volume-4-angel-sueros-top-50" }
     ]
   },
   {
     "slug": "substack",
     "title": "Substack",
     "description": "Long-form writing, dispatches, and behind-the-scenes notes.",
-    "primary_url": "https://aesarchive.substack.com",
+    "primary_url": "https://substack.com/@aesu?r=2ejeld&shareImageVariant=blur&utm_medium=ios&utm_source=profile",
     "mode": "rss",
     "rss_url": "https://aesarchive.substack.com/feed",
     "featured": [
-      { "label": "Publication", "url": "https://aesarchive.substack.com" }
+      {
+        "label": "Profile",
+        "url": "https://substack.com/@aesu?r=2ejeld&shareImageVariant=blur&utm_medium=ios&utm_source=profile"
+      },
+      { "label": "Publication feed", "url": "https://aesarchive.substack.com" }
     ]
   },
   {
     "slug": "spotify",
     "title": "Spotify",
     "description": "Now Listening playlist and release-adjacent references.",
-    "primary_url": "https://open.spotify.com/",
+    "primary_url": "https://open.spotify.com/playlist/1aeafuJB347VmKXu4jvaTO",
     "mode": "manual",
     "featured": [
-      { "label": "Open Spotify", "url": "https://open.spotify.com/" }
+      { "label": "Now Listening (Vol 4)", "url": "https://open.spotify.com/playlist/1aeafuJB347VmKXu4jvaTO" },
+      { "label": "Volume 3", "url": "https://open.spotify.com/playlist/5ZZLhPOVAzr7QufXPiD5dQ" }
+    ],
+    "embeds": [
+      { "label": "Now Listening (Vol 4)", "url": "https://open.spotify.com/playlist/1aeafuJB347VmKXu4jvaTO" }
     ]
   },
   {
     "slug": "untitled",
     "title": "Untitled",
     "description": "Direct stream player for live and in-progress music sets.",
-    "primary_url": "https://untitled.stream/m8IEX655GwMH",
+    "primary_url": "https://untitled.stream/library/project/W9oQWS6klQAAftkyx28QL",
     "mode": "manual",
     "featured": [
-      { "label": "Open stream page", "url": "https://untitled.stream/m8IEX655GwMH" }
+      { "label": "My First Beat Tape", "url": "https://untitled.stream/library/project/W9oQWS6klQAAftkyx28QL" },
+      { "label": "The Every Day Soundscape", "url": "https://untitled.stream/library/track/tbolNlQAX1cXSZr3bLWeh" },
+      { "label": "Queries Beat Tape", "url": "https://untitled.stream/library/project/yJu7cTKC0F3qvrRqs2EzA" }
     ],
     "embeds": [
-      { "label": "Untitled Stream", "url": "https://untitled.stream/embed/m8IEX655GwMH" }
+      { "label": "My First Beat Tape", "url": "https://untitled.stream/library/project/W9oQWS6klQAAftkyx28QL" }
     ]
   },
   {
@@ -83,40 +96,40 @@
     "slug": "x",
     "title": "X",
     "description": "Short-form commentary and research notes.",
-    "primary_url": "https://x.com/AngelESuero",
+    "primary_url": "https://x.com/a_e_s_4",
     "mode": "manual",
     "featured": [
-      { "label": "Profile", "url": "https://x.com/AngelESuero" }
+      { "label": "Profile", "url": "https://x.com/a_e_s_4" }
     ]
   },
   {
     "slug": "threads",
     "title": "Threads",
     "description": "Community updates and visual snippets.",
-    "primary_url": "https://www.threads.net/@a_e.s_",
+    "primary_url": "https://www.threads.com/@a_e.s",
     "mode": "manual",
     "featured": [
-      { "label": "Profile", "url": "https://www.threads.net/@a_e.s_" }
+      { "label": "Profile", "url": "https://www.threads.com/@a_e.s" }
     ]
   },
   {
     "slug": "tiktok",
     "title": "TikTok",
     "description": "Short clips and experiments adapted for vertical viewing.",
-    "primary_url": "https://www.tiktok.com/@a_e.s_4",
+    "primary_url": "https://tiktok.com/@a_e.s",
     "mode": "manual",
     "featured": [
-      { "label": "Profile", "url": "https://www.tiktok.com/@a_e.s_4" }
+      { "label": "Profile", "url": "https://tiktok.com/@a_e.s" }
     ]
   },
   {
     "slug": "twitch",
     "title": "Twitch",
     "description": "Live sessions, breakdowns, and in-progress streams.",
-    "primary_url": "https://www.twitch.tv/a_e_s_4",
+    "primary_url": "https://www.twitch.tv/thatoneyonder",
     "mode": "manual",
     "featured": [
-      { "label": "Channel", "url": "https://www.twitch.tv/a_e_s_4" }
+      { "label": "Channel", "url": "https://www.twitch.tv/thatoneyonder" }
     ]
   }
 ]

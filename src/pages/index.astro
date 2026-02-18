@@ -6,7 +6,7 @@ import { getCollection } from 'astro:content';
 import MobileTOC from '../components/MobileTOC.astro';
 import UntitledPlayer from '../components/UntitledPlayer.astro';
 import EmbedCard from '../components/EmbedCard.astro';
-import { LINK_HUB_CATEGORIES } from '../data/linkhub';
+import { LINK_HUB_CATEGORIES, type LinkHubItem } from '../data/linkhub';
 
 const allProjects = await getCollection('projects');
 const posts = (await getCollection('posts'))
@@ -14,38 +14,43 @@ const posts = (await getCollection('posts'))
   .slice(0, 3);
 const tools = [...new Set(allProjects.flatMap((project) => project.data.tools))].slice(0, 10);
 const threads = featuredThreads.featured_threads;
-const musicCategory = LINK_HUB_CATEGORIES.find((category) => category.id === 'music');
-const nowListeningItem = musicCategory?.items.find((item) => item.id === 'now-listening');
-const videoCategory = LINK_HUB_CATEGORIES.find((category) => category.id === 'video');
-const writingCategory = LINK_HUB_CATEGORIES.find((category) => category.id === 'writing');
-const resourcesCategory = LINK_HUB_CATEGORIES.find((category) => category.id === 'resources');
-const socialCategory = LINK_HUB_CATEGORIES.find((category) => category.id === 'social');
+const categoryItems = new Map(LINK_HUB_CATEGORIES.map((category) => [category.id, category.items]));
+const pickItems = (categoryId: string, ids: string[]): LinkHubItem[] => {
+  const items = categoryItems.get(categoryId) || [];
+  return ids
+    .map((id) => items.find((item) => item.id === id))
+    .filter((item): item is LinkHubItem => Boolean(item));
+};
+
+const nowListeningItem = pickItems('music', ['now-listening'])[0];
 
 const sectionEmbeds = [
   {
     id: 'music',
     label: 'Music',
-    items: musicCategory?.items ?? []
+    items: pickItems('music', ['now-listening', 'my-first-beat-tape', 'everyday-soundscape', 'queries-beat-tape'])
   },
   {
     id: 'visual',
     label: 'Visual',
-    items: (socialCategory?.items || []).filter((item) => ['instagram', 'discord'].includes(item.id))
+    items: pickItems('social', ['instagram', 'threads', 'tiktok'])
   },
   {
     id: 'video',
     label: 'Video',
-    items: videoCategory?.items ?? []
+    items: pickItems('video', ['everyday-life-video', 'youtube-channel', 'post-labor-econ-playlist'])
   },
   {
     id: 'newark',
     label: 'Newark',
-    items: (resourcesCategory?.items || []).filter((item) => ['map', 'press-kit'].includes(item.id))
+    items: pickItems('resources', ['work-archive', 'map', 'mit-living-wage'])
   },
   {
     id: 'scraps',
     label: 'Scraps',
-    items: (writingCategory?.items || []).filter((item) => ['writing-archive', 'substack', 'rss-feed'].includes(item.id))
+    items: pickItems('music', ['scraps-2023-2024']).concat(
+      pickItems('writing', ['writing-archive', 'substack', 'magazine-publication'])
+    )
   }
 ];
 ---
