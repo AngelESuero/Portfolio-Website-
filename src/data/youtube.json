@@ -1,22 +1,176 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-17T21:31:20.914Z",
+    "generatedAt": "2026-02-18T08:02:25.804Z",
     "channelUrl": "https://www.youtube.com/@a_e.s_4",
     "channelId": "UCQeJiBS72gxrZXw5GmqtocA",
     "feedUrl": "https://www.youtube.com/feeds/videos.xml?channel_id=UCQeJiBS72gxrZXw5GmqtocA"
   },
   "items": [
     {
-      "id": "a04be4077bd152f7369d69e075ca00b3d180d938",
-      "title": "YouTube seed: run sync to populate uploads.",
-      "url": "https://www.youtube.com/@a_e.s_4",
-      "videoId": null,
-      "publishedAt": "2026-02-17T21:31:20.914Z",
+      "id": "eb4819202f8011f00345bc78293dfcba7e0b4fdf5e9982ef33f2d9c5f54b1130",
+      "title": "Waiting For Society To Change... Or A Job To Hit Me Back...",
+      "url": "https://www.youtube.com/watch?v=My31BWs9OB0",
+      "videoId": "My31BWs9OB0",
+      "publishedAt": "2026-02-18T06:10:08.000Z",
       "series": [
-        "Seed"
+        "Uploads"
       ],
-      "thumbnailUrl": null
+      "thumbnailUrl": "https://i.ytimg.com/vi/My31BWs9OB0/hqdefault.jpg"
+    },
+    {
+      "id": "fd4a7717437fc4d4bebe0be7d25199e91906505505b57616f883372e08068cc9",
+      "title": "Waiting For Society To Change... Or A Job To Hit Me Back...",
+      "url": "https://www.youtube.com/watch?v=T6V6gMhmQpM",
+      "videoId": "T6V6gMhmQpM",
+      "publishedAt": "2026-02-17T13:36:55.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/T6V6gMhmQpM/hqdefault.jpg"
+    },
+    {
+      "id": "10e14d76e19a0d29ef86a94dff6597fc4bf67fe7ee79b2a40909c6194aefc4c6",
+      "title": "Waiting For Society To Change... Or A Job To Hit Me Back...",
+      "url": "https://www.youtube.com/watch?v=8cvs2ReK9A0",
+      "videoId": "8cvs2ReK9A0",
+      "publishedAt": "2026-02-17T12:57:51.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/8cvs2ReK9A0/hqdefault.jpg"
+    },
+    {
+      "id": "35c9b60b647a15ceeb1814093dcd1721aa73f13777f3a9d25d93338ce51872a6",
+      "title": "Waiting For Society To Change... Or A Job To Hit Me Back...",
+      "url": "https://www.youtube.com/watch?v=qFZVIxAD830",
+      "videoId": "qFZVIxAD830",
+      "publishedAt": "2026-02-17T12:39:07.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/qFZVIxAD830/hqdefault.jpg"
+    },
+    {
+      "id": "545174ce555d6fdc6841b4cc2503667dd1a80d4e4e166c686d90cd3fef6cd7a5",
+      "title": "-",
+      "url": "https://www.youtube.com/shorts/4Po3jxWXF3c",
+      "videoId": "4Po3jxWXF3c",
+      "publishedAt": "2026-02-16T22:03:03.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/4Po3jxWXF3c/hqdefault.jpg"
+    },
+    {
+      "id": "70916563caae93416c317c863c510c504e5970d5aa20919ece3dbae4c33b306a",
+      "title": "-",
+      "url": "https://www.youtube.com/watch?v=SvwlVMhaaCU",
+      "videoId": "SvwlVMhaaCU",
+      "publishedAt": "2026-02-15T03:35:38.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/SvwlVMhaaCU/hqdefault.jpg"
+    },
+    {
+      "id": "42f504053b9b4e3e76505982f2239ae22a0c4e8e22e30c23a64a640a72451704",
+      "title": "-",
+      "url": "https://www.youtube.com/shorts/dhVyMDXO4ko",
+      "videoId": "dhVyMDXO4ko",
+      "publishedAt": "2026-02-15T03:30:40.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/dhVyMDXO4ko/hqdefault.jpg"
+    },
+    {
+      "id": "45a33932d75fe403e4e0a75f79c54fe8067f97364a18808354ff2093f2bca20a",
+      "title": "-",
+      "url": "https://www.youtube.com/watch?v=qljRlY7EJ4I",
+      "videoId": "qljRlY7EJ4I",
+      "publishedAt": "2026-02-15T03:29:56.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/qljRlY7EJ4I/hqdefault.jpg"
+    },
+    {
+      "id": "6bc0738c3f0f8ebbf6d8d9733a21251d48eeb79a91d5e43d8d2698048cb936bb",
+      "title": "-",
+      "url": "https://www.youtube.com/shorts/rGRCf7j6Qws",
+      "videoId": "rGRCf7j6Qws",
+      "publishedAt": "2026-02-15T03:29:46.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/rGRCf7j6Qws/hqdefault.jpg"
+    },
+    {
+      "id": "23f31b57cbcf6b52dd59a3c53c4b3393b663687ad49da4a946764dabacc93585",
+      "title": "-",
+      "url": "https://www.youtube.com/shorts/HZw1Jx78-Kw",
+      "videoId": "HZw1Jx78-Kw",
+      "publishedAt": "2026-02-15T03:29:36.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/HZw1Jx78-Kw/hqdefault.jpg"
+    },
+    {
+      "id": "62d68bff92658c652692b5666d5f8369a4a2821e332f312018c2d1d9e6135f46",
+      "title": "-",
+      "url": "https://www.youtube.com/shorts/bKziM8_WFIk",
+      "videoId": "bKziM8_WFIk",
+      "publishedAt": "2026-02-15T03:29:12.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/bKziM8_WFIk/hqdefault.jpg"
+    },
+    {
+      "id": "b911a263ec1dc7f4b0edeefc932d984667bcf0d5cc7127e8e831f391dc4e2f74",
+      "title": "-",
+      "url": "https://www.youtube.com/shorts/wEV7giSFwyU",
+      "videoId": "wEV7giSFwyU",
+      "publishedAt": "2026-02-15T03:28:41.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/wEV7giSFwyU/hqdefault.jpg"
+    },
+    {
+      "id": "4b1625c1e4b4eaf91a4ea79c51b54bc79819b1b38f6ddd7ae6147f110c16026f",
+      "title": "-",
+      "url": "https://www.youtube.com/shorts/PdFd54zYo7s",
+      "videoId": "PdFd54zYo7s",
+      "publishedAt": "2026-02-15T03:22:52.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/PdFd54zYo7s/hqdefault.jpg"
+    },
+    {
+      "id": "8c0545a0d7c1a375fc430e3bb62061a093857bfceceeb7a7a192a20d8c91fb02",
+      "title": "-",
+      "url": "https://www.youtube.com/shorts/xYDR7BuIszs",
+      "videoId": "xYDR7BuIszs",
+      "publishedAt": "2026-02-15T03:22:29.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/xYDR7BuIszs/hqdefault.jpg"
+    },
+    {
+      "id": "11b4c157b3068bcb2d3798ff518af15b2af6e76ac5ef4e899c2c4613bdf41d6d",
+      "title": "-",
+      "url": "https://www.youtube.com/shorts/Yv1akhygHRM",
+      "videoId": "Yv1akhygHRM",
+      "publishedAt": "2026-02-15T03:18:28.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/Yv1akhygHRM/hqdefault.jpg"
     }
   ]
 }
