@@ -7,10 +7,10 @@
   color-scheme: dark;
   --bg0: #05060a;
   --bg1: #070a12;
-  --paper: rgba(10, 12, 18, 0.62);
-  --line: rgba(232, 239, 255, 0.065);
-  --text: rgba(255, 255, 255, 0.92);
-  --muted: rgba(255, 255, 255, 0.62);
+  --paper: rgba(8, 12, 20, 0.76);
+  --line: rgba(232, 239, 255, 0.095);
+  --text: rgba(255, 255, 255, 0.95);
+  --muted: rgba(255, 255, 255, 0.72);
   --neon: #7be7ff;
   --amber: #ffcc7a;
   --accent: var(--neon);
@@ -37,8 +37,8 @@
   --aura-y: 30vh;
   --hallway-x: 50vw;
   --hallway-y: 34vh;
-  --line: rgba(232, 239, 255, 0.065);
-  --line2: rgba(232, 239, 255, 0.045);
+  --line: rgba(232, 239, 255, 0.095);
+  --line2: rgba(232, 239, 255, 0.08);
   --panel: rgba(255, 255, 255, 0.028);
   --street-noise: 0.04;
   --street-vignette: 0.28;
@@ -74,8 +74,8 @@ html[data-size='spacious'] {
   color-scheme: dark;
   --tone-bg: #060911;
   --tone-bg-deep: #04070d;
-  --tone-surface: rgba(11, 16, 25, 0.84);
-  --tone-surface-strong: rgba(8, 12, 20, 0.92);
+  --tone-surface: rgba(10, 15, 24, 0.9);
+  --tone-surface-strong: rgba(8, 12, 20, 0.96);
 }
 
 body[data-theme='archive'] {
@@ -219,7 +219,7 @@ html[data-cursor-idle='false'] {
 
 .card,
 .panel {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.028));
   border: 1px solid var(--line);
   box-shadow:
     0 10px 36px rgba(0, 0, 0, 0.34),
@@ -228,7 +228,7 @@ html[data-cursor-idle='false'] {
 }
 
 .site-header {
-  background: linear-gradient(180deg, rgba(8, 12, 20, 0.7), rgba(8, 12, 20, 0.5));
+  background: linear-gradient(180deg, rgba(6, 10, 17, 0.88), rgba(6, 10, 17, 0.78));
   border-bottom: 1px solid var(--line2);
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
   backdrop-filter: blur(8px);
@@ -249,11 +249,29 @@ html[data-cursor-idle='false'] {
 }
 
 .page-shell {
+  position: relative;
+  isolation: isolate;
   padding-inline: calc(var(--size-gutter) * var(--space-scale));
   padding-block: calc(var(--size-pad-y) * var(--space-scale));
   background:
     linear-gradient(to right, rgba(255, 255, 255, 0.02), transparent 26%),
     linear-gradient(to left, rgba(0, 0, 0, 0.2), transparent 36%);
+}
+
+.page-shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(3, 8, 16, 0.42), rgba(3, 7, 14, 0.56)),
+    radial-gradient(1200px 760px at 50% 0%, rgba(5, 12, 22, 0.14), rgba(2, 6, 12, 0.48));
+}
+
+.page-shell > * {
+  position: relative;
+  z-index: 1;
 }
 
 .site-shell-row {
