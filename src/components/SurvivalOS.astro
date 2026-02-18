@@ -1,0 +1,218 @@
+---
+import { SURVIVAL_OS } from '../data/survival-os';
+
+const tuneUps = [
+  {
+    claim: 'WHO annual PM2.5 guideline: 5 µg/m³.',
+    note: 'Use this as the primary benchmark for long-run air quality framing.',
+    source: 'https://iris.who.int/handle/10665/345329'
+  },
+  {
+    claim: 'Clean cooking gap is commonly cited at ~2.1B people (not 2.4B).',
+    note: 'Use latest WHO-aligned figure and include the publication date in the caption.',
+    source: 'https://www.who.int/news-room/fact-sheets/detail/household-air-pollution-and-health'
+  },
+  {
+    claim: 'Emergency water minimum in Sphere: 15 L/person/day.',
+    note: 'State this as humanitarian minimum; keep survival minimum separate when relevant.',
+    source: 'https://disasterlaw.ifrc.org/sites/default/files/media/disaster_law/2021-01/Sphere-Handbook-2018-EN.pdf'
+  },
+  {
+    claim: 'UNICEF Gaza citation: ~1.5–2 L/day observed; 15 L/day humanitarian minimum.',
+    note: 'Present both observed reality and humanitarian standard in the same sentence.',
+    source: 'https://www.unicef.org/press-releases/barely-drop-drink-children-gaza-strip-do-not-access-90-cent-their-normal-water-use'
+  },
+  {
+    claim: 'Texas Uri death phrasing: “246 officially reported deaths.”',
+    note: 'If you include alternative estimates, label them as separate study estimates.',
+    source: 'https://www.airclim.org/working-areas/air-pollution/policy-initiatives/who-air-quality-guidelines'
+  }
+];
+---
+
+<section class="view-surface">
+  <header class="view-surface-header">
+    <p class="view-surface-kicker">AI-generated content</p>
+    <h1>Survival OS</h1>
+    <p>
+      A survival-first systems map for life support, stability, and the infrastructure that keeps people alive at scale.
+    </p>
+  </header>
+
+  <div class="explore-grid mt-4">
+    <a class="explore-card" href="#infographic">Infographic</a>
+    <a class="explore-card" href="#systems">Vital systems map</a>
+    <a class="explore-card" href="#sources">Citations</a>
+  </div>
+</section>
+
+<section id="infographic" class="view-surface mt-4">
+  <header class="view-surface-header">
+    <p class="view-surface-kicker">Visual overview</p>
+    <h1>Infographic</h1>
+    <p>Embedded PDF + preview image.</p>
+  </header>
+
+  <div class="card mt-4 p-4">
+    <img
+      src="/survival-os/SurvivalOS_Infographic_v4.png"
+      alt="Survival OS infographic preview"
+      class="w-full rounded-xl"
+      loading="lazy"
+    />
+    <div class="mt-4 flex flex-wrap gap-3">
+      <a class="pill rounded-full px-3 py-1.5 text-sm no-underline" href="/survival-os/SurvivalOS_Infographic_v4.pdf" target="_blank" rel="noreferrer">
+        Open PDF
+      </a>
+      <a class="pill rounded-full px-3 py-1.5 text-sm no-underline" href="/survival-os/SurvivalOS_Infographic_v4.pdf" download>
+        Download PDF
+      </a>
+    </div>
+
+    <div class="mt-4">
+      <iframe
+        title="Survival OS infographic PDF"
+        src="/survival-os/SurvivalOS_Infographic_v4.pdf#view=FitH"
+        class="h-[72vh] w-full rounded-xl border"
+        loading="lazy"
+      ></iframe>
+    </div>
+  </div>
+</section>
+
+<section class="view-surface mt-4">
+  <header class="view-surface-header">
+    <p class="view-surface-kicker">Stack model</p>
+    <h1>SurvivalOS Overlay</h1>
+    <p>Layering survivability below your existing “Living” model.</p>
+  </header>
+
+  <div class="card mt-4 overflow-x-auto p-4">
+    <table class="w-full min-w-[640px] border-collapse text-sm">
+      <thead>
+        <tr class="text-left">
+          <th class="border-b px-3 py-2">Layer</th>
+          <th class="border-b px-3 py-2">Purpose</th>
+          <th class="border-b px-3 py-2">Systems</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="border-b px-3 py-2">L0: Life Support</td>
+          <td class="border-b px-3 py-2">Keep a human alive today.</td>
+          <td class="border-b px-3 py-2">Air, Water, Thermoregulation/Shelter, Calories</td>
+        </tr>
+        <tr>
+          <td class="border-b px-3 py-2">L1: Protection</td>
+          <td class="border-b px-3 py-2">Prevent avoidable mortality from exposure and breakdown.</td>
+          <td class="border-b px-3 py-2">Sanitation, Safety, Acute Care</td>
+        </tr>
+        <tr>
+          <td class="border-b px-3 py-2">L2: Backbone</td>
+          <td class="border-b px-3 py-2">Enable L0-L1 at population scale.</td>
+          <td class="border-b px-3 py-2">Energy, Logistics, Information/Comms, Governance</td>
+        </tr>
+        <tr>
+          <td class="px-3 py-2">L3: Living</td>
+          <td class="px-3 py-2">Expression, meaning, and social flourishing.</td>
+          <td class="px-3 py-2">Your existing 9-part model</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="systems" class="view-surface mt-4">
+  <header class="view-surface-header">
+    <p class="view-surface-kicker">Systems map</p>
+    <h1>What keeps a human alive</h1>
+    <p>
+      Tiered by urgency: <strong>Keep Alive</strong> then <strong>Stabilize</strong>.
+    </p>
+  </header>
+
+  <div class="mt-4 grid gap-4">
+    {SURVIVAL_OS.systems.map((sys) => (
+      <details class="card p-4">
+        <summary class="cursor-pointer list-none">
+          <div class="flex items-baseline justify-between gap-4">
+            <div>
+              <div class="view-surface-kicker">{sys.tier}</div>
+              <div class="mt-1 font-display text-lg">{sys.title}</div>
+            </div>
+            <div class="chip rounded-full px-3 py-1 text-xs">Open</div>
+          </div>
+        </summary>
+
+        <p class="mt-4 text-[var(--tone-muted)]">{sys.whyItMatters}</p>
+
+        <div class="mt-4 grid gap-4">
+          <div>
+            <div class="view-surface-kicker">Minimums</div>
+            <ul class="list-disc pl-5">
+              {sys.minimums.map((x) => <li>{x}</li>)}
+            </ul>
+          </div>
+
+          <div>
+            <div class="view-surface-kicker">Dependencies</div>
+            <ul class="list-disc pl-5">
+              {sys.dependencies.map((x) => <li>{x}</li>)}
+            </ul>
+          </div>
+
+          <div>
+            <div class="view-surface-kicker">What AI could automate</div>
+            <ul class="list-disc pl-5">
+              {sys.whatAiCouldAutomate.map((x) => <li>{x}</li>)}
+            </ul>
+          </div>
+
+          <div>
+            <div class="view-surface-kicker">Safeguards</div>
+            <ul class="list-disc pl-5">
+              {sys.safeguards.map((x) => <li>{x}</li>)}
+            </ul>
+          </div>
+        </div>
+      </details>
+    ))}
+  </div>
+</section>
+
+<section class="view-surface mt-4">
+  <header class="view-surface-header">
+    <p class="view-surface-kicker">Publication hardening</p>
+    <h1>Fact tune-ups before publish</h1>
+    <p>Short list of claims to phrase carefully and cite directly.</p>
+  </header>
+
+  <div class="mt-4 grid gap-3">
+    {tuneUps.map((item) => (
+      <article class="card p-4">
+        <h3 class="font-semibold">{item.claim}</h3>
+        <p class="mt-1 text-[var(--tone-muted)]">{item.note}</p>
+        <p class="mt-2 text-sm">
+          <a class="underline" href={item.source} target="_blank" rel="noreferrer">Source</a>
+        </p>
+      </article>
+    ))}
+  </div>
+</section>
+
+<section id="sources" class="view-surface mt-4">
+  <header class="view-surface-header">
+    <p class="view-surface-kicker">Sources</p>
+    <h1>Primary references</h1>
+    <p>Use these as baseline references for the report page and infographic captions.</p>
+  </header>
+
+  <ul class="mt-4 list-disc space-y-1 pl-5 text-sm">
+    {tuneUps.map((item) => (
+      <li>
+        <a class="underline" href={item.source} target="_blank" rel="noreferrer">{item.source}</a>
+      </li>
+    ))}
+  </ul>
+</section>
+
