@@ -25,6 +25,15 @@ const providerFromUrl = (urlValue: string): LinkHubProvider | null => {
   return null;
 };
 
+const isLinktreeUrl = (urlValue: string): boolean => {
+  try {
+    const parsed = new URL(urlValue);
+    return parsed.hostname.toLowerCase().includes('linktr.ee');
+  } catch {
+    return false;
+  }
+};
+
 const instagramEmbed = (urlValue: string): string | null => {
   let parsed: URL;
   try {
@@ -108,6 +117,7 @@ const untitledEmbed = (urlValue: string): string | null => {
 
 const provider = item.preferredEmbed ?? providerFromUrl(item.url);
 const isExternal = /^https?:\/\//i.test(item.url);
+const isLinktree = isLinktreeUrl(item.url);
 const isPlaceholderSpotify = provider === 'spotify' && /SPOTIFY_PLAYLIST_ID/i.test(item.url || '');
 
 let embedUrl: string | null = null;
@@ -160,12 +170,16 @@ const isEmbeddable = Boolean(embedUrl) && !isPlaceholderSpotify;
       <p>
         {provider === 'instagram'
           ? 'Instagram profile links do not embed here. Use a specific post or reel URL.'
-          : 'Embed unavailable for this source.'}
+          : isLinktree
+            ? 'Linktree is your active links hub. Open it to see the full live stack.'
+            : 'Embed unavailable for this source.'}
       </p>
     </div>
   )}
 
-  <a class="hub-link" href={item.url} {...(isExternal ? { target: '_blank', rel: 'noopener' } : {})}>Open source</a>
+  <a class="hub-link" href={item.url} {...(isExternal ? { target: '_blank', rel: 'noopener' } : {})}>
+    {isLinktree ? 'Open Linktree' : 'Open source'}
+  </a>
 </article>
 
 <style>

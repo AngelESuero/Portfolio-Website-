@@ -23,9 +23,10 @@ export interface LinkHubIconLink {
 }
 
 const spotifyPlaylistId = String(import.meta.env.PUBLIC_SPOTIFY_PLAYLIST_ID || '').trim();
+const linkHubFallbackUrl = 'https://linktr.ee/a_e.s_';
 const spotifyNowListeningUrl = spotifyPlaylistId
   ? `https://open.spotify.com/playlist/${spotifyPlaylistId}`
-  : 'https://open.spotify.com/';
+  : linkHubFallbackUrl;
 
 export const LINK_HUB_ICONS: LinkHubIconLink[] = [
   { title: 'YouTube', url: 'https://www.youtube.com/@a_e.s_4', icon: 'YT' },
@@ -47,7 +48,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
         title: 'Now Listening',
         url: spotifyNowListeningUrl,
         year: '2026',
-        tag: 'Playlist',
+        tag: spotifyPlaylistId ? 'Playlist' : 'Link hub',
         preferredEmbed: spotifyPlaylistId ? 'spotify' : undefined
       },
       {
