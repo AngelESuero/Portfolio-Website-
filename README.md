@@ -13,7 +13,7 @@ A modern, lo-fi, content-first personal site for **Angel Suero (a_e.s_)** built 
 - Astro
 - Tailwind CSS
 - Astro Content Collections (projects + writing)
-- Cloudflare Pages Functions (`/contact`, `/api/agi`, `/api/agi-x`)
+- Cloudflare Pages Functions (`/contact`, `/api/agi`, `/api/agi-x`, `/api/social-rss`)
 
 ## Local development
 ```bash
@@ -41,7 +41,7 @@ npm run build
 3. Use these build settings:
    - Build command: `npm run build`
    - Build output directory: `dist`
-4. Ensure the `functions/` directory is included so `/contact`, `/api/agi`, and `/api/agi-x` are deployed as Pages Functions.
+4. Ensure the `functions/` directory is included so `/contact`, `/api/agi`, `/api/agi-x`, and `/api/social-rss` are deployed as Pages Functions.
 
 ## AGI Timeline setup
 The AGI timeline uses two pieces:

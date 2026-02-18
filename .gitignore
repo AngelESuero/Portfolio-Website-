@@ -2,3 +2,11 @@ node_modules
 .astro
 dist
 .DS_Store
+
+# Finder-style duplicate filenames
+* 2.astro
+* 2.ts
+* 2.mjs
+* 2.json
+* 2.md
+* 2.svg
