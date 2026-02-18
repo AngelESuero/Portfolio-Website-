@@ -2,17 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import profile from '../data/profile';
 import featuredThreads from '../data/featured_threads.json';
-import { getCollection } from 'astro:content';
-import MobileTOC from '../components/MobileTOC.astro';
 import UntitledPlayer from '../components/UntitledPlayer.astro';
 import EmbedCard from '../components/EmbedCard.astro';
 import { LINK_HUB_CATEGORIES, type LinkHubItem } from '../data/linkhub';
 
-const allProjects = await getCollection('projects');
-const posts = (await getCollection('posts'))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
-const tools = [...new Set(allProjects.flatMap((project) => project.data.tools))].slice(0, 10);
 const threads = featuredThreads.featured_threads;
 const categoryItems = new Map(LINK_HUB_CATEGORIES.map((category) => [category.id, category.items]));
 const pickItems = (categoryId: string, ids: string[]): LinkHubItem[] => {
@@ -130,86 +123,6 @@ const sectionEmbeds = [
       </section>
     )}
   </div>
-
-  <article class="mobile-editorial" aria-label="Mobile editorial layout">
-    <header class="mobile-hero" id="home">
-      <p class="mobile-kicker">Timeline / Archive</p>
-      <h1><span class="mobile-accent">a_e.s_</span></h1>
-      <p class="mobile-dek">{profile.long_bio}</p>
-      <div class="mobile-role-row" aria-label="Identity chips">
-        {profile.roles.map((role) => <span>{role}</span>)}
-      </div>
-    </header>
-
-    <MobileTOC />
-
-    <section id="about" class="mobile-story-section">
-      <h2>About</h2>
-      <p>{profile.short_bio}</p>
-      <p>{profile.long_bio}</p>
-    </section>
-
-    <section id="work" class="mobile-story-section">
-      <h2>Work / Projects</h2>
-      <ul class="mobile-project-list">
-        {threads.map((thread) => (
-          <li>
-            <a href={thread.href} {...(thread.external ? { target: '_blank', rel: 'noopener' } : {})}>{thread.title}</a>
-            <p>{thread.blurb}</p>
-            <p class="meta">{thread.year} · {thread.type}</p>
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <section id="experience" class="mobile-story-section">
-      <h2>Experience</h2>
-      <p>Built cross-disciplinary work streams in music production, visual storytelling, and civic collaboration across Newark communities.</p>
-      <p>Current focus: documenting process in public, shipping creative studies, and evolving this archive into a living portfolio timeline.</p>
-    </section>
-
-    <section id="skills" class="mobile-story-section">
-      <h2>Skills / Tools</h2>
-      <div class="mobile-pill-grid">
-        {tools.map((tool) => <span>{tool}</span>)}
-      </div>
-    </section>
-
-    <section id="media" class="mobile-story-section">
-      <h2>Media</h2>
-      <ul class="mobile-post-list">
-        {posts.map((post) => (
-          <li>
-            <a href={`/writing/${post.slug}`}>{post.data.title}</a>
-            <p>{post.data.summary}</p>
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <section id="resume" class="mobile-story-section">
-      <h2>Resume / CV</h2>
-      <p>For speaking, collaborations, and portfolio details, use the press kit and updated project index.</p>
-      <p><a href="/press-kit">Open press kit</a></p>
-    </section>
-
-    <section id="contact" class="mobile-story-section">
-      <h2>Contact</h2>
-      <p>Use the form for inquiries, collaborations, and project commissions.</p>
-      <p><a href="/contact">Open contact form</a></p>
-    </section>
-
-    <section id="links" class="mobile-story-section">
-      <h2>Links</h2>
-      <ul class="mobile-link-list">
-        <li><a href={profile.social_links.instagram}>Instagram</a></li>
-        <li><a href={profile.social_links.youtube}>YouTube</a></li>
-        <li><a href={profile.social_links.discord}>Discord</a></li>
-        <li><a href={profile.link_hub_url}>Link hub</a></li>
-      </ul>
-    </section>
-  </article>
-
   <script is:inline>
     (() => {
       const tabs = Array.from(document.querySelectorAll('[data-section-tab]'));

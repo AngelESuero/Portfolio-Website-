@@ -512,37 +512,7 @@ html[data-mode='explore'] .mode-explore {
   }
 
   .desktop-home {
-    display: none;
-  }
-
-  .mobile-editorial {
     display: block;
-    position: relative;
-    margin: -2rem calc(50% - 50vw) 0;
-    padding: 2.25rem 1.25rem 5rem;
-    color: #ecf0f6;
-    background:
-      linear-gradient(180deg, #081328 0%, #071124 42%, #050d1b 100%),
-      radial-gradient(circle at 12% 8%, rgba(35, 95, 176, 0.15), transparent 40%);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    --mobile-accent: var(--tone-accent);
-  }
-
-  .mobile-editorial::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.08;
-    background-image: radial-gradient(rgba(255, 255, 255, 0.55) 0.45px, transparent 0.45px);
-    background-size: 2px 2px;
-  }
-
-  .mobile-editorial > * {
-    position: relative;
-    z-index: 1;
-    max-width: 68ch;
-    margin-inline: auto;
   }
 
   .mobile-hero {
