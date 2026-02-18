@@ -133,7 +133,7 @@ if (provider === 'youtube') {
 const isEmbeddable = Boolean(embedUrl) && !isPlaceholderSpotify;
 ---
 
-<article class="card hub-card">
+<article class="card hub-card" data-provider={provider || 'none'}>
   <div class="hub-meta">
     {item.tag && <span class="hub-tag">{item.tag}</span>}
     {item.year && <span class="hub-year">{item.year}</span>}
@@ -236,5 +236,9 @@ const isEmbeddable = Boolean(embedUrl) && !isPlaceholderSpotify;
     text-decoration: none;
     border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 38%, transparent);
     font-size: 0.84rem;
+  }
+
+  .hub-card[data-provider='untitled'] .hub-embed iframe {
+    height: clamp(250px, 62vw, 344px);
   }
 </style>
