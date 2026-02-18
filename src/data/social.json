@@ -3,11 +3,11 @@
     "slug": "instagram",
     "title": "Instagram",
     "description": "Local-first archive page with curated posts from Google Photos exports.",
-    "primary_url": "https://www.instagram.com/a_e.s",
+    "primary_url": "https://www.instagram.com/a_e.s_",
     "mode": "manual",
     "local_preview": "instagram",
     "featured": [
-      { "label": "Profile", "url": "https://www.instagram.com/a_e.s" },
+      { "label": "Profile", "url": "https://www.instagram.com/a_e.s_" },
       { "label": "Open local archive", "url": "/instagram" }
     ]
   },

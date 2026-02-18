@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Parser from 'rss-parser';
 import MusicConsole from '../../components/MusicConsole.astro';
 import rooms from '../../data/rooms.json';
 
@@ -22,12 +21,6 @@ interface Room {
   machines: RoomMachine[];
 }
 
-interface WritingPost {
-  title: string;
-  link: string;
-  pubDate?: string;
-}
-
 export function getStaticPaths() {
   const roomList = rooms as Room[];
   return roomList.map((room) => ({
@@ -39,30 +32,6 @@ export function getStaticPaths() {
 const { room } = Astro.props as { room: Room };
 const isExternal = (url: string) => /^https?:\/\//i.test(url);
 const embedMachines = room.machines.filter((machine) => machine.kind === 'embed' && machine.embed_url);
-const parser = new Parser();
-const SUBSTACK_FEED_URL = 'https://aesarchive.substack.com/feed';
-let writingPosts: WritingPost[] = [];
-let writingFeedNote = '';
-
-if (room.slug === 'writing') {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 8000);
-  try {
-    const xml = await fetch(SUBSTACK_FEED_URL, { signal: controller.signal }).then((response) => response.text());
-    const feed = await parser.parseString(xml);
-    writingPosts = (feed.items || [])
-      .slice(0, 5)
-      .map((item) => ({
-        title: item.title || 'Untitled post',
-        link: item.link || SUBSTACK_FEED_URL,
-        pubDate: item.pubDate
-      }));
-  } catch {
-    writingFeedNote = 'Could not load Substack feed during build. Open publication directly below.';
-  } finally {
-    clearTimeout(timeout);
-  }
-}
 ---
 
 <BaseLayout title={`${room.title} — Room`} description={room.description || `${room.title} arcade room.`} theme="social">
@@ -114,20 +83,12 @@ if (room.slug === 'writing') {
     {room.slug === 'writing' && (
       <section class="writing-rss" aria-label="Latest Substack posts">
         <header class="writing-rss__head">
-          <h2>Latest Substack Posts</h2>
+          <h2>Substack Publication</h2>
           <a href="https://aesarchive.substack.com" target="_blank" rel="noopener">Open publication</a>
         </header>
-        {writingFeedNote && <p class="writing-rss__note">{writingFeedNote}</p>}
-        {writingPosts.length > 0 && (
-          <ul class="writing-rss__list">
-            {writingPosts.map((post) => (
-              <li>
-                <a href={post.link} target="_blank" rel="noopener">{post.title}</a>
-                {post.pubDate && <time datetime={post.pubDate}>{new Date(post.pubDate).toLocaleDateString()}</time>}
-              </li>
-            ))}
-          </ul>
-        )}
+        <p class="writing-rss__note">
+          This room avoids build-time feed fetches to keep deploys reliable. Open the publication directly for latest posts.
+        </p>
       </section>
     )}
 

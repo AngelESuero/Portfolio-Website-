@@ -18,14 +18,14 @@
         "title": "Spotify Console",
         "summary": "Now Listening playlist in a native wrapper.",
         "kind": "embed",
-        "url": "https://open.spotify.com/",
-        "embed_url": "https://open.spotify.com/"
+        "url": "https://open.spotify.com/playlist/1aeafuJB347VmKXu4jvaTO",
+        "embed_url": "https://open.spotify.com/embed/playlist/1aeafuJB347VmKXu4jvaTO"
       },
       {
         "title": "SoundCloud Bay",
         "summary": "Audio sketches and release-adjacent cuts.",
         "kind": "external",
-        "url": "https://soundcloud.com/a_e-s_"
+        "url": "https://soundcloud.com/aesuero"
       }
     ]
   },

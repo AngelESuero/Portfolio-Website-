@@ -32,7 +32,7 @@ const SUBSTACK_FEED_URL = 'https://aesarchive.substack.com/feed';
 
 export const LINK_HUB_ICONS: LinkHubIconLink[] = [
   { title: 'YouTube', url: 'https://www.youtube.com/@a_e.s_4', icon: 'YT' },
-  { title: 'Instagram', url: 'https://www.instagram.com/a_e.s', icon: 'IG' },
+  { title: 'Instagram', url: 'https://www.instagram.com/a_e.s_', icon: 'IG' },
   { title: 'X', url: 'https://x.com/a_e_s_4', icon: 'X' },
   { title: 'TikTok', url: 'https://tiktok.com/@a_e.s', icon: 'TT' },
   { title: 'SoundCloud', url: 'https://soundcloud.com/aesuero', icon: 'SC' },
@@ -409,7 +409,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
     id: 'social',
     label: 'Social',
     items: [
-      { id: 'instagram', title: 'Instagram', url: 'https://www.instagram.com/a_e.s', year: '2026', tag: 'Visual' },
+      { id: 'instagram', title: 'Instagram', url: 'https://www.instagram.com/a_e.s_', year: '2026', tag: 'Visual' },
       { id: 'youtube', title: 'YouTube', url: 'https://www.youtube.com/@a_e.s_4', year: '2026', tag: 'Video' },
       { id: 'x', title: 'X', url: 'https://x.com/a_e_s_4', year: '2026', tag: 'Updates' },
       { id: 'tiktok', title: 'TikTok', url: 'https://tiktok.com/@a_e.s', year: '2026', tag: 'Shorts' },
