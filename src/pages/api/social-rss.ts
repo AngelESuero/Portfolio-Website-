@@ -1,10 +1,11 @@
 import type { APIRoute } from 'astro';
 import Parser from 'rss-parser';
+import { SOCIAL_URLS } from '../../data/site-refs';
 
 export const prerender = true;
 
 const FEEDS = {
-  substack: 'https://aesarchive.substack.com/feed'
+  substack: SOCIAL_URLS.substackFeed
 } as const;
 
 type FeedSlug = keyof typeof FEEDS;

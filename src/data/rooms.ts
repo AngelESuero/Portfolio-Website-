@@ -1,0 +1,139 @@
+import { MUSIC_URLS, SOCIAL_URLS } from './site-refs';
+
+export interface RoomMachine {
+  title: string;
+  summary?: string;
+  kind: 'native' | 'embed' | 'external';
+  url: string;
+  embed_url?: string;
+}
+
+export interface Room {
+  slug: string;
+  title: string;
+  description?: string;
+  color?: string;
+  room_type: 'native' | 'embed' | 'external';
+  destination: string;
+  machines: RoomMachine[];
+}
+
+const rooms: Room[] = [
+  {
+    slug: 'music',
+    title: 'Music Room',
+    description: 'Playback consoles for in-progress sessions, references, and release prep.',
+    color: 'yellow',
+    room_type: 'embed',
+    destination: '/link-hub',
+    machines: [
+      {
+        title: 'Untitled Console',
+        summary: 'Live stream player for sessions and rough sets.',
+        kind: 'embed',
+        url: 'https://untitled.stream/m8IEX655GwMH',
+        embed_url: 'https://untitled.stream/embed/m8IEX655GwMH'
+      },
+      {
+        title: 'Spotify Console',
+        summary: 'Now Listening playlist in a native wrapper.',
+        kind: 'embed',
+        url: MUSIC_URLS.spotifyVol4,
+        embed_url: 'https://open.spotify.com/embed/playlist/1aeafuJB347VmKXu4jvaTO'
+      },
+      {
+        title: 'SoundCloud Bay',
+        summary: 'Audio sketches and release-adjacent cuts.',
+        kind: 'external',
+        url: SOCIAL_URLS.soundcloud
+      }
+    ]
+  },
+  {
+    slug: 'writing',
+    title: 'Writing Room',
+    description: 'Essays, notes, RSS streams, and archival dispatches.',
+    color: 'red',
+    room_type: 'native',
+    destination: '/writing',
+    machines: [
+      {
+        title: 'Writing Archive',
+        summary: 'Read all on-site posts.',
+        kind: 'native',
+        url: '/writing'
+      },
+      {
+        title: 'Substack Feed',
+        summary: 'Publication feed and subscription touchpoint.',
+        kind: 'external',
+        url: SOCIAL_URLS.substackPublication
+      },
+      {
+        title: 'RSS Feed',
+        summary: 'Subscribe via RSS.',
+        kind: 'native',
+        url: '/rss.xml'
+      }
+    ]
+  },
+  {
+    slug: 'work',
+    title: 'Work Room',
+    description: 'Project threads, install notes, and production logs.',
+    color: 'orange',
+    room_type: 'native',
+    destination: '/work',
+    machines: [
+      {
+        title: 'Project Index',
+        summary: 'Filter and browse all work entries.',
+        kind: 'native',
+        url: '/work'
+      },
+      {
+        title: 'AV / Museum Thread',
+        summary: 'Installation notes and AV constraints.',
+        kind: 'native',
+        url: '/threads/av-museum-work'
+      },
+      {
+        title: 'Music Session Thread',
+        summary: 'Session-by-session production process.',
+        kind: 'native',
+        url: '/threads/music-production-sessions'
+      }
+    ]
+  },
+  {
+    slug: 'social',
+    title: 'Social Room',
+    description: 'Platform exits, profile paths, and quick handoff links.',
+    color: 'white',
+    room_type: 'external',
+    destination: SOCIAL_URLS.linktree,
+    machines: [
+      {
+        title: 'Instagram',
+        summary: 'Visual stream and archive updates.',
+        kind: 'external',
+        url: SOCIAL_URLS.instagram
+      },
+      {
+        title: 'YouTube',
+        summary: 'Video and music uploads.',
+        kind: 'external',
+        url: SOCIAL_URLS.youtube
+      },
+      {
+        title: 'Contact',
+        summary: 'Direct email and inquiry form.',
+        kind: 'native',
+        url: '/contact'
+      }
+    ]
+  }
+];
+
+export default rooms;
+

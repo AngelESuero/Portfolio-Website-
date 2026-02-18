@@ -93,10 +93,16 @@ npx wrangler secret put X_BEARER_TOKEN -c wrangler.agi.toml
 
 ## Content editing
 ### Identity/profile
-Edit `src/data/profile.json`:
+Edit `src/data/profile.ts`:
 - `name`, `location`, `roles`, `mottos`, `short_bio`, `long_bio`
 - `social_links`
 - `link_hub_url`
+
+### Shared canonical links (single source of truth)
+Edit `src/data/site-refs.ts`:
+- social handles and URLs
+- core music/video/source links
+- canonical site URL and link hub URL
 
 ### Projects
 Add/edit files in `src/content/projects/*.md` with frontmatter:
@@ -130,9 +136,12 @@ Item schema:
 - Dynamic platform pages: `/social/[slug]`
 - Direct routes: `/youtube`, `/soundcloud`, `/substack`, `/discord`, `/x`, `/threads`, `/tiktok`, `/twitch`
 - Config:
-  - `src/data/social.json`
+  - `src/data/social.ts`
 - RSS proxy endpoint for supported platforms:
   - `GET /api/social-rss?slug=<platform>`
+
+### Social rooms config
+- `src/data/rooms.ts`
 
 ### Discord local-only gate
 - Routes: `/community-corner` (primary) and `/join/community` (legacy alias)

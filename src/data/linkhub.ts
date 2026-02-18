@@ -1,3 +1,12 @@
+import {
+  DEFAULT_SPOTIFY_PLAYLIST_ID,
+  MUSIC_URLS,
+  RESOURCE_URLS,
+  SOCIAL_URLS,
+  VIDEO_URLS,
+  getSpotifyPlaylistUrl
+} from './site-refs';
+
 export type LinkHubProvider = 'spotify' | 'youtube' | 'soundcloud' | 'untitled' | 'substack' | 'instagram';
 export type LinkHubCategoryId = 'music' | 'writing' | 'video' | 'resources' | 'legal' | 'social';
 
@@ -22,25 +31,22 @@ export interface LinkHubIconLink {
   icon: string;
 }
 
-const DEFAULT_SPOTIFY_PLAYLIST_ID = '1aeafuJB347VmKXu4jvaTO';
 const spotifyPlaylistValue = String(import.meta.env.PUBLIC_SPOTIFY_PLAYLIST_ID || DEFAULT_SPOTIFY_PLAYLIST_ID).trim();
-const spotifyNowListeningUrl = spotifyPlaylistValue.startsWith('https://')
-  ? spotifyPlaylistValue
-  : `https://open.spotify.com/playlist/${spotifyPlaylistValue}`;
-const SUBSTACK_PROFILE_URL = 'https://substack.com/@aesu?r=2ejeld&shareImageVariant=blur&utm_medium=ios&utm_source=profile';
-const SUBSTACK_FEED_URL = 'https://aesarchive.substack.com/feed';
+const spotifyNowListeningUrl = getSpotifyPlaylistUrl(spotifyPlaylistValue);
+const SUBSTACK_PROFILE_URL = SOCIAL_URLS.substackProfile;
+const SUBSTACK_FEED_URL = SOCIAL_URLS.substackFeed;
 
 export const LINK_HUB_ICONS: LinkHubIconLink[] = [
-  { title: 'YouTube', url: 'https://www.youtube.com/@a_e.s_4', icon: 'YT' },
-  { title: 'Instagram', url: 'https://www.instagram.com/a_e.s_', icon: 'IG' },
-  { title: 'X', url: 'https://x.com/a_e_s_4', icon: 'X' },
-  { title: 'TikTok', url: 'https://tiktok.com/@a_e.s', icon: 'TT' },
-  { title: 'SoundCloud', url: 'https://soundcloud.com/aesuero', icon: 'SC' },
-  { title: 'Threads', url: 'https://www.threads.com/@a_e.s', icon: 'TH' },
-  { title: 'Twitch', url: 'https://www.twitch.tv/thatoneyonder', icon: 'TW' },
+  { title: 'YouTube', url: SOCIAL_URLS.youtube, icon: 'YT' },
+  { title: 'Instagram', url: SOCIAL_URLS.instagram, icon: 'IG' },
+  { title: 'X', url: SOCIAL_URLS.x, icon: 'X' },
+  { title: 'TikTok', url: SOCIAL_URLS.tiktok, icon: 'TT' },
+  { title: 'SoundCloud', url: SOCIAL_URLS.soundcloud, icon: 'SC' },
+  { title: 'Threads', url: SOCIAL_URLS.threads, icon: 'TH' },
+  { title: 'Twitch', url: SOCIAL_URLS.twitch, icon: 'TW' },
   { title: 'Substack', url: SUBSTACK_PROFILE_URL, icon: 'SB' },
-  { title: 'Linktree', url: 'https://linktr.ee/a_e.s_', icon: 'LT' },
-  { title: 'Discord', url: '/discord', icon: 'DC' },
+  { title: 'Linktree', url: SOCIAL_URLS.linktree, icon: 'LT' },
+  { title: 'Discord', url: SOCIAL_URLS.discordHub, icon: 'DC' },
   { title: 'Spotify', url: spotifyNowListeningUrl, icon: 'SP' },
   { title: 'Email', url: '/contact', icon: '@' }
 ];
@@ -61,7 +67,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
       {
         id: 'my-first-beat-tape',
         title: 'My First Beat Tape',
-        url: 'https://untitled.stream/library/project/W9oQWS6klQAAftkyx28QL',
+        url: MUSIC_URLS.untitledMyFirstBeatTape,
         year: '2026',
         tag: 'Project',
         preferredEmbed: 'untitled'
@@ -69,7 +75,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
       {
         id: 'everyday-soundscape',
         title: 'The Every Day Soundscape',
-        url: 'https://untitled.stream/library/track/tbolNlQAX1cXSZr3bLWeh',
+        url: MUSIC_URLS.untitledEveryDaySoundscape,
         year: '2026',
         tag: 'Track',
         preferredEmbed: 'untitled'
@@ -77,7 +83,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
       {
         id: 'queries-beat-tape',
         title: 'Queries Beat Tape',
-        url: 'https://untitled.stream/library/project/yJu7cTKC0F3qvrRqs2EzA',
+        url: MUSIC_URLS.untitledQueriesBeatTape,
         year: '2026',
         tag: 'Project',
         preferredEmbed: 'untitled'
@@ -85,14 +91,14 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
       {
         id: 'scraps-2023-2024',
         title: 'Scraps 2023-2024',
-        url: 'https://untitled.stream/invite/sUL08iLtaVYP3UbF2ehDg',
+        url: MUSIC_URLS.untitledScrapsInvite,
         year: '2026',
         tag: 'Invite'
       },
       {
         id: 'vol-1-spotify',
         title: 'Volume 1 - Spotify',
-        url: 'https://open.spotify.com/playlist/3J99oKrZvILt0zrGa5XUW8',
+        url: MUSIC_URLS.spotifyVol1,
         year: '2026',
         tag: 'Vol 1',
         preferredEmbed: 'spotify'
@@ -100,7 +106,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
       {
         id: 'vol-2-spotify',
         title: 'Volume 2 - Spotify',
-        url: 'https://open.spotify.com/playlist/2hhUhKocUVUIVG7aWmjvH9',
+        url: MUSIC_URLS.spotifyVol2,
         year: '2026',
         tag: 'Vol 2',
         preferredEmbed: 'spotify'
@@ -108,7 +114,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
       {
         id: 'vol-3-spotify',
         title: 'Volume 3 - Spotify',
-        url: 'https://open.spotify.com/playlist/5ZZLhPOVAzr7QufXPiD5dQ',
+        url: MUSIC_URLS.spotifyVol3,
         year: '2026',
         tag: 'Vol 3',
         preferredEmbed: 'spotify'
@@ -116,7 +122,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
       {
         id: 'vol-4-spotify',
         title: 'Volume 4 - Spotify',
-        url: 'https://open.spotify.com/playlist/1aeafuJB347VmKXu4jvaTO',
+        url: MUSIC_URLS.spotifyVol4,
         year: '2026',
         tag: 'Vol 4',
         preferredEmbed: 'spotify'
@@ -216,7 +222,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
       {
         id: 'soundcloud-profile',
         title: 'SoundCloud Profile',
-        url: 'https://soundcloud.com/aesuero',
+        url: SOCIAL_URLS.soundcloud,
         year: '2026',
         tag: 'Profile',
         preferredEmbed: 'soundcloud'
@@ -272,7 +278,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
       {
         id: 'everyday-life-video',
         title: 'The Everyday Life Video',
-        url: 'https://youtu.be/KWDgWpSDlrM?si=-3TuP0xU0t5egiZA',
+        url: VIDEO_URLS.everydayLifeVideo,
         year: '2026',
         tag: 'Feature',
         preferredEmbed: 'youtube'
@@ -280,7 +286,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
       {
         id: 'youtube-channel',
         title: 'YouTube Channel',
-        url: 'https://www.youtube.com/@a_e.s_4',
+        url: SOCIAL_URLS.youtube,
         year: '2026',
         tag: 'Channel'
       },
@@ -365,7 +371,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
       {
         id: 'mit-living-wage',
         title: 'MIT Living Wage Calculator',
-        url: 'https://livingwage.mit.edu/',
+        url: RESOURCE_URLS.mitLivingWage,
         year: '2026',
         tag: 'Work'
       },
@@ -409,16 +415,16 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
     id: 'social',
     label: 'Social',
     items: [
-      { id: 'instagram', title: 'Instagram', url: 'https://www.instagram.com/a_e.s_', year: '2026', tag: 'Visual' },
-      { id: 'youtube', title: 'YouTube', url: 'https://www.youtube.com/@a_e.s_4', year: '2026', tag: 'Video' },
-      { id: 'x', title: 'X', url: 'https://x.com/a_e_s_4', year: '2026', tag: 'Updates' },
-      { id: 'tiktok', title: 'TikTok', url: 'https://tiktok.com/@a_e.s', year: '2026', tag: 'Shorts' },
-      { id: 'soundcloud', title: 'SoundCloud', url: 'https://soundcloud.com/aesuero', year: '2026', tag: 'Audio' },
-      { id: 'threads', title: 'Threads', url: 'https://www.threads.com/@a_e.s', year: '2026', tag: 'Community' },
-      { id: 'twitch', title: 'Twitch', url: 'https://www.twitch.tv/thatoneyonder', year: '2026', tag: 'Live' },
+      { id: 'instagram', title: 'Instagram', url: SOCIAL_URLS.instagram, year: '2026', tag: 'Visual' },
+      { id: 'youtube', title: 'YouTube', url: SOCIAL_URLS.youtube, year: '2026', tag: 'Video' },
+      { id: 'x', title: 'X', url: SOCIAL_URLS.x, year: '2026', tag: 'Updates' },
+      { id: 'tiktok', title: 'TikTok', url: SOCIAL_URLS.tiktok, year: '2026', tag: 'Shorts' },
+      { id: 'soundcloud', title: 'SoundCloud', url: SOCIAL_URLS.soundcloud, year: '2026', tag: 'Audio' },
+      { id: 'threads', title: 'Threads', url: SOCIAL_URLS.threads, year: '2026', tag: 'Community' },
+      { id: 'twitch', title: 'Twitch', url: SOCIAL_URLS.twitch, year: '2026', tag: 'Live' },
       { id: 'substack', title: 'Substack', url: SUBSTACK_PROFILE_URL, year: '2026', tag: 'Writing' },
-      { id: 'linktree', title: 'Linktree', url: 'https://linktr.ee/a_e.s_', year: '2026', tag: 'Hub' },
-      { id: 'discord', title: 'Discord', url: '/discord', year: '2026', tag: 'Servers' },
+      { id: 'linktree', title: 'Linktree', url: SOCIAL_URLS.linktree, year: '2026', tag: 'Hub' },
+      { id: 'discord', title: 'Discord', url: SOCIAL_URLS.discordHub, year: '2026', tag: 'Servers' },
       { id: 'contact', title: 'Contact', url: '/contact', year: '2026', tag: 'Email' }
     ]
   }

@@ -1,24 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import rooms from '../../data/rooms.json';
-
-interface RoomMachine {
-  title: string;
-  summary?: string;
-  kind: 'native' | 'embed' | 'external';
-  url: string;
-  embed_url?: string;
-}
-
-interface Room {
-  slug: string;
-  title: string;
-  description?: string;
-  color?: string;
-  room_type: 'native' | 'embed' | 'external';
-  destination: string;
-  machines: RoomMachine[];
-}
+import rooms from '../../data/rooms';
+import type { Room } from '../../data/rooms';
 
 const roomList = rooms as Room[];
 const isExternal = (url: string) => /^https?:\/\//i.test(url);
@@ -29,7 +12,7 @@ const isExternal = (url: string) => /^https?:\/\//i.test(url);
     <header class="social-hero">
       <p class="social-kicker">Arcade index</p>
       <h1>Social Rooms</h1>
-      <p class="social-dek">Every room is data-driven from <code>src/data/rooms.json</code>. Open a room to run its machines.</p>
+      <p class="social-dek">Every room is data-driven from <code>src/data/rooms.ts</code>. Open a room to run its machines.</p>
     </header>
 
     <div class="room-grid">

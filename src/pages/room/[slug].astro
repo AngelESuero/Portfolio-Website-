@@ -1,25 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import MusicConsole from '../../components/MusicConsole.astro';
-import rooms from '../../data/rooms.json';
-
-interface RoomMachine {
-  title: string;
-  summary?: string;
-  kind: 'native' | 'embed' | 'external';
-  url: string;
-  embed_url?: string;
-}
-
-interface Room {
-  slug: string;
-  title: string;
-  description?: string;
-  color?: string;
-  room_type: 'native' | 'embed' | 'external';
-  destination: string;
-  machines: RoomMachine[];
-}
+import rooms from '../../data/rooms';
+import type { Room } from '../../data/rooms';
+import { SOCIAL_URLS } from '../../data/site-refs';
 
 export function getStaticPaths() {
   const roomList = rooms as Room[];
@@ -84,7 +68,7 @@ const embedMachines = room.machines.filter((machine) => machine.kind === 'embed'
       <section class="writing-rss" aria-label="Latest Substack posts">
         <header class="writing-rss__head">
           <h2>Substack Publication</h2>
-          <a href="https://aesarchive.substack.com" target="_blank" rel="noopener">Open publication</a>
+          <a href={SOCIAL_URLS.substackPublication} target="_blank" rel="noopener">Open publication</a>
         </header>
         <p class="writing-rss__note">
           This room avoids build-time feed fetches to keep deploys reliable. Open the publication directly for latest posts.
