@@ -99,13 +99,17 @@ const isExternal = (url: string) => /^https?:\/\//i.test(url);
           const resolution = embed.resolution;
           const embedSource = resolution.embedUrl;
           const isEmbeddable = resolution.embeddable && Boolean(embedSource);
+          const isResizableEmbed =
+            resolution.provider === 'google_drive' ||
+            resolution.provider === 'youtube' ||
+            resolution.provider === 'instagram';
           const sourceExternal = isExternal(embed.url);
           const height = getEmbedHeight(resolution.provider);
 
           return (
             <figure class="social-embed-card" data-provider={resolution.provider || 'none'} style={`--embed-height:${height}px`}>
               {isEmbeddable ? (
-                <div class="social-embed-frame">
+                <div class:list={['social-embed-frame', isResizableEmbed && 'is-resizable']}>
                   <iframe
                     src={embedSource || undefined}
                     title={embed.label || `${config.title} embed`}
@@ -327,7 +331,7 @@ const isExternal = (url: string) => /^https?:\/\//i.test(url);
   }
 
   @media (pointer: fine) {
-    .social-embed-frame {
+    .social-embed-frame.is-resizable {
       resize: vertical;
       overflow: auto;
       max-height: min(75vh, 720px);

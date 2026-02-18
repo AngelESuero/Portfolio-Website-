@@ -22,6 +22,7 @@ const provider = resolution.provider;
 const embedUrl = resolution.embedUrl;
 const embedHeight = getEmbedHeight(provider);
 const isEmbeddable = resolution.embeddable && Boolean(embedUrl);
+const isResizableEmbed = provider === 'google_drive' || provider === 'youtube' || provider === 'instagram';
 const isExternal = /^https?:\/\//i.test(item.url);
 const isLinktree = isLinktreeUrl(item.url);
 const fallbackMessage = isLinktree
@@ -39,7 +40,7 @@ const fallbackMessage = isLinktree
 
   {isEmbeddable ? (
     <div class="hub-embed">
-      <div class="hub-embed-frame" style={`--embed-height:${embedHeight}px`}>
+      <div class:list={['hub-embed-frame', isResizableEmbed && 'is-resizable']} style={`--embed-height:${embedHeight}px`}>
         <iframe
           src={embedUrl || undefined}
           width="100%"
@@ -50,7 +51,10 @@ const fallbackMessage = isLinktree
           title={`${item.title} embed`}
         ></iframe>
       </div>
-      <p class="hub-note">Drag to resize on desktop. If the embed fails, open source below.</p>
+      <p class="hub-note">
+        {isResizableEmbed ? 'Drag to resize on desktop. ' : ''}
+        If the embed fails, open source below.
+      </p>
     </div>
   ) : (
     <div class="reader-frame">
@@ -114,7 +118,7 @@ const fallbackMessage = isLinktree
   }
 
   @media (pointer: fine) {
-    .hub-embed-frame {
+    .hub-embed-frame.is-resizable {
       resize: vertical;
       overflow: auto;
       max-height: min(75vh, 720px);

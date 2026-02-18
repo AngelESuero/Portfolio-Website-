@@ -64,15 +64,6 @@ const subtitle = Astro.props.subtitle ?? 'untitled.stream';
     background: #060911;
   }
 
-  @media (pointer: fine) {
-    .listen__frame {
-      resize: vertical;
-      overflow: auto;
-      min-height: 176px;
-      max-height: min(70vh, 520px);
-    }
-  }
-
   @media (max-width: 720px) {
     .listen__head {
       flex-direction: column;
