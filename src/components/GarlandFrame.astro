@@ -25,14 +25,11 @@ const vineBranches = Array.from({ length: 18 }, (_, i) => ({
   rightRot: i % 2 === 0 ? -32 : 24
 }));
 
-const berriesTop = Array.from({ length: 14 }, (_, i) => ({
-  x: 4 + i * 7.2,
-  y: 30 + (i % 2 ? 4 : -2)
-}));
-
-const berriesBottom = Array.from({ length: 14 }, (_, i) => ({
-  x: 3.5 + i * 7.4,
-  y: 26 + (i % 2 ? 2 : -4)
+const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
+  y: 6 + i * 9.4,
+  len: 20 + (i % 3) * 10,
+  leftRot: i % 2 === 0 ? -18 : 14,
+  rightRot: i % 2 === 0 ? 18 : -14
 }));
 
 ---
@@ -47,17 +44,11 @@ const berriesBottom = Array.from({ length: 14 }, (_, i) => ({
     {topLeaves.map((leaf) => (
       <span class="leaf leaf-top" style={`--x:${leaf.x}%;--rot:${leaf.rot}deg;--s:${leaf.scale};`}></span>
     ))}
-    {berriesTop.map((berry) => (
-      <span class="berry berry-top" style={`--x:${berry.x}%;--y:${berry.y}px;`}></span>
-    ))}
   </div>
 
   <div class="leaf-track leaf-track-bottom">
     {bottomLeaves.map((leaf) => (
       <span class="leaf leaf-bottom" style={`--x:${leaf.x}%;--rot:${leaf.rot}deg;--s:${leaf.scale};`}></span>
-    ))}
-    {berriesBottom.map((berry) => (
-      <span class="berry berry-bottom" style={`--x:${berry.x}%;--y:${berry.y}px;`}></span>
     ))}
   </div>
 
@@ -81,6 +72,12 @@ const berriesBottom = Array.from({ length: 14 }, (_, i) => ({
         style={`--y:${branch.y}%;--len:${branch.len}px;--rot:${branch.leftRot}deg;`}
       ></span>
     ))}
+    {vineTendrils.map((tendril) => (
+      <span
+        class="vine-tendril vine-tendril-left"
+        style={`--y:${tendril.y}%;--len:${tendril.len}px;--rot:${tendril.leftRot}deg;`}
+      ></span>
+    ))}
   </div>
 
   <div class="vine-lane vine-lane-right">
@@ -89,6 +86,12 @@ const berriesBottom = Array.from({ length: 14 }, (_, i) => ({
       <span
         class="vine-branch vine-branch-right"
         style={`--y:${branch.y}%;--len:${branch.len}px;--rot:${branch.rightRot}deg;`}
+      ></span>
+    ))}
+    {vineTendrils.map((tendril) => (
+      <span
+        class="vine-tendril vine-tendril-right"
+        style={`--y:${tendril.y}%;--len:${tendril.len}px;--rot:${tendril.rightRot}deg;`}
       ></span>
     ))}
   </div>
@@ -151,7 +154,7 @@ const berriesBottom = Array.from({ length: 14 }, (_, i) => ({
 
   .leaf-track-top,
   .leaf-track-bottom {
-    opacity: 0.62;
+    opacity: 0.46;
   }
 
   .leaf-track-top {
@@ -237,7 +240,7 @@ const berriesBottom = Array.from({ length: 14 }, (_, i) => ({
     bottom: 22px;
     width: 56px;
     z-index: 1;
-    opacity: 0.72;
+    opacity: 0.8;
   }
 
   .vine-lane-left {
@@ -309,25 +312,28 @@ const berriesBottom = Array.from({ length: 14 }, (_, i) => ({
     transform: rotate(-28deg) scaleX(-1);
   }
 
-  .berry {
+  .vine-tendril {
     position: absolute;
-    width: 10px;
-    height: 10px;
-    border-radius: 999px;
-    background: radial-gradient(circle at 32% 28%, #ffe2dc, #bc4d62 64%, #6f1f32);
-    box-shadow: 0 0 9px rgba(210, 84, 114, 0.28);
-  }
-
-  .berry-top {
-    left: var(--x);
     top: var(--y);
-    transform: translateX(-50%);
+    width: 16px;
+    height: var(--len);
+    opacity: 0.62;
   }
 
-  .berry-bottom {
-    left: var(--x);
-    bottom: var(--y);
-    transform: translateX(-50%);
+  .vine-tendril-left {
+    left: 24px;
+    border-left: 2px solid rgba(92, 156, 99, 0.62);
+    border-bottom: 2px solid rgba(92, 156, 99, 0.62);
+    border-radius: 0 0 0 22px;
+    transform: rotate(var(--rot));
+  }
+
+  .vine-tendril-right {
+    right: 24px;
+    border-right: 2px solid rgba(92, 156, 99, 0.62);
+    border-bottom: 2px solid rgba(92, 156, 99, 0.62);
+    border-radius: 0 0 22px 0;
+    transform: rotate(var(--rot));
   }
 
   @media (max-width: 860px) {
@@ -360,11 +366,16 @@ const berriesBottom = Array.from({ length: 14 }, (_, i) => ({
       width: calc(var(--len) - 4px);
     }
 
+    .vine-tendril {
+      opacity: 0.5;
+    }
+
     .leaf-track-left .leaf:nth-child(2n),
     .leaf-track-right .leaf:nth-child(2n),
     .leaf-track-top .leaf:nth-child(2n),
     .leaf-track-bottom .leaf:nth-child(2n),
-    .vine-lane .vine-branch:nth-child(2n) {
+    .vine-lane .vine-branch:nth-child(2n),
+    .vine-lane .vine-tendril:nth-child(2n) {
       display: none;
     }
   }
