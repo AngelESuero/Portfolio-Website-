@@ -1,0 +1,84 @@
+/** AGI Timeline Styling */
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+timeline {
+    position: relative;
+    padding: 20px;
+}
+
+timeline::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    background: #ccc;
+    top: 0;
+    bottom: 0;
+}
+
+/* Public View */
+.public-view {
+    background-color: #e7f3ff; /* Light Blue */
+    color: #0056b3; /* Dark Blue */
+}
+
+.public-view .timeline-item {
+    animation: fadeIn 0.5s ease-in;
+}
+
+/* Analyst View */
+.analyst-view {
+    background-color: #fff3cd; /* Light Yellow */
+    color: #856404; /* Dark Yellow */
+}
+
+.analyst-view .timeline-item {
+    animation: slideIn 0.5s ease-in;
+}
+
+/* Engineer View */
+.engineer-view {
+    background-color: #d4edda; /* Light Green */
+    color: #155724; /* Dark Green */
+}
+
+.engineer-view .timeline-item {
+    animation: bounceIn 0.5s ease-in;
+}
+
+/* Timeline Items */
+.timeline-item {
+    margin: 20px 0;
+    padding: 10px;
+    border-radius: 8px;
+    position: relative;
+    width: 40%;
+    left: 30%;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(-100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes bounceIn {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .timeline-item {
+        width: 90%;
+        left: 5%;
+    }
+}
