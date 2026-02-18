@@ -35,17 +35,6 @@ const berriesBottom = Array.from({ length: 14 }, (_, i) => ({
   y: 26 + (i % 2 ? 2 : -4)
 }));
 
-const lightsTop = Array.from({ length: 22 }, (_, i) => ({
-  x: 4 + i * 4.3,
-  drop: 18 + (i % 3) * 6,
-  color: ['#ffd58e', '#ffc0b0', '#b9e4ff'][i % 3]
-}));
-
-const lightsBottom = Array.from({ length: 18 }, (_, i) => ({
-  x: 5 + i * 5.1,
-  drop: 14 + (i % 2) * 5,
-  color: ['#ffd58e', '#b9e4ff', '#ffc0b0'][i % 3]
-}));
 ---
 
 <div class="garland-real" aria-hidden="true">
@@ -104,17 +93,6 @@ const lightsBottom = Array.from({ length: 18 }, (_, i) => ({
     ))}
   </div>
 
-  <div class="light-track light-track-top">
-    {lightsTop.map((light) => (
-      <span class="bulb" style={`--x:${light.x}%;--drop:${light.drop}px;--bulb:${light.color};`}></span>
-    ))}
-  </div>
-
-  <div class="light-track light-track-bottom">
-    {lightsBottom.map((light) => (
-      <span class="bulb bulb-bottom" style={`--x:${light.x}%;--drop:${light.drop}px;--bulb:${light.color};`}></span>
-    ))}
-  </div>
 </div>
 
 <style>
@@ -352,56 +330,6 @@ const lightsBottom = Array.from({ length: 18 }, (_, i) => ({
     transform: translateX(-50%);
   }
 
-  .light-track {
-    position: absolute;
-    left: 2%;
-    right: 2%;
-    height: 52px;
-  }
-
-  .light-track-top {
-    top: 8px;
-    display: none;
-  }
-
-  .light-track-bottom {
-    bottom: 8px;
-    display: none;
-  }
-
-  .bulb {
-    position: absolute;
-    left: var(--x);
-    top: 0;
-    width: 3px;
-    height: var(--drop);
-    background: rgba(216, 206, 187, 0.48);
-    transform: translateX(-50%);
-  }
-
-  .bulb-bottom {
-    bottom: 0;
-    top: auto;
-    transform: translateX(-50%) scaleY(-1);
-  }
-
-  .bulb::after {
-    content: '';
-    position: absolute;
-    top: calc(var(--drop) - 1px);
-    left: 50%;
-    width: 12px;
-    height: 16px;
-    transform: translateX(-50%);
-    border-radius: 7px 7px 10px 10px;
-    background:
-      radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.76), transparent 46%),
-      var(--bulb);
-    box-shadow:
-      0 0 7px color-mix(in srgb, var(--bulb) 55%, transparent),
-      0 0 15px color-mix(in srgb, var(--bulb) 28%, transparent);
-  }
-
   @media (max-width: 860px) {
     .garland-real {
       inset: 6px 6px;
@@ -436,9 +364,7 @@ const lightsBottom = Array.from({ length: 18 }, (_, i) => ({
     .leaf-track-right .leaf:nth-child(2n),
     .leaf-track-top .leaf:nth-child(2n),
     .leaf-track-bottom .leaf:nth-child(2n),
-    .vine-lane .vine-branch:nth-child(2n),
-    .light-track-top .bulb:nth-child(2n),
-    .light-track-bottom .bulb:nth-child(2n) {
+    .vine-lane .vine-branch:nth-child(2n) {
       display: none;
     }
   }
