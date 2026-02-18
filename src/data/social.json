@@ -69,15 +69,15 @@
     "slug": "untitled",
     "title": "Untitled",
     "description": "Direct stream player for live and in-progress music sets.",
-    "primary_url": "https://untitled.stream/library/project/W9oQWS6klQAAftkyx28QL",
+    "primary_url": "https://untitled.stream/embed/m8IEX655GwMH",
     "mode": "manual",
     "featured": [
-      { "label": "My First Beat Tape", "url": "https://untitled.stream/library/project/W9oQWS6klQAAftkyx28QL" },
+      { "label": "My First Beat Tape", "url": "https://untitled.stream/embed/m8IEX655GwMH" },
       { "label": "The Every Day Soundscape", "url": "https://untitled.stream/library/track/tbolNlQAX1cXSZr3bLWeh" },
       { "label": "Queries Beat Tape", "url": "https://untitled.stream/library/project/yJu7cTKC0F3qvrRqs2EzA" }
     ],
     "embeds": [
-      { "label": "My First Beat Tape", "url": "https://untitled.stream/library/project/W9oQWS6klQAAftkyx28QL" }
+      { "label": "My First Beat Tape", "url": "https://untitled.stream/embed/m8IEX655GwMH" }
     ]
   },
   {

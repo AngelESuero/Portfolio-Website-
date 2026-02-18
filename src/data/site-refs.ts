@@ -27,7 +27,7 @@ export const MUSIC_URLS = {
   spotifyVol2: 'https://open.spotify.com/playlist/2hhUhKocUVUIVG7aWmjvH9',
   spotifyVol3: 'https://open.spotify.com/playlist/5ZZLhPOVAzr7QufXPiD5dQ',
   spotifyVol4: 'https://open.spotify.com/playlist/1aeafuJB347VmKXu4jvaTO',
-  untitledMyFirstBeatTape: 'https://untitled.stream/library/project/W9oQWS6klQAAftkyx28QL',
+  untitledMyFirstBeatTape: 'https://untitled.stream/embed/m8IEX655GwMH',
   untitledEveryDaySoundscape: 'https://untitled.stream/library/track/tbolNlQAX1cXSZr3bLWeh',
   untitledQueriesBeatTape: 'https://untitled.stream/library/project/yJu7cTKC0F3qvrRqs2EzA',
   untitledScrapsInvite: 'https://untitled.stream/invite/sUL08iLtaVYP3UbF2ehDg'
@@ -45,4 +45,3 @@ export const DEFAULT_SPOTIFY_PLAYLIST_ID = '1aeafuJB347VmKXu4jvaTO';
 
 export const getSpotifyPlaylistUrl = (value: string): string =>
   value.startsWith('https://') ? value : `https://open.spotify.com/playlist/${value}`;
-
