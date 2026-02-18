@@ -39,17 +39,18 @@ const fallbackMessage = isLinktree
 
   {isEmbeddable ? (
     <div class="hub-embed">
-      <iframe
-        src={embedUrl || undefined}
-        width="100%"
-        height={embedHeight}
-        frameborder="0"
-        loading="lazy"
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        allowFullScreen
-        title={`${item.title} embed`}
-      ></iframe>
-      <p class="hub-note">If the embed fails, open source below.</p>
+      <div class="hub-embed-frame" style={`--embed-height:${embedHeight}px`}>
+        <iframe
+          src={embedUrl || undefined}
+          width="100%"
+          frameborder="0"
+          loading="lazy"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          allowFullScreen
+          title={`${item.title} embed`}
+        ></iframe>
+      </div>
+      <p class="hub-note">Drag to resize on desktop. If the embed fails, open source below.</p>
     </div>
   ) : (
     <div class="reader-frame">
@@ -94,12 +95,30 @@ const fallbackMessage = isLinktree
   .hub-embed {
     border: 1px solid var(--line2);
     border-radius: 12px;
-    overflow: hidden;
     background: rgba(4, 7, 12, 0.62);
   }
 
-  .hub-embed iframe {
+  .hub-embed-frame {
+    height: var(--embed-height, 300px);
+    min-height: 11rem;
+    border-radius: 12px 12px 0 0;
+    overflow: hidden;
+  }
+
+  .hub-embed-frame iframe {
     display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #060911;
+  }
+
+  @media (pointer: fine) {
+    .hub-embed-frame {
+      resize: vertical;
+      overflow: auto;
+      max-height: min(75vh, 720px);
+    }
   }
 
   .hub-note {
@@ -132,7 +151,4 @@ const fallbackMessage = isLinktree
     font-size: 0.84rem;
   }
 
-  .hub-card[data-provider='untitled'] .hub-embed iframe {
-    height: clamp(250px, 62vw, 344px);
-  }
 </style>

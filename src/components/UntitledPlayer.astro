@@ -15,7 +15,6 @@ const subtitle = Astro.props.subtitle ?? 'untitled.stream';
       class="listen__iframe"
       src="https://untitled.stream/embed/URtNv54OnV0P"
       width="100%"
-      height="192"
       allowFullScreen
       allow="picture-in-picture"
       frameborder="0"
@@ -54,14 +53,24 @@ const subtitle = Astro.props.subtitle ?? 'untitled.stream';
     background: rgba(8, 12, 20, 0.5);
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.32);
     overflow: hidden;
+    height: clamp(176px, 28vw, 192px);
   }
 
   .listen__iframe {
     display: block;
     width: 100%;
-    height: clamp(176px, 28vw, 192px);
+    height: 100%;
     border: 0;
     background: #060911;
+  }
+
+  @media (pointer: fine) {
+    .listen__frame {
+      resize: vertical;
+      overflow: auto;
+      min-height: 176px;
+      max-height: min(70vh, 520px);
+    }
   }
 
   @media (max-width: 720px) {
