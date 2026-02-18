@@ -1,0 +1,237 @@
+---
+const topLeaves = Array.from({ length: 34 }, (_, i) => ({
+  x: 2 + i * 2.85,
+  rot: i % 2 === 0 ? 28 : -34,
+  scale: 0.86 + (i % 5) * 0.035
+}));
+
+const sideLeaves = Array.from({ length: 20 }, (_, i) => ({
+  y: 3 + i * 4.8,
+  leftRot: i % 2 === 0 ? 40 : 14,
+  rightRot: i % 2 === 0 ? -40 : -14,
+  scale: 0.82 + (i % 4) * 0.04
+}));
+
+const berries = Array.from({ length: 12 }, (_, i) => ({
+  x: 4 + i * 8.2,
+  y: 25 + (i % 2 ? 4 : -2)
+}));
+
+const lights = Array.from({ length: 18 }, (_, i) => ({
+  x: 5 + i * 5.2,
+  drop: 14 + (i % 3) * 5,
+  color: ['#ffd58e', '#ffc0b0', '#b9e4ff'][i % 3]
+}));
+---
+
+<div class="garland-real" aria-hidden="true">
+  <span class="wire wire-top"></span>
+  <span class="wire wire-left"></span>
+  <span class="wire wire-right"></span>
+
+  <div class="leaf-track leaf-track-top">
+    {topLeaves.map((leaf) => (
+      <span class="leaf leaf-top" style={`--x:${leaf.x}%;--rot:${leaf.rot}deg;--s:${leaf.scale};`}></span>
+    ))}
+    {berries.map((berry) => (
+      <span class="berry berry-top" style={`--x:${berry.x}%;--y:${berry.y}px;`}></span>
+    ))}
+  </div>
+
+  <div class="leaf-track leaf-track-left">
+    {sideLeaves.map((leaf) => (
+      <span class="leaf leaf-left" style={`--y:${leaf.y}%;--rot:${leaf.leftRot}deg;--s:${leaf.scale};`}></span>
+    ))}
+  </div>
+
+  <div class="leaf-track leaf-track-right">
+    {sideLeaves.map((leaf) => (
+      <span class="leaf leaf-right" style={`--y:${leaf.y}%;--rot:${leaf.rightRot}deg;--s:${leaf.scale};`}></span>
+    ))}
+  </div>
+
+  <div class="light-track">
+    {lights.map((light) => (
+      <span class="bulb" style={`--x:${light.x}%;--drop:${light.drop}px;--bulb:${light.color};`}></span>
+    ))}
+  </div>
+</div>
+
+<style>
+  .garland-real {
+    position: fixed;
+    inset: 10px calc(var(--shell-gutter) - 12px) 10px;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.88;
+  }
+
+  .wire {
+    position: absolute;
+    display: block;
+    border-color: rgba(112, 142, 100, 0.38);
+  }
+
+  .wire-top {
+    top: 6px;
+    left: 2%;
+    right: 2%;
+    border-top: 2px solid rgba(112, 142, 100, 0.4);
+    border-radius: 999px;
+  }
+
+  .wire-left,
+  .wire-right {
+    top: 14px;
+    bottom: 10px;
+    width: 0;
+  }
+
+  .wire-left {
+    left: 2px;
+    border-left: 2px solid rgba(112, 142, 100, 0.34);
+  }
+
+  .wire-right {
+    right: 2px;
+    border-right: 2px solid rgba(112, 142, 100, 0.34);
+  }
+
+  .leaf-track {
+    position: absolute;
+  }
+
+  .leaf-track-top {
+    top: 2px;
+    left: 2%;
+    right: 2%;
+    height: 46px;
+  }
+
+  .leaf-track-left,
+  .leaf-track-right {
+    top: 24px;
+    bottom: 20px;
+    width: 28px;
+  }
+
+  .leaf-track-left {
+    left: -8px;
+  }
+
+  .leaf-track-right {
+    right: -8px;
+  }
+
+  .leaf {
+    position: absolute;
+    width: 23px;
+    height: 35px;
+    border-radius: 70% 0 70% 0 / 80% 0 80% 0;
+    background:
+      linear-gradient(148deg, rgba(74, 122, 71, 0.95), rgba(28, 66, 35, 0.96) 62%, rgba(15, 46, 23, 0.98));
+    box-shadow:
+      inset 0 0 0 1px rgba(200, 255, 196, 0.08),
+      0 2px 7px rgba(0, 0, 0, 0.34);
+    transform-origin: center;
+  }
+
+  .leaf::after {
+    content: '';
+    position: absolute;
+    left: 46%;
+    top: 3px;
+    bottom: 3px;
+    width: 1px;
+    background: rgba(210, 255, 200, 0.2);
+    transform: rotate(8deg);
+  }
+
+  .leaf-top {
+    left: var(--x);
+    top: 4px;
+    transform: translateX(-50%) rotate(var(--rot)) scale(var(--s));
+  }
+
+  .leaf-left {
+    top: var(--y);
+    left: 1px;
+    transform: rotate(var(--rot)) scale(var(--s));
+  }
+
+  .leaf-right {
+    top: var(--y);
+    right: 1px;
+    transform: rotate(var(--rot)) scale(var(--s));
+  }
+
+  .berry {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 32% 28%, #ffe2dc, #bc4d62 64%, #6f1f32);
+    box-shadow: 0 0 7px rgba(210, 84, 114, 0.24);
+  }
+
+  .berry-top {
+    left: var(--x);
+    top: var(--y);
+    transform: translateX(-50%);
+  }
+
+  .light-track {
+    position: absolute;
+    left: 2%;
+    right: 2%;
+    top: 6px;
+    height: 42px;
+  }
+
+  .bulb {
+    position: absolute;
+    left: var(--x);
+    top: 0;
+    width: 2px;
+    height: var(--drop);
+    background: rgba(216, 206, 187, 0.42);
+    transform: translateX(-50%);
+  }
+
+  .bulb::after {
+    content: '';
+    position: absolute;
+    top: calc(var(--drop) - 1px);
+    left: 50%;
+    width: 10px;
+    height: 13px;
+    transform: translateX(-50%);
+    border-radius: 7px 7px 10px 10px;
+    background:
+      radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.76), transparent 46%),
+      var(--bulb);
+    box-shadow:
+      0 0 7px color-mix(in srgb, var(--bulb) 55%, transparent),
+      0 0 15px color-mix(in srgb, var(--bulb) 28%, transparent);
+  }
+
+  @media (max-width: 860px) {
+    .garland-real {
+      inset: 8px 8px;
+      opacity: 0.72;
+    }
+
+    .wire-left,
+    .wire-right,
+    .leaf-track-left,
+    .leaf-track-right {
+      display: none;
+    }
+
+    .leaf-track-top .leaf:nth-child(2n),
+    .light-track .bulb:nth-child(odd) {
+      display: none;
+    }
+  }
+</style>
+
