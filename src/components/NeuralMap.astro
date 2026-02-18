@@ -229,9 +229,9 @@ const edgeTypeLabels: Record<(typeof edgeTypes)[number], string> = {
 
     const setTargets = () => {
       if (state.mode === 'spiral') {
-        const a = 24;
-        const b = 30;
-        const altBoost = 140;
+        const a = 34;
+        const b = 25;
+        const altBoost = 118;
 
         runtimeNodes.forEach((node) => {
           const radius = a + b * node.t + node.alt * altBoost;
@@ -264,11 +264,11 @@ const edgeTypeLabels: Record<(typeof edgeTypes)[number], string> = {
 
     const buildSpiralGuidePath = () => {
       if (!spiralGuide) return;
-      const maxT = runtimeNodes.reduce((m, node) => Math.max(m, node.t + 0.8), 10);
-      const a = 24;
-      const b = 30;
+      const maxT = runtimeNodes.reduce((m, node) => Math.max(m, node.t + 1.2), 11.2);
+      const a = 34;
+      const b = 25;
       const points = [];
-      for (let t = 0.2; t <= maxT; t += 0.18) {
+      for (let t = 0.2; t <= maxT; t += 0.16) {
         const radius = a + b * t;
         const x = CENTER_X + Math.cos(t) * radius;
         const y = CENTER_Y + Math.sin(t) * radius;
@@ -370,8 +370,9 @@ const edgeTypeLabels: Record<(typeof edgeTypes)[number], string> = {
         }
 
         if (label) {
-          const showAllByZoom = state.scale >= 1.28;
-          const show = showAllByZoom || isFocus || isHover || (focusSet && focusSet.has(id));
+          const showAllByZoom = state.mode === 'spiral' ? state.scale >= 1.52 : state.scale >= 1.38;
+          const showNeighborhood = Boolean(focusSet && focusSet.has(id) && state.scale >= 0.92);
+          const show = showAllByZoom || isFocus || isHover || showNeighborhood;
           label.setAttribute('opacity', show ? '0.95' : '0');
         }
 
@@ -392,9 +393,9 @@ const edgeTypeLabels: Record<(typeof edgeTypes)[number], string> = {
           : false;
         const shouldDim = focusSet ? !isLinked : false;
 
-        const baseWidth = 1 + weight * 2;
-        const width = isLinked ? baseWidth + (state.expanded ? 1.35 : 0.8) : baseWidth;
-        const opacity = isHiddenByLegend ? 0 : shouldDim ? 0.05 : isLinked ? 0.9 : 0.24 + weight * 0.16;
+        const baseWidth = 0.9 + weight * 1.75;
+        const width = isLinked ? baseWidth + (state.expanded ? 1.45 : 0.95) : baseWidth;
+        const opacity = isHiddenByLegend ? 0 : shouldDim ? 0.03 : isLinked ? 0.84 : 0.13 + weight * 0.11;
 
         el.setAttribute('stroke', style.color);
         el.setAttribute('stroke-dasharray', style.dash);
@@ -405,7 +406,7 @@ const edgeTypeLabels: Record<(typeof edgeTypes)[number], string> = {
       });
 
       if (spiralGuide) {
-        spiralGuide.setAttribute('opacity', state.mode === 'spiral' ? '0.34' : '0');
+        spiralGuide.setAttribute('opacity', state.mode === 'spiral' ? '0.22' : '0');
       }
 
       legendBtns.forEach((btn) => {
@@ -447,8 +448,8 @@ const edgeTypeLabels: Record<(typeof edgeTypes)[number], string> = {
       if (state.alpha <= 0) return;
 
       const alpha = state.alpha;
-      const targetStrength = state.mode === 'spiral' ? 0.095 : 0.07;
-      const repulsionBase = state.mode === 'spiral' ? 2100 : 2400;
+      const targetStrength = state.mode === 'spiral' ? 0.084 : 0.062;
+      const repulsionBase = state.mode === 'spiral' ? 1850 : 2150;
 
       for (let i = 0; i < runtimeNodes.length; i += 1) {
         const a = runtimeNodes[i];
@@ -468,9 +469,9 @@ const edgeTypeLabels: Record<(typeof edgeTypes)[number], string> = {
           b.vx += rx;
           b.vy += ry;
 
-          const minDist = NODE_RADIUS * 2.16;
+          const minDist = NODE_RADIUS * 2.06;
           if (dist < minDist && dist > 0.001) {
-            const push = ((minDist - dist) / minDist) * 0.45;
+            const push = ((minDist - dist) / minDist) * 0.38;
             const cx = (dx / dist) * push;
             const cy = (dy / dist) * push;
             a.vx -= cx;
@@ -491,8 +492,8 @@ const edgeTypeLabels: Record<(typeof edgeTypes)[number], string> = {
         const dx = target.x - source.x;
         const dy = target.y - source.y;
         const dist = Math.sqrt(dx * dx + dy * dy) || 0.001;
-        const desired = state.mode === 'spiral' ? 104 + (1 - link.weight) * 86 : 118 + (1 - link.weight) * 78;
-        const spring = ((dist - desired) / dist) * (0.017 + link.weight * 0.02) * alpha;
+        const desired = state.mode === 'spiral' ? 96 + (1 - link.weight) * 72 : 110 + (1 - link.weight) * 70;
+        const spring = ((dist - desired) / dist) * (0.013 + link.weight * 0.016) * alpha;
         const sx = dx * spring;
         const sy = dy * spring;
 
@@ -503,12 +504,12 @@ const edgeTypeLabels: Record<(typeof edgeTypes)[number], string> = {
       });
 
       runtimeNodes.forEach((node) => {
-        const altGain = 0.64 + node.alt * 0.46;
+        const altGain = 0.68 + node.alt * 0.36;
         node.vx += (node.fx - node.x) * targetStrength * alpha * altGain;
         node.vy += (node.fy - node.y) * targetStrength * alpha * altGain;
 
-        node.vx *= 0.84;
-        node.vy *= 0.84;
+        node.vx *= 0.86;
+        node.vy *= 0.86;
 
         node.x = clamp(node.x + node.vx, PADDING, WIDTH - PADDING);
         node.y = clamp(node.y + node.vy, PADDING, HEIGHT - PADDING);
@@ -738,7 +739,7 @@ const edgeTypeLabels: Record<(typeof edgeTypes)[number], string> = {
   }
 
   .map-edge {
-    transition: opacity 120ms ease;
+    transition: opacity 120ms ease, stroke-width 140ms ease;
   }
 
   .map-node {
@@ -753,16 +754,19 @@ const edgeTypeLabels: Record<(typeof edgeTypes)[number], string> = {
 
   .map-label {
     fill: var(--tone-text);
-    font-size: 12px;
+    font-size: 11.5px;
     letter-spacing: 0.02em;
+    stroke: rgba(4, 8, 14, 0.85);
+    stroke-width: 3px;
+    paint-order: stroke fill;
     pointer-events: none;
   }
 
   .spiral-guide {
     fill: none;
     stroke: color-mix(in srgb, var(--tone-accent) 38%, var(--tone-sky) 18%);
-    stroke-width: 1.2;
-    stroke-dasharray: 2 6;
+    stroke-width: 1;
+    stroke-dasharray: 2 7;
     opacity: 0;
     transition: opacity 180ms ease;
   }
@@ -782,7 +786,7 @@ const edgeTypeLabels: Record<(typeof edgeTypes)[number], string> = {
     z-index: 5;
     border: 1px solid var(--line2);
     border-radius: 12px;
-    background: rgba(8, 12, 20, 0.62);
+    background: rgba(8, 12, 20, 0.74);
     backdrop-filter: blur(6px);
     padding: 0.55rem;
     display: grid;
@@ -857,7 +861,7 @@ const edgeTypeLabels: Record<(typeof edgeTypes)[number], string> = {
     left: 0;
     border: 1px solid var(--line2);
     border-radius: 12px;
-    background: rgba(8, 12, 20, 0.9);
+    background: rgba(8, 12, 20, 0.95);
     color: var(--tone-text);
     min-width: 160px;
     max-width: 220px;
