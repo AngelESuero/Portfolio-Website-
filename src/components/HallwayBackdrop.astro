@@ -108,19 +108,19 @@ const { accent = '#7BE7FF' } = Astro.props;
   /* cursor "flashlight" reveal */
   .hallway__cursorLight {
     position: absolute;
-    width: 520px;
-    height: 520px;
+    width: 560px;
+    height: 560px;
     left: var(--mx, 50%);
     top: var(--my, 45%);
     transform: translate(-50%, -50%);
     background: radial-gradient(
       circle at center,
-      color-mix(in oklab, var(--cursor) 35%, transparent) 0%,
-      transparent 65%
+      color-mix(in oklab, var(--cursor) 16%, transparent) 0%,
+      transparent 72%
     );
-    filter: blur(0px);
-    opacity: calc(var(--cursor-light-visibility, 1) * 0.9);
-    transition: opacity 900ms ease;
+    filter: blur(12px);
+    opacity: calc(var(--cursor-light-visibility, 1) * 0.42);
+    transition: opacity 1200ms ease;
     mix-blend-mode: screen;
   }
 
@@ -133,6 +133,6 @@ const { accent = '#7BE7FF' } = Astro.props;
   /* Respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .hallway__fog,
-    .hallway__cursorLight { opacity: 0.35; }
+    .hallway__cursorLight { opacity: 0.2; }
   }
 </style>

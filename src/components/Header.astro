@@ -29,7 +29,7 @@ const isActive = (href: string) => {
       {nav.map((item) => (
         <a
           href={item.href}
-          class="text-sm hover:text-accent"
+          class="text-sm hover:text-accent no-underline"
           {...(item.color ? { 'data-color': item.color } : {})}
           {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
         >
