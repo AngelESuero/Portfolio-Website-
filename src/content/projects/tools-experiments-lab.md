@@ -9,7 +9,7 @@ links:
   linktree: "https://linktr.ee/a_e.s_"
 featured: false
 cover_image: "https://images.unsplash.com/photo-1518773553398-650c184e0bb3?auto=format&fit=crop&w=1200&q=80"
-description: "[Add description]"
+description: "A running lab of creative tooling prototypes and workflow experiments built with Astro, Tailwind, and Cloudflare."
 ---
 
 Small creative software and workflow tests.

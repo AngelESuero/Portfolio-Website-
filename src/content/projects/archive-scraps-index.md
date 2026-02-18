@@ -9,7 +9,7 @@ links:
   instagram: "https://instagram.com/a_e.s_"
 featured: true
 cover_image: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?auto=format&fit=crop&w=1200&q=80"
-description: "[Add description]"
+description: "An index of scraps, references, and unfinished fragments that keeps process visible before final polish."
 ---
 
 Quick fragments, unfinished ideas, and references.

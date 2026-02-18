@@ -6,7 +6,7 @@ export async function GET(context) {
   return rss({
     title: 'a_e.s_ Writing Feed',
     description: 'Writing and archive notes by a_e.s_',
-    site: context.site || 'https://angel-suero.pages.dev',
+    site: context.site || 'https://portfolio-website-9c9.pages.dev',
     items: posts.map((post) => ({
       title: post.data.title,
       pubDate: post.data.date,

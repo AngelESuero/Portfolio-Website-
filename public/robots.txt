@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://angel-suero.pages.dev/sitemap-index.xml
+Sitemap: https://portfolio-website-9c9.pages.dev/sitemap-index.xml
