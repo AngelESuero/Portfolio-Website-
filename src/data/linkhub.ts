@@ -7,7 +7,7 @@ import {
   getSpotifyPlaylistUrl
 } from './site-refs';
 
-export type LinkHubProvider = 'spotify' | 'youtube' | 'soundcloud' | 'untitled' | 'substack' | 'instagram';
+export type LinkHubProvider = 'spotify' | 'youtube' | 'soundcloud' | 'untitled' | 'substack' | 'instagram' | 'google_drive';
 export type LinkHubCategoryId = 'music' | 'writing' | 'video' | 'resources' | 'legal' | 'social';
 
 export interface LinkHubItem {
@@ -324,7 +324,8 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
         title: 'Practicing Kriya',
         url: 'https://drive.google.com/file/d/1TcERCTJS1opeyJJ3A5SSFHQBvF7LLBc6/view?usp=drivesdk',
         year: '2026',
-        tag: 'Wellbeing'
+        tag: 'Wellbeing',
+        preferredEmbed: 'google_drive'
       },
       {
         id: 'resources-for-humans',

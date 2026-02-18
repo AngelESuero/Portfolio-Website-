@@ -34,6 +34,17 @@ export const providerFromUrl = (urlValue: string): LinkHubProvider | null => {
   if (host.includes('soundcloud.com') || host.includes('snd.sc')) return 'soundcloud';
   if (host.includes('untitled.stream')) return 'untitled';
   if (host.includes('substack.com')) return 'substack';
+  if (host.includes('drive.google.com')) return 'google_drive';
+
+  return null;
+};
+
+const extractGoogleDriveFileId = (parsed: URL): string | null => {
+  const fromPath = parsed.pathname.match(/^\/file\/d\/([^/]+)/);
+  if (fromPath?.[1]) return fromPath[1];
+
+  const fromQuery = parsed.searchParams.get('id');
+  if (fromQuery) return fromQuery;
 
   return null;
 };
@@ -51,6 +62,20 @@ export const resolveEmbed = (urlValue: string, preferredProvider?: LinkHubProvid
 
   if (provider === 'spotify' && /SPOTIFY_PLAYLIST_ID/i.test(urlValue)) {
     return { provider, embedUrl: null, embeddable: false, reason: 'placeholder' };
+  }
+
+  if (provider === 'google_drive') {
+    const fileId = extractGoogleDriveFileId(parsed);
+    if (!fileId) {
+      return { provider, embedUrl: null, embeddable: false, reason: 'unsupported_url_shape' };
+    }
+
+    return {
+      provider,
+      embedUrl: `https://drive.google.com/file/d/${encodeURIComponent(fileId)}/preview`,
+      embeddable: true,
+      reason: 'ok'
+    };
   }
 
   if (provider === 'youtube') {
@@ -158,6 +183,7 @@ export const getEmbedHeight = (provider: LinkHubProvider | null): number => {
   if (provider === 'soundcloud') return 180;
   if (provider === 'untitled') return 344;
   if (provider === 'instagram') return 420;
+  if (provider === 'google_drive') return 400;
   return 300;
 };
 
@@ -171,6 +197,10 @@ export const getEmbedFallbackMessage = (resolution: EmbedResolution): string => 
 
   if (resolution.provider === 'instagram' && resolution.reason === 'profile_only') {
     return 'Instagram profile links do not embed here. Use a specific post or reel URL.';
+  }
+
+  if (resolution.provider === 'google_drive' && resolution.reason === 'unsupported_url_shape') {
+    return "This Drive link can't be embedded from its current URL shape. Open source below.";
   }
 
   if (resolution.reason === 'placeholder') {

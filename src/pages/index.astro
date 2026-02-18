@@ -28,7 +28,9 @@ const sectionEmbeds = [
   {
     id: 'music',
     label: 'Music',
-    items: pickItems('music', ['now-listening', 'my-first-beat-tape', 'everyday-soundscape', 'queries-beat-tape'])
+    items: pickItems('music', ['now-listening', 'my-first-beat-tape', 'everyday-soundscape']).concat(
+      pickItems('resources', ['practicing-kriya'])
+    )
   },
   {
     id: 'visual',
