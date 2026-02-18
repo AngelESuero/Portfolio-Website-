@@ -125,10 +125,10 @@ const edgeTypeLabels: Record<(typeof edgeTypes)[number], string> = {
     const MIN_ZOOM = 0.62;
 
     const EDGE_STYLE = {
-      creates: { dash: '', color: 'color-mix(in srgb, var(--tone-accent) 88%, #fff 12%)' },
-      supports: { dash: '9 6', color: 'color-mix(in srgb, var(--tone-sky) 80%, #fff 10%)' },
-      feeds_back: { dash: '2 7', color: 'color-mix(in srgb, var(--tone-sky-bright) 70%, #fff 10%)' },
-      grounds: { dash: '11 5 2 5', color: 'color-mix(in srgb, var(--tone-accent-bright) 62%, #fff 10%)' }
+      creates: { dash: '', color: 'color-mix(in srgb, var(--tone-accent) 76%, var(--tone-line) 24%)' },
+      supports: { dash: '9 6', color: 'color-mix(in srgb, var(--tone-sky) 74%, var(--tone-line) 26%)' },
+      feeds_back: { dash: '2 7', color: 'color-mix(in srgb, var(--tone-sky-bright) 70%, var(--tone-line) 30%)' },
+      grounds: { dash: '11 5 2 5', color: 'color-mix(in srgb, var(--tone-accent-bright) 62%, var(--tone-line) 38%)' }
     };
 
     const STORAGE_KEY = 'neural_map_mode';
@@ -395,7 +395,7 @@ const edgeTypeLabels: Record<(typeof edgeTypes)[number], string> = {
 
         const baseWidth = 0.9 + weight * 1.75;
         const width = isLinked ? baseWidth + (state.expanded ? 1.45 : 0.95) : baseWidth;
-        const opacity = isHiddenByLegend ? 0 : shouldDim ? 0.03 : isLinked ? 0.84 : 0.13 + weight * 0.11;
+        const opacity = isHiddenByLegend ? 0 : shouldDim ? 0.03 : isLinked ? 0.72 : 0.12 + weight * 0.10;
 
         el.setAttribute('stroke', style.color);
         el.setAttribute('stroke-dasharray', style.dash);
@@ -772,7 +772,7 @@ const edgeTypeLabels: Record<(typeof edgeTypes)[number], string> = {
   }
 
   .map-arrowhead {
-    fill: color-mix(in srgb, var(--tone-accent) 80%, #fff 10%);
+    fill: color-mix(in srgb, var(--tone-accent) 72%, var(--tone-line) 28%);
   }
 
   .map-spiral-arrow {
@@ -836,21 +836,21 @@ const edgeTypeLabels: Record<(typeof edgeTypes)[number], string> = {
   }
 
   .map-legend__line--creates {
-    border-top-color: color-mix(in srgb, var(--tone-accent) 88%, #fff 12%);
+    border-top-color: color-mix(in srgb, var(--tone-accent) 76%, var(--tone-line) 24%);
   }
 
   .map-legend__line--supports {
-    border-top-color: color-mix(in srgb, var(--tone-sky) 80%, #fff 10%);
+    border-top-color: color-mix(in srgb, var(--tone-sky) 74%, var(--tone-line) 26%);
     border-top-style: dashed;
   }
 
   .map-legend__line--feeds_back {
-    border-top-color: color-mix(in srgb, var(--tone-sky-bright) 70%, #fff 10%);
+    border-top-color: color-mix(in srgb, var(--tone-sky-bright) 70%, var(--tone-line) 30%);
     border-top-style: dotted;
   }
 
   .map-legend__line--grounds {
-    border-top-color: color-mix(in srgb, var(--tone-accent-bright) 62%, #fff 10%);
+    border-top-color: color-mix(in srgb, var(--tone-accent-bright) 62%, var(--tone-line) 38%);
     border-top-style: dashed;
   }
 

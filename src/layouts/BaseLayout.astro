@@ -260,10 +260,15 @@ const exploreLinks = [
           const active =
             document.querySelector("nav a[aria-current='page']") || document.querySelector('nav a[data-color]');
           if (!active) return;
+
           const key = active.getAttribute('data-color');
           const base = isha[key] || isha.blue;
+
           root.style.setProperty('--accent', base);
           root.style.setProperty('--cursor', complement(base));
+          root.style.setProperty('--tone-accent', base);
+          root.style.setProperty('--tone-accent-bright', `color-mix(in srgb, ${base} 82%, #fff 18%)`);
+          root.style.setProperty('--tone-accent-glow', `color-mix(in srgb, ${base} 72%, #fff 28%)`);
         }
 
         setAccentFromActiveLink();

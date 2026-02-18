@@ -8,7 +8,7 @@
   --bg0: #05060a;
   --bg1: #070a12;
   --paper: rgba(8, 12, 20, 0.76);
-  --line: rgba(232, 239, 255, 0.095);
+  --line: rgba(232, 239, 255, 0.065);
   --text: rgba(255, 255, 255, 0.95);
   --muted: rgba(255, 255, 255, 0.72);
   --neon: #7be7ff;
@@ -37,8 +37,8 @@
   --aura-y: 30vh;
   --hallway-x: 50vw;
   --hallway-y: 34vh;
-  --line: rgba(232, 239, 255, 0.095);
-  --line2: rgba(232, 239, 255, 0.08);
+  --line: rgba(232, 239, 255, 0.065);
+  --line2: rgba(232, 239, 255, 0.05);
   --panel: rgba(255, 255, 255, 0.028);
   --street-noise: 0.04;
   --street-vignette: 0.28;
@@ -46,6 +46,7 @@
   --street-cool: rgba(111, 183, 255, 0.06);
   --hallway-photo-url: url('/images/bg-station.jpg');
   --shell-gutter: clamp(24px, 3.8vw, 72px);
+  --measure: 1080px;
   --phi: 1.618;
   --s0: 8px;
   --s1: calc(var(--s0) * var(--phi));
@@ -276,6 +277,15 @@ html[data-cursor-idle='false'] {
 
 .site-shell-row {
   padding-inline: calc(var(--size-gutter) * var(--space-scale));
+  max-width: var(--measure);
+  margin-inline: auto;
+}
+
+.mode-normal,
+.view-surface {
+  max-width: var(--measure);
+  margin-inline: auto;
+  width: 100%;
 }
 
 .pill,
