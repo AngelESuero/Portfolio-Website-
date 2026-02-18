@@ -59,10 +59,10 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
       {
         id: 'now-listening',
         title: 'Now Listening (Vol 4)',
-        url: spotifyNowListeningUrl,
+        url: 'https://youtube.com/shorts/rGRCf7j6Qws?si=00HNlFldJ6o0-Tk9',
         year: '2026',
         tag: 'Vol 4',
-        preferredEmbed: 'spotify'
+        preferredEmbed: 'youtube'
       },
       {
         id: 'my-first-beat-tape',
