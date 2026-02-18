@@ -1,6 +1,5 @@
 ---
 import profile from '../data/profile';
-import ViewSettings from './ViewSettings.astro';
 ---
 
 <footer class="mt-20 border-t border-zinc-300 py-8 text-sm dark:border-zinc-700">
@@ -8,7 +7,6 @@ import ViewSettings from './ViewSettings.astro';
     <p>© {new Date().getFullYear()} {profile.name}. Timeline/archive in progress.</p>
     <div class="flex flex-wrap items-center gap-3">
       <a class="underline decoration-accent" href={profile.link_hub_url}>Link hub</a>
-      <ViewSettings />
     </div>
   </div>
 </footer>

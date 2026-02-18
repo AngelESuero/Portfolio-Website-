@@ -1,5 +1,6 @@
 ---
 import profile from '../data/profile';
+import ViewSettings from './ViewSettings.astro';
 
 const nav = [
   { label: 'Home', href: '/', color: 'blue' },
@@ -24,13 +25,13 @@ const isActive = (href: string) => {
 ---
 
 <header class="site-header sticky top-0 z-50">
-  <div class="site-shell-row flex w-full items-center justify-between py-3 md:py-4">
+  <div class="site-shell-row header-row flex w-full items-center justify-between py-3 md:py-4">
     <a href="/" class="font-display text-lg font-bold tracking-tight text-accent">a_e.s_</a>
-    <nav aria-label="Main navigation" class="hidden gap-4 md:flex">
+    <nav aria-label="Main navigation" class="header-nav hidden md:flex">
       {nav.map((item) => (
         <a
           href={item.href}
-          class="text-sm hover:text-accent no-underline"
+          class="header-link text-sm no-underline"
           {...(item.color ? { 'data-color': item.color } : {})}
           {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
         >
@@ -38,21 +39,75 @@ const isActive = (href: string) => {
         </a>
       ))}
     </nav>
-    <div class="flex items-center gap-2">
-      <a href={profile.site_url} class="pill rounded px-3 py-1 text-sm" aria-label="Open live site">
+    <div class="header-actions flex items-center gap-2">
+      <button
+        id="mobile-nav-toggle"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        class="pill rounded px-3 py-1 text-sm md:hidden"
+        type="button"
+      >
+        Menu
+      </button>
+      <a href={profile.site_url} class="pill rounded px-3 py-1 text-sm hidden sm:inline-flex" aria-label="Open live site">
         Live
       </a>
       <button id="theme-toggle" aria-label="Toggle dark mode" class="pill rounded px-3 py-1 text-sm">Theme</button>
+      <ViewSettings />
     </div>
   </div>
+  <nav id="mobile-nav" aria-label="Mobile navigation" class="mobile-nav md:hidden" hidden>
+    <div class="site-shell-row mobile-nav-inner">
+      {nav.map((item) => (
+        <a
+          href={item.href}
+          class="header-link mobile-nav-link no-underline"
+          {...(item.color ? { 'data-color': item.color } : {})}
+          {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
+        >
+          {item.label}
+        </a>
+      ))}
+      <a href={profile.site_url} class="pill rounded px-3 py-1 text-sm w-fit mt-2" aria-label="Open live site">
+        Live
+      </a>
+    </div>
+  </nav>
 </header>
 
 <script is:inline>
   const root = document.documentElement;
   const saved = localStorage.getItem('theme');
   if (saved === 'dark') root.classList.add('dark');
-  document.getElementById('theme-toggle')?.addEventListener('click', () => {
+  const themeToggle = document.getElementById('theme-toggle');
+  const mobileToggle = document.getElementById('mobile-nav-toggle');
+  const mobileNav = document.getElementById('mobile-nav');
+
+  const closeMobileNav = () => {
+    if (!mobileNav || !mobileToggle) return;
+    mobileNav.hidden = true;
+    mobileToggle.setAttribute('aria-expanded', 'false');
+    mobileToggle.textContent = 'Menu';
+  };
+
+  themeToggle?.addEventListener('click', () => {
     root.classList.toggle('dark');
     localStorage.setItem('theme', root.classList.contains('dark') ? 'dark' : 'light');
+  });
+
+  mobileToggle?.addEventListener('click', () => {
+    if (!mobileNav) return;
+    const nextHidden = !mobileNav.hidden;
+    mobileNav.hidden = nextHidden;
+    mobileToggle.setAttribute('aria-expanded', String(!nextHidden));
+    mobileToggle.textContent = nextHidden ? 'Menu' : 'Close';
+  });
+
+  mobileNav?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', closeMobileNav);
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 768) closeMobileNav();
   });
 </script>
