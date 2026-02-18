@@ -1,29 +1,12 @@
 ---
-import type { LinkHubItem, LinkHubProvider } from '../data/linkhub';
+import type { LinkHubItem } from '../data/linkhub';
+import { getEmbedFallbackMessage, getEmbedHeight, resolveEmbed } from '../lib/embed-resolver';
 
 interface Props {
   item: LinkHubItem;
 }
 
 const { item } = Astro.props as Props;
-
-const providerFromUrl = (urlValue: string): LinkHubProvider | null => {
-  let parsed: URL;
-  try {
-    parsed = new URL(urlValue);
-  } catch {
-    return null;
-  }
-
-  const host = parsed.hostname.toLowerCase();
-  if (host.includes('instagram.com')) return 'instagram';
-  if (host.includes('youtube.com') || host.includes('youtu.be')) return 'youtube';
-  if (host.includes('spotify.com')) return 'spotify';
-  if (host.includes('soundcloud.com')) return 'soundcloud';
-  if (host.includes('untitled.stream')) return 'untitled';
-  if (host.includes('substack.com')) return 'substack';
-  return null;
-};
 
 const isLinktreeUrl = (urlValue: string): boolean => {
   try {
@@ -34,117 +17,16 @@ const isLinktreeUrl = (urlValue: string): boolean => {
   }
 };
 
-const instagramEmbed = (urlValue: string): string | null => {
-  let parsed: URL;
-  try {
-    parsed = new URL(urlValue);
-  } catch {
-    return null;
-  }
-
-  const match = parsed.pathname.match(/^\/(p|reel|tv)\/([^/]+)/);
-  if (!match?.[1] || !match?.[2]) return null;
-  const kind = match[1];
-  const code = match[2];
-  return `https://www.instagram.com/${kind}/${code}/embed`;
-};
-
-const youtubeEmbed = (urlValue: string): string | null => {
-  let parsed: URL;
-  try {
-    parsed = new URL(urlValue);
-  } catch {
-    return null;
-  }
-
-  const host = parsed.hostname.toLowerCase();
-  if (parsed.pathname.startsWith('/embed')) return urlValue;
-
-  const playlistId = parsed.searchParams.get('list');
-  if (playlistId) return `https://www.youtube.com/embed/videoseries?list=${encodeURIComponent(playlistId)}`;
-
-  if (host.includes('youtu.be')) {
-    const id = parsed.pathname.split('/').filter(Boolean)[0];
-    if (id) return `https://www.youtube.com/embed/${id}`;
-  }
-
-  const shortsMatch = parsed.pathname.match(/\/shorts\/([^/]+)/);
-  if (shortsMatch?.[1]) return `https://www.youtube.com/embed/${shortsMatch[1]}`;
-
-  const id = parsed.searchParams.get('v');
-  if (id) return `https://www.youtube.com/embed/${id}`;
-  return null;
-};
-
-const spotifyEmbed = (urlValue: string): string | null => {
-  let parsed: URL;
-  try {
-    parsed = new URL(urlValue);
-  } catch {
-    return null;
-  }
-
-  if (parsed.pathname.startsWith('/embed/')) return urlValue;
-  const segments = parsed.pathname.split('/').filter(Boolean);
-  if (segments.length >= 2) {
-    const [kind, id] = segments;
-    if (kind && id) return `https://open.spotify.com/embed/${kind}/${id}`;
-  }
-  return null;
-};
-
-const soundCloudEmbed = (urlValue: string): string | null => {
-  try {
-    const parsed = new URL(urlValue);
-    if (parsed.hostname.toLowerCase().includes('w.soundcloud.com')) return urlValue;
-    return `https://w.soundcloud.com/player/?url=${encodeURIComponent(urlValue)}`;
-  } catch {
-    return null;
-  }
-};
-
-const untitledEmbed = (urlValue: string): string | null => {
-  let parsed: URL;
-  try {
-    parsed = new URL(urlValue);
-  } catch {
-    return null;
-  }
-
-  if (parsed.pathname.includes('/invite/')) return null;
-  if (parsed.pathname.startsWith('/embed/')) return urlValue;
-  const segments = parsed.pathname.split('/').filter(Boolean);
-  const id = segments[segments.length - 1];
-  if (id) return `https://untitled.stream/embed/${id}`;
-  return null;
-};
-
-const provider = item.preferredEmbed ?? providerFromUrl(item.url);
+const resolution = resolveEmbed(item.url, item.preferredEmbed);
+const provider = resolution.provider;
+const embedUrl = resolution.embedUrl;
+const embedHeight = getEmbedHeight(provider);
+const isEmbeddable = resolution.embeddable && Boolean(embedUrl);
 const isExternal = /^https?:\/\//i.test(item.url);
 const isLinktree = isLinktreeUrl(item.url);
-const isPlaceholderSpotify = provider === 'spotify' && /SPOTIFY_PLAYLIST_ID/i.test(item.url || '');
-
-let embedUrl: string | null = null;
-let embedHeight = 220;
-
-if (provider === 'youtube') {
-  embedUrl = youtubeEmbed(item.url);
-  embedHeight = 300;
-} else if (provider === 'instagram') {
-  embedUrl = instagramEmbed(item.url);
-  embedHeight = 420;
-} else if (provider === 'spotify' && !isPlaceholderSpotify) {
-  embedUrl = spotifyEmbed(item.url);
-  embedHeight = 152;
-} else if (provider === 'soundcloud') {
-  embedUrl = soundCloudEmbed(item.url);
-  embedHeight = 180;
-} else if (provider === 'untitled') {
-  embedUrl = untitledEmbed(item.url);
-  embedHeight = 344;
-}
-
-const isEmbeddable = Boolean(embedUrl) && !isPlaceholderSpotify;
+const fallbackMessage = isLinktree
+  ? 'Linktree is your active links hub. Open it to see the full live stack.'
+  : getEmbedFallbackMessage(resolution);
 ---
 
 <article class="card hub-card" data-provider={provider || 'none'}>
@@ -171,13 +53,7 @@ const isEmbeddable = Boolean(embedUrl) && !isPlaceholderSpotify;
     </div>
   ) : (
     <div class="reader-frame">
-      <p>
-        {provider === 'instagram'
-          ? 'Instagram profile links do not embed here. Use a specific post or reel URL.'
-          : isLinktree
-            ? 'Linktree is your active links hub. Open it to see the full live stack.'
-            : 'Embed unavailable for this source.'}
-      </p>
+      <p>{fallbackMessage}</p>
     </div>
   )}
 

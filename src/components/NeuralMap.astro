@@ -1,166 +1,900 @@
 ---
-const nodes = [
-  { id: 'music', label: 'Music', x: 280, y: 210, group: 'core' },
-  { id: 'visual', label: 'Visual', x: 540, y: 180, group: 'core' },
-  { id: 'video', label: 'Video', x: 690, y: 330, group: 'core' },
-  { id: 'newark', label: 'Newark', x: 420, y: 410, group: 'place' },
-  { id: 'scraps', label: 'Scraps', x: 220, y: 410, group: 'archive' },
-  { id: 'writing', label: 'Writing', x: 505, y: 300, group: 'archive' },
-  { id: 'tools', label: 'Tools', x: 360, y: 140, group: 'lab' }
-];
+import { MAP_GROUP_ORDER, MAP_LINKS, MAP_NODES } from '../data/map-topology';
 
-const edges = [
-  ['music', 'visual'],
-  ['music', 'scraps'],
-  ['visual', 'video'],
-  ['newark', 'visual'],
-  ['newark', 'writing'],
-  ['scraps', 'writing'],
-  ['tools', 'music'],
-  ['tools', 'visual'],
-  ['video', 'writing']
-];
+const edgeTypes = ['creates', 'supports', 'feeds_back', 'grounds'] as const;
+const edgeTypeLabels: Record<(typeof edgeTypes)[number], string> = {
+  creates: 'creates',
+  supports: 'supports',
+  feeds_back: 'feeds_back',
+  grounds: 'grounds'
+};
 ---
 
 <section class="rounded-2xl border border-zinc-300 bg-white/70 p-4 dark:border-zinc-700 dark:bg-zinc-900/60">
-  <div class="mb-3 flex items-center justify-between gap-3">
+  <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
     <p class="text-sm text-zinc-600 dark:text-zinc-300">Drag to pan · Scroll to zoom · Click node to focus · Double-click node to expand neighbors.</p>
-    <button id="reset-map" class="rounded border border-zinc-400 px-3 py-1 text-sm hover:border-accent dark:border-zinc-600">Reset view</button>
+    <div class="map-controls">
+      <div class="map-mode" role="group" aria-label="Map mode">
+        <button id="map-mode-network" class="map-mode__btn is-active" type="button" aria-pressed="true">Network</button>
+        <button id="map-mode-spiral" class="map-mode__btn" type="button" aria-pressed="false">Spiral Up</button>
+      </div>
+      <button id="reset-map" class="rounded border border-zinc-400 px-3 py-1 text-sm hover:border-accent dark:border-zinc-600" type="button">Reset view</button>
+    </div>
   </div>
 
-  <div class="map-wrap relative h-[500px] overflow-hidden rounded-xl border border-zinc-300 bg-paper dark:border-zinc-700 dark:bg-zinc-950" tabindex="0" aria-label="Interactive neural map">
-    <svg id="neural-svg" viewBox="0 0 960 540" class="h-full w-full">
+  <div class="map-wrap relative h-[560px] overflow-hidden rounded-xl border border-zinc-300 bg-paper dark:border-zinc-700 dark:bg-zinc-950" tabindex="0" aria-label="Interactive neural map">
+    <svg id="neural-svg" viewBox="0 0 960 560" class="h-full w-full">
+      <defs>
+        <marker id="map-arrowhead" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L8,4 L0,8 z" class="map-arrowhead" />
+        </marker>
+        <marker id="map-spiral-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L8,4 L0,8 z" class="map-spiral-arrow" />
+        </marker>
+      </defs>
+
       <g id="viewport">
-        <g id="edge-layer">
-          {edges.map(([fromId, toId]) => {
-            const from = nodes.find((node) => node.id === fromId);
-            const to = nodes.find((node) => node.id === toId);
-            if (!from || !to) return null;
-            return <line data-edge={`${fromId}-${toId}`} x1={from.x} y1={from.y} x2={to.x} y2={to.y} class="stroke-zinc-400 dark:stroke-zinc-600" stroke-width="2" />;
-          })}
+        <g id="guide-layer">
+          <path id="spiral-guide" class="spiral-guide" marker-end="url(#map-spiral-arrow)"></path>
         </g>
+
+        <g id="edge-layer">
+          {MAP_LINKS.map((link) => (
+            <line
+              data-edge={`${link.source}__${link.target}`}
+              data-source={link.source}
+              data-target={link.target}
+              data-type={link.type}
+              data-weight={String(link.weight ?? 0.5)}
+              data-directed={link.directed ? 'true' : 'false'}
+              x1="0"
+              y1="0"
+              x2="0"
+              y2="0"
+              class="map-edge"
+            />
+          ))}
+        </g>
+
         <g id="node-layer">
-          {nodes.map((node) => (
-            <g data-node={node.id} class="node cursor-pointer">
-              <circle cx={node.x} cy={node.y} r="28" class="fill-white stroke-zinc-500 dark:fill-zinc-900 dark:stroke-zinc-300" stroke-width="2" />
-              <text x={node.x} y={node.y + 5} text-anchor="middle" class="pointer-events-none fill-zinc-900 text-[13px] dark:fill-zinc-100">{node.label}</text>
+          {MAP_NODES.map((node) => (
+            <g data-node={node.id} data-group={node.group} data-alt={String(node.alt ?? '')} class="map-node" tabindex="0" role="button" aria-label={`Node ${node.label}`}>
+              <circle class="map-node-halo" r="22" cx="0" cy="0"></circle>
+              <circle class="map-node-core" r="18" cx="0" cy="0"></circle>
+              <text class="map-label" x="0" y="5" text-anchor="middle">{node.label}</text>
             </g>
           ))}
         </g>
       </g>
     </svg>
+
+    <div class="map-legend" aria-label="Edge type legend">
+      <p class="map-legend__title">Edge types</p>
+      <div class="map-legend__list">
+        {edgeTypes.map((type) => (
+          <button type="button" class="map-legend__item is-active" data-edge-filter={type} aria-pressed="true">
+            <span class={`map-legend__line map-legend__line--${type}`}></span>
+            <span>{edgeTypeLabels[type]}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <div id="map-tooltip" class="map-tooltip" hidden>
+      <p class="map-tooltip__label" data-tip-label></p>
+      <p data-tip-group></p>
+      <p data-tip-degree></p>
+      <p data-tip-alt></p>
+    </div>
   </div>
 </section>
 
-<script is:inline define:vars={{ nodes, edges }}>
-  const wrap = document.querySelector('.map-wrap');
-  const viewport = document.getElementById('viewport');
-  const resetBtn = document.getElementById('reset-map');
-  const nodeEls = document.querySelectorAll('[data-node]');
-  const edgeEls = document.querySelectorAll('[data-edge]');
+<script is:inline define:vars={{ nodesData: MAP_NODES, linksData: MAP_LINKS, groupOrder: MAP_GROUP_ORDER }}>
+  (() => {
+    const wrap = document.querySelector('.map-wrap');
+    const viewport = document.getElementById('viewport');
+    const resetBtn = document.getElementById('reset-map');
+    const modeNetworkBtn = document.getElementById('map-mode-network');
+    const modeSpiralBtn = document.getElementById('map-mode-spiral');
+    const spiralGuide = document.getElementById('spiral-guide');
+    const tooltip = document.getElementById('map-tooltip');
 
-  let tx = 0;
-  let ty = 0;
-  let scale = 1;
-  let dragging = false;
-  let startX = 0;
-  let startY = 0;
+    if (!wrap || !viewport || !tooltip) return;
 
-  const linksByNode = new Map();
-  edges.forEach(([a, b]) => {
-    linksByNode.set(a, [...(linksByNode.get(a) || []), b]);
-    linksByNode.set(b, [...(linksByNode.get(b) || []), a]);
-  });
+    const nodeEls = Array.from(document.querySelectorAll('[data-node]'));
+    const edgeEls = Array.from(document.querySelectorAll('[data-edge]'));
+    const nodeElsById = new Map(
+      nodeEls
+        .map((el) => [el.getAttribute('data-node') || '', el])
+        .filter(([id]) => Boolean(id))
+    );
+    const edgeElsById = new Map(
+      edgeEls
+        .map((el) => [el.getAttribute('data-edge') || '', el])
+        .filter(([id]) => Boolean(id))
+    );
+    const legendBtns = Array.from(document.querySelectorAll('[data-edge-filter]'));
 
-  const render = () => {
-    viewport?.setAttribute('transform', `translate(${tx} ${ty}) scale(${scale})`);
-  };
+    const WIDTH = 960;
+    const HEIGHT = 560;
+    const CENTER_X = WIDTH / 2;
+    const CENTER_Y = HEIGHT / 2;
+    const NODE_RADIUS = 18;
+    const PADDING = 18;
+    const MAX_ZOOM = 2.35;
+    const MIN_ZOOM = 0.62;
 
-  const clearHighlight = () => {
-    nodeEls.forEach((el) => {
-      el.querySelector('circle')?.setAttribute('class', 'fill-white stroke-zinc-500 dark:fill-zinc-900 dark:stroke-zinc-300');
+    const EDGE_STYLE = {
+      creates: { dash: '', color: 'color-mix(in srgb, var(--tone-accent) 88%, #fff 12%)' },
+      supports: { dash: '9 6', color: 'color-mix(in srgb, var(--tone-sky) 80%, #fff 10%)' },
+      feeds_back: { dash: '2 7', color: 'color-mix(in srgb, var(--tone-sky-bright) 70%, #fff 10%)' },
+      grounds: { dash: '11 5 2 5', color: 'color-mix(in srgb, var(--tone-accent-bright) 62%, #fff 10%)' }
+    };
+
+    const STORAGE_KEY = 'neural_map_mode';
+
+    const hashToUnit = (value) => {
+      let h = 2166136261;
+      for (let i = 0; i < value.length; i += 1) {
+        h ^= value.charCodeAt(i);
+        h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
+      }
+      return (h >>> 0) / 4294967295;
+    };
+
+    const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+
+    const nodeById = new Map();
+    const degrees = new Map();
+    linksData.forEach((link) => {
+      degrees.set(link.source, (degrees.get(link.source) || 0) + 1);
+      degrees.set(link.target, (degrees.get(link.target) || 0) + 1);
     });
-    edgeEls.forEach((el) => {
-      el.setAttribute('class', 'stroke-zinc-400 dark:stroke-zinc-600');
-      el.setAttribute('stroke-width', '2');
-    });
-  };
 
-  const highlight = (focusId, expand = false) => {
-    clearHighlight();
-    const neighbors = new Set([focusId, ...(linksByNode.get(focusId) || [])]);
+    const degreeValues = nodesData.map((n) => degrees.get(n.id) || 0);
+    const minDegree = Math.min(...degreeValues);
+    const maxDegree = Math.max(...degreeValues);
+    const degreeRange = Math.max(1, maxDegree - minDegree);
+
+    const groups = new Map();
+    nodesData.forEach((node) => {
+      const list = groups.get(node.group) || [];
+      list.push(node);
+      groups.set(node.group, list);
+    });
+    groups.forEach((list) => list.sort((a, b) => a.id.localeCompare(b.id)));
+
+    const runtimeNodes = nodesData.map((node, index) => {
+      const list = groups.get(node.group) || [];
+      const groupIndex = Math.max(0, groupOrder.indexOf(node.group));
+      const withinIndex = Math.max(0, list.findIndex((x) => x.id === node.id));
+      const jitter = hashToUnit(`${node.group}:${node.id}`) * 0.26;
+      const t = 0.68 + groupIndex * 0.98 + withinIndex * 0.53 + jitter;
+      const derivedAlt = clamp(((degrees.get(node.id) || 0) - minDegree) / degreeRange, 0, 1);
+      const alt = typeof node.alt === 'number' ? clamp(node.alt, 0, 1) : derivedAlt;
+      const seedAngle = hashToUnit(`${node.id}:seed`) * Math.PI * 2;
+      const seedRadius = 42 + hashToUnit(`${node.id}:radius`) * 26;
+      const x = CENTER_X + Math.cos(seedAngle) * seedRadius + (index - nodesData.length / 2) * 4;
+      const y = CENTER_Y + Math.sin(seedAngle) * seedRadius;
+
+      const state = {
+        ...node,
+        degree: degrees.get(node.id) || 0,
+        alt,
+        t,
+        x,
+        y,
+        vx: 0,
+        vy: 0,
+        fx: x,
+        fy: y
+      };
+      nodeById.set(node.id, state);
+      return state;
+    });
+
+    const runtimeLinks = linksData.map((link) => ({
+      source: link.source,
+      target: link.target,
+      type: link.type,
+      weight: typeof link.weight === 'number' ? clamp(link.weight, 0, 1) : 0.5,
+      directed: Boolean(link.directed)
+    }));
+
+    const linksByNode = new Map();
+    runtimeLinks.forEach((link) => {
+      linksByNode.set(link.source, [...(linksByNode.get(link.source) || []), link.target]);
+      linksByNode.set(link.target, [...(linksByNode.get(link.target) || []), link.source]);
+    });
+
+    const state = {
+      mode: localStorage.getItem(STORAGE_KEY) === 'spiral' ? 'spiral' : 'network',
+      tx: 0,
+      ty: 0,
+      scale: 1,
+      draggingViewport: false,
+      dragPointerId: null,
+      startX: 0,
+      startY: 0,
+      focusedId: null,
+      expanded: false,
+      hoveredId: null,
+      hiddenEdgeTypes: new Set(),
+      alpha: 0,
+      raf: null,
+      suppressClickId: null,
+      tooltipX: 0,
+      tooltipY: 0
+    };
+
+    const setTargets = () => {
+      if (state.mode === 'spiral') {
+        const a = 24;
+        const b = 30;
+        const altBoost = 140;
+
+        runtimeNodes.forEach((node) => {
+          const radius = a + b * node.t + node.alt * altBoost;
+          const theta = node.t;
+          node.fx = CENTER_X + Math.cos(theta) * radius;
+          node.fy = CENTER_Y + Math.sin(theta) * radius;
+        });
+        return;
+      }
+
+      const groupCount = Math.max(1, groupOrder.length);
+      const groupCenters = new Map();
+      groupOrder.forEach((group, index) => {
+        const angle = -Math.PI / 2 + (index / groupCount) * Math.PI * 2;
+        const radius = Math.min(WIDTH, HEIGHT) * 0.28;
+        groupCenters.set(group, {
+          x: CENTER_X + Math.cos(angle) * radius,
+          y: CENTER_Y + Math.sin(angle) * radius
+        });
+      });
+
+      runtimeNodes.forEach((node) => {
+        const center = groupCenters.get(node.group) || { x: CENTER_X, y: CENTER_Y };
+        const phase = hashToUnit(`${node.id}:network`) * Math.PI * 2;
+        const spread = 26 + node.alt * 28;
+        node.fx = center.x + Math.cos(phase) * spread;
+        node.fy = center.y + Math.sin(phase) * spread;
+      });
+    };
+
+    const buildSpiralGuidePath = () => {
+      if (!spiralGuide) return;
+      const maxT = runtimeNodes.reduce((m, node) => Math.max(m, node.t + 0.8), 10);
+      const a = 24;
+      const b = 30;
+      const points = [];
+      for (let t = 0.2; t <= maxT; t += 0.18) {
+        const radius = a + b * t;
+        const x = CENTER_X + Math.cos(t) * radius;
+        const y = CENTER_Y + Math.sin(t) * radius;
+        points.push(`${x.toFixed(2)},${y.toFixed(2)}`);
+      }
+      if (!points.length) return;
+      const [head, ...rest] = points;
+      const d = `M ${head} ${rest.map((p) => `L ${p}`).join(' ')}`;
+      spiralGuide.setAttribute('d', d);
+    };
+
+    const neighborhoodSet = (rootId, depth = 1) => {
+      const seen = new Set([rootId]);
+      let frontier = [rootId];
+      for (let level = 0; level < depth; level += 1) {
+        const next = [];
+        frontier.forEach((id) => {
+          (linksByNode.get(id) || []).forEach((neighbor) => {
+            if (!seen.has(neighbor)) {
+              seen.add(neighbor);
+              next.push(neighbor);
+            }
+          });
+        });
+        frontier = next;
+        if (!frontier.length) break;
+      }
+      return seen;
+    };
+
+    const visibleEdge = (edge) => !state.hiddenEdgeTypes.has(edge.type);
+
+    const linkedToFocus = (edge, focusSet) => {
+      if (!focusSet) return false;
+      return focusSet.has(edge.source) || focusSet.has(edge.target);
+    };
+
+    const updateViewportTransform = () => {
+      viewport.setAttribute('transform', `translate(${state.tx} ${state.ty}) scale(${state.scale})`);
+    };
+
+    const updateTooltip = () => {
+      if (!tooltip) return;
+      const id = state.hoveredId;
+      if (!id) {
+        tooltip.hidden = true;
+        return;
+      }
+
+      const node = nodeById.get(id);
+      if (!node) {
+        tooltip.hidden = true;
+        return;
+      }
+
+      const labelEl = tooltip.querySelector('[data-tip-label]');
+      const groupEl = tooltip.querySelector('[data-tip-group]');
+      const degreeEl = tooltip.querySelector('[data-tip-degree]');
+      const altEl = tooltip.querySelector('[data-tip-alt]');
+
+      if (labelEl) labelEl.textContent = node.label;
+      if (groupEl) groupEl.textContent = `group: ${node.group}`;
+      if (degreeEl) degreeEl.textContent = `connections: ${node.degree}`;
+      if (altEl) altEl.textContent = `altitude: ${node.alt.toFixed(2)}`;
+
+      const rect = wrap.getBoundingClientRect();
+      const x = clamp(state.tooltipX - rect.left + 12, 8, rect.width - 210);
+      const y = clamp(state.tooltipY - rect.top + 12, 8, rect.height - 96);
+      tooltip.style.transform = `translate(${x}px, ${y}px)`;
+      tooltip.hidden = false;
+    };
+
+    const renderStyles = () => {
+      const focusId = state.focusedId;
+      const focusSet = focusId ? neighborhoodSet(focusId, state.expanded ? 2 : 1) : null;
+      const hoveredId = state.hoveredId;
+
+      nodeEls.forEach((el) => {
+        const id = el.getAttribute('data-node') || '';
+        const core = el.querySelector('.map-node-core');
+        const halo = el.querySelector('.map-node-halo');
+        const label = el.querySelector('.map-label');
+        const isFocus = id === focusId;
+        const isHover = id === hoveredId;
+        const isNeighbor = focusSet ? focusSet.has(id) : false;
+        const isDimmed = focusSet ? !isNeighbor : false;
+
+        if (core) {
+          core.setAttribute('stroke-width', isFocus || isHover ? '2.8' : '1.8');
+          core.setAttribute('stroke', isFocus ? 'color-mix(in srgb, var(--tone-accent) 92%, #fff 8%)' : 'rgba(210, 222, 245, 0.56)');
+          core.setAttribute('fill', isDimmed ? 'rgba(16, 26, 42, 0.42)' : 'rgba(11, 19, 33, 0.92)');
+        }
+
+        if (halo) {
+          halo.setAttribute('fill', 'none');
+          halo.setAttribute('stroke', 'color-mix(in srgb, var(--tone-accent) 70%, transparent)');
+          halo.setAttribute('stroke-width', isFocus ? '2' : isHover ? '1.4' : '0');
+          halo.setAttribute('opacity', isFocus ? '0.8' : isHover ? '0.45' : '0');
+        }
+
+        if (label) {
+          const showAllByZoom = state.scale >= 1.28;
+          const show = showAllByZoom || isFocus || isHover || (focusSet && focusSet.has(id));
+          label.setAttribute('opacity', show ? '0.95' : '0');
+        }
+
+        el.setAttribute('opacity', isDimmed ? '0.28' : '1');
+      });
+
+      edgeEls.forEach((el) => {
+        const type = el.getAttribute('data-type') || 'supports';
+        const source = el.getAttribute('data-source') || '';
+        const target = el.getAttribute('data-target') || '';
+        const weight = Number(el.getAttribute('data-weight') || 0.5);
+        const directed = el.getAttribute('data-directed') === 'true';
+
+        const style = EDGE_STYLE[type] || EDGE_STYLE.supports;
+        const isHiddenByLegend = state.hiddenEdgeTypes.has(type);
+        const isLinked = focusSet
+          ? linkedToFocus({ source, target, type, weight, directed }, focusSet)
+          : false;
+        const shouldDim = focusSet ? !isLinked : false;
+
+        const baseWidth = 1 + weight * 2;
+        const width = isLinked ? baseWidth + (state.expanded ? 1.35 : 0.8) : baseWidth;
+        const opacity = isHiddenByLegend ? 0 : shouldDim ? 0.05 : isLinked ? 0.9 : 0.24 + weight * 0.16;
+
+        el.setAttribute('stroke', style.color);
+        el.setAttribute('stroke-dasharray', style.dash);
+        el.setAttribute('stroke-width', String(width));
+        el.setAttribute('opacity', String(opacity));
+        el.setAttribute('marker-end', directed && !isHiddenByLegend ? 'url(#map-arrowhead)' : '');
+        el.style.pointerEvents = isHiddenByLegend ? 'none' : 'auto';
+      });
+
+      if (spiralGuide) {
+        spiralGuide.setAttribute('opacity', state.mode === 'spiral' ? '0.34' : '0');
+      }
+
+      legendBtns.forEach((btn) => {
+        const type = btn.getAttribute('data-edge-filter');
+        if (!type) return;
+        const active = !state.hiddenEdgeTypes.has(type);
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-pressed', String(active));
+      });
+
+      updateTooltip();
+    };
+
+    const renderPositions = () => {
+      runtimeNodes.forEach((node) => {
+        const el = nodeElsById.get(node.id);
+        if (!el) return;
+        el.setAttribute('transform', `translate(${node.x.toFixed(2)} ${node.y.toFixed(2)})`);
+      });
+
+      runtimeLinks.forEach((link) => {
+        const line = edgeElsById.get(`${link.source}__${link.target}`);
+        const source = nodeById.get(link.source);
+        const target = nodeById.get(link.target);
+        if (!line || !source || !target) return;
+        line.setAttribute('x1', source.x.toFixed(2));
+        line.setAttribute('y1', source.y.toFixed(2));
+        line.setAttribute('x2', target.x.toFixed(2));
+        line.setAttribute('y2', target.y.toFixed(2));
+      });
+    };
+
+    const coolDown = () => {
+      state.alpha *= 0.968;
+      if (state.alpha < 0.005) state.alpha = 0;
+    };
+
+    const tickPhysics = () => {
+      if (state.alpha <= 0) return;
+
+      const alpha = state.alpha;
+      const targetStrength = state.mode === 'spiral' ? 0.095 : 0.07;
+      const repulsionBase = state.mode === 'spiral' ? 2100 : 2400;
+
+      for (let i = 0; i < runtimeNodes.length; i += 1) {
+        const a = runtimeNodes[i];
+        for (let j = i + 1; j < runtimeNodes.length; j += 1) {
+          const b = runtimeNodes[j];
+          let dx = b.x - a.x;
+          let dy = b.y - a.y;
+          const distSq = dx * dx + dy * dy + 0.01;
+          const dist = Math.sqrt(distSq);
+
+          const repulse = (repulsionBase * alpha) / distSq;
+          const rx = (dx / dist) * repulse;
+          const ry = (dy / dist) * repulse;
+
+          a.vx -= rx;
+          a.vy -= ry;
+          b.vx += rx;
+          b.vy += ry;
+
+          const minDist = NODE_RADIUS * 2.16;
+          if (dist < minDist && dist > 0.001) {
+            const push = ((minDist - dist) / minDist) * 0.45;
+            const cx = (dx / dist) * push;
+            const cy = (dy / dist) * push;
+            a.vx -= cx;
+            a.vy -= cy;
+            b.vx += cx;
+            b.vy += cy;
+          }
+        }
+      }
+
+      runtimeLinks.forEach((link) => {
+        if (!visibleEdge(link)) return;
+
+        const source = nodeById.get(link.source);
+        const target = nodeById.get(link.target);
+        if (!source || !target) return;
+
+        const dx = target.x - source.x;
+        const dy = target.y - source.y;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 0.001;
+        const desired = state.mode === 'spiral' ? 104 + (1 - link.weight) * 86 : 118 + (1 - link.weight) * 78;
+        const spring = ((dist - desired) / dist) * (0.017 + link.weight * 0.02) * alpha;
+        const sx = dx * spring;
+        const sy = dy * spring;
+
+        source.vx += sx;
+        source.vy += sy;
+        target.vx -= sx;
+        target.vy -= sy;
+      });
+
+      runtimeNodes.forEach((node) => {
+        const altGain = 0.64 + node.alt * 0.46;
+        node.vx += (node.fx - node.x) * targetStrength * alpha * altGain;
+        node.vy += (node.fy - node.y) * targetStrength * alpha * altGain;
+
+        node.vx *= 0.84;
+        node.vy *= 0.84;
+
+        node.x = clamp(node.x + node.vx, PADDING, WIDTH - PADDING);
+        node.y = clamp(node.y + node.vy, PADDING, HEIGHT - PADDING);
+      });
+
+      coolDown();
+    };
+
+    const frame = () => {
+      tickPhysics();
+      renderPositions();
+      renderStyles();
+
+      if (state.alpha > 0.004) {
+        state.raf = window.requestAnimationFrame(frame);
+      } else {
+        state.raf = null;
+      }
+    };
+
+    const restartSimulation = (strength = 1) => {
+      state.alpha = Math.max(state.alpha, strength);
+      if (!state.raf) state.raf = window.requestAnimationFrame(frame);
+    };
+
+    const setMode = (mode) => {
+      state.mode = mode === 'spiral' ? 'spiral' : 'network';
+      localStorage.setItem(STORAGE_KEY, state.mode);
+      modeNetworkBtn?.classList.toggle('is-active', state.mode === 'network');
+      modeSpiralBtn?.classList.toggle('is-active', state.mode === 'spiral');
+      modeNetworkBtn?.setAttribute('aria-pressed', String(state.mode === 'network'));
+      modeSpiralBtn?.setAttribute('aria-pressed', String(state.mode === 'spiral'));
+
+      setTargets();
+      buildSpiralGuidePath();
+      restartSimulation(1);
+      renderStyles();
+    };
+
+    const setFocus = (id, expanded) => {
+      state.focusedId = id;
+      state.expanded = expanded;
+      restartSimulation(0.36);
+      renderStyles();
+    };
+
+    const clearFocus = () => {
+      state.focusedId = null;
+      state.expanded = false;
+      renderStyles();
+    };
+
+    const onPointerDown = (event) => {
+      if (event.target.closest('[data-node]')) return;
+      state.draggingViewport = true;
+      state.dragPointerId = event.pointerId;
+      state.startX = event.clientX - state.tx;
+      state.startY = event.clientY - state.ty;
+      wrap.setPointerCapture(event.pointerId);
+    };
+
+    const onPointerMove = (event) => {
+      if (state.draggingViewport) {
+        state.tx = event.clientX - state.startX;
+        state.ty = event.clientY - state.startY;
+        updateViewportTransform();
+      }
+      state.tooltipX = event.clientX;
+      state.tooltipY = event.clientY;
+      updateTooltip();
+    };
+
+    const onPointerUp = (event) => {
+      if (state.dragPointerId !== null && event.pointerId === state.dragPointerId) {
+        state.draggingViewport = false;
+        state.dragPointerId = null;
+      }
+    };
+
+    const onWheel = (event) => {
+      event.preventDefault();
+      const next = state.scale - event.deltaY * 0.001;
+      state.scale = clamp(next, MIN_ZOOM, MAX_ZOOM);
+      updateViewportTransform();
+      renderStyles();
+    };
 
     nodeEls.forEach((el) => {
       const id = el.getAttribute('data-node');
-      const circle = el.querySelector('circle');
-      if (!circle) return;
-      if (id === focusId) {
-        circle.setAttribute('class', 'fill-accent/10 stroke-accent dark:fill-accent/20 dark:stroke-orange-300');
-        circle.setAttribute('r', expand ? '34' : '30');
-      } else if (expand && neighbors.has(id)) {
-        circle.setAttribute('class', 'fill-zinc-200 stroke-zinc-700 dark:fill-zinc-700 dark:stroke-zinc-100');
-      } else {
-        circle.setAttribute('class', 'fill-zinc-100 stroke-zinc-400 dark:fill-zinc-900 dark:stroke-zinc-700');
-        circle.setAttribute('r', '28');
+      if (!id) return;
+
+      el.addEventListener('click', () => {
+        if (state.suppressClickId === id) {
+          state.suppressClickId = null;
+          return;
+        }
+        setFocus(id, false);
+      });
+
+      el.addEventListener('dblclick', () => {
+        state.suppressClickId = id;
+        setFocus(id, true);
+      });
+
+      el.addEventListener('mouseenter', (event) => {
+        state.hoveredId = id;
+        state.tooltipX = event.clientX;
+        state.tooltipY = event.clientY;
+        renderStyles();
+      });
+
+      el.addEventListener('mousemove', (event) => {
+        state.tooltipX = event.clientX;
+        state.tooltipY = event.clientY;
+        updateTooltip();
+      });
+
+      el.addEventListener('mouseleave', () => {
+        state.hoveredId = null;
+        renderStyles();
+      });
+
+      el.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          setFocus(id, false);
+        }
+        if (event.key === 'Escape') {
+          clearFocus();
+        }
+      });
+    });
+
+    legendBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const type = btn.getAttribute('data-edge-filter');
+        if (!type) return;
+
+        if (state.hiddenEdgeTypes.has(type)) {
+          state.hiddenEdgeTypes.delete(type);
+        } else {
+          state.hiddenEdgeTypes.add(type);
+        }
+        restartSimulation(0.28);
+        renderStyles();
+      });
+    });
+
+    modeNetworkBtn?.addEventListener('click', () => setMode('network'));
+    modeSpiralBtn?.addEventListener('click', () => setMode('spiral'));
+
+    resetBtn?.addEventListener('click', () => {
+      state.tx = 0;
+      state.ty = 0;
+      state.scale = 1;
+      state.focusedId = null;
+      state.expanded = false;
+      state.hoveredId = null;
+      updateViewportTransform();
+      setTargets();
+      buildSpiralGuidePath();
+      restartSimulation(1);
+      renderStyles();
+    });
+
+    wrap.addEventListener('pointerdown', onPointerDown);
+    wrap.addEventListener('pointermove', onPointerMove);
+    wrap.addEventListener('pointerup', onPointerUp);
+    wrap.addEventListener('pointercancel', onPointerUp);
+    wrap.addEventListener('wheel', onWheel, { passive: false });
+    wrap.addEventListener('dblclick', (event) => {
+      if (!event.target.closest('[data-node]')) {
+        event.preventDefault();
       }
     });
 
-    edgeEls.forEach((el) => {
-      const [a, b] = (el.getAttribute('data-edge') || '').split('-');
-      const isLinked = a === focusId || b === focusId || (expand && neighbors.has(a) && neighbors.has(b));
-      if (isLinked) {
-        el.setAttribute('class', 'stroke-accent dark:stroke-orange-300');
-        el.setAttribute('stroke-width', expand ? '3' : '2.5');
-      } else {
-        el.setAttribute('class', 'stroke-zinc-300 dark:stroke-zinc-700');
-        el.setAttribute('stroke-width', '1.5');
-      }
-    });
-  };
-
-  wrap?.addEventListener('pointerdown', (event) => {
-    dragging = true;
-    startX = event.clientX - tx;
-    startY = event.clientY - ty;
-    wrap.setPointerCapture(event.pointerId);
-  });
-
-  wrap?.addEventListener('pointermove', (event) => {
-    if (!dragging) return;
-    tx = event.clientX - startX;
-    ty = event.clientY - startY;
-    render();
-  });
-
-  wrap?.addEventListener('pointerup', () => {
-    dragging = false;
-  });
-
-  wrap?.addEventListener('wheel', (event) => {
-    event.preventDefault();
-    const next = scale - event.deltaY * 0.001;
-    scale = Math.min(2.25, Math.max(0.65, next));
-    render();
-  }, { passive: false });
-
-  nodeEls.forEach((el) => {
-    el.addEventListener('click', () => {
-      const id = el.getAttribute('data-node');
-      if (id) highlight(id, false);
-    });
-    el.addEventListener('dblclick', () => {
-      const id = el.getAttribute('data-node');
-      if (id) highlight(id, true);
-    });
-  });
-
-  resetBtn?.addEventListener('click', () => {
-    tx = 0;
-    ty = 0;
-    scale = 1;
-    render();
-    clearHighlight();
-  });
-
-  render();
+    setTargets();
+    buildSpiralGuidePath();
+    updateViewportTransform();
+    setMode(state.mode);
+    renderPositions();
+    renderStyles();
+    restartSimulation(0.82);
+  })();
 </script>
+
+<style>
+  .map-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .map-mode {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    border: 1px solid var(--line2);
+    border-radius: 999px;
+    background: rgba(8, 12, 20, 0.5);
+    padding: 0.2rem;
+  }
+
+  .map-mode__btn {
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--tone-muted);
+    font-size: 0.78rem;
+    line-height: 1;
+    padding: 0.4rem 0.6rem;
+    cursor: pointer;
+    transition: border-color 140ms ease, color 140ms ease, background-color 140ms ease;
+  }
+
+  .map-mode__btn:hover,
+  .map-mode__btn:focus-visible {
+    color: var(--tone-text);
+    border-color: color-mix(in srgb, var(--tone-accent) 32%, var(--line2));
+  }
+
+  .map-mode__btn.is-active {
+    color: var(--tone-accent-glow);
+    background: rgba(215, 170, 47, 0.14);
+    border-color: rgba(215, 170, 47, 0.34);
+  }
+
+  .map-edge {
+    transition: opacity 120ms ease;
+  }
+
+  .map-node {
+    cursor: pointer;
+  }
+
+  .map-node-halo,
+  .map-node-core,
+  .map-label {
+    transition: opacity 120ms ease, stroke-width 140ms ease, fill 140ms ease, stroke 140ms ease;
+  }
+
+  .map-label {
+    fill: var(--tone-text);
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    pointer-events: none;
+  }
+
+  .spiral-guide {
+    fill: none;
+    stroke: color-mix(in srgb, var(--tone-accent) 38%, var(--tone-sky) 18%);
+    stroke-width: 1.2;
+    stroke-dasharray: 2 6;
+    opacity: 0;
+    transition: opacity 180ms ease;
+  }
+
+  .map-arrowhead {
+    fill: color-mix(in srgb, var(--tone-accent) 80%, #fff 10%);
+  }
+
+  .map-spiral-arrow {
+    fill: color-mix(in srgb, var(--tone-accent) 55%, var(--tone-sky) 30%);
+  }
+
+  .map-legend {
+    position: absolute;
+    left: 0.7rem;
+    bottom: 0.7rem;
+    z-index: 5;
+    border: 1px solid var(--line2);
+    border-radius: 12px;
+    background: rgba(8, 12, 20, 0.62);
+    backdrop-filter: blur(6px);
+    padding: 0.55rem;
+    display: grid;
+    gap: 0.45rem;
+    max-width: min(100%, 250px);
+  }
+
+  .map-legend__title {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tone-muted);
+  }
+
+  .map-legend__list {
+    display: grid;
+    gap: 0.34rem;
+  }
+
+  .map-legend__item {
+    border: 1px solid var(--line2);
+    border-radius: 999px;
+    background: rgba(8, 12, 20, 0.4);
+    color: var(--tone-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.48rem;
+    justify-content: flex-start;
+    padding: 0.28rem 0.58rem;
+    font-size: 0.73rem;
+    text-transform: lowercase;
+    cursor: pointer;
+  }
+
+  .map-legend__item.is-active {
+    color: var(--tone-text);
+    border-color: color-mix(in srgb, var(--tone-accent) 24%, var(--line2));
+  }
+
+  .map-legend__line {
+    width: 1.3rem;
+    height: 0;
+    border-top-width: 2px;
+    border-top-style: solid;
+    opacity: 0.95;
+  }
+
+  .map-legend__line--creates {
+    border-top-color: color-mix(in srgb, var(--tone-accent) 88%, #fff 12%);
+  }
+
+  .map-legend__line--supports {
+    border-top-color: color-mix(in srgb, var(--tone-sky) 80%, #fff 10%);
+    border-top-style: dashed;
+  }
+
+  .map-legend__line--feeds_back {
+    border-top-color: color-mix(in srgb, var(--tone-sky-bright) 70%, #fff 10%);
+    border-top-style: dotted;
+  }
+
+  .map-legend__line--grounds {
+    border-top-color: color-mix(in srgb, var(--tone-accent-bright) 62%, #fff 10%);
+    border-top-style: dashed;
+  }
+
+  .map-tooltip {
+    position: absolute;
+    z-index: 8;
+    top: 0;
+    left: 0;
+    border: 1px solid var(--line2);
+    border-radius: 12px;
+    background: rgba(8, 12, 20, 0.9);
+    color: var(--tone-text);
+    min-width: 160px;
+    max-width: 220px;
+    padding: 0.5rem 0.58rem;
+    pointer-events: none;
+    display: grid;
+    gap: 0.16rem;
+  }
+
+  .map-tooltip p {
+    margin: 0;
+    font-size: 0.74rem;
+    line-height: 1.35;
+    color: var(--tone-muted);
+  }
+
+  .map-tooltip__label {
+    color: var(--tone-accent-glow) !important;
+    font-weight: 600;
+    font-size: 0.8rem !important;
+  }
+
+  @media (max-width: 800px) {
+    .map-wrap {
+      height: 72vh;
+      min-height: 460px;
+    }
+
+    .map-legend {
+      left: 0.55rem;
+      right: 0.55rem;
+      max-width: none;
+    }
+
+    .map-legend__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.35rem;
+    }
+  }
+</style>

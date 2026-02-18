@@ -1,4 +1,6 @@
 ---
+import { getEmbedFallbackMessage, getEmbedHeight, resolveEmbed } from '../lib/embed-resolver';
+
 interface SocialFeaturedLink {
   label: string;
   url: string;
@@ -32,6 +34,10 @@ const statusId = `${feedId}-status`;
 const hasRss = config.mode === 'rss' && Boolean(config.rss_url);
 const featuredLinks = Array.isArray(config.featured) ? config.featured : [];
 const embeds = Array.isArray(config.embeds) ? config.embeds : [];
+const resolvedEmbeds = embeds.map((embed) => ({
+  ...embed,
+  resolution: resolveEmbed(embed.url)
+}));
 const showInstagramPreview = config.local_preview === 'instagram' && igPreview.length > 0;
 const isExternal = (url: string) => /^https?:\/\//i.test(url);
 ---
@@ -85,63 +91,35 @@ const isExternal = (url: string) => /^https?:\/\//i.test(url);
     </section>
   )}
 
-  {embeds.length > 0 && (
+  {resolvedEmbeds.length > 0 && (
     <section class="social-block" aria-label={`${config.title} embeds`}>
       <h2>Embeds</h2>
       <div class="social-embed-grid">
-        {embeds.map((embed) => {
-          const isYoutube = /youtube\.com\/embed|youtube\.com|youtu\.be/.test(embed.url);
-          const isSoundCloud = /soundcloud\.com/.test(embed.url) && !/w\.soundcloud\.com\/player/.test(embed.url);
-          const isSpotify = /spotify\.com/.test(embed.url);
-          const isUntitled = /untitled\.stream/.test(embed.url);
-          let source = embed.url;
-
-          if (isYoutube && !/youtube\.com\/embed/.test(source)) {
-            try {
-              const parsed = new URL(source);
-              if (parsed.hostname.includes('youtu.be')) {
-                const id = parsed.pathname.split('/').filter(Boolean)[0];
-                if (id) source = `https://www.youtube.com/embed/${id}`;
-              } else {
-                const id = parsed.searchParams.get('v');
-                if (id) source = `https://www.youtube.com/embed/${id}`;
-              }
-            } catch {}
-          }
-
-          if (isSpotify && !/spotify\.com\/embed/.test(source)) {
-            try {
-              const parsed = new URL(source);
-              const segments = parsed.pathname.split('/').filter(Boolean);
-              if (segments.length >= 2) source = `https://open.spotify.com/embed/${segments[0]}/${segments[1]}`;
-            } catch {}
-          }
-
-          if (isUntitled && !/untitled\.stream\/embed\//.test(source)) {
-            try {
-              const parsed = new URL(source);
-              const segments = parsed.pathname.split('/').filter(Boolean);
-              const id = segments[segments.length - 1];
-              if (id) source = `https://untitled.stream/embed/${id}`;
-            } catch {}
-          }
-
-          const embedSource = isSoundCloud
-            ? `https://w.soundcloud.com/player/?url=${encodeURIComponent(source)}`
-            : source;
-          const height = isSpotify ? 152 : isUntitled ? 344 : 288;
+        {resolvedEmbeds.map((embed) => {
+          const resolution = embed.resolution;
+          const embedSource = resolution.embedUrl;
+          const isEmbeddable = resolution.embeddable && Boolean(embedSource);
+          const sourceExternal = isExternal(embed.url);
+          const height = getEmbedHeight(resolution.provider);
 
           return (
-            <figure class="social-embed-card">
-              <iframe
-                src={embedSource}
-                title={embed.label || `${config.title} embed`}
-                loading="lazy"
-                allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-                allowfullscreen={isYoutube}
-                height={height}
-              ></iframe>
-              {embed.label && <figcaption>{embed.label}</figcaption>}
+            <figure class="social-embed-card" data-provider={resolution.provider || 'none'}>
+              {isEmbeddable ? (
+                <iframe
+                  src={embedSource || undefined}
+                  title={embed.label || `${config.title} embed`}
+                  loading="lazy"
+                  allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+                  allowfullscreen={resolution.provider === 'youtube'}
+                  height={height}
+                ></iframe>
+              ) : (
+                <div class="social-embed-fallback">{getEmbedFallbackMessage(resolution)}</div>
+              )}
+              <figcaption>
+                {embed.label && <span>{embed.label}</span>}
+                <a href={embed.url} {...(sourceExternal ? { target: '_blank', rel: 'noopener' } : {})}>Open source</a>
+              </figcaption>
             </figure>
           );
         })}
@@ -339,6 +317,21 @@ const isExternal = (url: string) => /^https?:\/\//i.test(url);
     background: #020617;
   }
 
+  .social-embed-fallback {
+    min-height: 12rem;
+    border: 1px dashed rgba(113, 113, 122, 0.36);
+    border-radius: 0.72rem;
+    background: rgba(2, 6, 23, 0.55);
+    color: rgba(82, 82, 91, 0.92);
+    padding: 0.86rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.5;
+    font-size: 0.82rem;
+  }
+
   .social-local-grid {
     margin-top: 0.72rem;
     display: grid;
@@ -373,6 +366,23 @@ const isExternal = (url: string) => /^https?:\/\//i.test(url);
     margin-top: 0.35rem;
     font-size: 0.78rem;
     color: rgba(82, 82, 91, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .social-embed-card figcaption a {
+    text-decoration: none;
+    border-bottom: 1px solid rgba(113, 113, 122, 0.44);
+    color: inherit;
+    white-space: nowrap;
+  }
+
+  .social-embed-card figcaption a:hover,
+  .social-embed-card figcaption a:focus-visible {
+    color: var(--tone-accent);
+    border-color: var(--tone-accent);
   }
 
   :root.dark .social-kicker,
@@ -380,7 +390,8 @@ const isExternal = (url: string) => /^https?:\/\//i.test(url);
   :root.dark .social-status,
   :root.dark .social-meta,
   :root.dark .social-empty,
-  :root.dark .social-embed-card figcaption {
+  :root.dark .social-embed-card figcaption,
+  :root.dark .social-embed-fallback {
     color: rgba(212, 212, 216, 0.9);
   }
 

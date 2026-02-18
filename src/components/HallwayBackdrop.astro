@@ -4,6 +4,7 @@ const { accent = '#7BE7FF' } = Astro.props;
 
 <!-- Backdrop layers -->
 <div class="hallway" style={`--accent:${accent};`} aria-hidden="true">
+  <div class="hallway__photo"></div>
   <div class="hallway__vignette"></div>
   <div class="hallway__fog"></div>
   <div class="hallway__walls"></div>
@@ -21,6 +22,21 @@ const { accent = '#7BE7FF' } = Astro.props;
     z-index: 0;
     pointer-events: none;
     overflow: hidden;
+  }
+
+  .hallway__photo {
+    position: absolute;
+    inset: -8%;
+    background-image:
+      radial-gradient(900px 420px at 58% 16%, rgba(255, 212, 146, 0.2), transparent 65%),
+      linear-gradient(180deg, rgba(3, 8, 18, 0.54) 0%, rgba(4, 8, 15, 0.74) 48%, rgba(3, 6, 12, 0.9) 100%),
+      var(--hallway-photo-url);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: saturate(0.96) contrast(1.05) brightness(0.66);
+    opacity: 0.4;
+    transform: scale(1.03);
   }
 
   /* vignette (like camera/scene) */

@@ -44,6 +44,7 @@
   --street-vignette: 0.28;
   --street-warm: rgba(242, 184, 75, 0.07);
   --street-cool: rgba(111, 183, 255, 0.06);
+  --hallway-photo-url: url('/images/bg-station.jpg');
   --phi: 1.618;
   --s0: 8px;
   --s1: calc(var(--s0) * var(--phi));

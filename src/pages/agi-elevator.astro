@@ -1,0 +1,424 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="The AGI Elevator // Timeline Edition"
+  description="Three-layer AGI framing: story, strategy, and system log."
+  theme="agi"
+>
+  <section class="elevator">
+    <header class="elevator__top">
+      <div>
+        <p class="elevator__kicker">Timeline edition</p>
+        <h1>The AGI Elevator</h1>
+        <p id="subtitle" class="elevator__subtitle">Timeline mode: Story</p>
+      </div>
+      <div class="elevator__modes" role="group" aria-label="AGI elevator modes">
+        <button id="btn-story" type="button" class="elevator__pill is-active" aria-pressed="true">Level 1 · Story</button>
+        <button id="btn-strategy" type="button" class="elevator__pill" aria-pressed="false">Level 2 · Strategy</button>
+        <button id="btn-syslog" type="button" class="elevator__pill" aria-pressed="false">Level 3 · System Log</button>
+      </div>
+    </header>
+
+    <section class="card elevator__panel">
+      <div class="elevator__panel-head">
+        <div>
+          <p class="elevator__kicker">Infographic</p>
+          <h2>The Trajectory of Machine Intelligence</h2>
+          <p class="elevator__muted">2026 strategic assessment · consensus window: <strong>2028-2032</strong></p>
+        </div>
+        <p class="elevator__muted elevator__small">From your AGI base report blocks: vibe shift, ambiguity barrier, energy wall.</p>
+      </div>
+      <div class="elevator__grid elevator__grid--3">
+        <article class="card elevator__mini">
+          <p class="elevator__kicker">Now</p>
+          <h3>2026 = Construction Site</h3>
+          <p class="elevator__muted">Reasoners + agents are scaling, but reliability remains brittle.</p>
+        </article>
+        <article class="card elevator__mini">
+          <p class="elevator__kicker">Core Barrier</p>
+          <h3>Ambiguity Gap</h3>
+          <p class="elevator__muted">Closed benchmarks saturate faster than open-ended discovery tasks.</p>
+        </article>
+        <article class="card elevator__mini">
+          <p class="elevator__kicker">Hard Constraint</p>
+          <h3>Energy / Compute Wall</h3>
+          <p class="elevator__muted">Infrastructure timelines now throttle capability deployment.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="view-story" class="elevator__view">
+      <div class="elevator__grid elevator__grid--2">
+        <article class="card elevator__panel">
+          <p class="elevator__kicker">Level 1</p>
+          <h2>Story Mode</h2>
+          <p class="elevator__muted">Magic → Construction → Power Plant.</p>
+
+          <div class="elevator__timeline">
+            <div class="elevator__timeline-item">
+              <span class="elevator__dot"></span>
+              <h3>2024 · The Magic Trick</h3>
+              <p class="elevator__muted">Generative AI shocks the public narrative.</p>
+            </div>
+            <div class="elevator__timeline-item">
+              <span class="elevator__dot"></span>
+              <h3>2026 · The Construction Site</h3>
+              <p class="elevator__muted">Industrial hardening and engineering constraints dominate.</p>
+            </div>
+            <div class="elevator__timeline-item">
+              <span class="elevator__dot"></span>
+              <h3>2030 · The Power Plant</h3>
+              <p class="elevator__muted">Infrastructure convergence unlocks broad-scale deployment.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="card elevator__panel">
+          <p class="elevator__kicker">Capability Overview</p>
+          <h2>Jagged Frontier Snapshot</h2>
+          <div class="elevator__bars">
+            <div>
+              <div class="elevator__bar-meta"><span>GPQA</span><strong>92.4%</strong></div>
+              <div class="elevator__bar"><span style="width:92.4%"></span></div>
+            </div>
+            <div>
+              <div class="elevator__bar-meta"><span>HLE</span><strong>53.1%</strong></div>
+              <div class="elevator__bar"><span style="width:53.1%"></span></div>
+            </div>
+          </div>
+          <p class="elevator__muted">Gap shown as the ambiguity barrier between structured and open-ended reasoning.</p>
+          <div class="elevator__chart-wrap">
+            <canvas id="chartStory"></canvas>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="view-strategy" class="elevator__view is-hidden">
+      <article class="card elevator__panel">
+        <div class="elevator__panel-head">
+          <div>
+            <p class="elevator__kicker">Level 2</p>
+            <h2>Strategy Mode</h2>
+            <p class="elevator__muted">Breakthrough narrative shifts to scaling and engineering.</p>
+          </div>
+          <p class="elevator__muted elevator__small">Consensus window: <strong>2028-2032</strong></p>
+        </div>
+        <div class="elevator__grid elevator__grid--3">
+          <article class="card elevator__mini">
+            <p class="elevator__kicker">Phase 1</p>
+            <h3>Agentic Stumble</h3>
+            <p class="elevator__muted">Capability high, long-horizon reliability inconsistent.</p>
+          </article>
+          <article class="card elevator__mini">
+            <p class="elevator__kicker">Phase 2</p>
+            <h3>Infra Convergence</h3>
+            <p class="elevator__muted">Energy and substrate upgrades catch up to model ambition.</p>
+          </article>
+          <article class="card elevator__mini">
+            <p class="elevator__kicker">Phase 3</p>
+            <h3>Moment of Truth</h3>
+            <p class="elevator__muted">HLMI window drives org-scale automation questions.</p>
+          </article>
+        </div>
+      </article>
+    </section>
+
+    <section id="view-syslog" class="elevator__view is-hidden">
+      <article class="card elevator__panel elevator__syslog">
+        <p class="elevator__kicker">Level 3</p>
+        <h2>System Log Mode</h2>
+        <p class="elevator__muted">Engineering_Core style summary with key milestones.</p>
+        <div class="elevator__log">
+          <p>[LIVE] HLE_BENCH: 53.1%</p>
+          <p>[LIVE] GPQA_SCORE: 92.4%</p>
+          <p>[WINDOW] 2028-2032</p>
+          <p>[ALERT] Energy constraints force infrastructure-first strategy.</p>
+        </div>
+        <div class="elevator__log">
+          <p>[2026-01] WORLD_MODEL grounding improves.</p>
+          <p>[2026-02] Autonomous maintenance behaviors emerge in robotics.</p>
+          <p>[2027-03?] Superhuman coding workflows become accelerants.</p>
+          <p>[2028-XX] Baseload + bandwidth convergence window.</p>
+          <p>[2030-XX] Org-scale automation threshold.</p>
+        </div>
+      </article>
+    </section>
+  </section>
+
+  <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script is:inline>
+    (() => {
+      const views = {
+        story: document.getElementById('view-story'),
+        strategy: document.getElementById('view-strategy'),
+        syslog: document.getElementById('view-syslog')
+      };
+      const buttons = {
+        story: document.getElementById('btn-story'),
+        strategy: document.getElementById('btn-strategy'),
+        syslog: document.getElementById('btn-syslog')
+      };
+      const subtitle = document.getElementById('subtitle');
+
+      function setMode(mode) {
+        localStorage.setItem('agiElevatorMode', mode);
+        Object.entries(views).forEach(([id, el]) => {
+          if (!el) return;
+          el.classList.toggle('is-hidden', id !== mode);
+        });
+        Object.entries(buttons).forEach(([id, btn]) => {
+          if (!btn) return;
+          const active = id === mode;
+          btn.classList.toggle('is-active', active);
+          btn.setAttribute('aria-pressed', String(active));
+        });
+        if (subtitle) {
+          subtitle.textContent =
+            mode === 'story'
+              ? 'Timeline mode: Story'
+              : mode === 'strategy'
+                ? 'Timeline mode: Strategic Roadmap'
+                : 'Timeline mode: System Log';
+        }
+      }
+
+      buttons.story?.addEventListener('click', () => setMode('story'));
+      buttons.strategy?.addEventListener('click', () => setMode('strategy'));
+      buttons.syslog?.addEventListener('click', () => setMode('syslog'));
+
+      function initChart() {
+        if (!window.Chart) return;
+        const el = document.getElementById('chartStory');
+        if (!el) return;
+        const accent = getComputedStyle(document.documentElement).getPropertyValue('--tone-accent').trim() || '#d7aa2f';
+        const soft = getComputedStyle(document.documentElement).getPropertyValue('--tone-muted').trim() || 'rgba(232,239,255,.72)';
+        new window.Chart(el, {
+          type: 'line',
+          data: {
+            labels: ['2024', '2026', '2028', '2030', '2032'],
+            datasets: [
+              {
+                label: 'Trajectory',
+                data: [35, 55, 70, 85, 92],
+                borderColor: accent,
+                backgroundColor: 'rgba(215,170,47,.18)',
+                fill: true,
+                tension: 0.35,
+                pointRadius: 3
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { grid: { color: 'rgba(232,239,255,.06)' }, ticks: { color: soft } },
+              y: { grid: { color: 'rgba(232,239,255,.06)' }, ticks: { color: soft }, suggestedMin: 0, suggestedMax: 100 }
+            }
+          }
+        });
+      }
+
+      let tries = 0;
+      const boot = () => {
+        tries += 1;
+        if (window.Chart) {
+          initChart();
+          return;
+        }
+        if (tries < 20) window.setTimeout(boot, 120);
+      };
+
+      setMode(localStorage.getItem('agiElevatorMode') || 'story');
+      boot();
+    })();
+  </script>
+</BaseLayout>
+
+<style>
+  .elevator {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .elevator__top {
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--panel);
+    padding: 1rem;
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .elevator h1,
+  .elevator h2,
+  .elevator h3 {
+    margin: 0;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: var(--tone-text);
+  }
+
+  .elevator__kicker {
+    margin: 0;
+    color: var(--tone-muted);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .elevator__subtitle,
+  .elevator__muted {
+    margin: 0.35rem 0 0;
+    color: var(--tone-muted);
+  }
+
+  .elevator__small {
+    font-size: 0.85rem;
+  }
+
+  .elevator__modes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .elevator__pill {
+    border: 1px solid var(--line2);
+    border-radius: 999px;
+    background: rgba(8, 12, 20, 0.45);
+    color: var(--tone-text);
+    padding: 0.42rem 0.78rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: border-color 160ms ease, background-color 160ms ease, transform 120ms ease;
+  }
+
+  .elevator__pill:hover {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--tone-accent) 24%, var(--line2));
+  }
+
+  .elevator__pill.is-active {
+    background: rgba(215, 170, 47, 0.14);
+    border-color: rgba(215, 170, 47, 0.36);
+    color: var(--tone-accent-glow);
+  }
+
+  .elevator__panel {
+    padding: 1rem;
+  }
+
+  .elevator__panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .elevator__grid {
+    display: grid;
+    gap: 0.72rem;
+    margin-top: 0.85rem;
+  }
+
+  .elevator__grid--2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .elevator__grid--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .elevator__mini {
+    padding: 0.85rem;
+  }
+
+  .elevator__timeline {
+    margin-top: 0.8rem;
+    border-left: 2px solid var(--line2);
+    padding-left: 1rem;
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .elevator__timeline-item {
+    position: relative;
+  }
+
+  .elevator__dot {
+    position: absolute;
+    left: -1.45rem;
+    top: 0.42rem;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 999px;
+    border: 2px solid color-mix(in srgb, var(--tone-accent) 85%, transparent);
+    background: var(--panel);
+  }
+
+  .elevator__bars {
+    margin-top: 0.9rem;
+    display: grid;
+    gap: 0.72rem;
+  }
+
+  .elevator__bar-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.65rem;
+    font-size: 0.85rem;
+  }
+
+  .elevator__bar {
+    margin-top: 0.35rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--line2);
+    overflow: hidden;
+  }
+
+  .elevator__bar span {
+    display: block;
+    height: 100%;
+    background: color-mix(in srgb, var(--tone-accent) 85%, transparent);
+  }
+
+  .elevator__chart-wrap {
+    margin-top: 0.75rem;
+    height: 220px;
+  }
+
+  .elevator__syslog {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  }
+
+  .elevator__log {
+    margin-top: 0.72rem;
+    border: 1px solid var(--line2);
+    border-radius: 12px;
+    background: rgba(8, 12, 20, 0.55);
+    padding: 0.75rem;
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .elevator__log p {
+    margin: 0;
+  }
+
+  .is-hidden {
+    display: none;
+  }
+
+  @media (max-width: 900px) {
+    .elevator__grid--2,
+    .elevator__grid--3 {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
