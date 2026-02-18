@@ -18,6 +18,13 @@ const sideLeaves = Array.from({ length: 24 }, (_, i) => ({
   scale: 0.96 + (i % 4) * 0.04
 }));
 
+const vineBranches = Array.from({ length: 18 }, (_, i) => ({
+  y: 4 + i * 5.1,
+  len: 16 + (i % 4) * 6,
+  leftRot: i % 2 === 0 ? 32 : -24,
+  rightRot: i % 2 === 0 ? -32 : 24
+}));
+
 const berriesTop = Array.from({ length: 14 }, (_, i) => ({
   x: 4 + i * 7.2,
   y: 30 + (i % 2 ? 4 : -2)
@@ -74,6 +81,26 @@ const lightsBottom = Array.from({ length: 18 }, (_, i) => ({
   <div class="leaf-track leaf-track-right">
     {sideLeaves.map((leaf) => (
       <span class="leaf leaf-right" style={`--y:${leaf.y}%;--rot:${leaf.rightRot}deg;--s:${leaf.scale};`}></span>
+    ))}
+  </div>
+
+  <div class="vine-lane vine-lane-left">
+    <span class="vine-main vine-main-left"></span>
+    {vineBranches.map((branch) => (
+      <span
+        class="vine-branch vine-branch-left"
+        style={`--y:${branch.y}%;--len:${branch.len}px;--rot:${branch.leftRot}deg;`}
+      ></span>
+    ))}
+  </div>
+
+  <div class="vine-lane vine-lane-right">
+    <span class="vine-main vine-main-right"></span>
+    {vineBranches.map((branch) => (
+      <span
+        class="vine-branch vine-branch-right"
+        style={`--y:${branch.y}%;--len:${branch.len}px;--rot:${branch.rightRot}deg;`}
+      ></span>
     ))}
   </div>
 
@@ -140,6 +167,7 @@ const lightsBottom = Array.from({ length: 18 }, (_, i) => ({
 
   .leaf-track {
     position: absolute;
+    z-index: 2;
   }
 
   .leaf-track-top {
@@ -217,6 +245,84 @@ const lightsBottom = Array.from({ length: 18 }, (_, i) => ({
     top: var(--y);
     right: 0;
     transform: rotate(var(--rot)) scale(var(--s));
+  }
+
+  .vine-lane {
+    position: absolute;
+    top: 22px;
+    bottom: 22px;
+    width: 56px;
+    z-index: 1;
+    opacity: 0.86;
+  }
+
+  .vine-lane-left {
+    left: -6px;
+  }
+
+  .vine-lane-right {
+    right: -6px;
+  }
+
+  .vine-main {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgba(34, 94, 44, 0.84), rgba(19, 57, 28, 0.86));
+    box-shadow:
+      0 0 0 1px rgba(188, 240, 180, 0.14),
+      0 5px 16px rgba(0, 0, 0, 0.34);
+  }
+
+  .vine-main-left {
+    left: 19px;
+  }
+
+  .vine-main-right {
+    right: 19px;
+  }
+
+  .vine-branch {
+    position: absolute;
+    top: var(--y);
+    width: var(--len);
+    height: 3px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(46, 110, 56, 0.9), rgba(22, 72, 33, 0.96));
+    box-shadow: 0 0 0 1px rgba(194, 245, 186, 0.08);
+  }
+
+  .vine-branch::after {
+    content: '';
+    position: absolute;
+    top: -7px;
+    right: -6px;
+    width: 13px;
+    height: 20px;
+    border-radius: 70% 0 70% 0 / 80% 0 80% 0;
+    background: linear-gradient(148deg, rgba(88, 145, 86, 0.9), rgba(31, 78, 40, 0.94));
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.24);
+    transform: rotate(28deg);
+  }
+
+  .vine-branch-left {
+    left: 21px;
+    transform-origin: left center;
+    transform: rotate(var(--rot));
+  }
+
+  .vine-branch-right {
+    right: 21px;
+    transform-origin: right center;
+    transform: rotate(var(--rot));
+  }
+
+  .vine-branch-right::after {
+    right: auto;
+    left: -6px;
+    transform: rotate(-28deg) scaleX(-1);
   }
 
   .berry {
@@ -299,10 +405,30 @@ const lightsBottom = Array.from({ length: 18 }, (_, i) => ({
       height: 35px;
     }
 
+    .vine-lane {
+      width: 38px;
+      opacity: 0.72;
+    }
+
+    .vine-main-left {
+      left: 13px;
+      width: 4px;
+    }
+
+    .vine-main-right {
+      right: 13px;
+      width: 4px;
+    }
+
+    .vine-branch {
+      width: calc(var(--len) - 4px);
+    }
+
     .leaf-track-left .leaf:nth-child(2n),
     .leaf-track-right .leaf:nth-child(2n),
     .leaf-track-top .leaf:nth-child(2n),
     .leaf-track-bottom .leaf:nth-child(2n),
+    .vine-lane .vine-branch:nth-child(2n),
     .light-track-top .bulb:nth-child(2n),
     .light-track-bottom .bulb:nth-child(2n) {
       display: none;
