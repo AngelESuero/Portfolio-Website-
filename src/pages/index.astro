@@ -16,12 +16,37 @@ const tools = [...new Set(allProjects.flatMap((project) => project.data.tools))]
 const threads = featuredThreads.featured_threads;
 const musicCategory = LINK_HUB_CATEGORIES.find((category) => category.id === 'music');
 const nowListeningItem = musicCategory?.items.find((item) => item.id === 'now-listening');
-const sectionLinks = [
-  { label: 'Music', href: '/threads/music-production-sessions' },
-  { label: 'Visual', href: '/instagram' },
-  { label: 'Video', href: '/threads/av-museum-work' },
-  { label: 'Newark', href: '/work' },
-  { label: 'Scraps', href: '/threads/scraps-archive' }
+const videoCategory = LINK_HUB_CATEGORIES.find((category) => category.id === 'video');
+const writingCategory = LINK_HUB_CATEGORIES.find((category) => category.id === 'writing');
+const resourcesCategory = LINK_HUB_CATEGORIES.find((category) => category.id === 'resources');
+const socialCategory = LINK_HUB_CATEGORIES.find((category) => category.id === 'social');
+
+const sectionEmbeds = [
+  {
+    id: 'music',
+    label: 'Music',
+    items: musicCategory?.items ?? []
+  },
+  {
+    id: 'visual',
+    label: 'Visual',
+    items: (socialCategory?.items || []).filter((item) => ['instagram', 'discord'].includes(item.id))
+  },
+  {
+    id: 'video',
+    label: 'Video',
+    items: videoCategory?.items ?? []
+  },
+  {
+    id: 'newark',
+    label: 'Newark',
+    items: (resourcesCategory?.items || []).filter((item) => ['map', 'press-kit'].includes(item.id))
+  },
+  {
+    id: 'scraps',
+    label: 'Scraps',
+    items: (writingCategory?.items || []).filter((item) => ['writing-archive', 'substack', 'rss-feed'].includes(item.id))
+  }
 ];
 ---
 
@@ -56,11 +81,38 @@ const sectionLinks = [
 
     <section class="mt-10">
       <h2 class="font-display text-2xl">Sections</h2>
-      <div class="mt-3 flex flex-wrap gap-2" aria-label="Section links">
-        {sectionLinks.map((section) => (
-          <a href={section.href} class="tag rounded px-3 py-1.5 text-sm section-link">
+      <div class="mt-3 flex flex-wrap gap-2" role="tablist" aria-label="Section spotlight tabs">
+        {sectionEmbeds.map((section, index) => (
+          <button
+            type="button"
+            role="tab"
+            data-section-tab={section.id}
+            aria-selected={index === 0 ? 'true' : 'false'}
+            class:list={['tag rounded px-3 py-1.5 text-sm section-tab', index === 0 && 'is-active']}
+          >
             {section.label}
-          </a>
+          </button>
+        ))}
+      </div>
+
+      <div class="mt-4 section-panels">
+        {sectionEmbeds.map((section, index) => (
+          <div
+            class:list={['section-panel', index === 0 && 'is-active']}
+            data-section-panel={section.id}
+            role="tabpanel"
+            aria-label={`${section.label} spotlight`}
+          >
+            {section.items.length > 0 ? (
+              <div class="grid gap-3 md:grid-cols-2">
+                {section.items.map((item) => (
+                  <EmbedCard item={item} />
+                ))}
+              </div>
+            ) : (
+              <p class="text-sm text-zinc-400">No spotlight links configured yet.</p>
+            )}
+          </div>
         ))}
       </div>
     </section>
@@ -153,21 +205,59 @@ const sectionLinks = [
     </section>
   </article>
 
+  <script is:inline>
+    (() => {
+      const tabs = Array.from(document.querySelectorAll('[data-section-tab]'));
+      const panels = Array.from(document.querySelectorAll('[data-section-panel]'));
+      if (!tabs.length || !panels.length) return;
+
+      const activate = (id) => {
+        tabs.forEach((tab) => {
+          const active = tab.getAttribute('data-section-tab') === id;
+          tab.classList.toggle('is-active', active);
+          tab.setAttribute('aria-selected', String(active));
+        });
+        panels.forEach((panel) => {
+          const active = panel.getAttribute('data-section-panel') === id;
+          panel.classList.toggle('is-active', active);
+        });
+      };
+
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const id = tab.getAttribute('data-section-tab');
+          if (id) activate(id);
+        });
+      });
+
+      const first = tabs[0]?.getAttribute('data-section-tab');
+      if (first) activate(first);
+    })();
+  </script>
 </BaseLayout>
 
 <style>
-  .section-link {
+  .section-tab {
     border: 1px solid var(--line2);
     background: rgba(8, 12, 20, 0.42);
     color: var(--tone-text);
-    text-decoration: none;
+    cursor: pointer;
     transition: border-color 140ms ease, color 140ms ease, background-color 140ms ease;
   }
 
-  .section-link:hover,
-  .section-link:focus-visible {
+  .section-tab:hover,
+  .section-tab:focus-visible,
+  .section-tab.is-active {
     border-color: color-mix(in srgb, var(--tone-accent) 24%, var(--line2));
     color: var(--tone-accent-glow);
     background: rgba(8, 12, 20, 0.58);
+  }
+
+  .section-panel {
+    display: none;
+  }
+
+  .section-panel.is-active {
+    display: block;
   }
 </style>
