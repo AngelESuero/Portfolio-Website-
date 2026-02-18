@@ -48,6 +48,7 @@
   --garland-wire: rgba(255, 226, 176, 0.22);
   --garland-bulb: rgba(255, 208, 127, 0.85);
   --garland-halo: rgba(255, 193, 92, 0.22);
+  --shell-gutter: clamp(24px, 3.8vw, 72px);
   --phi: 1.618;
   --s0: 8px;
   --s1: calc(var(--s0) * var(--phi));
@@ -302,9 +303,15 @@ html[data-cursor-idle='false'] {
 }
 
 .page-shell {
+  padding-inline: var(--shell-gutter);
+  padding-block: clamp(2rem, 3.8vw, 3.6rem);
   background:
     linear-gradient(to right, rgba(255, 255, 255, 0.02), transparent 26%),
     linear-gradient(to left, rgba(0, 0, 0, 0.2), transparent 36%);
+}
+
+.site-shell-row {
+  padding-inline: var(--shell-gutter);
 }
 
 .pill,
@@ -518,6 +525,10 @@ html[data-mode='explore'] .mode-explore {
 }
 
 @media (max-width: 860px) {
+  :root {
+    --shell-gutter: clamp(16px, 4.2vw, 24px);
+  }
+
   .garland-outline {
     inset: 8px 8px;
     opacity: 0.5;
