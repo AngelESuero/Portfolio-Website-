@@ -1,7 +1,50 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-19T00:00:00.000Z"
+    "generatedAt": "2026-02-19T21:00:00.000Z"
   },
-  "items": []
+  "items": [
+    {
+      "id": "now-2026-02-19",
+      "title": "Now: what I am building and tracking this week",
+      "url": "/now",
+      "publishedAt": "2026-02-19T12:00:00.000Z",
+      "summary": "Current focus areas across archive updates, experiments, and live process."
+    },
+    {
+      "id": "agi-2026-02-18",
+      "title": "AGI timeline: latest signal snapshot",
+      "url": "/agi",
+      "publishedAt": "2026-02-18T12:00:00.000Z",
+      "summary": "Recent signal entries and monitoring notes from the AGI tracker."
+    },
+    {
+      "id": "map-2026-02-15",
+      "title": "Newark civic mapping thread",
+      "url": "/work/newark-civic-mapping",
+      "publishedAt": "2026-02-15T12:00:00.000Z",
+      "summary": "Field notes and documentation for place-based mapping work."
+    },
+    {
+      "id": "music-2026-02-12",
+      "title": "Music production sessions archive",
+      "url": "/work/music-production-sessions",
+      "publishedAt": "2026-02-12T12:00:00.000Z",
+      "summary": "Session snapshots, process clips, and in-progress material."
+    },
+    {
+      "id": "writing-2026-02-10",
+      "title": "Archive method notes",
+      "url": "/writing/archive-method",
+      "publishedAt": "2026-02-10T12:00:00.000Z",
+      "summary": "How the archive is structured and updated in public."
+    },
+    {
+      "id": "survival-os-2026-02-08",
+      "title": "Survival OS: current operating notes",
+      "url": "/survival-os",
+      "publishedAt": "2026-02-08T12:00:00.000Z",
+      "summary": "Framework updates for routines, systems, and project cadence."
+    }
+  ]
 }
