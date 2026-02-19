@@ -86,6 +86,12 @@
   --street-vignette: 0.28;
   --street-warm: rgba(242, 184, 75, 0.07);
   --street-cool: rgba(111, 183, 255, 0.06);
+  --topic-warm-alpha: 0.062;
+  --topic-cool-alpha: 0.058;
+  --topic-shadow-alpha: 0.33;
+  --topic-highlight-alpha: 0.013;
+  --topic-depth-alpha: 0.31;
+  --topic-body-lift-alpha: 0.03;
   --hallway-photo-url: url('/images/bg-station.jpg');
   --shell-gutter: clamp(24px, 3.8vw, 72px);
   --measure: clamp(1080px, 88vw, 1440px);
@@ -212,6 +218,21 @@ body {
   color: var(--text);
   background-image:
     radial-gradient(
+      1020px 660px at 14% -8%,
+      rgba(242, 184, 75, var(--topic-warm-alpha)),
+      transparent 64%
+    ),
+    radial-gradient(
+      980px 620px at 86% -10%,
+      rgba(111, 183, 255, var(--topic-cool-alpha)),
+      transparent 66%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(2, 5, 10, var(--topic-depth-alpha)),
+      rgba(2, 4, 9, calc(var(--topic-depth-alpha) + 0.08))
+    ),
+    radial-gradient(
       1200px 700px at 50% 0%,
       color-mix(in oklab, var(--accent) 18%, transparent),
       transparent 60%
@@ -224,6 +245,7 @@ body {
     linear-gradient(180deg, var(--bg1), var(--bg0));
   position: relative;
   isolation: isolate;
+  transition: background-image var(--motion-slow) var(--ease-standard);
 }
 
 main :where(p, li) {
@@ -258,10 +280,13 @@ hr {
   pointer-events: none;
   z-index: 0;
   background:
-    linear-gradient(to right, rgba(255, 255, 255, 0.012), transparent 28%),
-    linear-gradient(to left, rgba(0, 0, 0, 0.12), transparent 42%),
+    linear-gradient(to right, rgba(255, 255, 255, var(--topic-highlight-alpha)), transparent 28%),
+    linear-gradient(to left, rgba(0, 0, 0, var(--topic-shadow-alpha)), transparent 42%),
+    radial-gradient(1160px 720px at 16% 2%, rgba(242, 184, 75, var(--topic-warm-alpha)), transparent 64%),
+    radial-gradient(1160px 720px at 84% 4%, rgba(111, 183, 255, var(--topic-cool-alpha)), transparent 66%),
     linear-gradient(180deg, rgba(3, 8, 16, 0.18), rgba(3, 8, 16, 0.3) 44%, rgba(3, 7, 14, 0.34)),
     radial-gradient(1200px 760px at 50% 0%, rgba(5, 12, 22, 0.12), rgba(2, 6, 12, 0.26) 72%, rgba(2, 6, 12, 0.14));
+  transition: background-image var(--motion-slow) var(--ease-standard);
 }
 
 header,

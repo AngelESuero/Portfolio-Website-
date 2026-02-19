@@ -173,8 +173,10 @@ const exploreLinks = [
       (() => {
         const root = document.documentElement;
         const HANDOFF_KEY = 'siteAccentHandoff';
+        const TONE_HANDOFF_KEY = 'siteToneHandoff';
         const HANDOFF_MAX_AGE_MS = 2200;
         const DEFAULT_COLOR_KEY = 'blue';
+        const DEFAULT_TONE_KEY = 'balance';
         const palette = {
           yellow: '#F5D547',
           blue: '#45C7FF',
@@ -183,8 +185,23 @@ const exploreLinks = [
           white: '#C5B1FF',
           black: '#4458D9'
         };
+        const toneProfiles = {
+          balance: { warm: 0.062, cool: 0.058, shadow: 0.33, highlight: 0.013, depth: 0.31, bodyLift: 0.03 },
+          clarity: { warm: 0.052, cool: 0.074, shadow: 0.3, highlight: 0.017, depth: 0.27, bodyLift: 0.035 },
+          devotion: { warm: 0.078, cool: 0.05, shadow: 0.35, highlight: 0.012, depth: 0.33, bodyLift: 0.028 },
+          contemplation: { warm: 0.048, cool: 0.064, shadow: 0.39, highlight: 0.01, depth: 0.36, bodyLift: 0.02 },
+          discernment: { warm: 0.044, cool: 0.07, shadow: 0.37, highlight: 0.011, depth: 0.34, bodyLift: 0.024 },
+          vitality: { warm: 0.082, cool: 0.06, shadow: 0.31, highlight: 0.015, depth: 0.29, bodyLift: 0.034 },
+          grounding: { warm: 0.072, cool: 0.046, shadow: 0.41, highlight: 0.009, depth: 0.38, bodyLift: 0.018 },
+          compassion: { warm: 0.076, cool: 0.072, shadow: 0.3, highlight: 0.018, depth: 0.28, bodyLift: 0.036 },
+          harmony: { warm: 0.068, cool: 0.068, shadow: 0.32, highlight: 0.016, depth: 0.3, bodyLift: 0.033 },
+          seva: { warm: 0.074, cool: 0.055, shadow: 0.34, highlight: 0.013, depth: 0.32, bodyLift: 0.03 },
+          intensity: { warm: 0.088, cool: 0.05, shadow: 0.36, highlight: 0.012, depth: 0.33, bodyLift: 0.026 },
+          presence: { warm: 0.06, cool: 0.064, shadow: 0.32, highlight: 0.015, depth: 0.3, bodyLift: 0.032 }
+        };
 
         const hasOwn = (key) => Object.prototype.hasOwnProperty.call(palette, key);
+        const hasTone = (key) => Object.prototype.hasOwnProperty.call(toneProfiles, key);
 
         const safeGet = (storage, key) => {
           try {
@@ -209,6 +226,11 @@ const exploreLinks = [
         const normalizeColorKey = (value) => {
           const key = String(value || '').trim().toLowerCase();
           return hasOwn(key) ? key : DEFAULT_COLOR_KEY;
+        };
+
+        const normalizeToneKey = (value) => {
+          const key = String(value || '').trim().toLowerCase();
+          return hasTone(key) ? key : DEFAULT_TONE_KEY;
         };
 
         const isHexColor = (value) => /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(String(value || '').trim());
@@ -349,6 +371,7 @@ const exploreLinks = [
         const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         let currentBase = palette[DEFAULT_COLOR_KEY];
+        let currentTone = DEFAULT_TONE_KEY;
         let accentFrame = null;
 
         const applyAccent = (baseHex) => {
@@ -364,6 +387,19 @@ const exploreLinks = [
           root.style.setProperty('--accent-1', next.toneAccent);
           root.style.setProperty('--accent-2', next.toneSky);
           root.style.setProperty('--accent2', next.toneSky);
+        };
+
+        const applyTopicTone = (toneInput) => {
+          const key = normalizeToneKey(toneInput);
+          const profile = toneProfiles[key];
+          currentTone = key;
+          root.dataset.topicTone = key;
+          root.style.setProperty('--topic-warm-alpha', String(profile.warm));
+          root.style.setProperty('--topic-cool-alpha', String(profile.cool));
+          root.style.setProperty('--topic-shadow-alpha', String(profile.shadow));
+          root.style.setProperty('--topic-highlight-alpha', String(profile.highlight));
+          root.style.setProperty('--topic-depth-alpha', String(profile.depth));
+          root.style.setProperty('--topic-body-lift-alpha', String(profile.bodyLift));
         };
 
         const stopAccentAnimation = () => {
@@ -420,6 +456,23 @@ const exploreLinks = [
           }
         };
 
+        const readToneHandoff = () => {
+          const raw = safeGet(sessionStorage, TONE_HANDOFF_KEY);
+          if (!raw) return null;
+
+          try {
+            const parsed = JSON.parse(raw);
+            const from = normalizeToneKey(parsed?.from);
+            const to = normalizeToneKey(parsed?.to);
+            const ts = Number(parsed?.ts);
+            if (Number.isNaN(ts)) return null;
+            if (Date.now() - ts > HANDOFF_MAX_AGE_MS) return null;
+            return { from, to, ts };
+          } catch {
+            return null;
+          }
+        };
+
         const writeAccentHandoff = (targetInput) => {
           const target = toHexFromInput(targetInput);
           safeSet(
@@ -427,6 +480,19 @@ const exploreLinks = [
             HANDOFF_KEY,
             JSON.stringify({
               from: currentBase,
+              to: target,
+              ts: Date.now()
+            })
+          );
+        };
+
+        const writeToneHandoff = (targetInput) => {
+          const target = normalizeToneKey(targetInput);
+          safeSet(
+            sessionStorage,
+            TONE_HANDOFF_KEY,
+            JSON.stringify({
+              from: currentTone,
               to: target,
               ts: Date.now()
             })
@@ -447,12 +513,41 @@ const exploreLinks = [
           animateAccent(target, duration);
         };
 
+        const setSiteTone = (input, options = {}) => {
+          const animate = options.animate !== false;
+          const duration = typeof options.duration === 'number' ? options.duration : 320;
+          const target = normalizeToneKey(input);
+
+          if (!animate || prefersReducedMotion()) {
+            applyTopicTone(target);
+            return;
+          }
+
+          if (currentTone === target) {
+            applyTopicTone(target);
+            return;
+          }
+
+          root.classList.add('is-topic-transitioning');
+          window.setTimeout(() => {
+            root.classList.remove('is-topic-transitioning');
+          }, Math.max(120, duration));
+          applyTopicTone(target);
+        };
+
         window.__setSiteAccent = setSiteAccent;
+        window.__setSiteTone = setSiteTone;
 
         const getInitialColorKey = () => {
           const active =
             document.querySelector("nav a[aria-current='page'][data-color]") || document.querySelector('a[data-color]');
           return active instanceof HTMLElement ? active.getAttribute('data-color') || DEFAULT_COLOR_KEY : DEFAULT_COLOR_KEY;
+        };
+
+        const getInitialToneKey = () => {
+          const active =
+            document.querySelector("nav a[aria-current='page'][data-tone]") || document.querySelector('a[data-tone]');
+          return active instanceof HTMLElement ? active.getAttribute('data-tone') || DEFAULT_TONE_KEY : DEFAULT_TONE_KEY;
         };
 
         const initAccent = () => {
@@ -469,6 +564,22 @@ const exploreLinks = [
           }
 
           applyAccent(toHexFromInput(targetKey));
+        };
+
+        const initTone = () => {
+          const targetKey = getInitialToneKey();
+          const handoff = readToneHandoff();
+          safeRemove(sessionStorage, TONE_HANDOFF_KEY);
+
+          if (handoff && !prefersReducedMotion()) {
+            applyTopicTone(handoff.from);
+            window.requestAnimationFrame(() => {
+              setSiteTone(targetKey, { animate: true, duration: 320 });
+            });
+            return;
+          }
+
+          applyTopicTone(targetKey);
         };
 
         const initCursorLight = () => {
@@ -534,11 +645,17 @@ const exploreLinks = [
           }
 
           if (!(event.target instanceof Element)) return;
-          const trigger = event.target.closest('[data-color]');
+          const trigger = event.target.closest('[data-color], [data-tone]');
           if (!(trigger instanceof HTMLElement)) return;
 
-          const color = trigger.getAttribute('data-color') || DEFAULT_COLOR_KEY;
-          setSiteAccent(color, { animate: true, duration: 240 });
+          const color = trigger.getAttribute('data-color');
+          const tone = trigger.getAttribute('data-tone');
+          if (color) {
+            setSiteAccent(color, { animate: true, duration: 240 });
+          }
+          if (tone) {
+            setSiteTone(tone, { animate: true, duration: 320 });
+          }
 
           if (!(trigger instanceof HTMLAnchorElement)) return;
           if (trigger.target && trigger.target !== '_self') return;
@@ -556,10 +673,12 @@ const exploreLinks = [
 
           if (url.origin !== window.location.origin) return;
           if (url.pathname === window.location.pathname && url.search === window.location.search) return;
-          writeAccentHandoff(color);
+          if (color) writeAccentHandoff(color);
+          if (tone) writeToneHandoff(tone);
         };
 
         const init = () => {
+          initTone();
           initAccent();
           initCursorLight();
           document.addEventListener('click', handleColorClick, { capture: true });

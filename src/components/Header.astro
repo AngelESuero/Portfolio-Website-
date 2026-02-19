@@ -3,17 +3,17 @@ import profile from '../data/profile';
 import ViewSettings from './ViewSettings.astro';
 
 const nav = [
-  { label: 'Home', href: '/', color: 'blue' },
-  { label: 'About', href: '/about', color: 'blue' },
-  { label: 'Work', href: '/work', color: 'orange' },
-  { label: 'Writing', href: '/writing', color: 'red' },
-  { label: 'Social', href: '/social', color: 'white' },
-  { label: 'AGI Timeline', href: '/agi', color: 'black' },
-  { label: 'Survival OS', href: '/survival-os', color: 'red' },
-  { label: 'Map', href: '/map', color: 'blue' },
-  { label: 'Now', href: '/now', color: 'yellow' },
-  { label: 'Contact', href: '/contact', color: 'orange' },
-  { label: 'Link Hub', href: '/link-hub', color: 'yellow' }
+  { label: 'Home', href: '/', color: 'blue', tone: 'balance' },
+  { label: 'About', href: '/about', color: 'blue', tone: 'clarity' },
+  { label: 'Work', href: '/work', color: 'orange', tone: 'seva' },
+  { label: 'Writing', href: '/writing', color: 'red', tone: 'contemplation' },
+  { label: 'Social', href: '/social', color: 'white', tone: 'compassion' },
+  { label: 'AGI Timeline', href: '/agi', color: 'black', tone: 'discernment' },
+  { label: 'Survival OS', href: '/survival-os', color: 'red', tone: 'vitality' },
+  { label: 'Map', href: '/map', color: 'blue', tone: 'grounding' },
+  { label: 'Now', href: '/now', color: 'yellow', tone: 'presence' },
+  { label: 'Contact', href: '/contact', color: 'orange', tone: 'harmony' },
+  { label: 'Link Hub', href: '/link-hub', color: 'yellow', tone: 'harmony' }
 ];
 
 const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
@@ -33,6 +33,7 @@ const isActive = (href: string) => {
           href={item.href}
           class="header-link text-sm no-underline"
           {...(item.color ? { 'data-color': item.color } : {})}
+          {...(item.tone ? { 'data-tone': item.tone } : {})}
           {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
         >
           {item.label}
@@ -63,6 +64,7 @@ const isActive = (href: string) => {
           href={item.href}
           class="header-link mobile-nav-link no-underline"
           {...(item.color ? { 'data-color': item.color } : {})}
+          {...(item.tone ? { 'data-tone': item.tone } : {})}
           {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
         >
           {item.label}

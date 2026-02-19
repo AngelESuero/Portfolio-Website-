@@ -54,6 +54,7 @@ const sectionEmbeds = [
     id: 'music',
     label: 'Music',
     color: 'blue',
+    tone: 'vitality',
     items: pickItems('music', ['now-listening', 'my-first-beat-tape', 'everyday-soundscape']).concat(
       pickItems('resources', ['practicing-kriya'])
     )
@@ -62,24 +63,28 @@ const sectionEmbeds = [
     id: 'visual',
     label: 'Visual',
     color: 'orange',
+    tone: 'devotion',
     items: pickItems('social', ['instagram', 'threads', 'tiktok'])
   },
   {
     id: 'video',
     label: 'Video',
     color: 'red',
+    tone: 'intensity',
     items: pickItems('video', ['everyday-life-video', 'youtube-channel', 'post-labor-econ-playlist'])
   },
   {
     id: 'newark',
     label: 'Newark',
     color: 'yellow',
+    tone: 'grounding',
     items: pickItems('resources', ['work-archive', 'map', 'mit-living-wage'])
   },
   {
     id: 'scraps',
     label: 'Scraps',
     color: 'white',
+    tone: 'contemplation',
     items: pickItems('music', ['scraps-2023-2024']).concat(
       pickItems('writing', ['writing-archive', 'substack', 'magazine-publication'])
     )
@@ -236,6 +241,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
             role="tab"
             data-section-tab={section.id}
             data-color={section.color}
+            data-tone={section.tone}
             aria-selected={index === 0 ? 'true' : 'false'}
             class:list={['section-tab', index === 0 && 'is-active']}
           >
@@ -412,7 +418,9 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
         if (!syncAccent) return;
         const activeTab = tabs.find((tab) => tab.getAttribute('data-section-tab') === id);
         const color = activeTab?.getAttribute('data-color') || 'blue';
+        const tone = activeTab?.getAttribute('data-tone') || 'balance';
         window.__setSiteAccent?.(color, { animate: true, duration: 250 });
+        window.__setSiteTone?.(tone, { animate: true });
       };
 
       tabs.forEach((tab) => {
