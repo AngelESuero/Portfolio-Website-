@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-19T16:05:18.799Z",
+    "generatedAt": "2026-02-19T17:15:06.887Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,53 @@
     ]
   },
   "items": [
+    {
+      "id": "a0d2060a9fd5cca5365c0edf2347dbc8e4469a9a07348648b3466418fc0e39af",
+      "title": "Train AI models with Unsloth and Hugging Face Jobs for FREE",
+      "url": "https://huggingface.co/blog/unsloth-jobs",
+      "sourceId": "hf_blog",
+      "sourceName": "Hugging Face — Blog",
+      "publishedAt": "2026-02-20T00:00:00.000Z",
+      "summary": null,
+      "tags": [
+        "open-source",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://huggingface.co/blog/unsloth-jobs"
+        },
+        {
+          "label": "Feed",
+          "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
+    {
+      "id": "dfa6f01d2753ac461aba3837e5780c375d8f85259467e0ee11d4a53d603e069e",
+      "title": "Gemini 3.1 Pro: A smarter model for your most complex tasks",
+      "url": "https://deepmind.google/blog/gemini-3-1-pro-a-smarter-model-for-your-most-complex-tasks/",
+      "sourceId": "deepmind_blog",
+      "sourceName": "Google DeepMind — Blog",
+      "publishedAt": "2026-02-19T16:06:14.000Z",
+      "summary": "3.1 Pro is designed for tasks where a simple answer isn’t enough.",
+      "tags": [
+        "primary",
+        "research",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://deepmind.google/blog/gemini-3-1-pro-a-smarter-model-for-your-most-complex-tasks/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://deepmind.google/blog/feed/basic"
+        }
+      ]
+    },
     {
       "id": "90065781d1f3b55b47a4b284cf1c71b833ea4831efbe7591739b2ad9cce3f8fa",
       "title": "Media Authenticity Methods in Practice: Capabilities, Limitations, and Directions",
@@ -15059,56 +15106,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2602.15456"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "9ae2436a37cb7eb3d1f45efb4c9457411fae17609e868d99a49a530ca5b935aa",
-      "title": "Towards Expectation Detection in Language: A Case Study on Treatment Expectations in Reddit",
-      "url": "https://arxiv.org/abs/2602.15504",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-18T05:00:00.000Z",
-      "summary": "arXiv:2602.15504v1 Announce Type: new Abstract: Patients' expectations towards their treatment have a substantial effect on the treatments' success. While primarily studied in clinical settings, online patient platforms like medical subreddits may hold complementary insights: treatment expectations that patients feel unnecessary or uncomfortable to share elsewhere. Despite this, no studies examine what type of expectations users discuss online and how they express them. Presumably this is because expectations have not been studied in natural language processing (NLP) before. Therefore, we introduce the task of Expectation Detection, arguing that expectations are relevant for many applications, including opinion mining and product design. Subsequently, we present a case study for the medical domain, where expectations are particularly crucial to extract. We contribute RedHOTExpect, a corpus of Reddit posts (4.5K posts) to study expectations in this context. We use a large language model (LLM) to silver-label the data and validate its quality manually (label accuracy ~78%). Based on this, we analyze which linguistic patterns characterize expectations and explore what patients expect and why. We find that optimism and proactive framing are more pronounced in posts about physical or treatment-related illnesses compared to mental-health contexts, and that in our dataset, patients mostly discuss benefits rather than negative outcomes. The RedHOTExpect corpus can be obtained from https://www.ims.uni-stuttgart.de/data/RedHOTExpect",
-      "tags": [
-        "papers",
-        "language",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.15504"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "2e204e4a9c6e20ba96fd3920768ee12badaf84ee67c98fda967352480138ae71",
-      "title": "LuxMT Technical Report",
-      "url": "https://arxiv.org/abs/2602.15506",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-18T05:00:00.000Z",
-      "summary": "arXiv:2602.15506v1 Announce Type: new Abstract: We introduce LuxMT, a machine translation system based on Gemma 3 27B and fine-tuned for translation from Luxembourgish (LB) into French (FR) and English (EN). To assess translation performance, we construct a novel benchmark covering LB-FR, LB-EN, and LB-FR using human-translated data from Luci, a tourist magazine about Luxembourg. Training data stems from LuxAlign, a parallel corpus of multilingual Luxembourgish news articles, and LB parliamentary transcripts augmented with Google Translate. We filter the data using LuxEmbedder, LB sentence embeddings, to remove low-equivalence segment-pairs. Overall, LuxMT's results suggest strong improvements over the Gemma 3 baseline, even for translating LB to German (DE), despite the training data not containing any DE. We also explore LuxEmbedder's potential to be used as a quality estimation metric and find strong correlations with other reference-based metrics. However, we call for further research to fully assess the metric's utility and advise using it with caution.",
-      "tags": [
-        "papers",
-        "language",
-        "eval",
-        "training"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.15506"
         },
         {
           "label": "Feed",
