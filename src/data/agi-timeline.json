@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-18T07:58:26.977Z",
+    "generatedAt": "2026-02-19T04:28:37.150Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,168 @@
     ]
   },
   "items": [
+    {
+      "id": "2613101f0c34d9a67e84a43e635349f74ee847090bf3dc7738ab53527ae978c3",
+      "title": "Introducing OpenAI for India",
+      "url": "https://openai.com/index/openai-for-india",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-02-18T21:00:00.000Z",
+      "summary": "OpenAI for India expands AI access across the country—building local infrastructure, powering enterprises, and advancing workforce skills.",
+      "tags": [
+        "primary",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/openai-for-india"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
+    {
+      "id": "203b98419f4d54a053290d5ab4b43a7b19dffaa050ddfbbd96e63cf5ec347942",
+      "title": "Unlock Massive Token Throughput with GPU Fractioning in NVIDIA Run:ai",
+      "url": "https://developer.nvidia.com/blog/unlock-massive-token-throughput-with-gpu-fractioning-in-nvidia-runai/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-02-18T18:00:00.000Z",
+      "summary": "As AI workloads scale, achieving high throughput, efficient resource usage, and predictable latency becomes essential. NVIDIA Run:ai addresses these challenges... As AI workloads scale, achieving high throughput, efficient resource usage, and predictable latency becomes essential. NVIDIA Run:ai addresses these challenges through intelligent scheduling and dynamic GPU fractioning. GPU fractioning is wholly delivered by NVIDIA Run:ai in any environment—cloud, NCP, and on-premises. This post presents the joint benchmarking effort between NVIDIA and AI… Source",
+      "tags": [
+        "compute",
+        "eval"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/unlock-massive-token-throughput-with-gpu-fractioning-in-nvidia-runai/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
+    {
+      "id": "c9db41bd72f3ea3f2a41269c1f4f586a7afe712a1f59f5029c3f6ae8ec4b65e3",
+      "title": "Topping the GPU MODE Kernel Leaderboard with NVIDIA cuda.compute",
+      "url": "https://developer.nvidia.com/blog/topping-the-gpu-mode-kernel-leaderboard-with-nvidia-cuda-compute/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-02-18T17:00:00.000Z",
+      "summary": "Python dominates machine learning for its ergonomics, but writing truly fast GPU code has historically meant dropping into C++ to write custom kernels and to... Python dominates machine learning for its ergonomics, but writing truly fast GPU code has historically meant dropping into C++ to write custom kernels and to maintain bindings back to Python. For most Python developers and researchers, this is a significant barrier to entry. Frameworks like PyTorch address this by implementing kernels in CUDA C++—either handwritten or by leveraging libraries… Source",
+      "tags": [
+        "compute"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/topping-the-gpu-mode-kernel-leaderboard-with-nvidia-cuda-compute/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
+    {
+      "id": "722c597dce6e4ae019ef0d9d19c19bfb47f61fe23db3451cf529ae71fa6bd097",
+      "title": "IBM and UC Berkeley Diagnose Why Enterprise Agents Fail Using IT-Bench and MAST",
+      "url": "https://huggingface.co/blog/ibm-research/itbenchandmast",
+      "sourceId": "hf_blog",
+      "sourceName": "Hugging Face — Blog",
+      "publishedAt": "2026-02-18T16:15:45.000Z",
+      "summary": null,
+      "tags": [
+        "open-source",
+        "agents"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://huggingface.co/blog/ibm-research/itbenchandmast"
+        },
+        {
+          "label": "Feed",
+          "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
+    {
+      "id": "d961a05c47f722a6fc47dabbaaca22edac24ed2c70c04d3942f4208a5a91a4c4",
+      "title": "Project Silica’s advances in glass storage technology",
+      "url": "https://www.microsoft.com/en-us/research/blog/project-silicas-advances-in-glass-storage-technology/",
+      "sourceId": "msr_blog",
+      "sourceName": "Microsoft Research — Blog",
+      "publishedAt": "2026-02-18T16:11:45.000Z",
+      "summary": "Project Silica introduces new techniques for encoding data in borosilicate glass, as described in the journal Nature. These advances lower media cost and simplify writing and reading systems while supporting 10,000-year data preservation. The post Project Silica’s advances in glass storage technology appeared first on Microsoft Research.",
+      "tags": [
+        "research"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://www.microsoft.com/en-us/research/blog/project-silicas-advances-in-glass-storage-technology/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://www.microsoft.com/en-us/research/blog/feed/"
+        }
+      ]
+    },
+    {
+      "id": "47ebec05674b784a703909f2f8e26661ffb2663c357ba68bacbc460d676d2d0b",
+      "title": "A new way to express yourself: Gemini can now create music",
+      "url": "https://deepmind.google/blog/a-new-way-to-express-yourself-gemini-can-now-create-music/",
+      "sourceId": "deepmind_blog",
+      "sourceName": "Google DeepMind — Blog",
+      "publishedAt": "2026-02-18T16:01:38.000Z",
+      "summary": "The Gemini app now features our most advanced music generation model Lyria 3, empowering anyone to make 30-second tracks using text or images.",
+      "tags": [
+        "primary",
+        "research",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://deepmind.google/blog/a-new-way-to-express-yourself-gemini-can-now-create-music/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://deepmind.google/blog/feed/basic"
+        }
+      ]
+    },
+    {
+      "id": "4959b410c9aa4918f8a4222917ae0e5b150deb1a3c405c781ed6a3fb47027d3a",
+      "title": "How NVIDIA Extreme Hardware-Software Co-Design Delivered a Large Inference Boost for Sarvam AI’s Sovereign Models",
+      "url": "https://developer.nvidia.com/blog/how-nvidia-extreme-hardware-software-co-design-delivered-a-large-inference-boost-for-sarvam-ais-sovereign-models/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-02-18T16:00:00.000Z",
+      "summary": "As global AI adoption accelerates, developers face a growing challenge: delivering large language model (LLM) performance that meets real-world latency and cost... As global AI adoption accelerates, developers face a growing challenge: delivering large language model (LLM) performance that meets real-world latency and cost requirements. Running models with tens of billions of parameters in production, especially for conversational or voice-based AI agents, demands high throughput, low latency, and predictable service-level performance. Source",
+      "tags": [
+        "compute",
+        "agents",
+        "inference",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/how-nvidia-extreme-hardware-software-co-design-delivered-a-large-inference-boost-for-sarvam-ais-sovereign-models/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
     {
       "id": "0121162c3c8f53ce1877675516061a96e64005b30f38e847c7ed6d90fdaaee34",
       "title": "Attention-gated U-Net model for semantic segmentation of brain tumors and feature extraction for survival prognosis",
@@ -8065,6 +8227,28 @@
       ]
     },
     {
+      "id": "e05de92b51b59e56b1bfd2a6504f29478c6b334999fdbdf250f87e7fba910b5d",
+      "title": "One-Shot Any Web App with Gradio's gr.HTML",
+      "url": "https://huggingface.co/blog/gradio-html-one-shot-apps",
+      "sourceId": "hf_blog",
+      "sourceName": "Hugging Face — Blog",
+      "publishedAt": "2026-02-18T00:00:00.000Z",
+      "summary": null,
+      "tags": [
+        "open-source"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://huggingface.co/blog/gradio-html-one-shot-apps"
+        },
+        {
+          "label": "Feed",
+          "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
+    {
       "id": "3e2fbcad087e7b71821dae21d62c683665902b9129a9db4735e5a7d72dc991d4",
       "title": "NVIDIA Nemotron 2 Nano 9B Japanese: 日本のソブリンAIを支える最先端小規模言語モデル",
       "url": "https://huggingface.co/blog/nvidia/nemotron-nano-9b-v2-japanese-ja",
@@ -8123,6 +8307,29 @@
         {
           "label": "Feed",
           "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
+    {
+      "id": "7e18d8a59075d6c88cc1b6f41e4e2c1dd563f9b8e27ee80b423131ef33fac619",
+      "title": "Accelerating discovery in India through AI-powered science and education",
+      "url": "https://deepmind.google/blog/accelerating-discovery-in-india-through-ai-powered-science-and-education/",
+      "sourceId": "deepmind_blog",
+      "sourceName": "Google DeepMind — Blog",
+      "publishedAt": "2026-02-17T13:42:20.000Z",
+      "summary": "Google DeepMind brings National Partnerships for AI initiative to India, scaling AI for science and education",
+      "tags": [
+        "primary",
+        "research"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://deepmind.google/blog/accelerating-discovery-in-india-through-ai-powered-science-and-education/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://deepmind.google/blog/feed/basic"
         }
       ]
     },
@@ -14391,223 +14598,6 @@
         {
           "label": "Original",
           "url": "https://developer.nvidia.com/blog/building-better-qubits-with-gpu-accelerated-computing/"
-        },
-        {
-          "label": "Feed",
-          "url": "https://developer.nvidia.com/blog/feed/"
-        }
-      ]
-    },
-    {
-      "id": "1ac986890e253bb2defc80db6bd39e9beea1d7d132b39207bc93e41890a92e64",
-      "title": "Strengthening our safety ecosystem with external testing",
-      "url": "https://openai.com/index/strengthening-safety-with-external-testing",
-      "sourceId": "openai_news",
-      "sourceName": "OpenAI — News",
-      "publishedAt": "2025-11-19T12:00:00.000Z",
-      "summary": "OpenAI works with independent experts to evaluate frontier AI systems. Third-party testing strengthens safety, validates safeguards, and increases transparency in how we assess model capabilities and risks.",
-      "tags": [
-        "primary",
-        "release",
-        "safety",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://openai.com/index/strengthening-safety-with-external-testing"
-        },
-        {
-          "label": "Feed",
-          "url": "https://openai.com/news/rss.xml"
-        }
-      ]
-    },
-    {
-      "id": "8c1f909be9ec1297144c1ebd4efad4e06f9f8abb10d086c56d45a5b98262bb56",
-      "title": "How evals drive the next chapter in AI for businesses",
-      "url": "https://openai.com/index/evals-drive-next-chapter-of-ai",
-      "sourceId": "openai_news",
-      "sourceName": "OpenAI — News",
-      "publishedAt": "2025-11-19T11:00:00.000Z",
-      "summary": "Learn how evals help businesses define, measure, and improve AI performance—reducing risk, boosting productivity, and driving strategic advantage.",
-      "tags": [
-        "primary",
-        "release"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://openai.com/index/evals-drive-next-chapter-of-ai"
-        },
-        {
-          "label": "Feed",
-          "url": "https://openai.com/news/rss.xml"
-        }
-      ]
-    },
-    {
-      "id": "7e15563114511928e2f292c3bbeb0848e2c6c16b028f8f3ec76d9279728081cb",
-      "title": "OpenAI and Target team up on new AI-powered experiences",
-      "url": "https://openai.com/index/target-partnership",
-      "sourceId": "openai_news",
-      "sourceName": "OpenAI — News",
-      "publishedAt": "2025-11-19T06:00:00.000Z",
-      "summary": "OpenAI and Target are partnering to bring a new Target app to ChatGPT, offering personalized shopping and faster checkout. Target will also expand its use of ChatGPT Enterprise to boost productivity and guest experiences.",
-      "tags": [
-        "primary",
-        "release"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://openai.com/index/target-partnership"
-        },
-        {
-          "label": "Feed",
-          "url": "https://openai.com/news/rss.xml"
-        }
-      ]
-    },
-    {
-      "id": "cf5180667b9a31ecc2f9072b868feb8a89dc5e7bf5135ed30850b19718784214",
-      "title": "Apriel-H1: The Surprising Key to Distilling Efficient Reasoning Models",
-      "url": "https://huggingface.co/blog/ServiceNow-AI/apriel-h1",
-      "sourceId": "hf_blog",
-      "sourceName": "Hugging Face — Blog",
-      "publishedAt": "2025-11-19T05:19:07.000Z",
-      "summary": null,
-      "tags": [
-        "open-source",
-        "reasoning",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://huggingface.co/blog/ServiceNow-AI/apriel-h1"
-        },
-        {
-          "label": "Feed",
-          "url": "https://huggingface.co/blog/feed.xml"
-        }
-      ]
-    },
-    {
-      "id": "820e5f369c259f6e95b73179a51a0cc633172f2b3331d8e6fd4e8416b89a6af1",
-      "title": "A free version of ChatGPT built for teachers",
-      "url": "https://openai.com/index/chatgpt-for-teachers",
-      "sourceId": "openai_news",
-      "sourceName": "OpenAI — News",
-      "publishedAt": "2025-11-19T00:00:00.000Z",
-      "summary": "ChatGPT for Teachers is a secure workspace with education‑grade privacy and admin controls. Free for verified U.S. K–12 educators through June 2027.",
-      "tags": [
-        "primary",
-        "release"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://openai.com/index/chatgpt-for-teachers"
-        },
-        {
-          "label": "Feed",
-          "url": "https://openai.com/news/rss.xml"
-        }
-      ]
-    },
-    {
-      "id": "1abe35783ec1fca27674176e64373c0256155fd276bc75ab27dacbab67ac5b00",
-      "title": "GPT-5.1-Codex-Max System Card",
-      "url": "https://openai.com/index/gpt-5-1-codex-max-system-card",
-      "sourceId": "openai_news",
-      "sourceName": "OpenAI — News",
-      "publishedAt": "2025-11-19T00:00:00.000Z",
-      "summary": "This system card outlines the comprehensive safety measures implemented for GPT‑5.1-CodexMax. It details both model-level mitigations, such as specialized safety training for harmful tasks and prompt injections, and product-level mitigations like agent sandboxing and configurable network access.",
-      "tags": [
-        "primary",
-        "release",
-        "agents",
-        "safety",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://openai.com/index/gpt-5-1-codex-max-system-card"
-        },
-        {
-          "label": "Feed",
-          "url": "https://openai.com/news/rss.xml"
-        }
-      ]
-    },
-    {
-      "id": "58142b849887936b9c92102c2ab7be165e298a14dc7212e35ce33d21b428ef4c",
-      "title": "Building more with GPT-5.1-Codex-Max",
-      "url": "https://openai.com/index/gpt-5-1-codex-max",
-      "sourceId": "openai_news",
-      "sourceName": "OpenAI — News",
-      "publishedAt": "2025-11-19T00:00:00.000Z",
-      "summary": "Introducing GPT-5.1-Codex-Max, a faster, more intelligent agentic coding model for Codex. The model is designed for long-running, project-scale work with enhanced reasoning and token efficiency.",
-      "tags": [
-        "primary",
-        "release",
-        "agents",
-        "reasoning",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://openai.com/index/gpt-5-1-codex-max"
-        },
-        {
-          "label": "Feed",
-          "url": "https://openai.com/news/rss.xml"
-        }
-      ]
-    },
-    {
-      "id": "8d31ef8fbc8e45f3fcc8beb036b7112f7394374545210a704d21ef95328645f6",
-      "title": "How Scania is accelerating work with AI across its global workforce",
-      "url": "https://openai.com/index/scania",
-      "sourceId": "openai_news",
-      "sourceName": "OpenAI — News",
-      "publishedAt": "2025-11-19T00:00:00.000Z",
-      "summary": "Description: Global manufacturer Scania is scaling AI with ChatGPT Enterprise. With team-based onboarding and strong guardrails, AI is boosting productivity, quality, and innovation.",
-      "tags": [
-        "primary",
-        "release"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://openai.com/index/scania"
-        },
-        {
-          "label": "Feed",
-          "url": "https://openai.com/news/rss.xml"
-        }
-      ]
-    },
-    {
-      "id": "3c3bfdb9e7cba7265c50ded7a672619211386367f5af4b1a54bf901b7bc3bfa7",
-      "title": "Building Scalable AI on Enterprise Data with NVIDIA Nemotron RAG and Microsoft SQL Server 2025",
-      "url": "https://developer.nvidia.com/blog/building-scalable-ai-on-enterprise-data-with-nvidia-nemotron-rag-and-microsoft-sql-server-2025/",
-      "sourceId": "nvidia_dev_blog",
-      "sourceName": "NVIDIA Developer — Blog",
-      "publishedAt": "2025-11-18T20:00:00.000Z",
-      "summary": "At Microsoft Ignite 2025, the vision for an AI-ready enterprise database becomes a reality with the announcement of Microsoft SQL Server 2025, giving developers... At Microsoft Ignite 2025, the vision for an AI-ready enterprise database becomes a reality with the announcement of Microsoft SQL Server 2025, giving developers powerful new tools like built-in vector search and SQL native APIs to call external AI models. NVIDIA has partnered with Microsoft to seamlessly connect SQL Server 2025 with the NVIDIA Nemotron RAG collection of open models. Source",
-      "tags": [
-        "compute",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://developer.nvidia.com/blog/building-scalable-ai-on-enterprise-data-with-nvidia-nemotron-rag-and-microsoft-sql-server-2025/"
         },
         {
           "label": "Feed",
