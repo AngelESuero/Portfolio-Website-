@@ -111,9 +111,11 @@ const sectionEmbeds = [
             aria-label={`${section.label} spotlight`}
           >
             {section.items.length > 0 ? (
-              <div class="grid gap-3 md:grid-cols-2">
+              <div class="section-cards">
                 {section.items.map((item) => (
-                  <EmbedCard item={item} />
+                  <div class="section-card-shell">
+                    <EmbedCard item={item} />
+                  </div>
                 ))}
               </div>
             ) : (
@@ -269,8 +271,36 @@ const sectionEmbeds = [
     display: block;
   }
 
-  .section-panel .grid {
-    align-items: start;
+  .section-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: flex-start;
     min-width: fit-content;
+  }
+
+  .section-card-shell {
+    flex: 1 1 28rem;
+    min-width: min(100%, 22rem);
+    max-width: 100%;
+  }
+
+  @media (pointer: fine) {
+    .section-card-shell {
+      resize: both;
+      overflow: auto;
+      min-width: 20rem;
+      min-height: 20rem;
+      max-width: min(1400px, 96vw);
+      max-height: min(90vh, 1100px);
+    }
+  }
+
+  .section-card-shell :global(.hub-card) {
+    height: 100%;
+  }
+
+  .section-card-shell :global(.hub-embed) {
+    min-width: 100%;
   }
 </style>

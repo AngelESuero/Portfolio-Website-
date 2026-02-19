@@ -23,7 +23,6 @@ const embedUrl = resolution.embedUrl;
 const embedHeight = getEmbedHeight(provider);
 const isEmbeddable = resolution.embeddable && Boolean(embedUrl);
 const isResizableEmbed = provider === 'google_drive' || provider === 'youtube' || provider === 'instagram';
-const isResizableCard = isEmbeddable;
 const isExternal = /^https?:\/\//i.test(item.url);
 const isLinktree = isLinktreeUrl(item.url);
 const fallbackMessage = isLinktree
@@ -31,7 +30,7 @@ const fallbackMessage = isLinktree
   : getEmbedFallbackMessage(resolution);
 ---
 
-<article class:list={['card', 'hub-card', isResizableCard && 'is-resizable-card']} data-provider={provider || 'none'}>
+<article class="card hub-card" data-provider={provider || 'none'}>
   <div class="hub-meta">
     {item.tag && <span class="hub-tag">{item.tag}</span>}
     {item.year && <span class="hub-year">{item.year}</span>}
@@ -53,7 +52,7 @@ const fallbackMessage = isLinktree
         ></iframe>
       </div>
       <p class="hub-note">
-        {(isResizableCard || isResizableEmbed) ? 'Drag card/player to resize on desktop. ' : ''}
+        {isResizableEmbed ? 'Drag player to resize on desktop. ' : ''}
         If the embed fails, open source below.
       </p>
     </div>
@@ -123,15 +122,6 @@ const fallbackMessage = isLinktree
   }
 
   @media (pointer: fine) {
-    .hub-card.is-resizable-card {
-      resize: both;
-      overflow: auto;
-      min-width: 20rem;
-      min-height: 20rem;
-      max-width: min(1400px, 96vw);
-      max-height: min(90vh, 1100px);
-    }
-
     .hub-embed-frame.is-resizable {
       resize: both;
       overflow: auto;
