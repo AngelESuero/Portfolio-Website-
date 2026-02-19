@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-19T15:08:12.874Z",
+    "generatedAt": "2026-02-19T16:05:18.799Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,50 @@
     ]
   },
   "items": [
+    {
+      "id": "90065781d1f3b55b47a4b284cf1c71b833ea4831efbe7591739b2ad9cce3f8fa",
+      "title": "Media Authenticity Methods in Practice: Capabilities, Limitations, and Directions",
+      "url": "https://www.microsoft.com/en-us/research/blog/media-authenticity-methods-in-practice-capabilities-limitations-and-directions/",
+      "sourceId": "msr_blog",
+      "sourceName": "Microsoft Research — Blog",
+      "publishedAt": "2026-02-19T16:00:51.000Z",
+      "summary": "As synthetic media grows, verifying what’s real, and the origin of content, matters more than ever. Our latest report explores media integrity and authentication methods, their limits, and practical paths toward trustworthy provenance across images, audio, and video. The post Media Authenticity Methods in Practice: Capabilities, Limitations, and Directions appeared first on Microsoft Research.",
+      "tags": [
+        "research"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://www.microsoft.com/en-us/research/blog/media-authenticity-methods-in-practice-capabilities-limitations-and-directions/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://www.microsoft.com/en-us/research/blog/feed/"
+        }
+      ]
+    },
+    {
+      "id": "3c702cb19cf151296e1166f486680477ce7f18b7d5716f861b24f30676ee13e9",
+      "title": "「データ不足」の壁を越える：合成ペルソナが日本のAI開発を加速",
+      "url": "https://huggingface.co/blog/nvidia/nemotron-personas-japan-nttdata-ja",
+      "sourceId": "hf_blog",
+      "sourceName": "Hugging Face — Blog",
+      "publishedAt": "2026-02-19T15:32:38.000Z",
+      "summary": null,
+      "tags": [
+        "open-source"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://huggingface.co/blog/nvidia/nemotron-personas-japan-nttdata-ja"
+        },
+        {
+          "label": "Feed",
+          "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
     {
       "id": "afc45d83363fd3b50a451868ea0c23d1d60a9a1e7f35a39a7a64407e2ccc236e",
       "title": "From Scarcity to Scale: How Synthetic Personas Can Bootstrap Japanese AI Development",
@@ -15065,55 +15109,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2602.15506"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "6c35aa28ff7ee8145e9713a2a02c64d677c493d840e48758fe3981cc9094b4c8",
-      "title": "Fine-Refine: Iterative Fine-grained Refinement for Mitigating Dialogue Hallucination",
-      "url": "https://arxiv.org/abs/2602.15509",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-18T05:00:00.000Z",
-      "summary": "arXiv:2602.15509v1 Announce Type: new Abstract: The tendency for hallucination in current large language models (LLMs) negatively impacts dialogue systems. Such hallucinations produce factually incorrect responses that may mislead users and undermine system trust. Existing refinement methods for dialogue systems typically operate at the response level, overlooking the fact that a single response may contain multiple verifiable or unverifiable facts. To address this gap, we propose Fine-Refine, a fine-grained refinement framework that decomposes responses into atomic units, verifies each unit using external knowledge, assesses fluency via perplexity, and iteratively corrects granular errors. We evaluate factuality across the HybriDialogue and OpendialKG datasets in terms of factual accuracy (fact score) and coverage (Not Enough Information Proportion), and experiments show that Fine-Refine substantially improves factuality, achieving up to a 7.63-point gain in dialogue fact score, with a small trade-off in dialogue quality.",
-      "tags": [
-        "papers",
-        "language",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.15509"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "d3357743c9b97cbb42e35f6b0a8db7a4d070c54dbf503fbff7ac56af939e476a",
-      "title": "DependencyAI: Detecting AI Generated Text through Dependency Parsing",
-      "url": "https://arxiv.org/abs/2602.15514",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-18T05:00:00.000Z",
-      "summary": "arXiv:2602.15514v1 Announce Type: new Abstract: As large language models (LLMs) become increasingly prevalent, reliable methods for detecting AI-generated text are critical for mitigating potential risks. We introduce DependencyAI, a simple and interpretable approach for detecting AI-generated text using only the labels of linguistic dependency relations. Our method achieves competitive performance across monolingual, multi-generator, and multilingual settings. To increase interpretability, we analyze feature importance to reveal syntactic structures that distinguish AI-generated from human-written text. We also observe a systematic overprediction of certain models on unseen domains, suggesting that generator-specific writing styles may affect cross-domain generalization. Overall, our results demonstrate that dependency relations alone provide a robust signal for AI-generated text detection, establishing DependencyAI as a strong linguistically grounded, interpretable, and non-neural network baseline.",
-      "tags": [
-        "papers",
-        "language",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.15514"
         },
         {
           "label": "Feed",
