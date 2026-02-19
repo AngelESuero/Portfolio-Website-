@@ -88,14 +88,14 @@ const sectionEmbeds = [
 
     <section class="mt-12 md:mt-14">
       <h2 class="font-display text-2xl">Sections</h2>
-      <div class="mt-3 flex flex-wrap gap-2" role="tablist" aria-label="Section spotlight tabs">
+      <div class="mt-3 section-tablist" role="tablist" aria-label="Section spotlight tabs">
         {sectionEmbeds.map((section, index) => (
           <button
             type="button"
             role="tab"
             data-section-tab={section.id}
             aria-selected={index === 0 ? 'true' : 'false'}
-            class:list={['tag rounded px-3 py-1.5 text-sm section-tab', index === 0 && 'is-active']}
+            class:list={['section-tab', index === 0 && 'is-active']}
           >
             {section.label}
           </button>
@@ -114,7 +114,7 @@ const sectionEmbeds = [
               <div class="section-cards">
                 {section.items.map((item) => (
                   <div class="section-card-shell">
-                    <EmbedCard item={item} />
+                    <EmbedCard item={item} showResizeHint={true} />
                   </div>
                 ))}
               </div>
@@ -246,20 +246,62 @@ const sectionEmbeds = [
 </BaseLayout>
 
 <style>
+  .section-tablist {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: clamp(0.8rem, 1.3vw, 1.3rem);
+    border-bottom: 1px solid var(--line2);
+    padding-bottom: 0.12rem;
+  }
+
   .section-tab {
-    border: 1px solid var(--line2);
-    background: rgba(8, 12, 20, 0.42);
-    color: var(--tone-text);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+    font-size: 0.875rem;
     cursor: pointer;
-    transition: border-color 140ms ease, color 140ms ease, background-color 140ms ease;
+    transition: color 160ms ease;
+  }
+
+  .section-tab::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 8px;
+    height: 1px;
+    transform: scaleX(0);
+    transform-origin: left center;
+    background: color-mix(in srgb, var(--tone-accent) 82%, #fff 18%);
+    opacity: 0.8;
+    transition: transform 160ms ease;
   }
 
   .section-tab:hover,
   .section-tab:focus-visible,
   .section-tab.is-active {
-    border-color: color-mix(in srgb, var(--tone-accent) 24%, var(--line2));
     color: var(--tone-accent-glow);
-    background: rgba(8, 12, 20, 0.58);
+  }
+
+  .section-tab:hover::after,
+  .section-tab:focus-visible::after,
+  .section-tab.is-active::after {
+    transform: scaleX(1);
+  }
+
+  .section-tab:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--tone-accent) 85%, transparent);
+    outline-offset: 3px;
+    border-radius: 0.35rem;
   }
 
   .section-panel {
@@ -274,9 +316,12 @@ const sectionEmbeds = [
   .section-cards {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start;
+    align-content: flex-start;
     gap: 0.75rem;
     align-items: flex-start;
+    width: min(100%, 78rem);
+    margin-inline: auto;
     min-width: 0;
   }
 
