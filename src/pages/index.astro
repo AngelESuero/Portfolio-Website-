@@ -11,6 +11,7 @@ import HomeSocialFeeds from '../components/HomeSocialFeeds.astro';
 import { LINK_HUB_CATEGORIES, type LinkHubItem } from '../data/linkhub';
 import igManifest from '../data/ig.json';
 import youtubeManifest from '../data/youtube.json';
+import xFeedManifest from '../data/x-feed.json';
 
 interface YoutubeFeedItem {
   videoId?: string;
@@ -18,6 +19,18 @@ interface YoutubeFeedItem {
 
 interface YoutubeFeedManifest {
   items?: YoutubeFeedItem[];
+}
+
+interface XFeedItem {
+  id?: string;
+  title?: string;
+  url?: string;
+  publishedAt?: string;
+  summary?: string;
+}
+
+interface XFeedManifest {
+  items?: XFeedItem[];
 }
 import rooms from '../data/rooms';
 import agiTimelineData from '../data/agi-timeline.json';
@@ -145,6 +158,21 @@ const xHandle = 'a_e_s_4';
 const youtubeChannelId = 'UCQeJiBS72gxrZXw5GmqtocA';
 const youtubeUploadsPlaylistId = `UU${youtubeChannelId.slice(2)}`;
 const ytManifest = youtubeManifest as YoutubeFeedManifest;
+const xManifest = xFeedManifest as XFeedManifest;
+const xFeedItems = (Array.isArray(xManifest.items) ? xManifest.items : [])
+  .map((item) => ({
+    title: String(item?.title || '').trim(),
+    url: String(item?.url || '').trim(),
+    publishedAt: String(item?.publishedAt || '').trim(),
+    summary: String(item?.summary || '').trim()
+  }))
+  .filter((item) => item.title && item.url)
+  .sort((a, b) => {
+    const aTime = new Date(a.publishedAt || 0).valueOf();
+    const bTime = new Date(b.publishedAt || 0).valueOf();
+    return bTime - aTime;
+  })
+  .slice(0, 6);
 const youtubeLatestVideoId = Array.isArray(ytManifest.items)
   ? ytManifest.items
       .map((item) => (typeof item?.videoId === 'string' ? item.videoId.trim() : ''))
@@ -236,6 +264,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
 
     <HomeSocialFeeds
       xHandle={xHandle}
+      xFeedItems={xFeedItems}
       youtubeUploadsEmbedUrl={youtubeUploadsEmbedUrl}
       youtubeChannelUrl={profile.social_links.youtube}
       instagramProfileUrl={profile.social_links.instagram}

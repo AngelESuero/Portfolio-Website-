@@ -5,8 +5,16 @@ interface InstagramPreviewItem {
   date?: string;
 }
 
+interface XFeedItem {
+  title: string;
+  url: string;
+  publishedAt?: string;
+  summary?: string;
+}
+
 interface HomeSocialFeedsProps {
   xHandle: string;
+  xFeedItems: XFeedItem[];
   youtubeUploadsEmbedUrl: string;
   youtubeChannelUrl: string;
   instagramProfileUrl: string;
@@ -16,6 +24,7 @@ interface HomeSocialFeedsProps {
 
 const {
   xHandle,
+  xFeedItems,
   youtubeUploadsEmbedUrl,
   youtubeChannelUrl,
   instagramProfileUrl,
@@ -25,11 +34,35 @@ const {
 
 const normalizedXHandle = String(xHandle || '').trim().replace(/^@/, '');
 const xTimelineUrl = normalizedXHandle ? `https://twitter.com/${normalizedXHandle}` : 'https://twitter.com';
+const formatXDate = (value?: string): string => {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.valueOf())) return '';
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  }).format(date);
+};
+const normalizedXItems = (Array.isArray(xFeedItems) ? xFeedItems : [])
+  .map((item) => ({
+    title: String(item?.title || '').trim(),
+    url: String(item?.url || '').trim(),
+    publishedAt: String(item?.publishedAt || '').trim(),
+    summary: String(item?.summary || '').trim()
+  }))
+  .filter((item) => item.title && item.url)
+  .sort((a, b) => {
+    const aTime = new Date(a.publishedAt || 0).valueOf();
+    const bTime = new Date(b.publishedAt || 0).valueOf();
+    return bTime - aTime;
+  })
+  .slice(0, 6);
+const hasXItems = normalizedXItems.length > 0;
 const previewItems = (Array.isArray(instagramPreview) ? instagramPreview : [])
   .filter((item) => typeof item?.src === 'string' && item.src)
   .slice(0, 4);
 const hasPreview = previewItems.length > 0;
-const xWidgetRootId = 'home-social-x-widget';
 ---
 
 <section class="home-social-feeds" aria-label="Social feeds">
@@ -41,22 +74,27 @@ const xWidgetRootId = 'home-social-x-widget';
 
   <div class="home-social-feeds-grid">
     <article class="home-social-card" data-provider="x">
-      <p class="home-social-card-kicker">Live timeline</p>
+      <p class="home-social-card-kicker">Latest posts</p>
       <h3>X</h3>
       <p class="home-social-card-dek">Latest short-form notes and commentary from @{normalizedXHandle}.</p>
-      <div id={xWidgetRootId} class="home-social-frame home-social-frame-x">
-        <a
-          class="twitter-timeline"
-          href={xTimelineUrl}
-          data-dnt="true"
-          data-chrome="noheader nofooter transparent"
-          data-tweet-limit="6"
-        >
-          Posts by @{normalizedXHandle}
-        </a>
-        <div class="home-social-x-fallback" aria-live="polite">
-          <p>Timeline preview is unavailable in this browser. Use the links below.</p>
-        </div>
+      <div class="home-social-frame home-social-frame-x">
+        {hasXItems ? (
+          <ul class="home-social-x-list">
+            {normalizedXItems.map((item) => (
+              <li>
+                <a href={item.url} target="_blank" rel="noopener">{item.title}</a>
+                {item.publishedAt && <p class="home-social-x-meta">{formatXDate(item.publishedAt)}</p>}
+                {item.summary && <p class="home-social-x-summary">{item.summary}</p>}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div class="home-social-x-empty">
+            <p>
+              No local X posts yet. Add items in <code>src/data/x-feed.json</code>.
+            </p>
+          </div>
+        )}
       </div>
       <p class="home-social-links">
         <a href="/social/x">Open full feed</a>
@@ -107,64 +145,6 @@ const xWidgetRootId = 'home-social-x-widget';
     </article>
   </div>
 </section>
-
-<script is:inline define:vars={{ xWidgetRootId }}>
-  (() => {
-    if (!window.matchMedia('(min-width: 861px)').matches) return;
-
-    const root = document.getElementById(xWidgetRootId);
-    if (!root) return;
-    const showFallback = () => {
-      if (root.querySelector('iframe')) {
-        root.classList.remove('is-fallback');
-        return;
-      }
-      root.classList.add('is-fallback');
-    };
-    const scheduleFallbackCheck = () => {
-      window.setTimeout(showFallback, 4500);
-    };
-    const observer = new MutationObserver(() => {
-      if (root.querySelector('iframe')) {
-        root.classList.remove('is-fallback');
-      }
-    });
-    observer.observe(root, { childList: true, subtree: true });
-
-    const timelineLink = root.querySelector('a.twitter-timeline');
-    if (timelineLink) {
-      const prefersDark = document.documentElement.classList.contains('dark');
-      timelineLink.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
-    }
-
-    const twttr = window.twttr;
-    if (twttr?.widgets?.load) {
-      twttr.widgets.load(root);
-      scheduleFallbackCheck();
-      return;
-    }
-
-    const scriptId = 'home-social-x-widgets-script';
-    if (document.getElementById(scriptId)) {
-      scheduleFallbackCheck();
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.id = scriptId;
-    script.async = true;
-    script.src = 'https://platform.twitter.com/widgets.js';
-    script.charset = 'utf-8';
-    script.addEventListener('load', () => {
-      const loadedTwttr = window.twttr;
-      if (loadedTwttr?.widgets?.load) loadedTwttr.widgets.load(root);
-      scheduleFallbackCheck();
-    });
-    script.addEventListener('error', showFallback);
-    document.head.appendChild(script);
-    scheduleFallbackCheck();
-  })();
-</script>
 
 <style>
   .home-social-feeds {
@@ -280,31 +260,60 @@ const xWidgetRootId = 'home-social-x-widget';
     background: #060911;
   }
 
-  .home-social-frame-x :global(.twitter-timeline) {
-    display: block;
+  .home-social-x-empty {
     min-height: 24.5rem;
-  }
-
-  .home-social-x-fallback {
-    display: none;
+    padding: 0.92rem;
+    display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    min-height: 6rem;
-    padding: 0.82rem;
-    border-top: 1px dashed var(--line2);
-    background: rgba(6, 10, 17, 0.66);
   }
 
-  .home-social-x-fallback p {
+  .home-social-x-empty p {
     margin: 0;
-    font-size: 0.82rem;
+    font-size: 0.84rem;
     line-height: 1.5;
     color: var(--tone-muted);
   }
 
-  .home-social-frame-x.is-fallback .home-social-x-fallback {
-    display: flex;
+  .home-social-x-list {
+    margin: 0;
+    padding: 0.58rem;
+    list-style: none;
+    display: grid;
+    gap: 0.58rem;
+  }
+
+  .home-social-x-list li {
+    border: 1px solid var(--line2);
+    border-radius: 0.66rem;
+    padding: 0.58rem 0.62rem;
+    background: rgba(6, 10, 17, 0.42);
+  }
+
+  .home-social-x-list li a {
+    color: #f4f4f5;
+    text-decoration: none;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .home-social-x-list li a:hover,
+  .home-social-x-list li a:focus-visible {
+    color: var(--tone-accent-glow);
+  }
+
+  .home-social-x-meta {
+    margin: 0.28rem 0 0;
+    font-size: 0.74rem;
+    color: var(--tone-muted);
+  }
+
+  .home-social-x-summary {
+    margin: 0.24rem 0 0;
+    font-size: 0.8rem;
+    color: rgba(228, 230, 236, 0.9);
+    line-height: 1.45;
   }
 
   .home-social-ig-grid {
@@ -401,7 +410,7 @@ const xWidgetRootId = 'home-social-x-widget';
     .home-social-frame-x,
     .home-social-frame-youtube,
     .home-social-frame iframe,
-    .home-social-frame-x :global(.twitter-timeline) {
+    .home-social-x-empty {
       min-height: 21.5rem;
     }
 

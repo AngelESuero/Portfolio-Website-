@@ -2,8 +2,12 @@ name: Sync site datasets
 
 on:
   schedule:
-    - cron: "17 7 * * *"
+    - cron: "17 * * * *"
   workflow_dispatch:
+
+concurrency:
+  group: sync-data
+  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -27,7 +31,9 @@ jobs:
         run: npm ci
 
       - name: Sync datasets
-        run: npm run sync:data
+        run: |
+          npm run sync:data
+          npm run ig:manifest
 
       - name: Commit & push if changed
         run: |
@@ -39,6 +45,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add src/data/agi-timeline.json src/data/youtube.json src/data/chess.json
-          git commit -m "chore(data): daily dataset sync"
+          git add src/data/agi-timeline.json src/data/youtube.json src/data/chess.json src/data/ig.json
+          git commit -m "chore(data): hourly dataset sync"
           git push

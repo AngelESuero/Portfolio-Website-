@@ -3,7 +3,19 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import SocialFeedPage from '../../components/SocialFeedPage.astro';
 import socialConfig from '../../data/social';
 import igManifest from '../../data/ig.json';
+import xFeedManifest from '../../data/x-feed.json';
 import type { SocialConfigItem } from '../../data/social';
+
+interface XFeedItem {
+  title?: string;
+  url?: string;
+  publishedAt?: string;
+  summary?: string;
+}
+
+interface XFeedManifest {
+  items?: XFeedItem[];
+}
 
 export function getStaticPaths() {
   return (socialConfig as SocialConfigItem[]).map((config) => ({
@@ -17,6 +29,35 @@ const igPreview =
   config.local_preview === 'instagram' && Array.isArray(igManifest)
     ? igManifest.slice(0, 8).filter((item) => typeof item?.src === 'string' && item.src)
     : [];
+const xManifest = xFeedManifest as XFeedManifest;
+const formatDate = (value: string): string => {
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.valueOf())) return value;
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  }).format(parsed);
+};
+const xManualItems =
+  config.slug === 'x' && Array.isArray(xManifest.items)
+    ? xManifest.items
+        .map((item) => ({
+          title: String(item?.title || '').trim(),
+          url: String(item?.url || '').trim(),
+          dateRaw: String(item?.publishedAt || '').trim(),
+          summary: String(item?.summary || '').trim()
+        }))
+        .filter((item) => item.title && item.url)
+        .sort((a, b) => new Date(b.dateRaw || 0).valueOf() - new Date(a.dateRaw || 0).valueOf())
+        .map((item) => ({
+          title: item.title,
+          url: item.url,
+          date: item.dateRaw ? formatDate(item.dateRaw) : '',
+          summary: item.summary
+        }))
+        .slice(0, 12)
+    : undefined;
 ---
 
 <BaseLayout
@@ -24,5 +65,5 @@ const igPreview =
   description={config.description || `Updates from ${config.title}.`}
   theme="social"
 >
-  <SocialFeedPage config={config} igPreview={igPreview} />
+  <SocialFeedPage config={config} igPreview={igPreview} manualItems={xManualItems} />
 </BaseLayout>

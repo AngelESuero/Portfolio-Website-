@@ -11,6 +11,13 @@ interface SocialEmbed {
   url: string;
 }
 
+interface SocialManualItem {
+  title: string;
+  url: string;
+  date?: string;
+  summary?: string;
+}
+
 interface SocialConfig {
   slug: string;
   title: string;
@@ -27,12 +34,23 @@ interface SocialConfig {
 interface Props {
   config: SocialConfig;
   igPreview?: Array<{ src: string; caption?: string; date?: string }>;
+  manualItems?: SocialManualItem[];
 }
 
-const { config, igPreview = [] } = Astro.props;
+const { config, igPreview = [], manualItems } = Astro.props as Props;
 const feedId = `social-feed-${config.slug}`;
 const statusId = `${feedId}-status`;
-const hasRss = config.mode === 'rss' && Boolean(config.rss_url);
+const normalizedManualItems = (Array.isArray(manualItems) ? manualItems : [])
+  .map((item) => ({
+    title: String(item?.title || '').trim(),
+    url: String(item?.url || '').trim(),
+    date: String(item?.date || '').trim(),
+    summary: String(item?.summary || '').trim()
+  }))
+  .filter((item) => item.title && item.url);
+const hasManualLatestSource = Array.isArray(manualItems);
+const hasManualItems = normalizedManualItems.length > 0;
+const hasRss = !hasManualLatestSource && config.mode === 'rss' && Boolean(config.rss_url);
 const featuredLinks = Array.isArray(config.featured) ? config.featured : [];
 const embeds = Array.isArray(config.embeds) ? config.embeds : [];
 const resolvedEmbeds = embeds.map((embed) => ({
@@ -43,7 +61,7 @@ const showInstagramPreview = config.local_preview === 'instagram' && igPreview.l
 const isExternal = (url: string) => /^https?:\/\//i.test(url);
 const xTimelineHandle =
   typeof config.x_timeline_handle === 'string' ? config.x_timeline_handle.trim().replace(/^@/, '') : '';
-const showXTimeline = Boolean(xTimelineHandle);
+const showXTimeline = Boolean(xTimelineHandle) && !hasManualLatestSource;
 const xWidgetRootId = `x-widget-${config.slug}`;
 const xTimelineHref = showXTimeline ? `https://twitter.com/${xTimelineHandle}` : '';
 ---
@@ -60,12 +78,33 @@ const xTimelineHref = showXTimeline ? `https://twitter.com/${xTimelineHandle}` :
     </p>
   </header>
 
-  {hasRss && (
+  {hasManualLatestSource ? (
+    <section class="social-block" aria-label={`${config.title} latest feed`}>
+      <h2>Latest</h2>
+      {hasManualItems ? (
+        <ul class="social-list">
+          {normalizedManualItems.map((item) => (
+            <li>
+              <a href={item.url} target="_blank" rel="noopener">{item.title}</a>
+              {item.date && <p class="social-meta">{item.date}</p>}
+              {item.summary && <p class="social-summary">{item.summary}</p>}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="social-empty">
+          No local X posts yet. Add items in <code>src/data/x-feed.json</code>.
+        </p>
+      )}
+    </section>
+  ) : (
+    hasRss && (
     <section class="social-block" aria-label={`${config.title} latest feed`}>
       <h2>Latest</h2>
       <p id={statusId} class="social-status">Loading latest entries…</p>
       <ul id={feedId} class="social-list"></ul>
     </section>
+    )
   )}
 
   <section class="social-block" aria-label={`${config.title} featured links`}>
@@ -352,6 +391,13 @@ const xTimelineHref = showXTimeline ? `https://twitter.com/${xTimelineHandle}` :
     color: rgba(82, 82, 91, 0.92);
   }
 
+  .social-summary {
+    margin: 0.22rem 0 0;
+    font-size: 0.82rem;
+    line-height: 1.48;
+    color: rgba(82, 82, 91, 0.92);
+  }
+
   .social-empty {
     margin: 0.65rem 0 0;
     color: rgba(82, 82, 91, 0.9);
@@ -482,6 +528,7 @@ const xTimelineHref = showXTimeline ? `https://twitter.com/${xTimelineHandle}` :
   :root.dark .social-dek,
   :root.dark .social-status,
   :root.dark .social-meta,
+  :root.dark .social-summary,
   :root.dark .social-empty,
   :root.dark .social-embed-card figcaption,
   :root.dark .social-embed-fallback {
