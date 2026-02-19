@@ -262,9 +262,15 @@ const sectionEmbeds = [
 
   .section-panel {
     display: none;
+    overflow-x: auto;
   }
 
   .section-panel.is-active {
     display: block;
+  }
+
+  .section-panel .grid {
+    align-items: start;
+    min-width: fit-content;
   }
 </style>
