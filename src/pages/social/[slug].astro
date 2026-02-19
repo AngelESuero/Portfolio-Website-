@@ -30,6 +30,11 @@ const igPreview =
     ? igManifest.slice(0, 8).filter((item) => typeof item?.src === 'string' && item.src)
     : [];
 const xManifest = xFeedManifest as XFeedManifest;
+const xFeedSource = config.slug === 'x' ? (Array.isArray(xManifest.items) ? xManifest.items : []) : [];
+const xPublishedAtToTimestamp = (value: string): number => {
+  const parsed = Date.parse(value);
+  return Number.isNaN(parsed) ? 0 : parsed;
+};
 const formatDate = (value: string): string => {
   const parsed = new Date(value);
   if (Number.isNaN(parsed.valueOf())) return value;
@@ -40,8 +45,8 @@ const formatDate = (value: string): string => {
   }).format(parsed);
 };
 const xManualItems =
-  config.slug === 'x' && Array.isArray(xManifest.items)
-    ? xManifest.items
+  config.slug === 'x'
+    ? xFeedSource
         .map((item) => ({
           title: String(item?.title || '').trim(),
           url: String(item?.url || '').trim(),
@@ -49,7 +54,7 @@ const xManualItems =
           summary: String(item?.summary || '').trim()
         }))
         .filter((item) => item.title && item.url)
-        .sort((a, b) => new Date(b.dateRaw || 0).valueOf() - new Date(a.dateRaw || 0).valueOf())
+        .sort((a, b) => xPublishedAtToTimestamp(b.dateRaw) - xPublishedAtToTimestamp(a.dateRaw))
         .map((item) => ({
           title: item.title,
           url: item.url,

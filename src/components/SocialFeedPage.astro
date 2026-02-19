@@ -63,7 +63,7 @@ const xTimelineHandle =
   typeof config.x_timeline_handle === 'string' ? config.x_timeline_handle.trim().replace(/^@/, '') : '';
 const showXTimeline = Boolean(xTimelineHandle) && !hasManualLatestSource;
 const xWidgetRootId = `x-widget-${config.slug}`;
-const xTimelineHref = showXTimeline ? `https://twitter.com/${xTimelineHandle}` : '';
+const xTimelineHref = showXTimeline ? `https://x.com/${xTimelineHandle}` : '';
 ---
 
 <section class="social-page">

@@ -159,6 +159,10 @@ const youtubeChannelId = 'UCQeJiBS72gxrZXw5GmqtocA';
 const youtubeUploadsPlaylistId = `UU${youtubeChannelId.slice(2)}`;
 const ytManifest = youtubeManifest as YoutubeFeedManifest;
 const xManifest = xFeedManifest as XFeedManifest;
+const xPublishedAtToTimestamp = (value: string): number => {
+  const parsed = Date.parse(value);
+  return Number.isNaN(parsed) ? 0 : parsed;
+};
 const xFeedItems = (Array.isArray(xManifest.items) ? xManifest.items : [])
   .map((item) => ({
     title: String(item?.title || '').trim(),
@@ -167,11 +171,7 @@ const xFeedItems = (Array.isArray(xManifest.items) ? xManifest.items : [])
     summary: String(item?.summary || '').trim()
   }))
   .filter((item) => item.title && item.url)
-  .sort((a, b) => {
-    const aTime = new Date(a.publishedAt || 0).valueOf();
-    const bTime = new Date(b.publishedAt || 0).valueOf();
-    return bTime - aTime;
-  })
+  .sort((a, b) => xPublishedAtToTimestamp(b.publishedAt) - xPublishedAtToTimestamp(a.publishedAt))
   .slice(0, 6);
 const youtubeLatestVideoId = Array.isArray(ytManifest.items)
   ? ytManifest.items
