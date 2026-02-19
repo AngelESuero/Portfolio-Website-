@@ -9,9 +9,10 @@
     "preview": "astro preview",
     "ig:manifest": "node scripts/generate-ig-manifest.mjs",
     "sync:agi": "node scripts/sync-agi-timeline.mjs",
+    "sync:x": "node scripts/sync-x.mjs",
     "sync:youtube": "node scripts/sync-youtube.mjs",
     "sync:chess": "node scripts/sync-chess.mjs",
-    "sync:data": "npm run sync:agi && npm run sync:youtube && npm run sync:chess"
+    "sync:data": "npm run sync:agi && npm run sync:x && npm run sync:youtube && npm run sync:chess"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",

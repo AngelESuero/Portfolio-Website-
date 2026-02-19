@@ -17,6 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CHESSCOM_USERNAME: Trid3nt
+      X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
+      X_HANDLE: a_e_s_4
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,6 +47,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add src/data/agi-timeline.json src/data/youtube.json src/data/chess.json src/data/ig.json
+          git add src/data/agi-timeline.json src/data/x-feed.json src/data/youtube.json src/data/chess.json src/data/ig.json
           git commit -m "chore(data): hourly dataset sync"
           git push
