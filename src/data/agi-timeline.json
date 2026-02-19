@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-19T17:15:06.887Z",
+    "generatedAt": "2026-02-19T18:08:11.899Z",
     "sources": [
       {
         "id": "openai_news",
@@ -68,6 +68,28 @@
         {
           "label": "Feed",
           "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
+    {
+      "id": "e871e54dd6d4b58fd91692bda5de06f889ea3f177fa05747e83378cbf6a56896",
+      "title": "Accelerating Data Processing with NVIDIA Multi-Instance GPU and NUMA Node Localization",
+      "url": "https://developer.nvidia.com/blog/accelerating-data-processing-with-nvidia-multi-instance-gpu-and-numa-node-localization/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-02-19T17:30:00.000Z",
+      "summary": "NVIDIA flagship data center GPUs in the NVIDIA Ampere, NVIDIA Hopper, and NVIDIA Blackwell families all feature non-uniform memory access (NUMA) behaviors, but... NVIDIA flagship data center GPUs in the NVIDIA Ampere, NVIDIA Hopper, and NVIDIA Blackwell families all feature non-uniform memory access (NUMA) behaviors, but expose a single memory space. Most programs therefore do not have an issue with memory non-uniformity. However, as bandwidth increases in newer generation GPUs, there are significant performance and power gains to be had when taking into… Source",
+      "tags": [
+        "compute"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/accelerating-data-processing-with-nvidia-multi-instance-gpu-and-numa-node-localization/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
         }
       ]
     },
@@ -158,6 +180,30 @@
         {
           "label": "Feed",
           "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
+    {
+      "id": "8504611abb949371cb1d08c40a60340b159b1dfb50280ddcea8423a7a0a2c624",
+      "title": "Advancing independent research on AI alignment",
+      "url": "https://openai.com/index/advancing-independent-research-ai-alignment",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-02-19T10:00:00.000Z",
+      "summary": "OpenAI commits $7.5M to The Alignment Project to fund independent AI alignment research, strengthening global efforts to address AGI safety and security risks.",
+      "tags": [
+        "primary",
+        "release",
+        "safety"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/advancing-independent-research-ai-alignment"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
         }
       ]
     },
@@ -15053,59 +15099,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2602.15436"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "1bd5c6d1f69400ab5f0031ea751e1f9b9c6a53586a05d37e5286ba5ce39e75dd",
-      "title": "TAROT: Test-driven and Capability-adaptive Curriculum Reinforcement Fine-tuning for Code Generation with Large Language Models",
-      "url": "https://arxiv.org/abs/2602.15449",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-18T05:00:00.000Z",
-      "summary": "arXiv:2602.15449v1 Announce Type: new Abstract: Large Language Models (LLMs) are changing the coding paradigm, known as vibe coding, yet synthesizing algorithmically sophisticated and robust code still remains a critical challenge. Incentivizing the deep reasoning capabilities of LLMs is essential to overcoming this hurdle. Reinforcement Fine-Tuning (RFT) has emerged as a promising strategy to address this need. However, most existing approaches overlook the heterogeneous difficulty and granularity inherent in test cases, leading to an imbalanced distribution of reward signals and consequently biased gradient updates during training. To address this, we propose Test-driven and cApability-adaptive cuRriculum reinfOrcement fine-Tuning (TAROT). TAROT systematically constructs, for each problem, a four-tier test suite (basic, intermediate, complex, edge), providing a controlled difficulty landscape for curriculum design and evaluation. Crucially, TAROT decouples curriculum progression from raw reward scores, enabling capability-conditioned evaluation and principled selection from a portfolio of curriculum policies rather than incidental test-case difficulty composition. This design fosters stable optimization and more efficient competency acquisition. Extensive experimental results reveal that the optimal curriculum for RFT in code generation is closely tied to a model's inherent capability, with less capable models achieving greater gains with an easy-to-hard progression, whereas more competent models excel under a hard-first curriculum. TAROT provides a reproducible method that adaptively tailors curriculum design to a model's capability, thereby consistently improving the functional correctness and robustness of the generated code. All code and data are released to foster reproducibility and advance community research at https://github.com/deep-diver/TAROT.",
-      "tags": [
-        "papers",
-        "language",
-        "reasoning",
-        "eval",
-        "training",
-        "model",
-        "release"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.15449"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "4dcbe2f7bcc43b9e06267c285572c99ddf4ee73381a21bd7c6108194ed00df1b",
-      "title": "In Agents We Trust, but Who Do Agents Trust? Latent Source Preferences Steer LLM Generations",
-      "url": "https://arxiv.org/abs/2602.15456",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-18T05:00:00.000Z",
-      "summary": "arXiv:2602.15456v1 Announce Type: new Abstract: Agents based on Large Language Models (LLMs) are increasingly being deployed as interfaces to information on online platforms. These agents filter, prioritize, and synthesize information retrieved from the platforms' back-end databases or via web search. In these scenarios, LLM agents govern the information users receive, by drawing users' attention to particular instances of retrieved information at the expense of others. While much prior work has focused on biases in the information LLMs themselves generate, less attention has been paid to the factors that influence what information LLMs select and present to users. We hypothesize that when information is attributed to specific sources (e.g., particular publishers, journals, or platforms), current LLMs exhibit systematic latent source preferences- that is, they prioritize information from some sources over others. Through controlled experiments on twelve LLMs from six model providers, spanning both synthetic and real-world tasks, we find that several models consistently exhibit strong and predictable source preferences. These preferences are sensitive to contextual framing, can outweigh the influence of content itself, and persist despite explicit prompting to avoid them. They also help explain phenomena such as the observed left-leaning skew in news recommendations in prior work. Our findings advocate for deeper investigation into the origins of these preferences, as well as for mechanisms that provide users with transparency and control over the biases guiding LLM-powered agents.",
-      "tags": [
-        "papers",
-        "language",
-        "agents",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.15456"
         },
         {
           "label": "Feed",
