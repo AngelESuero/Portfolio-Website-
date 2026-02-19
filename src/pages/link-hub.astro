@@ -7,6 +7,7 @@ const categoryIds = LINK_HUB_CATEGORIES.map((category) => category.id);
 const defaultItems = Object.fromEntries(
   LINK_HUB_CATEGORIES.map((category) => [category.id, category.items[0]?.id || ''])
 );
+const categoryColors = Object.fromEntries(LINK_HUB_CATEGORIES.map((category) => [category.id, category.color]));
 ---
 
 <BaseLayout
@@ -36,6 +37,7 @@ const defaultItems = Object.fromEntries(
           type="button"
           role="tab"
           data-hub-tab={category.id}
+          data-color={category.color}
           aria-selected={index === 0 ? 'true' : 'false'}
           class:list={[index === 0 && 'is-active']}
         >
@@ -53,6 +55,7 @@ const defaultItems = Object.fromEntries(
               role="tab"
               data-hub-link-tab={item.id}
               data-hub-link-category={category.id}
+              data-color={category.color}
               aria-selected={itemIndex === 0 ? 'true' : 'false'}
               class:list={[itemIndex === 0 && 'is-active']}
             >
@@ -83,22 +86,25 @@ const defaultItems = Object.fromEntries(
     ))}
   </section>
 
-  <script is:inline define:vars={{ categoryIds, defaultItems }}>
+  <script is:inline define:vars={{ categoryIds, defaultItems, categoryColors }}>
     (() => {
       const tabs = Array.from(document.querySelectorAll('[data-hub-tab]'));
       const panels = Array.from(document.querySelectorAll('[data-hub-panel]'));
       if (!tabs.length || !panels.length) return;
 
       const categoryState = { ...(defaultItems || {}) };
+      const resolveCategoryColor = (categoryId) => categoryColors?.[categoryId] || 'blue';
 
-      const setActiveLink = (categoryId, itemId) => {
+      const setActiveLink = (categoryId, itemId, syncAccent = true) => {
         const linkTabs = Array.from(document.querySelectorAll(`[data-hub-link-category="${categoryId}"][data-hub-link-tab]`));
         const linkPanels = Array.from(document.querySelectorAll(`[data-hub-link-category="${categoryId}"][data-hub-link-panel]`));
+        let activeColor = resolveCategoryColor(categoryId);
 
         linkTabs.forEach((tab) => {
           const active = tab.getAttribute('data-hub-link-tab') === itemId;
           tab.classList.toggle('is-active', active);
           tab.setAttribute('aria-selected', String(active));
+          if (active) activeColor = tab.getAttribute('data-color') || activeColor;
         });
 
         linkPanels.forEach((panel) => {
@@ -107,9 +113,10 @@ const defaultItems = Object.fromEntries(
         });
 
         categoryState[categoryId] = itemId;
+        if (syncAccent) window.__setSiteAccent?.(activeColor, { animate: true, duration: 250 });
       };
 
-      const setActiveCategory = (categoryId) => {
+      const setActiveCategory = (categoryId, syncAccent = true) => {
         if (!Array.isArray(categoryIds) || !categoryIds.includes(categoryId)) return;
 
         tabs.forEach((tab) => {
@@ -123,8 +130,10 @@ const defaultItems = Object.fromEntries(
           panel.classList.toggle('is-active', active);
         });
 
+        if (syncAccent) window.__setSiteAccent?.(resolveCategoryColor(categoryId), { animate: true, duration: 250 });
+
         const itemId = categoryState[categoryId];
-        if (itemId) setActiveLink(categoryId, itemId);
+        if (itemId) setActiveLink(categoryId, itemId, false);
       };
 
       tabs.forEach((tab) => {
@@ -201,7 +210,7 @@ const defaultItems = Object.fromEntries(
         }
       };
 
-      setActiveCategory(Array.isArray(categoryIds) && categoryIds[0] ? categoryIds[0] : 'music');
+      setActiveCategory(Array.isArray(categoryIds) && categoryIds[0] ? categoryIds[0] : 'music', false);
       loadSubstack();
     })();
   </script>
@@ -284,6 +293,22 @@ const defaultItems = Object.fromEntries(
     padding: 0.38rem 0.72rem;
     font-size: 0.8rem;
     color: var(--tone-text);
+    background: color-mix(in srgb, var(--tone-accent) 0%, transparent);
+    transition:
+      color var(--motion-fast) var(--ease-standard),
+      border-color var(--motion-fast) var(--ease-standard),
+      background-color var(--motion-base) var(--ease-standard),
+      transform var(--motion-fast) var(--ease-emphasized);
+  }
+
+  .hub-tabs button:hover,
+  .hub-tabs button:focus-visible,
+  .hub-subtabs button:hover,
+  .hub-subtabs button:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent-bright) 68%, var(--line2));
+    color: var(--tone-accent-glow);
+    background: color-mix(in srgb, var(--tone-accent) 14%, transparent);
+    transform: translateY(-1px);
   }
 
   .hub-tabs button.is-active,

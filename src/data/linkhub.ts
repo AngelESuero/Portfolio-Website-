@@ -9,6 +9,7 @@ import {
 
 export type LinkHubProvider = 'spotify' | 'youtube' | 'soundcloud' | 'untitled' | 'substack' | 'instagram' | 'google_drive';
 export type LinkHubCategoryId = 'music' | 'writing' | 'video' | 'resources' | 'legal' | 'social';
+export type AccentColorKey = 'yellow' | 'blue' | 'orange' | 'red' | 'white' | 'black';
 
 export interface LinkHubItem {
   id: string;
@@ -22,6 +23,7 @@ export interface LinkHubItem {
 export interface LinkHubCategory {
   id: LinkHubCategoryId;
   label: string;
+  color: AccentColorKey;
   items: LinkHubItem[];
 }
 
@@ -57,6 +59,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
   {
     id: 'music',
     label: 'Music',
+    color: 'yellow',
     items: [
       {
         id: 'now-listening',
@@ -234,6 +237,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
   {
     id: 'writing',
     label: 'Writing',
+    color: 'red',
     items: [
       {
         id: 'substack',
@@ -276,6 +280,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
   {
     id: 'video',
     label: 'Video',
+    color: 'blue',
     items: [
       {
         id: 'everyday-life-video',
@@ -321,6 +326,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
   {
     id: 'resources',
     label: 'Resources',
+    color: 'orange',
     items: [
       {
         id: 'practicing-kriya',
@@ -405,6 +411,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
   {
     id: 'legal',
     label: 'Legal',
+    color: 'white',
     items: [
       {
         id: 'ai-accountability',
@@ -418,6 +425,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
   {
     id: 'social',
     label: 'Social',
+    color: 'white',
     items: [
       { id: 'instagram', title: 'Instagram', url: SOCIAL_URLS.instagram, year: '2026', tag: 'Visual' },
       { id: 'youtube', title: 'YouTube', url: SOCIAL_URLS.youtube, year: '2026', tag: 'Video' },

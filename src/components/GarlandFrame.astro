@@ -112,6 +112,17 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
     filter: saturate(0.75) brightness(0.84);
   }
 
+  .garland-real::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(70% 28% at 50% 0%, color-mix(in oklab, var(--garland-comp-light) 22%, transparent), transparent 70%),
+      radial-gradient(70% 34% at 50% 100%, color-mix(in oklab, var(--garland-comp) 16%, transparent), transparent 75%);
+    opacity: 0.42;
+  }
+
   .wire {
     position: absolute;
     display: block;
@@ -221,6 +232,19 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
     transform: rotate(8deg);
   }
 
+  .leaf::before {
+    content: '';
+    position: absolute;
+    inset: 2px 1px 10px 6px;
+    border-radius: 50% 0 42% 0 / 58% 0 52% 0;
+    background: linear-gradient(
+      150deg,
+      color-mix(in oklab, var(--garland-comp-light) 24%, transparent),
+      transparent 68%
+    );
+    opacity: 0.72;
+  }
+
   .leaf-top {
     left: var(--x);
     top: 6px;
@@ -258,10 +282,12 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
 
   .vine-lane-left {
     left: -12px;
+    animation: garlandSideSwayLeft 16s ease-in-out infinite;
   }
 
   .vine-lane-right {
     right: -12px;
+    animation: garlandSideSwayRight 17s ease-in-out infinite;
   }
 
   .vine-main {
@@ -348,6 +374,11 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
     opacity: 0.62;
   }
 
+  .vine-lane-left .vine-tendril,
+  .vine-lane-right .vine-tendril {
+    animation: garlandTendrilGlow 9s ease-in-out infinite;
+  }
+
   .vine-tendril-left {
     left: 24px;
     border-left: 2px solid color-mix(in oklab, var(--garland-comp-light) 54%, transparent);
@@ -364,6 +395,36 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
     transform: rotate(var(--rot));
   }
 
+  @keyframes garlandSideSwayLeft {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(-1.2px, 0.8px, 0);
+    }
+  }
+
+  @keyframes garlandSideSwayRight {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(1.2px, 0.8px, 0);
+    }
+  }
+
+  @keyframes garlandTendrilGlow {
+    0%,
+    100% {
+      opacity: 0.52;
+    }
+    50% {
+      opacity: 0.72;
+    }
+  }
+
   @media (max-width: 860px) {
     .garland-real {
       inset: 2px;
@@ -378,6 +439,7 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
     .vine-lane {
       width: 38px;
       opacity: 0.58;
+      animation: none;
     }
 
     .vine-main-left {
@@ -396,6 +458,7 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
 
     .vine-tendril {
       opacity: 0.5;
+      animation: none;
     }
 
     .leaf-track-left .leaf:nth-child(2n),
@@ -405,6 +468,15 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
     .vine-lane .vine-branch:nth-child(2n),
     .vine-lane .vine-tendril:nth-child(2n) {
       display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vine-lane-left,
+    .vine-lane-right,
+    .vine-lane-left .vine-tendril,
+    .vine-lane-right .vine-tendril {
+      animation: none;
     }
   }
 </style>

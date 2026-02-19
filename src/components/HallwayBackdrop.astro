@@ -7,6 +7,8 @@ const { accent = '#7BE7FF' } = Astro.props;
   <div class="hallway__photo"></div>
   <div class="hallway__vignette"></div>
   <div class="hallway__fog"></div>
+  <div class="hallway__atmosphere"></div>
+  <div class="hallway__depth"></div>
   <div class="hallway__walls"></div>
   <div class="hallway__neon"></div>
   <div class="hallway__grain"></div>
@@ -26,20 +28,20 @@ const { accent = '#7BE7FF' } = Astro.props;
 
   .hallway__photo {
     position: absolute;
-    inset: -8%;
+    inset: -10%;
     background-image:
       radial-gradient(
         900px 420px at 58% 16%,
-        color-mix(in oklab, var(--complement) 30%, transparent),
-        transparent 65%
+        color-mix(in oklab, var(--complement) 34%, transparent),
+        transparent 62%
       ),
-      linear-gradient(180deg, rgba(3, 8, 18, 0.54) 0%, rgba(4, 8, 15, 0.74) 48%, rgba(3, 6, 12, 0.9) 100%),
+      linear-gradient(180deg, rgba(4, 9, 18, 0.5) 0%, rgba(4, 8, 15, 0.72) 48%, rgba(3, 6, 12, 0.88) 100%),
       var(--hallway-photo-url);
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    filter: saturate(0.96) contrast(1.05) brightness(0.66);
-    opacity: 0.4;
+    filter: saturate(1.02) contrast(1.04) brightness(0.64);
+    opacity: 0.44;
     transform: scale(1.03);
   }
 
@@ -56,11 +58,61 @@ const { accent = '#7BE7FF' } = Astro.props;
     position: absolute;
     inset: -20%;
     background:
-      radial-gradient(600px 260px at 35% 35%, rgba(255, 255, 255, 0.06), transparent 60%),
-      radial-gradient(700px 320px at 70% 45%, rgba(255, 255, 255, 0.05), transparent 65%),
-      radial-gradient(900px 420px at 50% 70%, rgba(255, 255, 255, 0.04), transparent 70%);
-    filter: blur(10px);
-    opacity: 0.55;
+      radial-gradient(600px 260px at 35% 35%, rgba(255, 255, 255, 0.055), transparent 62%),
+      radial-gradient(700px 320px at 70% 45%, rgba(255, 255, 255, 0.046), transparent 67%),
+      radial-gradient(900px 420px at 50% 70%, rgba(255, 255, 255, 0.034), transparent 72%);
+    filter: blur(11px);
+    opacity: 0.52;
+    animation: hallwayFogDrift 28s ease-in-out infinite alternate;
+  }
+
+  .hallway__atmosphere {
+    position: absolute;
+    inset: -18%;
+    background:
+      radial-gradient(
+        780px 420px at 15% 18%,
+        color-mix(in oklab, var(--accent) 20%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        840px 460px at 84% 24%,
+        color-mix(in oklab, var(--complement) 18%, transparent),
+        transparent 72%
+      ),
+      radial-gradient(
+        1000px 520px at 50% 82%,
+        rgba(255, 255, 255, 0.03),
+        transparent 72%
+      );
+    opacity: 0.3;
+    filter: blur(18px) saturate(1.04);
+    animation: hallwayBreathe 24s ease-in-out infinite;
+  }
+
+  .hallway__depth {
+    position: absolute;
+    inset: -16%;
+    background:
+      radial-gradient(85% 58% at 50% 62%, rgba(255, 255, 255, 0.05), transparent 75%),
+      repeating-linear-gradient(
+        90deg,
+        color-mix(in oklab, var(--complement) 7%, transparent) 0 1px,
+        transparent 1px 22px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        color-mix(in oklab, var(--accent) 6%, transparent) 0 1px,
+        transparent 1px 28px
+      );
+    mix-blend-mode: soft-light;
+    opacity: 0.2;
+    transform: translate3d(
+      calc((var(--hallway-x, 50vw) - 50vw) / 58),
+      calc((var(--hallway-y, 34vh) - 34vh) / 72),
+      0
+    ) scale(1.04);
+    transition: transform var(--motion-slow, 420ms) var(--ease-standard, ease);
   }
 
   /* corridor "walls" / subtle perspective */
@@ -70,14 +122,19 @@ const { accent = '#7BE7FF' } = Astro.props;
     background:
       linear-gradient(
         90deg,
-        color-mix(in oklab, var(--complement) 18%, transparent),
-        transparent 22%,
-        transparent 78%,
-        color-mix(in oklab, var(--accent) 18%, transparent)
+        color-mix(in oklab, var(--complement) 20%, transparent),
+        transparent 24%,
+        transparent 76%,
+        color-mix(in oklab, var(--accent) 20%, transparent)
       ),
-      linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.35) 55%, rgba(0, 0, 0, 0.65));
+      linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0),
+        rgba(0, 0, 0, 0.32) 52%,
+        rgba(0, 0, 0, 0.67)
+      );
     transform: perspective(900px) rotateX(8deg);
-    opacity: 0.75;
+    opacity: 0.78;
   }
 
   /* neon tubes + glow edges */
@@ -87,23 +144,23 @@ const { accent = '#7BE7FF' } = Astro.props;
     background:
       radial-gradient(
         600px 220px at 50% 12%,
-        color-mix(in oklab, var(--complement) 28%, transparent),
+        color-mix(in oklab, var(--complement) 30%, transparent),
         transparent 60%
       ),
       radial-gradient(
         800px 360px at 50% 20%,
-        color-mix(in oklab, var(--accent) 36%, transparent),
+        color-mix(in oklab, var(--accent) 33%, transparent),
         transparent 70%
       ),
       linear-gradient(
         90deg,
-        color-mix(in oklab, var(--complement) 18%, transparent),
+        color-mix(in oklab, var(--complement) 16%, transparent),
         transparent 24%,
         transparent 76%,
-        color-mix(in oklab, var(--accent) 20%, transparent)
+        color-mix(in oklab, var(--accent) 18%, transparent)
       );
-    filter: blur(0px);
-    opacity: 0.9;
+    filter: blur(1px);
+    opacity: 0.84;
   }
 
   /* grain (world texture) */
@@ -126,7 +183,8 @@ const { accent = '#7BE7FF' } = Astro.props;
         transparent 6px
       );
     mix-blend-mode: overlay;
-    opacity: 0.12;
+    opacity: 0.11;
+    animation: hallwayBreathe 18s ease-in-out infinite reverse;
   }
 
   /* cursor "flashlight" reveal */
@@ -144,8 +202,27 @@ const { accent = '#7BE7FF' } = Astro.props;
     );
     filter: blur(12px);
     opacity: calc(var(--cursor-light-visibility, 1) * 0.42);
-    transition: opacity 1200ms ease;
+    transition: opacity var(--motion-ambient, 1200ms) var(--ease-emphasized, ease);
     mix-blend-mode: screen;
+  }
+
+  @keyframes hallwayFogDrift {
+    from {
+      transform: translate3d(-0.8%, -0.5%, 0) scale(1.01);
+    }
+    to {
+      transform: translate3d(0.8%, 0.6%, 0) scale(1.04);
+    }
+  }
+
+  @keyframes hallwayBreathe {
+    0%,
+    100% {
+      opacity: 0.18;
+    }
+    50% {
+      opacity: 0.3;
+    }
   }
 
   @media (pointer: coarse) {
@@ -157,6 +234,27 @@ const { accent = '#7BE7FF' } = Astro.props;
   /* Respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .hallway__fog,
+    .hallway__atmosphere,
+    .hallway__grain {
+      animation: none;
+    }
+
+    .hallway__depth {
+      transform: none;
+      transition: none;
+    }
+
+    .hallway__fog,
     .hallway__cursorLight { opacity: 0.2; }
+  }
+
+  @media (max-width: 860px) {
+    .hallway__atmosphere {
+      opacity: 0.24;
+    }
+
+    .hallway__depth {
+      opacity: 0.15;
+    }
   }
 </style>

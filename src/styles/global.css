@@ -3,6 +3,36 @@
 @tailwind components;
 @tailwind utilities;
 
+@property --accent {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #7be7ff;
+}
+
+@property --cursor {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ff9a3c;
+}
+
+@property --tone-accent {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #f2b84b;
+}
+
+@property --tone-accent-bright {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ffd07a;
+}
+
+@property --tone-accent-glow {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ffe4ae;
+}
+
 :root {
   color-scheme: dark;
   --bg0: #05060a;
@@ -57,6 +87,12 @@
   --radius: 16px;
   --ui-scale: 1;
   --space-scale: 1;
+  --motion-fast: 180ms;
+  --motion-base: 260ms;
+  --motion-slow: 420ms;
+  --motion-ambient: 1200ms;
+  --ease-standard: cubic-bezier(0.33, 0, 0.14, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0.72, 0, 1);
   --size-gutter: var(--shell-gutter);
   --size-pad-y: clamp(2.35rem, 4.6vw, 4.6rem);
   --content-leading: 1.74;
@@ -191,7 +227,7 @@ hr {
   pointer-events: none;
   z-index: 0;
   opacity: 0;
-  transition: opacity 1200ms ease;
+  transition: opacity var(--motion-ambient) var(--ease-emphasized);
   filter: blur(20px) saturate(0.95);
   mix-blend-mode: screen;
 }
@@ -287,7 +323,24 @@ html[data-cursor-idle='false'] {
   align-items: center;
   min-height: 44px;
   color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
-  transition: color 160ms ease;
+  transition:
+    color var(--motion-fast) var(--ease-standard),
+    text-shadow var(--motion-fast) var(--ease-standard);
+}
+
+.site-header .header-link::before {
+  content: '';
+  position: absolute;
+  inset: 8px -0.35rem 6px;
+  border-radius: 999px;
+  opacity: 0;
+  transform: scale(0.96);
+  background: color-mix(in oklab, var(--tone-accent) 14%, transparent);
+  transition:
+    opacity var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-base) var(--ease-standard);
+  pointer-events: none;
 }
 
 .site-header .header-link::after {
@@ -301,12 +354,21 @@ html[data-cursor-idle='false'] {
   transform-origin: left center;
   background: color-mix(in srgb, var(--tone-accent) 82%, #fff 18%);
   opacity: 0.8;
-  transition: transform 160ms ease;
+  transition:
+    transform var(--motion-fast) var(--ease-emphasized),
+    background-color var(--motion-base) var(--ease-standard);
 }
 
 .site-header .header-link:hover,
 .site-header .header-link:focus-visible {
   color: var(--tone-accent-glow);
+}
+
+.site-header .header-link:hover::before,
+.site-header .header-link:focus-visible::before,
+.site-header .header-link[aria-current='page']::before {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .site-header .header-link:hover::after,
@@ -375,7 +437,11 @@ button {
   color: var(--tone-text);
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.02) inset;
   backdrop-filter: blur(8px);
-  transition: border-color 180ms ease, color 180ms ease;
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-base) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-emphasized);
 }
 
 .pill:hover,
@@ -386,7 +452,9 @@ button:hover {
 
 .card {
   border-radius: calc(var(--radius) * var(--space-scale));
-  transition: border-color 180ms ease, box-shadow 180ms ease;
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-fast) var(--ease-standard);
   position: relative;
   overflow: hidden;
 }
@@ -636,7 +704,10 @@ html[data-mode='explore'] .mode-explore {
   color: var(--tone-text);
   text-decoration: none;
   padding: calc(0.82rem * var(--space-scale)) calc(0.88rem * var(--space-scale));
-  transition: border-color 140ms ease, color 140ms ease, transform 140ms ease;
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-emphasized);
 }
 
 .explore-card:hover,
@@ -796,7 +867,9 @@ html[data-mode='explore'] .mode-explore {
     text-decoration: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.16);
     line-height: 1.45;
-    transition: color 120ms ease, border-color 120ms ease;
+    transition:
+      color var(--motion-fast) var(--ease-standard),
+      border-color var(--motion-fast) var(--ease-standard);
   }
 
   .mobile-toc-list a.is-active,
@@ -901,6 +974,22 @@ html[data-mode='explore'] .mode-explore {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: 0.01ms;
+    --motion-base: 0.01ms;
+    --motion-slow: 0.01ms;
+    --motion-ambient: 0.01ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
   #cursor-aura {
     display: none !important;
   }

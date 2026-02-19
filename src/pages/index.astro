@@ -53,6 +53,7 @@ const sectionEmbeds = [
   {
     id: 'music',
     label: 'Music',
+    color: 'blue',
     items: pickItems('music', ['now-listening', 'my-first-beat-tape', 'everyday-soundscape']).concat(
       pickItems('resources', ['practicing-kriya'])
     )
@@ -60,21 +61,25 @@ const sectionEmbeds = [
   {
     id: 'visual',
     label: 'Visual',
+    color: 'orange',
     items: pickItems('social', ['instagram', 'threads', 'tiktok'])
   },
   {
     id: 'video',
     label: 'Video',
+    color: 'red',
     items: pickItems('video', ['everyday-life-video', 'youtube-channel', 'post-labor-econ-playlist'])
   },
   {
     id: 'newark',
     label: 'Newark',
+    color: 'yellow',
     items: pickItems('resources', ['work-archive', 'map', 'mit-living-wage'])
   },
   {
     id: 'scraps',
     label: 'Scraps',
+    color: 'white',
     items: pickItems('music', ['scraps-2023-2024']).concat(
       pickItems('writing', ['writing-archive', 'substack', 'magazine-publication'])
     )
@@ -230,6 +235,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
             type="button"
             role="tab"
             data-section-tab={section.id}
+            data-color={section.color}
             aria-selected={index === 0 ? 'true' : 'false'}
             class:list={['section-tab', index === 0 && 'is-active']}
           >
@@ -392,7 +398,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
       const panels = Array.from(document.querySelectorAll('[data-section-panel]'));
       if (!tabs.length || !panels.length) return;
 
-      const activate = (id) => {
+      const activate = (id, syncAccent = true) => {
         tabs.forEach((tab) => {
           const active = tab.getAttribute('data-section-tab') === id;
           tab.classList.toggle('is-active', active);
@@ -402,6 +408,11 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
           const active = panel.getAttribute('data-section-panel') === id;
           panel.classList.toggle('is-active', active);
         });
+
+        if (!syncAccent) return;
+        const activeTab = tabs.find((tab) => tab.getAttribute('data-section-tab') === id);
+        const color = activeTab?.getAttribute('data-color') || 'blue';
+        window.__setSiteAccent?.(color, { animate: true, duration: 250 });
       };
 
       tabs.forEach((tab) => {
@@ -412,7 +423,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
       });
 
       const first = tabs[0]?.getAttribute('data-section-tab');
-      if (first) activate(first);
+      if (first) activate(first, false);
     })();
   </script>
 </BaseLayout>
@@ -438,10 +449,14 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
     background: transparent;
     box-shadow: none;
     backdrop-filter: none;
+    background: color-mix(in oklab, var(--tone-accent) 0%, transparent);
     color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
     font-size: 0.875rem;
     cursor: pointer;
-    transition: color 160ms ease;
+    transition:
+      color var(--motion-fast) var(--ease-standard),
+      background-color var(--motion-base) var(--ease-standard),
+      transform var(--motion-fast) var(--ease-emphasized);
   }
 
   .section-tab::after {
@@ -455,13 +470,17 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
     transform-origin: left center;
     background: color-mix(in srgb, var(--tone-accent) 82%, #fff 18%);
     opacity: 0.8;
-    transition: transform 160ms ease;
+    transition:
+      transform var(--motion-fast) var(--ease-emphasized),
+      background-color var(--motion-base) var(--ease-standard);
   }
 
   .section-tab:hover,
   .section-tab:focus-visible,
   .section-tab.is-active {
     color: var(--tone-accent-glow);
+    background: color-mix(in srgb, var(--tone-accent) 16%, transparent);
+    transform: translateY(-1px);
   }
 
   .section-tab:hover::after,
