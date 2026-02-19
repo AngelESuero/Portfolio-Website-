@@ -1,0 +1,62 @@
+name: Smoke live site
+
+on:
+  schedule:
+    - cron: "47 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    env:
+      SITE_URL: https://portfolio-website-9c9.pages.dev
+    steps:
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run live smoke checks
+        run: |
+          node - <<'NODE'
+          (async () => {
+            const site = process.env.SITE_URL;
+            if (!site) throw new Error('SITE_URL is not configured');
+
+            async function assertHome() {
+              const response = await fetch(`${site}/`, { redirect: 'follow' });
+              if (!response.ok) throw new Error(`Homepage check failed: ${response.status}`);
+            }
+
+            async function assertFeed(slug, { requireItems }) {
+              const response = await fetch(`${site}/api/social-rss?slug=${encodeURIComponent(slug)}`, {
+                redirect: 'follow'
+              });
+              if (!response.ok) throw new Error(`${slug} feed returned ${response.status}`);
+
+              const payload = await response.json();
+              if (payload?.ok !== true) {
+                throw new Error(`${slug} feed payload is not ok=true`);
+              }
+
+              if (!Array.isArray(payload?.items)) {
+                throw new Error(`${slug} feed payload has no items array`);
+              }
+
+              if (requireItems && payload.items.length === 0) {
+                throw new Error(`${slug} feed payload is empty`);
+              }
+            }
+
+            await assertHome();
+            await assertFeed('youtube', { requireItems: true });
+            await assertFeed('substack', { requireItems: false });
+            console.log('Live smoke checks passed');
+          })().catch((error) => {
+            console.error(error);
+            process.exit(1);
+          });
+          NODE

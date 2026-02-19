@@ -63,6 +63,9 @@ const previewItems = (Array.isArray(instagramPreview) ? instagramPreview : [])
   .filter((item) => typeof item?.src === 'string' && item.src)
   .slice(0, 4);
 const hasPreview = previewItems.length > 0;
+const xWidgetRootId = 'home-social-x-widget';
+const youtubeFrameId = 'home-social-youtube-frame';
+const youtubeStatusId = 'home-social-youtube-status';
 ---
 
 <section class="home-social-feeds" aria-label="Social feeds">
@@ -77,24 +80,31 @@ const hasPreview = previewItems.length > 0;
       <p class="home-social-card-kicker">Latest posts</p>
       <h3>X</h3>
       <p class="home-social-card-dek">Latest short-form notes and commentary from @{normalizedXHandle}.</p>
-      <div class="home-social-frame home-social-frame-x">
-        {hasXItems ? (
-          <ul class="home-social-x-list">
-            {normalizedXItems.map((item) => (
-              <li>
-                <a href={item.url} target="_blank" rel="noopener">{item.title}</a>
-                {item.publishedAt && <p class="home-social-x-meta">{formatXDate(item.publishedAt)}</p>}
-                {item.summary && <p class="home-social-x-summary">{item.summary}</p>}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <div class="home-social-x-empty">
-            <p>
-              No local X posts yet. Add items in <code>src/data/x-feed.json</code>.
-            </p>
-          </div>
-        )}
+      <div id={xWidgetRootId} class="home-social-frame home-social-frame-x">
+        <a
+          class="twitter-timeline"
+          href={xTimelineUrl}
+          data-dnt="true"
+          data-chrome="noheader nofooter transparent"
+          data-tweet-limit="6"
+        >
+          Posts by @{normalizedXHandle}
+        </a>
+        <div class="home-social-x-fallback" aria-live="polite">
+          {hasXItems ? (
+            <ul class="home-social-x-list">
+              {normalizedXItems.map((item) => (
+                <li>
+                  <a href={item.url} target="_blank" rel="noopener">{item.title}</a>
+                  {item.publishedAt && <p class="home-social-x-meta">{formatXDate(item.publishedAt)}</p>}
+                  {item.summary && <p class="home-social-x-summary">{item.summary}</p>}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>Timeline preview is unavailable right now. Use the links below.</p>
+          )}
+        </div>
       </div>
       <p class="home-social-links">
         <a href="/social/x">Open full feed</a>
@@ -106,15 +116,17 @@ const hasPreview = previewItems.length > 0;
       <p class="home-social-card-kicker">Uploads</p>
       <h3>YouTube</h3>
       <p class="home-social-card-dek">Latest uploads playlist from your channel.</p>
-      <div class="home-social-frame home-social-frame-youtube">
+      <div id={youtubeFrameId} class="home-social-frame home-social-frame-youtube">
         <iframe
           src={youtubeUploadsEmbedUrl}
           title="YouTube uploads"
           loading="lazy"
+          data-fallback-src={youtubeUploadsEmbedUrl}
           allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
           allowfullscreen
         ></iframe>
       </div>
+      <p id={youtubeStatusId} class="home-social-youtube-status" aria-live="polite">Checking latest feed…</p>
       <p class="home-social-links">
         <a href="/social/youtube">Open full feed</a>
         <a href={youtubeChannelUrl} target="_blank" rel="noopener">Open channel</a>
@@ -145,6 +157,164 @@ const hasPreview = previewItems.length > 0;
     </article>
   </div>
 </section>
+
+<script is:inline define:vars={{ xWidgetRootId }}>
+  (() => {
+    const root = document.getElementById(xWidgetRootId);
+    if (!root) return;
+
+    const showFallback = () => {
+      if (root.querySelector('iframe')) {
+        root.classList.remove('is-fallback');
+        return;
+      }
+      root.classList.add('is-fallback');
+    };
+
+    const scheduleFallbackCheck = () => {
+      window.setTimeout(showFallback, 4500);
+    };
+
+    const observer = new MutationObserver(() => {
+      if (root.querySelector('iframe')) {
+        root.classList.remove('is-fallback');
+      }
+    });
+    observer.observe(root, { childList: true, subtree: true });
+
+    const timelineLink = root.querySelector('a.twitter-timeline');
+    if (timelineLink) {
+      const prefersDark = document.documentElement.classList.contains('dark');
+      timelineLink.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+    }
+
+    const twttr = window.twttr;
+    if (twttr?.widgets?.load) {
+      twttr.widgets.load(root);
+      scheduleFallbackCheck();
+      return;
+    }
+
+    const scriptId = 'home-social-x-widgets-script';
+    if (document.getElementById(scriptId)) {
+      scheduleFallbackCheck();
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.async = true;
+    script.src = 'https://platform.twitter.com/widgets.js';
+    script.charset = 'utf-8';
+    script.addEventListener('load', () => {
+      const loadedTwttr = window.twttr;
+      if (loadedTwttr?.widgets?.load) loadedTwttr.widgets.load(root);
+      scheduleFallbackCheck();
+    });
+    script.addEventListener('error', showFallback);
+    document.head.appendChild(script);
+    scheduleFallbackCheck();
+  })();
+</script>
+
+<script is:inline define:vars={{ youtubeFrameId, youtubeStatusId }}>
+  (() => {
+    const frame = document.getElementById(youtubeFrameId);
+    const status = document.getElementById(youtubeStatusId);
+    const iframe = frame?.querySelector('iframe');
+    if (!frame || !status || !iframe) return;
+
+    const fallbackSrc = iframe.getAttribute('data-fallback-src') || iframe.getAttribute('src') || '';
+
+    const setStatus = (message) => {
+      status.textContent = message;
+    };
+
+    const toEmbedUrl = (videoId) => `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?rel=0`;
+
+    const formatDate = (value) => {
+      const date = new Date(value);
+      if (Number.isNaN(date.valueOf())) return '';
+      return new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      }).format(date);
+    };
+
+    const cleanVideoId = (value) => String(value || '').trim().replace(/[^A-Za-z0-9_-]/g, '');
+
+    const parseVideoId = (value) => {
+      const raw = String(value || '').trim();
+      if (!raw) return '';
+
+      try {
+        const parsed = new URL(raw);
+        const host = parsed.hostname.replace(/^www\./, '').toLowerCase();
+
+        if (host === 'youtu.be') {
+          const direct = cleanVideoId(parsed.pathname.split('/').filter(Boolean)[0] || '');
+          if (direct) return direct;
+        }
+
+        if (host.endsWith('youtube.com') || host.endsWith('youtube-nocookie.com')) {
+          if (parsed.pathname === '/watch') {
+            const watchId = cleanVideoId(parsed.searchParams.get('v') || '');
+            if (watchId) return watchId;
+          }
+
+          const segments = parsed.pathname.split('/').filter(Boolean);
+          if (segments.length >= 2 && ['shorts', 'embed', 'live'].includes(segments[0])) {
+            const segmentId = cleanVideoId(segments[1] || '');
+            if (segmentId) return segmentId;
+          }
+        }
+      } catch {}
+
+      const regexes = [
+        /[?&]v=([A-Za-z0-9_-]{6,})/i,
+        /youtu\.be\/([A-Za-z0-9_-]{6,})/i,
+        /\/shorts\/([A-Za-z0-9_-]{6,})/i,
+        /\/embed\/([A-Za-z0-9_-]{6,})/i
+      ];
+
+      for (const regex of regexes) {
+        const match = raw.match(regex);
+        if (match?.[1]) return cleanVideoId(match[1]);
+      }
+
+      return '';
+    };
+
+    fetch('/api/social-rss?slug=youtube')
+      .then((response) => {
+        if (!response.ok) throw new Error(`RSS endpoint returned ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        const items = Array.isArray(payload?.items) ? payload.items : [];
+        const latest = items.find((item) => parseVideoId(item?.url || ''));
+        if (!latest) {
+          setStatus('Using latest available embed.');
+          return;
+        }
+
+        const latestVideoId = parseVideoId(latest.url || '');
+        if (!latestVideoId) {
+          setStatus('Using latest available embed.');
+          return;
+        }
+
+        iframe.src = toEmbedUrl(latestVideoId);
+        const formattedDate = formatDate(latest.date || '');
+        setStatus(formattedDate ? `Updated ${formattedDate}.` : 'Updated recently.');
+      })
+      .catch(() => {
+        if (fallbackSrc) iframe.src = fallbackSrc;
+        setStatus('Using latest available embed.');
+      });
+  })();
+</script>
 
 <style>
   .home-social-feeds {
@@ -260,20 +430,35 @@ const hasPreview = previewItems.length > 0;
     background: #060911;
   }
 
-  .home-social-x-empty {
+  .home-social-frame-x :global(.twitter-timeline) {
+    display: block;
     min-height: 24.5rem;
-    padding: 0.92rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
   }
 
-  .home-social-x-empty p {
+  .home-social-x-fallback {
+    display: none;
+    min-height: 24.5rem;
+    padding: 0.58rem;
+  }
+
+  .home-social-frame-x.is-fallback :global(.twitter-timeline) {
+    display: none;
+  }
+
+  .home-social-frame-x.is-fallback .home-social-x-fallback {
+    display: block;
+  }
+
+  .home-social-x-fallback p {
     margin: 0;
     font-size: 0.84rem;
     line-height: 1.5;
     color: var(--tone-muted);
+    display: flex;
+    min-height: calc(24.5rem - 1.16rem);
+    align-items: center;
+    justify-content: center;
+    text-align: center;
   }
 
   .home-social-x-list {
@@ -314,6 +499,12 @@ const hasPreview = previewItems.length > 0;
     font-size: 0.8rem;
     color: rgba(228, 230, 236, 0.9);
     line-height: 1.45;
+  }
+
+  .home-social-youtube-status {
+    margin: 0;
+    font-size: 0.76rem;
+    color: var(--tone-muted);
   }
 
   .home-social-ig-grid {
@@ -410,8 +601,13 @@ const hasPreview = previewItems.length > 0;
     .home-social-frame-x,
     .home-social-frame-youtube,
     .home-social-frame iframe,
-    .home-social-x-empty {
+    .home-social-frame-x :global(.twitter-timeline),
+    .home-social-x-fallback {
       min-height: 21.5rem;
+    }
+
+    .home-social-x-fallback p {
+      min-height: calc(21.5rem - 1.16rem);
     }
 
     .home-social-ig-grid {
