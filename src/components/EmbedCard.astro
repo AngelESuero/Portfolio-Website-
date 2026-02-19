@@ -100,9 +100,11 @@ const fallbackMessage = isLinktree
     border: 1px solid var(--line2);
     border-radius: 12px;
     background: rgba(4, 7, 12, 0.62);
+    overflow-x: auto;
   }
 
   .hub-embed-frame {
+    width: 100%;
     height: var(--embed-height, 300px);
     min-height: 11rem;
     border-radius: 12px 12px 0 0;
@@ -119,8 +121,10 @@ const fallbackMessage = isLinktree
 
   @media (pointer: fine) {
     .hub-embed-frame.is-resizable {
-      resize: vertical;
+      resize: both;
       overflow: auto;
+      min-width: 18rem;
+      max-width: min(1200px, 95vw);
       max-height: min(75vh, 720px);
     }
   }

@@ -312,9 +312,11 @@ const isExternal = (url: string) => /^https?:\/\//i.test(url);
 
   .social-embed-card {
     margin: 0;
+    overflow-x: auto;
   }
 
   .social-embed-frame {
+    width: 100%;
     height: var(--embed-height, 300px);
     min-height: 12rem;
     border: 1px solid rgba(113, 113, 122, 0.36);
@@ -332,8 +334,10 @@ const isExternal = (url: string) => /^https?:\/\//i.test(url);
 
   @media (pointer: fine) {
     .social-embed-frame.is-resizable {
-      resize: vertical;
+      resize: both;
       overflow: auto;
+      min-width: 18rem;
+      max-width: min(1200px, 95vw);
       max-height: min(75vh, 720px);
     }
   }
