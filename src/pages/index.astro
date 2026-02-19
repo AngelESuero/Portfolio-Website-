@@ -57,11 +57,11 @@ const sectionEmbeds = [
 ];
 ---
 
-<BaseLayout title="a_e.s_ — Archive" description={profile.short_bio} theme="archive">
+<BaseLayout title="A Path Toward Life — Archive" description={profile.short_bio} theme="archive">
   <div class="desktop-home">
     <section class="space-y-6 text-center">
       <p class="text-xs uppercase tracking-[0.2em] text-zinc-500">Timeline / Archive</p>
-      <h1 class="mx-auto max-w-3xl font-display text-4xl font-bold md:text-6xl text-accent">a_e.s_</h1>
+      <h1 class="mx-auto max-w-3xl font-display text-4xl font-bold md:text-6xl text-accent">A Path Toward Life</h1>
       <p class="mx-auto max-w-4xl text-lg">{profile.long_bio}</p>
       <div class="flex flex-wrap justify-center gap-2" aria-label="Identity chips">
         {profile.roles.map((role) => <span class="chip rounded-full px-3 py-1 text-sm">{role}</span>)}
@@ -138,7 +138,7 @@ const sectionEmbeds = [
   <article class="mobile-editorial" aria-label="Mobile editorial layout">
     <header class="mobile-hero" id="home">
       <p class="mobile-kicker">Timeline / Archive</p>
-      <h1><span class="mobile-accent">a_e.s_</span></h1>
+      <h1><span class="mobile-accent">A Path Toward Life</span></h1>
       <p class="mobile-dek">{profile.long_bio}</p>
       <div class="mobile-role-row" aria-label="Identity chips">
         {profile.roles.map((role) => <span>{role}</span>)}
