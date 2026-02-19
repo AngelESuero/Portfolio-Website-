@@ -33,6 +33,18 @@
   initial-value: #ffe4ae;
 }
 
+@property --tone-sky {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #6fb7ff;
+}
+
+@property --tone-sky-bright {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #9fceff;
+}
+
 :root {
   color-scheme: dark;
   --bg0: #05060a;
@@ -199,8 +211,16 @@ body {
   line-height: var(--content-leading);
   color: var(--text);
   background-image:
-    radial-gradient(1200px 700px at 50% 0%, rgba(123, 231, 255, 0.08), transparent 60%),
-    radial-gradient(900px 600px at 50% 15%, rgba(255, 204, 122, 0.06), transparent 55%),
+    radial-gradient(
+      1200px 700px at 50% 0%,
+      color-mix(in oklab, var(--accent) 18%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 600px at 50% 15%,
+      color-mix(in oklab, var(--cursor) 14%, transparent),
+      transparent 55%
+    ),
     linear-gradient(180deg, var(--bg1), var(--bg0));
   position: relative;
   isolation: isolate;

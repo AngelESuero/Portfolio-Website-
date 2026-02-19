@@ -100,16 +100,17 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
 
 <style>
   .garland-real {
-    --garland-comp: color-mix(in oklab, var(--cursor) 72%, #814212 28%);
-    --garland-comp-deep: color-mix(in oklab, var(--garland-comp) 54%, #130907 46%);
-    --garland-comp-light: color-mix(in oklab, var(--garland-comp) 66%, #ffddb7 34%);
+    --garland-comp: color-mix(in oklab, var(--cursor) 82%, #6d3511 18%);
+    --garland-comp-deep: color-mix(in oklab, var(--garland-comp) 58%, #130907 42%);
+    --garland-comp-light: color-mix(in oklab, var(--garland-comp) 70%, #ffddb7 30%);
+    --garland-highlight: color-mix(in oklab, var(--accent) 24%, var(--garland-comp-light) 76%);
     --garland-wire: color-mix(in oklab, var(--garland-comp) 52%, #74604c 48%);
     position: fixed;
     inset: 4px;
     z-index: 0;
     pointer-events: none;
     opacity: 0.58;
-    filter: saturate(0.75) brightness(0.84);
+    filter: saturate(0.82) brightness(0.84);
   }
 
   .garland-real::before {
@@ -118,8 +119,8 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
     inset: 0;
     pointer-events: none;
     background:
-      radial-gradient(70% 28% at 50% 0%, color-mix(in oklab, var(--garland-comp-light) 22%, transparent), transparent 70%),
-      radial-gradient(70% 34% at 50% 100%, color-mix(in oklab, var(--garland-comp) 16%, transparent), transparent 75%);
+      radial-gradient(70% 28% at 50% 0%, color-mix(in oklab, var(--garland-highlight) 28%, transparent), transparent 70%),
+      radial-gradient(70% 34% at 50% 100%, color-mix(in oklab, var(--garland-comp) 18%, transparent), transparent 75%);
     opacity: 0.42;
   }
 
@@ -211,7 +212,7 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
     background:
       linear-gradient(
         148deg,
-        color-mix(in oklab, var(--garland-comp-light) 90%, white 10%),
+        color-mix(in oklab, var(--garland-highlight) 88%, white 12%),
         color-mix(in oklab, var(--garland-comp) 88%, #4e2915 12%) 62%,
         color-mix(in oklab, var(--garland-comp-deep) 90%, black 10%)
       );
@@ -239,7 +240,7 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
     border-radius: 50% 0 42% 0 / 58% 0 52% 0;
     background: linear-gradient(
       150deg,
-      color-mix(in oklab, var(--garland-comp-light) 24%, transparent),
+      color-mix(in oklab, var(--garland-highlight) 28%, transparent),
       transparent 68%
     );
     opacity: 0.72;
