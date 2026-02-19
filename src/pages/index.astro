@@ -36,6 +36,37 @@ const pickItems = (categoryId: string, ids: string[]): LinkHubItem[] => {
 };
 
 const nowListeningItem = pickItems('music', ['now-listening'])[0];
+const sectionEmbeds = [
+  {
+    id: 'music',
+    label: 'Music',
+    items: pickItems('music', ['now-listening', 'my-first-beat-tape', 'everyday-soundscape']).concat(
+      pickItems('resources', ['practicing-kriya'])
+    )
+  },
+  {
+    id: 'visual',
+    label: 'Visual',
+    items: pickItems('social', ['instagram', 'threads', 'tiktok'])
+  },
+  {
+    id: 'video',
+    label: 'Video',
+    items: pickItems('video', ['everyday-life-video', 'youtube-channel', 'post-labor-econ-playlist'])
+  },
+  {
+    id: 'newark',
+    label: 'Newark',
+    items: pickItems('resources', ['work-archive', 'map', 'mit-living-wage'])
+  },
+  {
+    id: 'scraps',
+    label: 'Scraps',
+    items: pickItems('music', ['scraps-2023-2024']).concat(
+      pickItems('writing', ['writing-archive', 'substack', 'magazine-publication'])
+    )
+  }
+];
 const shortDateFormatter = new Intl.DateTimeFormat('en-US', {
   month: 'short',
   day: 'numeric',
@@ -163,6 +194,46 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
 
     <HomeTabReflections items={reflectionItems} sectionTitle="Tab Reflections" variant="desktop" />
 
+    <section class="mt-12 md:mt-14">
+      <h2 class="font-display text-2xl">Sections</h2>
+      <div class="mt-3 section-tablist" role="tablist" aria-label="Section spotlight tabs">
+        {sectionEmbeds.map((section, index) => (
+          <button
+            type="button"
+            role="tab"
+            data-section-tab={section.id}
+            aria-selected={index === 0 ? 'true' : 'false'}
+            class:list={['section-tab', index === 0 && 'is-active']}
+          >
+            {section.label}
+          </button>
+        ))}
+      </div>
+
+      <div class="mt-4 section-panels">
+        {sectionEmbeds.map((section, index) => (
+          <div
+            class:list={['section-panel', index === 0 && 'is-active']}
+            data-section-panel={section.id}
+            role="tabpanel"
+            aria-label={`${section.label} spotlight`}
+          >
+            {section.items.length > 0 ? (
+              <div class="section-cards">
+                {section.items.map((item) => (
+                  <div class="section-card-shell">
+                    <EmbedCard item={item} showResizeHint={true} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p class="text-sm text-zinc-400">No spotlight links configured yet.</p>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+
     <HomeSocialFeeds
       xHandle={xHandle}
       youtubeUploadsEmbedUrl={youtubeUploadsEmbedUrl}
@@ -285,9 +356,144 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
       </ul>
     </section>
   </article>
+
+  <script is:inline>
+    (() => {
+      const tabs = Array.from(document.querySelectorAll('[data-section-tab]'));
+      const panels = Array.from(document.querySelectorAll('[data-section-panel]'));
+      if (!tabs.length || !panels.length) return;
+
+      const activate = (id) => {
+        tabs.forEach((tab) => {
+          const active = tab.getAttribute('data-section-tab') === id;
+          tab.classList.toggle('is-active', active);
+          tab.setAttribute('aria-selected', String(active));
+        });
+        panels.forEach((panel) => {
+          const active = panel.getAttribute('data-section-panel') === id;
+          panel.classList.toggle('is-active', active);
+        });
+      };
+
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const id = tab.getAttribute('data-section-tab');
+          if (id) activate(id);
+        });
+      });
+
+      const first = tabs[0]?.getAttribute('data-section-tab');
+      if (first) activate(first);
+    })();
+  </script>
 </BaseLayout>
 
 <style>
+  .section-tablist {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: clamp(0.8rem, 1.3vw, 1.3rem);
+    border-bottom: 1px solid var(--line2);
+    padding-bottom: 0.12rem;
+  }
+
+  .section-tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: color 160ms ease;
+  }
+
+  .section-tab::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 8px;
+    height: 1px;
+    transform: scaleX(0);
+    transform-origin: left center;
+    background: color-mix(in srgb, var(--tone-accent) 82%, #fff 18%);
+    opacity: 0.8;
+    transition: transform 160ms ease;
+  }
+
+  .section-tab:hover,
+  .section-tab:focus-visible,
+  .section-tab.is-active {
+    color: var(--tone-accent-glow);
+  }
+
+  .section-tab:hover::after,
+  .section-tab:focus-visible::after,
+  .section-tab.is-active::after {
+    transform: scaleX(1);
+  }
+
+  .section-tab:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--tone-accent) 85%, transparent);
+    outline-offset: 3px;
+    border-radius: 0.35rem;
+  }
+
+  .section-panel {
+    display: none;
+    overflow-x: visible;
+  }
+
+  .section-panel.is-active {
+    display: block;
+  }
+
+  .section-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    gap: 0.75rem;
+    align-items: flex-start;
+    width: min(100%, 78rem);
+    margin-inline: auto;
+    min-width: 0;
+  }
+
+  .section-card-shell {
+    flex: 0 0 auto;
+    width: clamp(20rem, 31vw, 34rem);
+    min-width: min(100%, 20rem);
+    max-width: 100%;
+  }
+
+  @media (pointer: fine) {
+    .section-card-shell {
+      resize: both;
+      overflow: auto;
+      min-width: 20rem;
+      min-height: 20rem;
+      max-width: min(1400px, 96vw);
+      max-height: min(90vh, 1100px);
+    }
+  }
+
+  .section-card-shell :global(.hub-card) {
+    height: 100%;
+  }
+
+  .section-card-shell :global(.hub-embed) {
+    min-width: 100%;
+  }
+
   @media (max-width: 860px) {
     .mobile-social-feed-cards {
       list-style: none;
