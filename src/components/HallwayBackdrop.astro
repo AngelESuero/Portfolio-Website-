@@ -3,7 +3,7 @@ const { accent = '#7BE7FF' } = Astro.props;
 ---
 
 <!-- Backdrop layers -->
-<div class="hallway" style={`--accent:${accent};`} aria-hidden="true">
+<div class="hallway" style={`--accent:${accent};--complement:var(--cursor);`} aria-hidden="true">
   <div class="hallway__photo"></div>
   <div class="hallway__vignette"></div>
   <div class="hallway__fog"></div>
@@ -28,7 +28,11 @@ const { accent = '#7BE7FF' } = Astro.props;
     position: absolute;
     inset: -8%;
     background-image:
-      radial-gradient(900px 420px at 58% 16%, rgba(255, 212, 146, 0.2), transparent 65%),
+      radial-gradient(
+        900px 420px at 58% 16%,
+        color-mix(in oklab, var(--complement) 30%, transparent),
+        transparent 65%
+      ),
       linear-gradient(180deg, rgba(3, 8, 18, 0.54) 0%, rgba(4, 8, 15, 0.74) 48%, rgba(3, 6, 12, 0.9) 100%),
       var(--hallway-photo-url);
     background-position: center;
@@ -66,10 +70,10 @@ const { accent = '#7BE7FF' } = Astro.props;
     background:
       linear-gradient(
         90deg,
-        rgba(123, 231, 255, 0.08),
-        transparent 18%,
-        transparent 82%,
-        rgba(123, 231, 255, 0.08)
+        color-mix(in oklab, var(--complement) 18%, transparent),
+        transparent 22%,
+        transparent 78%,
+        color-mix(in oklab, var(--accent) 18%, transparent)
       ),
       linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.35) 55%, rgba(0, 0, 0, 0.65));
     transform: perspective(900px) rotateX(8deg);
@@ -81,18 +85,22 @@ const { accent = '#7BE7FF' } = Astro.props;
     position: absolute;
     inset: -10%;
     background:
-      radial-gradient(600px 220px at 50% 12%, rgba(255, 204, 122, 0.12), transparent 60%),
+      radial-gradient(
+        600px 220px at 50% 12%,
+        color-mix(in oklab, var(--complement) 28%, transparent),
+        transparent 60%
+      ),
       radial-gradient(
         800px 360px at 50% 20%,
-        color-mix(in oklab, var(--accent) 40%, transparent),
+        color-mix(in oklab, var(--accent) 36%, transparent),
         transparent 70%
       ),
       linear-gradient(
         90deg,
-        color-mix(in oklab, var(--accent) 22%, transparent),
-        transparent 20%,
-        transparent 80%,
-        color-mix(in oklab, var(--accent) 22%, transparent)
+        color-mix(in oklab, var(--complement) 18%, transparent),
+        transparent 24%,
+        transparent 76%,
+        color-mix(in oklab, var(--accent) 20%, transparent)
       );
     filter: blur(0px);
     opacity: 0.9;
