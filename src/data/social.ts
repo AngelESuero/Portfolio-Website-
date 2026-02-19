@@ -8,9 +8,14 @@ export interface SocialConfigItem {
   mode: 'rss' | 'manual';
   rss_url?: string;
   local_preview?: 'instagram';
+  x_timeline_handle?: string;
   featured?: Array<{ label: string; url: string }>;
   embeds?: Array<{ label?: string; url: string }>;
 }
+
+const YOUTUBE_CHANNEL_ID = 'UCQeJiBS72gxrZXw5GmqtocA';
+const YOUTUBE_FEED_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL_ID}`;
+const YOUTUBE_UPLOADS_PLAYLIST_URL = `https://www.youtube.com/playlist?list=UU${YOUTUBE_CHANNEL_ID.slice(2)}`;
 
 const socialConfig: SocialConfigItem[] = [
   {
@@ -28,14 +33,19 @@ const socialConfig: SocialConfigItem[] = [
   {
     slug: 'youtube',
     title: 'YouTube',
-    description: 'Videos, visual essays, and process uploads.',
+    description: 'Latest uploads, visual essays, and process videos.',
     primary_url: SOCIAL_URLS.youtube,
-    mode: 'manual',
+    mode: 'rss',
+    rss_url: YOUTUBE_FEED_URL,
     featured: [
       { label: 'Channel home', url: SOCIAL_URLS.youtube },
+      { label: 'Uploads playlist', url: YOUTUBE_UPLOADS_PLAYLIST_URL },
       { label: 'The Everyday Life Video', url: VIDEO_URLS.everydayLifeVideo }
     ],
-    embeds: [{ label: 'The Everyday Life Video', url: VIDEO_URLS.everydayLifeVideo }]
+    embeds: [
+      { label: 'Latest uploads playlist', url: YOUTUBE_UPLOADS_PLAYLIST_URL },
+      { label: 'The Everyday Life Video', url: VIDEO_URLS.everydayLifeVideo }
+    ]
   },
   {
     slug: 'soundcloud',
@@ -103,6 +113,7 @@ const socialConfig: SocialConfigItem[] = [
     description: 'Short-form commentary and research notes.',
     primary_url: SOCIAL_URLS.x,
     mode: 'manual',
+    x_timeline_handle: 'a_e_s_4',
     featured: [{ label: 'Profile', url: SOCIAL_URLS.x }]
   },
   {
@@ -132,4 +143,3 @@ const socialConfig: SocialConfigItem[] = [
 ];
 
 export default socialConfig;
-

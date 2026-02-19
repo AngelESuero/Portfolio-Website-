@@ -35,6 +35,8 @@ const spotifyPlaylistValue = String(import.meta.env.PUBLIC_SPOTIFY_PLAYLIST_ID |
 const spotifyNowListeningUrl = getSpotifyPlaylistUrl(spotifyPlaylistValue);
 const SUBSTACK_PROFILE_URL = SOCIAL_URLS.substackProfile;
 const SUBSTACK_FEED_URL = SOCIAL_URLS.substackFeed;
+const YOUTUBE_CHANNEL_ID = 'UCQeJiBS72gxrZXw5GmqtocA';
+const YOUTUBE_UPLOADS_PLAYLIST_URL = `https://www.youtube.com/playlist?list=UU${YOUTUBE_CHANNEL_ID.slice(2)}`;
 
 export const LINK_HUB_ICONS: LinkHubIconLink[] = [
   { title: 'YouTube', url: SOCIAL_URLS.youtube, icon: 'YT' },
@@ -285,10 +287,11 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
       },
       {
         id: 'youtube-channel',
-        title: 'YouTube Channel',
-        url: SOCIAL_URLS.youtube,
+        title: 'YouTube Uploads',
+        url: YOUTUBE_UPLOADS_PLAYLIST_URL,
         year: '2026',
-        tag: 'Channel'
+        tag: 'Uploads',
+        preferredEmbed: 'youtube'
       },
       {
         id: 'upa-yoga-playlist',

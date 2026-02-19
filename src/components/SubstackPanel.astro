@@ -1,5 +1,11 @@
 ---
 const SUBSTACK_PROFILE = 'https://substack.com/@aesu';
+interface Props {
+  secondaryHref?: string;
+  secondaryLabel?: string;
+}
+
+const { secondaryHref = '/writing#writing-list', secondaryLabel = 'Browse site writings' } = Astro.props;
 ---
 
 <section class="panel" id="substack">
@@ -9,7 +15,7 @@ const SUBSTACK_PROFILE = 'https://substack.com/@aesu';
 
     <div class="row">
       <a class="btn" href={SUBSTACK_PROFILE} target="_blank" rel="noopener">Open Substack</a>
-      <a class="btn ghost" href="/writing">Browse site writings</a>
+      <a class="btn ghost" href={secondaryHref}>{secondaryLabel}</a>
     </div>
 
     <!-- OPTIONAL: paste your Substack “embed signup form” code here -->

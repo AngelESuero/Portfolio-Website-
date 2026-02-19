@@ -19,6 +19,7 @@ interface SocialConfig {
   mode: 'rss' | 'manual';
   rss_url?: string;
   local_preview?: 'instagram';
+  x_timeline_handle?: string;
   featured?: SocialFeaturedLink[];
   embeds?: SocialEmbed[];
 }
@@ -40,6 +41,11 @@ const resolvedEmbeds = embeds.map((embed) => ({
 }));
 const showInstagramPreview = config.local_preview === 'instagram' && igPreview.length > 0;
 const isExternal = (url: string) => /^https?:\/\//i.test(url);
+const xTimelineHandle =
+  typeof config.x_timeline_handle === 'string' ? config.x_timeline_handle.trim().replace(/^@/, '') : '';
+const showXTimeline = Boolean(xTimelineHandle);
+const xWidgetRootId = `x-widget-${config.slug}`;
+const xTimelineHref = showXTimeline ? `https://twitter.com/${xTimelineHandle}` : '';
 ---
 
 <section class="social-page">
@@ -76,6 +82,23 @@ const isExternal = (url: string) => /^https?:\/\//i.test(url);
       <p class="social-empty">Add featured links in <code>src/data/social.ts</code>.</p>
     )}
   </section>
+
+  {showXTimeline && (
+    <section class="social-block" aria-label={`${config.title} timeline`}>
+      <h2>Timeline</h2>
+      <div id={xWidgetRootId} class="social-x-widget">
+        <a
+          class="twitter-timeline"
+          href={xTimelineHref}
+          data-dnt="true"
+          data-chrome="noheader nofooter transparent"
+          data-tweet-limit="6"
+        >
+          Posts by @{xTimelineHandle}
+        </a>
+      </div>
+    </section>
+  )}
 
   {showInstagramPreview && (
     <section class="social-block" aria-label="Instagram local preview">
@@ -188,6 +211,37 @@ const isExternal = (url: string) => /^https?:\/\//i.test(url);
           statusEl.textContent = 'Could not load feed right now.';
           statusEl.classList.add('is-error');
         });
+    })();
+  </script>
+)}
+
+{showXTimeline && (
+  <script is:inline define:vars={{ xWidgetRootId }}>
+    (() => {
+      const root = document.getElementById(xWidgetRootId);
+      if (!root) return;
+
+      const timelineLink = root.querySelector('a.twitter-timeline');
+      if (timelineLink) {
+        const prefersDark = document.documentElement.classList.contains('dark');
+        timelineLink.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+      }
+
+      const twttr = window.twttr;
+      if (twttr?.widgets?.load) {
+        twttr.widgets.load(root);
+        return;
+      }
+
+      const scriptId = 'x-timeline-widgets-script';
+      if (document.getElementById(scriptId)) return;
+
+      const script = document.createElement('script');
+      script.id = scriptId;
+      script.async = true;
+      script.src = 'https://platform.twitter.com/widgets.js';
+      script.charset = 'utf-8';
+      document.head.appendChild(script);
     })();
   </script>
 )}
@@ -355,6 +409,20 @@ const isExternal = (url: string) => /^https?:\/\//i.test(url);
     text-align: center;
     line-height: 1.5;
     font-size: 0.82rem;
+  }
+
+  .social-x-widget {
+    margin-top: 0.72rem;
+    border: 1px solid rgba(113, 113, 122, 0.36);
+    border-radius: 0.72rem;
+    overflow: hidden;
+    min-height: 24rem;
+    background: rgba(2, 6, 23, 0.55);
+  }
+
+  .social-x-widget :global(.twitter-timeline) {
+    display: block;
+    min-height: 24rem;
   }
 
   .social-local-grid {

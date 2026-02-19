@@ -133,6 +133,47 @@ const seedAgi = {
   ] satisfies AGITimelineItem[]
 };
 
+const manualAgiItems: AGITimelineItem[] = [
+  {
+    id: 'manual-youtube-z19uezhjzag',
+    phase: 'agentic_stumble',
+    year: 2026,
+    headline: 'YouTube signal: AGI reference video',
+    url: 'https://www.youtube.com/watch?v=Z19UEZHJzAg',
+    sourceId: 'manual',
+    sourceName: 'Manual curation',
+    publishedAt: '2026-02-19T00:00:00.000Z',
+    summary: 'Curated external AGI reference video added to the timeline.',
+    tags: ['manual', 'youtube', 'video', 'agi'],
+    citations: [{ label: 'YouTube', url: 'https://www.youtube.com/watch?v=Z19UEZHJzAg' }],
+    public: {
+      summary: 'A curated video signal added to track AGI narrative momentum.',
+      implication: 'Media signals shape how quickly AGI expectations spread to broader audiences.',
+      analogy: 'A widely shared clip that shifts the room before the data catches up.'
+    },
+    analyst: {
+      metric: 'Narrative signal velocity',
+      value: 'Elevated',
+      dataSource: 'YouTube',
+      trend: 'stable',
+      context: 'External media references can amplify perceived timeline urgency.'
+    },
+    engineer: {
+      technicalDetail: 'This entry is a curated narrative signal linked for cross-view context.',
+      bottleneck: 'Narrative momentum does not substitute for reliability and deployment readiness.',
+      references: [
+        {
+          title: 'YouTube signal',
+          authors: 'YouTube',
+          link: 'https://www.youtube.com/watch?v=Z19UEZHJzAg'
+        }
+      ]
+    }
+  }
+];
+
+const manualPinnedIds = new Set(manualAgiItems.map((item) => item.id));
+
 async function safeJsonImport(path: string, fallback: any) {
   try {
     const mod = await import(path);
@@ -246,8 +287,17 @@ function normalizeItem(raw: any, index: number): AGITimelineItem | null {
 
 const agiData = await safeJsonImport('../data/agi-timeline.json', seedAgi);
 const rawItems = Array.isArray(agiData?.items) ? agiData.items : seedAgi.items;
+const combinedRawItems = [...rawItems, ...manualAgiItems];
+const combinedById = new Map<string, unknown>();
 
-const normalizedItems = rawItems
+combinedRawItems.forEach((item, index) => {
+  const id = typeof item === 'object' && item && 'id' in item ? String((item as { id: string }).id) : `item-${index}`;
+  combinedById.set(id, item);
+});
+
+const dedupedRawItems = [...combinedById.values()];
+
+const normalizedItems = dedupedRawItems
   .map((raw, index) => normalizeItem(raw, index))
   .filter((item): item is AGITimelineItem => Boolean(item))
   .sort((a, b) => {
@@ -267,7 +317,14 @@ const itemsByPhase: Record<AGITimelinePhase, AGITimelineItem[]> = {
 };
 
 const lastUpdated = agiMeta?.generatedAt ? new Date(agiMeta.generatedAt).toLocaleString() : 'unknown';
-const analystTopItems = [...agiItems].sort((a, b) => b.year - a.year).slice(0, 12);
+const analystBaseItems = [...agiItems].sort((a, b) => b.year - a.year).slice(0, 12);
+const analystPinnedItems = agiItems.filter((item) => manualPinnedIds.has(item.id));
+const analystTopItems = [
+  ...[...analystBaseItems, ...analystPinnedItems].reduce((byId, item) => byId.set(item.id, item), new Map<string, AGITimelineItem>()).values()
+].sort((a, b) => {
+  if (a.year !== b.year) return b.year - a.year;
+  return a.headline.localeCompare(b.headline);
+});
 ---
 
 <BaseLayout title="AGI Monitor 2026 // Strategic Assessment" description="AGI strategic monitor with public, analyst, and engineering views." theme="agi">

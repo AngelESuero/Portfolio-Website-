@@ -6,7 +6,9 @@ import { getCollection } from 'astro:content';
 import MobileTOC from '../components/MobileTOC.astro';
 import UntitledPlayer from '../components/UntitledPlayer.astro';
 import EmbedCard from '../components/EmbedCard.astro';
+import HomeSocialFeeds from '../components/HomeSocialFeeds.astro';
 import { LINK_HUB_CATEGORIES, type LinkHubItem } from '../data/linkhub';
+import igManifest from '../data/ig.json';
 
 const allProjects = await getCollection('projects');
 const posts = (await getCollection('posts'))
@@ -23,12 +25,24 @@ const pickItems = (categoryId: string, ids: string[]): LinkHubItem[] => {
 };
 
 const nowListeningItem = pickItems('music', ['now-listening'])[0];
+const xHandle = 'a_e_s_4';
+const youtubeChannelId = 'UCQeJiBS72gxrZXw5GmqtocA';
+const youtubeUploadsPlaylistId = `UU${youtubeChannelId.slice(2)}`;
+const youtubeUploadsEmbedUrl = `https://www.youtube.com/embed/videoseries?list=${youtubeUploadsPlaylistId}`;
+const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
+  .filter((item) => typeof item?.src === 'string' && item.src)
+  .slice(0, 4)
+  .map((item) => ({
+    src: String(item.src),
+    caption: typeof item.caption === 'string' ? item.caption : '',
+    date: typeof item.date === 'string' ? item.date : ''
+  }));
 
 const sectionEmbeds = [
   {
     id: 'music',
     label: 'Music',
-    items: pickItems('music', ['now-listening', 'my-first-beat-tape', 'everyday-soundscape']).concat(
+    items: pickItems('music', ['my-first-beat-tape', 'everyday-soundscape']).concat(
       pickItems('resources', ['practicing-kriya'])
     )
   },
@@ -126,6 +140,15 @@ const sectionEmbeds = [
       </div>
     </section>
 
+    <HomeSocialFeeds
+      xHandle={xHandle}
+      youtubeUploadsEmbedUrl={youtubeUploadsEmbedUrl}
+      youtubeChannelUrl={profile.social_links.youtube}
+      instagramProfileUrl={profile.social_links.instagram}
+      instagramArchiveUrl="/instagram"
+      instagramPreview={instagramPreview}
+    />
+
     <UntitledPlayer title="Listen" subtitle="untitled.stream" />
     {nowListeningItem && (
       <section class="mt-4">
@@ -201,6 +224,31 @@ const sectionEmbeds = [
       <h2>Contact</h2>
       <p>Use the form for inquiries, collaborations, and project commissions.</p>
       <p><a href="/contact">Open contact form</a></p>
+    </section>
+
+    <section id="social-feeds" class="mobile-story-section">
+      <h2>Social feeds</h2>
+      <p>Quick feed jump links for X, YouTube uploads, and the local Instagram archive.</p>
+      <ul class="mobile-social-feed-cards">
+        <li>
+          <a href="/social/x" class="mobile-social-card mobile-social-card-x">
+            <strong>X</strong>
+            <span>Latest notes and commentary from @{xHandle}.</span>
+          </a>
+        </li>
+        <li>
+          <a href="/social/youtube" class="mobile-social-card mobile-social-card-youtube">
+            <strong>YouTube</strong>
+            <span>Newest uploads and featured videos.</span>
+          </a>
+        </li>
+        <li>
+          <a href="/social/instagram" class="mobile-social-card mobile-social-card-instagram">
+            <strong>Instagram</strong>
+            <span>Local-first preview feed with full archive at /instagram.</span>
+          </a>
+        </li>
+      </ul>
     </section>
 
     <section id="links" class="mobile-story-section">
@@ -345,5 +393,89 @@ const sectionEmbeds = [
 
   .section-card-shell :global(.hub-embed) {
     min-width: 100%;
+  }
+
+  @media (max-width: 860px) {
+    .mobile-social-feed-cards {
+      list-style: none;
+      margin: 1rem 0 0;
+      padding: 0;
+      display: grid;
+      gap: 0.72rem;
+    }
+
+    .mobile-social-feed-cards li {
+      margin: 0;
+    }
+
+    .mobile-social-feed-cards a {
+      --card-accent: rgba(214, 168, 53, 0.52);
+      position: relative;
+      display: grid;
+      gap: 0.38rem;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 0.76rem;
+      padding: 0.68rem 0.74rem;
+      text-decoration: none;
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--card-accent) 16%, transparent) 0%, rgba(255, 255, 255, 0.04) 56%),
+        rgba(255, 255, 255, 0.04);
+      color: rgba(238, 244, 255, 0.95);
+      transition: border-color 140ms ease, color 140ms ease, background-color 140ms ease, transform 140ms ease;
+    }
+
+    .mobile-social-card-x {
+      --card-accent: rgba(138, 196, 255, 0.68);
+    }
+
+    .mobile-social-card-youtube {
+      --card-accent: rgba(255, 133, 133, 0.7);
+    }
+
+    .mobile-social-card-instagram {
+      --card-accent: rgba(255, 184, 122, 0.72);
+    }
+
+    .mobile-social-feed-cards a strong {
+      font-size: 0.95rem;
+      line-height: 1.2;
+    }
+
+    .mobile-social-feed-cards a span {
+      font-size: 0.86rem;
+      line-height: 1.46;
+      color: rgba(220, 230, 247, 0.9);
+    }
+
+    .mobile-social-feed-cards a::after {
+      content: '→';
+      position: absolute;
+      right: 0.72rem;
+      top: 0.66rem;
+      font-size: 0.86rem;
+      opacity: 0.78;
+      color: color-mix(in srgb, var(--card-accent) 78%, #ffffff 22%);
+    }
+
+    .mobile-social-feed-cards a:hover,
+    .mobile-social-feed-cards a:focus-visible {
+      border-color: var(--card-accent);
+      color: var(--tone-accent);
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--card-accent) 28%, transparent) 0%, rgba(255, 255, 255, 0.08) 58%),
+        rgba(255, 255, 255, 0.08);
+      transform: translateY(-1px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .mobile-social-feed-cards a {
+        transition: none;
+      }
+
+      .mobile-social-feed-cards a:hover,
+      .mobile-social-feed-cards a:focus-visible {
+        transform: none;
+      }
+    }
   }
 </style>

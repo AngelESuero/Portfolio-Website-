@@ -4,21 +4,310 @@ import { getCollection } from 'astro:content';
 import SubstackPanel from '../../components/SubstackPanel.astro';
 
 const posts = (await getCollection('posts')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const dateFormatter = new Intl.DateTimeFormat('en-US', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric'
+});
+const fullDateFormatter = new Intl.DateTimeFormat('en-US', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric'
+});
+const allTags = [...new Set(posts.flatMap((post) => post.data.tags.map((tag) => tag.trim().toLowerCase())))]
+  .filter(Boolean)
+  .sort((a, b) => a.localeCompare(b));
 ---
 <BaseLayout title="Writing — a_e.s_" theme="writing">
-  <h1 class="font-display text-4xl">Writing</h1>
-  <a class="mt-2 inline-block text-sm underline" href="/rss.xml">RSS feed</a>
-  <SubstackPanel />
-  <ul class="mt-6 space-y-4">
-    {posts.map((post) => (
-      <li class="rounded border border-zinc-300 p-4 dark:border-zinc-700">
-        <a href={`/writing/${post.slug}`} class="font-display text-xl">{post.data.title}</a>
-        <p class="text-sm text-zinc-600 dark:text-zinc-300">{post.data.date.toLocaleDateString()}</p>
-        <p class="mt-1">{post.data.summary}</p>
-        <div class="mt-2 flex flex-wrap gap-2">
-          {post.data.tags.map((tag) => <span class="rounded bg-zinc-200 px-2 py-0.5 text-xs dark:bg-zinc-800">#{tag}</span>)}
+  <section class="writing-hero">
+    <p class="writing-kicker">Archive / Essays / Notes</p>
+    <h1 class="font-display text-4xl md:text-5xl">Writing</h1>
+    <p class="writing-description">
+      Track process notes, longer essays, and archive fragments. Use tags to filter quickly.
+    </p>
+    <div class="writing-meta">
+      <p>{posts.length} {posts.length === 1 ? 'entry' : 'entries'}</p>
+      {posts[0] && <p>Latest: {fullDateFormatter.format(posts[0].data.date)}</p>}
+    </div>
+    <a class="writing-rss-link" href="/rss.xml">RSS feed</a>
+  </section>
+
+  <SubstackPanel secondaryHref="#writing-list" secondaryLabel="Jump to site archive" />
+
+  <section class="writing-archive" id="writing-list" aria-labelledby="writing-archive-heading">
+    <div class="writing-archive-header">
+      <h2 id="writing-archive-heading" class="font-display text-2xl">Site Archive</h2>
+      {allTags.length > 0 && (
+        <div class="writing-filters" role="group" aria-label="Filter posts by tag">
+          <button type="button" class="writing-filter is-active" data-filter="all" aria-pressed="true">All</button>
+          {allTags.map((tag) => (
+            <button type="button" class="writing-filter" data-filter={tag} aria-pressed="false">#{tag}</button>
+          ))}
         </div>
-      </li>
-    ))}
-  </ul>
+      )}
+      <p class="writing-results" id="writing-results-count">{posts.length} {posts.length === 1 ? 'entry' : 'entries'}</p>
+    </div>
+
+    {posts.length === 0 ? (
+      <p class="writing-empty">No entries published yet.</p>
+    ) : (
+      <>
+        <ul class="writing-list" id="writing-list-items">
+          {posts.map((post) => (
+            <li class="writing-item" data-tags={post.data.tags.map((tag) => tag.trim().toLowerCase()).join(' ')}>
+              <article class="writing-card">
+                <p class="writing-card-date">{dateFormatter.format(post.data.date)}</p>
+                <h3 class="font-display text-2xl">
+                  <a href={`/writing/${post.slug}`} class="writing-card-title">{post.data.title}</a>
+                </h3>
+                <p class="writing-card-summary">{post.data.summary}</p>
+                <div class="writing-card-footer">
+                  <div class="writing-tags">
+                    {post.data.tags.map((tag) => <span class="writing-tag">#{tag}</span>)}
+                  </div>
+                  <a href={`/writing/${post.slug}`} class="writing-read-link" aria-label={`Read ${post.data.title}`}>
+                    Read note
+                  </a>
+                </div>
+              </article>
+            </li>
+          ))}
+        </ul>
+        <p class="writing-empty" id="writing-empty-state" hidden>No posts match this tag yet.</p>
+      </>
+    )}
+  </section>
+
+  <script is:inline>
+    (() => {
+      const filterButtons = Array.from(document.querySelectorAll('.writing-filter'));
+      const items = Array.from(document.querySelectorAll('.writing-item'));
+      const emptyState = document.getElementById('writing-empty-state');
+      const results = document.getElementById('writing-results-count');
+      if (!filterButtons.length || !items.length || !results) return;
+
+      const label = (count) => `${count} ${count === 1 ? 'entry' : 'entries'}`;
+      const setActive = (activeFilter) => {
+        filterButtons.forEach((candidate) => {
+          const active = (candidate.getAttribute('data-filter') || 'all') === activeFilter;
+          candidate.classList.toggle('is-active', active);
+          candidate.setAttribute('aria-pressed', String(active));
+        });
+      };
+
+      const applyFilter = (filter) => {
+        let visibleCount = 0;
+        items.forEach((item) => {
+          const tags = item.getAttribute('data-tags') || '';
+          const matches = filter === 'all' || tags.split(/\s+/).includes(filter);
+          item.hidden = !matches;
+          if (matches) visibleCount += 1;
+        });
+
+        results.textContent = label(visibleCount);
+        if (emptyState) emptyState.hidden = visibleCount !== 0;
+      };
+
+      filterButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const filter = button.getAttribute('data-filter') || 'all';
+          setActive(filter);
+          applyFilter(filter);
+        });
+      });
+
+      setActive('all');
+      applyFilter('all');
+    })();
+  </script>
 </BaseLayout>
+
+<style>
+  .writing-hero {
+    border: 1px solid var(--line2);
+    border-radius: calc(var(--radius) * var(--space-scale));
+    background: linear-gradient(120deg, rgba(9, 14, 24, 0.68), rgba(7, 13, 24, 0.5));
+    padding: clamp(1.05rem, 2.4vw, 1.85rem);
+  }
+
+  .writing-kicker {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.7rem;
+    color: var(--tone-muted);
+  }
+
+  .writing-description {
+    margin-top: 0.8rem;
+    max-width: 62ch;
+    color: color-mix(in srgb, var(--tone-text) 85%, var(--tone-muted) 15%);
+  }
+
+  .writing-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 1rem;
+    margin-top: 0.8rem;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--tone-muted);
+  }
+
+  .writing-meta p {
+    margin: 0;
+  }
+
+  .writing-rss-link {
+    display: inline-flex;
+    margin-top: 0.9rem;
+    font-size: 0.9rem;
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 50%, transparent);
+  }
+
+  .writing-rss-link:hover,
+  .writing-rss-link:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 80%, transparent);
+  }
+
+  .writing-archive {
+    margin-top: clamp(1.3rem, 3vw, 2.4rem);
+  }
+
+  .writing-archive-header {
+    display: grid;
+    gap: 0.8rem;
+    align-items: end;
+  }
+
+  .writing-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .writing-filter {
+    border: 1px solid var(--line2);
+    border-radius: 999px;
+    background: rgba(9, 14, 23, 0.48);
+    color: var(--tone-muted);
+    padding: 0.33rem 0.72rem;
+    font-size: 0.74rem;
+    letter-spacing: 0.02em;
+  }
+
+  .writing-filter.is-active,
+  .writing-filter:hover,
+  .writing-filter:focus-visible {
+    color: var(--tone-accent-glow);
+    border-color: color-mix(in srgb, var(--tone-accent) 32%, var(--line2));
+  }
+
+  .writing-results {
+    margin: 0;
+    font-size: 0.82rem;
+    color: var(--tone-muted);
+  }
+
+  .writing-list {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .writing-card {
+    border: 1px solid var(--line2);
+    border-radius: calc(var(--radius) * var(--space-scale));
+    background: linear-gradient(180deg, rgba(8, 12, 20, 0.7), rgba(5, 10, 17, 0.58));
+    padding: clamp(0.9rem, 2.2vw, 1.2rem);
+    transition: border-color 160ms ease, transform 160ms ease;
+  }
+
+  .writing-card:hover {
+    border-color: color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
+    transform: translateY(-1px);
+  }
+
+  .writing-card-date {
+    margin: 0;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tone-muted);
+  }
+
+  .writing-card h3 {
+    margin: 0.5rem 0 0;
+    line-height: 1.2;
+  }
+
+  .writing-card-title {
+    color: var(--tone-text);
+    text-decoration: none;
+  }
+
+  .writing-card-title:hover,
+  .writing-card-title:focus-visible {
+    color: var(--tone-accent-glow);
+  }
+
+  .writing-card-summary {
+    margin: 0.6rem 0 0;
+    max-width: 70ch;
+    color: color-mix(in srgb, var(--tone-text) 83%, var(--tone-muted) 17%);
+  }
+
+  .writing-card-footer {
+    margin-top: 0.82rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.55rem;
+  }
+
+  .writing-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .writing-tag {
+    border: 1px solid var(--line2);
+    border-radius: 999px;
+    font-size: 0.72rem;
+    padding: 0.25rem 0.55rem;
+    color: var(--tone-muted);
+    background: rgba(8, 12, 20, 0.55);
+  }
+
+  .writing-read-link {
+    color: var(--tone-accent-glow);
+    font-size: 0.85rem;
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 55%, transparent);
+    white-space: nowrap;
+  }
+
+  .writing-read-link:hover,
+  .writing-read-link:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 90%, transparent);
+  }
+
+  .writing-empty {
+    margin-top: 0.8rem;
+    color: var(--tone-muted);
+  }
+
+  @media (max-width: 700px) {
+    .writing-card-footer {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>

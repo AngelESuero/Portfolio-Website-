@@ -9,10 +9,167 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await post.render();
+const allPosts = (await getCollection('posts')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const currentIndex = allPosts.findIndex((entry) => entry.slug === post.slug);
+const newerPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+const olderPost = currentIndex >= 0 && currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+const dateFormatter = new Intl.DateTimeFormat('en-US', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric'
+});
+const wordCount = post.body ? post.body.trim().split(/\s+/).length : 0;
+const readingTime = Math.max(1, Math.round(wordCount / 200));
 ---
 <BaseLayout title={`${post.data.title} — Writing`} theme="writing">
-  <a href="/writing" class="text-sm underline">← Back to Writing</a>
-  <h1 class="mt-2 font-display text-4xl">{post.data.title}</h1>
-  <p class="text-sm text-zinc-500">{post.data.date.toLocaleDateString()}</p>
-  <article class="prose mt-6 dark:prose-invert"><Content /></article>
+  <article class="writing-entry">
+    <a href="/writing" class="writing-entry-back">← Back to Writing</a>
+    <header class="writing-entry-header">
+      <p class="writing-entry-date">{dateFormatter.format(post.data.date)}</p>
+      <h1 class="font-display text-4xl md:text-5xl">{post.data.title}</h1>
+      <p class="writing-entry-summary">{post.data.summary}</p>
+      <div class="writing-entry-meta">
+        <p>{readingTime} min read</p>
+        <div class="writing-entry-tags" aria-label="Post tags">
+          {post.data.tags.map((tag) => <span>#{tag}</span>)}
+        </div>
+      </div>
+    </header>
+
+    <section class="reading-prose mt-8">
+      <Content />
+    </section>
+
+    <footer class="writing-entry-footer">
+      <a href="/rss.xml" class="writing-entry-rss">Follow via RSS</a>
+      <nav class="writing-entry-nav" aria-label="Adjacent posts">
+        {newerPost && (
+          <a href={`/writing/${newerPost.slug}`} class="writing-entry-nav-link">
+            Newer: {newerPost.data.title}
+          </a>
+        )}
+        {olderPost && (
+          <a href={`/writing/${olderPost.slug}`} class="writing-entry-nav-link">
+            Older: {olderPost.data.title}
+          </a>
+        )}
+      </nav>
+    </footer>
+  </article>
 </BaseLayout>
+
+<style>
+  .writing-entry {
+    max-width: 74ch;
+  }
+
+  .writing-entry-back {
+    display: inline-flex;
+    font-size: 0.87rem;
+    color: var(--tone-muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line2);
+  }
+
+  .writing-entry-back:hover,
+  .writing-entry-back:focus-visible {
+    color: var(--tone-accent-glow);
+    border-color: color-mix(in srgb, var(--tone-accent) 58%, transparent);
+  }
+
+  .writing-entry-header {
+    margin-top: 0.9rem;
+  }
+
+  .writing-entry-date {
+    margin: 0;
+    color: var(--tone-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.78rem;
+  }
+
+  .writing-entry-header h1 {
+    margin-top: 0.55rem;
+    line-height: 1.08;
+  }
+
+  .writing-entry-summary {
+    margin-top: 0.78rem;
+    color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
+    max-width: 62ch;
+  }
+
+  .writing-entry-meta {
+    margin-top: 0.85rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem 1rem;
+  }
+
+  .writing-entry-meta p {
+    margin: 0;
+    font-size: 0.77rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--tone-muted);
+  }
+
+  .writing-entry-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.38rem;
+  }
+
+  .writing-entry-tags span {
+    border: 1px solid var(--line2);
+    border-radius: 999px;
+    background: rgba(10, 14, 23, 0.52);
+    color: var(--tone-muted);
+    font-size: 0.72rem;
+    padding: 0.22rem 0.5rem;
+  }
+
+  .writing-entry-footer {
+    margin-top: 2.1rem;
+    border-top: 1px solid var(--line2);
+    padding-top: 1rem;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .writing-entry-rss {
+    width: fit-content;
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 55%, transparent);
+    font-size: 0.86rem;
+  }
+
+  .writing-entry-rss:hover,
+  .writing-entry-rss:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 85%, transparent);
+  }
+
+  .writing-entry-nav {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .writing-entry-nav-link {
+    color: var(--tone-text);
+    text-decoration: none;
+    border: 1px solid var(--line2);
+    border-radius: 0.7rem;
+    background: rgba(8, 12, 20, 0.52);
+    padding: 0.6rem 0.74rem;
+    transition: border-color 140ms ease, color 140ms ease;
+  }
+
+  .writing-entry-nav-link:hover,
+  .writing-entry-nav-link:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 32%, var(--line2));
+    color: var(--tone-accent-glow);
+  }
+</style>
