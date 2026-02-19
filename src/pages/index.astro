@@ -6,14 +6,16 @@ import { getCollection } from 'astro:content';
 import MobileTOC from '../components/MobileTOC.astro';
 import UntitledPlayer from '../components/UntitledPlayer.astro';
 import EmbedCard from '../components/EmbedCard.astro';
+import HomeTabReflections from '../components/HomeTabReflections.astro';
 import HomeSocialFeeds from '../components/HomeSocialFeeds.astro';
 import { LINK_HUB_CATEGORIES, type LinkHubItem } from '../data/linkhub';
 import igManifest from '../data/ig.json';
+import rooms from '../data/rooms';
+import agiTimelineData from '../data/agi-timeline.json';
 
 const allProjects = await getCollection('projects');
-const posts = (await getCollection('posts'))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
+const allPosts = (await getCollection('posts')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const posts = allPosts.slice(0, 3);
 const tools = [...new Set(allProjects.flatMap((project) => project.data.tools))].slice(0, 10);
 const threads = featuredThreads.featured_threads;
 const categoryItems = new Map(LINK_HUB_CATEGORIES.map((category) => [category.id, category.items]));
@@ -25,6 +27,80 @@ const pickItems = (categoryId: string, ids: string[]): LinkHubItem[] => {
 };
 
 const nowListeningItem = pickItems('music', ['now-listening'])[0];
+const shortDateFormatter = new Intl.DateTimeFormat('en-US', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric'
+});
+const pluralize = (count: number, singular: string, plural = `${singular}s`) => `${count} ${count === 1 ? singular : plural}`;
+const formatDateLabel = (value: unknown, fallback: string): string => {
+  let parsed: Date | null = null;
+
+  if (value instanceof Date) {
+    parsed = Number.isNaN(value.valueOf()) ? null : value;
+  } else if (typeof value === 'string' || typeof value === 'number') {
+    const candidate = new Date(value);
+    parsed = Number.isNaN(candidate.valueOf()) ? null : candidate;
+  }
+
+  return parsed ? shortDateFormatter.format(parsed) : fallback;
+};
+
+const projectCount = allProjects.length;
+const projectTypeCount = new Set(allProjects.map((project) => project.data.type)).size;
+const postCount = allPosts.length;
+const latestPostDateLabel = formatDateLabel(allPosts[0]?.data?.date, 'recently');
+const roomList = Array.isArray(rooms) ? rooms : [];
+const roomCount = roomList.length;
+const machineCount = roomList.reduce((count, room) => count + (Array.isArray(room.machines) ? room.machines.length : 0), 0);
+const agiSignalCount = Array.isArray(agiTimelineData?.items) ? agiTimelineData.items.length : 0;
+const agiUpdatedAtLabel = formatDateLabel(agiTimelineData?.meta?.generatedAt, 'Updated recently');
+const reflectionItems = [
+  {
+    id: 'work',
+    title: 'Work',
+    href: '/work',
+    summary:
+      projectCount > 0
+        ? `${pluralize(projectCount, 'project')} across ${pluralize(projectTypeCount, 'type')}.`
+        : 'No projects indexed yet.',
+    meta: projectCount > 0 ? `Coverage: ${pluralize(projectTypeCount, 'type')}` : 'Coverage pending',
+    cta: 'Open Work'
+  },
+  {
+    id: 'writing',
+    title: 'Writing',
+    href: '/writing',
+    summary:
+      postCount > 0 ? `${pluralize(postCount, 'entry', 'entries')} published. Latest ${latestPostDateLabel}.` : 'No entries yet.',
+    meta: postCount > 0 ? `Latest update ${latestPostDateLabel}` : 'Latest update pending',
+    cta: 'Open Writing'
+  },
+  {
+    id: 'social',
+    title: 'Social',
+    href: '/social',
+    summary: `${pluralize(roomCount, 'room')} and ${pluralize(machineCount, 'machine')} mapped in the arcade.`,
+    meta: `Index: ${pluralize(roomCount, 'room')}`,
+    cta: 'Open Social'
+  },
+  {
+    id: 'agi',
+    title: 'AGI Timeline',
+    href: '/agi',
+    summary: agiSignalCount > 0 ? `${pluralize(agiSignalCount, 'signal')} tracked in the monitor.` : 'No AGI signals indexed yet.',
+    meta: `Last sync ${agiUpdatedAtLabel}`,
+    cta: 'Open AGI Timeline'
+  },
+  {
+    id: 'contact',
+    title: 'Contact',
+    href: '/contact',
+    summary: 'Inquiry form plus 4 quick links for direct outreach.',
+    meta: 'Channels: form + socials',
+    cta: 'Open Contact'
+  }
+];
 const xHandle = 'a_e_s_4';
 const youtubeChannelId = 'UCQeJiBS72gxrZXw5GmqtocA';
 const youtubeUploadsPlaylistId = `UU${youtubeChannelId.slice(2)}`;
@@ -37,38 +113,6 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
     caption: typeof item.caption === 'string' ? item.caption : '',
     date: typeof item.date === 'string' ? item.date : ''
   }));
-
-const sectionEmbeds = [
-  {
-    id: 'music',
-    label: 'Music',
-    items: pickItems('music', ['my-first-beat-tape', 'everyday-soundscape']).concat(
-      pickItems('resources', ['practicing-kriya'])
-    )
-  },
-  {
-    id: 'visual',
-    label: 'Visual',
-    items: pickItems('social', ['instagram', 'threads', 'tiktok'])
-  },
-  {
-    id: 'video',
-    label: 'Video',
-    items: pickItems('video', ['everyday-life-video', 'youtube-channel', 'post-labor-econ-playlist'])
-  },
-  {
-    id: 'newark',
-    label: 'Newark',
-    items: pickItems('resources', ['work-archive', 'map', 'mit-living-wage'])
-  },
-  {
-    id: 'scraps',
-    label: 'Scraps',
-    items: pickItems('music', ['scraps-2023-2024']).concat(
-      pickItems('writing', ['writing-archive', 'substack', 'magazine-publication'])
-    )
-  }
-];
 ---
 
 <BaseLayout title="A Path Toward Life — Archive" description={profile.short_bio} theme="archive">
@@ -100,45 +144,7 @@ const sectionEmbeds = [
       </div>
     </section>
 
-    <section class="mt-12 md:mt-14">
-      <h2 class="font-display text-2xl">Sections</h2>
-      <div class="mt-3 section-tablist" role="tablist" aria-label="Section spotlight tabs">
-        {sectionEmbeds.map((section, index) => (
-          <button
-            type="button"
-            role="tab"
-            data-section-tab={section.id}
-            aria-selected={index === 0 ? 'true' : 'false'}
-            class:list={['section-tab', index === 0 && 'is-active']}
-          >
-            {section.label}
-          </button>
-        ))}
-      </div>
-
-      <div class="mt-4 section-panels">
-        {sectionEmbeds.map((section, index) => (
-          <div
-            class:list={['section-panel', index === 0 && 'is-active']}
-            data-section-panel={section.id}
-            role="tabpanel"
-            aria-label={`${section.label} spotlight`}
-          >
-            {section.items.length > 0 ? (
-              <div class="section-cards">
-                {section.items.map((item) => (
-                  <div class="section-card-shell">
-                    <EmbedCard item={item} showResizeHint={true} />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p class="text-sm text-zinc-400">No spotlight links configured yet.</p>
-            )}
-          </div>
-        ))}
-      </div>
-    </section>
+    <HomeTabReflections items={reflectionItems} sectionTitle="Tab Reflections" variant="desktop" />
 
     <HomeSocialFeeds
       xHandle={xHandle}
@@ -169,6 +175,7 @@ const sectionEmbeds = [
     </header>
 
     <MobileTOC />
+    <HomeTabReflections items={reflectionItems} sectionTitle="Tab Reflections" variant="mobile" />
 
     <section id="about" class="mobile-story-section">
       <h2>About</h2>
@@ -261,140 +268,9 @@ const sectionEmbeds = [
       </ul>
     </section>
   </article>
-
-  <script is:inline>
-    (() => {
-      const tabs = Array.from(document.querySelectorAll('[data-section-tab]'));
-      const panels = Array.from(document.querySelectorAll('[data-section-panel]'));
-      if (!tabs.length || !panels.length) return;
-
-      const activate = (id) => {
-        tabs.forEach((tab) => {
-          const active = tab.getAttribute('data-section-tab') === id;
-          tab.classList.toggle('is-active', active);
-          tab.setAttribute('aria-selected', String(active));
-        });
-        panels.forEach((panel) => {
-          const active = panel.getAttribute('data-section-panel') === id;
-          panel.classList.toggle('is-active', active);
-        });
-      };
-
-      tabs.forEach((tab) => {
-        tab.addEventListener('click', () => {
-          const id = tab.getAttribute('data-section-tab');
-          if (id) activate(id);
-        });
-      });
-
-      const first = tabs[0]?.getAttribute('data-section-tab');
-      if (first) activate(first);
-    })();
-  </script>
 </BaseLayout>
 
 <style>
-  .section-tablist {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    gap: clamp(0.8rem, 1.3vw, 1.3rem);
-    border-bottom: 1px solid var(--line2);
-    padding-bottom: 0.12rem;
-  }
-
-  .section-tab {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    padding: 0;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    box-shadow: none;
-    backdrop-filter: none;
-    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: color 160ms ease;
-  }
-
-  .section-tab::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 9px;
-    height: 1px;
-    transform: scaleX(0);
-    transform-origin: left center;
-    background: color-mix(in srgb, var(--tone-accent) 82%, #fff 18%);
-    opacity: 0.8;
-    transition: transform 160ms ease;
-  }
-
-  .section-tab:hover,
-  .section-tab:focus-visible,
-  .section-tab[aria-selected='true'],
-  .section-tab.is-active {
-    color: var(--tone-accent-glow);
-  }
-
-  .section-tab:hover::after,
-  .section-tab:focus-visible::after,
-  .section-tab[aria-selected='true']::after,
-  .section-tab.is-active::after {
-    transform: scaleX(1);
-  }
-
-  .section-panel {
-    display: none;
-    overflow-x: visible;
-  }
-
-  .section-panel.is-active {
-    display: block;
-  }
-
-  .section-cards {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-content: flex-start;
-    gap: 0.75rem;
-    align-items: flex-start;
-    width: min(100%, 78rem);
-    margin-inline: auto;
-    min-width: 0;
-  }
-
-  .section-card-shell {
-    flex: 0 0 auto;
-    width: clamp(20rem, 31vw, 34rem);
-    min-width: min(100%, 20rem);
-    max-width: 100%;
-  }
-
-  @media (pointer: fine) {
-    .section-card-shell {
-      resize: both;
-      overflow: auto;
-      min-width: 20rem;
-      min-height: 20rem;
-      max-width: min(1400px, 96vw);
-      max-height: min(90vh, 1100px);
-    }
-  }
-
-  .section-card-shell :global(.hub-card) {
-    height: 100%;
-  }
-
-  .section-card-shell :global(.hub-embed) {
-    min-width: 100%;
-  }
-
   @media (max-width: 860px) {
     .mobile-social-feed-cards {
       list-style: none;
