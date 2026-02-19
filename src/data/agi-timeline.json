@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-19T13:43:14.382Z",
+    "generatedAt": "2026-02-19T15:08:12.874Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,28 @@
     ]
   },
   "items": [
+    {
+      "id": "afc45d83363fd3b50a451868ea0c23d1d60a9a1e7f35a39a7a64407e2ccc236e",
+      "title": "From Scarcity to Scale: How Synthetic Personas Can Bootstrap Japanese AI Development",
+      "url": "https://huggingface.co/blog/nvidia/nemotron-personas-japan-nttdata",
+      "sourceId": "hf_blog",
+      "sourceName": "Hugging Face — Blog",
+      "publishedAt": "2026-02-19T14:57:24.000Z",
+      "summary": null,
+      "tags": [
+        "open-source"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://huggingface.co/blog/nvidia/nemotron-personas-japan-nttdata"
+        },
+        {
+          "label": "Feed",
+          "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
     {
       "id": "a0c106b6a93b4f663965c8d09eb09b51817187a63f3e50a9f9093c5e6242939d",
       "title": "Towards Efficient Constraint Handling in Neural Solvers for Routing Problems",
@@ -15092,32 +15114,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2602.15514"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "9c644deedd2609b6defd4d48c5eb486bb40d7375724d36adcdb32d6ead99574e",
-      "title": "ExpertWeaver: Unlocking the Inherent MoE in Dense LLMs with GLU Activation Patterns",
-      "url": "https://arxiv.org/abs/2602.15521",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-18T05:00:00.000Z",
-      "summary": "arXiv:2602.15521v1 Announce Type: new Abstract: Mixture-of-Experts (MoE) effectively scales model capacity while preserving computational efficiency through sparse expert activation. However, training high-quality MoEs from scratch is prohibitively expensive. A promising alternative is to convert pretrained dense models into sparse MoEs. Existing dense-to-MoE methods fall into two categories: \\textbf{dynamic structural pruning} that converts dense models into MoE architectures with moderate sparsity to balance performance and inference efficiency, and \\textbf{downcycling} approaches that use pretrained dense models to initialize highly sparse MoE architectures. However, existing methods break the intrinsic activation patterns within dense models, leading to suboptimal expert construction. In this work, we argue that the Gated Linear Unit (GLU) mechanism provides a natural blueprint for dense-to-MoE conversion. We show that the fine-grained neural-wise activation patterns of GLU reveal a coarse-grained structure, uncovering an inherent MoE architecture composed of consistently activated universal neurons and dynamically activated specialized neurons. Leveraging this discovery, we introduce ExpertWeaver, a training-free framework that partitions neurons according to their activation patterns and constructs shared experts and specialized routed experts with layer-adaptive configurations. Our experiments demonstrate that ExpertWeaver significantly outperforms existing methods, both as a training-free dynamic structural pruning technique and as a downcycling strategy for superior MoE initialization.",
-      "tags": [
-        "papers",
-        "language",
-        "inference",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.15521"
         },
         {
           "label": "Feed",
