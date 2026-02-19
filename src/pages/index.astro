@@ -264,7 +264,7 @@ const sectionEmbeds = [
 
   .section-panel {
     display: none;
-    overflow-x: auto;
+    overflow-x: visible;
   }
 
   .section-panel.is-active {
@@ -274,14 +274,16 @@ const sectionEmbeds = [
   .section-cards {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 0.75rem;
     align-items: flex-start;
-    min-width: fit-content;
+    min-width: 0;
   }
 
   .section-card-shell {
-    flex: 1 1 28rem;
-    min-width: min(100%, 22rem);
+    flex: 0 0 auto;
+    width: clamp(20rem, 31vw, 34rem);
+    min-width: min(100%, 20rem);
     max-width: 100%;
   }
 
