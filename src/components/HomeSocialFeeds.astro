@@ -54,6 +54,9 @@ const xWidgetRootId = 'home-social-x-widget';
         >
           Posts by @{normalizedXHandle}
         </a>
+        <div class="home-social-x-fallback" aria-live="polite">
+          <p>Timeline preview is unavailable in this browser. Use the links below.</p>
+        </div>
       </div>
       <p class="home-social-links">
         <a href="/social/x">Open full feed</a>
@@ -111,6 +114,22 @@ const xWidgetRootId = 'home-social-x-widget';
 
     const root = document.getElementById(xWidgetRootId);
     if (!root) return;
+    const showFallback = () => {
+      if (root.querySelector('iframe')) {
+        root.classList.remove('is-fallback');
+        return;
+      }
+      root.classList.add('is-fallback');
+    };
+    const scheduleFallbackCheck = () => {
+      window.setTimeout(showFallback, 4500);
+    };
+    const observer = new MutationObserver(() => {
+      if (root.querySelector('iframe')) {
+        root.classList.remove('is-fallback');
+      }
+    });
+    observer.observe(root, { childList: true, subtree: true });
 
     const timelineLink = root.querySelector('a.twitter-timeline');
     if (timelineLink) {
@@ -121,18 +140,29 @@ const xWidgetRootId = 'home-social-x-widget';
     const twttr = window.twttr;
     if (twttr?.widgets?.load) {
       twttr.widgets.load(root);
+      scheduleFallbackCheck();
       return;
     }
 
     const scriptId = 'home-social-x-widgets-script';
-    if (document.getElementById(scriptId)) return;
+    if (document.getElementById(scriptId)) {
+      scheduleFallbackCheck();
+      return;
+    }
 
     const script = document.createElement('script');
     script.id = scriptId;
     script.async = true;
     script.src = 'https://platform.twitter.com/widgets.js';
     script.charset = 'utf-8';
+    script.addEventListener('load', () => {
+      const loadedTwttr = window.twttr;
+      if (loadedTwttr?.widgets?.load) loadedTwttr.widgets.load(root);
+      scheduleFallbackCheck();
+    });
+    script.addEventListener('error', showFallback);
     document.head.appendChild(script);
+    scheduleFallbackCheck();
   })();
 </script>
 
@@ -234,6 +264,7 @@ const xWidgetRootId = 'home-social-x-widget';
   }
 
   .home-social-frame-x {
+    position: relative;
     min-height: 24.5rem;
   }
 
@@ -252,6 +283,28 @@ const xWidgetRootId = 'home-social-x-widget';
   .home-social-frame-x :global(.twitter-timeline) {
     display: block;
     min-height: 24.5rem;
+  }
+
+  .home-social-x-fallback {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 6rem;
+    padding: 0.82rem;
+    border-top: 1px dashed var(--line2);
+    background: rgba(6, 10, 17, 0.66);
+  }
+
+  .home-social-x-fallback p {
+    margin: 0;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--tone-muted);
+  }
+
+  .home-social-frame-x.is-fallback .home-social-x-fallback {
+    display: flex;
   }
 
   .home-social-ig-grid {

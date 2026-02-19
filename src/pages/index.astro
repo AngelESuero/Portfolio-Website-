@@ -10,6 +10,15 @@ import HomeTabReflections from '../components/HomeTabReflections.astro';
 import HomeSocialFeeds from '../components/HomeSocialFeeds.astro';
 import { LINK_HUB_CATEGORIES, type LinkHubItem } from '../data/linkhub';
 import igManifest from '../data/ig.json';
+import youtubeManifest from '../data/youtube.json';
+
+interface YoutubeFeedItem {
+  videoId?: string;
+}
+
+interface YoutubeFeedManifest {
+  items?: YoutubeFeedItem[];
+}
 import rooms from '../data/rooms';
 import agiTimelineData from '../data/agi-timeline.json';
 
@@ -104,7 +113,15 @@ const reflectionItems = [
 const xHandle = 'a_e_s_4';
 const youtubeChannelId = 'UCQeJiBS72gxrZXw5GmqtocA';
 const youtubeUploadsPlaylistId = `UU${youtubeChannelId.slice(2)}`;
-const youtubeUploadsEmbedUrl = `https://www.youtube.com/embed/videoseries?list=${youtubeUploadsPlaylistId}`;
+const ytManifest = youtubeManifest as YoutubeFeedManifest;
+const youtubeLatestVideoId = Array.isArray(ytManifest.items)
+  ? ytManifest.items
+      .map((item) => (typeof item?.videoId === 'string' ? item.videoId.trim() : ''))
+      .find((value) => value.length > 0) || ''
+  : '';
+const youtubeUploadsEmbedUrl = youtubeLatestVideoId
+  ? `https://www.youtube.com/embed/${youtubeLatestVideoId}`
+  : `https://www.youtube.com/embed/videoseries?list=${youtubeUploadsPlaylistId}`;
 const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
   .filter((item) => typeof item?.src === 'string' && item.src)
   .slice(0, 4)
