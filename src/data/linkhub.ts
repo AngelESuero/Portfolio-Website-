@@ -75,10 +75,10 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
       {
         id: 'everyday-soundscape',
         title: 'The Every Day Soundscape',
-        url: MUSIC_URLS.untitledEveryDaySoundscape,
+        url: 'https://www.youtube.com/watch?v=KWDgWpSDlrM&t=16s',
         year: '2026',
         tag: 'Track',
-        preferredEmbed: 'untitled'
+        preferredEmbed: 'youtube'
       },
       {
         id: 'queries-beat-tape',
