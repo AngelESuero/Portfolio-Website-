@@ -1,0 +1,262 @@
+<div class="view-settings">
+  <button id="view-settings-open" class="view-settings-open" type="button" aria-haspopup="dialog">
+    View settings
+  </button>
+</div>
+
+<div id="view-settings-modal" class="view-settings-modal" hidden>
+  <button type="button" class="view-settings-backdrop" data-close-view-settings aria-label="Close view settings"></button>
+  <section class="view-settings-panel" role="dialog" aria-modal="true" aria-labelledby="view-settings-title">
+    <header class="view-settings-header">
+      <h2 id="view-settings-title">View settings</h2>
+      <button type="button" class="view-settings-close" data-close-view-settings aria-label="Close">×</button>
+    </header>
+
+    <div class="view-settings-modes" role="group" aria-label="Site mode">
+      <button type="button" class="view-mode-btn" data-mode="normal">Normal</button>
+      <button type="button" class="view-mode-btn" data-mode="walk">Walkthrough</button>
+      <button type="button" class="view-mode-btn" data-mode="explore">Explore</button>
+    </div>
+
+    <div class="view-settings-size" role="group" aria-label="Interface size">
+      <p>Size</p>
+      <div class="view-settings-size-options">
+        <button type="button" class="view-size-btn" data-size="compact">Compact</button>
+        <button type="button" class="view-size-btn" data-size="standard">Standard</button>
+        <button type="button" class="view-size-btn" data-size="spacious">Spacious</button>
+      </div>
+    </div>
+
+    <div class="view-settings-actions">
+      <button id="view-settings-reset" type="button">Reset</button>
+    </div>
+  </section>
+</div>
+
+<script is:inline>
+  (() => {
+    const openBtn = document.getElementById('view-settings-open');
+    const modal = document.getElementById('view-settings-modal');
+    const resetBtn = document.getElementById('view-settings-reset');
+    if (!openBtn || !modal || !resetBtn) return;
+
+    const closeTargets = Array.from(modal.querySelectorAll('[data-close-view-settings]'));
+    const modeButtons = Array.from(modal.querySelectorAll('.view-mode-btn'));
+    const sizeButtons = Array.from(modal.querySelectorAll('.view-size-btn'));
+
+    const getApi = () => window.__modeSettings;
+    const getState = () =>
+      typeof getApi()?.getState === 'function'
+        ? getApi().getState()
+        : { mode: 'normal', size: 'standard' };
+
+    const syncUi = () => {
+      const state = getState();
+      modeButtons.forEach((button) => {
+        const selected = button.getAttribute('data-mode') === state.mode;
+        button.classList.toggle('is-active', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
+      sizeButtons.forEach((button) => {
+        const selected = button.getAttribute('data-size') === state.size;
+        button.classList.toggle('is-active', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
+    };
+
+    const openModal = () => {
+      syncUi();
+      modal.hidden = false;
+      document.body.style.overflow = 'hidden';
+    };
+
+    const closeModal = () => {
+      modal.hidden = true;
+      document.body.style.removeProperty('overflow');
+    };
+
+    openBtn.addEventListener('click', openModal);
+    closeTargets.forEach((node) => node.addEventListener('click', closeModal));
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !modal.hidden) closeModal();
+    });
+
+    modeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const mode = button.getAttribute('data-mode') || 'normal';
+        getApi()?.setMode?.(mode);
+        syncUi();
+      });
+    });
+
+    sizeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const size = button.getAttribute('data-size') || 'standard';
+        getApi()?.setSize?.(size);
+        syncUi();
+      });
+    });
+
+    resetBtn.addEventListener('click', () => {
+      getApi()?.reset?.();
+      syncUi();
+    });
+
+    window.addEventListener('modesettings:change', syncUi);
+    syncUi();
+  })();
+</script>
+
+<style>
+  .view-settings-open {
+    border: 1px solid var(--tone-line);
+    border-radius: 999px;
+    background: var(--tone-surface);
+    color: var(--tone-text);
+    padding: 0.36rem 0.74rem;
+    font-size: 0.78rem;
+    line-height: 1;
+    text-decoration: none;
+  }
+
+  .view-settings-open:hover,
+  .view-settings-open:focus-visible {
+    border-color: var(--tone-accent);
+    color: var(--tone-accent-glow);
+  }
+
+  .view-settings-modal[hidden] {
+    display: none;
+  }
+
+  .view-settings-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: end center;
+    padding: 1rem;
+  }
+
+  .view-settings-backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: rgba(2, 6, 23, 0.74);
+    padding: 0;
+  }
+
+  .view-settings-panel {
+    position: relative;
+    width: min(32rem, calc(100vw - 2rem));
+    border: 1px solid var(--tone-line);
+    border-radius: 0.86rem;
+    background: var(--tone-surface-strong);
+    color: var(--tone-text);
+    padding: 0.8rem;
+    backdrop-filter: blur(8px);
+  }
+
+  .view-settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+  }
+
+  .view-settings-header h2 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .view-settings-close {
+    border: 0;
+    background: transparent;
+    color: var(--tone-muted);
+    font-size: 1.3rem;
+    line-height: 1;
+  }
+
+  .view-settings-modes {
+    margin-top: 0.75rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .view-mode-btn {
+    border: 1px solid var(--tone-line);
+    border-radius: 0.58rem;
+    background: rgba(9, 22, 44, 0.45);
+    color: var(--tone-text);
+    padding: 0.55rem 0.4rem;
+    font-size: 0.79rem;
+  }
+
+  .view-mode-btn.is-active {
+    border-color: var(--tone-accent);
+    color: var(--tone-accent-glow);
+    background: rgba(214, 168, 53, 0.14);
+  }
+
+  .view-settings-actions {
+    margin-top: 0.72rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .view-settings-size {
+    margin-top: 0.72rem;
+  }
+
+  .view-settings-size p {
+    margin: 0;
+    color: var(--tone-muted);
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .view-settings-size-options {
+    margin-top: 0.4rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .view-size-btn {
+    border: 1px solid var(--tone-line);
+    border-radius: 0.58rem;
+    background: rgba(9, 22, 44, 0.45);
+    color: var(--tone-text);
+    padding: 0.5rem 0.38rem;
+    font-size: 0.78rem;
+  }
+
+  .view-size-btn.is-active {
+    border-color: var(--tone-accent);
+    color: var(--tone-accent-glow);
+    background: rgba(214, 168, 53, 0.14);
+  }
+
+  .view-settings-actions button {
+    border: 1px solid var(--tone-line);
+    border-radius: 0.58rem;
+    background: transparent;
+    color: var(--tone-text);
+    padding: 0.4rem 0.62rem;
+    font-size: 0.8rem;
+  }
+
+  .view-settings-actions button:hover,
+  .view-settings-actions button:focus-visible {
+    border-color: var(--tone-accent);
+    color: var(--tone-accent-glow);
+  }
+
+  @media (min-width: 861px) {
+    .view-settings-modal {
+      place-items: center;
+    }
+  }
+</style>

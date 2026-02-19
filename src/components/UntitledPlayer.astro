@@ -1,0 +1,74 @@
+---
+// src/components/UntitledPlayer.astro
+const title = Astro.props.title ?? 'Listen';
+const subtitle = Astro.props.subtitle ?? 'untitled.stream';
+---
+
+<section id="listen" class="listen">
+  <div class="listen__head">
+    <h2>{title}</h2>
+    <p>{subtitle}</p>
+  </div>
+
+  <div class="listen__frame">
+    <iframe
+      class="listen__iframe"
+      src="https://untitled.stream/embed/URtNv54OnV0P"
+      width="100%"
+      allowFullScreen
+      allow="picture-in-picture"
+      frameborder="0"
+      loading="lazy"
+      title="untitled.stream player"
+    ></iframe>
+  </div>
+</section>
+
+<style>
+  .listen {
+    margin-top: 40px;
+  }
+
+  .listen__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  .listen__head h2 {
+    margin: 0;
+  }
+
+  .listen__head p {
+    opacity: 0.7;
+    font-size: 13px;
+    margin: 0;
+  }
+
+  .listen__frame {
+    border-radius: 24px;
+    border: 1px solid var(--line2);
+    background: rgba(8, 12, 20, 0.5);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.32);
+    overflow: hidden;
+    height: clamp(176px, 28vw, 192px);
+  }
+
+  .listen__iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #060911;
+  }
+
+  @media (max-width: 720px) {
+    .listen__head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+  }
+</style>

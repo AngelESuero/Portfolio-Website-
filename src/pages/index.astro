@@ -3,21 +3,88 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import profile from '../data/profile';
 import featuredThreads from '../data/featured_threads.json';
 import { getCollection } from 'astro:content';
+import MobileTOC from '../components/MobileTOC.astro';
+import UntitledPlayer from '../components/UntitledPlayer.astro';
+import EmbedCard from '../components/EmbedCard.astro';
+import HomeTabReflections from '../components/HomeTabReflections.astro';
+import HomeSocialFeeds from '../components/HomeSocialFeeds.astro';
+import { LINK_HUB_CATEGORIES, type LinkHubItem } from '../data/linkhub';
+import igManifest from '../data/ig.json';
+import youtubeManifest from '../data/youtube.json';
+import xFeedManifest from '../data/x-feed.json';
+
+interface YoutubeFeedItem {
+  videoId?: string;
+}
+
+interface YoutubeFeedManifest {
+  items?: YoutubeFeedItem[];
+}
+
+interface XFeedItem {
+  id?: string;
+  title?: string;
+  url?: string;
+  publishedAt?: string;
+  summary?: string;
+}
+
+interface XFeedManifest {
+  items?: XFeedItem[];
+}
 import rooms from '../data/rooms';
 import agiTimelineData from '../data/agi-timeline.json';
-import { SOCIAL_URLS } from '../data/site-refs';
 
 const allProjects = await getCollection('projects');
 const allPosts = (await getCollection('posts')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const recentPosts = allPosts.slice(0, 3);
-const featuredThreadSnapshot = Array.isArray(featuredThreads.featured_threads) ? featuredThreads.featured_threads.slice(0, 3) : [];
+const posts = allPosts.slice(0, 3);
+const tools = [...new Set(allProjects.flatMap((project) => project.data.tools))].slice(0, 10);
+const threads = featuredThreads.featured_threads;
+const categoryItems = new Map(LINK_HUB_CATEGORIES.map((category) => [category.id, category.items]));
+const pickItems = (categoryId: string, ids: string[]): LinkHubItem[] => {
+  const items = categoryItems.get(categoryId) || [];
+  return ids
+    .map((id) => items.find((item) => item.id === id))
+    .filter((item): item is LinkHubItem => Boolean(item));
+};
 
+const nowListeningItem = pickItems('music', ['now-listening'])[0];
+const sectionEmbeds = [
+  {
+    id: 'music',
+    label: 'Music',
+    items: pickItems('music', ['now-listening', 'my-first-beat-tape', 'everyday-soundscape']).concat(
+      pickItems('resources', ['practicing-kriya'])
+    )
+  },
+  {
+    id: 'visual',
+    label: 'Visual',
+    items: pickItems('social', ['instagram', 'threads', 'tiktok'])
+  },
+  {
+    id: 'video',
+    label: 'Video',
+    items: pickItems('video', ['everyday-life-video', 'youtube-channel', 'post-labor-econ-playlist'])
+  },
+  {
+    id: 'newark',
+    label: 'Newark',
+    items: pickItems('resources', ['work-archive', 'map', 'mit-living-wage'])
+  },
+  {
+    id: 'scraps',
+    label: 'Scraps',
+    items: pickItems('music', ['scraps-2023-2024']).concat(
+      pickItems('writing', ['writing-archive', 'substack', 'magazine-publication'])
+    )
+  }
+];
 const shortDateFormatter = new Intl.DateTimeFormat('en-US', {
   month: 'short',
   day: 'numeric',
   year: 'numeric'
 });
-
 const pluralize = (count: number, singular: string, plural = `${singular}s`) => `${count} ${count === 1 ? singular : plural}`;
 const formatDateLabel = (value: unknown, fallback: string): string => {
   let parsed: Date | null = null;
@@ -36,15 +103,12 @@ const projectCount = allProjects.length;
 const projectTypeCount = new Set(allProjects.map((project) => project.data.type)).size;
 const postCount = allPosts.length;
 const latestPostDateLabel = formatDateLabel(allPosts[0]?.data?.date, 'recently');
-
 const roomList = Array.isArray(rooms) ? rooms : [];
 const roomCount = roomList.length;
 const machineCount = roomList.reduce((count, room) => count + (Array.isArray(room.machines) ? room.machines.length : 0), 0);
-
 const agiSignalCount = Array.isArray(agiTimelineData?.items) ? agiTimelineData.items.length : 0;
 const agiUpdatedAtLabel = formatDateLabel(agiTimelineData?.meta?.generatedAt, 'Updated recently');
-
-const quickDestinations = [
+const reflectionItems = [
   {
     id: 'work',
     title: 'Work',
@@ -85,522 +149,461 @@ const quickDestinations = [
     id: 'contact',
     title: 'Contact',
     href: '/contact',
-    summary: 'Inquiry form plus direct outreach channels.',
+    summary: 'Inquiry form plus 4 quick links for direct outreach.',
     meta: 'Channels: form + socials',
     cta: 'Open Contact'
   }
 ];
-
-const socialSnapshot = [
-  {
-    id: 'x',
-    title: 'X',
-    summary: 'Latest short-form notes and commentary from @a_e_s_4.',
-    href: '/social/x',
-    profileUrl: SOCIAL_URLS.x
-  },
-  {
-    id: 'youtube',
-    title: 'YouTube',
-    summary: 'Newest uploads, playlists, and featured long-form posts.',
-    href: '/social/youtube',
-    profileUrl: profile.social_links.youtube
-  },
-  {
-    id: 'instagram',
-    title: 'Instagram',
-    summary: 'Local-first archive previews and visual highlights.',
-    href: '/social/instagram',
-    profileUrl: profile.social_links.instagram
-  }
-];
+const xHandle = 'a_e_s_4';
+const youtubeChannelId = 'UCQeJiBS72gxrZXw5GmqtocA';
+const youtubeUploadsPlaylistId = `UU${youtubeChannelId.slice(2)}`;
+const ytManifest = youtubeManifest as YoutubeFeedManifest;
+const xManifest = xFeedManifest as XFeedManifest;
+const xPublishedAtToTimestamp = (value: string): number => {
+  const parsed = Date.parse(value);
+  return Number.isNaN(parsed) ? 0 : parsed;
+};
+const xFeedItems = (Array.isArray(xManifest.items) ? xManifest.items : [])
+  .map((item) => ({
+    title: String(item?.title || '').trim(),
+    url: String(item?.url || '').trim(),
+    publishedAt: String(item?.publishedAt || '').trim(),
+    summary: String(item?.summary || '').trim()
+  }))
+  .filter((item) => item.title && item.url)
+  .sort((a, b) => xPublishedAtToTimestamp(b.publishedAt) - xPublishedAtToTimestamp(a.publishedAt))
+  .slice(0, 6);
+const youtubeLatestVideoId = Array.isArray(ytManifest.items)
+  ? ytManifest.items
+      .map((item) => (typeof item?.videoId === 'string' ? item.videoId.trim() : ''))
+      .find((value) => value.length > 0) || ''
+  : '';
+const youtubeUploadsEmbedUrl = youtubeLatestVideoId
+  ? `https://www.youtube.com/embed/${youtubeLatestVideoId}`
+  : `https://www.youtube.com/embed/videoseries?list=${youtubeUploadsPlaylistId}`;
+const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
+  .filter((item) => typeof item?.src === 'string' && item.src)
+  .slice(0, 4)
+  .map((item) => ({
+    src: String(item.src),
+    caption: typeof item.caption === 'string' ? item.caption : '',
+    date: typeof item.date === 'string' ? item.date : ''
+  }));
 ---
 
 <BaseLayout title="A Path Toward Life — Archive" description={profile.short_bio} theme="archive">
-  <article class="home-simplified" aria-label="Homepage">
-    <header class="home-hero" id="home">
-      <p class="home-kicker">Timeline / Archive</p>
-      <h1 class="home-title">A Path Toward Life</h1>
-      <p class="home-dek">{profile.long_bio}</p>
-      <div class="home-role-row" aria-label="Identity chips">
-        {profile.roles.map((role) => <span class="home-role-chip">{role}</span>)}
+  <div class="desktop-home">
+    <section class="space-y-6 text-center">
+      <p class="text-xs uppercase tracking-[0.2em] text-zinc-500">Timeline / Archive</p>
+      <h1 class="mx-auto max-w-3xl font-display text-4xl font-bold md:text-6xl text-accent">A Path Toward Life</h1>
+      <p class="mx-auto max-w-4xl text-lg">{profile.long_bio}</p>
+      <div class="flex flex-wrap justify-center gap-2" aria-label="Identity chips">
+        {profile.roles.map((role) => <span class="chip rounded-full px-3 py-1 text-sm">{role}</span>)}
+      </div>
+    </section>
+
+    <section class="mt-12 md:mt-14">
+      <h2 class="font-display text-2xl">Featured Threads</h2>
+      <div class="mt-4 flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:overflow-visible">
+        {threads.map((thread) => (
+          <a
+            href={thread.href}
+            class="card threadCard min-w-[270px] p-4"
+            {...(thread.external ? { target: '_blank', rel: 'noopener' } : {})}
+          >
+            <p class="text-xs uppercase tracking-wide text-zinc-500">{thread.year} · {thread.type}</p>
+            <h3 class="mt-1 font-display text-lg">{thread.title}</h3>
+            <p class="mt-2 text-sm">{thread.blurb}</p>
+            <p class="mt-3 text-sm underline decoration-accent">View thread</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <HomeTabReflections items={reflectionItems} sectionTitle="Tab Reflections" variant="desktop" />
+
+    <section class="mt-12 md:mt-14">
+      <h2 class="font-display text-2xl">Sections</h2>
+      <div class="mt-3 section-tablist" role="tablist" aria-label="Section spotlight tabs">
+        {sectionEmbeds.map((section, index) => (
+          <button
+            type="button"
+            role="tab"
+            data-section-tab={section.id}
+            aria-selected={index === 0 ? 'true' : 'false'}
+            class:list={['section-tab', index === 0 && 'is-active']}
+          >
+            {section.label}
+          </button>
+        ))}
+      </div>
+
+      <div class="mt-4 section-panels">
+        {sectionEmbeds.map((section, index) => (
+          <div
+            class:list={['section-panel', index === 0 && 'is-active']}
+            data-section-panel={section.id}
+            role="tabpanel"
+            aria-label={`${section.label} spotlight`}
+          >
+            {section.items.length > 0 ? (
+              <div class="section-cards">
+                {section.items.map((item) => (
+                  <div class="section-card-shell">
+                    <EmbedCard item={item} showResizeHint={true} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p class="text-sm text-zinc-400">No spotlight links configured yet.</p>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <HomeSocialFeeds
+      xHandle={xHandle}
+      xFeedItems={xFeedItems}
+      youtubeUploadsEmbedUrl={youtubeUploadsEmbedUrl}
+      youtubeChannelUrl={profile.social_links.youtube}
+      instagramProfileUrl={profile.social_links.instagram}
+      instagramArchiveUrl="/instagram"
+      instagramPreview={instagramPreview}
+    />
+
+    <UntitledPlayer title="Listen" subtitle="untitled.stream" />
+    {nowListeningItem && (
+      <section class="mt-4">
+        <h2 class="mb-3 font-display text-xl">Now Listening</h2>
+        <EmbedCard item={nowListeningItem} />
+      </section>
+    )}
+  </div>
+
+  <article class="mobile-editorial" aria-label="Mobile editorial layout">
+    <header class="mobile-hero" id="home">
+      <p class="mobile-kicker">Timeline / Archive</p>
+      <h1><span class="mobile-accent">A Path Toward Life</span></h1>
+      <p class="mobile-dek">{profile.long_bio}</p>
+      <div class="mobile-role-row" aria-label="Identity chips">
+        {profile.roles.map((role) => <span>{role}</span>)}
       </div>
     </header>
 
-    <section class="home-section" aria-labelledby="home-destinations-heading">
-      <div class="home-section-head">
-        <p class="home-section-kicker">Start here</p>
-        <h2 id="home-destinations-heading" class="home-section-title">Quick Destinations</h2>
-        <p class="home-section-description">Five direct paths through the archive.</p>
-      </div>
+    <MobileTOC />
+    <HomeTabReflections items={reflectionItems} sectionTitle="Tab Reflections" variant="mobile" />
 
-      <ul class="home-grid" aria-label="Quick destination cards">
-        {quickDestinations.map((item) => (
+    <section id="about" class="mobile-story-section">
+      <h2>About</h2>
+      <p>{profile.short_bio}</p>
+      <p>{profile.long_bio}</p>
+    </section>
+
+    <section id="work" class="mobile-story-section">
+      <h2>Work / Projects</h2>
+      <ul class="mobile-project-list">
+        {threads.map((thread) => (
           <li>
-            <a href={item.href} class="home-card">
-              <span class="home-card-title">{item.title}</span>
-              <span class="home-card-summary">{item.summary}</span>
-              <span class="home-card-meta">{item.meta}</span>
-              <span class="home-card-cta">{item.cta}</span>
-            </a>
+            <a href={thread.href} {...(thread.external ? { target: '_blank', rel: 'noopener' } : {})}>{thread.title}</a>
+            <p>{thread.blurb}</p>
+            <p class="meta">{thread.year} · {thread.type}</p>
           </li>
         ))}
       </ul>
     </section>
 
-    <section class="home-section" aria-labelledby="home-work-heading">
-      <div class="home-section-head-row">
-        <div class="home-section-head">
-          <p class="home-section-kicker">Snapshot</p>
-          <h2 id="home-work-heading" class="home-section-title">Work</h2>
-          <p class="home-section-description">Featured threads from the current archive cycle.</p>
-        </div>
-        <a href="/threads" class="home-section-link">View all work threads</a>
-      </div>
-
-      {featuredThreadSnapshot.length > 0 ? (
-        <ul class="home-list" aria-label="Work snapshot list">
-          {featuredThreadSnapshot.map((thread) => (
-            <li>
-              <article class="home-list-card">
-                <p class="home-list-meta">{thread.year} · {thread.type}</p>
-                <h3 class="home-list-title">{thread.title}</h3>
-                <p class="home-list-summary">{thread.blurb}</p>
-                <a
-                  href={thread.href}
-                  class="home-list-link"
-                  {...(thread.external ? { target: '_blank', rel: 'noopener' } : {})}
-                >
-                  Open thread
-                </a>
-              </article>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p class="home-empty">No featured threads are configured yet.</p>
-      )}
+    <section id="experience" class="mobile-story-section">
+      <h2>Experience</h2>
+      <p>Built cross-disciplinary work streams in music production, visual storytelling, and civic collaboration across Newark communities.</p>
+      <p>Current focus: documenting process in public, shipping creative studies, and evolving this archive into a living portfolio timeline.</p>
     </section>
 
-    <section class="home-section" aria-labelledby="home-writing-heading">
-      <div class="home-section-head-row">
-        <div class="home-section-head">
-          <p class="home-section-kicker">Snapshot</p>
-          <h2 id="home-writing-heading" class="home-section-title">Writing</h2>
-          <p class="home-section-description">Latest notes, essays, and archive updates.</p>
-        </div>
-        <a href="/writing" class="home-section-link">View all writing</a>
+    <section id="skills" class="mobile-story-section">
+      <h2>Skills / Tools</h2>
+      <div class="mobile-pill-grid">
+        {tools.map((tool) => <span>{tool}</span>)}
       </div>
-
-      {recentPosts.length > 0 ? (
-        <ul class="home-list" aria-label="Writing snapshot list">
-          {recentPosts.map((post) => (
-            <li>
-              <article class="home-list-card">
-                <p class="home-list-meta">{shortDateFormatter.format(post.data.date)}</p>
-                <h3 class="home-list-title">{post.data.title}</h3>
-                <p class="home-list-summary">{post.data.summary}</p>
-                <div class="home-writing-tags" aria-label="Post tags">
-                  {post.data.tags.slice(0, 3).map((tag) => <span>#{tag}</span>)}
-                </div>
-                <a href={`/writing/${post.slug}`} class="home-list-link">Read note</a>
-              </article>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p class="home-empty">No writing entries are published yet.</p>
-      )}
     </section>
 
-    <section class="home-section" aria-labelledby="home-social-heading">
-      <div class="home-section-head-row">
-        <div class="home-section-head">
-          <p class="home-section-kicker">Snapshot</p>
-          <h2 id="home-social-heading" class="home-section-title">Social</h2>
-          <p class="home-section-description">Links-first access to the active social archive channels.</p>
-        </div>
-        <a href="/social" class="home-section-link">View all social pages</a>
-      </div>
-
-      <ul class="home-grid" aria-label="Social snapshot cards">
-        {socialSnapshot.map((item) => (
+    <section id="media" class="mobile-story-section">
+      <h2>Media</h2>
+      <ul class="mobile-post-list">
+        {posts.map((post) => (
           <li>
-            <article class="home-card home-social-card" data-provider={item.id}>
-              <h3 class="home-card-title">{item.title}</h3>
-              <p class="home-card-summary">{item.summary}</p>
-              <div class="home-social-links">
-                <a href={item.href}>Open local feed</a>
-                <a href={item.profileUrl} target="_blank" rel="noopener">Open profile</a>
-              </div>
-            </article>
+            <a href={`/writing/${post.slug}`}>{post.data.title}</a>
+            <p>{post.data.summary}</p>
           </li>
         ))}
       </ul>
     </section>
 
-    <section class="home-section home-contact" aria-labelledby="home-contact-heading">
-      <div class="home-section-head">
-        <p class="home-section-kicker">Close the loop</p>
-        <h2 id="home-contact-heading" class="home-section-title">Contact</h2>
-        <p class="home-section-description">Use the form for collaborations, inquiries, and project requests.</p>
-      </div>
-      <div class="home-contact-actions">
-        <a href="/contact" class="home-action">Open contact form</a>
-        <a href={profile.link_hub_url} class="home-action" target="_blank" rel="noopener">Open link hub</a>
-      </div>
+    <section id="resume" class="mobile-story-section">
+      <h2>Resume / CV</h2>
+      <p>For speaking, collaborations, and portfolio details, use the press kit and updated project index.</p>
+      <p><a href="/press-kit">Open press kit</a></p>
+    </section>
+
+    <section id="contact" class="mobile-story-section">
+      <h2>Contact</h2>
+      <p>Use the form for inquiries, collaborations, and project commissions.</p>
+      <p><a href="/contact">Open contact form</a></p>
+    </section>
+
+    <section id="social-feeds" class="mobile-story-section">
+      <h2>Social feeds</h2>
+      <p>Quick feed jump links for X, YouTube uploads, and the local Instagram archive.</p>
+      <ul class="mobile-social-feed-cards">
+        <li>
+          <a href="/social/x" class="mobile-social-card mobile-social-card-x">
+            <strong>X</strong>
+            <span>Latest notes and commentary from @{xHandle}.</span>
+          </a>
+        </li>
+        <li>
+          <a href="/social/youtube" class="mobile-social-card mobile-social-card-youtube">
+            <strong>YouTube</strong>
+            <span>Newest uploads and featured videos.</span>
+          </a>
+        </li>
+        <li>
+          <a href="/social/instagram" class="mobile-social-card mobile-social-card-instagram">
+            <strong>Instagram</strong>
+            <span>Local-first preview feed with full archive at /instagram.</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section id="links" class="mobile-story-section">
+      <h2>Links</h2>
+      <ul class="mobile-link-list">
+        <li><a href={profile.social_links.instagram}>Instagram</a></li>
+        <li><a href={profile.social_links.youtube}>YouTube</a></li>
+        <li><a href={profile.social_links.discord}>Discord</a></li>
+        <li><a href={profile.link_hub_url}>Link hub</a></li>
+      </ul>
     </section>
   </article>
+
+  <script is:inline>
+    (() => {
+      const tabs = Array.from(document.querySelectorAll('[data-section-tab]'));
+      const panels = Array.from(document.querySelectorAll('[data-section-panel]'));
+      if (!tabs.length || !panels.length) return;
+
+      const activate = (id) => {
+        tabs.forEach((tab) => {
+          const active = tab.getAttribute('data-section-tab') === id;
+          tab.classList.toggle('is-active', active);
+          tab.setAttribute('aria-selected', String(active));
+        });
+        panels.forEach((panel) => {
+          const active = panel.getAttribute('data-section-panel') === id;
+          panel.classList.toggle('is-active', active);
+        });
+      };
+
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const id = tab.getAttribute('data-section-tab');
+          if (id) activate(id);
+        });
+      });
+
+      const first = tabs[0]?.getAttribute('data-section-tab');
+      if (first) activate(first);
+    })();
+  </script>
 </BaseLayout>
 
 <style>
-  .home-simplified {
-    display: grid;
-    gap: clamp(1.45rem, 3.3vw, 2.8rem);
-  }
-
-  .home-hero {
-    border: 1px solid var(--line2);
-    border-radius: calc(var(--radius) * var(--space-scale));
-    background:
-      radial-gradient(120% 140% at 12% 0%, color-mix(in srgb, var(--tone-sky) 10%, transparent) 0%, transparent 52%),
-      linear-gradient(180deg, rgba(9, 14, 24, 0.74), rgba(7, 12, 20, 0.58));
-    padding: clamp(1.35rem, 3.1vw, 2.6rem);
-    text-align: center;
-  }
-
-  .home-kicker {
-    margin: 0;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    color: var(--tone-muted);
-  }
-
-  .home-title {
-    margin: 0.62rem 0 0;
-    font-family: var(--font-display);
-    font-size: clamp(2.2rem, 6.8vw, 4.2rem);
-    line-height: 1.02;
-    letter-spacing: -0.03em;
-    color: var(--tone-accent-glow);
-  }
-
-  .home-dek {
-    margin: 1.02rem auto 0;
-    max-width: 68ch;
-    font-size: clamp(1rem, 1.15vw, 1.1rem);
-    line-height: 1.66;
-    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
-  }
-
-  .home-role-row {
-    margin-top: 1.12rem;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.52rem;
-  }
-
-  .home-role-chip {
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 42%, var(--line2));
-    border-radius: 999px;
-    padding: 0.32rem 0.72rem;
-    font-size: 0.78rem;
-    color: color-mix(in srgb, var(--tone-accent-glow) 84%, var(--tone-text) 16%);
-    background: rgba(214, 168, 53, 0.12);
-  }
-
-  .home-section {
-    border: 1px solid var(--line2);
-    border-radius: calc(var(--radius) * var(--space-scale));
-    background:
-      linear-gradient(180deg, rgba(9, 14, 23, 0.66), rgba(6, 10, 17, 0.52));
-    padding: clamp(1.05rem, 2.5vw, 1.65rem);
-    display: grid;
-    gap: 1.05rem;
-  }
-
-  .home-section-head {
-    display: grid;
-    gap: 0.42rem;
-  }
-
-  .home-section-head-row {
+  .section-tablist {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
-    justify-content: space-between;
-    gap: 0.82rem;
+    gap: clamp(0.8rem, 1.3vw, 1.3rem);
+    border-bottom: 1px solid var(--line2);
+    padding-bottom: 0.12rem;
   }
 
-  .home-section-kicker {
-    margin: 0;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: var(--tone-muted);
-  }
-
-  .home-section-title {
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: clamp(1.36rem, 3.2vw, 1.92rem);
-    line-height: 1.12;
-  }
-
-  .home-section-description {
-    margin: 0;
-    max-width: 68ch;
-    font-size: 0.94rem;
-    line-height: 1.56;
-    color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
-  }
-
-  .home-section-link {
-    color: var(--tone-accent-glow);
-    text-decoration: none;
-    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 45%, transparent);
-    font-size: 0.85rem;
-    white-space: nowrap;
-  }
-
-  .home-grid,
-  .home-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .home-grid {
-    display: grid;
-    gap: 0.82rem;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  }
-
-  .home-card {
-    display: grid;
-    gap: 0.5rem;
-    min-height: 100%;
-    padding: 0.94rem;
-    border: 1px solid var(--line2);
-    border-radius: 0.88rem;
-    text-decoration: none;
-    background:
-      linear-gradient(160deg, color-mix(in srgb, var(--tone-accent) 12%, transparent) 0%, rgba(255, 255, 255, 0.02) 56%),
-      rgba(8, 12, 20, 0.52);
-    color: color-mix(in srgb, var(--tone-text) 95%, var(--tone-muted) 5%);
-    transition: border-color 150ms ease, transform 150ms ease;
-  }
-
-  a.home-card:hover,
-  a.home-card:focus-visible,
-  .home-social-card:hover,
-  .home-social-card:focus-within {
-    border-color: color-mix(in srgb, var(--tone-accent) 45%, var(--line2));
-    transform: translateY(-1px);
-  }
-
-  .home-card-title {
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: 1.03rem;
-    line-height: 1.24;
-  }
-
-  .home-card-summary {
-    margin: 0;
-    font-size: 0.9rem;
-    line-height: 1.56;
-    color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
-  }
-
-  .home-card-meta {
-    margin-top: auto;
-    font-size: 0.74rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--tone-muted);
-  }
-
-  .home-card-cta {
-    display: inline-flex;
-    width: fit-content;
-    font-size: 0.82rem;
-    color: var(--tone-accent-glow);
-    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 35%, transparent);
-  }
-
-  .home-list {
-    display: grid;
-    gap: 0.82rem;
-  }
-
-  .home-list-card {
-    border: 1px solid var(--line2);
-    border-radius: 0.88rem;
-    padding: 0.94rem;
-    background: rgba(8, 12, 20, 0.44);
-    transition: border-color 150ms ease, transform 150ms ease;
-  }
-
-  .home-list-card:hover {
-    border-color: color-mix(in srgb, var(--tone-accent) 38%, var(--line2));
-    transform: translateY(-1px);
-  }
-
-  .home-list-meta {
-    margin: 0;
-    font-size: 0.74rem;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: var(--tone-muted);
-  }
-
-  .home-list-title {
-    margin: 0.5rem 0 0;
-    font-family: var(--font-display);
-    font-size: 1.1rem;
-    line-height: 1.28;
-  }
-
-  .home-list-summary {
-    margin: 0.54rem 0 0;
-    font-size: 0.92rem;
-    line-height: 1.58;
-    color: color-mix(in srgb, var(--tone-text) 87%, var(--tone-muted) 13%);
-  }
-
-  .home-list-link {
-    display: inline-flex;
-    margin-top: 0.72rem;
-    color: var(--tone-accent-glow);
-    text-decoration: none;
-    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 42%, transparent);
-    font-size: 0.85rem;
-  }
-
-  .home-writing-tags {
-    margin-top: 0.64rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-  }
-
-  .home-writing-tags span {
-    border: 1px solid var(--line2);
-    border-radius: 999px;
-    padding: 0.22rem 0.54rem;
-    font-size: 0.73rem;
-    color: var(--tone-muted);
-    background: rgba(8, 12, 20, 0.5);
-  }
-
-  .home-social-card {
-    align-content: start;
-  }
-
-  .home-social-links {
-    margin-top: 0.54rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.62rem;
-  }
-
-  .home-social-links a {
-    color: var(--tone-accent-glow);
-    text-decoration: none;
-    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 42%, transparent);
-    font-size: 0.84rem;
-  }
-
-  .home-contact {
-    background:
-      radial-gradient(120% 160% at 100% 0%, color-mix(in srgb, var(--tone-sky) 12%, transparent) 0%, transparent 56%),
-      linear-gradient(180deg, rgba(9, 14, 24, 0.74), rgba(7, 12, 20, 0.58));
-  }
-
-  .home-contact-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.66rem;
-  }
-
-  .home-action {
+  .section-tab {
+    position: relative;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    border: 1px solid var(--line2);
-    border-radius: 999px;
-    min-height: 2.45rem;
-    padding: 0.5rem 0.9rem;
-    text-decoration: none;
-    color: var(--tone-text);
-    background: rgba(10, 14, 22, 0.5);
-    font-size: 0.88rem;
-    transition: border-color 150ms ease, color 150ms ease;
+    min-height: 42px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: color 160ms ease;
   }
 
-  .home-action:hover,
-  .home-action:focus-visible {
-    border-color: color-mix(in srgb, var(--tone-accent) 52%, var(--line2));
+  .section-tab::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 8px;
+    height: 1px;
+    transform: scaleX(0);
+    transform-origin: left center;
+    background: color-mix(in srgb, var(--tone-accent) 82%, #fff 18%);
+    opacity: 0.8;
+    transition: transform 160ms ease;
+  }
+
+  .section-tab:hover,
+  .section-tab:focus-visible,
+  .section-tab.is-active {
     color: var(--tone-accent-glow);
   }
 
-  .home-empty {
-    margin: 0;
-    font-size: 0.92rem;
-    line-height: 1.56;
-    color: var(--tone-muted);
+  .section-tab:hover::after,
+  .section-tab:focus-visible::after,
+  .section-tab.is-active::after {
+    transform: scaleX(1);
+  }
+
+  .section-tab:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--tone-accent) 85%, transparent);
+    outline-offset: 3px;
+    border-radius: 0.35rem;
+  }
+
+  .section-panel {
+    display: none;
+    overflow-x: visible;
+  }
+
+  .section-panel.is-active {
+    display: block;
+  }
+
+  .section-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    gap: 0.75rem;
+    align-items: flex-start;
+    width: min(100%, 78rem);
+    margin-inline: auto;
+    min-width: 0;
+  }
+
+  .section-card-shell {
+    flex: 0 0 auto;
+    width: clamp(20rem, 31vw, 34rem);
+    min-width: min(100%, 20rem);
+    max-width: 100%;
+  }
+
+  @media (pointer: fine) {
+    .section-card-shell {
+      resize: both;
+      overflow: auto;
+      min-width: 20rem;
+      min-height: 20rem;
+      max-width: min(1400px, 96vw);
+      max-height: min(90vh, 1100px);
+    }
+  }
+
+  .section-card-shell :global(.hub-card) {
+    height: 100%;
+  }
+
+  .section-card-shell :global(.hub-embed) {
+    min-width: 100%;
   }
 
   @media (max-width: 860px) {
-    .home-simplified {
-      gap: 1.12rem;
+    .mobile-social-feed-cards {
+      list-style: none;
+      margin: 1rem 0 0;
+      padding: 0;
+      display: grid;
+      gap: 0.72rem;
     }
 
-    .home-hero,
-    .home-section {
-      padding: 0.95rem;
+    .mobile-social-feed-cards li {
+      margin: 0;
     }
 
-    .home-title {
-      font-size: clamp(2rem, 11vw, 2.9rem);
+    .mobile-social-feed-cards a {
+      --card-accent: rgba(214, 168, 53, 0.52);
+      position: relative;
+      display: grid;
+      gap: 0.38rem;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 0.76rem;
+      padding: 0.68rem 0.74rem;
+      text-decoration: none;
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--card-accent) 16%, transparent) 0%, rgba(255, 255, 255, 0.04) 56%),
+        rgba(255, 255, 255, 0.04);
+      color: rgba(238, 244, 255, 0.95);
+      transition: border-color 140ms ease, color 140ms ease, background-color 140ms ease, transform 140ms ease;
     }
 
-    .home-dek {
-      font-size: 0.98rem;
-      line-height: 1.62;
+    .mobile-social-card-x {
+      --card-accent: rgba(138, 196, 255, 0.68);
     }
 
-    .home-section-head-row {
-      align-items: flex-start;
-      flex-direction: column;
+    .mobile-social-card-youtube {
+      --card-accent: rgba(255, 133, 133, 0.7);
     }
 
-    .home-grid {
-      grid-template-columns: 1fr;
+    .mobile-social-card-instagram {
+      --card-accent: rgba(255, 184, 122, 0.72);
     }
 
-    .home-card,
-    .home-list-card {
-      padding: 0.86rem;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .home-card,
-    .home-list-card,
-    .home-action {
-      transition: none;
+    .mobile-social-feed-cards a strong {
+      font-size: 0.95rem;
+      line-height: 1.2;
     }
 
-    .home-card:hover,
-    .home-card:focus-visible,
-    .home-social-card:hover,
-    .home-social-card:focus-within,
-    .home-list-card:hover {
-      transform: none;
+    .mobile-social-feed-cards a span {
+      font-size: 0.86rem;
+      line-height: 1.46;
+      color: rgba(220, 230, 247, 0.9);
+    }
+
+    .mobile-social-feed-cards a::after {
+      content: '→';
+      position: absolute;
+      right: 0.72rem;
+      top: 0.66rem;
+      font-size: 0.86rem;
+      opacity: 0.78;
+      color: color-mix(in srgb, var(--card-accent) 78%, #ffffff 22%);
+    }
+
+    .mobile-social-feed-cards a:hover,
+    .mobile-social-feed-cards a:focus-visible {
+      border-color: var(--card-accent);
+      color: var(--tone-accent);
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--card-accent) 28%, transparent) 0%, rgba(255, 255, 255, 0.08) 58%),
+        rgba(255, 255, 255, 0.08);
+      transform: translateY(-1px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .mobile-social-feed-cards a {
+        transition: none;
+      }
+
+      .mobile-social-feed-cards a:hover,
+      .mobile-social-feed-cards a:focus-visible {
+        transform: none;
+      }
     }
   }
 </style>
