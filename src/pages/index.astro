@@ -259,7 +259,7 @@ const sectionEmbeds = [
     position: relative;
     display: inline-flex;
     align-items: center;
-    min-height: 42px;
+    min-height: 44px;
     padding: 0;
     border: 0;
     border-radius: 0;
@@ -277,7 +277,7 @@ const sectionEmbeds = [
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 8px;
+    bottom: 9px;
     height: 1px;
     transform: scaleX(0);
     transform-origin: left center;
@@ -288,20 +288,16 @@ const sectionEmbeds = [
 
   .section-tab:hover,
   .section-tab:focus-visible,
+  .section-tab[aria-selected='true'],
   .section-tab.is-active {
     color: var(--tone-accent-glow);
   }
 
   .section-tab:hover::after,
   .section-tab:focus-visible::after,
+  .section-tab[aria-selected='true']::after,
   .section-tab.is-active::after {
     transform: scaleX(1);
-  }
-
-  .section-tab:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--tone-accent) 85%, transparent);
-    outline-offset: 3px;
-    border-radius: 0.35rem;
   }
 
   .section-panel {
