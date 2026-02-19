@@ -323,7 +323,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
         id: 'practicing-kriya',
         title: 'Practicing Kriya',
         url: 'https://drive.google.com/file/d/1TcERCTJS1opeyJJ3A5SSFHQBvF7LLBc6/view?usp=drivesdk',
-        year: '2026',
+        year: '2024',
         tag: 'Wellbeing',
         preferredEmbed: 'google_drive'
       },
