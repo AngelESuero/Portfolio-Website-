@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-20T13:34:27.056Z",
+    "generatedAt": "2026-02-20T15:02:06.630Z",
     "sources": [
       {
         "id": "openai_news",
@@ -9187,6 +9187,28 @@
       ]
     },
     {
+      "id": "38de0506cd9f1d711b052b4c754d5a12351fca33b2c7338e03329a8d66c9ebd4",
+      "title": "GGML and llama.cpp join HF to ensure the long-term progress of Local AI",
+      "url": "https://huggingface.co/blog/ggml-joins-hf",
+      "sourceId": "hf_blog",
+      "sourceName": "Hugging Face — Blog",
+      "publishedAt": "2026-02-20T00:00:00.000Z",
+      "summary": null,
+      "tags": [
+        "open-source"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://huggingface.co/blog/ggml-joins-hf"
+        },
+        {
+          "label": "Feed",
+          "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
+    {
       "id": "e871e54dd6d4b58fd91692bda5de06f889ea3f177fa05747e83378cbf6a56896",
       "title": "Accelerating Data Processing with NVIDIA Multi-Instance GPU and NUMA Node Localization",
       "url": "https://developer.nvidia.com/blog/accelerating-data-processing-with-nvidia-multi-instance-gpu-and-numa-node-localization/",
@@ -15048,32 +15070,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2602.15856"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "07609ea52758f2b9958a6a8aafcd6b1c5aefade7d1b506d3c71681137a7a9f24",
-      "title": "Multi-source Heterogeneous Public Opinion Analysis via Collaborative Reasoning and Adaptive Fusion: A Systematically Integrated Approach",
-      "url": "https://arxiv.org/abs/2602.15857",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-19T05:00:00.000Z",
-      "summary": "arXiv:2602.15857v1 Announce Type: new Abstract: The analysis of public opinion from multiple heterogeneous sources presents significant challenges due to structural differences, semantic variations, and platform-specific biases. This paper introduces a novel Collaborative Reasoning and Adaptive Fusion (CRAF) framework that systematically integrates traditional feature-based methods with large language models (LLMs) through a structured multi-stage reasoning mechanism. Our approach features four key innovations: (1) a cross-platform collaborative attention module that aligns semantic representations while preserving source-specific characteristics, (2) a hierarchical adaptive fusion mechanism that dynamically weights features based on both data quality and task requirements, (3) a joint optimization strategy that simultaneously learns topic representations and sentiment distributions through shared latent spaces, and (4) a novel multimodal extraction capability that processes video content from platforms like Douyin and Kuaishou by integrating OCR, ASR, and visual sentiment analysis. Theoretical analysis demonstrates that CRAF achieves a tighter generalization bound with a reduction of O(sqrt(d log K / m)) compared to independent source modeling, where d is feature dimensionality, K is the number of sources, and m is sample size. Comprehensive experiments on three multi-platform datasets (Weibo-12, CrossPlatform-15, NewsForum-8) show that CRAF achieves an average topic clustering ARI of 0.76 (4.1% improvement over best baseline) and sentiment analysis F1-score of 0.84 (3.8% improvement). The framework exhibits strong cross-platform adaptability, reducing the labeled data requirement for new platforms by 75%.",
-      "tags": [
-        "papers",
-        "language",
-        "reasoning",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.15857"
         },
         {
           "label": "Feed",
