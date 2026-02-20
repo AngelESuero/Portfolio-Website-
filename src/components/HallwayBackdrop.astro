@@ -32,7 +32,7 @@ const { accent = '#7BE7FF' } = Astro.props;
     background-image:
       radial-gradient(
         900px 420px at 58% 16%,
-        color-mix(in oklab, var(--complement) 38%, transparent),
+        color-mix(in oklab, var(--complement) 30%, transparent),
         transparent 62%
       ),
       linear-gradient(180deg, rgba(4, 9, 18, 0.5) 0%, rgba(4, 8, 15, 0.72) 48%, rgba(3, 6, 12, 0.88) 100%),
@@ -72,12 +72,12 @@ const { accent = '#7BE7FF' } = Astro.props;
     background:
       radial-gradient(
         780px 420px at 15% 18%,
-        color-mix(in oklab, var(--accent) 24%, transparent),
+        color-mix(in oklab, var(--accent) 20%, transparent),
         transparent 70%
       ),
       radial-gradient(
         840px 460px at 84% 24%,
-        color-mix(in oklab, var(--complement) 24%, transparent),
+        color-mix(in oklab, var(--complement) 20%, transparent),
         transparent 72%
       ),
       radial-gradient(
@@ -85,7 +85,7 @@ const { accent = '#7BE7FF' } = Astro.props;
         rgba(255, 255, 255, 0.03),
         transparent 72%
       );
-    opacity: 0.34;
+    opacity: 0.31;
     filter: blur(18px) saturate(1.08);
     animation: hallwayBreathe 24s ease-in-out infinite;
   }
@@ -122,10 +122,10 @@ const { accent = '#7BE7FF' } = Astro.props;
     background:
       linear-gradient(
         90deg,
-        color-mix(in oklab, var(--complement) 24%, transparent),
+        color-mix(in oklab, var(--complement) 20%, transparent),
         transparent 24%,
         transparent 76%,
-        color-mix(in oklab, var(--accent) 24%, transparent)
+        color-mix(in oklab, var(--accent) 20%, transparent)
       ),
       linear-gradient(
         180deg,
@@ -144,23 +144,23 @@ const { accent = '#7BE7FF' } = Astro.props;
     background:
       radial-gradient(
         600px 220px at 50% 12%,
-        color-mix(in oklab, var(--complement) 34%, transparent),
+        color-mix(in oklab, var(--complement) 30%, transparent),
         transparent 60%
       ),
       radial-gradient(
         800px 360px at 50% 20%,
-        color-mix(in oklab, var(--accent) 36%, transparent),
+        color-mix(in oklab, var(--accent) 30%, transparent),
         transparent 70%
       ),
       linear-gradient(
         90deg,
-        color-mix(in oklab, var(--complement) 18%, transparent),
+        color-mix(in oklab, var(--complement) 16%, transparent),
         transparent 24%,
         transparent 76%,
-        color-mix(in oklab, var(--accent) 20%, transparent)
+        color-mix(in oklab, var(--accent) 16%, transparent)
       );
     filter: blur(1px);
-    opacity: 0.88;
+    opacity: 0.8;
   }
 
   /* grain (world texture) */
@@ -197,11 +197,11 @@ const { accent = '#7BE7FF' } = Astro.props;
     transform: translate(-50%, -50%);
     background: radial-gradient(
       circle at center,
-      color-mix(in oklab, var(--cursor) 20%, transparent) 0%,
+      color-mix(in oklab, var(--cursor) 16%, transparent) 0%,
       transparent 72%
     );
     filter: blur(12px);
-    opacity: calc(var(--cursor-light-visibility, 1) * 0.46);
+    opacity: calc(var(--cursor-light-visibility, 1) * 0.4);
     transition: opacity var(--motion-ambient, 1200ms) var(--ease-emphasized, ease);
     mix-blend-mode: screen;
   }

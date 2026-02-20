@@ -9,7 +9,7 @@ import {
 
 export type LinkHubProvider = 'spotify' | 'youtube' | 'soundcloud' | 'untitled' | 'substack' | 'instagram' | 'google_drive';
 export type LinkHubCategoryId = 'music' | 'writing' | 'video' | 'resources' | 'legal' | 'social';
-export type AccentColorKey = 'yellow' | 'blue' | 'orange' | 'red' | 'white' | 'black';
+export type AccentColorKey = 'yellow' | 'blue' | 'orange' | 'red' | 'violet' | 'indigo';
 
 export interface LinkHubItem {
   id: string;
@@ -64,10 +64,10 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
       {
         id: 'now-listening',
         title: 'Now Listening (Vol 4)',
-        url: 'https://youtube.com/shorts/rGRCf7j6Qws?si=00HNlFldJ6o0-Tk9',
+        url: MUSIC_URLS.spotifyVol4,
         year: '2026',
         tag: 'Vol 4',
-        preferredEmbed: 'youtube'
+        preferredEmbed: 'spotify'
       },
       {
         id: 'my-first-beat-tape',
@@ -80,10 +80,10 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
       {
         id: 'everyday-soundscape',
         title: 'The Every Day Soundscape',
-        url: 'https://www.youtube.com/embed/KWDgWpSDlrM?start=16',
+        url: MUSIC_URLS.untitledEveryDaySoundscape,
         year: '2026',
         tag: 'Track',
-        preferredEmbed: 'youtube'
+        preferredEmbed: 'untitled'
       },
       {
         id: 'queries-beat-tape',
@@ -411,7 +411,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
   {
     id: 'legal',
     label: 'Legal',
-    color: 'white',
+    color: 'indigo',
     items: [
       {
         id: 'ai-accountability',
@@ -425,7 +425,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
   {
     id: 'social',
     label: 'Social',
-    color: 'white',
+    color: 'violet',
     items: [
       { id: 'instagram', title: 'Instagram', url: SOCIAL_URLS.instagram, year: '2026', tag: 'Visual' },
       { id: 'youtube', title: 'YouTube', url: SOCIAL_URLS.youtube, year: '2026', tag: 'Video' },

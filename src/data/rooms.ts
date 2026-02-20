@@ -109,7 +109,7 @@ const rooms: Room[] = [
     slug: 'social',
     title: 'Social Room',
     description: 'Platform exits, profile paths, and quick handoff links.',
-    color: 'white',
+    color: 'violet',
     room_type: 'external',
     destination: SOCIAL_URLS.linktree,
     machines: [
@@ -136,4 +136,3 @@ const rooms: Room[] = [
 ];
 
 export default rooms;
-

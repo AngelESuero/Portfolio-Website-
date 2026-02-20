@@ -57,6 +57,8 @@
   --amber: #ffcc7a;
   --accent: var(--neon);
   --cursor: #ff9a3c;
+  --accent-rgb: 123 231 255;
+  --cursor-rgb: 255 154 60;
 
   --tone-bg: var(--bg1);
   --tone-bg-deep: var(--bg0);
@@ -219,12 +221,12 @@ body {
   background-image:
     radial-gradient(
       1020px 660px at 14% -8%,
-      rgba(242, 184, 75, var(--topic-warm-alpha)),
+      rgb(var(--accent-rgb) / var(--topic-warm-alpha)),
       transparent 64%
     ),
     radial-gradient(
       980px 620px at 86% -10%,
-      rgba(111, 183, 255, var(--topic-cool-alpha)),
+      rgb(var(--cursor-rgb) / var(--topic-cool-alpha)),
       transparent 66%
     ),
     linear-gradient(
@@ -245,7 +247,6 @@ body {
     linear-gradient(180deg, var(--bg1), var(--bg0));
   position: relative;
   isolation: isolate;
-  transition: background-image var(--motion-slow) var(--ease-standard);
 }
 
 main :where(p, li) {
@@ -282,11 +283,10 @@ hr {
   background:
     linear-gradient(to right, rgba(255, 255, 255, var(--topic-highlight-alpha)), transparent 28%),
     linear-gradient(to left, rgba(0, 0, 0, var(--topic-shadow-alpha)), transparent 42%),
-    radial-gradient(1160px 720px at 16% 2%, rgba(242, 184, 75, var(--topic-warm-alpha)), transparent 64%),
-    radial-gradient(1160px 720px at 84% 4%, rgba(111, 183, 255, var(--topic-cool-alpha)), transparent 66%),
+    radial-gradient(1160px 720px at 16% 2%, rgb(var(--accent-rgb) / var(--topic-warm-alpha)), transparent 64%),
+    radial-gradient(1160px 720px at 84% 4%, rgb(var(--cursor-rgb) / var(--topic-cool-alpha)), transparent 66%),
     linear-gradient(180deg, rgba(3, 8, 16, 0.18), rgba(3, 8, 16, 0.3) 44%, rgba(3, 7, 14, 0.34)),
     radial-gradient(1200px 760px at 50% 0%, rgba(5, 12, 22, 0.12), rgba(2, 6, 12, 0.26) 72%, rgba(2, 6, 12, 0.14));
-  transition: background-image var(--motion-slow) var(--ease-standard);
 }
 
 header,
@@ -780,10 +780,6 @@ html[data-mode='explore'] .mode-explore {
     flex-wrap: wrap;
   }
 
-  .desktop-home {
-    display: none;
-  }
-
   .site-header .header-actions {
     gap: 0.35rem;
   }
@@ -794,16 +790,7 @@ html[data-mode='explore'] .mode-explore {
   }
 
   .mobile-editorial {
-    display: block;
-    position: relative;
-    margin: -2rem calc(50% - 50vw) 0;
-    padding: 2.25rem 1.25rem 5rem;
-    color: #ecf0f6;
-    background:
-      linear-gradient(180deg, #081328 0%, #071124 42%, #050d1b 100%),
-      radial-gradient(circle at 12% 8%, rgba(35, 95, 176, 0.15), transparent 40%);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    --mobile-accent: var(--tone-accent);
+    display: none;
   }
 
   .mobile-editorial::before {

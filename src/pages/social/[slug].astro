@@ -5,6 +5,7 @@ import socialConfig from '../../data/social';
 import igManifest from '../../data/ig.json';
 import xFeedManifest from '../../data/x-feed.json';
 import type { SocialConfigItem } from '../../data/social';
+import { isValidXStatusUrl } from '../../lib/x-url';
 
 interface XFeedItem {
   title?: string;
@@ -53,7 +54,7 @@ const xManualItems =
           dateRaw: String(item?.publishedAt || '').trim(),
           summary: String(item?.summary || '').trim()
         }))
-        .filter((item) => item.title && item.url)
+        .filter((item) => item.title && item.url && isValidXStatusUrl(item.url))
         .sort((a, b) => xPublishedAtToTimestamp(b.dateRaw) - xPublishedAtToTimestamp(a.dateRaw))
         .map((item) => ({
           title: item.title,

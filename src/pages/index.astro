@@ -3,12 +3,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import profile from '../data/profile';
 import featuredThreads from '../data/featured_threads.json';
 import { getCollection } from 'astro:content';
-import MobileTOC from '../components/MobileTOC.astro';
 import UntitledPlayer from '../components/UntitledPlayer.astro';
 import EmbedCard from '../components/EmbedCard.astro';
 import HomeTabReflections from '../components/HomeTabReflections.astro';
 import HomeSocialFeeds from '../components/HomeSocialFeeds.astro';
 import { LINK_HUB_CATEGORIES, type LinkHubItem } from '../data/linkhub';
+import { isValidXStatusUrl } from '../lib/x-url';
 import igManifest from '../data/ig.json';
 import youtubeManifest from '../data/youtube.json';
 import xFeedManifest from '../data/x-feed.json';
@@ -37,8 +37,6 @@ import agiTimelineData from '../data/agi-timeline.json';
 
 const allProjects = await getCollection('projects');
 const allPosts = (await getCollection('posts')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const posts = allPosts.slice(0, 3);
-const tools = [...new Set(allProjects.flatMap((project) => project.data.tools))].slice(0, 10);
 const threads = featuredThreads.featured_threads;
 const categoryItems = new Map(LINK_HUB_CATEGORIES.map((category) => [category.id, category.items]));
 const pickItems = (categoryId: string, ids: string[]): LinkHubItem[] => {
@@ -55,7 +53,7 @@ const sectionEmbeds = [
     label: 'Music',
     color: 'blue',
     tone: 'vitality',
-    items: pickItems('music', ['now-listening', 'my-first-beat-tape', 'everyday-soundscape']).concat(
+    items: pickItems('music', ['my-first-beat-tape', 'everyday-soundscape']).concat(
       pickItems('resources', ['practicing-kriya'])
     )
   },
@@ -83,7 +81,7 @@ const sectionEmbeds = [
   {
     id: 'scraps',
     label: 'Scraps',
-    color: 'white',
+    color: 'violet',
     tone: 'contemplation',
     items: pickItems('music', ['scraps-2023-2024']).concat(
       pickItems('writing', ['writing-archive', 'substack', 'magazine-publication'])
@@ -180,7 +178,7 @@ const xFeedItems = (Array.isArray(xManifest.items) ? xManifest.items : [])
     publishedAt: String(item?.publishedAt || '').trim(),
     summary: String(item?.summary || '').trim()
   }))
-  .filter((item) => item.title && item.url)
+  .filter((item) => item.title && item.url && isValidXStatusUrl(item.url))
   .sort((a, b) => xPublishedAtToTimestamp(b.publishedAt) - xPublishedAtToTimestamp(a.publishedAt))
   .slice(0, 6);
 const youtubeLatestVideoId = Array.isArray(ytManifest.items)
@@ -292,111 +290,6 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
       </section>
     )}
   </div>
-
-  <article class="mobile-editorial" aria-label="Mobile editorial layout">
-    <header class="mobile-hero" id="home">
-      <p class="mobile-kicker">Timeline / Archive</p>
-      <h1><span class="mobile-accent">A Path Toward Life</span></h1>
-      <p class="mobile-dek">{profile.long_bio}</p>
-      <div class="mobile-role-row" aria-label="Identity chips">
-        {profile.roles.map((role) => <span>{role}</span>)}
-      </div>
-    </header>
-
-    <MobileTOC />
-    <HomeTabReflections items={reflectionItems} sectionTitle="Tab Reflections" variant="mobile" />
-
-    <section id="about" class="mobile-story-section">
-      <h2>About</h2>
-      <p>{profile.short_bio}</p>
-      <p>{profile.long_bio}</p>
-    </section>
-
-    <section id="work" class="mobile-story-section">
-      <h2>Work / Projects</h2>
-      <ul class="mobile-project-list">
-        {threads.map((thread) => (
-          <li>
-            <a href={thread.href} {...(thread.external ? { target: '_blank', rel: 'noopener' } : {})}>{thread.title}</a>
-            <p>{thread.blurb}</p>
-            <p class="meta">{thread.year} · {thread.type}</p>
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <section id="experience" class="mobile-story-section">
-      <h2>Experience</h2>
-      <p>Built cross-disciplinary work streams in music production, visual storytelling, and civic collaboration across Newark communities.</p>
-      <p>Current focus: documenting process in public, shipping creative studies, and evolving this archive into a living portfolio timeline.</p>
-    </section>
-
-    <section id="skills" class="mobile-story-section">
-      <h2>Skills / Tools</h2>
-      <div class="mobile-pill-grid">
-        {tools.map((tool) => <span>{tool}</span>)}
-      </div>
-    </section>
-
-    <section id="media" class="mobile-story-section">
-      <h2>Media</h2>
-      <ul class="mobile-post-list">
-        {posts.map((post) => (
-          <li>
-            <a href={`/writing/${post.slug}`}>{post.data.title}</a>
-            <p>{post.data.summary}</p>
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <section id="resume" class="mobile-story-section">
-      <h2>Resume / CV</h2>
-      <p>For speaking, collaborations, and portfolio details, use the press kit and updated project index.</p>
-      <p><a href="/press-kit">Open press kit</a></p>
-    </section>
-
-    <section id="contact" class="mobile-story-section">
-      <h2>Contact</h2>
-      <p>Use the form for inquiries, collaborations, and project commissions.</p>
-      <p><a href="/contact">Open contact form</a></p>
-    </section>
-
-    <section id="social-feeds" class="mobile-story-section">
-      <h2>Social feeds</h2>
-      <p>Quick feed jump links for X, YouTube uploads, and the local Instagram archive.</p>
-      <ul class="mobile-social-feed-cards">
-        <li>
-          <a href="/social/x" class="mobile-social-card mobile-social-card-x">
-            <strong>X</strong>
-            <span>Latest notes and commentary from @{xHandle}.</span>
-          </a>
-        </li>
-        <li>
-          <a href="/social/youtube" class="mobile-social-card mobile-social-card-youtube">
-            <strong>YouTube</strong>
-            <span>Newest uploads and featured videos.</span>
-          </a>
-        </li>
-        <li>
-          <a href="/social/instagram" class="mobile-social-card mobile-social-card-instagram">
-            <strong>Instagram</strong>
-            <span>Local-first preview feed with full archive at /instagram.</span>
-          </a>
-        </li>
-      </ul>
-    </section>
-
-    <section id="links" class="mobile-story-section">
-      <h2>Links</h2>
-      <ul class="mobile-link-list">
-        <li><a href={profile.social_links.instagram}>Instagram</a></li>
-        <li><a href={profile.social_links.youtube}>YouTube</a></li>
-        <li><a href={profile.social_links.discord}>Discord</a></li>
-        <li><a href={profile.link_hub_url}>Link hub</a></li>
-      </ul>
-    </section>
-  </article>
 
   <script is:inline>
     (() => {
@@ -551,86 +444,58 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
   }
 
   @media (max-width: 860px) {
-    .mobile-social-feed-cards {
-      list-style: none;
-      margin: 1rem 0 0;
-      padding: 0;
-      display: grid;
-      gap: 0.72rem;
+    .threadCard {
+      min-width: min(84vw, 24rem);
     }
 
-    .mobile-social-feed-cards li {
-      margin: 0;
+    .section-tablist {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      gap: 0.95rem;
+      margin-inline: -0.15rem;
+      padding-inline: 0.15rem;
+      padding-bottom: 0.42rem;
+      scrollbar-width: thin;
     }
 
-    .mobile-social-feed-cards a {
-      --card-accent: rgba(214, 168, 53, 0.52);
-      position: relative;
-      display: grid;
-      gap: 0.38rem;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 0.76rem;
-      padding: 0.68rem 0.74rem;
-      text-decoration: none;
-      background:
-        linear-gradient(180deg, color-mix(in srgb, var(--card-accent) 16%, transparent) 0%, rgba(255, 255, 255, 0.04) 56%),
-        rgba(255, 255, 255, 0.04);
-      color: rgba(238, 244, 255, 0.95);
-      transition: border-color 140ms ease, color 140ms ease, background-color 140ms ease, transform 140ms ease;
+    .section-tab {
+      flex: 0 0 auto;
+      min-height: 38px;
+      white-space: nowrap;
     }
 
-    .mobile-social-card-x {
-      --card-accent: rgba(138, 196, 255, 0.68);
+    .section-tab::after {
+      bottom: 6px;
     }
 
-    .mobile-social-card-youtube {
-      --card-accent: rgba(255, 133, 133, 0.7);
+    .section-cards {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      overscroll-behavior-x: contain;
+      width: 100%;
+      margin-inline: 0;
+      padding-bottom: 0.38rem;
     }
 
-    .mobile-social-card-instagram {
-      --card-accent: rgba(255, 184, 122, 0.72);
+    .section-card-shell {
+      width: min(88vw, 24rem);
+      min-width: min(88vw, 24rem);
+      scroll-snap-align: start;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .section-cards {
+      flex-wrap: wrap;
+      overflow-x: visible;
+      scroll-snap-type: none;
     }
 
-    .mobile-social-feed-cards a strong {
-      font-size: 0.95rem;
-      line-height: 1.2;
-    }
-
-    .mobile-social-feed-cards a span {
-      font-size: 0.86rem;
-      line-height: 1.46;
-      color: rgba(220, 230, 247, 0.9);
-    }
-
-    .mobile-social-feed-cards a::after {
-      content: '→';
-      position: absolute;
-      right: 0.72rem;
-      top: 0.66rem;
-      font-size: 0.86rem;
-      opacity: 0.78;
-      color: color-mix(in srgb, var(--card-accent) 78%, #ffffff 22%);
-    }
-
-    .mobile-social-feed-cards a:hover,
-    .mobile-social-feed-cards a:focus-visible {
-      border-color: var(--card-accent);
-      color: var(--tone-accent);
-      background:
-        linear-gradient(180deg, color-mix(in srgb, var(--card-accent) 28%, transparent) 0%, rgba(255, 255, 255, 0.08) 58%),
-        rgba(255, 255, 255, 0.08);
-      transform: translateY(-1px);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .mobile-social-feed-cards a {
-        transition: none;
-      }
-
-      .mobile-social-feed-cards a:hover,
-      .mobile-social-feed-cards a:focus-visible {
-        transform: none;
-      }
+    .section-card-shell {
+      width: 100%;
+      min-width: 100%;
     }
   }
 </style>
