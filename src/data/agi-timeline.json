@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-20T21:43:48.915Z",
+    "generatedAt": "2026-02-20T22:48:04.348Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,31 @@
     ]
   },
   "items": [
+    {
+      "id": "ce66dc286d3287b232af4bd369f45bf83ed8520de4c35fdaa08a5b346a2a4c37",
+      "title": "Our First Proof submissions",
+      "url": "https://openai.com/index/first-proof-submissions",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-02-20T14:30:00.000Z",
+      "summary": "We share our AI model’s proof attempts for the First Proof math challenge, testing research-grade reasoning on expert-level problems.",
+      "tags": [
+        "primary",
+        "release",
+        "reasoning",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/first-proof-submissions"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
     {
       "id": "217e73110b478566655f2f5881ed89d1f9a9217e699aa28e60fd68b321196e21",
       "title": "AIdentifyAGE Ontology for Decision Support in Forensic Dental Age Assessment",
@@ -15045,31 +15070,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2602.15854"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "5f7ab96b88e32dcf89efa7da5b9def5f757d1cd00e889b9a311ed7caacd3423f",
-      "title": "Rethinking Soft Compression in Retrieval-Augmented Generation: A Query-Conditioned Selector Perspective",
-      "url": "https://arxiv.org/abs/2602.15856",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-19T05:00:00.000Z",
-      "summary": "arXiv:2602.15856v1 Announce Type: new Abstract: Retrieval-Augmented Generation (RAG) effectively grounds Large Language Models (LLMs) with external knowledge and is widely applied to Web-related tasks. However, its scalability is hindered by excessive context length and redundant retrievals. Recent research on soft context compression aims to address this by encoding long documents into compact embeddings, yet they often underperform non-compressed RAG due to their reliance on auto-encoder-like full-compression that forces the encoder to compress all document information regardless of relevance to the input query. In this work, we conduct an analysis on this paradigm and reveal two fundamental limitations: (I) Infeasibility, full-compression conflicts with the LLM's downstream generation behavior; and (II) Non-necessity: full-compression is unnecessary and dilutes task-relevant information density. Motivated by these insights, we introduce SeleCom, a selector-based soft compression framework for RAG that redefines the encoder's role as query-conditioned information selector. The selector is decoder-only and is trained with a massive, diverse and difficulty-graded synthetic QA dataset with curriculum learning. Extensive experiments show that SeleCom significantly outperforms existing soft compression approaches and achieves competitive or superior performance to non-compression baselines, while reducing computation and latency by 33.8%~84.6%.",
-      "tags": [
-        "papers",
-        "language",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.15856"
         },
         {
           "label": "Feed",
