@@ -418,9 +418,9 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
   }
 
   .section-card-shell {
-    flex: 0 0 auto;
-    width: clamp(20rem, 31vw, 34rem);
-    min-width: min(100%, 20rem);
+    flex: 1 1 calc((100% - 1.5rem) / 3);
+    width: calc((100% - 1.5rem) / 3);
+    min-width: min(100%, 22rem);
     max-width: 100%;
   }
 
@@ -428,7 +428,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
     .section-card-shell {
       resize: both;
       overflow: auto;
-      min-width: 20rem;
+      min-width: 22rem;
       min-height: 20rem;
       max-width: min(1400px, 96vw);
       max-height: min(90vh, 1100px);
@@ -480,6 +480,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
     }
 
     .section-card-shell {
+      flex: 0 0 auto;
       width: min(88vw, 24rem);
       min-width: min(88vw, 24rem);
       scroll-snap-align: start;
@@ -494,6 +495,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
     }
 
     .section-card-shell {
+      flex-basis: 100%;
       width: 100%;
       min-width: 100%;
     }
