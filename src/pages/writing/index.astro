@@ -17,6 +17,29 @@ const fullDateFormatter = new Intl.DateTimeFormat('en-US', {
 const allTags = [...new Set(posts.flatMap((post) => post.data.tags.map((tag) => tag.trim().toLowerCase())))]
   .filter(Boolean)
   .sort((a, b) => a.localeCompare(b));
+const screenplayVault = [
+  {
+    title: 'Script End-6',
+    logline: 'Current screenplay draft preserved as a baseline for iterative rewrites.',
+    status: 'Draft',
+    lastTouched: 'Feb 21, 2026',
+    nextAction: 'Rewrite the first 3 pages with a sharper opening beat.'
+  },
+  {
+    title: 'Untitled Screenplay #2',
+    logline: 'Replace this with the core conflict and protagonist goal in one line.',
+    status: 'Outline',
+    lastTouched: 'Add date',
+    nextAction: 'Draft the opening sequence.'
+  },
+  {
+    title: 'Untitled Screenplay #3',
+    logline: 'Use this slot for a shelved script you want to restart.',
+    status: 'Draft',
+    lastTouched: 'Add date',
+    nextAction: 'Do one focused rewrite pass.'
+  }
+];
 ---
 <BaseLayout title="Writing — a_e.s_" theme="writing">
   <section class="writing-hero">
@@ -33,6 +56,30 @@ const allTags = [...new Set(posts.flatMap((post) => post.data.tags.map((tag) => 
   </section>
 
   <SubstackPanel secondaryHref="#writing-list" secondaryLabel="Jump to site archive" />
+
+  <section class="writing-vault" aria-labelledby="writing-vault-heading">
+    <div class="writing-vault-header">
+      <h2 id="writing-vault-heading" class="font-display text-2xl">Screenplay Vault</h2>
+      <p>Visible reminders for unfinished scripts so iteration stays easy.</p>
+    </div>
+    <ul class="writing-vault-list">
+      {screenplayVault.map((project) => (
+        <li>
+          <article class="writing-vault-card">
+            <div class="writing-vault-topline">
+              <h3 class="font-display text-xl">{project.title}</h3>
+              <span class="writing-vault-status">{project.status}</span>
+            </div>
+            <p class="writing-vault-logline">{project.logline}</p>
+            <div class="writing-vault-meta">
+              <p><strong>Last touched:</strong> {project.lastTouched}</p>
+              <p><strong>Next action:</strong> {project.nextAction}</p>
+            </div>
+          </article>
+        </li>
+      ))}
+    </ul>
+  </section>
 
   <section class="writing-archive" id="writing-list" aria-labelledby="writing-archive-heading">
     <div class="writing-archive-header">
@@ -175,6 +222,69 @@ const allTags = [...new Set(posts.flatMap((post) => post.data.tags.map((tag) => 
 
   .writing-archive {
     margin-top: clamp(1.3rem, 3vw, 2.4rem);
+  }
+
+  .writing-vault {
+    margin-top: clamp(1.3rem, 3vw, 2.4rem);
+  }
+
+  .writing-vault-header p {
+    margin: 0.55rem 0 0;
+    color: var(--tone-muted);
+  }
+
+  .writing-vault-list {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .writing-vault-card {
+    border: 1px solid var(--line2);
+    border-radius: calc(var(--radius) * var(--space-scale));
+    background: linear-gradient(180deg, rgba(10, 14, 23, 0.72), rgba(7, 11, 18, 0.6));
+    padding: clamp(0.9rem, 2.2vw, 1.15rem);
+  }
+
+  .writing-vault-topline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .writing-vault-topline h3 {
+    margin: 0;
+  }
+
+  .writing-vault-status {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 35%, var(--line2));
+    border-radius: 999px;
+    padding: 0.2rem 0.55rem;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--tone-accent-glow);
+  }
+
+  .writing-vault-logline {
+    margin: 0.62rem 0 0;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .writing-vault-meta {
+    margin-top: 0.72rem;
+    display: grid;
+    gap: 0.42rem;
+  }
+
+  .writing-vault-meta p {
+    margin: 0;
+    color: var(--tone-muted);
+    font-size: 0.86rem;
   }
 
   .writing-archive-header {
