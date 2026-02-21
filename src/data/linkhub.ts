@@ -292,6 +292,14 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
         preferredEmbed: 'youtube'
       },
       {
+        id: 'growth-happiness-journey',
+        title: 'Growth and Happiness Journey',
+        url: 'https://youtu.be/ErIkkP7lmEw',
+        year: '2026',
+        tag: 'Growth',
+        preferredEmbed: 'youtube'
+      },
+      {
         id: 'youtube-channel',
         title: 'YouTube Uploads',
         url: YOUTUBE_UPLOADS_PLAYLIST_URL,
