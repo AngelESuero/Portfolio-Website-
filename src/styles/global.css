@@ -1005,6 +1005,19 @@ html[data-mode='explore'] .mode-explore {
   }
 }
 
+/* Keep homepage spotlight embeds aligned to common social platform formats. */
+.desktop-home .section-card-shell .hub-card[data-provider='youtube'] .hub-embed-frame {
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 16 / 9;
+}
+
+.desktop-home .section-card-shell .hub-card[data-provider='instagram'] .hub-embed-frame {
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 4 / 5;
+}
+
 @media (prefers-reduced-motion: reduce) {
   :root {
     --motion-fast: 0.01ms;

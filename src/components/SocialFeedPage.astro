@@ -1,5 +1,5 @@
 ---
-import { getEmbedFallbackMessage, getEmbedHeight, resolveEmbed } from '../lib/embed-resolver';
+import { getEmbedAspectRatio, getEmbedFallbackMessage, getEmbedHeight, resolveEmbed } from '../lib/embed-resolver';
 
 interface SocialFeaturedLink {
   label: string;
@@ -167,11 +167,16 @@ const xTimelineHref = showXTimeline ? `https://x.com/${xTimelineHandle}` : '';
             resolution.provider === 'instagram';
           const sourceExternal = isExternal(embed.url);
           const height = getEmbedHeight(resolution.provider);
+          const aspectRatio = getEmbedAspectRatio(resolution.provider);
+          const hasAspectRatio = Boolean(aspectRatio);
+          const frameStyle = hasAspectRatio
+            ? `--embed-aspect-ratio:${aspectRatio}`
+            : `--embed-height:${height}px`;
 
           return (
-            <figure class="social-embed-card" data-provider={resolution.provider || 'none'} style={`--embed-height:${height}px`}>
+            <figure class="social-embed-card" data-provider={resolution.provider || 'none'}>
               {isEmbeddable ? (
-                <div class:list={['social-embed-frame', isResizableEmbed && 'is-resizable']}>
+                <div class:list={['social-embed-frame', isResizableEmbed && 'is-resizable', hasAspectRatio && 'has-aspect-ratio']} style={frameStyle}>
                   <iframe
                     src={embedSource || undefined}
                     title={embed.label || `${config.title} embed`}
@@ -423,6 +428,12 @@ const xTimelineHref = showXTimeline ? `https://x.com/${xTimelineHandle}` : '';
     border-radius: 0.72rem;
     overflow: hidden;
     background: #020617;
+  }
+
+  .social-embed-frame.has-aspect-ratio {
+    height: auto;
+    min-height: 0;
+    aspect-ratio: var(--embed-aspect-ratio, 16 / 9);
   }
 
   .social-embed-frame iframe {

@@ -187,6 +187,12 @@ export const getEmbedHeight = (provider: LinkHubProvider | null): number => {
   return 300;
 };
 
+export const getEmbedAspectRatio = (provider: LinkHubProvider | null): string | null => {
+  if (provider === 'youtube') return '16 / 9';
+  if (provider === 'instagram') return '4 / 5';
+  return null;
+};
+
 export const getEmbedFallbackMessage = (resolution: EmbedResolution): string => {
   if (
     resolution.provider === 'untitled' &&
