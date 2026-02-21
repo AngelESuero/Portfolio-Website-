@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import profile from '../data/profile';
 import featuredThreads from '../data/featured_threads.json';
 import { getCollection } from 'astro:content';
+import HomeTabReflections from '../components/HomeTabReflections.astro';
 import rooms from '../data/rooms';
 import agiTimelineData from '../data/agi-timeline.json';
 import { SOCIAL_URLS } from '../data/site-refs';
@@ -101,6 +102,48 @@ const quickDestinations = [
   }
 ] as const;
 
+const reflectionItems = quickDestinations.map((item) => ({
+  id: item.id,
+  title: item.title,
+  href: item.href,
+  summary: item.summary,
+  meta: item.meta,
+  cta: item.cta
+}));
+
+const sectionHighlights = [
+  {
+    id: 'music',
+    title: 'Music',
+    href: '/threads/music-production-sessions',
+    summary: 'Session logs and production notes from active tape work.',
+    meta: 'Thread · production',
+    cta: 'Open Music',
+    color: 'yellow',
+    tone: 'vitality'
+  },
+  {
+    id: 'visual',
+    title: 'Visual',
+    href: '/social/instagram',
+    summary: 'Local-first visual archive previews and highlights.',
+    meta: 'Social feed · instagram',
+    cta: 'Open Visual',
+    color: 'violet',
+    tone: 'compassion'
+  },
+  {
+    id: 'video',
+    title: 'Video',
+    href: '/social/youtube',
+    summary: 'Uploads, playlists, and long-form video experiments.',
+    meta: 'Social feed · youtube',
+    cta: 'Open Video',
+    color: 'red',
+    tone: 'intensity'
+  }
+] as const;
+
 const socialSnapshot = [
   {
     id: 'x',
@@ -153,6 +196,28 @@ const socialSnapshot = [
         {quickDestinations.map((item) => (
           <li>
             <a href={item.href} class="home-card" data-color={item.color} data-tone={item.tone}>
+              <span class="home-card-title">{item.title}</span>
+              <span class="home-card-summary">{item.summary}</span>
+              <span class="home-card-meta">{item.meta}</span>
+              <span class="home-card-cta">{item.cta}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <HomeTabReflections items={reflectionItems} sectionTitle="Tab Reflections" />
+
+    <section class="home-section" aria-labelledby="home-sections-heading">
+      <div class="home-section-head">
+        <p class="home-section-kicker">Curated</p>
+        <h2 id="home-sections-heading" class="home-section-title">Sections</h2>
+        <p class="home-section-description">Three focused lanes to continue exploring.</p>
+      </div>
+      <ul class="home-grid" aria-label="Section highlights">
+        {sectionHighlights.map((item) => (
+          <li>
+            <a href={item.href} class="home-card home-highlight-card" data-color={item.color} data-tone={item.tone}>
               <span class="home-card-title">{item.title}</span>
               <span class="home-card-summary">{item.summary}</span>
               <span class="home-card-meta">{item.meta}</span>
@@ -407,6 +472,12 @@ const socialSnapshot = [
   .home-card:focus-visible {
     border-color: color-mix(in srgb, var(--tone-accent) 50%, var(--line));
     transform: translateY(-1px);
+  }
+
+  .home-highlight-card {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-sky) 10%, transparent), rgba(255, 255, 255, 0.015)),
+      color-mix(in srgb, var(--tone-surface) 94%, transparent);
   }
 
   .home-card-title,
