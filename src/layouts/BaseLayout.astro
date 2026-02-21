@@ -174,9 +174,12 @@ const exploreLinks = [
         const root = document.documentElement;
         const HANDOFF_KEY = 'siteAccentHandoff';
         const TONE_HANDOFF_KEY = 'siteToneHandoff';
+        const KEY_CIRCADIAN_MODE = 'siteCircadianMode';
         const HANDOFF_MAX_AGE_MS = 2200;
+        const CIRCADIAN_REFRESH_MS = 5 * 60 * 1000;
         const DEFAULT_COLOR_KEY = 'blue';
         const DEFAULT_TONE_KEY = 'balance';
+        const DEFAULT_CIRCADIAN_MODE = 'auto';
         const palette = {
           yellow: '#F5D547',
           blue: '#45C7FF',
@@ -203,6 +206,142 @@ const exploreLinks = [
           intensity: { warm: 0.088, cool: 0.05, shadow: 0.36, highlight: 0.012, depth: 0.33, bodyLift: 0.026 },
           presence: { warm: 0.06, cool: 0.064, shadow: 0.32, highlight: 0.015, depth: 0.3, bodyLift: 0.032 }
         };
+        const circadianStops = [
+          {
+            hour: 0,
+            phase: 'night',
+            hueShift: -16,
+            saturation: 0.74,
+            lightness: -0.09,
+            warmMix: 0.18,
+            coolMix: 0.05,
+            warmScale: 0.9,
+            coolScale: 0.48,
+            shadowDelta: 0.06,
+            highlightDelta: -0.003,
+            depthDelta: 0.055,
+            bodyLiftDelta: -0.008
+          },
+          {
+            hour: 5.5,
+            phase: 'predawn',
+            hueShift: -10,
+            saturation: 0.86,
+            lightness: -0.04,
+            warmMix: 0.19,
+            coolMix: 0.08,
+            warmScale: 1.02,
+            coolScale: 0.7,
+            shadowDelta: 0.025,
+            highlightDelta: -0.001,
+            depthDelta: 0.02,
+            bodyLiftDelta: -0.004
+          },
+          {
+            hour: 8,
+            phase: 'morning',
+            hueShift: -2,
+            saturation: 0.95,
+            lightness: 0,
+            warmMix: 0.14,
+            coolMix: 0.14,
+            warmScale: 1,
+            coolScale: 0.96,
+            shadowDelta: 0,
+            highlightDelta: 0.001,
+            depthDelta: 0,
+            bodyLiftDelta: 0.001
+          },
+          {
+            hour: 12.5,
+            phase: 'day',
+            hueShift: 10,
+            saturation: 1.08,
+            lightness: 0.04,
+            warmMix: 0.07,
+            coolMix: 0.25,
+            warmScale: 0.86,
+            coolScale: 1.22,
+            shadowDelta: -0.04,
+            highlightDelta: 0.003,
+            depthDelta: -0.038,
+            bodyLiftDelta: 0.005
+          },
+          {
+            hour: 17.5,
+            phase: 'golden-hour',
+            hueShift: -6,
+            saturation: 0.98,
+            lightness: 0.01,
+            warmMix: 0.2,
+            coolMix: 0.11,
+            warmScale: 1.1,
+            coolScale: 0.84,
+            shadowDelta: -0.01,
+            highlightDelta: 0.001,
+            depthDelta: -0.006,
+            bodyLiftDelta: 0.002
+          },
+          {
+            hour: 19.5,
+            phase: 'dusk',
+            hueShift: -12,
+            saturation: 0.9,
+            lightness: -0.02,
+            warmMix: 0.24,
+            coolMix: 0.08,
+            warmScale: 1.15,
+            coolScale: 0.74,
+            shadowDelta: 0.02,
+            highlightDelta: -0.0005,
+            depthDelta: 0.015,
+            bodyLiftDelta: -0.002
+          },
+          {
+            hour: 22,
+            phase: 'late-night',
+            hueShift: -16,
+            saturation: 0.8,
+            lightness: -0.07,
+            warmMix: 0.18,
+            coolMix: 0.06,
+            warmScale: 0.95,
+            coolScale: 0.52,
+            shadowDelta: 0.05,
+            highlightDelta: -0.0025,
+            depthDelta: 0.04,
+            bodyLiftDelta: -0.006
+          },
+          {
+            hour: 24,
+            phase: 'night',
+            hueShift: -16,
+            saturation: 0.74,
+            lightness: -0.09,
+            warmMix: 0.18,
+            coolMix: 0.05,
+            warmScale: 0.9,
+            coolScale: 0.48,
+            shadowDelta: 0.06,
+            highlightDelta: -0.003,
+            depthDelta: 0.055,
+            bodyLiftDelta: -0.008
+          }
+        ];
+        const neutralCircadian = {
+          phase: 'static',
+          hueShift: 0,
+          saturation: 1,
+          lightness: 0,
+          warmMix: 0,
+          coolMix: 0,
+          warmScale: 1,
+          coolScale: 1,
+          shadowDelta: 0,
+          highlightDelta: 0,
+          depthDelta: 0,
+          bodyLiftDelta: 0
+        };
 
         const hasOwn = (key) => Object.prototype.hasOwnProperty.call(palette, key);
         const hasTone = (key) => Object.prototype.hasOwnProperty.call(toneProfiles, key);
@@ -226,6 +365,8 @@ const exploreLinks = [
             storage.removeItem(key);
           } catch {}
         };
+        const clamp = (value, min, max) => Math.min(max, Math.max(min, Number(value) || 0));
+        const lerp = (from, to, t) => from + (to - from) * t;
 
         const normalizeColorKey = (value) => {
           const raw = String(value || '').trim().toLowerCase();
@@ -236,6 +377,10 @@ const exploreLinks = [
         const normalizeToneKey = (value) => {
           const key = String(value || '').trim().toLowerCase();
           return hasTone(key) ? key : DEFAULT_TONE_KEY;
+        };
+        const normalizeCircadianMode = (value) => {
+          const key = String(value || '').trim().toLowerCase();
+          return key === 'auto' || key === 'static' ? key : DEFAULT_CIRCADIAN_MODE;
         };
 
         const isHexColor = (value) => /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(String(value || '').trim());
@@ -377,15 +522,25 @@ const exploreLinks = [
         };
 
         const derivePalette = (baseHex) => {
-          const opposite = complement(baseHex);
+          const circadian = getEffectiveCircadianProfile();
+          const accent = applyCircadianTone(baseHex, circadian);
+          const opposite = complement(accent);
+          const sky = applyCircadianTone(opposite, circadian, {
+            hueWeight: 0.45,
+            saturationWeight: 0.88,
+            lightnessWeight: 0.58,
+            warmWeight: 0.34,
+            coolWeight: 1.08
+          });
           return {
-            accent: baseHex,
+            accent,
             cursor: opposite,
-            toneAccent: baseHex,
-            toneAccentBright: mixHex(baseHex, '#ffffff', 0.16),
-            toneAccentGlow: mixHex(baseHex, '#ffffff', 0.24),
-            toneSky: mixHex(opposite, '#ffffff', 0.2),
-            toneSkyBright: mixHex(opposite, '#ffffff', 0.34)
+            toneAccent: accent,
+            toneAccentBright: mixHex(accent, '#ffffff', 0.16),
+            toneAccentGlow: mixHex(accent, '#ffffff', 0.24),
+            toneSky: mixHex(sky, '#ffffff', 0.2),
+            toneSkyBright: mixHex(sky, '#ffffff', 0.34),
+            circadian
           };
         };
 
@@ -393,11 +548,65 @@ const exploreLinks = [
 
         let currentBase = palette[DEFAULT_COLOR_KEY];
         let currentTone = DEFAULT_TONE_KEY;
+        let currentCircadian = null;
+        let currentCircadianMode = DEFAULT_CIRCADIAN_MODE;
         let accentFrame = null;
+        let circadianTimer = null;
+
+        const getCircadianProfile = (date = new Date()) => {
+          const decimalHour = date.getHours() + date.getMinutes() / 60 + date.getSeconds() / 3600;
+          const fallback = circadianStops[0];
+
+          for (let i = 0; i < circadianStops.length - 1; i += 1) {
+            const from = circadianStops[i];
+            const to = circadianStops[i + 1];
+            if (decimalHour < from.hour || decimalHour > to.hour) continue;
+            const span = Math.max(0.0001, to.hour - from.hour);
+            const t = clamp((decimalHour - from.hour) / span, 0, 1);
+            return {
+              phase: t < 0.5 ? from.phase : to.phase,
+              hueShift: lerp(from.hueShift, to.hueShift, t),
+              saturation: lerp(from.saturation, to.saturation, t),
+              lightness: lerp(from.lightness, to.lightness, t),
+              warmMix: lerp(from.warmMix, to.warmMix, t),
+              coolMix: lerp(from.coolMix, to.coolMix, t),
+              warmScale: lerp(from.warmScale, to.warmScale, t),
+              coolScale: lerp(from.coolScale, to.coolScale, t),
+              shadowDelta: lerp(from.shadowDelta, to.shadowDelta, t),
+              highlightDelta: lerp(from.highlightDelta, to.highlightDelta, t),
+              depthDelta: lerp(from.depthDelta, to.depthDelta, t),
+              bodyLiftDelta: lerp(from.bodyLiftDelta, to.bodyLiftDelta, t)
+            };
+          }
+
+          return fallback;
+        };
+        const getEffectiveCircadianProfile = (date = new Date()) =>
+          currentCircadianMode === 'auto' ? getCircadianProfile(date) : neutralCircadian;
+
+        const applyCircadianTone = (hex, profile, weights = {}) => {
+          const source = rgbToHsl(hexToRgb(hex));
+          const hueWeight = clamp(weights.hueWeight ?? 1, 0, 1.25);
+          const saturationWeight = clamp(weights.saturationWeight ?? 1, 0, 1.25);
+          const lightnessWeight = clamp(weights.lightnessWeight ?? 1, 0, 1.25);
+          const warmWeight = clamp(weights.warmWeight ?? 1, 0, 1.25);
+          const coolWeight = clamp(weights.coolWeight ?? 1, 0, 1.25);
+          const shifted = rgbToHex(
+            hslToRgb({
+              h: source.h + profile.hueShift * hueWeight,
+              s: clamp(source.s * (1 + (profile.saturation - 1) * saturationWeight), 0.06, 0.95),
+              l: clamp(source.l + profile.lightness * lightnessWeight, 0.12, 0.82)
+            })
+          );
+          const warmed = mixHex(shifted, '#ff9b54', clamp(profile.warmMix * warmWeight, 0, 0.35));
+          return mixHex(warmed, '#4e9fe8', clamp(profile.coolMix * coolWeight, 0, 0.35));
+        };
 
         const applyAccent = (baseHex) => {
           currentBase = normalizeHex(baseHex);
           const next = derivePalette(currentBase);
+          currentCircadian = next.circadian;
+          root.dataset.circadianPhase = currentCircadian.phase;
           root.style.setProperty('--accent', next.accent);
           root.style.setProperty('--cursor', next.cursor);
           root.style.setProperty('--tone-accent', next.toneAccent);
@@ -410,19 +619,79 @@ const exploreLinks = [
           root.style.setProperty('--accent2', next.toneSky);
           root.style.setProperty('--accent-rgb', rgbToTuple(hexToRgb(next.accent)));
           root.style.setProperty('--cursor-rgb', rgbToTuple(hexToRgb(next.cursor)));
+          root.style.setProperty(
+            '--street-warm',
+            `rgb(${rgbToTuple(hexToRgb(next.toneAccent))} / ${clamp(0.052 * currentCircadian.warmScale, 0.024, 0.11)})`
+          );
+          root.style.setProperty(
+            '--street-cool',
+            `rgb(${rgbToTuple(hexToRgb(next.toneSky))} / ${clamp(0.052 * currentCircadian.coolScale, 0.022, 0.11)})`
+          );
         };
 
         const applyTopicTone = (toneInput) => {
           const key = normalizeToneKey(toneInput);
           const profile = toneProfiles[key];
+          const circadian = currentCircadian || getEffectiveCircadianProfile();
           currentTone = key;
           root.dataset.topicTone = key;
-          root.style.setProperty('--topic-warm-alpha', String(profile.warm));
-          root.style.setProperty('--topic-cool-alpha', String(profile.cool));
-          root.style.setProperty('--topic-shadow-alpha', String(profile.shadow));
-          root.style.setProperty('--topic-highlight-alpha', String(profile.highlight));
-          root.style.setProperty('--topic-depth-alpha', String(profile.depth));
-          root.style.setProperty('--topic-body-lift-alpha', String(profile.bodyLift));
+          root.style.setProperty('--topic-warm-alpha', String(clamp(profile.warm * circadian.warmScale, 0.02, 0.12)));
+          root.style.setProperty('--topic-cool-alpha', String(clamp(profile.cool * circadian.coolScale, 0.02, 0.12)));
+          root.style.setProperty('--topic-shadow-alpha', String(clamp(profile.shadow + circadian.shadowDelta, 0.24, 0.48)));
+          root.style.setProperty(
+            '--topic-highlight-alpha',
+            String(clamp(profile.highlight + circadian.highlightDelta, 0.006, 0.032))
+          );
+          root.style.setProperty('--topic-depth-alpha', String(clamp(profile.depth + circadian.depthDelta, 0.2, 0.45)));
+          root.style.setProperty(
+            '--topic-body-lift-alpha',
+            String(clamp(profile.bodyLift + circadian.bodyLiftDelta, 0.012, 0.054))
+          );
+        };
+
+        const refreshCircadian = () => {
+          applyAccent(currentBase);
+          applyTopicTone(currentTone);
+        };
+
+        const applyCircadianMode = (modeInput, options = {}) => {
+          const persist = options.persist !== false;
+          const refresh = options.refresh !== false;
+          const nextMode = normalizeCircadianMode(modeInput);
+          currentCircadianMode = nextMode;
+          root.dataset.circadianMode = nextMode;
+          if (persist) {
+            safeSet(localStorage, KEY_CIRCADIAN_MODE, nextMode);
+          }
+          if (refresh) {
+            refreshCircadian();
+          }
+          window.dispatchEvent(
+            new CustomEvent('circadian:change', {
+              detail: { mode: nextMode }
+            })
+          );
+        };
+
+        const getCircadianMode = () => currentCircadianMode;
+
+        const initCircadianMode = () => {
+          const saved = normalizeCircadianMode(safeGet(localStorage, KEY_CIRCADIAN_MODE));
+          applyCircadianMode(saved, { persist: false, refresh: false });
+        };
+
+        const initCircadianClock = () => {
+          refreshCircadian();
+          if (circadianTimer) {
+            window.clearInterval(circadianTimer);
+          }
+          circadianTimer = window.setInterval(() => {
+            if (document.hidden) return;
+            refreshCircadian();
+          }, CIRCADIAN_REFRESH_MS);
+          document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) refreshCircadian();
+          });
         };
 
         const stopAccentAnimation = () => {
@@ -566,6 +835,11 @@ const exploreLinks = [
 
         window.__setSiteAccent = setSiteAccent;
         window.__setSiteTone = setSiteTone;
+        window.__circadianSettings = {
+          getMode: getCircadianMode,
+          setMode: (mode) => applyCircadianMode(mode, { persist: true, refresh: true }),
+          reset: () => applyCircadianMode(DEFAULT_CIRCADIAN_MODE, { persist: true, refresh: true })
+        };
 
         const getInitialColorKey = () => {
           const active =
@@ -707,8 +981,10 @@ const exploreLinks = [
         };
 
         const init = () => {
+          initCircadianMode();
           initTone();
           initAccent();
+          initCircadianClock();
           initCursorLight();
           document.addEventListener('click', handleColorClick, { capture: true });
         };

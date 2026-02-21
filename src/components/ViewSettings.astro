@@ -27,6 +27,14 @@
       </div>
     </div>
 
+    <div class="view-settings-circadian" role="group" aria-label="Circadian color rhythm">
+      <p>Color Rhythm</p>
+      <div class="view-settings-circadian-options">
+        <button type="button" class="view-circadian-btn" data-circadian-mode="auto">Auto Circadian</button>
+        <button type="button" class="view-circadian-btn" data-circadian-mode="static">Static Colors</button>
+      </div>
+    </div>
+
     <div class="view-settings-actions">
       <button id="view-settings-reset" type="button">Reset</button>
     </div>
@@ -43,15 +51,20 @@
     const closeTargets = Array.from(modal.querySelectorAll('[data-close-view-settings]'));
     const modeButtons = Array.from(modal.querySelectorAll('.view-mode-btn'));
     const sizeButtons = Array.from(modal.querySelectorAll('.view-size-btn'));
+    const circadianButtons = Array.from(modal.querySelectorAll('.view-circadian-btn'));
 
     const getApi = () => window.__modeSettings;
+    const getCircadianApi = () => window.__circadianSettings;
     const getState = () =>
       typeof getApi()?.getState === 'function'
         ? getApi().getState()
         : { mode: 'normal', size: 'standard' };
+    const getCircadianMode = () =>
+      typeof getCircadianApi()?.getMode === 'function' ? getCircadianApi().getMode() : 'auto';
 
     const syncUi = () => {
       const state = getState();
+      const circadianMode = getCircadianMode();
       modeButtons.forEach((button) => {
         const selected = button.getAttribute('data-mode') === state.mode;
         button.classList.toggle('is-active', selected);
@@ -59,6 +72,11 @@
       });
       sizeButtons.forEach((button) => {
         const selected = button.getAttribute('data-size') === state.size;
+        button.classList.toggle('is-active', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
+      circadianButtons.forEach((button) => {
+        const selected = button.getAttribute('data-circadian-mode') === circadianMode;
         button.classList.toggle('is-active', selected);
         button.setAttribute('aria-pressed', String(selected));
       });
@@ -97,12 +115,22 @@
       });
     });
 
+    circadianButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const mode = button.getAttribute('data-circadian-mode') || 'auto';
+        getCircadianApi()?.setMode?.(mode);
+        syncUi();
+      });
+    });
+
     resetBtn.addEventListener('click', () => {
       getApi()?.reset?.();
+      getCircadianApi()?.reset?.();
       syncUi();
     });
 
     window.addEventListener('modesettings:change', syncUi);
+    window.addEventListener('circadian:change', syncUi);
     syncUi();
   })();
 </script>
@@ -209,7 +237,8 @@
     margin-top: 0.72rem;
   }
 
-  .view-settings-size p {
+  .view-settings-size p,
+  .view-settings-circadian p {
     margin: 0;
     color: var(--tone-muted);
     font-size: 0.76rem;
@@ -234,6 +263,32 @@
   }
 
   .view-size-btn.is-active {
+    border-color: var(--tone-accent);
+    color: var(--tone-accent-glow);
+    background: rgba(214, 168, 53, 0.14);
+  }
+
+  .view-settings-circadian {
+    margin-top: 0.72rem;
+  }
+
+  .view-settings-circadian-options {
+    margin-top: 0.4rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .view-circadian-btn {
+    border: 1px solid var(--tone-line);
+    border-radius: 0.58rem;
+    background: rgba(9, 22, 44, 0.45);
+    color: var(--tone-text);
+    padding: 0.5rem 0.38rem;
+    font-size: 0.78rem;
+  }
+
+  .view-circadian-btn.is-active {
     border-color: var(--tone-accent);
     color: var(--tone-accent-glow);
     background: rgba(214, 168, 53, 0.14);
