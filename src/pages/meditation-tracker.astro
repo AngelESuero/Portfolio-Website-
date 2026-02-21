@@ -1,0 +1,656 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const minuteChoices = [7, 12, 15, 21, 30];
+const moodChoices = ['Calm', 'Focused', 'Drained', 'Grateful', 'Energized'];
+const timelineRanges = [7, 14, 30];
+---
+
+<BaseLayout
+  title="Meditation Tracker"
+  description="Track daily meditation minutes, streaks, mood, and timeline trends."
+  theme="archive"
+>
+  <main class="tracker-page">
+    <section class="tracker-shell">
+      <section class="tracker-card tracker-card--timer">
+        <p class="tracker-kicker">Select minutes</p>
+        <div class="tracker-minute-picker" id="minutePicker">
+          {
+            minuteChoices.map((choice) => (
+              <button type="button" class="tracker-chip" data-minute={choice}>
+                {choice}
+              </button>
+            ))
+          }
+        </div>
+        <button type="button" id="startSession" class="tracker-boom">
+          Let&apos;s BOOM!
+        </button>
+        <p id="trackerMessage" class="tracker-message">Select minutes and lock in your session.</p>
+      </section>
+
+      <section class="tracker-card tracker-card--streak">
+        <p class="tracker-kicker">Streak</p>
+        <div class="tracker-streak-row">
+          <p class="tracker-streak-count"><span id="streakDays">350</span> days</p>
+          <p class="tracker-streak-note">You&apos;ve reached a miracle moment!</p>
+        </div>
+      </section>
+
+      <section class="tracker-card tracker-card--mood">
+        <p class="tracker-kicker">Life-Hopscotch</p>
+        <p class="tracker-mood-title">How are you feeling?</p>
+        <div class="tracker-mood-pills" id="moodPicker">
+          {
+            moodChoices.map((mood) => (
+              <button type="button" class="tracker-pill" data-mood={mood}>
+                {mood}
+              </button>
+            ))
+          }
+        </div>
+        <p class="tracker-mood-today">
+          Today&apos;s mood:
+          <span id="moodToday" class="tracker-mood-value">Not tracked yet</span>
+        </p>
+      </section>
+
+      <section class="tracker-card tracker-card--stats">
+        <p class="tracker-kicker">Time meditated</p>
+        <p class="tracker-total"><span id="totalMinutes">9971</span><span class="tracker-total-unit"> mins</span></p>
+        <div class="tracker-level-row">
+          <div class="tracker-level-track">
+            <div id="levelProgress" class="tracker-level-fill"></div>
+          </div>
+          <p id="levelLabel" class="tracker-level-label">Level 26</p>
+        </div>
+        <p class="tracker-sessions">Sessions completed: <span id="sessionCount">601</span></p>
+      </section>
+
+      <section class="tracker-card tracker-card--timeline">
+        <div class="tracker-timeline-head">
+          <p class="tracker-timeline-title">Timeline</p>
+          <div class="tracker-range-controls" id="rangePicker">
+            {
+              timelineRanges.map((range) => (
+                <button type="button" class="tracker-range" data-range={range}>
+                  {range}d
+                </button>
+              ))
+            }
+          </div>
+        </div>
+
+        <svg id="timelineSvg" viewBox="0 0 560 192" class="tracker-chart" aria-label="Meditation timeline">
+          <defs>
+            <linearGradient id="trackerLineGlow" x1="0%" x2="100%" y1="0%" y2="0%">
+              <stop offset="0%" stop-color="#ff4d4d"></stop>
+              <stop offset="100%" stop-color="#ffa16a"></stop>
+            </linearGradient>
+            <linearGradient id="trackerAreaGlow" x1="0%" x2="0%" y1="0%" y2="100%">
+              <stop offset="0%" stop-color="#ff5b5b" stop-opacity="0.34"></stop>
+              <stop offset="100%" stop-color="#ff5b5b" stop-opacity="0"></stop>
+            </linearGradient>
+          </defs>
+          <line id="timelineBaseline" x1="14" y1="152" x2="546" y2="152" stroke="rgba(255,255,255,0.2)" stroke-dasharray="4 4"></line>
+          <line id="timelineAverageLine" x1="14" y1="102" x2="546" y2="102" stroke="rgba(255,255,255,0.35)" stroke-dasharray="5 5"></line>
+          <path id="timelineArea" d="" fill="url(#trackerAreaGlow)"></path>
+          <path id="timelineLine" d="" fill="none" stroke="url(#trackerLineGlow)" stroke-width="3.5" stroke-linecap="round"></path>
+          <g id="timelineDots"></g>
+          <g id="timelineLabels"></g>
+          <text id="timelineAverageLabel" x="544" y="96" text-anchor="end" font-size="10" fill="rgba(255,255,255,0.78)"></text>
+        </svg>
+
+        <p id="timelineSummary" class="tracker-summary">14 day total: 0 mins | Peak day: 0 mins | Avg: 0 mins/day</p>
+      </section>
+    </section>
+  </main>
+</BaseLayout>
+
+<script is:inline>
+  (() => {
+    const STORAGE_KEY = 'meditation-tracker-v1';
+    const DAY_MS = 24 * 60 * 60 * 1000;
+    const BASELINE_LEVEL_MINUTES = 380;
+    const DEFAULT_STATE = {
+      totalMinutes: 9971,
+      streakDays: 350,
+      sessions: 601,
+      lastSessionDate: null,
+      moodToday: null,
+      dailyMinutes: {}
+    };
+
+    let tracker = loadState();
+    let selectedMinutes = 7;
+    let selectedRange = 14;
+
+    const minuteButtons = Array.from(document.querySelectorAll('[data-minute]'));
+    const moodButtons = Array.from(document.querySelectorAll('[data-mood]'));
+    const rangeButtons = Array.from(document.querySelectorAll('[data-range]'));
+    const streakDays = document.getElementById('streakDays');
+    const totalMinutes = document.getElementById('totalMinutes');
+    const sessionCount = document.getElementById('sessionCount');
+    const moodToday = document.getElementById('moodToday');
+    const levelProgress = document.getElementById('levelProgress');
+    const levelLabel = document.getElementById('levelLabel');
+    const trackerMessage = document.getElementById('trackerMessage');
+    const startSession = document.getElementById('startSession');
+    const timelineArea = document.getElementById('timelineArea');
+    const timelineLine = document.getElementById('timelineLine');
+    const timelineDots = document.getElementById('timelineDots');
+    const timelineLabels = document.getElementById('timelineLabels');
+    const timelineAverageLine = document.getElementById('timelineAverageLine');
+    const timelineAverageLabel = document.getElementById('timelineAverageLabel');
+    const timelineSummary = document.getElementById('timelineSummary');
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return { ...DEFAULT_STATE };
+        const parsed = JSON.parse(raw);
+        const dailyMinutes = parsed && typeof parsed.dailyMinutes === 'object' ? parsed.dailyMinutes : {};
+        return {
+          ...DEFAULT_STATE,
+          ...parsed,
+          dailyMinutes
+        };
+      } catch {
+        return { ...DEFAULT_STATE };
+      }
+    }
+
+    function persistState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tracker));
+    }
+
+    function toDayKey(date = new Date()) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function fromDayKey(value) {
+      const [year, month, day] = String(value).split('-').map((entry) => Number.parseInt(entry, 10));
+      if ([year, month, day].some((entry) => Number.isNaN(entry))) return new Date();
+      return new Date(year, month - 1, day);
+    }
+
+    function daysBetween(previousDate, currentDate) {
+      const previous = fromDayKey(previousDate);
+      const current = fromDayKey(currentDate);
+      return Math.floor((current.getTime() - previous.getTime()) / DAY_MS);
+    }
+
+    function getRecentDays(count) {
+      const days = [];
+      const current = new Date();
+      for (let i = count - 1; i >= 0; i -= 1) {
+        const date = new Date(current);
+        date.setDate(current.getDate() - i);
+        days.push(toDayKey(date));
+      }
+      return days;
+    }
+
+    function buildSmoothPath(points) {
+      if (!points.length) return '';
+      if (points.length === 1) return `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`;
+      let path = `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`;
+      for (let i = 0; i < points.length - 1; i += 1) {
+        const p0 = points[i - 1] || points[i];
+        const p1 = points[i];
+        const p2 = points[i + 1];
+        const p3 = points[i + 2] || p2;
+        const c1x = p1.x + (p2.x - p0.x) / 6;
+        const c1y = p1.y + (p2.y - p0.y) / 6;
+        const c2x = p2.x - (p3.x - p1.x) / 6;
+        const c2y = p2.y - (p3.y - p1.y) / 6;
+        path += ` C ${c1x.toFixed(2)} ${c1y.toFixed(2)} ${c2x.toFixed(2)} ${c2y.toFixed(2)} ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
+      }
+      return path;
+    }
+
+    function renderMinutePicker() {
+      minuteButtons.forEach((button) => {
+        const isActive = Number.parseInt(button.dataset.minute || '0', 10) === selectedMinutes;
+        button.classList.toggle('is-active', isActive);
+      });
+    }
+
+    function renderMoodPicker() {
+      moodButtons.forEach((button) => {
+        const isActive = button.dataset.mood === tracker.moodToday;
+        button.classList.toggle('is-active', isActive);
+      });
+      moodToday.textContent = tracker.moodToday || 'Not tracked yet';
+    }
+
+    function renderStats() {
+      streakDays.textContent = String(tracker.streakDays);
+      totalMinutes.textContent = String(tracker.totalMinutes);
+      sessionCount.textContent = String(tracker.sessions);
+      const level = Math.max(1, Math.floor(tracker.totalMinutes / BASELINE_LEVEL_MINUTES));
+      const progress = Math.min(100, ((tracker.totalMinutes % BASELINE_LEVEL_MINUTES) / BASELINE_LEVEL_MINUTES) * 100);
+      levelProgress.style.width = `${progress}%`;
+      levelLabel.textContent = `Level ${level}`;
+    }
+
+    function renderRangePicker() {
+      rangeButtons.forEach((button) => {
+        const isActive = Number.parseInt(button.dataset.range || '0', 10) === selectedRange;
+        button.classList.toggle('is-active', isActive);
+      });
+    }
+
+    function getTimelineData() {
+      const days = getRecentDays(selectedRange);
+      const points = days.map((day) => {
+        const date = fromDayKey(day);
+        return {
+          day,
+          minutes: tracker.dailyMinutes[day] || 0,
+          axisLabel: `${date.getMonth() + 1}/${date.getDate()}`
+        };
+      });
+      const peak = Math.max(...points.map((point) => point.minutes), 1);
+      const total = points.reduce((sum, point) => sum + point.minutes, 0);
+      const average = Math.round((total / points.length) * 10) / 10;
+      const labelStride = selectedRange === 30 ? 5 : selectedRange === 14 ? 2 : 1;
+      return { points, peak, total, average, labelStride };
+    }
+
+    function renderTimeline() {
+      const data = getTimelineData();
+      const width = 560;
+      const height = 192;
+      const left = 14;
+      const right = width - 14;
+      const top = 18;
+      const bottom = 152;
+      const span = Math.max(1, data.points.length - 1);
+      const coords = data.points.map((point, index) => {
+        const x = left + (index / span) * (right - left);
+        const y = bottom - (point.minutes / data.peak) * (bottom - top);
+        return { ...point, x, y };
+      });
+      const linePath = buildSmoothPath(coords);
+      const areaPath = `${linePath} L ${right} ${bottom} L ${left} ${bottom} Z`;
+      const averageY = bottom - (data.average / data.peak) * (bottom - top);
+      const today = toDayKey();
+
+      timelineLine.setAttribute('d', linePath);
+      timelineArea.setAttribute('d', areaPath);
+      timelineAverageLine.setAttribute('y1', String(averageY));
+      timelineAverageLine.setAttribute('y2', String(averageY));
+      timelineAverageLabel.setAttribute('y', String(Math.max(12, averageY - 6)));
+      timelineAverageLabel.textContent = `avg ${data.average}m`;
+
+      timelineDots.innerHTML = coords
+        .map((coord) => {
+          const isToday = coord.day === today;
+          const radius = isToday ? 5.5 : 4;
+          const fill = isToday ? '#ffffff' : '#ff7171';
+          return `<g><circle cx="${coord.x}" cy="${coord.y}" r="${radius}" fill="${fill}"></circle><title>${coord.day}: ${coord.minutes} mins</title></g>`;
+        })
+        .join('');
+
+      timelineLabels.innerHTML = coords
+        .map((coord, index) => {
+          const shouldShow = index % data.labelStride === 0 || index === coords.length - 1;
+          if (!shouldShow) return '';
+          return `<text x="${coord.x}" y="${height - 10}" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.56)">${coord.axisLabel}</text>`;
+        })
+        .join('');
+
+      timelineSummary.textContent = `${selectedRange} day total: ${data.total} mins | Peak day: ${data.peak} mins | Avg: ${data.average} mins/day`;
+    }
+
+    function renderAll() {
+      renderMinutePicker();
+      renderMoodPicker();
+      renderStats();
+      renderRangePicker();
+      renderTimeline();
+    }
+
+    function handleSessionComplete() {
+      const today = toDayKey();
+      const lastDate = tracker.lastSessionDate;
+      let nextStreak = tracker.streakDays;
+      if (!lastDate) nextStreak = 1;
+      else {
+        const delta = daysBetween(lastDate, today);
+        if (delta === 1) nextStreak += 1;
+        else if (delta > 1) nextStreak = 1;
+      }
+
+      tracker = {
+        ...tracker,
+        totalMinutes: tracker.totalMinutes + selectedMinutes,
+        sessions: tracker.sessions + 1,
+        streakDays: nextStreak,
+        lastSessionDate: today,
+        dailyMinutes: {
+          ...tracker.dailyMinutes,
+          [today]: (tracker.dailyMinutes[today] || 0) + selectedMinutes
+        }
+      };
+      persistState();
+      trackerMessage.textContent = `Session complete: +${selectedMinutes} min. Keep the streak alive.`;
+      renderAll();
+    }
+
+    minuteButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        selectedMinutes = Number.parseInt(button.dataset.minute || '7', 10);
+        renderMinutePicker();
+      });
+    });
+
+    moodButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        tracker = { ...tracker, moodToday: button.dataset.mood || null };
+        persistState();
+        renderMoodPicker();
+      });
+    });
+
+    rangeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        selectedRange = Number.parseInt(button.dataset.range || '14', 10);
+        renderRangePicker();
+        renderTimeline();
+      });
+    });
+
+    startSession.addEventListener('click', handleSessionComplete);
+    renderAll();
+  })();
+</script>
+
+<style>
+  .tracker-page {
+    width: min(760px, calc(100vw - 2rem));
+    margin: 0 auto;
+    padding: 1.3rem 0 2.8rem;
+  }
+
+  .tracker-shell {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .tracker-card {
+    border-radius: 1.7rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.2rem;
+    background: linear-gradient(160deg, rgba(10, 16, 30, 0.88), rgba(4, 8, 18, 0.86));
+    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.38);
+  }
+
+  .tracker-card--timer {
+    background:
+      radial-gradient(90% 130% at 14% -10%, rgba(66, 114, 255, 0.18), transparent 58%),
+      linear-gradient(180deg, rgba(9, 12, 25, 0.95), rgba(3, 6, 14, 0.92));
+  }
+
+  .tracker-card--streak {
+    background: linear-gradient(120deg, #070b18, #070d26 38%, #7d0f20);
+  }
+
+  .tracker-card--mood {
+    background: linear-gradient(120deg, #312061, #1a1450 44%, #070b1a);
+  }
+
+  .tracker-card--stats {
+    background:
+      radial-gradient(120% 90% at 4% -20%, rgba(53, 95, 255, 0.26), transparent 62%),
+      linear-gradient(180deg, #0a0f25, #070a18);
+  }
+
+  .tracker-card--timeline {
+    background:
+      radial-gradient(100% 70% at 100% 0%, rgba(255, 76, 76, 0.17), transparent 70%),
+      linear-gradient(160deg, #0b1229, #090b1a);
+  }
+
+  .tracker-kicker {
+    margin: 0;
+    font-size: 0.87rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.64);
+  }
+
+  .tracker-minute-picker {
+    margin-top: 0.8rem;
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.2rem;
+  }
+
+  .tracker-chip {
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.86);
+    border-radius: 999px;
+    min-width: 3.1rem;
+    padding: 0.46rem 0.8rem;
+    font-size: 1.1rem;
+    line-height: 1;
+    transition: all 180ms ease;
+  }
+
+  .tracker-chip.is-active {
+    background: #ffffff;
+    color: #030308;
+    border-color: #ffffff;
+  }
+
+  .tracker-boom {
+    margin-top: 0.95rem;
+    width: 100%;
+    border: 0;
+    border-radius: 999px;
+    padding: 0.9rem 1rem 1rem;
+    background: linear-gradient(180deg, #ff2a2a, #e51212);
+    color: #fff;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.4rem, 5vw, 2rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    box-shadow: 0 16px 30px rgba(255, 20, 20, 0.38);
+  }
+
+  .tracker-message {
+    margin: 0.68rem 0 0;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .tracker-streak-row {
+    margin-top: 0.55rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .tracker-streak-count {
+    margin: 0;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.1rem, 7vw, 3rem);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .tracker-streak-note {
+    margin: 0;
+    max-width: 12rem;
+    text-align: right;
+    font-size: 1.07rem;
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1.3;
+  }
+
+  .tracker-mood-title {
+    margin: 0.4rem 0 0;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.7rem, 6vw, 2.25rem);
+    line-height: 1.08;
+  }
+
+  .tracker-mood-pills {
+    margin-top: 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .tracker-pill {
+    border: 1px solid rgba(255, 255, 255, 0.26);
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.88);
+    border-radius: 999px;
+    padding: 0.44rem 0.8rem;
+    font-size: 0.87rem;
+    transition: all 180ms ease;
+  }
+
+  .tracker-pill.is-active {
+    background: #fff;
+    color: #06060b;
+    border-color: #fff;
+  }
+
+  .tracker-mood-today {
+    margin: 0.65rem 0 0;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  .tracker-mood-value {
+    color: #fff;
+    font-weight: 600;
+    margin-left: 0.32rem;
+  }
+
+  .tracker-total {
+    margin: 0.4rem 0 0;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.3rem, 8vw, 3.8rem);
+    line-height: 1;
+    font-weight: 700;
+  }
+
+  .tracker-total-unit {
+    font-size: 0.63em;
+    margin-left: 0.34rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+  }
+
+  .tracker-level-row {
+    margin-top: 0.92rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .tracker-level-track {
+    flex: 1;
+    height: 0.65rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    overflow: hidden;
+  }
+
+  .tracker-level-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #425fff, #6ba7ff);
+    transition: width 240ms ease;
+  }
+
+  .tracker-level-label {
+    margin: 0;
+    white-space: nowrap;
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .tracker-sessions {
+    margin: 0.6rem 0 0;
+    color: rgba(255, 255, 255, 0.56);
+    font-size: 0.9rem;
+  }
+
+  .tracker-timeline-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.8rem;
+  }
+
+  .tracker-timeline-title {
+    margin: 0;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+  }
+
+  .tracker-range-controls {
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  .tracker-range {
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.76);
+    border-radius: 999px;
+    padding: 0.26rem 0.68rem;
+    font-size: 0.74rem;
+    line-height: 1.2;
+  }
+
+  .tracker-range.is-active {
+    background: #fff;
+    color: #04050a;
+    border-color: #fff;
+  }
+
+  .tracker-chart {
+    margin-top: 0.8rem;
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .tracker-summary {
+    margin: 0.28rem 0 0;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.87rem;
+  }
+
+  @media (max-width: 640px) {
+    .tracker-page {
+      width: min(760px, calc(100vw - 1rem));
+      padding-top: 0.6rem;
+    }
+
+    .tracker-card {
+      border-radius: 1.45rem;
+      padding: 1rem;
+    }
+
+    .tracker-streak-note {
+      max-width: 9rem;
+      font-size: 0.92rem;
+    }
+  }
+</style>
