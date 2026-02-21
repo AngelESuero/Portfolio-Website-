@@ -5,9 +5,10 @@ import featuredThreads from '../data/featured_threads.json';
 import { getCollection } from 'astro:content';
 import UntitledPlayer from '../components/UntitledPlayer.astro';
 import EmbedCard from '../components/EmbedCard.astro';
+import AIAccountabilityPanel from '../components/AIAccountabilityPanel.astro';
 import HomeTabReflections from '../components/HomeTabReflections.astro';
 import HomeSocialFeeds from '../components/HomeSocialFeeds.astro';
-import { LINK_HUB_CATEGORIES, type LinkHubItem } from '../data/linkhub';
+import { LINK_HUB_CATEGORIES, type AccentColorKey, type LinkHubItem } from '../data/linkhub';
 import { isValidXStatusUrl } from '../lib/x-url';
 import igManifest from '../data/ig.json';
 import youtubeManifest from '../data/youtube.json';
@@ -47,12 +48,47 @@ const pickItems = (categoryId: string, ids: string[]): LinkHubItem[] => {
 };
 
 const nowListeningItem = pickItems('music', ['now-listening'])[0];
-const sectionEmbeds = [
+type SectionPanelType = 'embed' | 'ai-accountability';
+type SiteToneKey =
+  | 'balance'
+  | 'clarity'
+  | 'devotion'
+  | 'contemplation'
+  | 'discernment'
+  | 'vitality'
+  | 'grounding'
+  | 'compassion'
+  | 'harmony'
+  | 'seva'
+  | 'intensity'
+  | 'presence';
+
+interface BaseHomeSection {
+  id: string;
+  label: string;
+  color: AccentColorKey;
+  tone: SiteToneKey;
+  panelType: SectionPanelType;
+}
+
+interface EmbedHomeSection extends BaseHomeSection {
+  panelType: 'embed';
+  items: LinkHubItem[];
+}
+
+interface AIAccountabilityHomeSection extends BaseHomeSection {
+  panelType: 'ai-accountability';
+}
+
+type HomeSection = EmbedHomeSection | AIAccountabilityHomeSection;
+
+const homeSections: HomeSection[] = [
   {
     id: 'music',
     label: 'Music',
     color: 'blue',
     tone: 'vitality',
+    panelType: 'embed',
     items: pickItems('music', ['my-first-beat-tape', 'everyday-soundscape']).concat(
       pickItems('resources', ['practicing-kriya'])
     )
@@ -62,6 +98,7 @@ const sectionEmbeds = [
     label: 'Visual',
     color: 'orange',
     tone: 'devotion',
+    panelType: 'embed',
     items: pickItems('social', ['instagram', 'threads', 'tiktok'])
   },
   {
@@ -69,6 +106,7 @@ const sectionEmbeds = [
     label: 'Video',
     color: 'red',
     tone: 'intensity',
+    panelType: 'embed',
     items: pickItems('video', ['everyday-life-video', 'youtube-channel', 'post-labor-econ-playlist'])
   },
   {
@@ -83,6 +121,7 @@ const sectionEmbeds = [
     label: 'Newark',
     color: 'yellow',
     tone: 'grounding',
+    panelType: 'embed',
     items: pickItems('resources', ['work-archive', 'map', 'mit-living-wage'])
   },
   {
@@ -90,9 +129,17 @@ const sectionEmbeds = [
     label: 'Scraps',
     color: 'violet',
     tone: 'contemplation',
+    panelType: 'embed',
     items: pickItems('music', ['scraps-2023-2024']).concat(
       pickItems('writing', ['writing-archive', 'substack', 'magazine-publication'])
     )
+  },
+  {
+    id: 'ai-accountability',
+    label: 'AI Accountability',
+    color: 'indigo',
+    tone: 'discernment',
+    panelType: 'ai-accountability'
   }
 ];
 const shortDateFormatter = new Intl.DateTimeFormat('en-US', {
@@ -240,7 +287,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
     <section class="mt-12 md:mt-14">
       <h2 class="font-display text-2xl">Sections</h2>
       <div class="mt-3 section-tablist" role="tablist" aria-label="Section spotlight tabs">
-        {sectionEmbeds.map((section, index) => (
+        {homeSections.map((section, index) => (
           <button
             type="button"
             role="tab"
@@ -256,23 +303,27 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
       </div>
 
       <div class="mt-4 section-panels">
-        {sectionEmbeds.map((section, index) => (
+        {homeSections.map((section, index) => (
           <div
             class:list={['section-panel', index === 0 && 'is-active']}
             data-section-panel={section.id}
             role="tabpanel"
             aria-label={`${section.label} spotlight`}
           >
-            {section.items.length > 0 ? (
-              <div class="section-cards">
-                {section.items.map((item) => (
-                  <div class="section-card-shell">
-                    <EmbedCard item={item} showResizeHint={true} />
-                  </div>
-                ))}
-              </div>
+            {section.panelType === 'embed' ? (
+              section.items.length > 0 ? (
+                <div class="section-cards">
+                  {section.items.map((item) => (
+                    <div class="section-card-shell">
+                      <EmbedCard item={item} showResizeHint={true} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p class="text-sm text-zinc-400">No spotlight links configured yet.</p>
+              )
             ) : (
-              <p class="text-sm text-zinc-400">No spotlight links configured yet.</p>
+              <AIAccountabilityPanel />
             )}
           </div>
         ))}
@@ -314,6 +365,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
           const active = panel.getAttribute('data-section-panel') === id;
           panel.classList.toggle('is-active', active);
         });
+        window.dispatchEvent(new CustomEvent('home:section-activated', { detail: { id } }));
 
         if (!syncAccent) return;
         const activeTab = tabs.find((tab) => tab.getAttribute('data-section-tab') === id);

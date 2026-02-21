@@ -1,0 +1,681 @@
+<section id="ai-accountability-panel" class="aia-panel" aria-labelledby="aia-heading">
+  <header class="card aia-hero">
+    <p class="aia-kicker">Section focus</p>
+    <h3 id="aia-heading" class="aia-title">AI Accountability</h3>
+    <p class="aia-copy">
+      Artificial intelligence is not weightless software. It is physical infrastructure, electricity demand, cooling demand, and
+      procurement pressure that moves through real communities. This panel tracks those hidden costs and where accountability has to
+      be engineered into deployment decisions.
+    </p>
+  </header>
+
+  <section class="aia-kpis" aria-label="Key AI accountability metrics">
+    <article class="card aia-kpi">
+      <p class="aia-kicker">Training emission</p>
+      <p class="aia-kpi-value">500+</p>
+      <p class="aia-kpi-note">Metric tons CO2e for one large legacy model training run (GPT-3 era estimate).</p>
+    </article>
+    <article class="card aia-kpi">
+      <p class="aia-kicker">Cooling water</p>
+      <p class="aia-kpi-value">700k</p>
+      <p class="aia-kpi-note">Liters of freshwater used for one large-model training cycle.</p>
+    </article>
+    <article class="card aia-kpi">
+      <p class="aia-kicker">Inference energy</p>
+      <p class="aia-kpi-value">10x</p>
+      <p class="aia-kpi-note">Typical energy ratio of one generative query versus one standard search query.</p>
+    </article>
+  </section>
+
+  <section class="card aia-block" aria-labelledby="aia-carbon-heading">
+    <header class="aia-block-head">
+      <p class="aia-kicker">Accountability lens 1</p>
+      <h4 id="aia-carbon-heading">Training day carbon burden</h4>
+      <p class="aia-copy">
+        Model training pushes thousands of accelerators for sustained windows. Emission totals depend as much on grid quality and
+        facility geography as on model architecture.
+      </p>
+    </header>
+
+    <div class="aia-grid aia-grid-2">
+      <article class="aia-chart-card">
+        <h5>Emissions comparison (tonnes CO2e)</h5>
+        <p class="aia-subtle">Legacy model training versus familiar real-world baselines.</p>
+        <div class="aia-chart-shell" data-chart-shell>
+          <canvas id="aia-co2-chart" aria-label="Emissions comparison chart"></canvas>
+          <p class="aia-chart-fallback" hidden>Chart unavailable. Check textual notes while charts load.</p>
+        </div>
+        <p class="aia-subtle">
+          Note: BLOOM was trained on a lower-carbon grid, showing how regional energy mix can sharply reduce training emissions.
+        </p>
+      </article>
+
+      <div class="aia-stack">
+        <article class="card aia-note">
+          <h5>Grid intensity determines footprint</h5>
+          <p>
+            Training in high-coal grids can multiply emissions compared with hydro or nuclear-heavy regions. Site selection is a
+            first-order policy decision, not a cosmetic optimization.
+          </p>
+        </article>
+        <article class="card aia-note">
+          <h5>Hardware lifecycle also counts</h5>
+          <p>
+            Frequent accelerator turnover compounds impact through manufacturing and e-waste. Accountability has to include
+            procurement cadence, not just runtime electricity.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="card aia-block" aria-labelledby="aia-water-heading">
+    <header class="aia-block-head">
+      <p class="aia-kicker">Accountability lens 2</p>
+      <h4 id="aia-water-heading">Water pressure in data center growth</h4>
+      <p class="aia-copy">
+        Cooling towers and power generation chains both consume water. As AI demand scales, local water planning and transparency
+        reporting become public-interest concerns.
+      </p>
+    </header>
+
+    <div class="aia-grid aia-grid-2">
+      <article class="aia-note-list">
+        <h5>How water is consumed</h5>
+        <ul>
+          <li>
+            <strong>Direct cooling draw:</strong> on-site tower systems use freshwater to keep thermal loads under control.
+          </li>
+          <li>
+            <strong>Indirect energy draw:</strong> utilities also consume water producing the electricity AI workloads require.
+          </li>
+          <li>
+            <strong>Conversation-scale impact:</strong> estimates suggest a 20-50 prompt chat can map to roughly 500 ml water usage.
+          </li>
+        </ul>
+      </article>
+      <article class="aia-chart-card">
+        <h5>Corporate water trend (billions of gallons)</h5>
+        <p class="aia-subtle">Approximate trend line as AI infrastructure scaled between 2018 and 2022.</p>
+        <div class="aia-chart-shell" data-chart-shell>
+          <canvas id="aia-water-chart" aria-label="Corporate water consumption trend chart"></canvas>
+          <p class="aia-chart-fallback" hidden>Chart unavailable. Check textual notes while charts load.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="card aia-block" aria-labelledby="aia-inference-heading">
+    <header class="aia-block-head">
+      <p class="aia-kicker">Accountability lens 3</p>
+      <h4 id="aia-inference-heading">Inference is the daily load</h4>
+      <p class="aia-copy">
+        Training is episodic, inference is continuous. Each generated response performs token-by-token computation, so scaled usage
+        shifts baseline data center demand.
+      </p>
+    </header>
+
+    <div class="aia-grid aia-grid-2">
+      <article class="aia-chart-card">
+        <h5>Energy per query (watt-hours)</h5>
+        <div class="aia-chart-shell" data-chart-shell>
+          <canvas id="aia-inference-chart" aria-label="Inference versus search energy chart"></canvas>
+          <p class="aia-chart-fallback" hidden>Chart unavailable. Check textual notes while charts load.</p>
+        </div>
+      </article>
+      <article class="card aia-note">
+        <h5>Why this matters at system scale</h5>
+        <p>
+          Search retrieves indexed records. Generative inference computes token probabilities in sequence, increasing accelerator
+          utilization per request. At billions of interactions, this changes total grid demand and required backup capacity.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="card aia-block" aria-labelledby="aia-benefit-heading">
+    <header class="aia-block-head">
+      <p class="aia-kicker">Counterbalance</p>
+      <h4 id="aia-benefit-heading">Where AI can reduce emissions</h4>
+      <p class="aia-copy">
+        Accountability is not anti-AI. It is pro-measurement. The same systems can reduce emissions when deployed toward grid
+        balancing, logistics efficiency, and material innovation.
+      </p>
+    </header>
+
+    <div class="aia-grid aia-grid-2">
+      <article class="aia-chart-card">
+        <h5>Potential sector reduction (%)</h5>
+        <div class="aia-chart-shell" data-chart-shell>
+          <canvas id="aia-benefit-chart" aria-label="Potential emission reduction chart"></canvas>
+          <p class="aia-chart-fallback" hidden>Chart unavailable. Check textual notes while charts load.</p>
+        </div>
+      </article>
+      <div class="aia-stack">
+        <article class="card aia-note">
+          <h5>Grid optimization</h5>
+          <p>Real-time balancing can improve renewable integration and reduce curtailment waste.</p>
+        </article>
+        <article class="card aia-note">
+          <h5>Material discovery</h5>
+          <p>Accelerated candidate search can compress R&D cycles for batteries and energy systems.</p>
+        </article>
+        <article class="card aia-note">
+          <h5>Agricultural and logistics efficiency</h5>
+          <p>Route planning and precision operations reduce fuel, fertilizer, and water overhead.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer class="card aia-sources" aria-labelledby="aia-sources-heading">
+    <h4 id="aia-sources-heading">Notes and source anchors</h4>
+    <p>
+      Values in this panel are educational estimates aggregated from public reporting and research summaries, including Stanford HAI,
+      hyperscaler environmental disclosures, BLOOM reporting context, and Joule-era inference cost discussions.
+    </p>
+  </footer>
+</section>
+
+<script is:inline src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script is:inline>
+  (() => {
+    const panel = document.getElementById('ai-accountability-panel');
+    if (!panel) return;
+
+    const state = {
+      initialized: false,
+      booting: false,
+      attempts: 0,
+      charts: []
+    };
+    const MAX_ATTEMPTS = 24;
+    const BOOT_DELAY_MS = 120;
+
+    const chartShells = () => Array.from(panel.querySelectorAll('[data-chart-shell]'));
+
+    const showFallback = () => {
+      chartShells().forEach((shell) => {
+        const canvas = shell.querySelector('canvas');
+        const fallback = shell.querySelector('.aia-chart-fallback');
+        if (canvas) {
+          canvas.setAttribute('hidden', 'true');
+        }
+        if (fallback instanceof HTMLElement) {
+          fallback.hidden = false;
+        }
+      });
+    };
+
+    const readTone = (token, fallback) => {
+      const value = getComputedStyle(document.documentElement).getPropertyValue(token).trim();
+      return value || fallback;
+    };
+
+    const wrapLabels = (labels, maxLength = 16) =>
+      labels.map((label) => {
+        if (label.length <= maxLength) return label;
+        const words = label.split(' ');
+        const lines = [];
+        let line = words[0] || '';
+        for (let index = 1; index < words.length; index += 1) {
+          const word = words[index];
+          if ((line + ' ' + word).trim().length <= maxLength) {
+            line = `${line} ${word}`.trim();
+          } else {
+            lines.push(line);
+            line = word;
+          }
+        }
+        if (line) lines.push(line);
+        return lines;
+      });
+
+    const baseTooltip = {
+      callbacks: {
+        title(tooltipItems) {
+          const item = tooltipItems[0];
+          const raw = item?.chart?.data?.labels?.[item.dataIndex];
+          return Array.isArray(raw) ? raw.join(' ') : raw;
+        }
+      }
+    };
+
+    const buildCharts = () => {
+      if (!window.Chart) return false;
+      const ChartCtor = window.Chart;
+
+      const accent = readTone('--tone-accent', '#f2b84b');
+      const sky = readTone('--tone-sky', '#6fb7ff');
+      const muted = readTone('--tone-muted', 'rgba(255,255,255,0.72)');
+      const text = readTone('--tone-text', '#f8fafc');
+      const grid = 'rgba(232,239,255,0.08)';
+
+      const co2Canvas = panel.querySelector('#aia-co2-chart');
+      if (co2Canvas instanceof HTMLCanvasElement) {
+        const co2Chart = new ChartCtor(co2Canvas.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: wrapLabels(['Roundtrip Flight (NY-LON)', 'Human Life (1 Year)', 'GPT-3 Training', 'Car Lifetime (Fuel)', 'BLOOM Training']),
+            datasets: [
+              {
+                label: 'Tonnes CO2e',
+                data: [0.98, 5, 502, 24, 25],
+                backgroundColor: ['#7f8ea3', '#9ca9bb', '#c84f77', '#73849b', accent],
+                borderRadius: 6
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: baseTooltip
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: { color: muted },
+                grid: { color: grid },
+                title: { display: true, text: 'Tonnes CO2e', color: muted }
+              },
+              x: {
+                ticks: { color: muted },
+                grid: { display: false }
+              }
+            }
+          }
+        });
+        state.charts.push(co2Chart);
+      }
+
+      const waterCanvas = panel.querySelector('#aia-water-chart');
+      if (waterCanvas instanceof HTMLCanvasElement) {
+        const waterChart = new ChartCtor(waterCanvas.getContext('2d'), {
+          type: 'line',
+          data: {
+            labels: ['2018', '2019', '2020', '2021', '2022'],
+            datasets: [
+              {
+                label: 'Google water usage',
+                data: [3.5, 4.1, 4.5, 5.2, 6.4],
+                borderColor: sky,
+                backgroundColor: sky,
+                tension: 0.3,
+                pointRadius: 4
+              },
+              {
+                label: 'Microsoft water usage',
+                data: [2.8, 3.0, 3.5, 4.0, 5.3],
+                borderColor: accent,
+                backgroundColor: accent,
+                tension: 0.3,
+                pointRadius: 4
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { labels: { color: text } },
+              tooltip: baseTooltip
+            },
+            scales: {
+              y: {
+                beginAtZero: false,
+                ticks: { color: muted },
+                grid: { color: grid },
+                title: { display: true, text: 'Billions of gallons', color: muted }
+              },
+              x: {
+                ticks: { color: muted },
+                grid: { color: grid }
+              }
+            }
+          }
+        });
+        state.charts.push(waterChart);
+      }
+
+      const inferenceCanvas = panel.querySelector('#aia-inference-chart');
+      if (inferenceCanvas instanceof HTMLCanvasElement) {
+        const inferenceChart = new ChartCtor(inferenceCanvas.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: ['Standard search', 'Generative AI query'],
+            datasets: [
+              {
+                label: 'Watt-hours per query',
+                data: [0.3, 4.5],
+                backgroundColor: ['#8593a7', '#da6e8f'],
+                borderRadius: 6
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: baseTooltip
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: { color: muted },
+                grid: { color: grid },
+                title: { display: true, text: 'Watt-hours (Wh)', color: muted }
+              },
+              x: {
+                ticks: { color: muted },
+                grid: { display: false }
+              }
+            }
+          }
+        });
+        state.charts.push(inferenceChart);
+      }
+
+      const benefitCanvas = panel.querySelector('#aia-benefit-chart');
+      if (benefitCanvas instanceof HTMLCanvasElement) {
+        const benefitChart = new ChartCtor(benefitCanvas.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: wrapLabels(['Grid optimization', 'Transport routing', 'Agricultural precision', 'Material discovery', 'Building HVAC']),
+            datasets: [
+              {
+                label: 'Potential emission reduction (%)',
+                data: [15, 12, 10, 20, 8],
+                backgroundColor: ['#57b78c', sky, '#d69d4b', accent, '#8b79cc'],
+                borderRadius: 4
+              }
+            ]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: baseTooltip
+            },
+            scales: {
+              x: {
+                beginAtZero: true,
+                ticks: { color: muted },
+                grid: { color: grid },
+                title: { display: true, text: 'Potential reduction (%)', color: muted }
+              },
+              y: {
+                ticks: { color: muted },
+                grid: { display: false }
+              }
+            }
+          }
+        });
+        state.charts.push(benefitChart);
+      }
+
+      state.initialized = state.charts.length > 0;
+      return state.initialized;
+    };
+
+    const resizeCharts = () => {
+      state.charts.forEach((chart) => {
+        try {
+          chart.resize();
+        } catch {}
+      });
+    };
+
+    const ensureCharts = () => {
+      if (state.initialized) {
+        resizeCharts();
+        return;
+      }
+      if (state.booting) return;
+
+      state.booting = true;
+      const runAttempt = () => {
+        if (buildCharts()) {
+          state.booting = false;
+          return;
+        }
+        state.attempts += 1;
+        if (state.attempts >= MAX_ATTEMPTS) {
+          state.booting = false;
+          showFallback();
+          return;
+        }
+        window.setTimeout(runAttempt, BOOT_DELAY_MS);
+      };
+      runAttempt();
+    };
+
+    const onSectionActivated = (event) => {
+      if (!event || typeof event !== 'object') return;
+      const detail = event.detail;
+      if (!detail || detail.id !== 'ai-accountability') return;
+      ensureCharts();
+    };
+
+    window.addEventListener('home:section-activated', onSectionActivated);
+
+    const parentPanel = panel.closest('[data-section-panel]');
+    if (parentPanel && parentPanel.classList.contains('is-active')) {
+      ensureCharts();
+    }
+  })();
+</script>
+
+<style>
+  .aia-panel {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .aia-hero {
+    padding: 1rem;
+  }
+
+  .aia-title {
+    margin: 0.1rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2.4vw, 1.8rem);
+    line-height: 1.12;
+    color: var(--tone-text);
+  }
+
+  .aia-kicker {
+    margin: 0;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--tone-muted);
+  }
+
+  .aia-copy {
+    margin: 0.55rem 0 0;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+    font-size: 0.95rem;
+    line-height: 1.56;
+  }
+
+  .aia-kpis {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.72rem;
+  }
+
+  .aia-kpi {
+    padding: 0.9rem;
+    display: grid;
+    gap: 0.32rem;
+  }
+
+  .aia-kpi-value {
+    margin: 0;
+    font-size: clamp(1.8rem, 3vw, 2.25rem);
+    line-height: 1;
+    font-weight: 700;
+    color: var(--tone-accent-glow);
+  }
+
+  .aia-kpi-note {
+    margin: 0;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: var(--tone-muted);
+  }
+
+  .aia-block {
+    padding: 1rem;
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .aia-block-head h4 {
+    margin: 0.1rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2.15vw, 1.5rem);
+    line-height: 1.2;
+  }
+
+  .aia-grid {
+    display: grid;
+    gap: 0.72rem;
+  }
+
+  .aia-grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .aia-chart-card {
+    border: 1px solid var(--line2);
+    border-radius: 0.85rem;
+    padding: 0.85rem;
+    background: color-mix(in srgb, var(--tone-surface-strong) 80%, transparent);
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .aia-chart-card h5,
+  .aia-note h5,
+  .aia-note-list h5 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 0.98rem;
+    line-height: 1.24;
+    color: var(--tone-text);
+  }
+
+  .aia-subtle {
+    margin: 0;
+    font-size: 0.76rem;
+    color: var(--tone-muted);
+    line-height: 1.45;
+  }
+
+  .aia-chart-shell {
+    position: relative;
+    border: 1px solid var(--line2);
+    border-radius: 0.75rem;
+    background: color-mix(in srgb, var(--tone-bg-deep) 86%, transparent);
+    min-height: 300px;
+    padding: 0.45rem;
+  }
+
+  .aia-chart-shell canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .aia-chart-fallback {
+    margin: 0;
+    padding: 0.65rem;
+    font-size: 0.83rem;
+    color: var(--tone-muted);
+  }
+
+  .aia-stack {
+    display: grid;
+    gap: 0.72rem;
+  }
+
+  .aia-note {
+    padding: 0.82rem;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .aia-note p,
+  .aia-note-list li {
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+  }
+
+  .aia-note-list {
+    border: 1px solid var(--line2);
+    border-radius: 0.85rem;
+    padding: 0.9rem;
+    background: color-mix(in srgb, var(--tone-surface-strong) 80%, transparent);
+  }
+
+  .aia-note-list ul {
+    margin: 0.6rem 0 0;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.58rem;
+  }
+
+  .aia-note-list strong {
+    color: var(--tone-accent-glow);
+    font-weight: 600;
+  }
+
+  .aia-sources {
+    padding: 0.85rem;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .aia-sources h4 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--tone-text);
+  }
+
+  .aia-sources p {
+    margin: 0;
+    font-size: 0.84rem;
+    line-height: 1.5;
+    color: var(--tone-muted);
+  }
+
+  @media (max-width: 980px) {
+    .aia-kpis,
+    .aia-grid-2 {
+      grid-template-columns: 1fr;
+    }
+
+    .aia-chart-shell {
+      min-height: 260px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .aia-hero,
+    .aia-block {
+      padding: 0.85rem;
+    }
+
+    .aia-chart-shell {
+      min-height: 230px;
+    }
+  }
+</style>
