@@ -1,6 +1,5 @@
 ---
 import profile from '../data/profile';
-import ViewSettings from './ViewSettings.astro';
 
 const nav = [
   { label: 'Home', href: '/', color: 'blue', tone: 'balance' },
@@ -54,7 +53,6 @@ const isActive = (href: string) => {
         Live
       </a>
       <button id="theme-toggle" aria-label="Toggle dark mode" class="pill rounded px-3 py-1 text-sm">Theme</button>
-      <ViewSettings />
     </div>
   </div>
   <nav id="mobile-nav" aria-label="Mobile navigation" class="mobile-nav md:hidden" hidden>
