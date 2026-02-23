@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-23T11:55:07.652Z",
+    "generatedAt": "2026-02-23T13:43:08.870Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,30 @@
     ]
   },
   "items": [
+    {
+      "id": "a285df3020a685d24a2a19c0bb92b0bf3c4337b7da9179f6467f2b04a59806c6",
+      "title": "OpenAI announces Frontier Alliance Partners",
+      "url": "https://openai.com/index/frontier-alliance-partners",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-02-23T05:30:00.000Z",
+      "summary": "OpenAI announces Frontier Alliance Partners to help enterprises move from AI pilots to production with secure, scalable agent deployments.",
+      "tags": [
+        "primary",
+        "release",
+        "agents"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/frontier-alliance-partners"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
     {
       "id": "4349acf3f9ad7715eb7b38ed1589d2b69205fb6064f9ec0be63459be7ff11538",
       "title": "Epistemic Traps: Rational Misalignment Driven by Model Misspecification",
@@ -15091,32 +15115,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2601.12815"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "1ef4063671238d61d452e919a30db75ab725724431aedbb1fefedd7f705698e6",
-      "title": "Proof-RM: A Scalable and Generalizable Reward Model for Math Proof",
-      "url": "https://arxiv.org/abs/2602.02377",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-20T05:00:00.000Z",
-      "summary": "arXiv:2602.02377v2 Announce Type: replace Abstract: While Large Language Models (LLMs) have demonstrated strong math reasoning abilities through Reinforcement Learning with *Verifiable Rewards* (RLVR), many advanced mathematical problems are proof-based, with no guaranteed way to determine the authenticity of a proof by simple answer matching. To enable automatic verification, a Reward Model (RM) capable of reliably evaluating full proof processes is required. In this work, we design a *scalable* data-construction pipeline that, with minimal human effort, leverages LLMs to generate a large quantity of high-quality ``**question-proof-check**'' triplet data. By systematically varying problem sources, generation methods, and model configurations, we create diverse problem-proof pairs spanning multiple difficulty levels, linguistic styles, and error types, subsequently filtered through hierarchical human review for label alignment. Utilizing these data, we train a proof-checking RM, incorporating an ``LLM-as-a-RM-for-RM'' approach and balanced token weighting to stabilize the RL process. Our experiments validate the model's scalability and strong performance from multiple perspectives, including reward accuracy, generalization ability and test-time guidance, providing important practical recipes and tools for strengthening LLM mathematical capabilities.",
-      "tags": [
-        "papers",
-        "language",
-        "reasoning",
-        "safety",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.02377"
         },
         {
           "label": "Feed",
