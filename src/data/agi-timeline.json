@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-23T17:20:30.490Z",
+    "generatedAt": "2026-02-23T19:32:49.930Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,55 @@
     ]
   },
   "items": [
+    {
+      "id": "3d2f17cbe178928f4e96aebc2ecd2467fa21bbb46ba20fb8664cd1694e522e03",
+      "title": "Using NVFP4 Low-Precision Model Training for Higher Throughput Without Losing Accuracy",
+      "url": "https://developer.nvidia.com/blog/using-nvfp4-low-precision-model-training-for-higher-throughput-without-losing-accuracy/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-02-23T18:00:00.000Z",
+      "summary": "As the sizes of AI models and datasets continue to increase, relying only on higher-precision BF16 training is no longer sufficient. Key challenges such as... As the sizes of AI models and datasets continue to increase, relying only on higher-precision BF16 training is no longer sufficient. Key challenges such as training throughput expectations, memory limits, and rising costs are becoming the primary barriers to scaling transformer models. Using lower-precision training can address these challenges. By reducing the numeric precision used during… Source",
+      "tags": [
+        "compute",
+        "training",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/using-nvfp4-low-precision-model-training-for-higher-throughput-without-losing-accuracy/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
+    {
+      "id": "b1596c242706f501d9acf4167bc1ed65c398012b3a1c86dcd28232f44cb7105a",
+      "title": "Why we no longer evaluate SWE-bench Verified",
+      "url": "https://openai.com/index/why-we-no-longer-evaluate-swe-bench-verified",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-02-23T11:00:00.000Z",
+      "summary": "SWE-bench Verified is increasingly contaminated and mismeasures frontier coding progress. Our analysis shows flawed tests and training leakage. We recommend SWE-bench Pro.",
+      "tags": [
+        "primary",
+        "release",
+        "training"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/why-we-no-longer-evaluate-swe-bench-verified"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
     {
       "id": "a285df3020a685d24a2a19c0bb92b0bf3c4337b7da9179f6467f2b04a59806c6",
       "title": "OpenAI announces Frontier Alliance Partners",
@@ -15064,57 +15113,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2512.11108"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "3763ad5a6963879b06113971334778650c3a00b85ec98801a75c7eb56c5809cb",
-      "title": "Symphonym: Universal Phonetic Embeddings for Cross-Script Name Matching",
-      "url": "https://arxiv.org/abs/2601.06932",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-20T05:00:00.000Z",
-      "summary": "arXiv:2601.06932v2 Announce Type: replace Abstract: Linking names across historical sources, languages, and writing systems remains a fundamental challenge in digital humanities and geographic information retrieval. Existing approaches require language-specific phonetic algorithms or fail to capture phonetic relationships across different scripts. This paper presents Symphonym, a neural embedding system that maps names from any script into a unified 128-dimensional phonetic space, enabling direct similarity comparison without runtime phonetic conversion. Symphonym uses a Teacher-Student architecture where a Teacher network trained on articulatory phonetic features produces target embeddings, while a Student network learns to approximate these embeddings directly from characters. The Teacher combines Epitran (extended with 100 new language-script mappings), Phonikud for Hebrew, and CharsiuG2P for Chinese, Japanese, and Korean. Training used 32.7 million triplet samples of toponyms spanning 20 writing systems from GeoNames, Wikidata, and Getty Thesaurus of Geographic Names. On the MEHDIE Hebrew-Arabic historical toponym benchmark, Symphonym achieves Recall@10 of 97.6% and MRR of 90.3%, outperforming Levenshtein and Jaro-Winkler baselines (Recall@1: 86.7% vs 81.5% and 78.5%). Evaluation on 12,947 real cross-script training pairs shows 82.6% achieve greater than 0.75 cosine similarity, with best performance on Arabic-Cyrillic (94--100%) and Cyrillic-Latin (94.3%) combinations. The fixed-length embeddings enable efficient retrieval in digital humanities workflows, with a case study on medieval personal names demonstrating effective transfer from modern place names to historical orthographic variation.",
-      "tags": [
-        "papers",
-        "language",
-        "eval",
-        "training"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2601.06932"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "cec9baf2f2b2bee33d5b74888b4a2712f9320561084ce9dea719c0f184cd618a",
-      "title": "Multimodal Multi-Agent Empowered Legal Judgment Prediction",
-      "url": "https://arxiv.org/abs/2601.12815",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-20T05:00:00.000Z",
-      "summary": "arXiv:2601.12815v5 Announce Type: replace Abstract: Legal Judgment Prediction (LJP) aims to predict the outcomes of legal cases based on factual descriptions, serving as a fundamental task to advance the development of legal systems. Traditional methods often rely on statistical analyses or role-based simulations but face challenges with multiple allegations, diverse evidence, and lack adaptability. In this paper, we introduce JurisMMA, a novel framework for LJP that effectively decomposes trial tasks, standardizes processes, and organizes them into distinct stages. Furthermore, we build JurisMM, a large dataset with over 100,000 recent Chinese judicial records, including both text and multimodal video-text data, enabling comprehensive evaluation. Experiments on JurisMM and the benchmark LawBench validate our framework's effectiveness. These results indicate that our framework is effective not only for LJP but also for a broader range of legal applications, offering new perspectives for the development of future legal methods and datasets.",
-      "tags": [
-        "papers",
-        "language",
-        "agents",
-        "eval",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2601.12815"
         },
         {
           "label": "Feed",
