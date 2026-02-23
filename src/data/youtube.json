@@ -1,12 +1,23 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-23T22:07:37.655Z",
+    "generatedAt": "2026-02-23T23:06:59.133Z",
     "channelUrl": "https://www.youtube.com/@a_e.s_4",
     "channelId": "UCQeJiBS72gxrZXw5GmqtocA",
     "feedUrl": "https://www.youtube.com/feeds/videos.xml?channel_id=UCQeJiBS72gxrZXw5GmqtocA"
   },
   "items": [
+    {
+      "id": "da0415a3e96a1a33b9b466bfe761e792bcb09f0080bc353de81d05c7a1a55e58",
+      "title": "Taking A Break From Shoveling",
+      "url": "https://www.youtube.com/watch?v=3QsoUBjQfZw",
+      "videoId": "3QsoUBjQfZw",
+      "publishedAt": "2026-02-23T22:17:02.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/3QsoUBjQfZw/hqdefault.jpg"
+    },
     {
       "id": "c759a8baec4dd8f7c67f04468f2daa9d45e895c0dbc2816f36397411ccc07db6",
       "title": "Waiting For Society To Change... Or A Job To Hit Me Back...",
@@ -160,17 +171,6 @@
         "Uploads"
       ],
       "thumbnailUrl": "https://i.ytimg.com/vi/HZw1Jx78-Kw/hqdefault.jpg"
-    },
-    {
-      "id": "62d68bff92658c652692b5666d5f8369a4a2821e332f312018c2d1d9e6135f46",
-      "title": "-",
-      "url": "https://www.youtube.com/shorts/bKziM8_WFIk",
-      "videoId": "bKziM8_WFIk",
-      "publishedAt": "2026-02-15T03:29:12.000Z",
-      "series": [
-        "Uploads"
-      ],
-      "thumbnailUrl": "https://i.ytimg.com/vi/bKziM8_WFIk/hqdefault.jpg"
     }
   ]
 }
