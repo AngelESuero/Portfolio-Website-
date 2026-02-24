@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-23T23:48:12.301Z",
+    "generatedAt": "2026-02-24T03:15:35.873Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,29 @@
     ]
   },
   "items": [
+    {
+      "id": "7492a447db2216b6219a65dd33b5f77664dbe13a39bcb48646f08becd042bcb3",
+      "title": "Deploying Open Source Vision Language Models (VLM) on Jetson",
+      "url": "https://huggingface.co/blog/nvidia/cosmos-on-jetson",
+      "sourceId": "hf_blog",
+      "sourceName": "Hugging Face — Blog",
+      "publishedAt": "2026-02-24T00:00:21.000Z",
+      "summary": null,
+      "tags": [
+        "open-source",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://huggingface.co/blog/nvidia/cosmos-on-jetson"
+        },
+        {
+          "label": "Feed",
+          "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
     {
       "id": "3d2f17cbe178928f4e96aebc2ecd2467fa21bbb46ba20fb8664cd1694e522e03",
       "title": "Using NVFP4 Low-Precision Model Training for Higher Throughput Without Losing Accuracy",
@@ -15088,31 +15111,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2512.08646"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "3ff35e766cf4586df608efc4b490933a6f8bd27cc44c6566327a6820688c8aa8",
-      "title": "Explanation Bias is a Product: Revealing the Hidden Lexical and Position Preferences in Post-Hoc Feature Attribution",
-      "url": "https://arxiv.org/abs/2512.11108",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-20T05:00:00.000Z",
-      "summary": "arXiv:2512.11108v2 Announce Type: replace Abstract: Good quality explanations strengthen the understanding of language models and data. Feature attribution methods, such as Integrated Gradient, are a type of post-hoc explainer that can provide token-level insights. However, explanations on the same input may vary greatly due to underlying biases of different methods. Users may be aware of this issue and mistrust their utility, while unaware users may trust them inadequately. In this work, we delve beyond the superficial inconsistencies between attribution methods, structuring their biases through a model- and method-agnostic framework of three evaluation metrics. We systematically assess both lexical and position bias (what and where in the input) for two transformers; first, in a controlled, pseudo-random classification task on artificial data; then, in a semi-controlled causal relation detection task on natural data. We find a trade-off between lexical and position biases in our model comparison, with models that score high on one type score low on the other. We also find signs that anomalous explanations are more likely to be biased.",
-      "tags": [
-        "papers",
-        "language",
-        "eval",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2512.11108"
         },
         {
           "label": "Feed",
