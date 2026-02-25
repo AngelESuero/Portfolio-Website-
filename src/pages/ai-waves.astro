@@ -5,165 +5,165 @@ const items = [
   {
     id: 'A1',
     label: 'Task-level competence is strong (drafting/snippets/analysis)',
-    help: 'Wave 1 signature: AI handles individual tasks well; humans still own outcomes.',
-    wave: 1,
+    help: 'Assist signature: AI handles individual tasks well; humans still own outcomes.',
+    stage: 1,
     lens: 'Capability',
     defaultScore: 3
   },
   {
     id: 'A2',
     label: 'Humans still stitch outputs + do QA',
-    help: 'If this stays high, Wave 2 is gated by trust/verification.',
-    wave: 1,
+    help: 'If this stays high, Agent is gated by trust/verification.',
+    stage: 1,
     lens: 'Capability',
     defaultScore: 3
   },
   {
     id: 'B1',
     label: 'AI budgets rising / deployments expanding beyond pilots',
-    wave: 1,
+    stage: 1,
     lens: 'Adoption',
     defaultScore: 2
   },
   {
     id: 'B2',
     label: 'Hiring growth slowing / optimization narrative present',
-    wave: 1,
+    stage: 1,
     lens: 'Adoption',
     defaultScore: 2
   },
   {
     id: 'C1',
     label: 'Broad productivity gains are measurable but modest',
-    wave: 1,
+    stage: 1,
     lens: 'Economics',
     defaultScore: 1
   },
   {
     id: 'D1',
     label: 'Baseline AI policies exist (data handling, disclosure, usage rules)',
-    wave: 1,
+    stage: 1,
     lens: 'Governance',
     defaultScore: 2
   },
   {
     id: 'A3',
     label: 'End-to-end automation is still rare (low single-digit %)',
-    help: 'Wave 2 starts when multi-step workflows run without babysitting.',
-    wave: 2,
+    help: 'Agent starts when multi-step workflows run without babysitting.',
+    stage: 2,
     lens: 'Capability',
     defaultScore: 1
   },
   {
     id: 'A4',
     label: 'Agents reliably run >10 steps without intervention',
-    help: 'This is a clean gate. If this hits 2-3 broadly, Wave 2 is here.',
-    wave: 2,
+    help: 'Clean gate: when this hits 2-3 broadly, Agent is here.',
+    stage: 2,
     lens: 'Capability',
     defaultScore: 1
   },
   {
     id: 'A5',
     label: 'Failures cluster in planning/execution/verification (multi-step compounding)',
-    wave: 2,
+    stage: 2,
     lens: 'Capability',
     defaultScore: 2
   },
   {
     id: 'A6',
     label: 'Main bottlenecks: trust/QA + connectors + data quality (not compute)',
-    wave: 2,
+    stage: 2,
     lens: 'Capability',
     defaultScore: 2
   },
   {
     id: 'B3',
     label: 'Roles redesigned more than eliminated (tasks removed != job removed)',
-    wave: 2,
+    stage: 2,
     lens: 'Adoption',
     defaultScore: 2
   },
   {
     id: 'B4',
     label: 'Human overseer/QA patterns emerging (auditor, exception handler)',
-    wave: 2,
+    stage: 2,
     lens: 'Adoption',
     defaultScore: 1
   },
   {
     id: 'C2',
     label: 'AI gains are strong enough to justify structural workflow redesign',
-    wave: 2,
+    stage: 2,
     lens: 'Economics',
     defaultScore: 1
   },
   {
     id: 'C3',
     label: 'Cost curve collapsing (price/performance improving sharply)',
-    wave: 2,
+    stage: 2,
     lens: 'Economics',
     defaultScore: 3
   },
   {
     id: 'D2',
     label: 'Audits/incident reporting becoming routine in higher-risk domains',
-    wave: 2,
+    stage: 2,
     lens: 'Governance',
     defaultScore: 1
   },
   {
     id: 'A7',
     label: 'Robotics/logistics automation scaling beyond pilots',
-    wave: 3,
+    stage: 3,
     lens: 'Capability',
     defaultScore: 1
   },
   {
     id: 'B5',
     label: 'Public services (cities/hospitals/utilities) deploy AI operationally',
-    wave: 3,
+    stage: 3,
     lens: 'Adoption',
     defaultScore: 1
   },
   {
     id: 'C4',
     label: 'Physical-world automation materially lowers costs / raises capacity',
-    wave: 3,
+    stage: 3,
     lens: 'Economics',
     defaultScore: 1
   },
   {
     id: 'D3',
     label: 'Liability frameworks for AI-caused harm are enforceable + routine',
-    wave: 3,
+    stage: 3,
     lens: 'Governance',
     defaultScore: 1
   },
   {
     id: 'D4',
     label: 'Governance standardizes (transparency/audits/liability) across sectors',
-    wave: 4,
+    stage: 4,
     lens: 'Governance',
     defaultScore: 1
   },
   {
     id: 'D5',
     label: 'AI becomes election-level policy priority (broad legitimacy battles)',
-    wave: 4,
+    stage: 4,
     lens: 'Governance',
     defaultScore: 2
   },
   {
     id: 'E1',
     label: 'Profit concentration becomes dominant social signal',
-    wave: 5,
+    stage: 5,
     lens: 'Equity',
     defaultScore: 2
   },
   {
     id: 'E2',
     label: 'Wage-based demand weakens while productivity rises',
-    wave: 5,
+    stage: 5,
     lens: 'Equity',
     defaultScore: 2
   },
@@ -171,7 +171,7 @@ const items = [
     id: 'E3',
     label: 'Credible ownership/dividend rail exists at scale',
     help: 'Public wealth funds, statutory profit-sharing, data/compute dividends, UBI-like floors.',
-    wave: 5,
+    stage: 5,
     lens: 'Equity',
     defaultScore: 1
   }
@@ -179,8 +179,8 @@ const items = [
 ---
 
 <BaseLayout
-  title="AI Waves Dashboard - A Path Toward Life"
-  description="Score AI wave signals, track evidence, and snapshot changes over time."
+  title="AI Transition Dashboard - A Path Toward Life"
+  description="Score AI transition stage signals, track evidence, and snapshot changes over time."
   theme="agi"
 >
   <section class="page-shell">
@@ -189,12 +189,12 @@ const items = [
     </div>
   </section>
 
-  <script type="application/json" id="ai-waves-items">{JSON.stringify(items)}</script>
+  <script type="application/json" id="ai-transition-items">{JSON.stringify(items)}</script>
   <script is:inline>
     (() => {
-      const STORAGE_KEY = 'ai_waves_dashboard_v1';
+      const STORAGE_KEY = 'ai_transition_dashboard_v1';
       const root = document.getElementById('ai-waves-app');
-      const itemsNode = document.getElementById('ai-waves-items');
+      const itemsNode = document.getElementById('ai-transition-items');
       if (!root || !itemsNode) return;
 
       let items = [];
@@ -209,15 +209,15 @@ const items = [
         return;
       }
 
-      const waveMeta = {
-        1: { title: 'Assist', subtitle: 'Task substitution inside jobs' },
-        2: { title: 'Agent', subtitle: 'Workflow ownership (agents)' },
-        3: { title: 'Robots', subtitle: 'Physical economy coupling' },
-        4: { title: 'Rules', subtitle: 'Institutional rewrite' },
-        5: { title: 'Dividends', subtitle: 'Distribution + ownership rails' }
+      const stageMeta = {
+        1: { title: 'Assist', subtitle: 'Tasks inside jobs' },
+        2: { title: 'Agent', subtitle: 'End-to-end workflows' },
+        3: { title: 'Robots', subtitle: 'Physical-world operations' },
+        4: { title: 'Rules', subtitle: 'Institutional and legal shift' },
+        5: { title: 'Dividends', subtitle: 'Dividend and ownership rails' }
       };
 
-      const waveOrder = [1, 2, 3, 4, 5];
+      const stageOrder = [1, 2, 3, 4, 5];
 
       const clampScore = (value) => {
         const numeric = Number(value);
@@ -243,15 +243,12 @@ const items = [
         return 'Widespread';
       };
 
-      const waveName = (wave) => {
-        if (wave === 1) return 'Wave 1 (Assist)';
-        if (wave === 2) return 'Wave 2 (Agent)';
-        if (wave === 3) return 'Wave 3 (Robots)';
-        if (wave === 4) return 'Wave 4 (Rules)';
-        return 'Wave 5 (Dividends)';
+      const stageName = (stage) => {
+        const entry = stageMeta[stage];
+        return entry ? entry.title : 'Unknown';
       };
 
-      const buildBaseline = () => {
+      const buildBlankBaseline = () => {
         const scores = {};
         const evidence = {};
         items.forEach((item) => {
@@ -266,6 +263,42 @@ const items = [
             compact: false,
             showHelp: true
           }
+        };
+      };
+
+      const buildSeededBaseline = () => {
+        const base = buildBlankBaseline();
+        const seededEvidence = { ...base.evidence };
+
+        seededEvidence.A1 =
+          'Microsoft Global AI Adoption 2025: global genAI adoption 16.3% (~1 in 6) https://www.microsoft.com/en-us/corporate-responsibility/topics/ai-economy-institute/reports/global-ai-adoption-2025/ | Stanford AI Index 2025: GPT-3.5-level inference cost drop $20->$0.07 per 1M tokens (Nov 2022->Oct 2024) https://hai.stanford.edu/news/ai-index-2025-state-of-ai-in-10-charts';
+        seededEvidence.A3 =
+          'OpenAI CUA benchmarks: OSWorld 38.1%, WebArena 58.1%, WebVoyager 87% https://openai.com/index/computer-using-agent/';
+        seededEvidence.A4 =
+          'Operator/CUA reliability limits + oversight notes (system card) https://openai.com/index/operator-system-card/';
+        seededEvidence.C3 =
+          'Stanford AI Index 2025: inference prices fell 9x-900x per year depending on task https://hai.stanford.edu/ai-index/2025-ai-index-report/research-and-development';
+        seededEvidence.A7 =
+          'Amazon: 1 millionth robot + DeepFleet improves fleet travel time by 10% https://www.aboutamazon.com/news/operations/amazon-million-robots-ai-foundation-model | Agility RoboFab: peak capacity 10,000 robots/year https://www.agilityrobotics.com/robofab';
+        seededEvidence.D4 =
+          'US regulatory patchwork / federal preemption proposals: Politico (draft EO) https://www.politico.com/news/2025/11/19/white-house-prepares-executive-order-to-block-state-ai-laws-00660719 | Reuters (EO paused) https://www.reuters.com/world/white-house-pauses-executive-order-that-would-seek-preempt-state-laws-on-ai-sources-2025-11-21/';
+        seededEvidence.E3 =
+          'No dividend rail at scale yet; UBI evidence base: OpenResearch ORUS findings (employment not reduced) https://www.openresearchlab.org/findings/key-findings-employment-and-income';
+
+        return {
+          ...base,
+          evidence: seededEvidence,
+          snapshots: [
+            {
+              id: `seed-${uid()}`,
+              title: 'Data-checked baseline (Feb 2026)',
+              dateISO: new Date().toISOString(),
+              notes:
+                'Baseline scores anchored to primary/credible sources. Key confirms: Assist adoption ~16.3% (1 in 6) per Microsoft; Agent benchmarks per OpenAI CUA; Robots scaling anchored to Amazon 1M robots + Agility RoboFab capacity. Items flagged for future verification: any court injunction timelines; any claims of large-scale humanoid deployments doing useful work outside controlled settings.',
+              evidence: { ...seededEvidence },
+              scores: { ...base.scores }
+            }
+          ]
         };
       };
 
@@ -319,7 +352,7 @@ const items = [
         const normalized = {
           scores: { ...fallback.scores },
           evidence: { ...fallback.evidence },
-          snapshots: [],
+          snapshots: [...fallback.snapshots],
           ui: {
             compact: false,
             showHelp: true
@@ -360,7 +393,7 @@ const items = [
       };
 
       const loadState = () => {
-        const fallback = buildBaseline();
+        const fallback = buildSeededBaseline();
         try {
           const raw = localStorage.getItem(STORAGE_KEY);
           if (!raw) return fallback;
@@ -378,7 +411,7 @@ const items = [
       };
 
       let state = loadState();
-      let activeWave = 1;
+      let activeStage = 1;
       let query = '';
       let activeTab = 'score';
       let snapDialogOpen = false;
@@ -390,7 +423,7 @@ const items = [
       const getFilteredItems = () => {
         const q = query.trim().toLowerCase();
         return items
-          .filter((item) => item.wave === activeWave)
+          .filter((item) => item.stage === activeStage)
           .filter((item) => {
             if (!q) return true;
             return (
@@ -401,8 +434,8 @@ const items = [
           });
       };
 
-      const getWaveStats = () => {
-        const byWave = {
+      const getStageStats = () => {
+        const byStage = {
           1: { sum: 0, max: 0, count: 0 },
           2: { sum: 0, max: 0, count: 0 },
           3: { sum: 0, max: 0, count: 0 },
@@ -416,75 +449,68 @@ const items = [
               ? state.scores[item.id]
               : item.defaultScore
           );
-          byWave[item.wave].sum += score;
-          byWave[item.wave].max += 3;
-          byWave[item.wave].count += 1;
+          byStage[item.stage].sum += score;
+          byStage[item.stage].max += 3;
+          byStage[item.stage].count += 1;
         });
 
-        const strength = (wave) => {
-          const bucket = byWave[wave];
+        const strength = (stage) => {
+          const bucket = byStage[stage];
           if (!bucket || bucket.max === 0) return 0;
           return bucket.sum / bucket.max;
         };
 
-        const overallMax = waveOrder.reduce(
-          (total, wave) => total + byWave[wave].max,
+        const overallMax = stageOrder.reduce(
+          (total, stage) => total + byStage[stage].max,
           0
         );
-        const overallSum = waveOrder.reduce(
-          (total, wave) => total + byWave[wave].sum,
+        const overallSum = stageOrder.reduce(
+          (total, stage) => total + byStage[stage].sum,
           0
         );
         const overall = overallMax ? overallSum / overallMax : 0;
 
-        let topWave = 1;
-        waveOrder.forEach((wave) => {
-          if (strength(wave) > strength(topWave)) {
-            topWave = wave;
+        let topStage = 1;
+        stageOrder.forEach((stage) => {
+          if (strength(stage) > strength(topStage)) {
+            topStage = stage;
           }
         });
 
         return {
-          byWave,
+          byStage,
           strength,
           overall,
-          topWave
+          topStage
         };
       };
 
       const getHeadline = (stats) => {
         const s1 = stats.strength(1);
         const s2 = stats.strength(2);
-        const s3 = stats.strength(3);
-        const s4 = stats.strength(4);
-        const s5 = stats.strength(5);
 
-        const primary = waveName(stats.topWave);
-        const ranked = [
-          { wave: 1, value: s1 },
-          { wave: 2, value: s2 },
-          { wave: 3, value: s3 },
-          { wave: 4, value: s4 },
-          { wave: 5, value: s5 }
-        ]
-          .filter((entry) => entry.wave !== stats.topWave)
-          .sort((a, b) => b.value - a.value);
-        const secondary = ranked[0] ? waveName(ranked[0].wave) : '';
+        const primary = stageName(stats.topStage);
+        const secondary = stageOrder
+          .filter((entry) => entry !== stats.topStage)
+          .map((entry) => ({ stage: entry, value: stats.strength(entry) }))
+          .sort((a, b) => b.value - a.value)[0];
+
+        const secondaryLabel = secondary ? stageName(secondary.stage) : '';
 
         const nuance =
           s2 >= 0.45 && s1 >= 0.6
-            ? 'Late Wave 1 with strong early Wave 2 signals'
+            ? 'Assist is mature; Agent is emerging'
             : s1 >= 0.6 && s2 < 0.45
-              ? 'Wave 1 dominates; Wave 2 is loading'
-              : stats.topWave === 2
-                ? 'Wave 2 is operationalizing'
-                : 'Mixed signals across waves';
+              ? 'Assist dominates; Agent is loading'
+              : stats.topStage === 2
+                ? 'Agent is operationalizing'
+                : 'Mixed signals across stages';
 
-        return { primary, secondary, nuance };
+        return { primary, secondary: secondaryLabel, nuance };
       };
 
       const getLensPills = () => {
-        const filtered = items.filter((item) => item.wave === activeWave);
+        const filtered = items.filter((item) => item.stage === activeStage);
         const lensMap = new Map();
         filtered.forEach((item) => {
           const score = clampScore(
@@ -511,7 +537,7 @@ const items = [
         const url = URL.createObjectURL(blob);
         const anchor = document.createElement('a');
         anchor.href = url;
-        anchor.download = `ai-waves-dashboard_${new Date().toISOString().slice(0, 10)}.json`;
+        anchor.download = `ai-transition-dashboard_${new Date().toISOString().slice(0, 10)}.json`;
         anchor.click();
         URL.revokeObjectURL(url);
       };
@@ -525,7 +551,7 @@ const items = [
           if (!parsed.scores || !parsed.evidence || !parsed.snapshots || !parsed.ui) {
             throw new Error('Missing keys');
           }
-          const fallback = buildBaseline();
+          const fallback = buildSeededBaseline();
           state = normalizeState(parsed, fallback);
           saveState(state);
           importDialogOpen = false;
@@ -537,7 +563,7 @@ const items = [
       };
 
       const resetToDefaults = () => {
-        const fallback = buildBaseline();
+        const fallback = buildBlankBaseline();
         state = {
           ...state,
           scores: fallback.scores,
@@ -625,24 +651,24 @@ const items = [
       const formatMultiline = (value) =>
         escapeHtml(value || '').replaceAll('\n', '<br>');
 
-      const renderWaveCard = (wave, stats) => {
-        const pct = Math.round(stats.strength(wave) * 100);
-        const isActive = wave === activeWave;
-        const isTop = wave === stats.topWave;
+      const renderStageCard = (stage, stats) => {
+        const pct = Math.round(stats.strength(stage) * 100);
+        const isActive = stage === activeStage;
+        const isTop = stage === stats.topStage;
         return `
           <button
             type="button"
             class="aw-wave-card ${isActive ? 'is-active' : ''}"
-            data-action="set-wave"
-            data-wave="${wave}"
+            data-action="set-stage"
+            data-stage="${stage}"
           >
             <div class="aw-wave-head">
               <div>
                 <div class="aw-wave-title-row">
-                  <span class="aw-wave-title">${waveMeta[wave].title}</span>
+                  <span class="aw-wave-title">${stageMeta[stage].title}</span>
                   ${isTop ? '<span class="aw-tag aw-tag-primary">Primary</span>' : ''}
                 </div>
-                <p class="aw-wave-subtitle">${escapeHtml(waveMeta[wave].subtitle)}</p>
+                <p class="aw-wave-subtitle">${escapeHtml(stageMeta[stage].subtitle)}</p>
               </div>
               <span class="aw-wave-pct">${pct}%</span>
             </div>
@@ -815,20 +841,20 @@ const items = [
       };
 
       const render = () => {
-        const stats = getWaveStats();
+        const stats = getStageStats();
         const headline = getHeadline(stats);
-        const activeWaveStrength = Math.round(stats.strength(activeWave) * 100);
+        const activeStageStrength = Math.round(stats.strength(activeStage) * 100);
         const overallStrength = Math.round(stats.overall * 100);
         const lensPills = getLensPills();
-        const tabLabel = waveName(activeWave).replace('Wave ', 'Wave ');
+        const tabLabel = stageName(activeStage);
 
         root.innerHTML = `
           <section class="aw-hero card">
             <div class="aw-hero-copy">
               <p class="aw-kicker">AI-generated content</p>
-              <h1>AI Waves - Interactive Dashboard</h1>
+              <h1>AI Transition - Interactive Dashboard</h1>
               <p class="aw-hero-text">
-                Score wave signals (0-3), attach evidence, and snapshot updates over time.
+                Score stage signals (0-3), attach evidence, and snapshot updates over time.
               </p>
               <div class="aw-badges">
                 <span class="aw-badge">AI-generated content</span>
@@ -846,11 +872,11 @@ const items = [
           <section class="aw-grid">
             <article class="aw-panel card">
               <div class="aw-panel-head">
-                <h2>Where are we?</h2>
+                <h2>Where are we now?</h2>
                 <span class="aw-badge">Overall: ${overallStrength}%</span>
               </div>
               <p class="aw-muted">
-                Primary wave: <strong>${escapeHtml(headline.primary)}</strong>
+                Primary: <strong>${escapeHtml(headline.primary)}</strong>
                 ${headline.secondary ? ` | Secondary: <strong>${escapeHtml(headline.secondary)}</strong>` : ''}
               </p>
               <div class="aw-meter">
@@ -863,10 +889,10 @@ const items = [
                 </div>
               </div>
               <div class="aw-wave-grid">
-                ${waveOrder.map((wave) => renderWaveCard(wave, stats)).join('')}
+                ${stageOrder.map((stage) => renderStageCard(stage, stats)).join('')}
               </div>
               <div class="aw-lens card">
-                <h3>Active wave lens mix</h3>
+                <h3>Active stage lens mix</h3>
                 <div class="aw-lens-row">
                   ${lensPills
                     .map(
@@ -880,7 +906,7 @@ const items = [
 
             <aside class="aw-controls card">
               <h2>Controls</h2>
-              <p class="aw-muted">Make it readable + fast.</p>
+              <p class="aw-muted">Make it readable and fast.</p>
               <div class="aw-switch">
                 <span>Compact view</span>
                 <input type="checkbox" ${state.ui.compact ? 'checked' : ''} data-action="toggle-compact" />
@@ -904,8 +930,8 @@ const items = [
           </section>
 
           <section class="aw-tabs card">
-            <div class="aw-tab-list" role="tablist" aria-label="AI Waves tabs">
-              <button type="button" role="tab" aria-selected="${activeTab === 'score'}" class="aw-tab ${activeTab === 'score' ? 'is-active' : ''}" data-action="set-tab" data-tab="score">Scoreboard</button>
+            <div class="aw-tab-list" role="tablist" aria-label="AI Transition tabs">
+              <button type="button" role="tab" aria-selected="${activeTab === 'score'}" class="aw-tab ${activeTab === 'score' ? 'is-active' : ''}" data-action="set-tab" data-tab="score">Checklist</button>
               <button type="button" role="tab" aria-selected="${activeTab === 'snapshots'}" class="aw-tab ${activeTab === 'snapshots' ? 'is-active' : ''}" data-action="set-tab" data-tab="snapshots">Update Log</button>
               <button type="button" role="tab" aria-selected="${activeTab === 'how'}" class="aw-tab ${activeTab === 'how' ? 'is-active' : ''}" data-action="set-tab" data-tab="how">How to Use</button>
             </div>
@@ -916,7 +942,7 @@ const items = [
               <div class="aw-tab-panel">
                 <div class="aw-panel-head">
                   <h3>${escapeHtml(tabLabel)}</h3>
-                  <span class="aw-badge aw-badge-secondary">Strength: ${activeWaveStrength}%</span>
+                  <span class="aw-badge aw-badge-secondary">Strength: ${activeStageStrength}%</span>
                 </div>
                 <p class="aw-muted">Score each signal and attach a small evidence note or link.</p>
                 <div class="aw-item-list">
@@ -950,7 +976,7 @@ const items = [
               <div class="aw-tab-panel">
                 <div class="aw-how-grid">
                   <article class="aw-how-block">
-                    <h3>Monthly (10 minutes)</h3>
+                    <h3>Monthly (10 min)</h3>
                     <ol>
                       <li>Adjust scores that changed.</li>
                       <li>Add one evidence note for any changed item.</li>
@@ -958,15 +984,21 @@ const items = [
                     </ol>
                   </article>
                   <article class="aw-how-block">
-                    <h3>Quarterly (30-45 minutes)</h3>
+                    <h3>Quarterly (30-45 min)</h3>
                     <ul>
                       <li>Update the item list (add/remove signals).</li>
-                      <li>Revisit wave boundaries (especially Wave 5 rails).</li>
+                      <li>Revisit stage boundaries (esp. dividend rails).</li>
                       <li>Export JSON as a backup.</li>
                     </ul>
                   </article>
                 </div>
-                <p class="aw-muted">Everything saves in your browser localStorage. Export if you want portability.</p>
+                <div class="aw-how-block">
+                  <h3>What does 100% mean?</h3>
+                  <p class="aw-muted">Strength % is computed as: <strong>(sum of scores) / (3 x number of items)</strong>.</p>
+                  <p class="aw-muted"><strong>100%</strong> means every item is scored 3 (Widespread/default).</p>
+                  <p class="aw-muted">Overall % uses all items; each card % uses only items in that section.</p>
+                  <p class="aw-muted">Everything saves locally in your browser. Export if you want portability.</p>
+                </div>
               </div>
             `
                 : ''
@@ -987,8 +1019,8 @@ const items = [
         const action = target.getAttribute('data-action');
         if (!action) return;
 
-        if (action === 'set-wave') {
-          activeWave = Number(target.getAttribute('data-wave')) || 1;
+        if (action === 'set-stage') {
+          activeStage = Number(target.getAttribute('data-stage')) || 1;
           render();
           return;
         }
