@@ -1,0 +1,225 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SURVIVAL_OS } from '../data/survival-os';
+
+const immediatePriorities = [
+  {
+    title: 'Secure breathable air',
+    action: 'Move away from smoke, gas, and enclosed spaces with poor ventilation.',
+    why: 'Air is a minute-level dependency. Remove exposure first, then assess other needs.'
+  },
+  {
+    title: 'Protect safe water access',
+    action: 'Confirm a potable water source, backup containers, and a refill plan.',
+    why: 'Hydration and sanitation fail quickly without clean water.'
+  },
+  {
+    title: 'Stabilize shelter and temperature',
+    action: 'Create a safe indoor temperature zone, reduce heat/cold exposure, and preserve dry clothing.',
+    why: 'Thermal stress can escalate fast during outages or severe weather.'
+  },
+  {
+    title: 'Preserve critical health needs',
+    action: 'Keep medications, allergy information, and key IDs ready for rapid access.',
+    why: 'Response time is shorter when care needs are pre-staged.'
+  },
+  {
+    title: 'Activate a contact loop',
+    action: 'Share your status with trusted contacts and set check-in intervals.',
+    why: 'Isolation raises risk. Coordination improves safety and decision quality.'
+  }
+];
+
+const preparednessChecklist = [
+  {
+    title: '72-hour essentials',
+    items: [
+      'Potable water plan with storage and refill method',
+      'Shelf-stable calories and basic utensils',
+      'Medication buffer and simple first-aid kit',
+      'Phone charging backup (battery bank or vehicle plan)',
+      'Flashlight and low-tech backup lighting'
+    ]
+  },
+  {
+    title: 'Documents and access',
+    items: [
+      'Photo ID and insurance cards',
+      'List of medications, allergies, and emergency contacts',
+      'Printed addresses for nearest urgent care and emergency services',
+      'Cash reserve for short-term transit or food'
+    ]
+  },
+  {
+    title: 'Home and mobility',
+    items: [
+      'Safe route options for day and night',
+      'One small go-bag with essentials',
+      'Basic sanitation supplies (soap, wipes, trash bags)',
+      'Clear meetup point if communication fails'
+    ]
+  }
+];
+
+const supportNetworkActions = [
+  {
+    title: 'Create a 3-contact safety loop',
+    detail: 'Choose one household contact, one nearby friend, and one out-of-area check-in person.'
+  },
+  {
+    title: 'Set trigger-based check-ins',
+    detail: 'Check in after storms, outages, missed commutes, or any major schedule break.'
+  },
+  {
+    title: 'Pre-map nearby support',
+    detail: 'Identify local clinics, pharmacies, mutual aid groups, and transport options before you need them.'
+  },
+  {
+    title: 'Use calm escalation rules',
+    detail: 'If risk is increasing, escalate early to trained responders and local emergency services.'
+  }
+];
+
+const keepAliveSystems = SURVIVAL_OS.systems.filter((system) => system.tier === 'Keep Alive');
+const stabilizeSystems = SURVIVAL_OS.systems.filter((system) => system.tier === 'Stabilize');
+---
+
+<BaseLayout
+  title="Survival Support"
+  description="Practical survival support with immediate priorities, a 72-hour checklist, and stabilization actions."
+  theme="survival"
+>
+  <section class="view-surface">
+    <header class="view-surface-header">
+      <p class="view-surface-kicker">Practical guide</p>
+      <h1>Survival Support</h1>
+      <p>
+        A practical page focused on immediate protection, short-run stabilization, and support coordination.
+      </p>
+    </header>
+
+    <div class="explore-grid mt-4">
+      <a class="explore-card" href="#immediate">Immediate priorities</a>
+      <a class="explore-card" href="#checklist">72-hour checklist</a>
+      <a class="explore-card" href="#systems">Critical systems</a>
+      <a class="explore-card" href="#network">Support network</a>
+    </div>
+
+    <p class="mt-4 text-sm text-[var(--tone-muted)]">
+      This page is educational support and planning guidance, not emergency dispatch or medical advice. If there is
+      immediate danger, contact local emergency services right away.
+    </p>
+  </section>
+
+  <section id="immediate" class="view-surface mt-4">
+    <header class="view-surface-header">
+      <p class="view-surface-kicker">First actions</p>
+      <h1>Immediate priorities</h1>
+      <p>Focus first on needs that fail fast and create compounding risk when delayed.</p>
+    </header>
+
+    <div class="mt-4 grid gap-4 md:grid-cols-2">
+      {immediatePriorities.map((priority) => (
+        <article class="card p-4">
+          <h2 class="font-display text-xl">{priority.title}</h2>
+          <p class="mt-2">{priority.action}</p>
+          <p class="mt-2 text-sm text-[var(--tone-muted)]">{priority.why}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section id="checklist" class="view-surface mt-4">
+    <header class="view-surface-header">
+      <p class="view-surface-kicker">Readiness</p>
+      <h1>72-hour checklist</h1>
+      <p>Build a lightweight setup that can carry you through disruptions with less panic.</p>
+    </header>
+
+    <div class="mt-4 grid gap-4 md:grid-cols-3">
+      {preparednessChecklist.map((group) => (
+        <article class="card p-4">
+          <h2 class="font-display text-lg">{group.title}</h2>
+          <ul class="mt-3 list-disc space-y-2 pl-5 text-sm">
+            {group.items.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section id="systems" class="view-surface mt-4">
+    <header class="view-surface-header">
+      <p class="view-surface-kicker">Priority stack</p>
+      <h1>Critical systems from Survival OS</h1>
+      <p>Use this condensed view to prioritize keep-alive systems before broader stabilization work.</p>
+    </header>
+
+    <div class="mt-4 grid gap-4 md:grid-cols-2">
+      <article class="card p-4">
+        <h2 class="font-display text-xl">Keep Alive</h2>
+        <p class="mt-2 text-sm text-[var(--tone-muted)]">Short-horizon conditions that protect viability in the next 24 hours.</p>
+        <div class="mt-4 space-y-3">
+          {keepAliveSystems.map((system) => (
+            <div class="rounded border border-[var(--tone-line)] bg-[var(--tone-surface-strong)] p-3">
+              <p class="font-semibold">{system.title}</p>
+              <p class="mt-1 text-sm text-[var(--tone-muted)]">{system.whyItMatters}</p>
+              <p class="mt-2 text-xs uppercase tracking-[0.12em] text-[var(--tone-muted)]">Minimums</p>
+              <ul class="mt-1 list-disc pl-5 text-sm">
+                {system.minimums.slice(0, 2).map((minimum) => <li>{minimum}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </article>
+
+      <article class="card p-4">
+        <h2 class="font-display text-xl">Stabilize</h2>
+        <p class="mt-2 text-sm text-[var(--tone-muted)]">Systems that lower avoidable failure across the next several days.</p>
+        <div class="mt-4 space-y-3">
+          {stabilizeSystems.map((system) => (
+            <div class="rounded border border-[var(--tone-line)] bg-[var(--tone-surface-strong)] p-3">
+              <p class="font-semibold">{system.title}</p>
+              <p class="mt-1 text-sm text-[var(--tone-muted)]">{system.whyItMatters}</p>
+              <p class="mt-2 text-xs uppercase tracking-[0.12em] text-[var(--tone-muted)]">Minimums</p>
+              <ul class="mt-1 list-disc pl-5 text-sm">
+                {system.minimums.slice(0, 2).map((minimum) => <li>{minimum}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="network" class="view-surface mt-4">
+    <header class="view-surface-header">
+      <p class="view-surface-kicker">Coordination</p>
+      <h1>Support network actions</h1>
+      <p>Survival support is stronger when social support and response plans are already in place.</p>
+    </header>
+
+    <div class="mt-4 grid gap-3">
+      {supportNetworkActions.map((item) => (
+        <article class="card p-4">
+          <h2 class="font-display text-lg">{item.title}</h2>
+          <p class="mt-2 text-sm text-[var(--tone-muted)]">{item.detail}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="view-surface mt-4">
+    <header class="view-surface-header">
+      <p class="view-surface-kicker">Related pages</p>
+      <h1>Go deeper</h1>
+      <p>Use the full system model, transition dashboard, and contact route for follow-up.</p>
+    </header>
+
+    <div class="mt-4 flex flex-wrap gap-3">
+      <a class="pill rounded-full px-4 py-2 text-sm no-underline" href="/survival-os">Open Survival OS</a>
+      <a class="pill rounded-full px-4 py-2 text-sm no-underline" href="/ai-waves">Open AI Transition</a>
+      <a class="pill rounded-full px-4 py-2 text-sm no-underline" href="/contact">Open Contact</a>
+    </div>
+  </section>
+</BaseLayout>
