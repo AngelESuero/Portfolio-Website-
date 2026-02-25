@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-25T05:06:55.026Z",
+    "generatedAt": "2026-02-25T06:17:10.436Z",
     "sources": [
       {
         "id": "openai_news",
@@ -9005,6 +9005,340 @@
       ]
     },
     {
+      "id": "4a0d705ec22343dfe9ac215114a54c0fe2cb6a59c4a09a0e5ed12cf7e3f63013",
+      "title": "Polychromic Objectives for Reinforcement Learning",
+      "url": "https://arxiv.org/abs/2509.25424",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-02-25T05:00:00.000Z",
+      "summary": "arXiv:2509.25424v3 Announce Type: replace-cross Abstract: Reinforcement learning fine-tuning (RLFT) is a dominant paradigm for improving pretrained policies for downstream tasks. These pretrained policies, trained on large datasets, produce generations with a broad range of promising but unrefined behaviors. Often, a critical failure mode of RLFT arises when policies lose this diversity and collapse into a handful of easily exploitable outputs. This convergence hinders exploration, which is essential for expanding the capabilities of the pretrained policy and for amplifying the benefits of test-time compute scaling. To address this, we introduce an objective for policy gradient methods that explicitly enforces the exploration and refinement of diverse generations, which we call a polychromic objective. We then show how proximal policy optimization (PPO) can be adapted to optimize this objective. Our method (1) employs vine sampling to collect on-policy rollouts and (2) modifies the advantage function to reflect the advantage under our new objective. Experiments on BabyAI, Minigrid, and Algorithmic Creativity show that our method improves success rates by reliably solving a larger set of environment configurations and generalizes better under large perturbations. Moreover, when given multiple attempts in pass@$k$ experiments, the policy achieves substantially higher coverage, demonstrating its ability to maintain and exploit a diverse repertoire of strategies.",
+      "tags": [
+        "papers",
+        "policy",
+        "compute",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2509.25424"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "7b0953aaef5c93ea1582aeabcefc2d848c5743ba7a50ccf650f4eb41afd73692",
+      "title": "AgentDR: Dynamic Recommendation with Implicit Item-Item Relations via LLM-based Agents",
+      "url": "https://arxiv.org/abs/2510.05598",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-02-25T05:00:00.000Z",
+      "summary": "arXiv:2510.05598v3 Announce Type: replace-cross Abstract: Recent agent-based recommendation frameworks aim to simulate user behaviors by incorporating memory mechanisms and prompting strategies, but they struggle with hallucinating non-existent items and full-catalog ranking. Besides, a largely underexplored opportunity lies in leveraging LLMs'commonsense reasoning to capture user intent through substitute and complement relationships between items, which are usually implicit in datasets and difficult for traditional ID-based recommenders to capture. In this work, we propose a novel LLM-agent framework, AgenDR, which bridges LLM reasoning with scalable recommendation tools. Our approach delegates full-ranking tasks to traditional models while utilizing LLMs to (i) integrate multiple recommendation outputs based on personalized tool suitability and (ii) reason over substitute and complement relationships grounded in user history. This design mitigates hallucination, scales to large catalogs, and enhances recommendation relevance through relational reasoning. Through extensive experiments on three public grocery datasets, we show that our framework achieves superior full-ranking performance, yielding on average a twofold improvement over its underlying tools. We also introduce a new LLM-based evaluation metric that jointly measures semantic alignment and ranking correctness.",
+      "tags": [
+        "papers",
+        "agents",
+        "reasoning",
+        "eval",
+        "safety",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2510.05598"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "71da496060803187f88edc6d22d60e8afc8775cb316f2dfe4b47d1132838b373",
+      "title": "MoMaGen: Generating Demonstrations under Soft and Hard Constraints for Multi-Step Bimanual Mobile Manipulation",
+      "url": "https://arxiv.org/abs/2510.18316",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-02-25T05:00:00.000Z",
+      "summary": "arXiv:2510.18316v3 Announce Type: replace-cross Abstract: Imitation learning from large-scale, diverse human demonstrations has been shown to be effective for training robots, but collecting such data is costly and time-consuming. This challenge intensifies for multi-step bimanual mobile manipulation, where humans must teleoperate both the mobile base and two high-DoF arms. Prior X-Gen works have developed automated data generation frameworks for static (bimanual) manipulation tasks, augmenting a few human demos in simulation with novel scene configurations to synthesize large-scale datasets. However, prior works fall short for bimanual mobile manipulation tasks for two major reasons: 1) a mobile base introduces the problem of how to place the robot base to enable downstream manipulation (reachability) and 2) an active camera introduces the problem of how to position the camera to generate data for a visuomotor policy (visibility). To address these challenges, MoMaGen formulates data generation as a constrained optimization problem that satisfies hard constraints (e.g., reachability) while balancing soft constraints (e.g., visibility while navigation). This formulation generalizes across most existing automated data generation approaches and offers a principled foundation for developing future methods. We evaluate on four multi-step bimanual mobile manipulation tasks and find that MoMaGen enables the generation of much more diverse datasets than previous methods. As a result of the dataset diversity, we also show that the data generated by MoMaGen can be used to train successful imitation learning policies using a single source demo. Furthermore, the trained policy can be fine-tuned with a very small amount of real-world data (40 demos) to be succesfully deployed on real robotic hardware. More details are on our project page: momagen.github.io.",
+      "tags": [
+        "papers",
+        "policy",
+        "training",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2510.18316"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "c9aa335bed5c533da91be489bebe67bcd82be93fb4c8ad000301599926875109",
+      "title": "PhysE-Inv: A Physics-Encoded Inverse Modeling approach for Arctic Snow Depth Prediction",
+      "url": "https://arxiv.org/abs/2601.17074",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-02-25T05:00:00.000Z",
+      "summary": "arXiv:2601.17074v3 Announce Type: replace-cross Abstract: The accurate estimation of Arctic snow depth remains a critical time-varying inverse problem due to the scarcity in associated sea ice parameters. Existing process-based and data-driven models are either highly sensitive to sparse data or lack the physical interpretability required for climate-critical applications. To address this gap, we introduce PhysE-Inv, a novel framework that integrates a sophisticated sequential architecture, namely an LSTM Encoder-Decoder with Multi-head Attention and contrastive learning, with physics-guided inference. Our core innovation lies in a physics-constrained inversion methodology. This methodology first leverages the hydrostatic balance forward model as a target-formulation proxy, enabling effective learning in the absence of direct ground truth; second, it uses reconstruction physics regularization over a latent space to dynamically discover hidden physical parameters from noisy, incomplete time-series input. Evaluated against state-of-the-art baselines, PhysE-Inv significantly improves prediction performance, reducing error by 20% while demonstrating superior physical consistency and resilience to data sparsity compared to empirical methods. Beyond Arctic snow depth, PhysE-Inv can be applied broadly to other noisy, data-scarce problems in Earth and climate science.",
+      "tags": [
+        "papers",
+        "inference",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2601.17074"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "2faefc5397ad28758cdef29e58406cd0b8b50d368d8caea7e4c67709354fbdb8",
+      "title": "GOT-Edit: Geometry-Aware Generic Object Tracking via Online Model Editing",
+      "url": "https://arxiv.org/abs/2602.08550",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-02-25T05:00:00.000Z",
+      "summary": "arXiv:2602.08550v3 Announce Type: replace-cross Abstract: Human perception for effective object tracking in 2D video streams arises from the implicit use of prior 3D knowledge and semantic reasoning. In contrast, most generic object tracking (GOT) methods primarily rely on 2D features of the target and its surroundings, while neglecting 3D geometric cues, making them susceptible to partial occlusion, distractors, and variations in geometry and appearance. To address this limitation, we introduce GOT-Edit, an online cross-modality model editing approach that integrates geometry-aware cues into a generic object tracker from a 2D video stream. Our approach leverages features from a pre-trained Visual Geometry Grounded Transformer to infer geometric cues from only a few 2D images. To address the challenge of seamlessly combining geometry and semantics, GOT-Edit performs online model editing. By leveraging null-space constraints during model updates, it incorporates geometric information while preserving semantic discrimination, yielding consistently better performance across diverse scenarios. Extensive experiments on multiple GOT benchmarks demonstrate that GOT-Edit achieves superior robustness and accuracy, particularly under occlusion and clutter, establishing a new paradigm for combining 2D semantics with 3D geometric reasoning for generic object tracking. The project page is available at https://chenshihfang.github.io/GOT-EDIT.",
+      "tags": [
+        "papers",
+        "reasoning",
+        "eval",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.08550"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "43fbf9c313fbabaf335f259e6d3ad80bc48a6dbfdb4e5ab8f9e8b3f15b1c771e",
+      "title": "ST-EVO: Towards Generative Spatio-Temporal Evolution of Multi-Agent Communication Topologies",
+      "url": "https://arxiv.org/abs/2602.14681",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-02-25T05:00:00.000Z",
+      "summary": "arXiv:2602.14681v3 Announce Type: replace-cross Abstract: LLM-powered Multi-Agent Systems (MAS) have emerged as an effective approach towards collaborative intelligence, and have attracted wide research interests. Among them, ``self-evolving'' MAS, treated as a more flexible and powerful technical route, can construct task-adaptive workflows or communication topologies, instead of relying on a predefined static structue template. Current self-evolving MAS mainly focus on Spatial Evolving or Temporal Evolving paradigm, which only considers the single dimension of evolution and does not fully incentivize LLMs' collaborative capability. In this work, we start from a novel Spatio-Temporal perspective by proposing ST-EVO, which supports dialogue-wise communication scheduling with a compact yet powerful flow-matching based Scheduler. To make precise Spatio-Temporal scheduling, ST-EVO can also perceive the uncertainty of MAS, and possesses self-feedback ability to learn from accumulated experience. Extensive experiments on nine benchmarks demonstrate the state-of-the-art performance of ST-EVO, achieving about 5%--25% accuracy improvement.",
+      "tags": [
+        "papers",
+        "agents",
+        "eval"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.14681"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "a2b9c6b95e55121305233c4a99d80966787e455ef3d0f53fc0c34f76cd4d5591",
+      "title": "NEXUS: A compact neural architecture for high-resolution spatiotemporal air quality forecasting in Delhi National Capital Region",
+      "url": "https://arxiv.org/abs/2602.19654",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-02-25T05:00:00.000Z",
+      "summary": "arXiv:2602.19654v2 Announce Type: replace-cross Abstract: Urban air pollution in megacities poses critical public health challenges, particularly in Delhi National Capital Region (NCR) where severe degradation affects millions. We present NEXUS (Neural Extraction and Unified Spatiotemporal) architecture for forecasting carbon monoxide, nitrogen oxide, and sulfur dioxide. Working with four years (2018--2021) of atmospheric data across sixteen spatial grids, NEXUS achieves R$^2$ exceeding 0.94 for CO, 0.91 for NO, and 0.95 for SO$_2$ using merely 18,748 parameters -- substantially fewer than SCINet (35,552), Autoformer (68,704), and FEDformer (298,080). The architecture integrates patch embedding, low-rank projections, and adaptive fusion mechanisms to decode complex atmospheric chemistry patterns. Our investigation uncovers distinct diurnal rhythms and pronounced seasonal variations, with winter months experiencing severe pollution episodes driven by temperature inversions and agricultural biomass burning. Analysis identifies critical meteorological thresholds, quantifies wind field impacts on pollutant dispersion, and maps spatial heterogeneity across the region. Extensive ablation experiments demonstrate each architectural component's role. NEXUS delivers superior predictive performance with remarkable computational efficiency, enabling real-time deployment for air quality monitoring systems.",
+      "tags": [
+        "papers"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.19654"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "d023be2683d43efc4d82e3c9084cfc5c9cc6eb6017ace85d749b408969a22276",
+      "title": "When Pretty Isn't Useful: Investigating Why Modern Text-to-Image Models Fail as Reliable Training Data Generators",
+      "url": "https://arxiv.org/abs/2602.19946",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-02-25T05:00:00.000Z",
+      "summary": "arXiv:2602.19946v2 Announce Type: replace-cross Abstract: Recent text-to-image (T2I) diffusion models produce visually stunning images and demonstrate excellent prompt following. But do they perform well as synthetic vision data generators? In this work, we revisit the promise of synthetic data as a scalable substitute for real training sets and uncover a surprising performance regression. We generate large-scale synthetic datasets using state-of-the-art T2I models released between 2022 and 2025, train standard classifiers solely on this synthetic data, and evaluate them on real test data. Despite observable advances in visual fidelity and prompt adherence, classification accuracy on real test data consistently declines with newer T2I models as training data generators. Our analysis reveals a hidden trend: These models collapse to a narrow, aesthetic-centric distribution that undermines diversity and label-image alignment. Overall, our findings challenge a growing assumption in vision research, namely that progress in generative realism implies progress in data realism. We thus highlight an urgent need to rethink the capabilities of modern T2I models as reliable training data generators.",
+      "tags": [
+        "papers",
+        "safety",
+        "training",
+        "model",
+        "release",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.19946"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "eb22c7f31be740fbbf711123a43d3012d926ca3e0b3121260491e244b715ec99",
+      "title": "A Very Big Video Reasoning Suite",
+      "url": "https://arxiv.org/abs/2602.20159",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-02-25T05:00:00.000Z",
+      "summary": "arXiv:2602.20159v2 Announce Type: replace-cross Abstract: Rapid progress in video models has largely focused on visual quality, leaving their reasoning capabilities underexplored. Video reasoning grounds intelligence in spatiotemporally consistent visual environments that go beyond what text can naturally capture, enabling intuitive reasoning over spatiotemporal structure such as continuity, interaction, and causality. However, systematically studying video reasoning and its scaling behavior is hindered by the lack of large-scale training data. To address this gap, we introduce the Very Big Video Reasoning (VBVR) Dataset, an unprecedentedly large-scale resource spanning 200 curated reasoning tasks following a principled taxonomy and over one million video clips, approximately three orders of magnitude larger than existing datasets. We further present VBVR-Bench, a verifiable evaluation framework that moves beyond model-based judging by incorporating rule-based, human-aligned scorers, enabling reproducible and interpretable diagnosis of video reasoning capabilities. Leveraging the VBVR suite, we conduct one of the first large-scale scaling studies of video reasoning and observe early signs of emergent generalization to unseen reasoning tasks. Together, VBVR lays a foundation for the next stage of research in generalizable video reasoning. The data, benchmark toolkit, and models are publicly available at https://video-reason.com/ .",
+      "tags": [
+        "papers",
+        "reasoning",
+        "eval",
+        "training",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.20159"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "ec882f4d6eee1a8821d1d7e83bd6ef4ee605f92fffce0fc2c7350f58ddef099d",
+      "title": "INSURE-Dial: A Phase-Aware Conversational Dataset & Benchmark for Compliance Verification and Phase Detection",
+      "url": "https://arxiv.org/abs/2602.18448",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-02-25T05:00:00.000Z",
+      "summary": "arXiv:2602.18448v2 Announce Type: replace Abstract: Administrative phone tasks drain roughly 1 trillion USD annually from U.S. healthcare, with over 500 million insurance-benefit verification calls manually handled in 2024. We introduce INSURE-Dial, to our knowledge the first public benchmark for developing and assessing compliance-aware voice agents for phase-aware call auditing with span-based compliance verification. The corpus includes 50 de-identified, AI-initiated calls with live insurance representatives (mean 71 turns/call) and 1,000 synthetically generated calls that mirror the same workflow. All calls are annotated with a phase-structured JSON schema covering IVR navigation, patient identification, coverage status, medication checks (up to two drugs), and agent identification (CRN), and each phase is labeled for Information and Procedural compliance under explicit ask/answer logic. We define two novel evaluation tasks: (1) Phase Boundary Detection (span segmentation under phase-specific acceptance rules) and (2) Compliance Verification (IC/PC decisions given fixed spans). Per-phase scores are strong across small, low-latency baselines, but end-to-end reliability is constrained by span-boundary errors. On real calls, full-call exact segmentation is low, showing a gap between conversational fluency and audit-grade evidence.",
+      "tags": [
+        "papers",
+        "language",
+        "agents",
+        "eval",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.18448"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "9478f908992518bdb3838e9c2ce67cad29b337a9013cb8a8c2b87ab63ce2f9c6",
+      "title": "Anatomy of Unlearning: The Dual Impact of Fact Salience and Model Fine-Tuning",
+      "url": "https://arxiv.org/abs/2602.19612",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-02-25T05:00:00.000Z",
+      "summary": "arXiv:2602.19612v2 Announce Type: replace Abstract: Machine Unlearning (MU) enables Large Language Models (LLMs) to remove unsafe or outdated information. However, existing work assumes that all facts are equally forgettable and largely ignores whether the forgotten knowledge originates from pretraining or supervised fine-tuning (SFT). In this paper, we introduce DUAL (Dual Unlearning Evaluation across Training Stages), a benchmark of 28.6k Wikidata-derived triplets annotated with fact popularity using Wikipedia link counts and LLM-based salience scores. Our experiments show that pretrained and SFT models respond differently to unlearning. An SFT step on the forget data yields smoother forgetting, more stable tuning, and 10-50% higher retention, while direct unlearning on pretrained models remains unstable and prone to relearning or catastrophic forgetting.",
+      "tags": [
+        "papers",
+        "language",
+        "eval",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.19612"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "6b022572301c433b9d75142c7283da8b6ca3c4eaa5f6f088bc775b2a2c73064b",
+      "title": "BabyLM Turns 4 and Goes Multilingual: Call for Papers for the 2026 BabyLM Workshop",
+      "url": "https://arxiv.org/abs/2602.20092",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-02-25T05:00:00.000Z",
+      "summary": "arXiv:2602.20092v2 Announce Type: replace Abstract: The goal of the BabyLM is to stimulate new research connections between cognitive modeling and language model pretraining. We invite contributions in this vein to the BabyLM Workshop, which will also include the 4th iteration of the BabyLM Challenge. As in previous years, the challenge features two ``standard'' tracks (Strict and Strict-Small), in which participants must train language models on under 100M or 10M words of data, respectively. This year, we move beyond our previous English-only pretraining datasets with a new Multilingual track, focusing on English, Dutch, and Chinese. For the workshop, we call for papers related to the overall theme of BabyLM, which includes training efficiency, small-scale training datasets, cognitive modeling, model evaluation, and architecture innovation.",
+      "tags": [
+        "papers",
+        "language",
+        "eval",
+        "training",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.20092"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "1b5c6c1d0b74346b0ae30760f4cca0254f6224277aee1ee1457fc78e3a968657",
+      "title": "How Well Can LLM Agents Simulate End-User Security and Privacy Attitudes and Behaviors?",
+      "url": "https://arxiv.org/abs/2602.18464",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-02-25T05:00:00.000Z",
+      "summary": "arXiv:2602.18464v2 Announce Type: replace-cross Abstract: A growing body of research assumes that large language model (LLM) agents can serve as proxies for how people form attitudes toward and behave in response to security and privacy (S&P) threats. If correct, these simulations could offer a scalable way to forecast S&P risks in products prior to deployment. We interrogate this assumption using SP-ABCBench, a new benchmark of 30 tests derived from validated S&P human-subject studies, which measures alignment between simulations and human-subjects studies on a 0-100 ascending scale, where higher scores indicate better alignment across three dimensions: Attitude, Behavior, and Coherence. Evaluating twelve LLMs, four persona construction strategies, and two prompting methods, we found that there remains substantial room for improvement: all models score between 50 and 64 on average. Newer, bigger, and smarter models do not reliably do better and sometimes do worse. Some simulation configurations, however, do yield high alignment: e.g., with scores above 95 for some behavior tests when agents are prompted to apply bounded rationality and weigh privacy costs against perceived benefits. We release SP-ABCBench to enable reproducible evaluation as methods improve.",
+      "tags": [
+        "papers",
+        "language",
+        "agents",
+        "eval",
+        "safety",
+        "model",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.18464"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
       "id": "e326688c52b1e3bd6f493efcaf7a224911a4cb666cf980e74e0736b612b86e5f",
       "title": "Arvind KC appointed Chief People Officer",
       "url": "https://openai.com/index/arvind-kc-chief-people-officer",
@@ -14776,333 +15110,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2602.19498"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "00d7eed5941d9c0b505b97ca62f6451a90ab6ee639fca226ff87ee0de3904f90",
-      "title": "Pyramid MoA: A Probabilistic Framework for Cost-Optimized Anytime Inference",
-      "url": "https://arxiv.org/abs/2602.19509",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-24T05:00:00.000Z",
-      "summary": "arXiv:2602.19509v1 Announce Type: cross Abstract: Large Language Models (LLMs) face a persistent trade-off between inference cost and reasoning capability. While \"Oracle\" models (e.g., Llama-3-70B) achieve state-of-the-art accuracy, they are prohibitively expensive for high-volume deployment. Smaller models (e.g., 8B parameters) are cost-effective but struggle with complex tasks. In this work, we propose \"Pyramid MoA\", a hierarchical Mixture-of-Agents architecture that uses a lightweight Router to dynamically escalate queries only when necessary. By leveraging semantic agreement and confidence calibration among an ensemble of small models, our Router identifies \"hard\" problems with high precision. On the GSM8K benchmark, our system achieves 93.0% accuracy, effectively matching the Oracle baseline (98.0%) while reducing compute costs by 61%. We demonstrate that the system introduces negligible latency overhead (+0.82s) and allows for a tunable trade-off between performance and budget.",
-      "tags": [
-        "papers",
-        "agents",
-        "reasoning",
-        "eval",
-        "compute",
-        "inference",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.19509"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "33cc59fbb01f1071f4c6f8b2b4beeec65108e09bf417b2fa9c920882a37486ce",
-      "title": "A Statistical Approach for Modeling Irregular Multivariate Time Series with Missing Observations",
-      "url": "https://arxiv.org/abs/2602.19531",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-24T05:00:00.000Z",
-      "summary": "arXiv:2602.19531v1 Announce Type: cross Abstract: Irregular multivariate time series with missing values present significant challenges for predictive modeling in domains such as healthcare. While deep learning approaches often focus on temporal interpolation or complex architectures to handle irregularities, we propose a simpler yet effective alternative: extracting time-agnostic summary statistics to eliminate the temporal axis. Our method computes four key features per variable-mean and standard deviation of observed values, as well as the mean and variability of changes between consecutive observations to create a fixed-dimensional representation. These features are then utilized with standard classifiers, such as logistic regression and XGBoost. Evaluated on four biomedical datasets (PhysioNet Challenge 2012, 2019, PAMAP2, and MIMIC-III), our approach achieves state-of-the-art performance, surpassing recent transformer and graph-based models by 0.5-1.7% in AUROC/AUPRC and 1.1-1.7% in accuracy/F1-score, while reducing computational complexity. Ablation studies demonstrate that feature extraction-not classifier choice-drives performance gains, and our summary statistics outperform raw/imputed input in most benchmarks. In particular, we identify scenarios where missing patterns themselves encode predictive signals, as in sepsis prediction (PhysioNet, 2019), where missing indicators alone can achieve 94.2% AUROC with XGBoost, only 1.6% lower than using original raw data as input. Our results challenge the necessity of complex temporal modeling when task objectives permit time-agnostic representations, providing an efficient and interpretable solution for irregular time series classification.",
-      "tags": [
-        "papers",
-        "eval",
-        "compute",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.19531"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "6741f06602f027672dd70f9f5062f9136c444870c193d7a4123f92b7887cde8e",
-      "title": "Grokking Finite-Dimensional Algebra",
-      "url": "https://arxiv.org/abs/2602.19533",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-24T05:00:00.000Z",
-      "summary": "arXiv:2602.19533v1 Announce Type: cross Abstract: This paper investigates the grokking phenomenon, which refers to the sudden transition from a long memorization to generalization observed during neural networks training, in the context of learning multiplication in finite-dimensional algebras (FDA). While prior work on grokking has focused mainly on group operations, we extend the analysis to more general algebraic structures, including non-associative, non-commutative, and non-unital algebras. We show that learning group operations is a special case of learning FDA, and that learning multiplication in FDA amounts to learning a bilinear product specified by the algebra's structure tensor. For algebras over the reals, we connect the learning problem to matrix factorization with an implicit low-rank bias, and for algebras over finite fields, we show that grokking emerges naturally as models must learn discrete representations of algebraic elements. This leads us to experimentally investigate the following core questions: (i) how do algebraic properties such as commutativity, associativity, and unitality influence both the emergence and timing of grokking, (ii) how structural properties of the structure tensor of the FDA, such as sparsity and rank, influence generalization, and (iii) to what extent generalization correlates with the model learning latent embeddings aligned with the algebra's representation. Our work provides a unified framework for grokking across algebraic structures and new insights into how mathematical structure governs neural network generalization dynamics.",
-      "tags": [
-        "papers",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.19533"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "52faf6bec5502bdf663fec042c37db34a4f8a4c880f8079632d2af1c2f8f8ef1",
-      "title": "Large Language Model-Assisted UAV Operations and Communications: A Multifaceted Survey and Tutorial",
-      "url": "https://arxiv.org/abs/2602.19534",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-24T05:00:00.000Z",
-      "summary": "arXiv:2602.19534v1 Announce Type: cross Abstract: Uncrewed Aerial Vehicles (UAVs) are widely deployed across diverse applications due to their mobility and agility. Recent advances in Large Language Models (LLMs) offer a transformative opportunity to enhance UAV intelligence beyond conventional optimization-based and learning-based approaches. By integrating LLMs into UAV systems, advanced environmental understanding, swarm coordination, mobility optimization, and high-level task reasoning can be achieved, thereby allowing more adaptive and context-aware aerial operations. This survey systematically explores the intersection of LLMs and UAV technologies and proposes a unified framework that consolidates existing architectures, methodologies, and applications for UAVs. We first present a structured taxonomy of LLM adaptation techniques for UAVs, including pretraining, fine-tuning, Retrieval-Augmented Generation (RAG), and prompt engineering, along with key reasoning capabilities such as Chain-of-Thought (CoT) and In-Context Learning (ICL). We then examine LLM-assisted UAV communications and operations, covering navigation, mission planning, swarm control, safety, autonomy, and network management. After that, the survey further discusses Multimodal LLMs (MLLMs) for human-swarm interaction, perception-driven navigation, and collaborative control. Finally, we address ethical considerations, including bias, transparency, accountability, and Human-in-the-Loop (HITL) strategies, and outline future research directions. Overall, this work positions LLM-assisted UAVs as a foundation for intelligent and adaptive aerial systems.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "safety",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.19534"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "03d93bdd16a2e08d685dace57fe8463aa3ec8f5b6f8f738434707ce05ae9af60",
-      "title": "Fore-Mamba3D: Mamba-based Foreground-Enhanced Encoding for 3D Object Detection",
-      "url": "https://arxiv.org/abs/2602.19536",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-24T05:00:00.000Z",
-      "summary": "arXiv:2602.19536v1 Announce Type: cross Abstract: Linear modeling methods like Mamba have been merged as the effective backbone for the 3D object detection task. However, previous Mamba-based methods utilize the bidirectional encoding for the whole non-empty voxel sequence, which contains abundant useless background information in the scenes. Though directly encoding foreground voxels appears to be a plausible solution, it tends to degrade detection performance. We attribute this to the response attenuation and restricted context representation in the linear modeling for fore-only sequences. To address this problem, we propose a novel backbone, termed Fore-Mamba3D, to focus on the foreground enhancement by modifying Mamba-based encoder. The foreground voxels are first sampled according to the predicted scores. Considering the response attenuation existing in the interaction of foreground voxels across different instances, we design a regional-to-global slide window (RGSW) to propagate the information from regional split to the entire sequence. Furthermore, a semantic-assisted and state spatial fusion module (SASFMamba) is proposed to enrich contextual representation by enhancing semantic and geometric awareness within the Mamba model. Our method emphasizes foreground-only encoding and alleviates the distance-based and causal dependencies in the linear autoregression model. The superior performance across various benchmarks demonstrates the effectiveness of Fore-Mamba3D in the 3D object detection task.",
-      "tags": [
-        "papers",
-        "eval",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.19536"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "f6689c1c0dd64779a7429225dab9911e5183c432baf7eb7312d37ff3c9827794",
-      "title": "Cost-Aware Diffusion Active Search",
-      "url": "https://arxiv.org/abs/2602.19538",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-24T05:00:00.000Z",
-      "summary": "arXiv:2602.19538v1 Announce Type: cross Abstract: Active search for recovering objects of interest through online, adaptive decision making with autonomous agents requires trading off exploration of unknown environments with exploitation of prior observations in the search space. Prior work has proposed information gain and Thompson sampling based myopic, greedy approaches for agents to actively decide query or search locations when the number of targets is unknown. Decision making algorithms in such partially observable environments have also shown that agents capable of lookahead over a finite horizon outperform myopic policies for active search. Unfortunately, lookahead algorithms typically rely on building a computationally expensive search tree that is simulated and updated based on the agent's observations and a model of the environment dynamics. Instead, in this work, we leverage the sequence modeling abilities of diffusion models to sample lookahead action sequences that balance the exploration-exploitation trade-off for active search without building an exhaustive search tree. We identify the optimism bias in prior diffusion based reinforcement learning approaches when applied to the active search setting and propose mitigating solutions for efficient cost-aware decision making with both single and multi-agent teams. Our proposed algorithm outperforms standard baselines in offline reinforcement learning in terms of full recovery rate and is computationally more efficient than tree search in cost-aware active decision making.",
-      "tags": [
-        "papers",
-        "agents",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.19538"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "b5cadd4e085106c54ea48dd3b74880b442ac15e3a83a490c845327e16724e531",
-      "title": "A Green Learning Approach to LDCT Image Restoration",
-      "url": "https://arxiv.org/abs/2602.19540",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-24T05:00:00.000Z",
-      "summary": "arXiv:2602.19540v1 Announce Type: cross Abstract: This work proposes a green learning (GL) approach to restore medical images. Without loss of generality, we use low-dose computed tomography (LDCT) images as examples. LDCT images are susceptible to noise and artifacts, where the imaging process introduces distortion. LDCT image restoration is an important preprocessing step for further medical analysis. Deep learning (DL) methods have been developed to solve this problem. We examine an alternative solution using the Green Learning (GL) methodology. The new restoration method is characterized by mathematical transparency, computational and memory efficiency, and high performance. Experiments show that our GL method offers state-of-the-art restoration performance at a smaller model size and with lower inference complexity.",
-      "tags": [
-        "papers",
-        "compute",
-        "inference",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.19540"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "978cc6950844774b210c266d6d7fc5f6880251753aed3811dbef8ae31a1b9541",
-      "title": "Agentic AI as a Cybersecurity Attack Surface: Threats, Exploits, and Defenses in Runtime Supply Chains",
-      "url": "https://arxiv.org/abs/2602.19555",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-24T05:00:00.000Z",
-      "summary": "arXiv:2602.19555v1 Announce Type: cross Abstract: Agentic systems built on large language models (LLMs) extend beyond text generation to autonomously retrieve information and invoke tools. This runtime execution model shifts the attack surface from build-time artifacts to inference-time dependencies, exposing agents to manipulation through untrusted data and probabilistic capability resolution. While prior work has focused on model-level vulnerabilities, security risks emerging from cyclic and interdependent runtime behavior remain fragmented. We systematize these risks within a unified runtime framework, categorizing threats into data supply chain attacks (transient context injection and persistent memory poisoning) and tool supply chain attacks (discovery, implementation, and invocation). We further identify the Viral Agent Loop, in which agents act as vectors for self-propagating generative worms without exploiting code-level flaws. Finally, we advocate a Zero-Trust Runtime Architecture that treats context as untrusted control flow and constrains tool execution through cryptographic provenance rather than semantic inference.",
-      "tags": [
-        "papers",
-        "agents",
-        "inference",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.19555"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "884cf8d5b28dba300f9eb09ad0e7c9ce8737e17cc10a6f2e98d38da2fedf7de6",
-      "title": "DICArt: Advancing Category-level Articulated Object Pose Estimation in Discrete State-Spaces",
-      "url": "https://arxiv.org/abs/2602.19565",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-24T05:00:00.000Z",
-      "summary": "arXiv:2602.19565v1 Announce Type: cross Abstract: Articulated object pose estimation is a core task in embodied AI. Existing methods typically regress poses in a continuous space, but often struggle with 1) navigating a large, complex search space and 2) failing to incorporate intrinsic kinematic constraints. In this work, we introduce DICArt (DIsCrete Diffusion for Articulation Pose Estimation), a novel framework that formulates pose estimation as a conditional discrete diffusion process. Instead of operating in a continuous domain, DICArt progressively denoises a noisy pose representation through a learned reverse diffusion procedure to recover the GT pose. To improve modeling fidelity, we propose a flexible flow decider that dynamically determines whether each token should be denoised or reset, effectively balancing the real and noise distributions during diffusion. Additionally, we incorporate a hierarchical kinematic coupling strategy, estimating the pose of each rigid part hierarchically to respect the object's kinematic structure. We validate DICArt on both synthetic and real-world datasets. Experimental results demonstrate its superior performance and robustness. By integrating discrete generative modeling with structural priors, DICArt offers a new paradigm for reliable category-level 6D pose estimation in complex environments.",
-      "tags": [
-        "papers",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.19565"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "ac2a57be7e78b21ab587cdaed055f9abaf7fe3871dbfdf36cbaa15c6316c8a9c",
-      "title": "Temporal-Aware Heterogeneous Graph Reasoning with Multi-View Fusion for Temporal Question Answering",
-      "url": "https://arxiv.org/abs/2602.19569",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-24T05:00:00.000Z",
-      "summary": "arXiv:2602.19569v1 Announce Type: cross Abstract: Question Answering over Temporal Knowledge Graphs (TKGQA) has attracted growing interest for handling time-sensitive queries. However, existing methods still struggle with: 1) weak incorporation of temporal constraints in question representation, causing biased reasoning; 2) limited ability to perform explicit multi-hop reasoning; and 3) suboptimal fusion of language and graph representations. We propose a novel framework with temporal-aware question encoding, multi-hop graph reasoning, and multi-view heterogeneous information fusion. Specifically, our approach introduces: 1) a constraint-aware question representation that combines semantic cues from language models with temporal entity dynamics; 2) a temporal-aware graph neural network for explicit multi-hop reasoning via time-aware message passing; and 3) a multi-view attention mechanism for more effective fusion of question context and temporal graph knowledge. Experiments on multiple TKGQA benchmarks demonstrate consistent improvements over multiple baselines.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "eval",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.19569"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "7e871301f2dc9aeb5ab70cb1a3d3b1cf34d7958a3eda4920984115f8a06cdced",
-      "title": "CTC-TTS: LLM-based dual-streaming text-to-speech with CTC alignment",
-      "url": "https://arxiv.org/abs/2602.19574",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-24T05:00:00.000Z",
-      "summary": "arXiv:2602.19574v1 Announce Type: cross Abstract: Large-language-model (LLM)-based text-to-speech (TTS) systems can generate natural speech, but most are not designed for low-latency dual-streaming synthesis. High-quality dual-streaming TTS depends on accurate text--speech alignment and well-designed training sequences that balance synthesis quality and latency. Prior work often relies on GMM-HMM based forced-alignment toolkits (e.g., MFA), which are pipeline-heavy and less flexible than neural aligners; fixed-ratio interleaving of text and speech tokens struggles to capture text--speech alignment regularities. We propose CTC-TTS, which replaces MFA with a CTC based aligner and introduces a bi-word based interleaving strategy. Two variants are designed: CTC-TTS-L (token concatenation along the sequence length) for higher quality and CTC-TTS-F (embedding stacking along the feature dimension) for lower latency. Experiments show that CTC-TTS outperforms fixed-ratio interleaving and MFA-based baselines on streaming synthesis and zero-shot tasks. Speech samples are available at https://ctctts.github.io/.",
-      "tags": [
-        "papers",
-        "safety",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.19574"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "a5318594330168358c971a8c6639269f752f33170cea42755b26da4bac378ce9",
-      "title": "Interpolation-Driven Machine Learning Approaches for Plume Shine Dose Estimation: A Comparison of XGBoost, Random Forest, and TabNet",
-      "url": "https://arxiv.org/abs/2602.19584",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-24T05:00:00.000Z",
-      "summary": "arXiv:2602.19584v1 Announce Type: cross Abstract: Despite the success of machine learning (ML) in surrogate modeling, its use in radiation dose assessment is limited by safety-critical constraints, scarce training-ready data, and challenges in selecting suitable architectures for physics-dominated systems. Within this context, rapid and accurate plume shine dose estimation serves as a practical test case, as it is critical for nuclear facility safety assessment and radiological emergency response, while conventional photon-transport-based calculations remain computationally expensive. In this work, an interpolation-assisted ML framework was developed using discrete dose datasets generated with the pyDOSEIA suite for 17 gamma-emitting radionuclides across varying downwind distances, release heights, and atmospheric stability categories. The datasets were augmented using shape-preserving interpolation to construct dense, high-resolution training data. Two tree-based ML models (Random Forest and XGBoost) and one deep learning (DL) model (TabNet) were evaluated to examine predictive performance and sensitivity to dataset resolution. All models showed higher prediction accuracy with the interpolated high-resolution dataset than with the discrete data; however, XGBoost consistently achieved the highest accuracy. Interpretability analysis using permutation importance (tree-based models) and attention-based feature attribution (TabNet) revealed that performance differences stem from how the models utilize input features. Tree-based models focus mainly on dominant geometry-dispersion features (release height, stability category, and downwind distance), treating radionuclide identity as a secondary input, whereas TabNet distributes attention more broadly across multiple variables. For practical deployment, a web-based GUI was developed for interactive scenario evaluation and transparent comparison with photon-transport reference calculations.",
-      "tags": [
-        "papers",
-        "eval",
-        "safety",
-        "training",
-        "model",
-        "release",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.19584"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "833d086bc79a4b477f26566a73bbd8d1e85002862c7679c013f4ac44e1a4f920",
-      "title": "Tri-Subspaces Disentanglement for Multimodal Sentiment Analysis",
-      "url": "https://arxiv.org/abs/2602.19585",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-24T05:00:00.000Z",
-      "summary": "arXiv:2602.19585v1 Announce Type: cross Abstract: Multimodal Sentiment Analysis (MSA) integrates language, visual, and acoustic modalities to infer human sentiment. Most existing methods either focus on globally shared representations or modality-specific features, while overlooking signals that are shared only by certain modality pairs. This limits the expressiveness and discriminative power of multimodal representations. To address this limitation, we propose a Tri-Subspace Disentanglement (TSD) framework that explicitly factorizes features into three complementary subspaces: a common subspace capturing global consistency, submodally-shared subspaces modeling pairwise cross-modal synergies, and private subspaces preserving modality-specific cues. To keep these subspaces pure and independent, we introduce a decoupling supervisor together with structured regularization losses. We further design a Subspace-Aware Cross-Attention (SACA) fusion module that adaptively models and integrates information from the three subspaces to obtain richer and more robust representations. Experiments on CMU-MOSI and CMU-MOSEI demonstrate that TSD achieves state-of-the-art performance across all key metrics, reaching 0.691 MAE on CMU-MOSI and 54.9% ACC-7 on CMU-MOSEI, and also transfers well to multimodal intent recognition tasks. Ablation studies confirm that tri-subspace disentanglement and SACA jointly enhance the modeling of multi-granular cross-modal sentiment cues.",
-      "tags": [
-        "papers",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.19585"
         },
         {
           "label": "Feed",
