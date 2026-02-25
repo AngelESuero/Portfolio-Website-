@@ -200,6 +200,12 @@ const items = [
       const itemsNode = document.getElementById('ai-transition-items');
       if (!root || !itemsNode) return;
 
+      const isEmbed = new URLSearchParams(window.location.search).get('embed') === '1';
+      if (isEmbed) {
+        document.documentElement.classList.add('aw-embed');
+        document.body.classList.add('aw-embed');
+      }
+
       let items = [];
       try {
         items = JSON.parse(itemsNode.textContent || '[]');
@@ -1165,7 +1171,36 @@ const items = [
   </script>
 </BaseLayout>
 
-<style>
+<style is:global>
+  html.aw-embed,
+  body.aw-embed {
+    background: transparent;
+  }
+
+  .aw-embed #cursor-aura,
+  .aw-embed .hallway,
+  .aw-embed .site-overlay,
+  .aw-embed .garland-real,
+  .aw-embed .site-header,
+  .aw-embed .mode-walk,
+  .aw-embed .mode-explore {
+    display: none !important;
+  }
+
+  body.aw-embed > footer {
+    display: none !important;
+  }
+
+  .aw-embed .page-shell {
+    padding: 0;
+    max-width: none;
+  }
+
+  .aw-embed .mode-normal {
+    max-width: none;
+    width: 100%;
+  }
+
   .aw-shell {
     display: grid;
     gap: 1rem;
