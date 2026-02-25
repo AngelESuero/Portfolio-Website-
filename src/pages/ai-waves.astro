@@ -190,6 +190,9 @@ const items = [
   </section>
 
   <script type="application/json" id="ai-transition-items" set:html={JSON.stringify(items)}></script>
+  <script is:inline define:vars={{ items }}>
+    window.__AI_TRANSITION_ITEMS__ = items;
+  </script>
   <script is:inline>
     (() => {
       const STORAGE_KEY = 'ai_transition_dashboard_v1';
@@ -202,6 +205,13 @@ const items = [
         items = JSON.parse(itemsNode.textContent || '[]');
       } catch {
         items = [];
+      }
+
+      const fallbackItems = Array.isArray(window.__AI_TRANSITION_ITEMS__)
+        ? window.__AI_TRANSITION_ITEMS__
+        : [];
+      if ((!Array.isArray(items) || items.length === 0) && fallbackItems.length > 0) {
+        items = fallbackItems;
       }
 
       if (!Array.isArray(items) || items.length === 0) {
