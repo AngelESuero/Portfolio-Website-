@@ -189,7 +189,7 @@ const items = [
     </div>
   </section>
 
-  <script type="application/json" id="ai-transition-items">{JSON.stringify(items)}</script>
+  <script type="application/json" id="ai-transition-items" set:html={JSON.stringify(items)}></script>
   <script is:inline>
     (() => {
       const STORAGE_KEY = 'ai_transition_dashboard_v1';
