@@ -66,19 +66,50 @@ const stackModelRows = [
     monitor: 'Participation, learning continuity, mental-health access, mobility and opportunity'
   }
 ];
+
+const transitionBridgeRows = [
+  {
+    signal: 'Assist strong, Agent still brittle',
+    posture: 'Harden L0-L2 operations before scaling autonomy.',
+    gate: 'Require QA coverage, incident logging, and rollback paths for every automation.'
+  },
+  {
+    signal: 'Agent strength rising with reliability gaps',
+    posture: 'Deploy supervised automation in L2 first, then L1.',
+    gate: 'No unsupervised deployment into triage/safety workflows without exception handling.'
+  },
+  {
+    signal: 'Robots coupling into physical systems',
+    posture: 'Treat reliability as life-critical infrastructure.',
+    gate: 'Drill manual fallback and fail-safe procedures before expanding fleet autonomy.'
+  },
+  {
+    signal: 'Rules and audits becoming enforceable',
+    posture: 'Institutionalize accountability across operators and vendors.',
+    gate: 'Standardize audit trails, liability ownership, and appeal workflows.'
+  },
+  {
+    signal: 'Dividends/equity pressure rising',
+    posture: 'Protect social stability while productivity scales.',
+    gate: 'Track distribution lag and activate ownership/benefit rails before trust erosion.'
+  }
+];
 ---
 
 <section class="view-surface">
   <header class="view-surface-header">
     <p class="view-surface-kicker">AI-generated content</p>
-    <h1>Survival OS</h1>
+    <h1>Survival OS + AI Transition</h1>
     <p>
-      A survival-first systems map for life support, stability, and the infrastructure that keeps people alive at scale.
+      One operating model: transition signals mapped to survival risk, infrastructure reliability, and social stability.
     </p>
   </header>
 
   <div class="explore-grid mt-4">
-    <a class="explore-card" href="#infographic">Infographic</a>
+    <a class="explore-card" href="#infographic">Transition dashboard</a>
+    <a class="explore-card" href="#integration">Control logic</a>
+    <a class="explore-card" href="#stack-model">Integrated stack</a>
+    <a class="explore-card" href="/survival-support">Survival support guide</a>
     <a class="explore-card" href="#systems">Vital systems map</a>
     <a class="explore-card" href="#sources">Citations</a>
   </div>
@@ -87,14 +118,14 @@ const stackModelRows = [
 <section id="infographic" class="view-surface mt-4">
   <header class="view-surface-header">
     <p class="view-surface-kicker">Visual overview</p>
-    <h1>Infographic</h1>
-    <p>AI Transition dashboard embedded in the infographic frame.</p>
+    <h1>AI Transition Dashboard</h1>
+    <p>Embedded transition signals powering the survival operating model below.</p>
   </header>
 
   <div class="card mt-4 p-4">
     <div class="mt-4 flex flex-wrap gap-3">
       <a class="pill rounded-full px-3 py-1.5 text-sm no-underline" href="/ai-waves?v=embedfix2" target="_blank" rel="noreferrer">
-        Open Full Dashboard
+        Open standalone dashboard
       </a>
     </div>
 
@@ -109,11 +140,40 @@ const stackModelRows = [
   </div>
 </section>
 
-<section class="view-surface mt-4">
+<section id="integration" class="view-surface mt-4">
+  <header class="view-surface-header">
+    <p class="view-surface-kicker">Integration layer</p>
+    <h1>Transition-to-survival control logic</h1>
+    <p>Use transition strength as a trigger for operating posture, safeguards, and deployment gates.</p>
+  </header>
+
+  <div class="card mt-4 overflow-x-auto p-4">
+    <table class="w-full min-w-[880px] border-collapse text-sm">
+      <thead>
+        <tr class="text-left">
+          <th class="border-b px-3 py-2">Transition signal</th>
+          <th class="border-b px-3 py-2">Survival posture</th>
+          <th class="border-b px-3 py-2">Decision gate</th>
+        </tr>
+      </thead>
+      <tbody>
+        {transitionBridgeRows.map((row, index) => (
+          <tr>
+            <td class={`${index < transitionBridgeRows.length - 1 ? 'border-b' : ''} px-3 py-2 font-semibold`}>{row.signal}</td>
+            <td class={`${index < transitionBridgeRows.length - 1 ? 'border-b' : ''} px-3 py-2`}>{row.posture}</td>
+            <td class={`${index < transitionBridgeRows.length - 1 ? 'border-b' : ''} px-3 py-2`}>{row.gate}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="stack-model" class="view-surface mt-4">
   <header class="view-surface-header">
     <p class="view-surface-kicker">Stack model</p>
-    <h1>SurvivalOS Overlay</h1>
-    <p>Survival-first operating stack aligned to AI transition decisions.</p>
+    <h1>Integrated operating stack</h1>
+    <p>Decision-grade layers for sequencing AI deployment without compromising life-critical outcomes.</p>
   </header>
 
   <div class="card mt-4 overflow-x-auto p-4">
