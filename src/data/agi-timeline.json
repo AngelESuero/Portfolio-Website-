@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-25T16:35:21.689Z",
+    "generatedAt": "2026-02-25T18:14:55.274Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,28 @@
     ]
   },
   "items": [
+    {
+      "id": "1396aa2ee7ac8e162d72ee35adb0b224646ee036acdb1a68a6f1fccc299e2d4f",
+      "title": "Making Softmax More Efficient with NVIDIA Blackwell Ultra",
+      "url": "https://developer.nvidia.com/blog/making-softmax-more-efficient-with-nvidia-blackwell-ultra/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-02-25T17:00:00.000Z",
+      "summary": "LLM context lengths are exploding, and architectures are moving toward complex attention schemes like Multi-Head Latent Attention (MLA) and Grouped Query... LLM context lengths are exploding, and architectures are moving toward complex attention schemes like Multi-Head Latent Attention (MLA) and Grouped Query Attention (GQA). As a result, AI ”speed of thought” is increasingly governed not by the massive throughput of matrix multiplications, but by the transcendental math of the softmax function. Transcendentals refer to functions that cannot be… Source",
+      "tags": [
+        "compute"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/making-softmax-more-efficient-with-nvidia-blackwell-ultra/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
     {
       "id": "a071188f43afe66fee756d73d9c1e1367933ecdb7a9d06786488d45b4f1e4fcb",
       "title": "Multilevel Determinants of Overweight and Obesity Among U.S. Children Aged 10-17: Comparative Evaluation of Statistical and Machine Learning Approaches Using the 2021 National Survey of Children's Health",
@@ -15086,30 +15108,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2602.19489"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "616be4b70db33071b07e15b55fdc690012785922c0c6784fbc8777633ca218f3",
-      "title": "Botson: An Accessible and Low-Cost Platform for Social Robotics Research",
-      "url": "https://arxiv.org/abs/2602.19491",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-24T05:00:00.000Z",
-      "summary": "arXiv:2602.19491v1 Announce Type: cross Abstract: Trust remains a critical barrier to the effective integration of Artificial Intelligence (AI) into human-centric domains. Disembodied agents, such as voice assistants, often fail to establish trust due to their inability to convey non-verbal social cues. This paper introduces the architecture of Botson: an anthropomorphic social robot powered by a large language model (LLM). Botson was created as a low-cost and accessible platform for social robotics research.",
-      "tags": [
-        "papers",
-        "agents",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.19491"
         },
         {
           "label": "Feed",
