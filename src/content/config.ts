@@ -5,6 +5,7 @@ const projects = defineCollection({
   schema: z.object({
     title: z.string(),
     year: z.number(),
+    timeline_order: z.number().optional(),
     type: z.enum(['music', 'video', 'writing', 'civic']),
     status: z.string(),
     tools: z.array(z.string()),

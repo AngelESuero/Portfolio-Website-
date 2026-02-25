@@ -3,12 +3,21 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import ProjectCard from '../../components/ProjectCard.astro';
 
-const allProjects = await getCollection('projects');
+const allProjects = (await getCollection('projects')).sort((a, b) => {
+  const yearDelta = a.data.year - b.data.year;
+  if (yearDelta !== 0) return yearDelta;
+
+  const timelineOrderA = a.data.timeline_order ?? Number.MAX_SAFE_INTEGER;
+  const timelineOrderB = b.data.timeline_order ?? Number.MAX_SAFE_INTEGER;
+  if (timelineOrderA !== timelineOrderB) return timelineOrderA - timelineOrderB;
+
+  return a.data.title.localeCompare(b.data.title);
+});
 const types = ['all', 'music', 'video', 'writing', 'civic'];
 ---
 <BaseLayout title="Work — a_e.s_" theme="work">
   <h1 class="font-display text-4xl">Work / Projects</h1>
-  <p class="mt-3">Filter by type and explore the archive.</p>
+  <p class="mt-3">Timeline order (oldest to newest). Filter by type and explore the archive.</p>
   <div class="mt-4 flex flex-wrap gap-2" id="filters">
     {types.map((type) => <button class="filter rounded border border-zinc-400 px-3 py-1 text-sm dark:border-zinc-600" data-filter={type}>{type}</button>)}
   </div>

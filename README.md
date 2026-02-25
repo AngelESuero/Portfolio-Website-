@@ -106,7 +106,7 @@ Edit `src/data/site-refs.ts`:
 
 ### Projects
 Add/edit files in `src/content/projects/*.md` with frontmatter:
-- `title`, `year`, `type` (`music|video|writing|civic`), `status`, `tools`
+- `title`, `year`, optional `timeline_order`, `type` (`music|video|writing|civic`), `status`, `tools`
 - `links` (`github`, `linktree`, `youtube`, `instagram`, `untitled`)
 - `featured`, `cover_image`, `description`
 
