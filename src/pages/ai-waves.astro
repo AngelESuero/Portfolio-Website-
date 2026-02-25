@@ -271,7 +271,7 @@ const items = [
         const seededEvidence = { ...base.evidence };
 
         seededEvidence.A1 =
-          'Microsoft Global AI Adoption 2025: global genAI adoption 16.3% (~1 in 6) https://www.microsoft.com/en-us/corporate-responsibility/topics/ai-economy-institute/reports/global-ai-adoption-2025/ | Stanford AI Index 2025: GPT-3.5-level inference cost drop $20->$0.07 per 1M tokens (Nov 2022->Oct 2024) https://hai.stanford.edu/news/ai-index-2025-state-of-ai-in-10-charts';
+          'US workplace adoption: Pew (Sept 2025) says 21% of US workers use AI for at least some of their work https://www.pewresearch.org/short-reads/2025/10/06/about-1-in-5-us-workers-now-use-ai-in-their-job-up-since-last-year/ | Gallup (Nov 2025) reports ~10-12% daily AI use and ~26% frequent use https://www.gallup.com/699797/indicator-artificial-intelligence.aspx | Cost curve context: Stanford AI Index shows large inference price drops (GPT-3.5-level) https://hai.stanford.edu/news/ai-index-2025-state-of-ai-in-10-charts';
         seededEvidence.A3 =
           'OpenAI CUA benchmarks: OSWorld 38.1%, WebArena 58.1%, WebVoyager 87% https://openai.com/index/computer-using-agent/';
         seededEvidence.A4 =
@@ -279,11 +279,20 @@ const items = [
         seededEvidence.C3 =
           'Stanford AI Index 2025: inference prices fell 9x-900x per year depending on task https://hai.stanford.edu/ai-index/2025-ai-index-report/research-and-development';
         seededEvidence.A7 =
-          'Amazon: 1 millionth robot + DeepFleet improves fleet travel time by 10% https://www.aboutamazon.com/news/operations/amazon-million-robots-ai-foundation-model | Agility RoboFab: peak capacity 10,000 robots/year https://www.agilityrobotics.com/robofab';
+          'Robots in US ops: Amazon reached its 1 millionth robot and says DeepFleet improved robot travel time by 10% https://www.aboutamazon.com/news/operations/amazon-million-robots-ai-foundation-model | Humanoid manufacturing capacity: Agility RoboFab (Oregon) lists peak capacity 10,000 robots/year https://www.agilityrobotics.com/robofab';
         seededEvidence.D4 =
           'US regulatory patchwork / federal preemption proposals: Politico (draft EO) https://www.politico.com/news/2025/11/19/white-house-prepares-executive-order-to-block-state-ai-laws-00660719 | Reuters (EO paused) https://www.reuters.com/world/white-house-pauses-executive-order-that-would-seek-preempt-state-laws-on-ai-sources-2025-11-21/';
         seededEvidence.E3 =
-          'No dividend rail at scale yet; UBI evidence base: OpenResearch ORUS findings (employment not reduced) https://www.openresearchlab.org/findings/key-findings-employment-and-income';
+          'No dividend rail at national scale yet; UBI evidence base (US): OpenResearch ORUS findings (employment not reduced) https://www.openresearchlab.org/findings/key-findings-employment-and-income';
+
+        seededEvidence.B2 =
+          'US labor market baseline: BLS Employment Situation (jobs, unemployment) https://www.bls.gov/news.release/empsit.htm | BLS CES hours (Avg weekly hours, total private) https://www.bls.gov/ces/ | BLS real earnings context via Productivity & Costs releases https://www.bls.gov/news.release/prod2.htm';
+        seededEvidence.C1 =
+          'US productivity signal: BLS Productivity & Costs news releases (nonfarm business productivity + unit labor costs) https://www.bls.gov/news.release/prod2.htm';
+        seededEvidence.E1 =
+          'US profits vs labor (proxy): BEA National Income and Product Accounts (corporate profits; compensation) https://www.bea.gov/data/income-saving/national-income-and-product-accounts';
+        seededEvidence.E2 =
+          'US household stress (proxy): NY Fed Household Debt and Credit (balances + delinquencies) https://www.newyorkfed.org/microeconomics/hhdc | BLS real hourly compensation appears in Productivity & Costs releases https://www.bls.gov/news.release/prod2.htm';
 
         return {
           ...base,
