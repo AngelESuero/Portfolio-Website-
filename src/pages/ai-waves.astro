@@ -1,0 +1,1685 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const items = [
+  {
+    id: 'A1',
+    label: 'Task-level competence is strong (drafting/snippets/analysis)',
+    help: 'Wave 1 signature: AI handles individual tasks well; humans still own outcomes.',
+    wave: 1,
+    lens: 'Capability',
+    defaultScore: 3
+  },
+  {
+    id: 'A2',
+    label: 'Humans still stitch outputs + do QA',
+    help: 'If this stays high, Wave 2 is gated by trust/verification.',
+    wave: 1,
+    lens: 'Capability',
+    defaultScore: 3
+  },
+  {
+    id: 'B1',
+    label: 'AI budgets rising / deployments expanding beyond pilots',
+    wave: 1,
+    lens: 'Adoption',
+    defaultScore: 2
+  },
+  {
+    id: 'B2',
+    label: 'Hiring growth slowing / optimization narrative present',
+    wave: 1,
+    lens: 'Adoption',
+    defaultScore: 2
+  },
+  {
+    id: 'C1',
+    label: 'Broad productivity gains are measurable but modest',
+    wave: 1,
+    lens: 'Economics',
+    defaultScore: 1
+  },
+  {
+    id: 'D1',
+    label: 'Baseline AI policies exist (data handling, disclosure, usage rules)',
+    wave: 1,
+    lens: 'Governance',
+    defaultScore: 2
+  },
+  {
+    id: 'A3',
+    label: 'End-to-end automation is still rare (low single-digit %)',
+    help: 'Wave 2 starts when multi-step workflows run without babysitting.',
+    wave: 2,
+    lens: 'Capability',
+    defaultScore: 1
+  },
+  {
+    id: 'A4',
+    label: 'Agents reliably run >10 steps without intervention',
+    help: 'This is a clean gate. If this hits 2-3 broadly, Wave 2 is here.',
+    wave: 2,
+    lens: 'Capability',
+    defaultScore: 1
+  },
+  {
+    id: 'A5',
+    label: 'Failures cluster in planning/execution/verification (multi-step compounding)',
+    wave: 2,
+    lens: 'Capability',
+    defaultScore: 2
+  },
+  {
+    id: 'A6',
+    label: 'Main bottlenecks: trust/QA + connectors + data quality (not compute)',
+    wave: 2,
+    lens: 'Capability',
+    defaultScore: 2
+  },
+  {
+    id: 'B3',
+    label: 'Roles redesigned more than eliminated (tasks removed != job removed)',
+    wave: 2,
+    lens: 'Adoption',
+    defaultScore: 2
+  },
+  {
+    id: 'B4',
+    label: 'Human overseer/QA patterns emerging (auditor, exception handler)',
+    wave: 2,
+    lens: 'Adoption',
+    defaultScore: 1
+  },
+  {
+    id: 'C2',
+    label: 'AI gains are strong enough to justify structural workflow redesign',
+    wave: 2,
+    lens: 'Economics',
+    defaultScore: 1
+  },
+  {
+    id: 'C3',
+    label: 'Cost curve collapsing (price/performance improving sharply)',
+    wave: 2,
+    lens: 'Economics',
+    defaultScore: 3
+  },
+  {
+    id: 'D2',
+    label: 'Audits/incident reporting becoming routine in higher-risk domains',
+    wave: 2,
+    lens: 'Governance',
+    defaultScore: 1
+  },
+  {
+    id: 'A7',
+    label: 'Robotics/logistics automation scaling beyond pilots',
+    wave: 3,
+    lens: 'Capability',
+    defaultScore: 1
+  },
+  {
+    id: 'B5',
+    label: 'Public services (cities/hospitals/utilities) deploy AI operationally',
+    wave: 3,
+    lens: 'Adoption',
+    defaultScore: 1
+  },
+  {
+    id: 'C4',
+    label: 'Physical-world automation materially lowers costs / raises capacity',
+    wave: 3,
+    lens: 'Economics',
+    defaultScore: 1
+  },
+  {
+    id: 'D3',
+    label: 'Liability frameworks for AI-caused harm are enforceable + routine',
+    wave: 3,
+    lens: 'Governance',
+    defaultScore: 1
+  },
+  {
+    id: 'D4',
+    label: 'Governance standardizes (transparency/audits/liability) across sectors',
+    wave: 4,
+    lens: 'Governance',
+    defaultScore: 1
+  },
+  {
+    id: 'D5',
+    label: 'AI becomes election-level policy priority (broad legitimacy battles)',
+    wave: 4,
+    lens: 'Governance',
+    defaultScore: 2
+  },
+  {
+    id: 'E1',
+    label: 'Profit concentration becomes dominant social signal',
+    wave: 5,
+    lens: 'Equity',
+    defaultScore: 2
+  },
+  {
+    id: 'E2',
+    label: 'Wage-based demand weakens while productivity rises',
+    wave: 5,
+    lens: 'Equity',
+    defaultScore: 2
+  },
+  {
+    id: 'E3',
+    label: 'Credible ownership/dividend rail exists at scale',
+    help: 'Public wealth funds, statutory profit-sharing, data/compute dividends, UBI-like floors.',
+    wave: 5,
+    lens: 'Equity',
+    defaultScore: 1
+  }
+] as const;
+---
+
+<BaseLayout
+  title="AI Waves Dashboard - A Path Toward Life"
+  description="Score AI wave signals, track evidence, and snapshot changes over time."
+  theme="agi"
+>
+  <section class="page-shell">
+    <div class="mode-normal aw-shell">
+      <div id="ai-waves-app" class="aw-root"></div>
+    </div>
+  </section>
+
+  <script type="application/json" id="ai-waves-items">{JSON.stringify(items)}</script>
+  <script is:inline>
+    (() => {
+      const STORAGE_KEY = 'ai_waves_dashboard_v1';
+      const root = document.getElementById('ai-waves-app');
+      const itemsNode = document.getElementById('ai-waves-items');
+      if (!root || !itemsNode) return;
+
+      let items = [];
+      try {
+        items = JSON.parse(itemsNode.textContent || '[]');
+      } catch {
+        items = [];
+      }
+
+      if (!Array.isArray(items) || items.length === 0) {
+        root.innerHTML = '<p class="aw-empty">Unable to load dashboard items.</p>';
+        return;
+      }
+
+      const waveMeta = {
+        1: { title: 'Assist', subtitle: 'Task substitution inside jobs' },
+        2: { title: 'Agent', subtitle: 'Workflow ownership (agents)' },
+        3: { title: 'Robots', subtitle: 'Physical economy coupling' },
+        4: { title: 'Rules', subtitle: 'Institutional rewrite' },
+        5: { title: 'Dividends', subtitle: 'Distribution + ownership rails' }
+      };
+
+      const waveOrder = [1, 2, 3, 4, 5];
+
+      const clampScore = (value) => {
+        const numeric = Number(value);
+        if (!Number.isFinite(numeric)) return 0;
+        return Math.max(0, Math.min(3, Math.round(numeric)));
+      };
+
+      const uid = () =>
+        Math.random().toString(16).slice(2) + Date.now().toString(16);
+
+      const escapeHtml = (value) =>
+        String(value ?? '')
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#39;');
+
+      const scoreToWord = (score) => {
+        if (score === 0) return 'Not present';
+        if (score === 1) return 'Early';
+        if (score === 2) return 'Leading orgs';
+        return 'Widespread';
+      };
+
+      const waveName = (wave) => {
+        if (wave === 1) return 'Wave 1 (Assist)';
+        if (wave === 2) return 'Wave 2 (Agent)';
+        if (wave === 3) return 'Wave 3 (Robots)';
+        if (wave === 4) return 'Wave 4 (Rules)';
+        return 'Wave 5 (Dividends)';
+      };
+
+      const buildBaseline = () => {
+        const scores = {};
+        const evidence = {};
+        items.forEach((item) => {
+          scores[item.id] = clampScore(item.defaultScore);
+          evidence[item.id] = '';
+        });
+        return {
+          scores,
+          evidence,
+          snapshots: [],
+          ui: {
+            compact: false,
+            showHelp: true
+          }
+        };
+      };
+
+      const normalizeSnapshot = (raw, fallback) => {
+        const snapScores = { ...fallback.scores };
+        const snapEvidence = { ...fallback.evidence };
+
+        if (raw?.scores && typeof raw.scores === 'object') {
+          items.forEach((item) => {
+            if (Object.hasOwn(raw.scores, item.id)) {
+              snapScores[item.id] = clampScore(raw.scores[item.id]);
+            }
+          });
+        }
+
+        if (raw?.evidence && typeof raw.evidence === 'object') {
+          items.forEach((item) => {
+            if (Object.hasOwn(raw.evidence, item.id)) {
+              snapEvidence[item.id] = String(raw.evidence[item.id] ?? '');
+            }
+          });
+        }
+
+        let dateISO = '';
+        if (typeof raw?.dateISO === 'string') {
+          const parsed = new Date(raw.dateISO);
+          dateISO = Number.isNaN(parsed.valueOf())
+            ? new Date().toISOString()
+            : parsed.toISOString();
+        } else {
+          dateISO = new Date().toISOString();
+        }
+
+        return {
+          id:
+            typeof raw?.id === 'string' && raw.id.trim().length > 0
+              ? raw.id
+              : uid(),
+          title:
+            typeof raw?.title === 'string' && raw.title.trim().length > 0
+              ? raw.title.trim()
+              : 'Update',
+          dateISO,
+          notes: typeof raw?.notes === 'string' ? raw.notes : '',
+          scores: snapScores,
+          evidence: snapEvidence
+        };
+      };
+
+      const normalizeState = (raw, fallback) => {
+        const normalized = {
+          scores: { ...fallback.scores },
+          evidence: { ...fallback.evidence },
+          snapshots: [],
+          ui: {
+            compact: false,
+            showHelp: true
+          }
+        };
+
+        if (!raw || typeof raw !== 'object') return normalized;
+
+        if (raw.scores && typeof raw.scores === 'object') {
+          items.forEach((item) => {
+            if (Object.hasOwn(raw.scores, item.id)) {
+              normalized.scores[item.id] = clampScore(raw.scores[item.id]);
+            }
+          });
+        }
+
+        if (raw.evidence && typeof raw.evidence === 'object') {
+          items.forEach((item) => {
+            if (Object.hasOwn(raw.evidence, item.id)) {
+              normalized.evidence[item.id] = String(raw.evidence[item.id] ?? '');
+            }
+          });
+        }
+
+        if (Array.isArray(raw.snapshots)) {
+          normalized.snapshots = raw.snapshots.map((entry) =>
+            normalizeSnapshot(entry, fallback)
+          );
+        }
+
+        if (raw.ui && typeof raw.ui === 'object') {
+          normalized.ui.compact = Boolean(raw.ui.compact);
+          normalized.ui.showHelp =
+            typeof raw.ui.showHelp === 'boolean' ? raw.ui.showHelp : true;
+        }
+
+        return normalized;
+      };
+
+      const loadState = () => {
+        const fallback = buildBaseline();
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return fallback;
+          const parsed = JSON.parse(raw);
+          return normalizeState(parsed, fallback);
+        } catch {
+          return fallback;
+        }
+      };
+
+      const saveState = (value) => {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
+        } catch {}
+      };
+
+      let state = loadState();
+      let activeWave = 1;
+      let query = '';
+      let activeTab = 'score';
+      let snapDialogOpen = false;
+      let snapTitle = 'Monthly update';
+      let snapNotes = '';
+      let importDialogOpen = false;
+      let importText = '';
+
+      const getFilteredItems = () => {
+        const q = query.trim().toLowerCase();
+        return items
+          .filter((item) => item.wave === activeWave)
+          .filter((item) => {
+            if (!q) return true;
+            return (
+              item.label.toLowerCase().includes(q) ||
+              item.lens.toLowerCase().includes(q) ||
+              item.id.toLowerCase().includes(q)
+            );
+          });
+      };
+
+      const getWaveStats = () => {
+        const byWave = {
+          1: { sum: 0, max: 0, count: 0 },
+          2: { sum: 0, max: 0, count: 0 },
+          3: { sum: 0, max: 0, count: 0 },
+          4: { sum: 0, max: 0, count: 0 },
+          5: { sum: 0, max: 0, count: 0 }
+        };
+
+        items.forEach((item) => {
+          const score = clampScore(
+            Object.hasOwn(state.scores, item.id)
+              ? state.scores[item.id]
+              : item.defaultScore
+          );
+          byWave[item.wave].sum += score;
+          byWave[item.wave].max += 3;
+          byWave[item.wave].count += 1;
+        });
+
+        const strength = (wave) => {
+          const bucket = byWave[wave];
+          if (!bucket || bucket.max === 0) return 0;
+          return bucket.sum / bucket.max;
+        };
+
+        const overallMax = waveOrder.reduce(
+          (total, wave) => total + byWave[wave].max,
+          0
+        );
+        const overallSum = waveOrder.reduce(
+          (total, wave) => total + byWave[wave].sum,
+          0
+        );
+        const overall = overallMax ? overallSum / overallMax : 0;
+
+        let topWave = 1;
+        waveOrder.forEach((wave) => {
+          if (strength(wave) > strength(topWave)) {
+            topWave = wave;
+          }
+        });
+
+        return {
+          byWave,
+          strength,
+          overall,
+          topWave
+        };
+      };
+
+      const getHeadline = (stats) => {
+        const s1 = stats.strength(1);
+        const s2 = stats.strength(2);
+        const s3 = stats.strength(3);
+        const s4 = stats.strength(4);
+        const s5 = stats.strength(5);
+
+        const primary = waveName(stats.topWave);
+        const ranked = [
+          { wave: 1, value: s1 },
+          { wave: 2, value: s2 },
+          { wave: 3, value: s3 },
+          { wave: 4, value: s4 },
+          { wave: 5, value: s5 }
+        ]
+          .filter((entry) => entry.wave !== stats.topWave)
+          .sort((a, b) => b.value - a.value);
+        const secondary = ranked[0] ? waveName(ranked[0].wave) : '';
+
+        const nuance =
+          s2 >= 0.45 && s1 >= 0.6
+            ? 'Late Wave 1 with strong early Wave 2 signals'
+            : s1 >= 0.6 && s2 < 0.45
+              ? 'Wave 1 dominates; Wave 2 is loading'
+              : stats.topWave === 2
+                ? 'Wave 2 is operationalizing'
+                : 'Mixed signals across waves';
+
+        return { primary, secondary, nuance };
+      };
+
+      const getLensPills = () => {
+        const filtered = items.filter((item) => item.wave === activeWave);
+        const lensMap = new Map();
+        filtered.forEach((item) => {
+          const score = clampScore(
+            Object.hasOwn(state.scores, item.id)
+              ? state.scores[item.id]
+              : item.defaultScore
+          );
+          const current = lensMap.get(item.lens) || { sum: 0, max: 0 };
+          current.sum += score;
+          current.max += 3;
+          lensMap.set(item.lens, current);
+        });
+        return Array.from(lensMap.entries())
+          .map(([lens, value]) => {
+            const pct = value.max ? Math.round((value.sum / value.max) * 100) : 0;
+            return { lens, pct };
+          })
+          .sort((a, b) => b.pct - a.pct);
+      };
+
+      const exportJson = () => {
+        const payload = JSON.stringify(state, null, 2);
+        const blob = new Blob([payload], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = `ai-waves-dashboard_${new Date().toISOString().slice(0, 10)}.json`;
+        anchor.click();
+        URL.revokeObjectURL(url);
+      };
+
+      const importJson = () => {
+        try {
+          const parsed = JSON.parse(importText);
+          if (!parsed || typeof parsed !== 'object') {
+            throw new Error('Invalid JSON');
+          }
+          if (!parsed.scores || !parsed.evidence || !parsed.snapshots || !parsed.ui) {
+            throw new Error('Missing keys');
+          }
+          const fallback = buildBaseline();
+          state = normalizeState(parsed, fallback);
+          saveState(state);
+          importDialogOpen = false;
+          importText = '';
+          render();
+        } catch {
+          window.alert('Import failed: paste a valid dashboard JSON export.');
+        }
+      };
+
+      const resetToDefaults = () => {
+        const fallback = buildBaseline();
+        state = {
+          ...state,
+          scores: fallback.scores,
+          evidence: fallback.evidence
+        };
+        saveState(state);
+        render();
+      };
+
+      const makeSnapshot = () => {
+        const snapshot = {
+          id: uid(),
+          title: snapTitle.trim() || 'Update',
+          dateISO: new Date().toISOString(),
+          notes: snapNotes,
+          evidence: { ...state.evidence },
+          scores: { ...state.scores }
+        };
+        state = {
+          ...state,
+          snapshots: [snapshot, ...state.snapshots]
+        };
+        saveState(state);
+        snapDialogOpen = false;
+        snapNotes = '';
+        render();
+      };
+
+      const deleteSnapshot = (id) => {
+        state = {
+          ...state,
+          snapshots: state.snapshots.filter((snapshot) => snapshot.id !== id)
+        };
+        saveState(state);
+        render();
+      };
+
+      const applySnapshot = (id) => {
+        const match = state.snapshots.find((snapshot) => snapshot.id === id);
+        if (!match) return;
+        state = {
+          ...state,
+          scores: { ...match.scores },
+          evidence: { ...match.evidence }
+        };
+        saveState(state);
+        render();
+      };
+
+      const updateUi = (patch) => {
+        state = {
+          ...state,
+          ui: {
+            ...state.ui,
+            ...patch
+          }
+        };
+        saveState(state);
+        render();
+      };
+
+      const updateScore = (itemId, score) => {
+        state = {
+          ...state,
+          scores: {
+            ...state.scores,
+            [itemId]: clampScore(score)
+          }
+        };
+        saveState(state);
+        render();
+      };
+
+      const updateEvidence = (itemId, value) => {
+        state = {
+          ...state,
+          evidence: {
+            ...state.evidence,
+            [itemId]: String(value ?? '')
+          }
+        };
+        saveState(state);
+      };
+
+      const formatMultiline = (value) =>
+        escapeHtml(value || '').replaceAll('\n', '<br>');
+
+      const renderWaveCard = (wave, stats) => {
+        const pct = Math.round(stats.strength(wave) * 100);
+        const isActive = wave === activeWave;
+        const isTop = wave === stats.topWave;
+        return `
+          <button
+            type="button"
+            class="aw-wave-card ${isActive ? 'is-active' : ''}"
+            data-action="set-wave"
+            data-wave="${wave}"
+          >
+            <div class="aw-wave-head">
+              <div>
+                <div class="aw-wave-title-row">
+                  <span class="aw-wave-title">${waveMeta[wave].title}</span>
+                  ${isTop ? '<span class="aw-tag aw-tag-primary">Primary</span>' : ''}
+                </div>
+                <p class="aw-wave-subtitle">${escapeHtml(waveMeta[wave].subtitle)}</p>
+              </div>
+              <span class="aw-wave-pct">${pct}%</span>
+            </div>
+            <div class="aw-progress-track aw-progress-track-compact">
+              <span class="aw-progress-fill" style="width:${pct}%"></span>
+            </div>
+          </button>
+        `;
+      };
+
+      const renderScoreItems = () => {
+        const filteredItems = getFilteredItems();
+        if (filteredItems.length === 0) {
+          return '<p class="aw-empty">No matches for this search.</p>';
+        }
+
+        return filteredItems
+          .map((item) => {
+            const score = clampScore(
+              Object.hasOwn(state.scores, item.id)
+                ? state.scores[item.id]
+                : item.defaultScore
+            );
+            const evidence = state.evidence[item.id] || '';
+            return `
+              <article class="aw-item ${state.ui.compact ? 'is-compact' : ''}">
+                <div class="aw-item-head">
+                  <div class="aw-item-copy">
+                    <div class="aw-item-topline">
+                      <span class="aw-pill aw-id">${item.id}</span>
+                      <p class="aw-item-label">${escapeHtml(item.label)}</p>
+                    </div>
+                    <div class="aw-item-meta">
+                      <span class="aw-pill">${escapeHtml(item.lens)}</span>
+                      <span class="aw-pill">Score: ${score} / ${escapeHtml(scoreToWord(score))}</span>
+                      ${state.ui.showHelp && item.help ? `<span class="aw-help" title="${escapeHtml(item.help)}">Help</span>` : ''}
+                    </div>
+                  </div>
+                  <div class="aw-slider-wrap">
+                    <div class="aw-slider-legend">
+                      <span>0</span>
+                      <span>3</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="3"
+                      step="1"
+                      value="${score}"
+                      data-action="set-score"
+                      data-item-id="${item.id}"
+                    />
+                  </div>
+                </div>
+                ${
+                  state.ui.compact
+                    ? ''
+                    : `
+                  <div class="aw-evidence-row">
+                    <label class="aw-label">Evidence (1 link or one sentence)</label>
+                    <input
+                      type="text"
+                      value="${escapeHtml(evidence)}"
+                      placeholder="Paste a link, headline, or short note..."
+                      data-action="set-evidence"
+                      data-item-id="${item.id}"
+                    />
+                  </div>
+                `
+                }
+              </article>
+            `;
+          })
+          .join('');
+      };
+
+      const renderSnapshots = () => {
+        if (state.snapshots.length === 0) {
+          return '<p class="aw-empty">No snapshots yet. Create one after a monthly update.</p>';
+        }
+
+        return state.snapshots
+          .map((snapshot) => {
+            const dateLabel = new Date(snapshot.dateISO).toLocaleString();
+            return `
+              <article class="aw-snapshot">
+                <div>
+                  <h4 class="aw-snapshot-title">${escapeHtml(snapshot.title)}</h4>
+                  <p class="aw-muted">${escapeHtml(dateLabel)}</p>
+                  ${
+                    snapshot.notes
+                      ? `<p class="aw-snapshot-notes">${formatMultiline(snapshot.notes)}</p>`
+                      : ''
+                  }
+                </div>
+                <div class="aw-actions-inline">
+                  <button type="button" class="aw-btn aw-btn-outline" data-action="apply-snapshot" data-snapshot-id="${snapshot.id}">
+                    Apply
+                  </button>
+                  <button type="button" class="aw-btn aw-btn-outline" data-action="delete-snapshot" data-snapshot-id="${snapshot.id}">
+                    Delete
+                  </button>
+                </div>
+              </article>
+            `;
+          })
+          .join('');
+      };
+
+      const renderModal = () => {
+        if (!snapDialogOpen && !importDialogOpen) return '';
+
+        if (snapDialogOpen) {
+          return `
+            <div class="aw-modal-layer" role="dialog" aria-modal="true" aria-labelledby="aw-snapshot-title">
+              <button type="button" class="aw-modal-backdrop" data-action="close-snapshot" aria-label="Close snapshot dialog"></button>
+              <div class="aw-modal card">
+                <header>
+                  <h3 id="aw-snapshot-title">Create snapshot</h3>
+                  <p>Captures all scores and evidence with a timestamp.</p>
+                </header>
+                <div class="aw-modal-body">
+                  <label class="aw-label" for="aw-snapshot-input">Title</label>
+                  <input
+                    id="aw-snapshot-input"
+                    type="text"
+                    value="${escapeHtml(snapTitle)}"
+                    placeholder="e.g., March 2026 update"
+                    data-action="snapshot-title-input"
+                  />
+                  <label class="aw-label" for="aw-snapshot-notes">Notes (optional)</label>
+                  <textarea
+                    id="aw-snapshot-notes"
+                    rows="6"
+                    placeholder="3 key signals, any surprises, what changed..."
+                    data-action="snapshot-notes-input"
+                  >${escapeHtml(snapNotes)}</textarea>
+                </div>
+                <footer>
+                  <button type="button" class="aw-btn aw-btn-outline" data-action="close-snapshot">Cancel</button>
+                  <button type="button" class="aw-btn aw-btn-solid" data-action="save-snapshot">Save snapshot</button>
+                </footer>
+              </div>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="aw-modal-layer" role="dialog" aria-modal="true" aria-labelledby="aw-import-title">
+            <button type="button" class="aw-modal-backdrop" data-action="close-import" aria-label="Close import dialog"></button>
+            <div class="aw-modal card">
+              <header>
+                <h3 id="aw-import-title">Import dashboard JSON</h3>
+                <p>Paste a prior export. This will overwrite your current state.</p>
+              </header>
+              <div class="aw-modal-body">
+                <textarea
+                  rows="12"
+                  placeholder="Paste JSON here..."
+                  data-action="import-text-input"
+                >${escapeHtml(importText)}</textarea>
+              </div>
+              <footer>
+                <button type="button" class="aw-btn aw-btn-outline" data-action="close-import">Cancel</button>
+                <button type="button" class="aw-btn aw-btn-solid" data-action="import-json">Import</button>
+              </footer>
+            </div>
+          </div>
+        `;
+      };
+
+      const render = () => {
+        const stats = getWaveStats();
+        const headline = getHeadline(stats);
+        const activeWaveStrength = Math.round(stats.strength(activeWave) * 100);
+        const overallStrength = Math.round(stats.overall * 100);
+        const lensPills = getLensPills();
+        const tabLabel = waveName(activeWave).replace('Wave ', 'Wave ');
+
+        root.innerHTML = `
+          <section class="aw-hero card">
+            <div class="aw-hero-copy">
+              <p class="aw-kicker">AI-generated content</p>
+              <h1>AI Waves - Interactive Dashboard</h1>
+              <p class="aw-hero-text">
+                Score wave signals (0-3), attach evidence, and snapshot updates over time.
+              </p>
+              <div class="aw-badges">
+                <span class="aw-badge">AI-generated content</span>
+                <span class="aw-badge aw-badge-secondary">${escapeHtml(headline.nuance)}</span>
+              </div>
+            </div>
+            <div class="aw-top-actions">
+              <button type="button" class="aw-btn aw-btn-soft" data-action="open-snapshot">Snapshot</button>
+              <button type="button" class="aw-btn aw-btn-outline" data-action="export-json">Export</button>
+              <button type="button" class="aw-btn aw-btn-outline" data-action="open-import">Import</button>
+              <button type="button" class="aw-btn aw-btn-outline" data-action="reset-defaults">Reset</button>
+            </div>
+          </section>
+
+          <section class="aw-grid">
+            <article class="aw-panel card">
+              <div class="aw-panel-head">
+                <h2>Where are we?</h2>
+                <span class="aw-badge">Overall: ${overallStrength}%</span>
+              </div>
+              <p class="aw-muted">
+                Primary wave: <strong>${escapeHtml(headline.primary)}</strong>
+                ${headline.secondary ? ` | Secondary: <strong>${escapeHtml(headline.secondary)}</strong>` : ''}
+              </p>
+              <div class="aw-meter">
+                <div class="aw-meter-label">
+                  <span>Strength</span>
+                  <span>${overallStrength}%</span>
+                </div>
+                <div class="aw-progress-track">
+                  <span class="aw-progress-fill" style="width:${overallStrength}%"></span>
+                </div>
+              </div>
+              <div class="aw-wave-grid">
+                ${waveOrder.map((wave) => renderWaveCard(wave, stats)).join('')}
+              </div>
+              <div class="aw-lens card">
+                <h3>Active wave lens mix</h3>
+                <div class="aw-lens-row">
+                  ${lensPills
+                    .map(
+                      (entry) =>
+                        `<span class="aw-pill">${escapeHtml(entry.lens)}: ${entry.pct}%</span>`
+                    )
+                    .join('')}
+                </div>
+              </div>
+            </article>
+
+            <aside class="aw-controls card">
+              <h2>Controls</h2>
+              <p class="aw-muted">Make it readable + fast.</p>
+              <div class="aw-switch">
+                <span>Compact view</span>
+                <input type="checkbox" ${state.ui.compact ? 'checked' : ''} data-action="toggle-compact" />
+              </div>
+              <div class="aw-switch">
+                <span>Show help</span>
+                <input type="checkbox" ${state.ui.showHelp ? 'checked' : ''} data-action="toggle-help" />
+              </div>
+              <div class="aw-field">
+                <label class="aw-label" for="aw-search">Search items</label>
+                <input
+                  id="aw-search"
+                  type="text"
+                  value="${escapeHtml(query)}"
+                  placeholder="Type: QA, connectors, wages, robotics..."
+                  data-action="set-query"
+                />
+              </div>
+              <p class="aw-muted">Snapshots stored locally: <strong>${state.snapshots.length}</strong></p>
+            </aside>
+          </section>
+
+          <section class="aw-tabs card">
+            <div class="aw-tab-list" role="tablist" aria-label="AI Waves tabs">
+              <button type="button" role="tab" aria-selected="${activeTab === 'score'}" class="aw-tab ${activeTab === 'score' ? 'is-active' : ''}" data-action="set-tab" data-tab="score">Scoreboard</button>
+              <button type="button" role="tab" aria-selected="${activeTab === 'snapshots'}" class="aw-tab ${activeTab === 'snapshots' ? 'is-active' : ''}" data-action="set-tab" data-tab="snapshots">Update Log</button>
+              <button type="button" role="tab" aria-selected="${activeTab === 'how'}" class="aw-tab ${activeTab === 'how' ? 'is-active' : ''}" data-action="set-tab" data-tab="how">How to Use</button>
+            </div>
+
+            ${
+              activeTab === 'score'
+                ? `
+              <div class="aw-tab-panel">
+                <div class="aw-panel-head">
+                  <h3>${escapeHtml(tabLabel)}</h3>
+                  <span class="aw-badge aw-badge-secondary">Strength: ${activeWaveStrength}%</span>
+                </div>
+                <p class="aw-muted">Score each signal and attach a small evidence note or link.</p>
+                <div class="aw-item-list">
+                  ${renderScoreItems()}
+                </div>
+              </div>
+            `
+                : ''
+            }
+
+            ${
+              activeTab === 'snapshots'
+                ? `
+              <div class="aw-tab-panel">
+                <div class="aw-panel-head">
+                  <h3>Update Log</h3>
+                  <button type="button" class="aw-btn aw-btn-soft" data-action="open-snapshot">New snapshot</button>
+                </div>
+                <p class="aw-muted">Snapshots capture a dated state of all scores and evidence.</p>
+                <div class="aw-snapshot-list">
+                  ${renderSnapshots()}
+                </div>
+              </div>
+            `
+                : ''
+            }
+
+            ${
+              activeTab === 'how'
+                ? `
+              <div class="aw-tab-panel">
+                <div class="aw-how-grid">
+                  <article class="aw-how-block">
+                    <h3>Monthly (10 minutes)</h3>
+                    <ol>
+                      <li>Adjust scores that changed.</li>
+                      <li>Add one evidence note for any changed item.</li>
+                      <li>Create a snapshot titled with the month.</li>
+                    </ol>
+                  </article>
+                  <article class="aw-how-block">
+                    <h3>Quarterly (30-45 minutes)</h3>
+                    <ul>
+                      <li>Update the item list (add/remove signals).</li>
+                      <li>Revisit wave boundaries (especially Wave 5 rails).</li>
+                      <li>Export JSON as a backup.</li>
+                    </ul>
+                  </article>
+                </div>
+                <p class="aw-muted">Everything saves in your browser localStorage. Export if you want portability.</p>
+              </div>
+            `
+                : ''
+            }
+          </section>
+
+          <p class="aw-foot-note">
+            Tip: If you want this dashboard restyled to match a specific visual direction, I can tune it.
+          </p>
+
+          ${renderModal()}
+        `;
+      };
+
+      root.addEventListener('click', (event) => {
+        const target = event.target instanceof Element ? event.target.closest('[data-action]') : null;
+        if (!target) return;
+        const action = target.getAttribute('data-action');
+        if (!action) return;
+
+        if (action === 'set-wave') {
+          activeWave = Number(target.getAttribute('data-wave')) || 1;
+          render();
+          return;
+        }
+
+        if (action === 'set-tab') {
+          const tab = target.getAttribute('data-tab');
+          if (tab === 'score' || tab === 'snapshots' || tab === 'how') {
+            activeTab = tab;
+            render();
+          }
+          return;
+        }
+
+        if (action === 'open-snapshot') {
+          snapDialogOpen = true;
+          render();
+          return;
+        }
+
+        if (action === 'close-snapshot') {
+          snapDialogOpen = false;
+          render();
+          return;
+        }
+
+        if (action === 'save-snapshot') {
+          makeSnapshot();
+          return;
+        }
+
+        if (action === 'open-import') {
+          importDialogOpen = true;
+          render();
+          return;
+        }
+
+        if (action === 'close-import') {
+          importDialogOpen = false;
+          render();
+          return;
+        }
+
+        if (action === 'import-json') {
+          importJson();
+          return;
+        }
+
+        if (action === 'export-json') {
+          exportJson();
+          return;
+        }
+
+        if (action === 'reset-defaults') {
+          resetToDefaults();
+          return;
+        }
+
+        if (action === 'apply-snapshot') {
+          const snapshotId = target.getAttribute('data-snapshot-id');
+          if (snapshotId) applySnapshot(snapshotId);
+          return;
+        }
+
+        if (action === 'delete-snapshot') {
+          const snapshotId = target.getAttribute('data-snapshot-id');
+          if (snapshotId) deleteSnapshot(snapshotId);
+        }
+      });
+
+      root.addEventListener('input', (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        const action = target.getAttribute('data-action');
+        if (!action) return;
+
+        if (action === 'set-query' && target instanceof HTMLInputElement) {
+          query = target.value;
+          render();
+          return;
+        }
+
+        if (action === 'toggle-compact' && target instanceof HTMLInputElement) {
+          updateUi({ compact: target.checked });
+          return;
+        }
+
+        if (action === 'toggle-help' && target instanceof HTMLInputElement) {
+          updateUi({ showHelp: target.checked });
+          return;
+        }
+
+        if (action === 'set-score' && target instanceof HTMLInputElement) {
+          const itemId = target.getAttribute('data-item-id');
+          if (!itemId) return;
+          updateScore(itemId, Number(target.value));
+          return;
+        }
+
+        if (action === 'set-evidence' && target instanceof HTMLInputElement) {
+          const itemId = target.getAttribute('data-item-id');
+          if (!itemId) return;
+          updateEvidence(itemId, target.value);
+          return;
+        }
+
+        if (action === 'snapshot-title-input' && target instanceof HTMLInputElement) {
+          snapTitle = target.value;
+          return;
+        }
+
+        if (action === 'snapshot-notes-input' && target instanceof HTMLTextAreaElement) {
+          snapNotes = target.value;
+          return;
+        }
+
+        if (action === 'import-text-input' && target instanceof HTMLTextAreaElement) {
+          importText = target.value;
+        }
+      });
+
+      render();
+    })();
+  </script>
+</BaseLayout>
+
+<style>
+  .aw-shell {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .aw-root {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .aw-hero,
+  .aw-panel,
+  .aw-controls,
+  .aw-tabs {
+    padding: clamp(1rem, 2vw, 1.35rem);
+    border-radius: 18px;
+  }
+
+  .aw-hero {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .aw-kicker {
+    margin: 0 0 0.3rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tone-muted);
+  }
+
+  .aw-hero h1 {
+    margin: 0;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.3rem, 2.8vw, 2rem);
+  }
+
+  .aw-hero-text {
+    margin: 0.55rem 0 0;
+    max-width: 44rem;
+    color: var(--tone-muted);
+  }
+
+  .aw-top-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .aw-btn {
+    border-radius: 999px;
+    min-height: 38px;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.85rem;
+    line-height: 1;
+  }
+
+  .aw-btn-outline {
+    border-color: var(--line2);
+    background: rgba(10, 14, 22, 0.42);
+  }
+
+  .aw-btn-soft {
+    border-color: color-mix(in oklab, var(--tone-accent) 45%, var(--line2));
+    background: color-mix(in oklab, var(--tone-accent) 16%, rgba(8, 12, 20, 0.5));
+  }
+
+  .aw-btn-solid {
+    border-color: color-mix(in oklab, var(--tone-accent) 58%, var(--line2));
+    background: color-mix(in oklab, var(--tone-accent) 24%, rgba(8, 12, 20, 0.6));
+  }
+
+  .aw-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 1040px) {
+    .aw-grid {
+      grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+      align-items: start;
+    }
+  }
+
+  .aw-panel-head {
+    display: flex;
+    gap: 0.65rem;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .aw-panel-head h2,
+  .aw-panel-head h3 {
+    margin: 0;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.1rem;
+  }
+
+  .aw-muted {
+    margin: 0.35rem 0 0;
+    color: var(--tone-muted);
+    font-size: 0.9rem;
+  }
+
+  .aw-badges {
+    margin-top: 0.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .aw-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    border: 1px solid var(--line2);
+    padding: 0.2rem 0.62rem;
+    font-size: 0.76rem;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+    background: rgba(10, 14, 22, 0.45);
+  }
+
+  .aw-badge-secondary {
+    border-color: color-mix(in oklab, var(--tone-sky) 35%, var(--line2));
+  }
+
+  .aw-meter {
+    margin-top: 0.8rem;
+  }
+
+  .aw-meter-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--tone-muted);
+  }
+
+  .aw-progress-track {
+    height: 0.6rem;
+    margin-top: 0.35rem;
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--line2);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .aw-progress-track-compact {
+    height: 0.45rem;
+    margin-top: 0.5rem;
+  }
+
+  .aw-progress-fill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--tone-accent) 86%, white 14%),
+      color-mix(in oklab, var(--tone-sky) 84%, white 16%)
+    );
+    transition: width 220ms ease;
+  }
+
+  .aw-wave-grid {
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 0.65rem;
+  }
+
+  .aw-wave-card {
+    width: 100%;
+    text-align: left;
+    border-radius: 14px;
+    border: 1px solid var(--line2);
+    padding: 0.75rem;
+    background: rgba(10, 14, 22, 0.45);
+  }
+
+  .aw-wave-card.is-active {
+    border-color: color-mix(in oklab, var(--tone-accent) 45%, var(--line2));
+    background: color-mix(in oklab, var(--tone-accent) 16%, rgba(8, 12, 20, 0.52));
+  }
+
+  .aw-wave-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.6rem;
+  }
+
+  .aw-wave-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .aw-wave-title {
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+
+  .aw-wave-subtitle {
+    margin: 0.2rem 0 0;
+    color: var(--tone-muted);
+    font-size: 0.75rem;
+    line-height: 1.35;
+  }
+
+  .aw-wave-pct {
+    color: var(--tone-muted);
+    font-size: 0.76rem;
+  }
+
+  .aw-tag {
+    display: inline-flex;
+    border-radius: 999px;
+    padding: 0.1rem 0.5rem;
+    border: 1px solid var(--line2);
+    font-size: 0.68rem;
+  }
+
+  .aw-tag-primary {
+    border-color: color-mix(in oklab, var(--tone-accent) 45%, var(--line2));
+    color: color-mix(in srgb, var(--tone-accent-glow) 90%, white 10%);
+  }
+
+  .aw-lens {
+    margin-top: 0.95rem;
+    padding: 0.75rem;
+    border-radius: 14px;
+  }
+
+  .aw-lens h3 {
+    margin: 0;
+    font-size: 0.94rem;
+  }
+
+  .aw-lens-row {
+    margin-top: 0.52rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .aw-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    border: 1px solid var(--line2);
+    padding: 0.18rem 0.55rem;
+    font-size: 0.74rem;
+    background: rgba(10, 14, 22, 0.44);
+    color: var(--tone-muted);
+  }
+
+  .aw-controls h2 {
+    margin: 0;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.1rem;
+  }
+
+  .aw-switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    margin-top: 0.9rem;
+    font-size: 0.92rem;
+  }
+
+  .aw-field {
+    margin-top: 0.95rem;
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .aw-label {
+    font-size: 0.74rem;
+    color: var(--tone-muted);
+  }
+
+  .aw-controls input[type='text'],
+  .aw-item input[type='text'],
+  .aw-modal input[type='text'],
+  .aw-modal textarea {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid var(--line2);
+    background: rgba(7, 10, 16, 0.74);
+    padding: 0.62rem 0.72rem;
+    color: var(--tone-text);
+  }
+
+  .aw-controls input[type='checkbox'] {
+    width: 1.02rem;
+    height: 1.02rem;
+    accent-color: var(--tone-accent);
+  }
+
+  .aw-tabs {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .aw-tab-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .aw-tab {
+    min-height: 40px;
+    border-radius: 10px;
+    border: 1px solid var(--line2);
+    background: rgba(10, 14, 22, 0.4);
+    font-size: 0.84rem;
+  }
+
+  .aw-tab.is-active {
+    border-color: color-mix(in oklab, var(--tone-accent) 45%, var(--line2));
+    background: color-mix(in oklab, var(--tone-accent) 15%, rgba(8, 12, 20, 0.55));
+  }
+
+  .aw-tab-panel {
+    display: grid;
+    gap: 0.72rem;
+  }
+
+  .aw-item-list {
+    display: grid;
+    gap: 0.62rem;
+  }
+
+  .aw-item {
+    border: 1px solid var(--line2);
+    border-radius: 14px;
+    padding: 0.75rem;
+    background: rgba(10, 14, 22, 0.34);
+  }
+
+  .aw-item-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .aw-item-copy {
+    flex: 1 1 330px;
+    min-width: 220px;
+  }
+
+  .aw-item-topline {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .aw-id {
+    min-width: 2.2rem;
+    justify-content: center;
+    color: color-mix(in srgb, var(--tone-accent-glow) 88%, white 12%);
+  }
+
+  .aw-item-label {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .aw-item-meta {
+    margin-top: 0.48rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    align-items: center;
+  }
+
+  .aw-help {
+    border-radius: 999px;
+    border: 1px dashed var(--line2);
+    padding: 0.12rem 0.52rem;
+    font-size: 0.72rem;
+    color: var(--tone-muted);
+  }
+
+  .aw-slider-wrap {
+    width: min(320px, 100%);
+    flex: 0 0 min(320px, 100%);
+  }
+
+  .aw-slider-wrap input[type='range'] {
+    width: 100%;
+    accent-color: var(--tone-accent);
+    margin-top: 0.35rem;
+  }
+
+  .aw-slider-legend {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: var(--tone-muted);
+  }
+
+  .aw-evidence-row {
+    margin-top: 0.72rem;
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .aw-snapshot-list {
+    display: grid;
+    gap: 0.62rem;
+  }
+
+  .aw-snapshot {
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    border: 1px solid var(--line2);
+    border-radius: 14px;
+    padding: 0.75rem;
+    background: rgba(10, 14, 22, 0.34);
+  }
+
+  .aw-snapshot-title {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  .aw-snapshot-notes {
+    margin: 0.55rem 0 0;
+    color: var(--tone-muted);
+    white-space: normal;
+  }
+
+  .aw-actions-inline {
+    display: flex;
+    gap: 0.45rem;
+  }
+
+  .aw-how-grid {
+    display: grid;
+    gap: 0.62rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+  .aw-how-block {
+    border: 1px solid var(--line2);
+    border-radius: 14px;
+    padding: 0.72rem;
+    background: rgba(10, 14, 22, 0.34);
+  }
+
+  .aw-how-block h3 {
+    margin: 0;
+    font-size: 0.94rem;
+  }
+
+  .aw-how-block ol,
+  .aw-how-block ul {
+    margin: 0.55rem 0 0;
+    padding-left: 1.1rem;
+    color: var(--tone-muted);
+    display: grid;
+    gap: 0.34rem;
+  }
+
+  .aw-foot-note {
+    margin: 0;
+    color: var(--tone-muted);
+    font-size: 0.76rem;
+  }
+
+  .aw-empty {
+    margin: 0;
+    color: var(--tone-muted);
+    font-size: 0.92rem;
+  }
+
+  .aw-modal-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .aw-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    margin: 0;
+    background: rgba(2, 5, 10, 0.76);
+  }
+
+  .aw-modal {
+    position: relative;
+    width: min(700px, calc(100vw - 2rem));
+    max-height: calc(100vh - 2rem);
+    overflow: auto;
+    padding: 1rem;
+    border-radius: 16px;
+  }
+
+  .aw-modal header h3 {
+    margin: 0;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  .aw-modal header p {
+    margin: 0.3rem 0 0;
+    color: var(--tone-muted);
+  }
+
+  .aw-modal-body {
+    margin-top: 0.8rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .aw-modal textarea {
+    resize: vertical;
+    min-height: 160px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  }
+
+  .aw-modal footer {
+    margin-top: 0.9rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 720px) {
+    .aw-tab-list {
+      grid-template-columns: 1fr;
+    }
+
+    .aw-top-actions {
+      width: 100%;
+    }
+
+    .aw-top-actions .aw-btn {
+      flex: 1 1 auto;
+    }
+
+    .aw-item-topline {
+      flex-wrap: wrap;
+    }
+
+    .aw-actions-inline {
+      width: 100%;
+    }
+  }
+</style>

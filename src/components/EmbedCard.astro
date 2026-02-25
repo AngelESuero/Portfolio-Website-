@@ -18,15 +18,27 @@ const isLinktreeUrl = (urlValue: string): boolean => {
   }
 };
 
-const resolution = resolveEmbed(item.url, item.preferredEmbed);
+const configuredEmbedUrl = typeof item.embedUrl === 'string' ? item.embedUrl.trim() : '';
+const resolvedUrl = configuredEmbedUrl || item.url;
+const resolution = resolveEmbed(resolvedUrl, item.preferredEmbed);
 const provider = resolution.provider;
 const embedUrl = resolution.embedUrl;
 const embedHeight = getEmbedHeight(provider);
 const isEmbeddable = resolution.embeddable && Boolean(embedUrl);
 const isExternal = /^https?:\/\//i.test(item.url);
 const isLinktree = isLinktreeUrl(item.url);
+const isUntitledLibraryLink = (() => {
+  try {
+    const parsed = new URL(item.url);
+    return parsed.hostname.toLowerCase().includes('untitled.stream') && /^\/library\/(track|project)\//.test(parsed.pathname);
+  } catch {
+    return false;
+  }
+})();
 const fallbackMessage = isLinktree
   ? 'Linktree is your active links hub. Open it to see the full live stack.'
+  : isUntitledLibraryLink && !configuredEmbedUrl
+    ? 'This item links to an editable Untitled page. Add an explicit embed URL to show an inline player.'
   : getEmbedFallbackMessage(resolution);
 ---
 

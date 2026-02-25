@@ -9,6 +9,7 @@ interface SocialFeaturedLink {
 interface SocialEmbed {
   label?: string;
   url: string;
+  embedUrl?: string;
 }
 
 interface SocialManualItem {
@@ -55,13 +56,13 @@ const featuredLinks = Array.isArray(config.featured) ? config.featured : [];
 const embeds = Array.isArray(config.embeds) ? config.embeds : [];
 const resolvedEmbeds = embeds.map((embed) => ({
   ...embed,
-  resolution: resolveEmbed(embed.url)
+  resolution: resolveEmbed(typeof embed.embedUrl === 'string' && embed.embedUrl.trim() ? embed.embedUrl : embed.url)
 }));
 const showInstagramPreview = config.local_preview === 'instagram' && igPreview.length > 0;
 const isExternal = (url: string) => /^https?:\/\//i.test(url);
 const xTimelineHandle =
   typeof config.x_timeline_handle === 'string' ? config.x_timeline_handle.trim().replace(/^@/, '') : '';
-const showXTimeline = Boolean(xTimelineHandle) && !hasManualLatestSource;
+const showXTimeline = Boolean(xTimelineHandle) && (!hasManualLatestSource || !hasManualItems);
 const xWidgetRootId = `x-widget-${config.slug}`;
 const xTimelineHref = showXTimeline ? `https://x.com/${xTimelineHandle}` : '';
 ---
@@ -85,16 +86,14 @@ const xTimelineHref = showXTimeline ? `https://x.com/${xTimelineHandle}` : '';
         <ul class="social-list">
           {normalizedManualItems.map((item) => (
             <li>
-              <a href={item.url} target="_blank" rel="noopener">{item.title}</a>
+              <a href={item.url} {...(isExternal(item.url) ? { target: '_blank', rel: 'noopener' } : {})}>{item.title}</a>
               {item.date && <p class="social-meta">{item.date}</p>}
               {item.summary && <p class="social-summary">{item.summary}</p>}
             </li>
           ))}
         </ul>
       ) : (
-        <p class="social-empty">
-          No recent valid X posts found. Add x.com status links in <code>src/data/x-feed.json</code>.
-        </p>
+        <p class="social-empty">No recent feed items are available right now.</p>
       )}
     </section>
   ) : (

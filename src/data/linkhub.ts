@@ -73,7 +73,8 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
       {
         id: 'my-first-beat-tape',
         title: 'My First Beat Tape',
-        url: MUSIC_URLS.untitledMyFirstBeatTape,
+        url: 'https://untitled.stream/library/project/W9oQWS6klQAAftkyx28QL',
+        embedUrl: 'https://untitled.stream/library/project/W9oQWS6klQAAftkyx28QL/embed',
         year: '2026',
         tag: 'Project',
         preferredEmbed: 'untitled'
@@ -81,15 +82,17 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
       {
         id: 'everyday-soundscape',
         title: 'The Every Day Soundscape',
-        url: 'https://www.youtube.com/watch?v=KWDgWpSDlrM&t=16s',
+        url: MUSIC_URLS.untitledEveryDaySoundscape,
+        embedUrl: `${MUSIC_URLS.untitledEveryDaySoundscape}/embed`,
         year: '2026',
         tag: 'Track',
-        preferredEmbed: 'youtube'
+        preferredEmbed: 'untitled'
       },
       {
         id: 'queries-beat-tape',
         title: 'Queries Beat Tape',
         url: MUSIC_URLS.untitledQueriesBeatTape,
+        embedUrl: `${MUSIC_URLS.untitledQueriesBeatTape}/embed`,
         year: '2026',
         tag: 'Project',
         preferredEmbed: 'untitled'

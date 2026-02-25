@@ -15,6 +15,7 @@ interface XFeedItem {
 interface HomeSocialFeedsProps {
   xHandle: string;
   xFeedItems: XFeedItem[];
+  xFeedMode?: 'x' | 'fallback';
   youtubeUploadsEmbedUrl: string;
   youtubeChannelUrl: string;
   instagramProfileUrl: string;
@@ -25,6 +26,7 @@ interface HomeSocialFeedsProps {
 const {
   xHandle,
   xFeedItems,
+  xFeedMode = 'x',
   youtubeUploadsEmbedUrl,
   youtubeChannelUrl,
   instagramProfileUrl,
@@ -34,6 +36,18 @@ const {
 
 const normalizedXHandle = String(xHandle || '').trim().replace(/^@/, '');
 const xProfileUrl = normalizedXHandle ? `https://x.com/${normalizedXHandle}` : 'https://x.com';
+const xWidgetRootId = 'home-social-x-widget';
+const xTimelineHref = normalizedXHandle ? `https://x.com/${normalizedXHandle}` : '';
+const isExternal = (url: string): boolean => /^https?:\/\//i.test(String(url || ''));
+const displayMode = xFeedMode === 'fallback' ? 'fallback' : 'x';
+const xCardTitle = displayMode === 'x' ? 'X' : 'Archive Updates';
+const xCardKicker = displayMode === 'x' ? 'Latest posts' : 'Local fallback';
+const xCardDek =
+  displayMode === 'x'
+    ? `Latest short-form notes and commentary from @${normalizedXHandle}.`
+    : 'Recent archive updates shown while X feed sync is unavailable.';
+const xSecondaryHref = displayMode === 'x' ? xProfileUrl : '/social';
+const xSecondaryLabel = displayMode === 'x' ? 'Open profile' : 'Open social hub';
 const toTimestamp = (value?: string): number => {
   if (!value) return 0;
   const parsed = Date.parse(value);
@@ -76,29 +90,41 @@ const youtubeStatusId = 'home-social-youtube-status';
 
   <div class="home-social-feeds-grid">
     <article class="home-social-card" data-provider="x">
-      <p class="home-social-card-kicker">Latest posts</p>
-      <h3>X</h3>
-      <p class="home-social-card-dek">Latest short-form notes and commentary from @{normalizedXHandle}.</p>
+      <p class="home-social-card-kicker">{xCardKicker}</p>
+      <h3>{xCardTitle}</h3>
+      <p class="home-social-card-dek">{xCardDek}</p>
       <div class="home-social-frame home-social-frame-x" aria-live="polite">
         {hasXItems ? (
           <ul class="home-social-x-list">
             {normalizedXItems.map((item) => (
               <li>
-                <a href={item.url} target="_blank" rel="noopener">{item.title}</a>
+                <a href={item.url} {...(isExternal(item.url) ? { target: '_blank', rel: 'noopener' } : {})}>{item.title}</a>
                 {item.publishedAt && <p class="home-social-x-meta">{formatXDate(item.publishedAt)}</p>}
                 {item.summary && <p class="home-social-x-summary">{item.summary}</p>}
               </li>
             ))}
           </ul>
         ) : (
-          <p class="home-social-x-empty">
-            No recent valid X posts found. Add x.com status links in <code>src/data/x-feed.json</code>.
-          </p>
+          <div id={xWidgetRootId} class="home-social-x-widget">
+            {xTimelineHref ? (
+              <a
+                class="twitter-timeline"
+                href={xTimelineHref}
+                data-dnt="true"
+                data-chrome="noheader nofooter transparent"
+                data-tweet-limit="4"
+              >
+                Posts by @{normalizedXHandle}
+              </a>
+            ) : (
+              <p class="home-social-x-empty">Add an X handle to enable timeline preview.</p>
+            )}
+          </div>
         )}
       </div>
       <p class="home-social-links">
         <a href="/social/x">Open full feed</a>
-        <a href={xProfileUrl} target="_blank" rel="noopener">Open profile</a>
+        <a href={xSecondaryHref} {...(isExternal(xSecondaryHref) ? { target: '_blank', rel: 'noopener' } : {})}>{xSecondaryLabel}</a>
       </p>
     </article>
 
@@ -246,6 +272,34 @@ const youtubeStatusId = 'home-social-youtube-status';
       });
   })();
 </script>
+
+{!hasXItems && xTimelineHref && (
+  <script is:inline define:vars={{ xWidgetRootId }}>
+    (() => {
+      const root = document.getElementById(xWidgetRootId);
+      if (!root) return;
+
+      const timelineLink = root.querySelector('a.twitter-timeline');
+      if (!timelineLink) return;
+
+      const twttr = window.twttr;
+      if (twttr?.widgets?.load) {
+        twttr.widgets.load(root);
+        return;
+      }
+
+      const scriptId = 'x-timeline-widgets-script';
+      if (document.getElementById(scriptId)) return;
+
+      const script = document.createElement('script');
+      script.id = scriptId;
+      script.async = true;
+      script.src = 'https://platform.twitter.com/widgets.js';
+      script.charset = 'utf-8';
+      document.head.appendChild(script);
+    })();
+  </script>
+)}
 
 <style>
   .home-social-feeds {

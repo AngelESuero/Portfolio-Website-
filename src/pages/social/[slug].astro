@@ -3,20 +3,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import SocialFeedPage from '../../components/SocialFeedPage.astro';
 import socialConfig from '../../data/social';
 import igManifest from '../../data/ig.json';
-import xFeedManifest from '../../data/x-feed.json';
+import xFallbackItems from '../../data/x-fallback';
 import type { SocialConfigItem } from '../../data/social';
-import { isValidXStatusUrl } from '../../lib/x-url';
-
-interface XFeedItem {
-  title?: string;
-  url?: string;
-  publishedAt?: string;
-  summary?: string;
-}
-
-interface XFeedManifest {
-  items?: XFeedItem[];
-}
 
 export function getStaticPaths() {
   return (socialConfig as SocialConfigItem[]).map((config) => ({
@@ -30,8 +18,6 @@ const igPreview =
   config.local_preview === 'instagram' && Array.isArray(igManifest)
     ? igManifest.slice(0, 8).filter((item) => typeof item?.src === 'string' && item.src)
     : [];
-const xManifest = xFeedManifest as XFeedManifest;
-const xFeedSource = config.slug === 'x' ? (Array.isArray(xManifest.items) ? xManifest.items : []) : [];
 const xPublishedAtToTimestamp = (value: string): number => {
   const parsed = Date.parse(value);
   return Number.isNaN(parsed) ? 0 : parsed;
@@ -47,14 +33,14 @@ const formatDate = (value: string): string => {
 };
 const xManualItems =
   config.slug === 'x'
-    ? xFeedSource
+    ? xFallbackItems
         .map((item) => ({
           title: String(item?.title || '').trim(),
           url: String(item?.url || '').trim(),
           dateRaw: String(item?.publishedAt || '').trim(),
           summary: String(item?.summary || '').trim()
         }))
-        .filter((item) => item.title && item.url && isValidXStatusUrl(item.url))
+        .filter((item) => item.title && item.url)
         .sort((a, b) => xPublishedAtToTimestamp(b.dateRaw) - xPublishedAtToTimestamp(a.dateRaw))
         .map((item) => ({
           title: item.title,

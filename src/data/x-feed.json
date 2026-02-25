@@ -1,50 +1,45 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-19T21:00:00.000Z"
+    "generatedAt": "2026-02-21T05:36:10.407Z",
+    "handle": "@a_e_s_4",
+    "source": "x-syndication",
+    "fetchedCount": 4,
+    "maxItems": 24,
+    "excludes": [
+      "replies",
+      "retweets"
+    ],
+    "fallback": "public-embed-syndication"
   },
   "items": [
     {
-      "id": "now-2026-02-19",
-      "title": "Now: what I am building and tracking this week",
-      "url": "/now",
-      "publishedAt": "2026-02-19T12:00:00.000Z",
-      "summary": "Current focus areas across archive updates, experiments, and live process."
+      "id": "x:1965481292562399320",
+      "title": "@AskPerplexity",
+      "url": "https://x.com/a_e_s_4/status/1965481292562399320",
+      "publishedAt": "2025-09-09T18:23:51.000Z",
+      "summary": "@AskPerplexity Can you summarize the entire Bungie renegades event?"
     },
     {
-      "id": "agi-2026-02-18",
-      "title": "AGI timeline: latest signal snapshot",
-      "url": "/agi",
-      "publishedAt": "2026-02-18T12:00:00.000Z",
-      "summary": "Recent signal entries and monitoring notes from the AGI tracker."
+      "id": "x:1962601212177444900",
+      "title": "Can someone explain to me what this is @openai",
+      "url": "https://x.com/a_e_s_4/status/1962601212177444900",
+      "publishedAt": "2025-09-01T19:39:27.000Z",
+      "summary": "Can someone explain to me what this is @openai IS THIS THE FUTURE https://t.co/A0PmlZDkJ7"
     },
     {
-      "id": "map-2026-02-15",
-      "title": "Newark civic mapping thread",
-      "url": "/work/newark-civic-mapping",
-      "publishedAt": "2026-02-15T12:00:00.000Z",
-      "summary": "Field notes and documentation for place-based mapping work."
+      "id": "x:1960029232039706946",
+      "title": "@premium Hey there, I bought x basic but I don’t have access to the edit button.",
+      "url": "https://x.com/a_e_s_4/status/1960029232039706946",
+      "publishedAt": "2025-08-25T17:19:19.000Z",
+      "summary": "@premium Hey there, I bought x basic but I don’t have access to the edit button. Is there anything to be done?"
     },
     {
-      "id": "music-2026-02-12",
-      "title": "Music production sessions archive",
-      "url": "/work/music-production-sessions",
-      "publishedAt": "2026-02-12T12:00:00.000Z",
-      "summary": "Session snapshots, process clips, and in-progress material."
-    },
-    {
-      "id": "writing-2026-02-10",
-      "title": "Archive method notes",
-      "url": "/writing/archive-method",
-      "publishedAt": "2026-02-10T12:00:00.000Z",
-      "summary": "How the archive is structured and updated in public."
-    },
-    {
-      "id": "survival-os-2026-02-08",
-      "title": "Survival OS: current operating notes",
-      "url": "/survival-os",
-      "publishedAt": "2026-02-08T12:00:00.000Z",
-      "summary": "Framework updates for routines, systems, and project cadence."
+      "id": "x:1934043631889113541",
+      "title": "Wow I can just send out words to the world?",
+      "url": "https://x.com/a_e_s_4/status/1934043631889113541",
+      "publishedAt": "2025-06-15T00:21:49.000Z",
+      "summary": "Wow I can just send out words to the world?"
     }
   ]
 }
