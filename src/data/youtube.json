@@ -1,12 +1,89 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-21T02:53:08.965Z",
+    "generatedAt": "2026-02-25T21:53:31.749Z",
     "channelUrl": "https://www.youtube.com/@a_e.s_4",
     "channelId": "UCQeJiBS72gxrZXw5GmqtocA",
     "feedUrl": "https://www.youtube.com/feeds/videos.xml?channel_id=UCQeJiBS72gxrZXw5GmqtocA"
   },
   "items": [
+    {
+      "id": "5323b011c94762f1f9a81850a3eb505a79bf23029d2963a12939451feacb43b1",
+      "title": "Bots And Sparking",
+      "url": "https://www.youtube.com/watch?v=eMUArjtvkWw",
+      "videoId": "eMUArjtvkWw",
+      "publishedAt": "2026-02-25T17:52:04.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/eMUArjtvkWw/hqdefault.jpg"
+    },
+    {
+      "id": "c7fd8c8a42f9f414aa88e2c0fa6f6eefc22d612033b1a95dca9c6b0c6ccf29eb",
+      "title": "Yo!",
+      "url": "https://www.youtube.com/watch?v=fN84QK8oK9M",
+      "videoId": "fN84QK8oK9M",
+      "publishedAt": "2026-02-25T11:55:14.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/fN84QK8oK9M/hqdefault.jpg"
+    },
+    {
+      "id": "da0415a3e96a1a33b9b466bfe761e792bcb09f0080bc353de81d05c7a1a55e58",
+      "title": "Taking A Break From Shoveling",
+      "url": "https://www.youtube.com/watch?v=3QsoUBjQfZw",
+      "videoId": "3QsoUBjQfZw",
+      "publishedAt": "2026-02-24T10:38:35.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/3QsoUBjQfZw/hqdefault.jpg"
+    },
+    {
+      "id": "c759a8baec4dd8f7c67f04468f2daa9d45e895c0dbc2816f36397411ccc07db6",
+      "title": "Waiting For Society To Change... Or A Job To Hit Me Back...",
+      "url": "https://www.youtube.com/watch?v=Stuhm3N11ww",
+      "videoId": "Stuhm3N11ww",
+      "publishedAt": "2026-02-24T06:49:47.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/Stuhm3N11ww/hqdefault.jpg"
+    },
+    {
+      "id": "13a7cdf0daa546c9ef82fb274519d5549c95ff5e01c53b5869402fe78109c502",
+      "title": "All The Same Edits",
+      "url": "https://www.youtube.com/watch?v=6A-1EielGcA",
+      "videoId": "6A-1EielGcA",
+      "publishedAt": "2026-02-23T14:10:33.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/6A-1EielGcA/hqdefault.jpg"
+    },
+    {
+      "id": "cb06cec7365714e75fb9a8a3a4478b7492c7251271c85c2a58579835854edf74",
+      "title": "Cool Air Flip!",
+      "url": "https://www.youtube.com/watch?v=aKz5zKahsuc",
+      "videoId": "aKz5zKahsuc",
+      "publishedAt": "2026-02-23T12:29:35.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/aKz5zKahsuc/hqdefault.jpg"
+    },
+    {
+      "id": "2a1b804601c46f4685c918fb150f3bdee8b6f72d82c5c90ccdb059d35c5c2f23",
+      "title": "Mixing PAPA",
+      "url": "https://www.youtube.com/watch?v=fi8y7goafx4",
+      "videoId": "fi8y7goafx4",
+      "publishedAt": "2026-02-21T23:36:57.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/fi8y7goafx4/hqdefault.jpg"
+    },
     {
       "id": "eb4819202f8011f00345bc78293dfcba7e0b4fdf5e9982ef33f2d9c5f54b1130",
       "title": "Waiting For Society To Change... Or A Job To Hit Me Back...",
@@ -94,83 +171,6 @@
         "Uploads"
       ],
       "thumbnailUrl": "https://i.ytimg.com/vi/qljRlY7EJ4I/hqdefault.jpg"
-    },
-    {
-      "id": "6bc0738c3f0f8ebbf6d8d9733a21251d48eeb79a91d5e43d8d2698048cb936bb",
-      "title": "-",
-      "url": "https://www.youtube.com/shorts/rGRCf7j6Qws",
-      "videoId": "rGRCf7j6Qws",
-      "publishedAt": "2026-02-15T03:29:46.000Z",
-      "series": [
-        "Uploads"
-      ],
-      "thumbnailUrl": "https://i.ytimg.com/vi/rGRCf7j6Qws/hqdefault.jpg"
-    },
-    {
-      "id": "23f31b57cbcf6b52dd59a3c53c4b3393b663687ad49da4a946764dabacc93585",
-      "title": "-",
-      "url": "https://www.youtube.com/shorts/HZw1Jx78-Kw",
-      "videoId": "HZw1Jx78-Kw",
-      "publishedAt": "2026-02-15T03:29:36.000Z",
-      "series": [
-        "Uploads"
-      ],
-      "thumbnailUrl": "https://i.ytimg.com/vi/HZw1Jx78-Kw/hqdefault.jpg"
-    },
-    {
-      "id": "62d68bff92658c652692b5666d5f8369a4a2821e332f312018c2d1d9e6135f46",
-      "title": "-",
-      "url": "https://www.youtube.com/shorts/bKziM8_WFIk",
-      "videoId": "bKziM8_WFIk",
-      "publishedAt": "2026-02-15T03:29:12.000Z",
-      "series": [
-        "Uploads"
-      ],
-      "thumbnailUrl": "https://i.ytimg.com/vi/bKziM8_WFIk/hqdefault.jpg"
-    },
-    {
-      "id": "b911a263ec1dc7f4b0edeefc932d984667bcf0d5cc7127e8e831f391dc4e2f74",
-      "title": "-",
-      "url": "https://www.youtube.com/shorts/wEV7giSFwyU",
-      "videoId": "wEV7giSFwyU",
-      "publishedAt": "2026-02-15T03:28:41.000Z",
-      "series": [
-        "Uploads"
-      ],
-      "thumbnailUrl": "https://i.ytimg.com/vi/wEV7giSFwyU/hqdefault.jpg"
-    },
-    {
-      "id": "4b1625c1e4b4eaf91a4ea79c51b54bc79819b1b38f6ddd7ae6147f110c16026f",
-      "title": "-",
-      "url": "https://www.youtube.com/shorts/PdFd54zYo7s",
-      "videoId": "PdFd54zYo7s",
-      "publishedAt": "2026-02-15T03:22:52.000Z",
-      "series": [
-        "Uploads"
-      ],
-      "thumbnailUrl": "https://i.ytimg.com/vi/PdFd54zYo7s/hqdefault.jpg"
-    },
-    {
-      "id": "8c0545a0d7c1a375fc430e3bb62061a093857bfceceeb7a7a192a20d8c91fb02",
-      "title": "-",
-      "url": "https://www.youtube.com/shorts/xYDR7BuIszs",
-      "videoId": "xYDR7BuIszs",
-      "publishedAt": "2026-02-15T03:22:29.000Z",
-      "series": [
-        "Uploads"
-      ],
-      "thumbnailUrl": "https://i.ytimg.com/vi/xYDR7BuIszs/hqdefault.jpg"
-    },
-    {
-      "id": "11b4c157b3068bcb2d3798ff518af15b2af6e76ac5ef4e899c2c4613bdf41d6d",
-      "title": "-",
-      "url": "https://www.youtube.com/shorts/Yv1akhygHRM",
-      "videoId": "Yv1akhygHRM",
-      "publishedAt": "2026-02-15T03:18:28.000Z",
-      "series": [
-        "Uploads"
-      ],
-      "thumbnailUrl": "https://i.ytimg.com/vi/Yv1akhygHRM/hqdefault.jpg"
     }
   ]
 }
