@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-26T13:44:43.288Z",
+    "generatedAt": "2026-02-26T15:07:09.108Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,29 @@
     ]
   },
   "items": [
+    {
+      "id": "c589fa0986221502fb3b1c7251828f6ffa065ec53dbc51e32d8271507fd5721d",
+      "title": "OpenAI Codex and Figma launch seamless code-to-design experience",
+      "url": "https://openai.com/index/figma-partnership",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-02-26T06:00:00.000Z",
+      "summary": "OpenAI and Figma launch a new Codex integration that connects code and design, enabling teams to move between implementation and the Figma canvas to iterate and ship faster.",
+      "tags": [
+        "primary",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/figma-partnership"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
     {
       "id": "5febc0e1d5c28027982b30d23d67b0bcb3973941e84735e52b46b413efe5790d",
       "title": "A Dynamic Survey of Soft Set Theory and Its Extensions",
@@ -15199,34 +15222,6 @@
         {
           "label": "Feed",
           "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "1108cb78a7482ef73cf3e1a916882ae9020fa0f335c880a55beebb29a567c2fa",
-      "title": "Talking to Yourself: Defying Forgetting in Large Language Models",
-      "url": "https://arxiv.org/abs/2602.20162",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-25T05:00:00.000Z",
-      "summary": "arXiv:2602.20162v1 Announce Type: new Abstract: Catastrophic forgetting remains a major challenge when fine-tuning large language models (LLMs) on narrow, task-specific data, often degrading their general knowledge and reasoning abilities. We propose SA-SFT, a lightweight self-augmentation routine in which an LLM generates self-dialogues prior to fine-tuning, and the resulting self-authored data are mixed with task data without modifying optimization or training schedules. Despite requiring no external data or additional tuning, SA-SFT consistently mitigates catastrophic forgetting while improving in-domain performance. Across 50 evaluation scenarios, it maintains performance comparable to the original model and achieves the best results in 40 cases, outperforming common baselines such as layer freezing and external data mixing. Guided by these empirical findings, we further present a theoretical analysis suggesting that forgetting can partly stem from style-induced parameter drift, and that self-alignment through self-generated data provides an effective means to counteract this effect. Overall, our results indicate that self-augmentation offers a simple and effective mechanism for robust LLM adaptation without incurring catastrophic forgetting.",
-      "tags": [
-        "papers",
-        "language",
-        "reasoning",
-        "eval",
-        "safety",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.20162"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
         }
       ]
     }
