@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-26T05:02:43.242Z",
+    "generatedAt": "2026-02-26T06:13:40.330Z",
     "sources": [
       {
         "id": "openai_news",
@@ -8799,6 +8799,212 @@
       ]
     },
     {
+      "id": "c9cda83c8e15baa409763373b9286a4edd600d9e346fcc484a71292c713576c0",
+      "title": "Spilled Energy in Large Language Models",
+      "url": "https://arxiv.org/abs/2602.18671",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-02-26T05:00:00.000Z",
+      "summary": "arXiv:2602.18671v2 Announce Type: replace Abstract: We reinterpret the final Large Language Model (LLM) softmax classifier as an Energy-Based Model (EBM), decomposing the sequence-to-sequence probability chain into multiple interacting EBMs at inference. This principled approach allows us to track \"energy spills\" during decoding, which we empirically show correlate with factual errors, biases, and failures. Similar to Orgad et al. (2025), our method localizes the exact answer token and subsequently tests for hallucinations. Crucially, however, we achieve this without requiring trained probe classifiers or activation ablations. Instead, we introduce two completely training-free metrics derived directly from output logits: spilled energy, which captures the discrepancy between energy values across consecutive generation steps that should theoretically match, and marginalized energy, which is measurable at a single step. Evaluated on nine benchmarks across state-of-the-art LLMs (including LLaMA, Mistral, and Gemma) and on synthetic algebraic operations (Qwen3), our approach demonstrates robust, competitive hallucination detection and cross-task generalization. Notably, these results hold for both pretrained and instruction-tuned variants without introducing any training overhead.",
+      "tags": [
+        "papers",
+        "eval",
+        "inference",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.18671"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "540d8cc7bf4d5f1495bde6491f663da9d9fc144a53ecb8eee2a60bc1342a46ee",
+      "title": "OptiRepair: Closed-Loop Diagnosis and Repair of Supply Chain Optimization Models with LLM Agents",
+      "url": "https://arxiv.org/abs/2602.19439",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-02-26T05:00:00.000Z",
+      "summary": "arXiv:2602.19439v2 Announce Type: replace Abstract: Supply chain optimization models frequently become infeasible because of modeling errors. Diagnosis and repair require scarce OR expertise: analysts must interpret solver diagnostics, trace root causes across echelons, and fix formulations without sacrificing operational soundness. Whether AI agents can perform this task remains untested. We decompose this task into two phases: a domain-agnostic feasibility phase that iteratively repairs any LP using IIS-guided diagnosis, and a domain-specific validation phase that enforces five rationality checks grounded in inventory theory. We test 22 API models from seven families on 976 multi-echelon supply chain problems and train two 8B-parameter models with self-taught reasoning and solver-verified rewards. The trained models reach 81.7% Rational Recovery Rate (RRR) -- the fraction of problems resolved to both feasibility and operational rationality -- versus 42.2% for the best API model and 21.3% on average. The gap concentrates in Phase 1 repair, where API models average 27.6% recovery rate versus 97.2% for trained models. Two gaps separate current AI from reliable model repair: solver interaction, as API models restore only 27.6% of infeasible formulations; and operational rationale, as roughly one in four feasible repairs violate supply chain theory. Each gap requires a different intervention -- targeted training closes the solver interaction gap, while explicit specification as solver-verifiable checks closes the rationality gap. For organizations adopting AI in operational planning, formalizing what 'rational' means in their context is the higher-return investment.",
+      "tags": [
+        "papers",
+        "agents",
+        "reasoning",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.19439"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "71da496060803187f88edc6d22d60e8afc8775cb316f2dfe4b47d1132838b373",
+      "title": "MoMaGen: Generating Demonstrations under Soft and Hard Constraints for Multi-Step Bimanual Mobile Manipulation",
+      "url": "https://arxiv.org/abs/2510.18316",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-02-26T05:00:00.000Z",
+      "summary": "arXiv:2510.18316v4 Announce Type: replace-cross Abstract: Imitation learning from large-scale, diverse human demonstrations has been shown to be effective for training robots, but collecting such data is costly and time-consuming. This challenge intensifies for multi-step bimanual mobile manipulation, where humans must teleoperate both the mobile base and two high-DoF arms. Prior X-Gen works have developed automated data generation frameworks for static (bimanual) manipulation tasks, augmenting a few human demos in simulation with novel scene configurations to synthesize large-scale datasets. However, prior works fall short for bimanual mobile manipulation tasks for two major reasons: 1) a mobile base introduces the problem of how to place the robot base to enable downstream manipulation (reachability) and 2) an active camera introduces the problem of how to position the camera to generate data for a visuomotor policy (visibility). To address these challenges, MoMaGen formulates data generation as a constrained optimization problem that satisfies hard constraints (e.g., reachability) while balancing soft constraints (e.g., visibility while navigation). This formulation generalizes across most existing automated data generation approaches and offers a principled foundation for developing future methods. We evaluate on four multi-step bimanual mobile manipulation tasks and find that MoMaGen enables the generation of much more diverse datasets than previous methods. As a result of the dataset diversity, we also show that the data generated by MoMaGen can be used to train successful imitation learning policies using a single source demo. Furthermore, the trained policy can be fine-tuned with a very small amount of real-world data (40 demos) to be succesfully deployed on real robotic hardware. More details are on our project page: momagen.github.io.",
+      "tags": [
+        "papers",
+        "policy",
+        "training",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2510.18316"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "c019ab21fb2f6eaeb5698d50b9067d6c60d34363073906c91872afed8a62f22d",
+      "title": "Hyperbolic Busemann Neural Networks",
+      "url": "https://arxiv.org/abs/2602.18858",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-02-26T05:00:00.000Z",
+      "summary": "arXiv:2602.18858v2 Announce Type: replace-cross Abstract: Hyperbolic spaces provide a natural geometry for representing hierarchical and tree-structured data due to their exponential volume growth. To leverage these benefits, neural networks require intrinsic and efficient components that operate directly in hyperbolic space. In this work, we lift two core components of neural networks, Multinomial Logistic Regression (MLR) and Fully Connected (FC) layers, into hyperbolic space via Busemann functions, resulting in Busemann MLR (BMLR) and Busemann FC (BFC) layers with a unified mathematical interpretation. BMLR provides compact parameters, a point-to-horosphere distance interpretation, batch-efficient computation, and a Euclidean limit, while BFC generalizes FC and activation layers with comparable complexity. Experiments on image classification, genome sequence learning, node classification, and link prediction demonstrate improvements in effectiveness and efficiency over prior hyperbolic layers. The code is available at https://github.com/GitZH-Chen/HBNN.",
+      "tags": [
+        "papers"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.18858"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "3ab12ea8d0e90334c09eda1a29bac9000a9902070c322f5c72951981b6bb3505",
+      "title": "LUMI: Unsupervised Intent Clustering with Multiple Pseudo-Labels",
+      "url": "https://arxiv.org/abs/2510.14640",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-02-26T05:00:00.000Z",
+      "summary": "arXiv:2510.14640v4 Announce Type: replace Abstract: In this paper, we propose an intuitive, training-free and label-free method for intent clustering in conversational search. Current approaches to short text clustering use LLM-generated pseudo-labels to enrich text representations or to identify similar text pairs for pooling. The limitations are: (1) each text is assigned only a single label, and refining representations toward a single label can be unstable; (2) text-level similarity is treated as a binary selection, which fails to account for continuous degrees of similarity. Our method LUMI is designed to amplify similarities between texts by using shared pseudo-labels. We first generate pseudo-labels for each text and collect them into a pseudo-label set. Next, we compute the mean of the pseudo-label embeddings and pool it with the text embedding. Finally, we perform text-level pooling: Each text representation is pooled with its similar pairs, where similarity is determined by the degree of shared labels. Our evaluation on four benchmark sets shows that our approach achieves competitive results, better than recent state-of-the-art baselines, while avoiding the need to estimate the number of clusters during embedding refinement, as is required by most methods. Our findings indicate that LUMI can effectively be applied in unsupervised short-text clustering scenarios.",
+      "tags": [
+        "papers",
+        "language",
+        "eval",
+        "compute",
+        "training"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2510.14640"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "755191b8bb1977e8478efafc6fc38bde8e4804e1082498e4df64a43c4232dc50",
+      "title": "The Art of Efficient Reasoning: Data, Reward, and Optimization",
+      "url": "https://arxiv.org/abs/2602.20945",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-02-26T05:00:00.000Z",
+      "summary": "arXiv:2602.20945v2 Announce Type: replace Abstract: Large Language Models (LLMs) consistently benefit from scaled Chain-of-Thought (CoT) reasoning, but also suffer from heavy computational overhead. To address this issue, efficient reasoning aims to incentivize short yet accurate thinking trajectories, typically through reward shaping with Reinforcement Learning (RL). In this paper, we systematically investigate the mechanics of efficient reasoning for LLMs. For comprehensive evaluation, we advocate for more fine-grained metrics, including length distribution conditioned on correctness and performance across a wide spectrum of token budgets ranging from 2k to 32k. First, we reveal that the training process follows a two-stage paradigm: length adaptation and reasoning refinement. After that, we conduct extensive experiments (about 0.2 million GPU hours) in a unified protocol, deconstructing training prompts and rollouts, reward shaping, and optimization strategies. In particular, a key finding is to train on relatively easier prompts, ensuring the density of positive reward signals and thus avoiding the length collapse. Meanwhile, the learned length bias can be generalized across domains. We distill all findings into valuable insights and practical guidelines, and further validate them across the Qwen3 series, ranging from 0.6B to 30B, demonstrating the robustness and generalization.",
+      "tags": [
+        "papers",
+        "language",
+        "reasoning",
+        "eval",
+        "compute",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.20945"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "aef814066b6ae1a1b863047394dbc49e2d5b083327d03088892633acfda57091",
+      "title": "SpecMind: Cognitively Inspired, Interactive Multi-Turn Framework for Postcondition Inference",
+      "url": "https://arxiv.org/abs/2602.20610",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-02-26T05:00:00.000Z",
+      "summary": "arXiv:2602.20610v2 Announce Type: replace-cross Abstract: Specifications are vital for ensuring program correctness, yet writing them manually remains challenging and time-intensive. Recent large language model (LLM)-based methods have shown successes in generating specifications such as postconditions, but existing single-pass prompting often yields inaccurate results. In this paper, we present SpecMind, a novel framework for postcondition generation that treats LLMs as interactive and exploratory reasoners rather than one-shot generators. SpecMind employs feedback-driven multi-turn prompting approaches, enabling the model to iteratively refine candidate postconditions by incorporating implicit and explicit correctness feedback, while autonomously deciding when to stop. This process fosters deeper code comprehension and improves alignment with true program behavior via exploratory attempts. Our empirical evaluation shows that SpecMind significantly outperforms state-of-the-art approaches in both accuracy and completeness of generated postconditions.",
+      "tags": [
+        "papers",
+        "language",
+        "eval",
+        "safety",
+        "inference",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.20610"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "3443147aba2dd32562e0dfcf6bab9170fe05a6a0f0a5ca5ae9b0fc1d783aba18",
+      "title": "SELAUR: Self Evolving LLM Agent via Uncertainty-aware Rewards",
+      "url": "https://arxiv.org/abs/2602.21158",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-02-26T05:00:00.000Z",
+      "summary": "arXiv:2602.21158v2 Announce Type: replace-cross Abstract: Large language models (LLMs) are increasingly deployed as multi-step decision-making agents, where effective reward design is essential for guiding learning. Although recent work explores various forms of reward shaping and step-level credit assignment, a key signal remains largely overlooked: the intrinsic uncertainty of LLMs. Uncertainty reflects model confidence, reveals where exploration is needed, and offers valuable learning cues even in failed trajectories. We introduce SELAUR: Self Evolving LLM Agent via Uncertainty-aware Rewards, a reinforcement learning framework that incorporates uncertainty directly into the reward design. SELAUR integrates entropy-, least-confidence-, and margin-based metrics into a combined token-level uncertainty estimate, providing dense confidence-aligned supervision, and employs a failure-aware reward reshaping mechanism that injects these uncertainty signals into step- and trajectory-level rewards to improve exploration efficiency and learning stability. Experiments on two benchmarks, ALFWorld and WebShop, show that our method consistently improves success rates over strong baselines. Ablation studies further demonstrate how uncertainty signals enhance exploration and robustness.",
+      "tags": [
+        "papers",
+        "language",
+        "agents",
+        "eval",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.21158"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
       "id": "1396aa2ee7ac8e162d72ee35adb0b224646ee036acdb1a68a6f1fccc299e2d4f",
       "title": "Making Softmax More Efficient with NVIDIA Blackwell Ultra",
       "url": "https://developer.nvidia.com/blog/making-softmax-more-efficient-with-nvidia-blackwell-ultra/",
@@ -15023,211 +15229,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2602.20164"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "191630bd8d017f86c9cc438dd3cb2a3f62ba2c37f685b79bafd778ca580b08b5",
-      "title": "ConceptRM: The Quest to Mitigate Alert Fatigue through Consensus-Based Purity-Driven Data Cleaning for Reflection Modelling",
-      "url": "https://arxiv.org/abs/2602.20166",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-25T05:00:00.000Z",
-      "summary": "arXiv:2602.20166v1 Announce Type: new Abstract: In many applications involving intelligent agents, the overwhelming volume of alerts (mostly false) generated by the agents may desensitize users and cause them to overlook critical issues, leading to the so-called ''alert fatigue''. A common strategy is to train a reflection model as a filter to intercept false alerts with labelled data collected from user verification feedback. However, a key challenge is the noisy nature of such data as it is often collected in production environments. As cleaning noise via manual annotation incurs high costs, this paper proposes a novel method ConceptRM for constructing a high-quality corpus to train a reflection model capable of effectively intercepting false alerts. With only a small amount of expert annotations as anchors, ConceptRM creates perturbed datasets with varying noise ratios and utilizes co-teaching to train multiple distinct models for collaborative learning. By analyzing the consensus decisions of these models, it effectively identifies reliable negative samples from a noisy dataset. Experimental results demonstrate that ConceptRM significantly enhances the interception of false alerts with minimal annotation cost, outperforming several state-of-the-art LLM baselines by up to 53.31% on in-domain datasets and 41.67% on out-of-domain datasets.",
-      "tags": [
-        "papers",
-        "language",
-        "agents",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.20166"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "2032da4bc25344c904dabc9e28ee853cef5b925a010595b92c961444c9c5aff5",
-      "title": "InterviewSim: A Scalable Framework for Interview-Grounded Personality Simulation",
-      "url": "https://arxiv.org/abs/2602.20294",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-25T05:00:00.000Z",
-      "summary": "arXiv:2602.20294v1 Announce Type: new Abstract: Simulating real personalities with large language models requires grounding generation in authentic personal data. Existing evaluation approaches rely on demographic surveys, personality questionnaires, or short AI-led interviews as proxies, but lack direct assessment against what individuals actually said. We address this gap with an interview-grounded evaluation framework for personality simulation at a large scale. We extract over 671,000 question-answer pairs from 23,000 verified interview transcripts across 1,000 public personalities, each with an average of 11.5 hours of interview content. We propose a multi-dimensional evaluation framework with four complementary metrics measuring content similarity, factual consistency, personality alignment, and factual knowledge retention. Through systematic comparison, we demonstrate that methods grounded in real interview data substantially outperform those relying solely on biographical profiles or the model's parametric knowledge. We further reveal a trade-off in how interview data is best utilized: retrieval-augmented methods excel at capturing personality style and response quality, while chronological-based methods better preserve factual consistency and knowledge retention. Our evaluation framework enables principled method selection based on application requirements, and our empirical findings provide actionable insights for advancing personality simulation research.",
-      "tags": [
-        "papers",
-        "language",
-        "eval",
-        "safety",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.20294"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "c90bd74402c64ffdafc6c61f3df39c80574eb1ac9088d24f0d5c866fde0075c2",
-      "title": "What Makes a Good Query? Measuring the Impact of Human-Confusing Linguistic Features on LLM Performance",
-      "url": "https://arxiv.org/abs/2602.20300",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-25T05:00:00.000Z",
-      "summary": "arXiv:2602.20300v1 Announce Type: new Abstract: Large Language Model (LLM) hallucinations are usually treated as defects of the model or its decoding strategy. Drawing on classical linguistics, we argue that a query's form can also shape a listener's (and model's) response. We operationalize this insight by constructing a 22-dimension query feature vector covering clause complexity, lexical rarity, and anaphora, negation, answerability, and intention grounding, all known to affect human comprehension. Using 369,837 real-world queries, we ask: Are there certain types of queries that make hallucination more likely? A large-scale analysis reveals a consistent \"risk landscape\": certain features such as deep clause nesting and underspecification align with higher hallucination propensity. In contrast, clear intention grounding and answerability align with lower hallucination rates. Others, including domain specificity, show mixed, dataset- and model-dependent effects. Thus, these findings establish an empirically observable query-feature representation correlated with hallucination risk, paving the way for guided query rewriting and future intervention studies.",
-      "tags": [
-        "papers",
-        "language",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.20300"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "587845015b04b284bb40efeeff04481fd280ad61702b1125f61a273932dbc96f",
-      "title": "No One Size Fits All: QueryBandits for Hallucination Mitigation",
-      "url": "https://arxiv.org/abs/2602.20332",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-25T05:00:00.000Z",
-      "summary": "arXiv:2602.20332v1 Announce Type: new Abstract: Advanced reasoning capabilities in Large Language Models (LLMs) have led to more frequent hallucinations; yet most mitigation work focuses on open-source models for post-hoc detection and parameter editing. The dearth of studies focusing on hallucinations in closed-source models is especially concerning, as they constitute the vast majority of models in institutional deployments. We introduce QueryBandits, a model-agnostic contextual bandit framework that adaptively learns online to select the optimal query-rewrite strategy by leveraging an empirically validated and calibrated reward function. Across 16 QA scenarios, our top QueryBandit (Thompson Sampling) achieves an 87.5% win rate over a No-Rewrite baseline and outperforms zero-shot static policies (e.g., Paraphrase or Expand) by 42.6% and 60.3%, respectively. Moreover, all contextual bandits outperform vanilla bandits across all datasets, with higher feature variance coinciding with greater variance in arm selection. This substantiates our finding that there is no single rewrite policy optimal for all queries. We also discover that certain static policies incur higher cumulative regret than No-Rewrite, indicating that an inflexible query-rewriting policy can worsen hallucinations. Thus, learning an online policy over semantic features with QueryBandits can shift model behavior purely through forward-pass mechanisms, enabling its use with closed-source models and bypassing the need for retraining or gradient-based adaptation.",
-      "tags": [
-        "papers",
-        "language",
-        "reasoning",
-        "policy",
-        "training",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.20332"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "79fdc69a6779ea3b1aa87f1c6a23ea259288f28346f0096967a0182e4d1de3fd",
-      "title": "Natural Language Processing Models for Robust Document Categorization",
-      "url": "https://arxiv.org/abs/2602.20336",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-25T05:00:00.000Z",
-      "summary": "arXiv:2602.20336v1 Announce Type: new Abstract: This article presents an evaluation of several machine learning methods applied to automated text classification, alongside the design of a demonstrative system for unbalanced document categorization and distribution. The study focuses on balancing classification accuracy with computational efficiency, a key consideration when integrating AI into real world automation pipelines. Three models of varying complexity were examined: a Naive Bayes classifier, a bidirectional LSTM network, and a fine tuned transformer based BERT model. The experiments reveal substantial differences in performance. BERT achieved the highest accuracy, consistently exceeding 99\\%, but required significantly longer training times and greater computational resources. The BiLSTM model provided a strong compromise, reaching approximately 98.56\\% accuracy while maintaining moderate training costs and offering robust contextual understanding. Naive Bayes proved to be the fastest to train, on the order of milliseconds, yet delivered the lowest accuracy, averaging around 94.5\\%. Class imbalance influenced all methods, particularly in the recognition of minority categories. A fully functional demonstrative system was implemented to validate practical applicability, enabling automated routing of technical requests with throughput unattainable through manual processing. The study concludes that BiLSTM offers the most balanced solution for the examined scenario, while also outlining opportunities for future improvements and further exploration of transformer architectures.",
-      "tags": [
-        "papers",
-        "language",
-        "eval",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.20336"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "e7f8d825b3157eb9fa2d0475d6a94aead99e64d91bcd8d89e37e46a442c342ae",
-      "title": "How communicatively optimal are exact numeral systems? Once more on lexicon size and morphosyntactic complexity",
-      "url": "https://arxiv.org/abs/2602.20372",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-25T05:00:00.000Z",
-      "summary": "arXiv:2602.20372v1 Announce Type: new Abstract: Recent research argues that exact recursive numeral systems optimize communicative efficiency by balancing a tradeoff between the size of the numeral lexicon and the average morphosyntactic complexity (roughly length in morphemes) of numeral terms. We argue that previous studies have not characterized the data in a fashion that accounts for the degree of complexity languages display. Using data from 52 genetically diverse languages and an annotation scheme distinguishing between predictable and unpredictable allomorphy (formal variation), we show that many of the world's languages are decisively less efficient than one would expect. We discuss the implications of our findings for the study of numeral systems and linguistic evolution more generally.",
-      "tags": [
-        "papers",
-        "language"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.20372"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "6438906d3c3deef4419ebc32914aedbb331f19f43ba342d7ab59d200742b0e9b",
-      "title": "Case-Aware LLM-as-a-Judge Evaluation for Enterprise-Scale RAG Systems",
-      "url": "https://arxiv.org/abs/2602.20379",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-25T05:00:00.000Z",
-      "summary": "arXiv:2602.20379v1 Announce Type: new Abstract: Enterprise Retrieval-Augmented Generation (RAG) assistants operate in multi-turn, case-based workflows such as technical support and IT operations, where evaluation must reflect operational constraints, structured identifiers (e.g., error codes, versions), and resolution workflows. Existing RAG evaluation frameworks are primarily designed for benchmark-style or single-turn settings and often fail to capture enterprise-specific failure modes such as case misidentification, workflow misalignment, and partial resolution across turns. We present a case-aware LLM-as-a-Judge evaluation framework for enterprise multi-turn RAG systems. The framework evaluates each turn using eight operationally grounded metrics that separate retrieval quality, grounding fidelity, answer utility, precision integrity, and case/workflow alignment. A severity-aware scoring protocol reduces score inflation and improves diagnostic clarity across heterogeneous enterprise cases. The system uses deterministic prompting with strict JSON outputs, enabling scalable batch evaluation, regression testing, and production monitoring. Through a comparative study of two instruction-tuned models across short and long workflows, we show that generic proxy metrics provide ambiguous signals, while the proposed framework exposes enterprise-critical tradeoffs that are actionable for system improvement.",
-      "tags": [
-        "papers",
-        "language",
-        "eval",
-        "safety",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.20379"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "82b3f219b24efacdaca4a2663fcd49ad5b2bfa808f92cd6fcecd5f8c505a28d9",
-      "title": "Disentangling Geometry, Performance, and Training in Language Models",
-      "url": "https://arxiv.org/abs/2602.20433",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-25T05:00:00.000Z",
-      "summary": "arXiv:2602.20433v1 Announce Type: new Abstract: Geometric properties of Transformer weights, particularly the unembedding matrix, have been widely useful in language model interpretability research. Yet, their utility for estimating downstream performance remains unclear. In this work, we systematically investigate the relationship between model performance and the unembedding matrix geometry, particularly its effective rank. Our experiments, involving a suite of 108 OLMo-style language models trained under controlled variation, reveal several key findings. While the best-performing models often exhibit a high effective rank, this trend is not universal across tasks and training setups. Contrary to prior work, we find that low effective rank does not cause late-stage performance degradation in small models, but instead co-occurs with it; we find adversarial cases where low-rank models do not exhibit saturation. Moreover, we show that effective rank is strongly influenced by pre-training hyperparameters, such as batch size and weight decay, which in-turn affect the model's performance. Lastly, extending our analysis to other geometric metrics and final-layer representation, we find that these metrics are largely aligned, but none can reliably predict downstream performance. Overall, our findings suggest that the model's geometry, as captured by existing metrics, primarily reflects training choices rather than performance.",
-      "tags": [
-        "papers",
-        "language",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.20433"
         },
         {
           "label": "Feed",
