@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-26T15:07:09.108Z",
+    "generatedAt": "2026-02-26T16:09:02.921Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,30 @@
     ]
   },
   "items": [
+    {
+      "id": "27946d5cda61e68b9420bb2661d42757d7aad5d2220e020daf93caa94dbc18c9",
+      "title": "Nano Banana 2: Combining Pro capabilities with lightning-fast speed",
+      "url": "https://deepmind.google/blog/nano-banana-2-combining-pro-capabilities-with-lightning-fast-speed/",
+      "sourceId": "deepmind_blog",
+      "sourceName": "Google DeepMind — Blog",
+      "publishedAt": "2026-02-26T16:01:50.000Z",
+      "summary": "Our latest image generation model offers advanced world knowledge, production ready specs, subject consistency and more, all at Flash speed.",
+      "tags": [
+        "primary",
+        "research",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://deepmind.google/blog/nano-banana-2-combining-pro-capabilities-with-lightning-fast-speed/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://deepmind.google/blog/feed/basic"
+        }
+      ]
+    },
     {
       "id": "c589fa0986221502fb3b1c7251828f6ffa065ec53dbc51e32d8271507fd5721d",
       "title": "OpenAI Codex and Figma launch seamless code-to-design experience",
@@ -15196,28 +15220,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2602.17557"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "9ebe2f3076fe8a4d4e1655e3a080bc6acaaf4cf43c058e50d06ce570aa2c7c8f",
-      "title": "Games That Teach, Chats That Convince: Comparing Interactive and Static Formats for Persuasive Learning",
-      "url": "https://arxiv.org/abs/2602.17905",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-25T05:00:00.000Z",
-      "summary": "arXiv:2602.17905v2 Announce Type: replace-cross Abstract: Interactive systems such as chatbots and games are increasingly used to persuade and educate on sustainability-related topics, yet it remains unclear how different delivery formats shape learning and persuasive outcomes when content is held constant. Grounding on identical arguments and factual content across conditions, we present a controlled user study comparing three modes of information delivery: static essays, conversational chatbots, and narrative text-based games. Across subjective measures, the chatbot condition consistently outperformed the other modes and increased perceived importance of the topic. However, perceived learning did not reliably align with objective outcomes: participants in the text-based game condition reported learning less than those reading essays, yet achieved higher scores on a delayed (24-hour) knowledge quiz. Additional exploratory analyses further suggest that common engagement proxies, such as verbosity and interaction length, are more closely related to subjective experience than to actual learning. These findings highlight a dissociation between how persuasive experiences feel and what participants retain, and point to important design trade-offs between interactivity, realism, and learning in persuasive systems and serious games.",
-      "tags": [
-        "papers"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.17905"
         },
         {
           "label": "Feed",
