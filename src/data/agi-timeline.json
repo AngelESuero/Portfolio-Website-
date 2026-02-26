@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-26T16:09:02.921Z",
+    "generatedAt": "2026-02-26T17:19:48.497Z",
     "sources": [
       {
         "id": "openai_news",
@@ -49,6 +49,30 @@
   },
   "items": [
     {
+      "id": "24bef398b909c867baec580b2b4685b226fa59881766e431d6e442f69dc81670",
+      "title": "CORPGEN advances AI agents for real work",
+      "url": "https://www.microsoft.com/en-us/research/blog/corpgen-advances-ai-agents-for-real-work/",
+      "sourceId": "msr_blog",
+      "sourceName": "Microsoft Research — Blog",
+      "publishedAt": "2026-02-26T17:06:34.000Z",
+      "summary": "By mid-morning, a typical knowledge worker is already juggling a client report, a budget spreadsheet, a slide deck, and an email backlog, all interdependent and all demanding attention at once. For AI agents to be genuinely useful in that environment, they will need to operate the same way, but today’s best models are evaluated one […] The post CORPGEN advances AI agents for real work appeared first on Microsoft Research.",
+      "tags": [
+        "research",
+        "agents",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://www.microsoft.com/en-us/research/blog/corpgen-advances-ai-agents-for-real-work/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://www.microsoft.com/en-us/research/blog/feed/"
+        }
+      ]
+    },
+    {
       "id": "27946d5cda61e68b9420bb2661d42757d7aad5d2220e020daf93caa94dbc18c9",
       "title": "Nano Banana 2: Combining Pro capabilities with lightning-fast speed",
       "url": "https://deepmind.google/blog/nano-banana-2-combining-pro-capabilities-with-lightning-fast-speed/",
@@ -69,6 +93,31 @@
         {
           "label": "Feed",
           "url": "https://deepmind.google/blog/feed/basic"
+        }
+      ]
+    },
+    {
+      "id": "1d05b2e6009b8de880a38dcf4e3e770cdfc210d5d2a85a1632d7f2f6d11a0791",
+      "title": "Pacific Northwest National Laboratory and OpenAI partner to accelerate federal permitting",
+      "url": "https://openai.com/index/pacific-northwest-national-laboratory",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-02-26T10:00:00.000Z",
+      "summary": "OpenAI and Pacific Northwest National Laboratory introduce DraftNEPABench, a new benchmark evaluating how AI coding agents can accelerate federal permitting—showing potential to reduce NEPA drafting time by up to 15% and modernize infrastructure reviews.",
+      "tags": [
+        "primary",
+        "release",
+        "agents",
+        "eval"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/pacific-northwest-national-laboratory"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
         }
       ]
     },
@@ -15169,57 +15218,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2602.16947"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "e2cf0f3ab4f64035f1914ac8c63d2642a22d126605a4c97b0e2bf93b3015c576",
-      "title": "MASPO: Unifying Gradient Utilization, Probability Mass, and Signal Reliability for Robust and Sample-Efficient LLM Reasoning",
-      "url": "https://arxiv.org/abs/2602.17550",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-25T05:00:00.000Z",
-      "summary": "arXiv:2602.17550v2 Announce Type: replace-cross Abstract: Existing Reinforcement Learning with Verifiable Rewards (RLVR) algorithms, such as GRPO, rely on rigid, uniform, and symmetric trust region mechanisms that are fundamentally misaligned with the complex optimization dynamics of Large Language Models (LLMs). In this paper, we identify three critical challenges in these methods: (1) inefficient gradient utilization caused by the binary cutoff of hard clipping, (2) insensitive probability mass arising from uniform ratio constraints that ignore the token distribution, and (3) asymmetric signal reliability stemming from the disparate credit assignment ambiguity between positive and negative samples. To bridge these gaps, we propose Mass-Adaptive Soft Policy Optimization (MASPO), a unified framework designed to harmonize these three dimensions. MASPO integrates a differentiable soft Gaussian gating to maximize gradient utility, a mass-adaptive limiter to balance exploration across the probability spectrum, and an asymmetric risk controller to align update magnitudes with signal confidence. Extensive evaluations demonstrate that MASPO serves as a robust, all-in-one RLVR solution, significantly outperforming baselines. Our code is at: \\href{https://github.com/VenomRose-Juri/MASPO-RL}{https://github.com/VenomRose-Juri/MASPO-RL}.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "eval",
-        "policy",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.17550"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "6bbf9b47d27f8155a3afbe5f6a664d967fc470ff540501a5b070c9b28a9ba290",
-      "title": "Probability-Invariant Random Walk Learning on Gyral Folding-Based Cortical Similarity Networks for Alzheimer's and Lewy Body Dementia Diagnosis",
-      "url": "https://arxiv.org/abs/2602.17557",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-25T05:00:00.000Z",
-      "summary": "arXiv:2602.17557v2 Announce Type: replace-cross Abstract: Alzheimer's disease (AD) and Lewy body dementia (LBD) present overlapping clinical features yet require distinct diagnostic strategies. While neuroimaging-based brain network analysis is promising, atlas-based representations may obscure individualized anatomy. Gyral folding-based networks using three-hinge gyri provide a biologically grounded alternative, but inter-individual variability in cortical folding results in inconsistent landmark correspondence and highly irregular network sizes, violating the fixed-topology and node-alignment assumptions of most existing graph learning methods, particularly in clinical datasets where pathological changes further amplify anatomical heterogeneity. We therefore propose a probability-invariant random-walk-based framework that classifies individualized gyral folding networks without explicit node alignment. Cortical similarity networks are built from local morphometric features and represented by distributions of anonymized random walks, with an anatomy-aware encoding that preserves permutation invariance. Experiments on a large clinical cohort of AD and LBD subjects show consistent improvements over existing gyral folding and atlas-based models, demonstrating robustness and potential for dementia diagnosis.",
-      "tags": [
-        "papers",
-        "safety",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.17557"
         },
         {
           "label": "Feed",
