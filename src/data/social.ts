@@ -16,8 +16,6 @@ export interface SocialConfigItem {
 const YOUTUBE_CHANNEL_ID = 'UCQeJiBS72gxrZXw5GmqtocA';
 const YOUTUBE_FEED_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL_ID}`;
 const YOUTUBE_UPLOADS_PLAYLIST_URL = `https://www.youtube.com/playlist?list=UU${YOUTUBE_CHANNEL_ID.slice(2)}`;
-const UNTITLED_MY_FIRST_BEAT_TAPE_URL = 'https://untitled.stream/library/project/W9oQWS6klQAAftkyx28QL';
-const UNTITLED_MY_FIRST_BEAT_TAPE_EMBED_URL = `${UNTITLED_MY_FIRST_BEAT_TAPE_URL}/embed`;
 
 const socialConfig: SocialConfigItem[] = [
   {
@@ -88,30 +86,14 @@ const socialConfig: SocialConfigItem[] = [
     slug: 'untitled',
     title: 'Untitled',
     description: 'Direct stream player for live and in-progress music sets.',
-    primary_url: UNTITLED_MY_FIRST_BEAT_TAPE_URL,
+    primary_url: MUSIC_URLS.untitledMyFirstBeatTape,
     mode: 'manual',
     featured: [
-      { label: 'My First Beat Tape', url: UNTITLED_MY_FIRST_BEAT_TAPE_URL },
+      { label: 'My First Beat Tape', url: MUSIC_URLS.untitledMyFirstBeatTape },
       { label: 'The Every Day Soundscape', url: MUSIC_URLS.untitledEveryDaySoundscape },
       { label: 'Queries Beat Tape', url: MUSIC_URLS.untitledQueriesBeatTape }
     ],
-    embeds: [
-      {
-        label: 'My First Beat Tape',
-        url: UNTITLED_MY_FIRST_BEAT_TAPE_URL,
-        embedUrl: UNTITLED_MY_FIRST_BEAT_TAPE_EMBED_URL
-      },
-      {
-        label: 'The Every Day Soundscape',
-        url: MUSIC_URLS.untitledEveryDaySoundscape,
-        embedUrl: `${MUSIC_URLS.untitledEveryDaySoundscape}/embed`
-      },
-      {
-        label: 'Queries Beat Tape',
-        url: MUSIC_URLS.untitledQueriesBeatTape,
-        embedUrl: `${MUSIC_URLS.untitledQueriesBeatTape}/embed`
-      }
-    ]
+    embeds: [{ label: 'My First Beat Tape', url: MUSIC_URLS.untitledMyFirstBeatTape }]
   },
   {
     slug: 'discord',

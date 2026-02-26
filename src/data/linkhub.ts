@@ -74,7 +74,7 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
         id: 'my-first-beat-tape',
         title: 'My First Beat Tape',
         url: 'https://untitled.stream/library/project/W9oQWS6klQAAftkyx28QL',
-        embedUrl: 'https://untitled.stream/library/project/W9oQWS6klQAAftkyx28QL/embed',
+        embedUrl: MUSIC_URLS.untitledMyFirstBeatTape,
         year: '2026',
         tag: 'Project',
         preferredEmbed: 'untitled'
@@ -82,11 +82,10 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
       {
         id: 'everyday-soundscape',
         title: 'The Every Day Soundscape',
-        url: MUSIC_URLS.untitledEveryDaySoundscape,
-        embedUrl: `${MUSIC_URLS.untitledEveryDaySoundscape}/embed`,
+        url: 'https://www.youtube.com/watch?v=KWDgWpSDlrM&t=16s',
         year: '2026',
         tag: 'Track',
-        preferredEmbed: 'untitled'
+        preferredEmbed: 'youtube'
       },
       {
         id: 'queries-beat-tape',
@@ -417,6 +416,13 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
         url: '/survival-os',
         year: '2026',
         tag: 'Blueprint'
+      },
+      {
+        id: 'survival-support',
+        title: 'Survival Support',
+        url: '/survival-support',
+        year: '2026',
+        tag: 'Guide'
       }
     ]
   },
