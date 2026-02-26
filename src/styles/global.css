@@ -1018,6 +1018,14 @@ html[data-mode='explore'] .mode-explore {
   aspect-ratio: 4 / 5;
 }
 
+.desktop-home .section-card-shell .hub-card[data-provider='google_drive'] .hub-embed-frame {
+  width: min(100%, 24rem);
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 4 / 5;
+  margin-inline: auto;
+}
+
 @media (prefers-reduced-motion: reduce) {
   :root {
     --motion-fast: 0.01ms;
