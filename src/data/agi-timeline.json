@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-26T11:56:21.754Z",
+    "generatedAt": "2026-02-26T13:44:43.288Z",
     "sources": [
       {
         "id": "openai_news",
@@ -9005,6 +9005,28 @@
       ]
     },
     {
+      "id": "f1a5debfbe4a3ba636f4ce2455b9d9c0812951ac3312e60df902ffb02ec3a5be",
+      "title": "Mixture of Experts (MoEs) in Transformers",
+      "url": "https://huggingface.co/blog/moe-transformers",
+      "sourceId": "hf_blog",
+      "sourceName": "Hugging Face — Blog",
+      "publishedAt": "2026-02-26T00:00:00.000Z",
+      "summary": null,
+      "tags": [
+        "open-source"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://huggingface.co/blog/moe-transformers"
+        },
+        {
+          "label": "Feed",
+          "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
+    {
       "id": "1396aa2ee7ac8e162d72ee35adb0b224646ee036acdb1a68a6f1fccc299e2d4f",
       "title": "Making Softmax More Efficient with NVIDIA Blackwell Ultra",
       "url": "https://developer.nvidia.com/blog/making-softmax-more-efficient-with-nvidia-blackwell-ultra/",
@@ -15201,34 +15223,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2602.20162"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "2e8b911fa289ed871090cbae1680a65c08406d3e20dc3695266beb4ae794fe69",
-      "title": "Benchmarking Distilled Language Models: Performance and Efficiency in Resource-Constrained Settings",
-      "url": "https://arxiv.org/abs/2602.20164",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-02-25T05:00:00.000Z",
-      "summary": "arXiv:2602.20164v1 Announce Type: new Abstract: Knowledge distillation offers a transformative pathway to developing powerful, yet efficient, small language models (SLMs) suitable for resource-constrained environments. In this paper, we benchmark the performance and computational cost of distilled models against their vanilla and proprietary counterparts, providing a quantitative analysis of their efficiency. Our results demonstrate that distillation creates a superior performance-tocompute curve. We find that creating a distilled 8B model is over 2,000 times more compute-efficient than training its vanilla counterpart, while achieving reasoning capabilities on par with, or even exceeding, standard models ten times its size. These findings validate distillation not just as a compression technique, but as a primary strategy for building state-of-the-art, accessible AI",
-      "tags": [
-        "papers",
-        "language",
-        "reasoning",
-        "eval",
-        "compute",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.20164"
         },
         {
           "label": "Feed",
