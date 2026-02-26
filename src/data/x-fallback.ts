@@ -19,18 +19,6 @@ const xFallbackItems: XFallbackItem[] = [
     summary: "Recent signal entries and monitoring notes from the AGI tracker."
   },
   {
-    title: "Newark civic mapping thread",
-    url: "/work/newark-civic-mapping",
-    publishedAt: "2026-02-15T12:00:00.000Z",
-    summary: "Field notes and documentation for place-based mapping work."
-  },
-  {
-    title: "Music production sessions archive",
-    url: "/work/music-production-sessions",
-    publishedAt: "2026-02-12T12:00:00.000Z",
-    summary: "Session snapshots, process clips, and in-progress material."
-  },
-  {
     title: "Archive method notes",
     url: "/writing/archive-method",
     publishedAt: "2026-02-10T12:00:00.000Z",
