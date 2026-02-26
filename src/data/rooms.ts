@@ -111,25 +111,19 @@ const rooms: Room[] = [
     description: 'Platform exits, profile paths, and quick handoff links.',
     color: 'violet',
     room_type: 'external',
-    destination: SOCIAL_URLS.linktree,
+    destination: 'https://discord.gg/rNjaEQbe',
     machines: [
       {
-        title: 'Instagram',
-        summary: 'Visual stream and archive updates.',
+        title: 'Neighborhood Corner',
+        summary: 'Community chat and public lounge server.',
         kind: 'external',
-        url: SOCIAL_URLS.instagram
+        url: 'https://discord.gg/rNjaEQbe'
       },
       {
-        title: 'YouTube',
-        summary: 'Video and music uploads.',
+        title: "Creator's Corner",
+        summary: 'Creator-focused server for sharing and collab.',
         kind: 'external',
-        url: SOCIAL_URLS.youtube
-      },
-      {
-        title: 'Contact',
-        summary: 'Direct email and inquiry form.',
-        kind: 'native',
-        url: '/contact'
+        url: 'https://discord.gg/rNjaEQbe'
       }
     ]
   }

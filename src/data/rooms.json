@@ -91,25 +91,19 @@
     "description": "Platform exits, profile paths, and quick handoff links.",
     "color": "white",
     "room_type": "external",
-    "destination": "https://linktr.ee/a_e.s_",
+    "destination": "https://discord.gg/rNjaEQbe",
     "machines": [
       {
-        "title": "Instagram",
-        "summary": "Visual stream and archive updates.",
+        "title": "Neighborhood Corner",
+        "summary": "Community chat and public lounge server.",
         "kind": "external",
-        "url": "https://instagram.com/a_e.s_"
+        "url": "https://discord.gg/rNjaEQbe"
       },
       {
-        "title": "YouTube",
-        "summary": "Video and music uploads.",
+        "title": "Creator's Corner",
+        "summary": "Creator-focused server for sharing and collab.",
         "kind": "external",
-        "url": "https://www.youtube.com/@a_e.s_4"
-      },
-      {
-        "title": "Contact",
-        "summary": "Direct email and inquiry form.",
-        "kind": "native",
-        "url": "/contact"
+        "url": "https://discord.gg/rNjaEQbe"
       }
     ]
   }
