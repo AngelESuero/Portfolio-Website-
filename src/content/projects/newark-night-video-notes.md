@@ -6,7 +6,7 @@ status: "Published"
 tools: ["Handheld Camera", "Ambient Sound", "Color Pass"]
 links:
   youtube: "https://youtube.com/@a_e.s_4"
-  untitled: "https://untitled.stream"
+  linktree: "https://linktr.ee/a_e.s_"
 featured: false
 cover_image: "https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1200&q=80"
 description: "Night-time visual diary cuts from Newark, pairing street footage with ambient sound and iterative color passes."

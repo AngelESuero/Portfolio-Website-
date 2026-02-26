@@ -119,7 +119,6 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
     inset: 0;
     pointer-events: none;
     background:
-      radial-gradient(70% 28% at 50% 0%, color-mix(in oklab, var(--garland-highlight) 22%, transparent), transparent 70%),
       radial-gradient(70% 34% at 50% 100%, color-mix(in oklab, var(--garland-comp) 14%, transparent), transparent 75%);
     opacity: 0.42;
   }
@@ -139,7 +138,7 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
   }
 
   .wire-top {
-    top: 8px;
+    display: none;
   }
 
   .wire-bottom {
@@ -174,10 +173,7 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
   }
 
   .leaf-track-top {
-    top: 2px;
-    left: 0.8%;
-    right: 0.8%;
-    height: 64px;
+    display: none;
   }
 
   .leaf-track-bottom {

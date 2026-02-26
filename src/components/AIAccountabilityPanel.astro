@@ -7,22 +7,30 @@
       procurement pressure that moves through real communities. This panel tracks those hidden costs and where accountability has to
       be engineered into deployment decisions.
     </p>
+    <div class="aia-hero-tags" aria-label="Accountability dimensions">
+      <span class="aia-tag">Infrastructure reality</span>
+      <span class="aia-tag">Grid-aware deployment</span>
+      <span class="aia-tag">Resource transparency</span>
+    </div>
   </header>
 
   <section class="aia-kpis" aria-label="Key AI accountability metrics">
     <article class="card aia-kpi">
       <p class="aia-kicker">Training emission</p>
       <p class="aia-kpi-value">500+</p>
+      <p class="aia-kpi-context">Large legacy run baseline</p>
       <p class="aia-kpi-note">Metric tons CO2e for one large legacy model training run (GPT-3 era estimate).</p>
     </article>
     <article class="card aia-kpi">
       <p class="aia-kicker">Cooling water</p>
       <p class="aia-kpi-value">700k</p>
+      <p class="aia-kpi-context">Full-cycle cooling estimate</p>
       <p class="aia-kpi-note">Liters of freshwater used for one large-model training cycle.</p>
     </article>
     <article class="card aia-kpi">
       <p class="aia-kicker">Inference energy</p>
       <p class="aia-kpi-value">10x</p>
+      <p class="aia-kpi-context">Generative vs. search query</p>
       <p class="aia-kpi-note">Typical energy ratio of one generative query versus one standard search query.</p>
     </article>
   </section>
@@ -472,93 +480,175 @@
 
 <style>
   .aia-panel {
+    --aia-glow: color-mix(in srgb, var(--tone-accent) 24%, transparent);
+    --aia-surface-soft: color-mix(in srgb, var(--tone-surface-strong) 84%, transparent);
+    --aia-surface-deep: color-mix(in srgb, var(--tone-bg-deep) 90%, transparent);
+    --aia-line-strong: color-mix(in srgb, var(--tone-accent) 20%, var(--line2));
     display: grid;
-    gap: 0.9rem;
+    gap: 1rem;
   }
 
   .aia-hero {
-    padding: 1rem;
+    padding: 1.2rem 1.2rem 1.15rem;
+    display: grid;
+    gap: 0.62rem;
+    border: 1px solid var(--aia-line-strong);
+    background:
+      radial-gradient(120% 165% at 100% 0%, color-mix(in srgb, var(--tone-sky) 24%, transparent) 0%, transparent 58%),
+      linear-gradient(125deg, color-mix(in srgb, var(--tone-accent) 11%, transparent) 0%, transparent 38%),
+      var(--aia-surface-soft);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      0 20px 34px rgba(2, 6, 14, 0.26);
+  }
+
+  .aia-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: min(38%, 16rem);
+    height: 2px;
+    background: linear-gradient(90deg, var(--tone-accent-glow), transparent);
   }
 
   .aia-title {
-    margin: 0.1rem 0 0;
+    margin: 0;
     font-family: var(--font-display);
-    font-size: clamp(1.35rem, 2.4vw, 1.8rem);
-    line-height: 1.12;
+    font-size: clamp(1.42rem, 2.45vw, 1.92rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
     color: var(--tone-text);
   }
 
   .aia-kicker {
     margin: 0;
     font-size: 0.7rem;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--tone-muted);
+    color: color-mix(in srgb, var(--tone-muted) 78%, var(--tone-accent-glow) 22%);
   }
 
   .aia-copy {
-    margin: 0.55rem 0 0;
-    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
-    font-size: 0.95rem;
+    margin: 0;
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+    font-size: 0.98rem;
     line-height: 1.56;
+  }
+
+  .aia-hero-tags {
+    margin-top: 0.08rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.42rem;
+  }
+
+  .aia-tag {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 24%, var(--line2));
+    border-radius: 999px;
+    padding: 0.24rem 0.56rem;
+    font-size: 0.67rem;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: color-mix(in srgb, var(--tone-accent-glow) 78%, var(--tone-text) 22%);
+    background: color-mix(in srgb, var(--tone-accent) 11%, transparent);
   }
 
   .aia-kpis {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.72rem;
+    gap: 0.78rem;
   }
 
   .aia-kpi {
-    padding: 0.9rem;
+    padding: 0.95rem;
     display: grid;
-    gap: 0.32rem;
+    gap: 0.28rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 7%, transparent) 0%, transparent 55%),
+      var(--aia-surface-soft);
+    border: 1px solid var(--line2);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  }
+
+  .aia-kpi::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--tone-accent-glow) 85%, white 15%), transparent);
+    pointer-events: none;
   }
 
   .aia-kpi-value {
     margin: 0;
-    font-size: clamp(1.8rem, 3vw, 2.25rem);
+    font-size: clamp(1.9rem, 3.1vw, 2.35rem);
     line-height: 1;
-    font-weight: 700;
+    font-weight: 750;
+    letter-spacing: -0.02em;
     color: var(--tone-accent-glow);
+    text-shadow: 0 0 20px color-mix(in srgb, var(--tone-accent) 24%, transparent);
+  }
+
+  .aia-kpi-context {
+    margin: 0;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: color-mix(in srgb, var(--tone-muted) 74%, var(--tone-accent-glow) 26%);
   }
 
   .aia-kpi-note {
     margin: 0;
-    font-size: 0.82rem;
+    font-size: 0.83rem;
     line-height: 1.45;
-    color: var(--tone-muted);
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
   }
 
   .aia-block {
-    padding: 1rem;
+    padding: 1.05rem;
     display: grid;
-    gap: 0.9rem;
+    gap: 0.95rem;
+    border: 1px solid var(--line2);
+    background:
+      radial-gradient(105% 130% at 100% 0%, color-mix(in srgb, var(--tone-sky) 16%, transparent) 0%, transparent 62%),
+      var(--aia-surface-soft);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  }
+
+  .aia-block-head {
+    display: grid;
+    gap: 0.42rem;
   }
 
   .aia-block-head h4 {
-    margin: 0.1rem 0 0;
+    margin: 0;
     font-family: var(--font-display);
-    font-size: clamp(1.15rem, 2.15vw, 1.5rem);
+    font-size: clamp(1.2rem, 2.2vw, 1.58rem);
     line-height: 1.2;
+    letter-spacing: -0.01em;
   }
 
   .aia-grid {
     display: grid;
-    gap: 0.72rem;
+    gap: 0.78rem;
   }
 
   .aia-grid-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
   }
 
   .aia-chart-card {
-    border: 1px solid var(--line2);
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
     border-radius: 0.85rem;
-    padding: 0.85rem;
-    background: color-mix(in srgb, var(--tone-surface-strong) 80%, transparent);
+    padding: 0.9rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-sky) 8%, transparent) 0%, transparent 40%),
+      var(--aia-surface-deep);
     display: grid;
-    gap: 0.45rem;
+    gap: 0.48rem;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
   }
 
   .aia-chart-card h5,
@@ -566,30 +656,48 @@
   .aia-note-list h5 {
     margin: 0;
     font-family: var(--font-display);
-    font-size: 0.98rem;
+    font-size: 1rem;
     line-height: 1.24;
     color: var(--tone-text);
   }
 
   .aia-subtle {
     margin: 0;
-    font-size: 0.76rem;
-    color: var(--tone-muted);
+    font-size: 0.77rem;
+    color: color-mix(in srgb, var(--tone-muted) 82%, var(--tone-accent-glow) 18%);
     line-height: 1.45;
   }
 
   .aia-chart-shell {
     position: relative;
-    border: 1px solid var(--line2);
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
     border-radius: 0.75rem;
-    background: color-mix(in srgb, var(--tone-bg-deep) 86%, transparent);
-    min-height: 300px;
-    padding: 0.45rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 8%, transparent) 0%, transparent 42%),
+      radial-gradient(120% 120% at 100% 0%, color-mix(in srgb, var(--tone-sky) 12%, transparent) 0%, transparent 62%),
+      color-mix(in srgb, var(--tone-bg-deep) 92%, transparent);
+    min-height: 308px;
+    padding: 0.5rem;
+    overflow: hidden;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.02),
+      inset 0 -14px 24px rgba(0, 0, 0, 0.16);
+  }
+
+  .aia-chart-shell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent 0 23px, rgba(255, 255, 255, 0.028) 23px 24px);
+    opacity: 0.46;
+    pointer-events: none;
   }
 
   .aia-chart-shell canvas {
     width: 100% !important;
     height: 100% !important;
+    position: relative;
+    z-index: 1;
   }
 
   .aia-chart-fallback {
@@ -597,32 +705,42 @@
     padding: 0.65rem;
     font-size: 0.83rem;
     color: var(--tone-muted);
+    position: relative;
+    z-index: 1;
   }
 
   .aia-stack {
     display: grid;
-    gap: 0.72rem;
+    gap: 0.78rem;
   }
 
   .aia-note {
-    padding: 0.82rem;
+    padding: 0.86rem;
     display: grid;
-    gap: 0.4rem;
+    gap: 0.42rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 7%, transparent) 0%, transparent 55%),
+      color-mix(in srgb, var(--tone-surface-strong) 84%, transparent);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
   }
 
   .aia-note p,
   .aia-note-list li {
     margin: 0;
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     line-height: 1.5;
-    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+    color: color-mix(in srgb, var(--tone-text) 89%, var(--tone-muted) 11%);
   }
 
   .aia-note-list {
-    border: 1px solid var(--line2);
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
     border-radius: 0.85rem;
-    padding: 0.9rem;
-    background: color-mix(in srgb, var(--tone-surface-strong) 80%, transparent);
+    padding: 0.94rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-sky) 8%, transparent) 0%, transparent 42%),
+      var(--aia-surface-deep);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
   }
 
   .aia-note-list ul {
@@ -638,9 +756,14 @@
   }
 
   .aia-sources {
-    padding: 0.85rem;
+    padding: 0.9rem;
     display: grid;
-    gap: 0.45rem;
+    gap: 0.5rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 16%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 8%, transparent) 0%, transparent 56%),
+      color-mix(in srgb, var(--tone-surface-strong) 82%, transparent);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
   }
 
   .aia-sources h4 {
@@ -654,7 +777,33 @@
     margin: 0;
     font-size: 0.84rem;
     line-height: 1.5;
-    color: var(--tone-muted);
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  }
+
+  .aia-kpi,
+  .aia-chart-card,
+  .aia-note,
+  .aia-note-list,
+  .aia-sources {
+    transition:
+      transform var(--motion-fast) var(--ease-emphasized),
+      border-color var(--motion-fast) var(--ease-standard),
+      box-shadow var(--motion-fast) var(--ease-standard);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .aia-kpi:hover,
+    .aia-chart-card:hover,
+    .aia-note:hover,
+    .aia-note-list:hover,
+    .aia-sources:hover {
+      transform: translateY(-2px);
+      border-color: color-mix(in srgb, var(--tone-accent) 36%, var(--line2));
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.03),
+        0 14px 28px rgba(2, 6, 14, 0.28),
+        0 0 0 1px color-mix(in srgb, var(--aia-glow) 40%, transparent);
+    }
   }
 
   @media (max-width: 980px) {
@@ -664,18 +813,41 @@
     }
 
     .aia-chart-shell {
-      min-height: 260px;
+      min-height: 268px;
     }
   }
 
   @media (max-width: 560px) {
     .aia-hero,
     .aia-block {
-      padding: 0.85rem;
+      padding: 0.92rem;
+    }
+
+    .aia-kpi,
+    .aia-note,
+    .aia-chart-card,
+    .aia-note-list,
+    .aia-sources {
+      padding: 0.84rem;
     }
 
     .aia-chart-shell {
-      min-height: 230px;
+      min-height: 236px;
+      padding: 0.45rem;
+    }
+
+    .aia-tag {
+      font-size: 0.64rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .aia-kpi,
+    .aia-chart-card,
+    .aia-note,
+    .aia-note-list,
+    .aia-sources {
+      transition: none;
     }
   }
 </style>
