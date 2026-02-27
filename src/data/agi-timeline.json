@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-27T11:47:39.454Z",
+    "generatedAt": "2026-02-27T13:33:43.687Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,101 @@
     ]
   },
   "items": [
+    {
+      "id": "a6d15b37df6c6b7f80247419d36a174fa96bc36fc250b981f54f1775b7f846c5",
+      "title": "OpenAI and Amazon announce strategic partnership",
+      "url": "https://openai.com/index/amazon-partnership",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-02-27T05:30:00.000Z",
+      "summary": "OpenAI and Amazon announce a strategic partnership bringing OpenAI’s Frontier platform to AWS, expanding AI infrastructure, custom models, and enterprise AI agents.",
+      "tags": [
+        "primary",
+        "release",
+        "agents",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/amazon-partnership"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
+    {
+      "id": "616aa530d6c35eb740a6213cd13cec0f701470426ee1f27e599359ce5c17d198",
+      "title": "Introducing the Stateful Runtime Environment for Agents in Amazon Bedrock",
+      "url": "https://openai.com/index/introducing-the-stateful-runtime-environment-for-agents-in-amazon-bedrock",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-02-27T05:30:00.000Z",
+      "summary": "Stateful Runtime for Agents in Amazon Bedrock brings persistent orchestration, memory, and secure execution to multi-step AI workflows powered by OpenAI.",
+      "tags": [
+        "primary",
+        "release",
+        "agents"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/introducing-the-stateful-runtime-environment-for-agents-in-amazon-bedrock"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
+    {
+      "id": "9787eacede9bdb76454ada847c24a5fa30d873962aeecdaabd01e56f929160d9",
+      "title": "Joint Statement from OpenAI and Microsoft",
+      "url": "https://openai.com/index/continuing-microsoft-partnership",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-02-27T05:30:00.000Z",
+      "summary": "Microsoft and OpenAI continue to work closely across research, engineering, and product development, building on years of deep collaboration and shared success.",
+      "tags": [
+        "primary",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/continuing-microsoft-partnership"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
+    {
+      "id": "95aa4a9cf818a6208ddfc1a39d71a8b80e807f9680e86461b7be23f4e429bd8e",
+      "title": "Scaling AI for everyone",
+      "url": "https://openai.com/index/scaling-ai-for-everyone",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-02-27T05:30:00.000Z",
+      "summary": "Today we’re announcing $110B in new investment at a $730B pre money valuation. This includes $30B from SoftBank, $30B from NVIDIA, and $50B from Amazon.",
+      "tags": [
+        "primary",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/scaling-ai-for-everyone"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
     {
       "id": "8b9769ea78d88581317921f2f09085a1a6c6d2a22d01762c33121ffe5e4e20a1",
       "title": "Graph Your Way to Inspiration: Integrating Co-Author Graphs with Retrieval-Augmented Generation for Large Language Model Based Scientific Idea Generation",
@@ -15029,106 +15124,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2509.23744"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "f99078ad8257c0672f6036153841f39371fa1b3c13f048d96d7d42897e56ef80",
-      "title": "Uncovering Grounding IDs: How External Cues Shape Multimodal Binding",
-      "url": "https://arxiv.org/abs/2509.24072",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-26T05:00:00.000Z",
-      "summary": "arXiv:2509.24072v4 Announce Type: replace-cross Abstract: Large vision-language models (LVLMs) show strong performance across multimodal benchmarks but remain limited in structured reasoning and precise grounding. Recent work has demonstrated that adding simple visual structures, such as partitions and annotations, improves accuracy, yet the internal mechanisms underlying these gains remain unclear. We investigate this phenomenon and propose the concept of Grounding IDs, latent identifiers induced by external cues that bind objects to their designated partitions across modalities. Through representation analysis, we find that these identifiers emerge as consistent within-partition alignment in embedding space and reduce the modality gap between image and text. Causal interventions further confirm that these identifiers mediate binding between objects and symbolic cues. We show that Grounding IDs strengthen attention between related components, which in turn improves cross-modal grounding and reduces hallucinations. Taken together, our results identify Grounding IDs as a key symbolic mechanism that explains how external cues enhance multimodal binding and offer both interpretability and practical improvements.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "eval",
-        "safety",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2509.24072"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "1d28218f4e630e9b12a07eb41388eca629b2cd5a7041ccfc52839d20d90fd382",
-      "title": "Incentive-Aligned Multi-Source LLM Summaries",
-      "url": "https://arxiv.org/abs/2509.25184",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-26T05:00:00.000Z",
-      "summary": "arXiv:2509.25184v2 Announce Type: replace-cross Abstract: Large language models (LLMs) are increasingly used in modern search and answer systems to synthesize multiple, sometimes conflicting, texts into a single response, yet current pipelines offer weak incentives for sources to be accurate and are vulnerable to adversarial content. We introduce Truthful Text Summarization (TTS), an incentive-aligned framework that improves factual robustness without ground-truth labels. TTS (i) decomposes a draft synthesis into atomic claims, (ii) elicits each source's stance on every claim, (iii) scores sources with an adapted multi-task peer-prediction mechanism that rewards informative agreement, and (iv) filters unreliable sources before re-summarizing. We establish formal guarantees that align a source's incentives with informative honesty, making truthful reporting the utility-maximizing strategy. Experiments show that TTS improves factual accuracy and robustness while preserving fluency, aligning exposure with informative corroboration and disincentivizing manipulation.",
-      "tags": [
-        "papers",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2509.25184"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "4f3e8845bbe049a23f2e2031a83866de0b193eff234056e89c9f09196bc6f08f",
-      "title": "EpidemIQs: Prompt-to-Paper LLM Agents for Epidemic Modeling and Analysis",
-      "url": "https://arxiv.org/abs/2510.00024",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-26T05:00:00.000Z",
-      "summary": "arXiv:2510.00024v2 Announce Type: replace-cross Abstract: Large Language Models (LLMs) offer new opportunities to accelerate complex interdisciplinary research domains. Epidemic modeling, characterized by its complexity and reliance on network science, dynamical systems, epidemiology, and stochastic simulations, represents a prime candidate for leveraging LLM-driven automation. We introduce EpidemIQs, a novel multi-agent LLM framework that integrates user inputs and autonomously conducts literature review, analytical derivation, network modeling, mechanistic modeling, stochastic simulations, data visualization and analysis, and finally documentation of findings in a structured manuscript, through five predefined research phases. We introduce two types of agents: a scientist agent for planning, coordination, reflection, and generation of final results, and a task-expert agent to focus exclusively on one specific duty serving as a tool to the scientist agent. The framework consistently generated complete reports in scientific article format. Specifically, using GPT 4.1 and GPT 4.1 Mini as backbone LLMs for scientist and task-expert agents, respectively, the autonomous process completes with average total token usage 870K at a cost of about $1.57 per study, successfully executing all phases and final report. We evaluate EpidemIQs across several different epidemic scenarios, measuring computational cost, workflow reliability, task success rate, and LLM-as-Judge and human expert reviews to estimate the overall quality and technical correctness of the generated results. Through our experiments, the framework consistently addresses evaluation scenarios with an average task success rate of 79%. We compare EpidemIQs to an iterative single-agent LLM, benefiting from the same system prompts and tools, iteratively planning, invoking tools, and revising outputs until task completion. The comparisons suggest a consistently higher performance of EpidemIQs.",
-      "tags": [
-        "papers",
-        "agents",
-        "eval",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2510.00024"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "d13ff0057e225dacfa20252c1726a5018f7e7fa708812f00bc8695124c1ecddd",
-      "title": "SciTS: Scientific Time Series Understanding and Generation with LLMs",
-      "url": "https://arxiv.org/abs/2510.03255",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-26T05:00:00.000Z",
-      "summary": "arXiv:2510.03255v2 Announce Type: replace-cross Abstract: The scientific reasoning ability of large language models (LLMs) has recently attracted significant attention. Time series, as a fundamental modality in scientific data, presents unique challenges that are often overlooked in current multimodal LLMs, which either encode numerical sequences as text or convert them into images. Such approaches may be insufficient for comprehensive scientific time series understanding and generation. Existing unified time series models typically specialise in either forecasting or analysis, and their effectiveness on non-periodic, heterogeneous scientific signals remains unclear. To address these gaps, we introduce SciTS, a benchmark spanning 12 scientific domains and 43 tasks, with over 50k+ instances, both univariate and multivariate signals ranging from $10^0$ to $10^7$ in length and up to 10~MHz in frequency. We benchmark 17 models, including text-only LLMs, multimodal LLMs, and unified time series models, and find that general-purpose LLMs exhibit stronger generalisability than specialised time series models, while representing time series as text or images limits their performance due to excessively long sequences and loss of numerical precision, respectively. We then introduce TimeOmni, a framework that equips LLMs with the ability to understand and generate time series while remaining compatible with general-purpose LLM training. This work fills a gap in both dedicated benchmarks and modelling frameworks for scientific time series, paving the way for LLMs to understand and generate complex temporal scientific data.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "eval",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2510.03255"
         },
         {
           "label": "Feed",
