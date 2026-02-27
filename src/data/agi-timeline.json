@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-27T21:45:27.027Z",
+    "generatedAt": "2026-02-27T22:44:36.602Z",
     "sources": [
       {
         "id": "openai_news",
@@ -11016,6 +11016,30 @@
       ]
     },
     {
+      "id": "93e59cd2cac3e835d1a95bc239d7cda600a143534b7c67e6f9f15aa9221a8b17",
+      "title": "An update on our mental health-related work",
+      "url": "https://openai.com/index/update-on-mental-health-related-work",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-02-27T00:00:00.000Z",
+      "summary": "OpenAI shares updates on its mental health safety work, including parental controls, trusted contacts, improved distress detection, and recent litigation developments.",
+      "tags": [
+        "primary",
+        "release",
+        "safety"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/update-on-mental-health-related-work"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
+    {
       "id": "24bef398b909c867baec580b2b4685b226fa59881766e431d6e442f69dc81670",
       "title": "CORPGEN advances AI agents for real work",
       "url": "https://www.microsoft.com/en-us/research/blog/corpgen-advances-ai-agents-for-real-work/",
@@ -15096,31 +15120,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2509.18880"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "6e9de6bfd4385b2d3eb0fcef2ff2cab09eb4f3fac524e537172886159fd4a27e",
-      "title": "Chasing the Tail: Effective Rubric-based Reward Modeling for Large Language Model Post-Training",
-      "url": "https://arxiv.org/abs/2509.21500",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-26T05:00:00.000Z",
-      "summary": "arXiv:2509.21500v2 Announce Type: replace-cross Abstract: Reinforcement fine-tuning (RFT) often suffers from reward over-optimization, where a policy model hacks the reward signals to achieve high scores while producing low-quality outputs. Our theoretical analysis shows that the key lies in reward misspecification at the high-reward tail: the inability to reliably distinguish Excellent responses from merely Great ones. This motivate us to focus on the high-reward region. However, such tail examples are scarce under the base LLM. While off-policy exemplars (e.g. from stronger models or rewrites) are easier to obtain, naively training on them yields a misspecified reward for the policy we aim to align. To address this, we study rubric-based rewards. By design, rubrics can leverage off-policy examples while remaining insensitive to their artifacts. To elicit rubrics that capture the high-reward tail, we highlight the importance of distinguishing among great and diverse responses, and introduce a workflow to implement this idea. We empirically demonstrate that rubric-based rewards substantially mitigate reward over-optimization and deliver effective LLM post-training improvements.",
-      "tags": [
-        "papers",
-        "policy",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2509.21500"
         },
         {
           "label": "Feed",
