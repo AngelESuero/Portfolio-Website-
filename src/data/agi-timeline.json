@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-27T16:56:50.463Z",
+    "generatedAt": "2026-02-27T17:54:53.300Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,55 @@
     ]
   },
   "items": [
+    {
+      "id": "d3b309c90a4af2784e8a7191386b0f083ee5065b1239352c7e5a0168e7ba5e98",
+      "title": "Develop Native Multimodal Agents with Qwen3.5 VLM Using NVIDIA GPU-Accelerated Endpoints",
+      "url": "https://developer.nvidia.com/blog/develop-native-multimodal-agents-with-qwen3-5-vlm-using-nvidia-gpu-accelerated-endpoints/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-02-27T17:30:00.000Z",
+      "summary": "Alibaba has introduced the new open source Qwen3.5 series built for native multimodal agents. The first model in this series is a ~400B parameter native... Alibaba has introduced the new open source Qwen3.5 series built for native multimodal agents. The first model in this series is a ~400B parameter native vision-language model (VLM) with reasoning built with a hybrid architecture of mixture of experts (MoE) and Gated Delta Networks. Qwen3.5 can understand and navigate user interfaces, which improves on the previous generation of VLMs. Qwen3.5… Source",
+      "tags": [
+        "compute",
+        "agents",
+        "reasoning",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/develop-native-multimodal-agents-with-qwen3-5-vlm-using-nvidia-gpu-accelerated-endpoints/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
+    {
+      "id": "b0c9eccb0a15b666e64bcce8fcea5805e8736f1a167c10b3ce3f55d1b1b4c533",
+      "title": "Maximizing GPU Utilization with NVIDIA Run:ai and NVIDIA NIM",
+      "url": "https://developer.nvidia.com/blog/maximizing-gpu-utilization-with-nvidia-runai-and-nvidia-nim/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-02-27T17:00:00.000Z",
+      "summary": "Organizations deploying LLMs are challenged by inference workloads with different resource requirements. A small embedding model might use only a few gigabytes... Organizations deploying LLMs are challenged by inference workloads with different resource requirements. A small embedding model might use only a few gigabytes of GPU memory, while a 70B+ parameter LLM could require multiple GPUs. This diversity often leads to low average GPU utilization, high compute costs, and unpredictable latency. The problem isn’t just about packing more workloads onto… Source",
+      "tags": [
+        "compute",
+        "inference",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/maximizing-gpu-utilization-with-nvidia-runai-and-nvidia-nim/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
     {
       "id": "a6d15b37df6c6b7f80247419d36a174fa96bc36fc250b981f54f1775b7f846c5",
       "title": "OpenAI and Amazon announce strategic partnership",
@@ -15072,58 +15121,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2509.21500"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "a4dec03da90d31ddb0fa17da44017530cd70c11b5950b26031a34594f40824e6",
-      "title": "Characteristic Root Analysis and Regularization for Linear Time Series Forecasting",
-      "url": "https://arxiv.org/abs/2509.23597",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-26T05:00:00.000Z",
-      "summary": "arXiv:2509.23597v3 Announce Type: replace-cross Abstract: Time series forecasting remains a critical challenge across numerous domains, yet the effectiveness of complex models often varies unpredictably across datasets. Recent studies highlight the surprising competitiveness of simple linear models, suggesting that their robustness and interpretability warrant deeper theoretical investigation. This paper presents a systematic study of linear models for time series forecasting, with a focus on the role of characteristic roots in temporal dynamics. We begin by analyzing the noise-free setting, where we show that characteristic roots govern long-term behavior and explain how design choices such as instance normalization and channel independence affect model capabilities. We then extend our analysis to the noisy regime, revealing that models tend to produce spurious roots. This leads to the identification of a key data-scaling property: mitigating the influence of noise requires disproportionately large training data, highlighting the need for structural regularization. To address these challenges, we propose two complementary strategies for robust root restructuring. The first uses rank reduction techniques, including \\textbf{Reduced-Rank Regression (RRR)} and \\textbf{Direct Weight Rank Reduction (DWRR)}, to recover the low-dimensional latent dynamics. The second, a novel adaptive method called \\textbf{Root Purge}, encourages the model to learn a noise-suppressing null space during training. Extensive experiments on standard benchmarks demonstrate the effectiveness of both approaches, validating our theoretical insights and achieving state-of-the-art results in several settings. Our findings underscore the potential of integrating classical theories for linear systems with modern learning techniques to build robust, interpretable, and data-efficient forecasting models.",
-      "tags": [
-        "papers",
-        "eval",
-        "training",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2509.23597"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "ad25d351cef49baee640b7e7cfa97b27bf2ccfe06c9a208d6ce6576fba876183",
-      "title": "Compose and Fuse: Revisiting the Foundational Bottlenecks in Multimodal Reasoning",
-      "url": "https://arxiv.org/abs/2509.23744",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-26T05:00:00.000Z",
-      "summary": "arXiv:2509.23744v2 Announce Type: replace-cross Abstract: Multimodal large language models (MLLMs) promise enhanced reasoning by integrating diverse inputs such as text, vision, and audio. Yet cross-modal reasoning remains underexplored, with conflicting reports on whether added modalities help or harm performance. These inconsistencies stem from a lack of controlled evaluation frameworks and analysis of models' internals to isolate when and why modality interactions support or undermine reasoning. We address this gap through a logic-grounded evaluation framework that categorizes multimodal reasoning into six interaction patterns, varying how facts are distributed across modalities and logically combined. Empirically, additional modalities enhance reasoning only when they provide independent and sufficient reasoning paths, while redundant or chained entailment support often hurts performance. Moreover, reasoning degrades in three systematic ways: weaker modalities drag down overall performance, conflicts bias preference toward certain modalities, and joint signals from different modalities fail to be integrated effectively. Therefore, we identify two core failures: task-composition bottleneck, where recognition and reasoning cannot be jointly executed in one pass, and fusion bottleneck, where early integration introduces bias. For further investigation, we find that attention patterns fail to encode fact usefulness, but a simple two-step prompting (recognize then reason) restores performance, confirming the task-composition bottleneck. Moreover, modality identity remains recoverable in early layers, and softening attention in early fusion improves reasoning, highlighting biased fusion as another failure mode. Overall, our findings show that integration, not perception, is the main barrier to multimodal reasoning, suggesting composition-aware training and early fusion control as promising directions.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "eval",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2509.23744"
         },
         {
           "label": "Feed",
