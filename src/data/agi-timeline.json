@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-02-28T19:33:32.742Z",
+    "generatedAt": "2026-02-28T20:41:42.415Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,30 @@
     ]
   },
   "items": [
+    {
+      "id": "b1283c9077a9b65a6999ca5aab600352dce695a7b6b5034762126d254186f5ac",
+      "title": "Our agreement with the Department of War",
+      "url": "https://openai.com/index/our-agreement-with-the-department-of-war",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-02-28T12:30:00.000Z",
+      "summary": "Details on OpenAI’s contract with the Department of War, outlining safety redlines, legal protections, and how AI systems will be deployed in classified environments.",
+      "tags": [
+        "primary",
+        "release",
+        "safety"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/our-agreement-with-the-department-of-war"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
     {
       "id": "d3b309c90a4af2784e8a7191386b0f083ee5065b1239352c7e5a0168e7ba5e98",
       "title": "Develop Native Multimodal Agents with Qwen3.5 VLM Using NVIDIA GPU-Accelerated Endpoints",
@@ -15096,30 +15120,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2509.14537"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "37829d0d10a53a7672660412d50f8fd845c97e0349dfb9af9783f39120536f3b",
-      "title": "Diversity Boosts AI-Generated Text Detection",
-      "url": "https://arxiv.org/abs/2509.18880",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-26T05:00:00.000Z",
-      "summary": "arXiv:2509.18880v3 Announce Type: replace-cross Abstract: Detecting AI-generated text is an increasing necessity to combat misuse of LLMs in education, business compliance, journalism, and social media, where synthetic fluency can mask misinformation or deception. While prior detectors often rely on token-level likelihoods or opaque black-box classifiers, these approaches struggle against high-quality generations and offer little interpretability. In this work, we propose DivEye, a novel detection framework that captures how unpredictability fluctuates across a text using surprisal-based features. Motivated by the observation that human-authored text exhibits richer variability in lexical and structural unpredictability than LLM outputs, DivEye captures this signal through a set of interpretable statistical features. Our method outperforms existing zero-shot detectors by up to 33.2% and achieves competitive performance with fine-tuned baselines across multiple benchmarks. DivEye is robust to paraphrasing and adversarial attacks, generalizes well across domains and models, and improves the performance of existing detectors by up to 18.7% when used as an auxiliary signal. Beyond detection, DivEye provides interpretable insights into why a text is flagged, pointing to rhythmic unpredictability as a powerful and underexplored signal for LLM detection.",
-      "tags": [
-        "papers",
-        "eval",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2509.18880"
         },
         {
           "label": "Feed",
