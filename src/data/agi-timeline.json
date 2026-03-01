@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-01T05:32:26.289Z",
+    "generatedAt": "2026-03-01T07:04:57.015Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,52 @@
     ]
   },
   "items": [
+    {
+      "id": "252cf46dcd8747ebbea4827779dd99db198995ca7118f3519ba44ac23e66b5dc",
+      "title": "Building Telco Reasoning Models for Autonomous Networks with NVIDIA NeMo",
+      "url": "https://developer.nvidia.com/blog/building-telco-reasoning-models-for-autonomous-networks-with-nvidia-nemo/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-03-01T07:00:00.000Z",
+      "summary": "Autonomous networks are quickly becoming one of the top priorities in telecommunications. According to the latest NVIDIA State of AI in Telecommunications... Autonomous networks are quickly becoming one of the top priorities in telecommunications. According to the latest NVIDIA State of AI in Telecommunications report, 65% of operators said AI is driving network automation, and 50% named autonomous networks as the top AI use case for ROI. Yet many telcos still report gaps in AI and data science expertise. This makes it difficult to scale safe… Source",
+      "tags": [
+        "compute",
+        "reasoning",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/building-telco-reasoning-models-for-autonomous-networks-with-nvidia-nemo/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
+    {
+      "id": "8a95c5dd2b7cd685294d2eef3ac621f1e9424756ffea97becdcbb3699d11f312",
+      "title": "5 New Digital Twin Products Developers Can Use to Build 6G Networks",
+      "url": "https://developer.nvidia.com/blog/5-new-digital-twin-products-developers-can-use-to-build-6g-networks/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-03-01T07:00:00.000Z",
+      "summary": "To make 6G a reality, the telecom industry must overcome a fundamental challenge: how to design, train, and validate AI-native networks that are too complex to... To make 6G a reality, the telecom industry must overcome a fundamental challenge: how to design, train, and validate AI-native networks that are too complex to be tested in the physical world. The NVIDIA Aerial Omniverse Digital Twin (AODT) solves this by enabling a continuous integration/continuous development (CI/CD)-style workflow where Radio Access Network (RAN) software is trained… Source",
+      "tags": [
+        "compute"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/5-new-digital-twin-products-developers-can-use-to-build-6g-networks/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
     {
       "id": "b1283c9077a9b65a6999ca5aab600352dce695a7b6b5034762126d254186f5ac",
       "title": "Our agreement with the Department of War",
@@ -15068,58 +15114,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2508.21112"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "67e1aa3db855afb1e032e10fe061f5b10713dd4087db0c670b5a20be7f38f512",
-      "title": "Do LLMs Adhere to Label Definitions? Examining Their Receptivity to External Label Definitions",
-      "url": "https://arxiv.org/abs/2509.02452",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-26T05:00:00.000Z",
-      "summary": "arXiv:2509.02452v3 Announce Type: replace-cross Abstract: Do LLMs genuinely incorporate external definitions, or do they primarily rely on their parametric knowledge? To address these questions, we conduct controlled experiments across multiple explanation benchmark datasets (general and domain-specific) and label definition conditions, including expert-curated, LLM-generated, perturbed, and swapped definitions. Our results reveal that while explicit label definitions can enhance accuracy and explainability, their integration into an LLM's task-solving processes is neither guaranteed nor consistent, suggesting reliance on internalized representations in many cases. Models often default to their internal representations, particularly in general tasks, whereas domain-specific tasks benefit more from explicit definitions. These findings underscore the need for a deeper understanding of how LLMs process external knowledge alongside their pre-existing capabilities.",
-      "tags": [
-        "papers",
-        "eval",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2509.02452"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "f61af4adb789c0c42b15bb34b476bc7826d836c575dc07a7d8712b0375b5a056",
-      "title": "ClearFairy: Capturing Creative Workflows through Decision Structuring, In-Situ Questioning, and Rationale Inference",
-      "url": "https://arxiv.org/abs/2509.14537",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-26T05:00:00.000Z",
-      "summary": "arXiv:2509.14537v2 Announce Type: replace-cross Abstract: Capturing professionals' decision-making in creative workflows (e.g., UI/UX) is essential for reflection, collaboration, and knowledge sharing, yet existing methods often leave rationales incomplete and implicit decisions hidden. To address this, we present the CLEAR approach, which structures reasoning into cognitive decision steps-linked units of actions, artifacts, and explanations making decisions traceable with generative AI. Building on CLEAR, we introduce ClearFairy, a think-aloud AI assistant for UI design that detects weak explanations, asks lightweight clarifying questions, and infers missing rationales. In a study with twelve professionals, 85% of ClearFairy's inferred rationales were accepted (as-is or with revisions). Notably, the system increased \"strong explanations\"-rationales providing sufficient causal reasoning-from 14% to 83% without adding cognitive demand. Furthermore, exploratory applications demonstrate that captured steps can enhance generative AI agents in Figma, yielding predictions better aligned with professionals and producing coherent outcomes. We release a dataset of 417 decision steps to support future research.",
-      "tags": [
-        "papers",
-        "agents",
-        "reasoning",
-        "inference",
-        "release",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2509.14537"
         },
         {
           "label": "Feed",
