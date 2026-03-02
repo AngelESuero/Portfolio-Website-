@@ -1,0 +1,190 @@
+---
+import type { HomePhotoCollageSlot } from '../data/home-photo-collage';
+
+interface Props {
+  slots?: HomePhotoCollageSlot[];
+}
+
+const { slots = [] } = Astro.props as Props;
+
+const toCssValue = (value: string | number | undefined, fallback: string) =>
+  value === undefined ? fallback : String(value);
+---
+
+<div class="home-photo-collage" aria-hidden="true">
+  <div class="home-photo-collage__wash"></div>
+  {slots.map((slot) => (
+    <div
+      class:list={[
+        'home-photo-collage__tile',
+        slot.tone ? `is-${slot.tone}` : 'is-neutral'
+      ]}
+      style={`--tile-image:url('${slot.src}');--tile-focus:${toCssValue(slot.focus, 'center')};--tile-x:${slot.x};--tile-y:${slot.y};--tile-w:${slot.width};--tile-h:${slot.height};--tile-mobile-x:${toCssValue(slot.mobileX, slot.x)};--tile-mobile-y:${toCssValue(slot.mobileY, slot.y)};--tile-mobile-w:${toCssValue(slot.mobileWidth, slot.width)};--tile-mobile-h:${toCssValue(slot.mobileHeight, slot.height)};--tile-rotate:${toCssValue(slot.rotate, '0deg')};--tile-opacity:${toCssValue(slot.opacity, '0.2')};--tile-blur:${toCssValue(slot.blur, '0px')};`}
+      data-slot={slot.id}
+    >
+      <div class="home-photo-collage__image"></div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .home-photo-collage {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .home-photo-collage__wash,
+  .home-photo-collage::before,
+  .home-photo-collage::after {
+    position: absolute;
+    inset: 0;
+    content: '';
+  }
+
+  .home-photo-collage__wash {
+    background:
+      radial-gradient(
+        70% 58% at 50% 36%,
+        rgba(6, 13, 24, 0.08),
+        rgba(4, 9, 18, 0.38) 65%,
+        rgba(3, 7, 14, 0.74)
+      ),
+      linear-gradient(
+        180deg,
+        rgba(3, 7, 14, 0.2),
+        rgba(3, 7, 14, 0.34) 38%,
+        rgba(3, 7, 14, 0.75)
+      );
+    z-index: 0;
+  }
+
+  .home-photo-collage::before {
+    z-index: 2;
+    background:
+      radial-gradient(
+        42% 32% at 50% 32%,
+        rgba(11, 17, 28, 0),
+        rgba(11, 17, 28, 0.18) 44%,
+        rgba(11, 17, 28, 0.52) 76%,
+        rgba(11, 17, 28, 0.78)
+      ),
+      linear-gradient(
+        180deg,
+        rgba(2, 6, 12, 0.2),
+        rgba(2, 6, 12, 0.06) 28%,
+        rgba(2, 6, 12, 0.54) 78%,
+        rgba(2, 6, 12, 0.86)
+      );
+  }
+
+  .home-photo-collage::after {
+    z-index: 3;
+    background:
+      radial-gradient(
+        34% 22% at 50% 30%,
+        rgba(123, 231, 255, 0.06),
+        transparent 72%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(2, 6, 12, 0) 0%,
+        rgba(2, 6, 12, 0.18) 42%,
+        rgba(2, 6, 12, 0.88) 100%
+      );
+  }
+
+  .home-photo-collage__tile {
+    position: absolute;
+    left: var(--tile-x);
+    top: var(--tile-y);
+    width: var(--tile-w);
+    height: var(--tile-h);
+    transform: translate(-50%, -50%) rotate(var(--tile-rotate));
+    opacity: var(--tile-opacity);
+    border-radius: clamp(1rem, 2vw, 1.75rem);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 18px 44px rgba(0, 0, 0, 0.35),
+      0 1px 0 rgba(255, 255, 255, 0.04) inset;
+    z-index: 1;
+  }
+
+  .home-photo-collage__tile.is-warm {
+    box-shadow:
+      0 18px 44px rgba(0, 0, 0, 0.42),
+      0 0 0 1px rgba(242, 184, 75, 0.08);
+  }
+
+  .home-photo-collage__tile.is-cool {
+    box-shadow:
+      0 18px 44px rgba(0, 0, 0, 0.42),
+      0 0 0 1px rgba(111, 183, 255, 0.08);
+  }
+
+  .home-photo-collage__image {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(
+        180deg,
+        rgba(4, 8, 15, 0.08),
+        rgba(4, 8, 15, 0.26) 42%,
+        rgba(4, 8, 15, 0.68)
+      ),
+      linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.06),
+        transparent 36%,
+        rgba(0, 0, 0, 0.24)
+      ),
+      var(--tile-image);
+    background-position: center, center, var(--tile-focus);
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter:
+      saturate(0.86)
+      contrast(1.02)
+      brightness(0.62)
+      blur(var(--tile-blur));
+    transform: scale(1.08);
+  }
+
+  @media (max-width: 860px) {
+    .home-photo-collage__tile {
+      left: var(--tile-mobile-x);
+      top: var(--tile-mobile-y);
+      width: var(--tile-mobile-w);
+      height: var(--tile-mobile-h);
+      border-radius: 1rem;
+    }
+
+    .home-photo-collage::before {
+      background:
+        radial-gradient(
+          52% 28% at 50% 26%,
+          rgba(11, 17, 28, 0),
+          rgba(11, 17, 28, 0.28) 48%,
+          rgba(11, 17, 28, 0.58) 76%,
+          rgba(11, 17, 28, 0.82)
+        ),
+        linear-gradient(
+          180deg,
+          rgba(2, 6, 12, 0.28),
+          rgba(2, 6, 12, 0.08) 24%,
+          rgba(2, 6, 12, 0.62) 72%,
+          rgba(2, 6, 12, 0.9)
+        );
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-photo-collage__tile,
+    .home-photo-collage__image {
+      transition: none;
+    }
+  }
+</style>
