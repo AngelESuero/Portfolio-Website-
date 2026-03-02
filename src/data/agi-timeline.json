@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-02T06:07:31.673Z",
+    "generatedAt": "2026-03-02T07:16:48.720Z",
     "sources": [
       {
         "id": "openai_news",
@@ -9288,6 +9288,322 @@
       ]
     },
     {
+      "id": "8d6edf1a820514602e9425b64dd6e8e0515303b521ab92939a9661967ef67edf",
+      "title": "fEDM+: A Risk-Based Fuzzy Ethical Decision Making Framework with Principle-Level Explainability and Pluralistic Validation",
+      "url": "https://arxiv.org/abs/2602.21746",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-02T05:00:00.000Z",
+      "summary": "arXiv:2602.21746v2 Announce Type: replace Abstract: In a previous work, we introduced the fuzzy Ethical Decision-Making framework (fEDM), a risk-based ethical reasoning architecture grounded in fuzzy logic. The original model combined a fuzzy Ethical Risk Assessment module (fERA) with ethical decision rules, enabled formal structural verification through Fuzzy Petri Nets (FPNs), and validated outputs against a single normative referent. Although this approach ensured formal soundness and decision consistency, it did not fully address two critical challenges: principled explainability of decisions and robustness under ethical pluralism. In this paper, we extend fEDM in two major directions. First, we introduce an Explainability and Traceability Module (ETM) that explicitly links each ethical decision rule to the underlying moral principles and computes a weighted principle-contribution profile for every recommended action. This enables transparent, auditable explanations that expose not only what decision was made but why, and on the basis of which principles. Second, we replace single-referent validation with a pluralistic semantic validation framework that evaluates decisions against multiple stakeholder referents, each encoding distinct principle priorities and risk tolerances. This shift allows principled disagreement to be formally represented rather than suppressed, thus increasing robustness and contextual sensitivity. The resulting extended fEDM, called fEDM+, preserves formal verifiability while achieving enhanced interpretability and stakeholder-aware validation, making it suitable as an oversight and governance layer for ethically sensitive AI systems.",
+      "tags": [
+        "papers",
+        "reasoning",
+        "policy",
+        "compute",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.21746"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "d0a53433f62f0d1ab484940bf4bd90f1479b338b3466e8c4bccd75ff072aa05c",
+      "title": "DropVLA: An Action-Level Backdoor Attack on Vision--Language--Action Models",
+      "url": "https://arxiv.org/abs/2510.10932",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-02T05:00:00.000Z",
+      "summary": "arXiv:2510.10932v3 Announce Type: replace-cross Abstract: Vision-Language-Action (VLA) models map multimodal perception and language instructions to executable robot actions, making them particularly vulnerable to behavioral backdoor manipulation: a hidden trigger introduced during training can induce unintended physical actions while nominal task performance remains intact. Prior work on VLA backdoors primarily studies untargeted attacks or task-level hijacking, leaving fine-grained control over individual actions largely unexplored. In this work, we present DropVLA, an action-level backdoor attack that forces a reusable action primitive (e.g., open_gripper) to execute at attacker-chosen decision points under a realistic pipeline-black-box setting with limited data-poisoning access, using a window-consistent relabeling scheme for chunked fine-tuning. On OpenVLA-7B evaluated with LIBERO, vision-only poisoning achieves 98.67%-99.83% attack success rate (ASR) with only 0.31% poisoned episodes while preserving 98.50%-99.17% clean-task retention, and successfully triggers the targeted action within 25 control steps at 500 Hz (0.05 s). Text-only triggers are unstable at low poisoning budgets, and combining text with vision provides no consistent ASR improvement over vision-only attacks. The backdoor remains robust to moderate trigger variations and transfers across evaluation suites (96.27%, 99.09%), whereas text-only largely fails (0.72%). We further validate physical-world feasibility on a 7-DoF Franka arm with pi0-fast, demonstrating non-trivial attack efficacy under camera-relative motion that induces image-plane trigger drift. These results reveal that VLA models can be covertly steered at the granularity of safety-critical actions with minimal poisoning and without observable degradation of nominal performance.",
+      "tags": [
+        "papers",
+        "eval",
+        "safety",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2510.10932"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "3fc3d5e8f94c3ee073bdbcafbd18cb5b2bd0bfe3f652974d18da9cf5822528ee",
+      "title": "Supervised Reinforcement Learning: From Expert Trajectories to Step-wise Reasoning",
+      "url": "https://arxiv.org/abs/2510.25992",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-02T05:00:00.000Z",
+      "summary": "arXiv:2510.25992v3 Announce Type: replace-cross Abstract: Large Language Models (LLMs) often struggle with problems that require multi-step reasoning. For small-scale open-source models, Reinforcement Learning with Verifiable Rewards (RLVR) fails when correct solutions are rarely sampled even after many attempts, while Supervised Fine-Tuning (SFT) tends to overfit long demonstrations through rigid token-by-token imitation. To address this gap, we propose Supervised Reinforcement Learning (SRL), a framework that reformulates problem solving as generating a sequence of logical \"actions\". SRL trains the model to generate an internal reasoning monologue before committing to each action. It provides smoother rewards based on the similarity between the model's actions and expert actions extracted from the SFT dataset in a step-wise manner. This supervision offers richer learning signals even when all rollouts are incorrect, while encouraging flexible reasoning guided by expert demonstrations. As a result, SRL enables small models to learn challenging problems previously unlearnable by SFT or RLVR. Moreover, initializing training with SRL before refining with RLVR yields the strongest overall performance. Beyond reasoning benchmarks, SRL generalizes effectively to agentic software engineering tasks, establishing it as a robust and versatile training framework for reasoning-oriented LLMs.",
+      "tags": [
+        "papers",
+        "agents",
+        "reasoning",
+        "eval",
+        "training",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2510.25992"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "dbe1138476ce49fe145027d71de37e453e713e1a19c03d2384bd79751dc722cf",
+      "title": "FedVG: Gradient-Guided Aggregation for Enhanced Federated Learning",
+      "url": "https://arxiv.org/abs/2602.21399",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-02T05:00:00.000Z",
+      "summary": "arXiv:2602.21399v2 Announce Type: replace-cross Abstract: Federated Learning (FL) enables collaborative model training across multiple clients without sharing their private data. However, data heterogeneity across clients leads to client drift, which degrades the overall generalization performance of the model. This effect is further compounded by overemphasis on poorly performing clients. To address this problem, we propose FedVG, a novel gradient-based federated aggregation framework that leverages a global validation set to guide the optimization process. Such a global validation set can be established using readily available public datasets, ensuring accessibility and consistency across clients without compromising privacy. In contrast to conventional approaches that prioritize client dataset volume, FedVG assesses the generalization ability of client models by measuring the magnitude of validation gradients across layers. Specifically, we compute layerwise gradient norms to derive a client-specific score that reflects how much each client needs to adjust for improved generalization on the global validation set, thereby enabling more informed and adaptive federated aggregation. Extensive experiments on both natural and medical image benchmarking datasets, across diverse model architectures, demonstrate that FedVG consistently improves performance, particularly in highly heterogeneous settings. Moreover, FedVG is modular and can be seamlessly integrated with various state-of-the-art FL algorithms, often further improving their results. Our code is available at https://github.com/alinadevkota/FedVG.",
+      "tags": [
+        "papers",
+        "eval",
+        "compute",
+        "training",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.21399"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "15749938e63d48ecb420a9f97d0722b29c3bb4462f8f40773301012def919aec",
+      "title": "Provably Safe Generative Sampling with Constricting Barrier Functions",
+      "url": "https://arxiv.org/abs/2602.21429",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-02T05:00:00.000Z",
+      "summary": "arXiv:2602.21429v2 Announce Type: replace-cross Abstract: Flow-based generative models, such as diffusion models and flow matching models, have achieved remarkable success in learning complex data distributions. However, a critical gap remains for their deployment in safety-critical domains: the lack of formal guarantees that generated samples will satisfy hard constraints. We address this by proposing a safety filtering framework that acts as an online shield for any pre-trained generative model. Our key insight is to cooperate with the generative process rather than override it. We define a constricting safety tube that is relaxed at the initial noise distribution and progressively tightens to the target safe set at the final data distribution, mirroring the coarse-to-fine structure of the generative process itself. By characterizing this tube via Control Barrier Functions (CBFs), we synthesize a feedback control input through a convex Quadratic Program (QP) at each sampling step. As the tube is loosest when noise is high and intervention is cheapest in terms of control energy, most constraint enforcement occurs when it least disrupts the model's learned structure. We prove that this mechanism guarantees safe sampling while minimizing the distributional shift from the original model at each sampling step, as quantified by the KL divergence. Our framework applies to any pre-trained flow-based generative scheme requiring no retraining or architectural modifications. We validate the approach across constrained image generation, physically-consistent trajectory sampling, and safe robotic manipulation policies, achieving 100% constraint satisfaction while preserving semantic fidelity.",
+      "tags": [
+        "papers",
+        "safety",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.21429"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "4c18cae2bdc1b95506002f5962ce4e13a1b24a2148fadcce33182e10037f2e21",
+      "title": "Training Generalizable Collaborative Agents via Strategic Risk Aversion",
+      "url": "https://arxiv.org/abs/2602.21515",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-02T05:00:00.000Z",
+      "summary": "arXiv:2602.21515v2 Announce Type: replace-cross Abstract: Many emerging agentic paradigms require agents to collaborate with one another (or people) to achieve shared goals. Unfortunately, existing approaches to learning policies for such collaborative problems produce brittle solutions that fail when paired with new partners. We attribute these failures to a combination of free-riding during training and a lack of strategic robustness. To address these problems, we study the concept of strategic risk aversion and interpret it as a principled inductive bias for generalizable cooperation with unseen partners. While strategically risk-averse players are robust to deviations in their partner's behavior by design, we show that, in collaborative games, they also (1) can have better equilibrium outcomes than those at classical game-theoretic concepts like Nash, and (2) exhibit less or no free-riding. Inspired by these insights, we develop a multi-agent reinforcement learning (MARL) algorithm that integrates strategic risk aversion into standard policy optimization methods. Our empirical results across collaborative benchmarks (including an LLM collaboration task) validate our theory and demonstrate that our approach consistently achieves reliable collaboration with heterogeneous and previously unseen partners across collaborative tasks.",
+      "tags": [
+        "papers",
+        "agents",
+        "eval",
+        "policy",
+        "training"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.21515"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "d34d3311a6cab8dd86b8908e26df1c6eb8d0162050365fc232e0dbd77660efa3",
+      "title": "SemVideo: Reconstructs What You Watch from Brain Activity via Hierarchical Semantic Guidance",
+      "url": "https://arxiv.org/abs/2602.21819",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-02T05:00:00.000Z",
+      "summary": "arXiv:2602.21819v2 Announce Type: replace-cross Abstract: Reconstructing dynamic visual experiences from brain activity provides a compelling avenue for exploring the neural mechanisms of human visual perception. While recent progress in fMRI-based image reconstruction has been notable, extending this success to video reconstruction remains a significant challenge. Current fMRI-to-video reconstruction approaches consistently encounter two major shortcomings: (i) inconsistent visual representations of salient objects across frames, leading to appearance mismatches; (ii) poor temporal coherence, resulting in motion misalignment or abrupt frame transitions. To address these limitations, we introduce SemVideo, a novel fMRI-to-video reconstruction framework guided by hierarchical semantic information. At the core of SemVideo is SemMiner, a hierarchical guidance module that constructs three levels of semantic cues from the original video stimulus: static anchor descriptions, motion-oriented narratives, and holistic summaries. Leveraging this semantic guidance, SemVideo comprises three key components: a Semantic Alignment Decoder that aligns fMRI signals with CLIP-style embeddings derived from SemMiner, a Motion Adaptation Decoder that reconstructs dynamic motion patterns using a novel tripartite attention fusion architecture, and a Conditional Video Render that leverages hierarchical semantic guidance for video reconstruction. Experiments conducted on the CC2017 and HCP datasets demonstrate that SemVideo achieves superior performance in both semantic alignment and temporal consistency, setting a new state-of-the-art in fMRI-to-video reconstruction.",
+      "tags": [
+        "papers",
+        "safety",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.21819"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "f4c7424c45ee8d88fc5a2a1a7de99c52ed6b9acc002c63930c1dfe24bd104b48",
+      "title": "Supervised Reinforcement Learning: From Expert Trajectories to Step-wise Reasoning",
+      "url": "https://arxiv.org/abs/2510.25992",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-02T05:00:00.000Z",
+      "summary": "arXiv:2510.25992v3 Announce Type: replace Abstract: Large Language Models (LLMs) often struggle with problems that require multi-step reasoning. For small-scale open-source models, Reinforcement Learning with Verifiable Rewards (RLVR) fails when correct solutions are rarely sampled even after many attempts, while Supervised Fine-Tuning (SFT) tends to overfit long demonstrations through rigid token-by-token imitation. To address this gap, we propose Supervised Reinforcement Learning (SRL), a framework that reformulates problem solving as generating a sequence of logical \"actions\". SRL trains the model to generate an internal reasoning monologue before committing to each action. It provides smoother rewards based on the similarity between the model's actions and expert actions extracted from the SFT dataset in a step-wise manner. This supervision offers richer learning signals even when all rollouts are incorrect, while encouraging flexible reasoning guided by expert demonstrations. As a result, SRL enables small models to learn challenging problems previously unlearnable by SFT or RLVR. Moreover, initializing training with SRL before refining with RLVR yields the strongest overall performance. Beyond reasoning benchmarks, SRL generalizes effectively to agentic software engineering tasks, establishing it as a robust and versatile training framework for reasoning-oriented LLMs.",
+      "tags": [
+        "papers",
+        "language",
+        "agents",
+        "reasoning",
+        "eval",
+        "training",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2510.25992"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "6233b41784ea8912965fde339ab8a979fbd60574f1e23c71cbb450e71b38c270",
+      "title": "Bridging Latent Reasoning and Target-Language Generation via Retrieval-Transition Heads",
+      "url": "https://arxiv.org/abs/2602.22453",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-02T05:00:00.000Z",
+      "summary": "arXiv:2602.22453v2 Announce Type: replace Abstract: Recent work has identified a subset of attention heads in Transformer as retrieval heads, which are responsible for retrieving information from the context. In this work, we first investigate retrieval heads in multilingual contexts. In multilingual language models, we find that retrieval heads are often shared across multiple languages. Expanding the study to cross-lingual setting, we identify Retrieval-Transition heads(RTH), which govern the transition to specific target-language output. Our experiments reveal that RTHs are distinct from retrieval heads and more vital for Chain-of-Thought reasoning in multilingual LLMs. Across four multilingual benchmarks (MMLU-ProX, MGSM, MLQA, and XQuaD) and two model families (Qwen-2.5 and Llama-3.1), we demonstrate that masking RTH induces bigger performance drop than masking Retrieval Heads (RH). Our work advances understanding of multilingual LMs by isolating the attention heads responsible for mapping to target languages.",
+      "tags": [
+        "papers",
+        "language",
+        "reasoning",
+        "eval",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.22453"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "0593e50b843cec9a79ef7b07aade720cb91137331426331b020fcf0de8c2fe7b",
+      "title": "Search More, Think Less: Rethinking Long-Horizon Agentic Search for Efficiency and Generalization",
+      "url": "https://arxiv.org/abs/2602.22675",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-02T05:00:00.000Z",
+      "summary": "arXiv:2602.22675v2 Announce Type: replace Abstract: Recent deep research agents primarily improve performance by scaling reasoning depth, but this leads to high inference cost and latency in search-intensive scenarios. Moreover, generalization across heterogeneous research settings remains challenging. In this work, we propose \\emph{Search More, Think Less} (SMTL), a framework for long-horizon agentic search that targets both efficiency and generalization. SMTL replaces sequential reasoning with parallel evidence acquisition, enabling efficient context management under constrained context budgets. To support generalization across task types, we further introduce a unified data synthesis pipeline that constructs search tasks spanning both deterministic question answering and open-ended research scenarios with task appropriate evaluation metrics. We train an end-to-end agent using supervised fine-tuning and reinforcement learning, achieving strong and often state of the art performance across benchmarks including BrowseComp (48.6\\%), GAIA (75.7\\%), Xbench (82.0\\%), and DeepResearch Bench (45.9\\%). Compared to Mirothinker-v1.0, SMTL with maximum 100 interaction steps reduces the average number of reasoning steps on BrowseComp by 70.7\\%, while improving accuracy.",
+      "tags": [
+        "papers",
+        "language",
+        "agents",
+        "reasoning",
+        "eval",
+        "inference"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.22675"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "bf5da7ecfcb0a034b205f3ce36a5382fd9547d93fbecaac53eb5cce6004386be",
+      "title": "Why Diffusion Language Models Struggle with Truly Parallel (Non-Autoregressive) Decoding?",
+      "url": "https://arxiv.org/abs/2602.23225",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-02T05:00:00.000Z",
+      "summary": "arXiv:2602.23225v2 Announce Type: replace Abstract: Diffusion Language Models (DLMs) are often advertised as enabling parallel token generation, yet practical fast DLMs frequently converge to left-to-right, autoregressive (AR)-like decoding dynamics. In contrast, genuinely non-AR generation is promising because it removes AR's sequential bottleneck, better exploiting parallel hardware to reduce synchronization/communication overhead and improve latency scaling with output length. We argue that a primary driver of AR-like decoding is a mismatch between DLM objectives and the highly sequential structure of widely used training data, including standard pretraining corpora and long chain-of-thought (CoT) supervision. Motivated by this diagnosis, we propose NAP (Non-Autoregressive Parallel DLMs), a proof-of-concept, data-centric approach that better aligns supervision with non-AR parallel decoding. NAP curates examples as multiple independent reasoning trajectories and couples them with a parallel-forced decoding strategy that encourages multi-token parallel updates. Across math reasoning benchmarks, NAP yields stronger performance under parallel decoding than DLMs trained on standard long CoT data, with gains growing as parallelism increases. Our results suggest that revisiting data and supervision is a principled direction for mitigating AR-like behavior and moving toward genuinely non-autoregressive parallel generation in DLMs. Our code is available at https://github.com/pixeli99/NAP.",
+      "tags": [
+        "papers",
+        "language",
+        "reasoning",
+        "eval",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.23225"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "60e93434a59746170f9c83f1b8f5dc068e566e10251e4d2deee76c6f5efc665c",
+      "title": "MoDora: Tree-Based Semi-Structured Document Analysis System",
+      "url": "https://arxiv.org/abs/2602.23061",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-02T05:00:00.000Z",
+      "summary": "arXiv:2602.23061v2 Announce Type: replace-cross Abstract: Semi-structured documents integrate diverse interleaved data elements (e.g., tables, charts, hierarchical paragraphs) arranged in various and often irregular layouts. These documents are widely observed across domains and account for a large portion of real-world data. However, existing methods struggle to support natural language question answering over these documents due to three main technical challenges: (1) The elements extracted by techniques like OCR are often fragmented and stripped of their original semantic context, making them inadequate for analysis. (2) Existing approaches lack effective representations to capture hierarchical structures within documents (e.g., associating tables with nested chapter titles) and to preserve layout-specific distinctions (e.g., differentiating sidebars from main content). (3) Answering questions often requires retrieving and aligning relevant information scattered across multiple regions or pages, such as linking a descriptive paragraph to table cells located elsewhere in the document. To address these issues, we propose MoDora, an LLM-powered system for semi-structured document analysis. First, we adopt a local-alignment aggregation strategy to convert OCR-parsed elements into layout-aware components, and conduct type-specific information extraction for components with hierarchical titles or non-text elements. Second, we design the Component-Correlation Tree (CCTree) to hierarchically organize components, explicitly modeling inter-component relations and layout distinctions through a bottom-up cascade summarization process. Finally, we propose a question-type-aware retrieval strategy that supports (1) layout-based grid partitioning for location-based retrieval and (2) LLM-guided pruning for semantic-based retrieval. Experiments show MoDora outperforms baselines by 5.97%-61.07% in accuracy. The code is at https://github.com/weAIDB/MoDora.",
+      "tags": [
+        "papers",
+        "language",
+        "safety",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.23061"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
       "id": "252cf46dcd8747ebbea4827779dd99db198995ca7118f3519ba44ac23e66b5dc",
       "title": "Building Telco Reasoning Models for Autonomous Networks with NVIDIA NeMo",
       "url": "https://developer.nvidia.com/blog/building-telco-reasoning-models-for-autonomous-networks-with-nvidia-nemo/",
@@ -14811,297 +15127,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2602.23359"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "530b204f17b8b57e93434e896596d86e0451f35206956e5a1ff5bf4d84ec20a5",
-      "title": "Model Agreement via Anchoring",
-      "url": "https://arxiv.org/abs/2602.23360",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-27T05:00:00.000Z",
-      "summary": "arXiv:2602.23360v1 Announce Type: cross Abstract: Numerous lines of aim to control $\\textit{model disagreement}$ -- the extent to which two machine learning models disagree in their predictions. We adopt a simple and standard notion of model disagreement in real-valued prediction problems, namely the expected squared difference in predictions between two models trained on independent samples, without any coordination of the training processes. We would like to be able to drive disagreement to zero with some natural parameter(s) of the training procedure using analyses that can be applied to existing training methodologies. We develop a simple general technique for proving bounds on independent model disagreement based on $\\textit{anchoring}$ to the average of two models within the analysis. We then apply this technique to prove disagreement bounds for four commonly used machine learning algorithms: (1) stacked aggregation over an arbitrary model class (where disagreement is driven to 0 with the number of models $k$ being stacked) (2) gradient boosting (where disagreement is driven to 0 with the number of iterations $k$) (3) neural network training with architecture search (where disagreement is driven to 0 with the size $n$ of the architecture being optimized over) and (4) regression tree training over all regression trees of fixed depth (where disagreement is driven to 0 with the depth $d$ of the tree architecture). For clarity, we work out our initial bounds in the setting of one-dimensional regression with squared error loss -- but then show that all of our results generalize to multi-dimensional regression with any strongly convex loss.",
-      "tags": [
-        "papers",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.23360"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "f482483bf32c36ba51f6730738b92c16775c65b9cde419c7f2a0bfa2a034a823",
-      "title": "LLM4AD: A Platform for Algorithm Design with Large Language Model",
-      "url": "https://arxiv.org/abs/2412.17287",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-27T05:00:00.000Z",
-      "summary": "arXiv:2412.17287v2 Announce Type: replace Abstract: We introduce LLM4AD, a unified Python platform for algorithm design (AD) with large language models (LLMs). LLM4AD is a generic framework with modularized blocks for search methods, algorithm design tasks, and LLM interface. The platform integrates numerous key methods and supports a wide range of algorithm design tasks across various domains including optimization, machine learning, and scientific discovery. We have also designed a unified evaluation sandbox to ensure a secure and robust assessment of algorithms. Additionally, we have compiled a comprehensive suite of support resources, including tutorials, examples, a user manual, online resources, and a dedicated graphical user interface (GUI) to enhance the usage of LLM4AD. We believe this platform will serve as a valuable tool for fostering future development in the merging research direction of LLM-assisted algorithm design.",
-      "tags": [
-        "papers",
-        "eval",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2412.17287"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "c16627929b3226d61a8b1e31340d44f929356fb2e625ef86902c40fbbd13a251",
-      "title": "Compositional-ARC: Assessing Systematic Generalization in Abstract Spatial Reasoning",
-      "url": "https://arxiv.org/abs/2504.01445",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-27T05:00:00.000Z",
-      "summary": "arXiv:2504.01445v3 Announce Type: replace Abstract: Systematic generalization refers to the capacity to understand and generate novel combinations from known components. Despite recent progress by large language models (LLMs) across various domains, these models often fail to extend their knowledge to novel compositional scenarios, revealing notable limitations in systematic generalization. There has been an ongoing debate about whether neural networks possess the capacity for systematic generalization, with recent studies suggesting that meta-learning approaches designed for compositionality can significantly enhance this ability. However, these insights have largely been confined to linguistic problems, leaving their applicability to other tasks an open question. In this study, we extend meta-learning for compositionality to the domain of abstract spatial reasoning. To this end, we introduce $\\textit{Compositional-ARC}\\unicode{x2014}$a dataset designed to evaluate the capacity of models to systematically generalize from known geometric transformations (e.g., translation, rotation) of abstract two-dimensional objects to novel combinations of these transformations (e.g., translation+rotation). Our results show that a small transformer-based encoder-decoder model, trained via meta-learning for compositionality, can systematically generalize to previously unseen transformation compositions. Notably, despite having only 5.7M parameters, this model significantly outperforms state-of-the-art LLMs$\\unicode{x2014}$including o3-mini, GPT-4o, and Gemini 2.0 Flash, which fail to exhibit similar systematic behavior$\\unicode{x2014}$and performs on par with the winning model of the ARC prize 2024, an 8B-parameter LLM trained via test-time training. Our findings highlight the effectiveness of meta-learning in promoting systematicity beyond linguistic tasks, suggesting a promising direction toward more robust and generalizable models.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "training",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2504.01445"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "bed4a8bb57b2dd03ac912f22159e6cf468bcbd3f8c7cc1e90fc43b28375745ae",
-      "title": "Cost-of-Pass: An Economic Framework for Evaluating Language Models",
-      "url": "https://arxiv.org/abs/2504.13359",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-27T05:00:00.000Z",
-      "summary": "arXiv:2504.13359v2 Announce Type: replace Abstract: Widespread adoption of AI systems hinges on their ability to generate economic value that outweighs their inference costs. Evaluating this tradeoff requires metrics accounting for both performance and costs. Building on production theory, we develop an economically grounded framework to evaluate language models' productivity by combining accuracy and inference cost. We formalize cost-of-pass: the expected monetary cost of generating a correct solution. We then define the frontier cost-of-pass: the minimum cost-of-pass achievable across available models or the human-expert(s), using the approx. cost of hiring an expert. Our analysis reveals distinct economic insights. First, lightweight models are most cost-effective for basic quantitative tasks, large models for knowledge-intensive ones, and reasoning models for complex quantitative problems, despite higher per-token costs. Second, tracking the frontier cost-of-pass over the past year reveals significant progress, particularly for complex quant. tasks where the cost roughly halved every few months. Third, to trace key innovations driving this progress, we examine counterfactual frontiers -- estimates of cost-efficiency without specific model classes. We find that innovations in lightweight, large, and reasoning models have been essential for pushing the frontier in basic quant., knowledge-intensive, and complex quant. tasks, respectively. Finally, we assess the cost-reductions from common inference-time techniques (majority voting and self-refinement), and a budget-aware technique (TALE-EP). We find that performance-oriented methods with marginal performance gains rarely justify the costs, while TALE-EP shows some promise. Overall, our findings underscore that complementary model-level innovations are the primary drivers of cost-efficiency and our framework provides a principled tool for measuring this progress and guiding deployment.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "inference",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2504.13359"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "75ab2bd491da618f0f3843feedda39f7c1f9baa35f00e891ac31c6185b6408bd",
-      "title": "Mastering Multi-Drone Volleyball through Hierarchical Co-Self-Play Reinforcement Learning",
-      "url": "https://arxiv.org/abs/2505.04317",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-27T05:00:00.000Z",
-      "summary": "arXiv:2505.04317v5 Announce Type: replace Abstract: In this paper, we tackle the problem of learning to play 3v3 multi-drone volleyball, a new embodied competitive task that requires both high-level strategic coordination and low-level agile control. The task is turn-based, multi-agent, and physically grounded, posing significant challenges due to its long-horizon dependencies, tight inter-agent coupling, and the underactuated dynamics of quadrotors. To address this, we propose Hierarchical Co-Self-Play (HCSP), a hierarchical reinforcement learning framework that separates centralized high-level strategic decision-making from decentralized low-level motion control. We design a three-stage population-based training pipeline to enable both strategy and skill to emerge from scratch without expert demonstrations: (I) training diverse low-level skills, (II) learning high-level strategy via self-play with fixed low-level skills, and (III) joint fine-tuning through co-self-play. Experiments show that HCSP achieves superior performance, outperforming non-hierarchical self-play and rule-based hierarchical baselines with an average 82.9% win rate and a 71.5% win rate against the two-stage variant. Moreover, co-self-play leads to emergent team behaviors such as role switching and coordinated formations, demonstrating the effectiveness of our hierarchical design and training scheme. The project page is at https://hi-co-self-play.github.io.",
-      "tags": [
-        "papers",
-        "agents",
-        "training"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2505.04317"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "d7f2fbead8bdb9aaa4e8befe05797d8c1775172914d1b4828adb175388cf1e4b",
-      "title": "Types of Relations: Defining Analogies with Category Theory",
-      "url": "https://arxiv.org/abs/2505.19792",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-27T05:00:00.000Z",
-      "summary": "arXiv:2505.19792v2 Announce Type: replace Abstract: In order to behave intelligently both humans and machines have to represent their knowledge adequately for how it is used. Humans often use analogies to transfer their knowledge to new domains, or help others with this transfer via explanations. Hence, an important question is: What representation can be used to construct, find, and evaluate analogies? In this paper, we study features of a domain that are important for constructing analogies. We do so by formalizing knowledge domains as categories. We use the well-known example of the analogy between the solar system and the hydrogen atom to demonstrate how to construct domain categories. We also show how functors, pullbacks, and pushouts can be used to define an analogy, describe its core and a corresponding blend of the underlying domains.",
-      "tags": [
-        "papers"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2505.19792"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "f20cbcbc6529401b548f38adfabcc657b07e54cd050636b16ce41a53e72db616",
-      "title": "LiveMCPBench: Can Agents Navigate an Ocean of MCP Tools?",
-      "url": "https://arxiv.org/abs/2508.01780",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-27T05:00:00.000Z",
-      "summary": "arXiv:2508.01780v2 Announce Type: replace Abstract: Model Context Protocol (MCP) has become a key infrastructure for connecting LLMs with external tools, scaling to 10,000+ MCP servers with diverse tools. Unfortunately, there is still a large gap between real-world MCP usage and current evaluation: they typically assume single-server settings and directly inject tools into the model's context, bypassing the challenges of large-scale retrieval and multi-tool composition. To bridge this gap, we propose LiveMCPBench, which evaluates 95 real-world daily tasks explicitly constructed to stress diverse tools and scaled multi-server routing. The benchmark includes a ready-to-deploy tool suite of 70 servers with 527 tools, ensuring reproducibility without scattered API configuration. We further introduce an LLM-as-a-Judge evaluation framework that directly verifies task outcomes, handling dynamic data sources and multiple valid solution paths. We benchmark 12 state-of-the-art LLMs and observe a substantial performance gap: while Claude-Sonnet-4 reaches 78.95% task success, most models achieve only 30-50%. Our analysis reveals that the active tool composition strongly correlates with task success, whereas retrieval errors account for nearly half of all failures, highlighting retrieval as the dominant bottleneck. Together, these results provide the first large-scale, reproducible diagnosis of MCP agent capabilities and point towards future research on improving retrieval robustness and encouraging effective tool composition. Our code and data are publicly available at https://icip-cas.github.io/LiveMCPBench.",
-      "tags": [
-        "papers",
-        "agents",
-        "eval",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2508.01780"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "434ccc9e93037b82dbe6f6032d53de8b9e220a84c6f7e28d9e0aead2dfa55617",
-      "title": "FHIR-RAG-MEDS: Integrating HL7 FHIR with Retrieval-Augmented Large Language Models for Enhanced Medical Decision Support",
-      "url": "https://arxiv.org/abs/2509.07706",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-27T05:00:00.000Z",
-      "summary": "arXiv:2509.07706v2 Announce Type: replace Abstract: In this study, we propose FHIR-RAG-MEDS system that aims to integrate Health Level 7 Fast Healthcare Interoperability Resources (HL7 FHIR) with a Retrieval-Augmented Generation (RAG)-based system to improve personalized medical decision support on evidence-based clinical guidelines, emphasizing the need for research in practical applications. In the evolving landscape of medical decision support systems, integrating advanced technologies such as RAG and HL7 FHIR can significantly enhance clinical decision-making processes. Despite the potential of these technologies, there is limited research on their integration in practical applications.",
-      "tags": [
-        "papers",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2509.07706"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "99f6c39cb7328b6501169b7207ecf921a4261717e6550d979f703d4239c4cd7b",
-      "title": "\"I think this is fair\": Uncovering the Complexities of Stakeholder Decision-Making in AI Fairness Assessment",
-      "url": "https://arxiv.org/abs/2509.17956",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-27T05:00:00.000Z",
-      "summary": "arXiv:2509.17956v2 Announce Type: replace Abstract: Assessing fairness in artificial intelligence (AI) typically involves AI experts who select protected features, fairness metrics, and set fairness thresholds to assess outcome fairness. However, little is known about how stakeholders, particularly those affected by AI outcomes but lacking AI expertise, assess fairness. To address this gap, we conducted a qualitative study with 26 stakeholders without AI expertise, representing potential decision subjects in a credit rating scenario, to examine how they assess fairness when placed in the role of deciding on features with priority, metrics, and thresholds. We reveal that stakeholders' fairness decisions are more complex than typical AI expert practices: they considered features far beyond legally protected features, tailored metrics for specific contexts, set diverse yet stricter fairness thresholds, and even preferred designing customized fairness. Our results extend the understanding of how stakeholders can meaningfully contribute to AI fairness governance and mitigation, underscoring the importance of incorporating stakeholders' nuanced fairness judgments.",
-      "tags": [
-        "papers",
-        "policy"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2509.17956"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "d9956a2fb96bb18d7b7a7ab696def859c3076d852eafa8df20e8cb566c97b9b7",
-      "title": "G-reasoner: Foundation Models for Unified Reasoning over Graph-structured Knowledge",
-      "url": "https://arxiv.org/abs/2509.24276",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-27T05:00:00.000Z",
-      "summary": "arXiv:2509.24276v2 Announce Type: replace Abstract: Large language models (LLMs) excel at complex reasoning but remain limited by static and incomplete parametric knowledge. Retrieval-augmented generation (RAG) mitigates this by incorporating external knowledge, yet existing RAGs struggle with knowledge-intensive tasks due to fragmented information and weak modeling of knowledge structure. Graphs offer a natural way to model relationships within knowledge, but LLMs are inherently unstructured and cannot effectively reason over graph-structured data. Recent graph-enhanced RAG (GraphRAG) attempts to bridge this gap by constructing tailored graphs and enabling LLMs to reason on them. However, these methods often depend on ad-hoc graph designs, heuristic search, or costly agent pipelines, which hinder scalability and generalization. To address these challenges, we present G-reasoner, a unified framework that integrates graph and language foundation models for scalable reasoning over diverse graph-structured knowledge. Central to our approach is QuadGraph, a standardized four-layer abstraction that unifies heterogeneous knowledge sources into a common graph representation. Building on this, we introduce a 34M-parameter graph foundation model (GFM) that jointly captures graph topology and textual semantics, and is integrated with LLMs to enhance reasoning in downstream applications. To ensure scalability and efficiency, mixed-precision training and distributed message-passing are implemented to scale GFM with more GPUs. Extensive experiments on six benchmarks show that G-reasoner consistently outperforms state-of-the-art baselines, significantly enhances LLM reasoning, and achieves strong efficiency and cross-graph generalization.",
-      "tags": [
-        "papers",
-        "agents",
-        "reasoning",
-        "eval",
-        "compute",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2509.24276"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "69cf2825ad721acb0df69f5030c774af9789078b3ca7f50eb32f6037b3ea1b20",
-      "title": "On Discovering Algorithms for Adversarial Imitation Learning",
-      "url": "https://arxiv.org/abs/2510.00922",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-27T05:00:00.000Z",
-      "summary": "arXiv:2510.00922v2 Announce Type: replace Abstract: Adversarial Imitation Learning (AIL) methods, while effective in settings with limited expert demonstrations, are often considered unstable. These approaches typically decompose into two components: Density Ratio (DR) estimation $\\frac{\\rho_E}{\\rho_{\\pi}}$, where a discriminator estimates the relative occupancy of state-action pairs under the policy versus the expert; and Reward Assignment (RA), where this ratio is transformed into a reward signal used to train the policy. While significant research has focused on improving density estimation, the role of reward assignment in influencing training dynamics and final policy performance has been largely overlooked. RA functions in AIL are typically derived from divergence minimization objectives, relying heavily on human design and ingenuity. In this work, we take a different approach: we investigate the discovery of data-driven RA functions, i.e, based directly on the performance of the resulting imitation policy. To this end, we leverage an LLM-guided evolutionary framework that efficiently explores the space of RA functions, yielding \\emph{Discovered Adversarial Imitation Learning} (DAIL), the first meta-learnt AIL algorithm. Remarkably, DAIL generalises across unseen environments and policy optimization algorithms, outperforming the current state-of-the-art of \\emph{human-designed} baselines. Finally, we analyse why DAIL leads to more stable training, offering novel insights into the role of RA functions in the stability of AIL. Code is publicly available: https://github.com/shshnkreddy/DAIL.",
-      "tags": [
-        "papers",
-        "policy",
-        "training"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2510.00922"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "48369c2e73cf7bf24fe568c38cb04c485fb06701a1fb3ddbc14aa79fe05d95dd",
-      "title": "A Mind Cannot Be Smeared Across Time",
-      "url": "https://arxiv.org/abs/2601.11620",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-02-27T05:00:00.000Z",
-      "summary": "arXiv:2601.11620v2 Announce Type: replace Abstract: Whether machines can be conscious depends not only on what they compute, but \\emph{when} they compute it. Most deployed artificial systems realise their functions via sequential or time-multiplexed updates, yet a moment of conscious experience feels unified and simultaneous. I prove that this difference matters. I augment Stack Theory with algebraic laws relating within time-window constraint satisfaction to conjunction. I introduce a temporal semantics over windowed trajectories $\\tau_{\\Delta}$ and prove that existential temporal realisation $\\Diamond_{\\Delta}$ does not preserve conjunction. A system can realise all the ingredients of experience across time without ever instantiating the experienced conjunction itself. I then distinguish two postulates, Chord and Arpeggio. Chord is the position that conscious unity requires \\textit{objective co-instantiation} of the grounded conjunction within the window, like a musical chord. Arpeggio only needs the ingredients to \\textit{occur} within window, like a melody. I formalise concurrency-capacity to measure what is needed to satisfy co-instantiation. Finally, I review neurophysiological evidence suggesting that consciousness depends on phase synchrony and effective connectivity, and that loss of consciousness is associated with its breakdown. Under Chord, software consciousness on strictly sequential substrates is impossible for contents whose grounding requires two or more simultaneous contributors. The hardware matters.",
-      "tags": [
-        "papers",
-        "compute"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2601.11620"
         },
         {
           "label": "Feed",
