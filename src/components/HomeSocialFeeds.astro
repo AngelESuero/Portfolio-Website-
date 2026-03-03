@@ -137,12 +137,11 @@ const youtubeStatusId = 'home-social-youtube-status';
           src={youtubeUploadsEmbedUrl}
           title="YouTube uploads"
           loading="lazy"
-          data-fallback-src={youtubeUploadsEmbedUrl}
           allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
           allowfullscreen
         ></iframe>
       </div>
-      <p id={youtubeStatusId} class="home-social-youtube-status" aria-live="polite">Checking latest feed…</p>
+      <p id={youtubeStatusId} class="home-social-youtube-status" aria-live="polite">Showing uploads playlist.</p>
       <p class="home-social-links">
         <a href="/social/youtube">Open full feed</a>
         <a href={youtubeChannelUrl} target="_blank" rel="noopener">Open channel</a>
@@ -174,20 +173,14 @@ const youtubeStatusId = 'home-social-youtube-status';
   </div>
 </section>
 
-<script is:inline define:vars={{ youtubeFrameId, youtubeStatusId }}>
+<script is:inline define:vars={{ youtubeStatusId }}>
   (() => {
-    const frame = document.getElementById(youtubeFrameId);
     const status = document.getElementById(youtubeStatusId);
-    const iframe = frame?.querySelector('iframe');
-    if (!frame || !status || !iframe) return;
-
-    const fallbackSrc = iframe.getAttribute('data-fallback-src') || iframe.getAttribute('src') || '';
+    if (!status) return;
 
     const setStatus = (message) => {
       status.textContent = message;
     };
-
-    const toEmbedUrl = (videoId) => `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?rel=0`;
 
     const formatDate = (value) => {
       const date = new Date(value);
@@ -199,50 +192,6 @@ const youtubeStatusId = 'home-social-youtube-status';
       }).format(date);
     };
 
-    const cleanVideoId = (value) => String(value || '').trim().replace(/[^A-Za-z0-9_-]/g, '');
-
-    const parseVideoId = (value) => {
-      const raw = String(value || '').trim();
-      if (!raw) return '';
-
-      try {
-        const parsed = new URL(raw);
-        const host = parsed.hostname.replace(/^www\./, '').toLowerCase();
-
-        if (host === 'youtu.be') {
-          const direct = cleanVideoId(parsed.pathname.split('/').filter(Boolean)[0] || '');
-          if (direct) return direct;
-        }
-
-        if (host.endsWith('youtube.com') || host.endsWith('youtube-nocookie.com')) {
-          if (parsed.pathname === '/watch') {
-            const watchId = cleanVideoId(parsed.searchParams.get('v') || '');
-            if (watchId) return watchId;
-          }
-
-          const segments = parsed.pathname.split('/').filter(Boolean);
-          if (segments.length >= 2 && ['shorts', 'embed', 'live'].includes(segments[0])) {
-            const segmentId = cleanVideoId(segments[1] || '');
-            if (segmentId) return segmentId;
-          }
-        }
-      } catch {}
-
-      const regexes = [
-        /[?&]v=([A-Za-z0-9_-]{6,})/i,
-        /youtu\.be\/([A-Za-z0-9_-]{6,})/i,
-        /\/shorts\/([A-Za-z0-9_-]{6,})/i,
-        /\/embed\/([A-Za-z0-9_-]{6,})/i
-      ];
-
-      for (const regex of regexes) {
-        const match = raw.match(regex);
-        if (match?.[1]) return cleanVideoId(match[1]);
-      }
-
-      return '';
-    };
-
     fetch('/api/social-rss?slug=youtube')
       .then((response) => {
         if (!response.ok) throw new Error(`RSS endpoint returned ${response.status}`);
@@ -250,25 +199,28 @@ const youtubeStatusId = 'home-social-youtube-status';
       })
       .then((payload) => {
         const items = Array.isArray(payload?.items) ? payload.items : [];
-        const latest = items.find((item) => parseVideoId(item?.url || ''));
+        const latest = items[0];
         if (!latest) {
-          setStatus('Using latest available embed.');
+          setStatus('Showing uploads playlist.');
           return;
         }
 
-        const latestVideoId = parseVideoId(latest.url || '');
-        if (!latestVideoId) {
-          setStatus('Using latest available embed.');
-          return;
-        }
-
-        iframe.src = toEmbedUrl(latestVideoId);
+        const title = String(latest.title || '').trim();
         const formattedDate = formatDate(latest.date || '');
-        setStatus(formattedDate ? `Updated ${formattedDate}.` : 'Updated recently.');
+        if (title && formattedDate) {
+          setStatus(`Latest upload: ${title} (${formattedDate}).`);
+          return;
+        }
+
+        if (title) {
+          setStatus(`Latest upload: ${title}.`);
+          return;
+        }
+
+        setStatus(formattedDate ? `Latest upload updated ${formattedDate}.` : 'Showing uploads playlist.');
       })
       .catch(() => {
-        if (fallbackSrc) iframe.src = fallbackSrc;
-        setStatus('Using latest available embed.');
+        setStatus('Showing uploads playlist.');
       });
   })();
 </script>

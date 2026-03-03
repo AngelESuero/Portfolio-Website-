@@ -168,10 +168,6 @@ export const resolveEmbed = (urlValue: string, preferredProvider?: LinkHubProvid
       return { provider, embedUrl: null, embeddable: false, reason: 'invite_link' };
     }
 
-    if (/^\/library\/(track|project)\/[^/]+\/embed\/?$/.test(parsed.pathname)) {
-      return { provider, embedUrl: urlValue, embeddable: true, reason: 'ok' };
-    }
-
     if (parsed.pathname.startsWith('/embed/')) {
       return { provider, embedUrl: urlValue, embeddable: true, reason: 'ok' };
     }
@@ -202,7 +198,7 @@ export const getEmbedFallbackMessage = (resolution: EmbedResolution): string => 
     resolution.provider === 'untitled' &&
     (resolution.reason === 'unsupported_url_shape' || resolution.reason === 'invite_link')
   ) {
-    return 'Preview isn\'t available for this URL format. Open source to view on Untitled.';
+    return 'Untitled renders inline only with a dedicated /embed/ link. Open source to view this piece.';
   }
 
   if (resolution.provider === 'instagram' && resolution.reason === 'profile_only') {

@@ -1,6 +1,6 @@
 ---
 import type { LinkHubItem } from '../data/linkhub';
-import { getEmbedFallbackMessage, getEmbedHeight, resolveEmbed } from '../lib/embed-resolver';
+import { getEmbedAspectRatio, getEmbedFallbackMessage, getEmbedHeight, resolveEmbed } from '../lib/embed-resolver';
 
 interface Props {
   item: LinkHubItem;
@@ -24,7 +24,10 @@ const resolution = resolveEmbed(resolvedUrl, item.preferredEmbed);
 const provider = resolution.provider;
 const embedUrl = resolution.embedUrl;
 const embedHeight = getEmbedHeight(provider);
-const isEmbeddable = resolution.embeddable && Boolean(embedUrl);
+const embedAspectRatio = getEmbedAspectRatio(provider);
+const hasAspectRatio = Boolean(embedAspectRatio);
+const usesCompactProviderFallback = showResizeHint && provider === 'google_drive';
+const isEmbeddable = resolution.embeddable && Boolean(embedUrl) && !usesCompactProviderFallback;
 const isExternal = /^https?:\/\//i.test(item.url);
 const isLinktree = isLinktreeUrl(item.url);
 const isUntitledLibraryLink = (() => {
@@ -35,8 +38,13 @@ const isUntitledLibraryLink = (() => {
     return false;
   }
 })();
+const frameStyle = hasAspectRatio
+  ? `--embed-aspect-ratio:${embedAspectRatio}`
+  : `--embed-height:${embedHeight}px`;
 const fallbackMessage = isLinktree
   ? 'Linktree is your active links hub. Open it to see the full live stack.'
+  : usesCompactProviderFallback
+    ? 'This preview opens more cleanly in Google Drive than in a compact card.'
   : isUntitledLibraryLink && !configuredEmbedUrl
     ? 'This item links to an editable Untitled page. Add an explicit embed URL to show an inline player.'
   : getEmbedFallbackMessage(resolution);
@@ -52,7 +60,7 @@ const fallbackMessage = isLinktree
 
   {isEmbeddable ? (
     <div class="hub-embed">
-      <div class="hub-embed-frame" style={`--embed-height:${embedHeight}px`}>
+      <div class:list={['hub-embed-frame', hasAspectRatio && 'has-aspect-ratio']} style={frameStyle}>
         <iframe
           src={embedUrl || undefined}
           width="100%"
@@ -123,6 +131,11 @@ const fallbackMessage = isLinktree
     min-height: 11rem;
     border-radius: 12px 12px 0 0;
     overflow: hidden;
+  }
+
+  .hub-embed-frame.has-aspect-ratio {
+    height: auto;
+    aspect-ratio: var(--embed-aspect-ratio, 16 / 9);
   }
 
   .hub-embed-frame iframe {
