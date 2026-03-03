@@ -236,6 +236,8 @@ const exploreLinks = [
           blue: '#6D8488',
           orange: '#9B7653',
           red: '#8B5952',
+          white: '#C3BCA9',
+          black: '#49433E',
           violet: '#7D7688',
           indigo: '#5F6C7A'
         };
@@ -421,7 +423,7 @@ const exploreLinks = [
 
         const normalizeColorKey = (value) => {
           const raw = String(value || '').trim().toLowerCase();
-          const key = LEGACY_COLOR_ALIASES[raw] || raw;
+          const key = hasOwn(raw) ? raw : LEGACY_COLOR_ALIASES[raw] || raw;
           return hasOwn(key) ? key : DEFAULT_COLOR_KEY;
         };
 

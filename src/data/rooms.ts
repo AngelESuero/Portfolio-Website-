@@ -23,7 +23,7 @@ const rooms: Room[] = [
     slug: 'music',
     title: 'Music Room',
     description: 'Playback consoles for in-progress sessions, references, and release prep.',
-    color: 'yellow',
+    color: 'blue',
     room_type: 'embed',
     destination: '/link-hub',
     machines: [
@@ -53,7 +53,7 @@ const rooms: Room[] = [
     slug: 'writing',
     title: 'Writing Room',
     description: 'Essays, notes, RSS streams, and archival dispatches.',
-    color: 'red',
+    color: 'black',
     room_type: 'native',
     destination: '/writing',
     machines: [
@@ -109,7 +109,7 @@ const rooms: Room[] = [
     slug: 'social',
     title: 'Social Room',
     description: 'Platform exits, profile paths, and quick handoff links.',
-    color: 'violet',
+    color: 'red',
     room_type: 'external',
     destination: 'https://discord.gg/rNjaEQbe',
     machines: [

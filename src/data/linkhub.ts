@@ -10,7 +10,7 @@ import { applyLinktreeTimelineToHubItem } from './linktree-timeline';
 
 export type LinkHubProvider = 'spotify' | 'youtube' | 'soundcloud' | 'untitled' | 'substack' | 'instagram' | 'google_drive';
 export type LinkHubCategoryId = 'music' | 'writing' | 'video' | 'resources' | 'legal' | 'social';
-export type AccentColorKey = 'yellow' | 'blue' | 'orange' | 'red' | 'violet' | 'indigo';
+export type AccentColorKey = 'yellow' | 'blue' | 'orange' | 'red' | 'white' | 'black' | 'violet' | 'indigo';
 
 export interface LinkHubItem {
   id: string;
@@ -61,7 +61,7 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
   {
     id: 'music',
     label: 'Music',
-    color: 'yellow',
+    color: 'blue',
     items: [
       {
         id: 'now-listening',
@@ -241,7 +241,7 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
   {
     id: 'writing',
     label: 'Writing',
-    color: 'red',
+    color: 'black',
     items: [
       {
         id: 'substack',
@@ -284,7 +284,7 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
   {
     id: 'video',
     label: 'Video',
-    color: 'blue',
+    color: 'red',
     items: [
       {
         id: 'everyday-life-video',
@@ -338,7 +338,7 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
   {
     id: 'resources',
     label: 'Resources',
-    color: 'orange',
+    color: 'yellow',
     items: [
       {
         id: 'practicing-kriya',
@@ -428,7 +428,7 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
   {
     id: 'legal',
     label: 'Legal',
-    color: 'indigo',
+    color: 'orange',
     items: [
       {
         id: 'ai-accountability',
@@ -442,7 +442,7 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
   {
     id: 'social',
     label: 'Social',
-    color: 'violet',
+    color: 'red',
     items: [
       { id: 'instagram', title: 'Instagram', url: SOCIAL_URLS.instagram, year: '2026', tag: 'Visual' },
       { id: 'youtube', title: 'YouTube', url: SOCIAL_URLS.youtube, year: '2026', tag: 'Video' },

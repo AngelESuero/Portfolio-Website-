@@ -66,7 +66,7 @@ const homeSections: HomeSection[] = [
     id: 'music',
     label: 'Music',
     color: 'blue',
-    tone: 'vitality',
+    tone: 'harmony',
     panelType: 'embed',
     items: pickItems('music', ['my-first-beat-tape', 'everyday-soundscape']).concat(
       pickItems('resources', ['practicing-kriya'])
@@ -76,7 +76,7 @@ const homeSections: HomeSection[] = [
     id: 'visual',
     label: 'Visual',
     color: 'orange',
-    tone: 'devotion',
+    tone: 'clarity',
     panelType: 'embed',
     items: pickItems('social', ['instagram', 'threads', 'tiktok'])
   },
@@ -84,15 +84,16 @@ const homeSections: HomeSection[] = [
     id: 'video',
     label: 'Video',
     color: 'red',
-    tone: 'intensity',
+    tone: 'vitality',
     panelType: 'embed',
     items: pickItems('video', ['everyday-life-video', 'youtube-channel', 'post-labor-econ-playlist'])
   },
   {
     id: 'growth',
     label: 'Growth',
-    color: 'indigo',
-    tone: 'compassion',
+    color: 'white',
+    tone: 'presence',
+    panelType: 'embed',
     items: pickItems('video', ['growth-happiness-journey'])
   },
   {
@@ -106,7 +107,7 @@ const homeSections: HomeSection[] = [
   {
     id: 'scraps',
     label: 'Scraps',
-    color: 'violet',
+    color: 'black',
     tone: 'contemplation',
     panelType: 'embed',
     items: pickItems('music', ['scraps-2023-2024']).concat(
@@ -116,7 +117,7 @@ const homeSections: HomeSection[] = [
   {
     id: 'ai-accountability',
     label: 'AI Accountability',
-    color: 'indigo',
+    color: 'orange',
     tone: 'discernment',
     panelType: 'ai-accountability'
   }
@@ -310,30 +311,30 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
         </div>
 
         <div class="section-panels">
-          {homeSections.map((section, index) => (
-            <div
-              class:list={['section-panel', index === 0 && 'is-active']}
-              data-section-panel={section.id}
-              role="tabpanel"
-              aria-label={`${section.label} spotlight`}
-            >
-              {section.panelType === 'embed' ? (
-                section.items.length > 0 ? (
-                  <div class="section-cards">
-                    {section.items.map((item) => (
-                      <div class="section-card-shell">
-                        <EmbedCard item={item} showResizeHint={true} />
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p class="text-sm text-zinc-400">No spotlight links configured yet.</p>
-                )
+        {homeSections.map((section, index) => (
+          <div
+            class:list={['section-panel', index === 0 && 'is-active']}
+            data-section-panel={section.id}
+            role="tabpanel"
+            aria-label={`${section.label} spotlight`}
+          >
+            {section.panelType === 'embed' ? (
+              section.items.length > 0 ? (
+                <div class="section-cards">
+                  {section.items.map((item) => (
+                    <div class="section-card-shell">
+                      <EmbedCard item={item} showResizeHint={true} />
+                    </div>
+                  ))}
+                </div>
               ) : (
-                <AIAccountabilityPanel />
-              )}
-            </div>
-          ))}
+                <p class="text-sm text-zinc-400">No spotlight links configured yet.</p>
+              )
+            ) : (
+              <AIAccountabilityPanel />
+            )}
+          </div>
+        ))}
         </div>
       </div>
     </section>
