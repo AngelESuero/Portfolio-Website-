@@ -352,9 +352,10 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
 
   <script is:inline>
     (() => {
+      const tablist = document.querySelector('.section-tablist');
       const tabs = Array.from(document.querySelectorAll('[data-section-tab]'));
       const panels = Array.from(document.querySelectorAll('[data-section-panel]'));
-      if (!tabs.length || !panels.length) return;
+      if (!(tablist instanceof HTMLElement) || !tabs.length || !panels.length) return;
 
       const activate = (id, syncAccent = true) => {
         tabs.forEach((tab) => {
@@ -368,8 +369,16 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
         });
         window.dispatchEvent(new CustomEvent('home:section-activated', { detail: { id } }));
 
-        if (!syncAccent) return;
         const activeTab = tabs.find((tab) => tab.getAttribute('data-section-tab') === id);
+        if (activeTab instanceof HTMLElement && tablist.scrollWidth > tablist.clientWidth + 1) {
+          activeTab.scrollIntoView({
+            behavior: syncAccent ? 'smooth' : 'auto',
+            block: 'nearest',
+            inline: 'center'
+          });
+        }
+
+        if (!syncAccent) return;
         const color = activeTab?.getAttribute('data-color') || 'blue';
         const tone = activeTab?.getAttribute('data-tone') || 'balance';
         window.__setSiteAccent?.(color, { animate: true, duration: 250 });
@@ -381,6 +390,72 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
           const id = tab.getAttribute('data-section-tab');
           if (id) activate(id);
         });
+      });
+
+      let dragPointerId = -1;
+      let dragStartX = 0;
+      let dragStartScrollLeft = 0;
+      let suppressClick = false;
+
+      const endDrag = (pointerId) => {
+        if (dragPointerId !== pointerId) return;
+        if (tablist.hasPointerCapture(dragPointerId)) {
+          tablist.releasePointerCapture(dragPointerId);
+        }
+        tablist.classList.remove('is-dragging');
+        dragPointerId = -1;
+      };
+
+      tablist.addEventListener(
+        'click',
+        (event) => {
+          if (!suppressClick) return;
+          event.preventDefault();
+          event.stopPropagation();
+          suppressClick = false;
+        },
+        true
+      );
+
+      tablist.addEventListener('pointerdown', (event) => {
+        if (event.pointerType !== 'mouse' || event.button !== 0) return;
+        if (tablist.scrollWidth <= tablist.clientWidth + 1) return;
+
+        dragPointerId = event.pointerId;
+        dragStartX = event.clientX;
+        dragStartScrollLeft = tablist.scrollLeft;
+        suppressClick = false;
+
+        tablist.classList.add('is-dragging');
+        tablist.setPointerCapture(event.pointerId);
+      });
+
+      tablist.addEventListener('pointermove', (event) => {
+        if (dragPointerId !== event.pointerId) return;
+
+        const deltaX = event.clientX - dragStartX;
+        if (!suppressClick && Math.abs(deltaX) > 4) {
+          suppressClick = true;
+        }
+
+        if (!suppressClick) return;
+        tablist.scrollLeft = dragStartScrollLeft - deltaX;
+        event.preventDefault();
+      });
+
+      tablist.addEventListener('pointerup', (event) => {
+        const dragged = suppressClick;
+        endDrag(event.pointerId);
+        if (dragged) {
+          window.setTimeout(() => {
+            suppressClick = false;
+          }, 0);
+        }
+      });
+
+      tablist.addEventListener('pointercancel', (event) => {
+        endDrag(event.pointerId);
+        suppressClick = false;
       });
 
       const first = tabs[0]?.getAttribute('data-section-tab');
@@ -734,6 +809,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
       flex-wrap: nowrap;
       overflow-x: auto;
       overscroll-behavior-x: contain;
+      touch-action: pan-x;
       gap: 0.95rem;
       margin-inline: -0.15rem;
       padding-inline: 0.15rem;
@@ -767,6 +843,19 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
       width: min(88vw, 24rem);
       min-width: min(88vw, 24rem);
       scroll-snap-align: start;
+    }
+  }
+
+  @media (max-width: 860px) and (pointer: fine) {
+    .section-tablist {
+      cursor: grab;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .section-tablist.is-dragging {
+      cursor: grabbing;
+      scroll-behavior: auto;
     }
   }
 
