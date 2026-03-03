@@ -1,6 +1,7 @@
 <div class="view-settings">
-  <button id="view-settings-open" class="view-settings-open" type="button" aria-haspopup="dialog">
-    View settings
+  <button id="view-settings-open" class="view-settings-open" type="button" aria-haspopup="dialog" aria-label="View settings">
+    <span class="view-settings-open__full">View settings</span>
+    <span class="view-settings-open__short" aria-hidden="true">Settings</span>
   </button>
 </div>
 
@@ -169,10 +170,28 @@
     text-decoration: none;
   }
 
+  .view-settings-open__short {
+    display: none;
+  }
+
   .view-settings-open:hover,
   .view-settings-open:focus-visible {
     border-color: var(--tone-accent);
     color: var(--tone-accent-glow);
+  }
+
+  @media (max-width: 640px) {
+    .view-settings-open {
+      padding-inline: 0.62rem;
+    }
+
+    .view-settings-open__full {
+      display: none;
+    }
+
+    .view-settings-open__short {
+      display: inline;
+    }
   }
 
   .view-settings-modal[hidden] {

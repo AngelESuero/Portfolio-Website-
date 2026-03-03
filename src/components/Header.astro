@@ -64,7 +64,7 @@ const isActive = (href: string) => {
       >
         Menu
       </button>
-      <a href={profile.site_url} class="pill rounded px-3 py-1 text-sm hidden sm:inline-flex" aria-label="Open live site">
+      <a href={profile.site_url} class="header-live pill rounded px-3 py-1 text-sm" aria-label="Open live site">
         Live
       </a>
       <span
@@ -116,7 +116,7 @@ const isActive = (href: string) => {
       return decimalHour >= THEME_DAY_START_HOUR && decimalHour < THEME_NIGHT_START_HOUR ? 'light' : 'dark';
     };
     const normalizeTheme = (value) => (value === 'light' ? 'light' : 'dark');
-    const getThemeStatusLabel = (value) => (value === 'light' ? 'Daylight' : 'Night');
+    const getThemeStatusLabel = (value) => (value === 'light' ? 'Day' : 'Night');
     const applyTheme = (value) => {
       const nextTheme = normalizeTheme(value);
       const isDark = nextTheme === 'dark';
