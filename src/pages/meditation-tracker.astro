@@ -85,12 +85,12 @@ const timelineRanges = [7, 14, 30];
         <svg id="timelineSvg" viewBox="0 0 560 192" class="tracker-chart" aria-label="Meditation timeline">
           <defs>
             <linearGradient id="trackerLineGlow" x1="0%" x2="100%" y1="0%" y2="0%">
-              <stop offset="0%" stop-color="#ff8282"></stop>
-              <stop offset="100%" stop-color="#ffbd97"></stop>
+              <stop offset="0%" stop-color="#ff7575"></stop>
+              <stop offset="100%" stop-color="#ffb05c"></stop>
             </linearGradient>
             <linearGradient id="trackerAreaGlow" x1="0%" x2="0%" y1="0%" y2="100%">
-              <stop offset="0%" stop-color="#ff8c8c" stop-opacity="0.34"></stop>
-              <stop offset="100%" stop-color="#ff8c8c" stop-opacity="0"></stop>
+              <stop offset="0%" stop-color="#ff7676" stop-opacity="0.34"></stop>
+              <stop offset="100%" stop-color="#ff7676" stop-opacity="0"></stop>
             </linearGradient>
           </defs>
           <line id="timelineBaseline" x1="14" y1="152" x2="546" y2="152" stroke="rgba(255,255,255,0.2)" stroke-dasharray="4 4"></line>
@@ -292,7 +292,7 @@ const timelineRanges = [7, 14, 30];
         .map((coord) => {
           const isToday = coord.day === today;
           const radius = isToday ? 5.5 : 4;
-          const fill = isToday ? '#ffffff' : '#ff9c9c';
+          const fill = isToday ? '#ffffff' : '#ff8a8a';
           return `<g><circle cx="${coord.x}" cy="${coord.y}" r="${radius}" fill="${fill}"></circle><title>${coord.day}: ${coord.minutes} mins</title></g>`;
         })
         .join('');
@@ -387,34 +387,34 @@ const timelineRanges = [7, 14, 30];
     border-radius: 1.7rem;
     border: 1px solid rgba(255, 255, 255, 0.14);
     padding: 1.2rem;
-    background: linear-gradient(160deg, rgba(14, 22, 38, 0.9), rgba(8, 13, 24, 0.88));
+    background: linear-gradient(160deg, rgba(16, 28, 50, 0.9), rgba(9, 16, 30, 0.88));
     box-shadow: 0 18px 34px rgba(0, 0, 0, 0.28);
   }
 
   .tracker-card--timer {
     background:
-      radial-gradient(90% 130% at 14% -10%, rgba(96, 143, 255, 0.22), transparent 58%),
-      linear-gradient(180deg, rgba(12, 16, 30, 0.94), rgba(8, 11, 20, 0.9));
+      radial-gradient(90% 130% at 14% -10%, rgba(91, 158, 255, 0.28), transparent 58%),
+      linear-gradient(180deg, rgba(16, 22, 46, 0.94), rgba(8, 14, 28, 0.9));
   }
 
   .tracker-card--streak {
-    background: linear-gradient(120deg, #090e1f, #091131 38%, #a45763);
+    background: linear-gradient(120deg, #17255a, #211d6a 38%, #cf4f64);
   }
 
   .tracker-card--mood {
-    background: linear-gradient(120deg, #6f6390, #5f5b85 44%, #53545f);
+    background: linear-gradient(120deg, #8368cf, #6652bf 44%, #464379);
   }
 
   .tracker-card--stats {
     background:
-      radial-gradient(120% 90% at 4% -20%, rgba(86, 124, 255, 0.3), transparent 62%),
-      linear-gradient(180deg, #545766, #51545d);
+      radial-gradient(120% 90% at 4% -20%, rgba(82, 129, 255, 0.36), transparent 62%),
+      linear-gradient(180deg, #2e3f8e, #16224e);
   }
 
   .tracker-card--timeline {
     background:
-      radial-gradient(100% 70% at 100% 0%, rgba(255, 130, 130, 0.2), transparent 70%),
-      linear-gradient(160deg, #545969, #53545f);
+      radial-gradient(100% 70% at 100% 0%, rgba(255, 110, 110, 0.24), transparent 70%),
+      linear-gradient(160deg, #30408a, #241e55);
   }
 
   .tracker-kicker {
@@ -457,13 +457,13 @@ const timelineRanges = [7, 14, 30];
     border: 0;
     border-radius: 999px;
     padding: 0.9rem 1rem 1rem;
-    background: linear-gradient(180deg, #ff6a6a, #ed5959);
+    background: linear-gradient(180deg, #ff5b5b, #ff3f3f);
     color: #fff;
     font-family: 'Space Grotesk', sans-serif;
     font-size: clamp(1.4rem, 5vw, 2rem);
     font-weight: 700;
     letter-spacing: -0.01em;
-    box-shadow: 0 16px 30px rgba(255, 89, 89, 0.32);
+    box-shadow: 0 16px 30px rgba(255, 63, 63, 0.34);
   }
 
   .tracker-message {
@@ -573,7 +573,7 @@ const timelineRanges = [7, 14, 30];
     height: 100%;
     width: 0%;
     border-radius: inherit;
-    background: linear-gradient(90deg, #567cff, #8bd9ff);
+    background: linear-gradient(90deg, #4f78ff, #74c8ff);
     transition: width 240ms ease;
   }
 

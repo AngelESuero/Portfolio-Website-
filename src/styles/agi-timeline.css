@@ -1,7 +1,7 @@
 :root {
-  --agi-phase-1: #e47ef4;
-  --agi-phase-2: #f8bb54;
-  --agi-phase-3: #64d68e;
+  --agi-phase-1: #ef62ff;
+  --agi-phase-2: #ffc93d;
+  --agi-phase-3: #4fe07c;
   --agi-accent: var(--tone-accent);
 }
 
@@ -301,7 +301,7 @@
 }
 
 .metric-card[data-trend='concerning'] {
-  border-left-color: #f37474;
+  border-left-color: #ff6f6f;
 }
 
 .metric-card:hover {
@@ -492,18 +492,18 @@
 }
 
 .badge.architecture {
-  background: rgba(118, 168, 249, 0.18);
-  color: #76a8f9;
+  background: rgba(93, 168, 255, 0.2);
+  color: #5da8ff;
 }
 
 .badge.bottleneck {
-  background: rgba(243, 116, 116, 0.18);
-  color: #f37474;
+  background: rgba(255, 111, 111, 0.2);
+  color: #ff6f6f;
 }
 
 .badge.metric {
-  background: rgba(174, 141, 249, 0.18);
-  color: #ae8df9;
+  background: rgba(180, 131, 255, 0.2);
+  color: #b483ff;
 }
 
 .tech-content {
@@ -569,14 +569,14 @@
 }
 
 .bottleneck-section {
-  background: rgba(243, 116, 116, 0.12);
-  border-left: 3px solid #f37474;
+  background: rgba(255, 111, 111, 0.14);
+  border-left: 3px solid #ff6f6f;
   padding: 0.9rem;
   border-radius: 4px;
 }
 
 .bottleneck-section h4 {
-  color: #f37474;
+  color: #ff6f6f;
 }
 
 .references-list {
