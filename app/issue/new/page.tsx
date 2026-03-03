@@ -31,23 +31,24 @@ export default function NewIssuePage() {
 
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) return;
+    const client = supabase;
 
     const loadTier = async () => {
-      const { data } = await supabase.auth.getUser();
+      const { data } = await client.auth.getUser();
       if (!data.user) {
         setTier("unverified");
         setHasPendingVerification(false);
         return;
       }
 
-      let { data: profile, error: profileError } = await supabase
+      let { data: profile, error: profileError } = await client
         .from("users")
         .select("verification_tier")
         .eq("id", data.user.id)
         .maybeSingle();
 
       if (!profile && !profileError) {
-        const { error: insertError } = await supabase.from("users").insert({
+        const { error: insertError } = await client.from("users").insert({
           id: data.user.id
         });
 
@@ -56,7 +57,7 @@ export default function NewIssuePage() {
           return;
         }
 
-        const reload = await supabase
+        const reload = await client
           .from("users")
           .select("verification_tier")
           .eq("id", data.user.id)
@@ -73,7 +74,7 @@ export default function NewIssuePage() {
 
       setTier(profile?.verification_tier ?? "unverified");
 
-      const { data: pendingRequest, error: pendingError } = await supabase
+      const { data: pendingRequest, error: pendingError } = await client
         .from("verification_requests")
         .select("id")
         .eq("user_id", data.user.id)

@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
+import type { ReactNode } from "react";
 import { PwaRegister } from "./components/PwaRegister";
 
 export const metadata: Metadata = {
@@ -12,7 +13,7 @@ export const viewport: Viewport = {
   themeColor: "#54575b"
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body className="min-h-screen bg-fog">

@@ -3,6 +3,8 @@
 import { useMemo } from "react";
 import type { Comment } from "../../lib/types";
 
+type CommentNode = Comment & { children: CommentNode[] };
+
 export function CommentThread({
   comments,
   onReport
@@ -11,8 +13,8 @@ export function CommentThread({
   onReport: (commentId: string) => void;
 }) {
   const tree = useMemo(() => {
-    const map = new Map<string, Comment & { children: Comment[] }>();
-    const roots: (Comment & { children: Comment[] })[] = [];
+    const map = new Map<string, CommentNode>();
+    const roots: CommentNode[] = [];
     comments.forEach((comment) => {
       map.set(comment.id, { ...comment, children: [] });
     });
@@ -26,7 +28,7 @@ export function CommentThread({
     return roots;
   }, [comments]);
 
-  const renderNode = (node: Comment & { children: Comment[] }, depth: number) => {
+  const renderNode = (node: CommentNode, depth: number) => {
     return (
       <div key={node.id} className={`rounded-xl border border-slate/10 bg-white p-3 ${depth ? "ml-4" : ""}`}>
         <p className="text-sm text-ink">{node.body}</p>

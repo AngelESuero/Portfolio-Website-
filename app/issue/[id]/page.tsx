@@ -34,30 +34,31 @@ export default function IssueDetailPage() {
 
   useEffect(() => {
     if (!issueId || !isSupabaseConfigured || !supabase) return;
+    const client = supabase;
 
     const load = async () => {
-      const { data: issueData } = await supabase.from("issues").select("*").eq("id", issueId).maybeSingle();
+      const { data: issueData } = await client.from("issues").select("*").eq("id", issueId).maybeSingle();
       if (issueData) setIssue(issueData);
 
-      const { data: commentData } = await supabase
+      const { data: commentData } = await client
         .from("comments")
         .select("*")
         .eq("issue_id", issueId)
         .order("created_at", { ascending: true });
       setComments(commentData ?? []);
 
-      const { data: eventData } = await supabase
+      const { data: eventData } = await client
         .from("status_events")
         .select("*")
         .eq("issue_id", issueId)
         .order("created_at", { ascending: true });
       setEvents(eventData ?? []);
 
-      const { count: supportCount } = await supabase
+      const { count: supportCount } = await client
         .from("supports")
         .select("id", { count: "exact", head: true })
         .eq("issue_id", issueId);
-      const { count: impactCount } = await supabase
+      const { count: impactCount } = await client
         .from("impacts")
         .select("id", { count: "exact", head: true })
         .eq("issue_id", issueId);
@@ -67,9 +68,9 @@ export default function IssueDetailPage() {
         impact: impactCount ?? 0
       });
 
-      const { data: user } = await supabase.auth.getUser();
+      const { data: user } = await client.auth.getUser();
       if (user.user) {
-        const { data: profile } = await supabase
+        const { data: profile } = await client
           .from("users")
           .select("verification_tier")
           .eq("id", user.user.id)
@@ -78,7 +79,7 @@ export default function IssueDetailPage() {
           setTier(profile.verification_tier);
         }
 
-        const { data: supportRow } = await supabase
+        const { data: supportRow } = await client
           .from("supports")
           .select("id")
           .eq("issue_id", issueId)
@@ -86,7 +87,7 @@ export default function IssueDetailPage() {
           .maybeSingle();
         setSupported(Boolean(supportRow));
 
-        const { data: impactRow } = await supabase
+        const { data: impactRow } = await client
           .from("impacts")
           .select("id")
           .eq("issue_id", issueId)

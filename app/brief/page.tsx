@@ -14,10 +14,11 @@ export default function BriefPage() {
       setLoading(false);
       return;
     }
+    const client = supabase;
 
     const load = async () => {
       setLoading(true);
-      const { data } = await supabase
+      const { data } = await client
         .from("issues")
         .select("*, supports(count)")
         .order("created_at", { ascending: false });
