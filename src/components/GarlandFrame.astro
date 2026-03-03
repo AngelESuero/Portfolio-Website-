@@ -229,12 +229,12 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
 
   .garland-photo-patch {
     position: absolute;
-    top: calc(var(--header-height, 64px) + 6px);
-    width: clamp(82px, 7vw, 120px);
-    height: clamp(120px, 18vh, 210px);
+    top: calc(var(--header-height, 64px) + 4px);
+    width: clamp(92px, 7.6vw, 132px);
+    height: clamp(156px, 21vh, 248px);
     overflow: hidden;
     isolation: isolate;
-    opacity: calc(0.16 - 0.035 * var(--garland-retract-progress));
+    opacity: calc(0.28 - 0.06 * var(--garland-retract-progress));
     transition:
       opacity var(--garland-duration-soft) var(--ease-standard, ease),
       transform var(--garland-duration-strong) var(--ease-emphasized, ease);
@@ -250,50 +250,50 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
 
   .garland-photo-patch::before {
     background:
-      linear-gradient(to bottom, rgba(2, 6, 12, 0.44) 0%, rgba(2, 6, 12, 0.12) 18%, transparent 40%, rgba(2, 6, 12, 0.38) 100%);
+      linear-gradient(to bottom, rgba(2, 6, 12, 0.28) 0%, rgba(2, 6, 12, 0.08) 16%, transparent 36%, rgba(2, 6, 12, 0.28) 100%);
   }
 
   .garland-photo-patch-left {
-    left: clamp(-62px, -4.8vw, -38px);
+    left: clamp(-34px, -2.8vw, -18px);
     transform-origin: top left;
     transform:
-      translateX(calc((-5px * var(--garland-retract-progress)) + (var(--garland-wind-x, 0px) * -0.02)))
+      translateX(calc((-4px * var(--garland-retract-progress)) + (var(--garland-wind-x, 0px) * -0.02)))
       rotate(calc(var(--garland-wind-strength, 0) * -0.03deg));
   }
 
   .garland-photo-patch-left::after {
     background:
-      linear-gradient(to right, rgba(2, 6, 12, 0.98) 0%, rgba(2, 6, 12, 0.86) 18%, rgba(2, 6, 12, 0.26) 42%, transparent 62%, rgba(2, 6, 12, 0.76) 100%),
-      linear-gradient(to bottom, transparent 0%, transparent 60%, rgba(2, 6, 12, 0.74) 100%);
+      linear-gradient(to right, rgba(2, 6, 12, 0.82) 0%, rgba(2, 6, 12, 0.54) 16%, rgba(2, 6, 12, 0.08) 34%, transparent 56%, rgba(2, 6, 12, 0.5) 100%),
+      linear-gradient(to bottom, transparent 0%, transparent 68%, rgba(2, 6, 12, 0.56) 100%);
   }
 
   .garland-photo-patch-right {
-    right: clamp(-62px, -4.8vw, -38px);
+    right: clamp(-34px, -2.8vw, -18px);
     transform-origin: top right;
     transform:
-      translateX(calc((5px * var(--garland-retract-progress)) + (var(--garland-wind-x, 0px) * 0.02)))
+      translateX(calc((4px * var(--garland-retract-progress)) + (var(--garland-wind-x, 0px) * 0.02)))
       rotate(calc(var(--garland-wind-strength, 0) * 0.03deg));
   }
 
   .garland-photo-patch-right::after {
     background:
-      linear-gradient(to left, rgba(2, 6, 12, 0.98) 0%, rgba(2, 6, 12, 0.86) 18%, rgba(2, 6, 12, 0.26) 42%, transparent 62%, rgba(2, 6, 12, 0.76) 100%),
-      linear-gradient(to bottom, transparent 0%, transparent 60%, rgba(2, 6, 12, 0.74) 100%);
+      linear-gradient(to left, rgba(2, 6, 12, 0.82) 0%, rgba(2, 6, 12, 0.54) 16%, rgba(2, 6, 12, 0.08) 34%, transparent 56%, rgba(2, 6, 12, 0.5) 100%),
+      linear-gradient(to bottom, transparent 0%, transparent 68%, rgba(2, 6, 12, 0.56) 100%);
   }
 
   .garland-photo-patch__image {
     position: absolute;
-    top: -8%;
+    top: -4%;
     display: block;
-    height: 138%;
+    height: 128%;
     width: auto;
     max-width: none;
     filter:
-      saturate(0.4)
-      brightness(0.3)
-      contrast(0.96)
-      sepia(0.08)
-      drop-shadow(0 8px 14px rgba(0, 0, 0, 0.14));
+      saturate(0.5)
+      brightness(0.42)
+      contrast(0.98)
+      sepia(0.05)
+      drop-shadow(0 8px 14px rgba(0, 0, 0, 0.12));
   }
 
   .garland-photo-patch-left .garland-photo-patch__image {
@@ -340,8 +340,8 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
   }
 
   .garland-real[data-has-photo-assets='true'] {
-    opacity: 0.18;
-    filter: saturate(0.42) brightness(0.7);
+    opacity: 0.24;
+    filter: saturate(0.5) brightness(0.76);
   }
 
   .garland-real[data-has-photo-assets='true'] .wire-left,
@@ -366,7 +366,7 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
   .garland-real[data-has-photo-assets='true'] .header-vine-band {
     left: clamp(20px, 2.1vw, 32px);
     right: clamp(20px, 2.1vw, 32px);
-    opacity: calc(0.14 - 0.035 * var(--garland-retract-progress));
+    opacity: calc(0.18 - 0.04 * var(--garland-retract-progress));
   }
 
   .garland-real::before {
@@ -959,18 +959,18 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
     }
 
     .garland-photo-patch {
-      top: calc(var(--header-height, 64px) + 8px);
-      width: clamp(56px, 7vw, 86px);
-      height: clamp(96px, 15vh, 150px);
-      opacity: calc(0.12 - 0.03 * var(--garland-retract-progress));
+      top: calc(var(--header-height, 64px) + 6px);
+      width: clamp(68px, 8vw, 96px);
+      height: clamp(116px, 16vh, 176px);
+      opacity: calc(0.2 - 0.045 * var(--garland-retract-progress));
     }
 
     .garland-photo-patch-left {
-      left: clamp(-42px, -6vw, -26px);
+      left: clamp(-28px, -4.6vw, -16px);
     }
 
     .garland-photo-patch-right {
-      right: clamp(-42px, -6vw, -26px);
+      right: clamp(-28px, -4.6vw, -16px);
     }
 
     .garland-real {
