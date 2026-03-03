@@ -942,6 +942,9 @@ const exploreLinks = [
           const reduced = prefersReducedMotion();
           const CURSOR_IDLE_MS = 12000;
           let idleTimer = null;
+          let cursorFrame = null;
+          let nextX = `${window.innerWidth / 2}px`;
+          let nextY = `${window.innerHeight * 0.42}px`;
 
           const setCursorIdle = (isIdle) => {
             root.dataset.cursorIdle = isIdle ? 'true' : 'false';
@@ -958,31 +961,39 @@ const exploreLinks = [
 
           if (!hasFinePointer || reduced) {
             setCursorIdle(true);
-          } else {
-            resetCursorIdleTimer();
-            document.addEventListener('visibilitychange', () => {
-              if (document.hidden) {
-                setCursorIdle(true);
-              } else {
-                resetCursorIdleTimer();
-              }
-            });
+            return;
           }
+
+          const applyPointerPosition = () => {
+            cursorFrame = null;
+            root.style.setProperty('--mx', nextX);
+            root.style.setProperty('--my', nextY);
+            root.style.setProperty('--aura-x', nextX);
+            root.style.setProperty('--aura-y', nextY);
+            root.style.setProperty('--hallway-x', nextX);
+            root.style.setProperty('--hallway-y', nextY);
+            if (light) {
+              light.style.left = nextX;
+              light.style.top = nextY;
+            }
+          };
+
+          resetCursorIdleTimer();
+          document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+              setCursorIdle(true);
+            } else {
+              resetCursorIdleTimer();
+            }
+          });
 
           window.addEventListener(
             'pointermove',
             (e) => {
-              const px = `${e.clientX}px`;
-              const py = `${e.clientY}px`;
-              root.style.setProperty('--mx', px);
-              root.style.setProperty('--my', py);
-              root.style.setProperty('--aura-x', px);
-              root.style.setProperty('--aura-y', py);
-              root.style.setProperty('--hallway-x', px);
-              root.style.setProperty('--hallway-y', py);
-              if (light) {
-                light.style.left = px;
-                light.style.top = py;
+              nextX = `${e.clientX}px`;
+              nextY = `${e.clientY}px`;
+              if (!cursorFrame) {
+                cursorFrame = window.requestAnimationFrame(applyPointerPosition);
               }
               resetCursorIdleTimer();
             },
@@ -1048,13 +1059,44 @@ const exploreLinks = [
         };
 
         const initScrollWind = () => {
+          const SCROLL_IDLE_MS = 140;
+          let scrollTimer = null;
+          let scrollOptimizing = false;
+
+          const setScrollOptimizing = (isActive) => {
+            if (scrollOptimizing === isActive) return;
+            scrollOptimizing = isActive;
+            root.dataset.scrollOptimizing = isActive ? 'true' : 'false';
+          };
+
           const clearWind = () => {
+            if (scrollTimer) {
+              window.clearTimeout(scrollTimer);
+              scrollTimer = null;
+            }
+
+            setScrollOptimizing(false);
             root.dataset.siteScrollActive = 'false';
             root.style.setProperty('--garland-wind-x', '0px');
             root.style.setProperty('--garland-wind-strength', '0');
           };
 
+          const markScrolling = () => {
+            setScrollOptimizing(true);
+            if (scrollTimer) window.clearTimeout(scrollTimer);
+            scrollTimer = window.setTimeout(() => {
+              setScrollOptimizing(false);
+              scrollTimer = null;
+            }, SCROLL_IDLE_MS);
+          };
+
           clearWind();
+          window.addEventListener('scroll', markScrolling, { passive: true });
+          window.addEventListener('wheel', markScrolling, { passive: true });
+          window.addEventListener('touchmove', markScrolling, { passive: true });
+          document.addEventListener('visibilitychange', () => {
+            if (document.hidden) clearWind();
+          });
         };
 
         const handleColorClick = (event) => {

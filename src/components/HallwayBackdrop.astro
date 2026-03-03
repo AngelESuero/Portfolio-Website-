@@ -533,6 +533,43 @@ const sparkSeeds = [
     }
   }
 
+  :global(html[data-scroll-optimizing='true']) .hallway__photo,
+  :global(html[data-scroll-optimizing='true']) .hallway__focusField,
+  :global(html[data-scroll-optimizing='true']) .hallway__memoryBloom,
+  :global(html[data-scroll-optimizing='true']) .hallway__cursorLight {
+    filter: none;
+  }
+
+  :global(html[data-scroll-optimizing='true']) .hallway__focusField,
+  :global(html[data-scroll-optimizing='true']) .hallway__fog,
+  :global(html[data-scroll-optimizing='true']) .hallway__atmosphere,
+  :global(html[data-scroll-optimizing='true']) .hallway__grain,
+  :global(html[data-scroll-optimizing='true']) .hallway__cursorLight {
+    opacity: 0;
+  }
+
+  :global(html[data-scroll-optimizing='true']) .hallway__memories {
+    opacity: 0.42;
+  }
+
+  :global(html[data-scroll-optimizing='true']) .hallway__depth {
+    opacity: 0.08;
+    transform: none;
+    transition: none;
+  }
+
+  :global(html[data-scroll-optimizing='true']) .hallway__neon {
+    opacity: 0.1;
+  }
+
+  :global(html[data-scroll-optimizing='true']) .hallway__memory,
+  :global(html[data-scroll-optimizing='true']) .hallway__spark,
+  :global(html[data-scroll-optimizing='true']) .hallway__fog,
+  :global(html[data-scroll-optimizing='true']) .hallway__atmosphere,
+  :global(html[data-scroll-optimizing='true']) .hallway__grain {
+    animation: none !important;
+  }
+
   @media (pointer: coarse) {
     .hallway__cursorLight {
       display: none;
@@ -616,8 +653,23 @@ const sparkSeeds = [
     let pointerX = window.innerWidth / 2;
     let pointerY = window.innerHeight * 0.42;
     let frameId = 0;
+    let memoryRects = [];
 
     const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+    const syncMemoryRects = () => {
+      memoryRects = memories.map((memory) => {
+        const rect = memory.getBoundingClientRect();
+        return {
+          left: rect.left,
+          top: rect.top,
+          width: rect.width,
+          height: rect.height,
+          centerX: rect.left + rect.width / 2,
+          centerY: rect.top + rect.height / 2
+        };
+      });
+    };
 
     const applyFocus = () => {
       frameId = 0;
@@ -627,11 +679,11 @@ const sparkSeeds = [
       const focusRadius = Math.min(window.innerWidth, window.innerHeight) * 0.34 + 180;
       const ambientRadius = focusRadius * 1.9;
 
-      memories.forEach((memory) => {
-        const rect = memory.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const distance = Math.hypot(pointerX - centerX, pointerY - centerY);
+      memories.forEach((memory, index) => {
+        const rect = memoryRects[index];
+        if (!rect) return;
+
+        const distance = Math.hypot(pointerX - rect.centerX, pointerY - rect.centerY);
         const focus = clamp(1 - distance / focusRadius, 0, 1);
         const ambient = clamp(1 - distance / ambientRadius, 0, 1);
         const presence = clamp(0.08 + ambient * 0.26 + focus * 1.04, 0.08, 1.24);
@@ -660,10 +712,16 @@ const sparkSeeds = [
       scheduleFocus();
     };
 
-    window.addEventListener('pointermove', handlePointerMove, { passive: true });
-    window.addEventListener('resize', scheduleFocus, { passive: true });
-    window.addEventListener('scroll', scheduleFocus, { passive: true });
+    const handleResize = () => {
+      syncMemoryRects();
+      scheduleFocus();
+    };
 
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    window.addEventListener('resize', handleResize, { passive: true });
+    window.addEventListener('modesettings:change', handleResize);
+
+    syncMemoryRects();
     applyFocus();
   })();
 </script>
