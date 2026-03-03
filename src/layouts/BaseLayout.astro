@@ -1004,6 +1004,205 @@ const exploreLinks = [
           );
         };
 
+        const initFocusZoom = () => {
+          const stage = document.querySelector('.site-content-stage');
+          root.dataset.focusZoomActive = 'false';
+
+          if (!(stage instanceof HTMLElement) || prefersReducedMotion()) {
+            root.style.setProperty('--focus-zoom-scale', '1');
+            root.style.setProperty('--focus-zoom-pan-x', '0px');
+            root.style.setProperty('--focus-zoom-pan-y', '0px');
+            return;
+          }
+
+          const canTrackPointer =
+            typeof window.matchMedia === 'function'
+              ? window.matchMedia('(hover: hover) and (pointer: fine)').matches
+              : false;
+          const DWELL_DELAY_MS = 960;
+          const ACTIVATE_DURATION_MS = 4800;
+          const FOCUS_DURATION_MS = 3200;
+          const RELEASE_DURATION_MS = 1500;
+          const MOVE_TOLERANCE_PX = 14;
+          const CENTER_Y_RATIO = 0.42;
+          const ZOOM_SCALE = 1.045;
+          const MAX_PAN_X = 34;
+          const MAX_PAN_Y = 28;
+          let dwellTimer = null;
+          let focusPinned = false;
+          let focusX = window.innerWidth / 2;
+          let focusY = window.innerHeight * CENTER_Y_RATIO;
+
+          const clearDwellTimer = () => {
+            if (!dwellTimer) return;
+            window.clearTimeout(dwellTimer);
+            dwellTimer = null;
+          };
+
+          const setZoomDuration = (durationMs) => {
+            const ms = Math.max(0, Math.round(Number(durationMs) || 0));
+            root.style.setProperty('--focus-zoom-duration', `${ms}ms`);
+          };
+
+          const applyFocusPoint = (x, y) => {
+            const width = Math.max(window.innerWidth, 1);
+            const height = Math.max(window.innerHeight, 1);
+            focusX = clamp(x, 0, width);
+            focusY = clamp(y, 0, height);
+
+            const originX = clamp((focusX / width) * 100, 8, 92);
+            const originY = clamp((focusY / height) * 100, 8, 92);
+            const panX = clamp((width * 0.5 - focusX) * 0.042, -MAX_PAN_X, MAX_PAN_X);
+            const panY = clamp((height * CENTER_Y_RATIO - focusY) * 0.05, -MAX_PAN_Y, MAX_PAN_Y);
+
+            root.style.setProperty('--focus-zoom-origin-x', `${originX.toFixed(2)}%`);
+            root.style.setProperty('--focus-zoom-origin-y', `${originY.toFixed(2)}%`);
+
+            return {
+              panX: `${panX.toFixed(2)}px`,
+              panY: `${panY.toFixed(2)}px`
+            };
+          };
+
+          const setInactive = (duration = RELEASE_DURATION_MS, force = false) => {
+            clearDwellTimer();
+            if (focusPinned && !force) return;
+
+            setZoomDuration(duration);
+            root.dataset.focusZoomActive = 'false';
+            root.style.setProperty('--focus-zoom-scale', '1');
+            root.style.setProperty('--focus-zoom-pan-x', '0px');
+            root.style.setProperty('--focus-zoom-pan-y', '0px');
+          };
+
+          const engage = (x, y, duration = ACTIVATE_DURATION_MS) => {
+            const next = applyFocusPoint(x, y);
+            setZoomDuration(duration);
+            root.dataset.focusZoomActive = 'true';
+            root.style.setProperty('--focus-zoom-scale', String(ZOOM_SCALE));
+            root.style.setProperty('--focus-zoom-pan-x', next.panX);
+            root.style.setProperty('--focus-zoom-pan-y', next.panY);
+          };
+
+          const getFocusableTarget = (node) => {
+            if (!(node instanceof HTMLElement) || node === document.body) return null;
+            const anchor = node.closest(
+              'a, button, input, textarea, select, summary, [tabindex]:not([tabindex="-1"])'
+            );
+            return anchor instanceof HTMLElement ? anchor : node;
+          };
+
+          const syncFocusedElement = (node, duration = FOCUS_DURATION_MS) => {
+            const target = getFocusableTarget(node);
+            if (!target) return false;
+            const rect = target.getBoundingClientRect();
+            if (!rect.width && !rect.height) return false;
+
+            focusPinned = true;
+            clearDwellTimer();
+            engage(rect.left + rect.width / 2, rect.top + rect.height / 2, duration);
+            return true;
+          };
+
+          const scheduleDwell = () => {
+            if (!canTrackPointer || focusPinned) return;
+            clearDwellTimer();
+            dwellTimer = window.setTimeout(() => {
+              engage(focusX, focusY, ACTIVATE_DURATION_MS);
+            }, DWELL_DELAY_MS);
+          };
+
+          const cancelAmbientZoom = () => {
+            clearDwellTimer();
+            if (!focusPinned && root.dataset.focusZoomActive === 'true') {
+              setInactive(RELEASE_DURATION_MS);
+            }
+          };
+
+          applyFocusPoint(focusX, focusY);
+          setZoomDuration(0);
+
+          if (canTrackPointer) {
+            window.addEventListener(
+              'pointermove',
+              (event) => {
+                if (focusPinned) return;
+
+                const nextX = event.clientX;
+                const nextY = event.clientY;
+                const distance = Math.hypot(nextX - focusX, nextY - focusY);
+                focusX = nextX;
+                focusY = nextY;
+
+                if (distance < MOVE_TOLERANCE_PX) return;
+                cancelAmbientZoom();
+                scheduleDwell();
+              },
+              { passive: true }
+            );
+
+            window.addEventListener(
+              'pointerdown',
+              () => {
+                if (!focusPinned) cancelAmbientZoom();
+              },
+              { passive: true }
+            );
+          }
+
+          document.addEventListener('focusin', (event) => {
+            syncFocusedElement(event.target);
+          });
+
+          document.addEventListener('focusout', () => {
+            window.requestAnimationFrame(() => {
+              if (syncFocusedElement(document.activeElement, 1800)) return;
+              focusPinned = false;
+              setInactive(RELEASE_DURATION_MS, true);
+              scheduleDwell();
+            });
+          });
+
+          window.addEventListener(
+            'scroll',
+            () => {
+              if (!focusPinned) cancelAmbientZoom();
+            },
+            { passive: true }
+          );
+
+          window.addEventListener(
+            'wheel',
+            () => {
+              if (!focusPinned) cancelAmbientZoom();
+            },
+            { passive: true }
+          );
+
+          window.addEventListener(
+            'resize',
+            () => {
+              if (root.dataset.focusZoomActive === 'true') {
+                engage(focusX, focusY, 900);
+                return;
+              }
+              applyFocusPoint(focusX, focusY);
+            },
+            { passive: true }
+          );
+
+          document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+              focusPinned = false;
+              setInactive(600, true);
+              return;
+            }
+
+            if (syncFocusedElement(document.activeElement, 1800)) return;
+            scheduleDwell();
+          });
+        };
+
         const initHeaderMetrics = () => {
           const header = document.querySelector('.site-header');
           if (!(header instanceof HTMLElement)) {
@@ -1087,9 +1286,9 @@ const exploreLinks = [
             return;
           }
 
-          const SHOW_EDGE_PX = 24;
-          const HIDE_BUFFER_PX = 52;
-          const HIDE_DELAY_MS = 160;
+          const SHOW_EDGE_PX = 44;
+          const HIDE_BUFFER_PX = 36;
+          const HIDE_DELAY_MS = 90;
           let hideTimer = null;
           let pointerY = Number.POSITIVE_INFINITY;
           let hoveringHeader = false;
@@ -1279,6 +1478,7 @@ const exploreLinks = [
           initSiteActivity();
           initScrollWind();
           initCursorLight();
+          initFocusZoom();
           document.addEventListener('click', handleColorClick, { capture: true });
         };
 
@@ -1308,50 +1508,52 @@ const exploreLinks = [
     <div class="site-overlay" aria-hidden="true"></div>
     <GarlandFrame />
     <Header />
-    <main class="page-shell w-full">
-      <div class="mode-normal">
-        <slot />
-      </div>
-
-      <section class="mode-walk view-surface" aria-labelledby="walkthrough-heading">
-        <header class="view-surface-header">
-          <p class="view-surface-kicker">Walkthrough mode</p>
-          <h1 id="walkthrough-heading">Walkthrough</h1>
-          <p>Use Next and Back to follow a simple guided sequence. Your current step is saved.</p>
-        </header>
-
-        <ol class="walkthrough-list" aria-live="polite">
-          {walkthroughSteps.map((step, index) => (
-            <li class="walkthrough-step" data-step={String(index + 1)} hidden={index !== 0}>
-              <p class="walkthrough-step-meta">Step {index + 1} of {walkthroughSteps.length}</p>
-              <h2>{step.title}</h2>
-              <p>{step.text}</p>
-              <a href={step.href} class="walkthrough-step-link">{step.cta}</a>
-            </li>
-          ))}
-        </ol>
-
-        <div class="walkthrough-controls">
-          <button type="button" id="walkthrough-back">Back</button>
-          <p id="walkthrough-step-indicator">Step 1 / {walkthroughSteps.length}</p>
-          <button type="button" id="walkthrough-next">Next</button>
+    <div class="site-content-stage">
+      <main class="page-shell w-full">
+        <div class="mode-normal">
+          <slot />
         </div>
-      </section>
 
-      <section class="mode-explore view-surface" aria-labelledby="explore-heading">
-        <header class="view-surface-header">
-          <p class="view-surface-kicker">Explore mode</p>
-          <h1 id="explore-heading">Explore</h1>
-          <p>Scan sections quickly, then jump directly to the page you want.</p>
-        </header>
-        <div class="explore-grid">
-          {exploreLinks.map((item) => (
-            <a href={item.href} class="explore-card">{item.label}</a>
-          ))}
-        </div>
-      </section>
-    </main>
-    <Footer />
+        <section class="mode-walk view-surface" aria-labelledby="walkthrough-heading">
+          <header class="view-surface-header">
+            <p class="view-surface-kicker">Walkthrough mode</p>
+            <h1 id="walkthrough-heading">Walkthrough</h1>
+            <p>Use Next and Back to follow a simple guided sequence. Your current step is saved.</p>
+          </header>
+
+          <ol class="walkthrough-list" aria-live="polite">
+            {walkthroughSteps.map((step, index) => (
+              <li class="walkthrough-step" data-step={String(index + 1)} hidden={index !== 0}>
+                <p class="walkthrough-step-meta">Step {index + 1} of {walkthroughSteps.length}</p>
+                <h2>{step.title}</h2>
+                <p>{step.text}</p>
+                <a href={step.href} class="walkthrough-step-link">{step.cta}</a>
+              </li>
+            ))}
+          </ol>
+
+          <div class="walkthrough-controls">
+            <button type="button" id="walkthrough-back">Back</button>
+            <p id="walkthrough-step-indicator">Step 1 / {walkthroughSteps.length}</p>
+            <button type="button" id="walkthrough-next">Next</button>
+          </div>
+        </section>
+
+        <section class="mode-explore view-surface" aria-labelledby="explore-heading">
+          <header class="view-surface-header">
+            <p class="view-surface-kicker">Explore mode</p>
+            <h1 id="explore-heading">Explore</h1>
+            <p>Scan sections quickly, then jump directly to the page you want.</p>
+          </header>
+          <div class="explore-grid">
+            {exploreLinks.map((item) => (
+              <a href={item.href} class="explore-card">{item.label}</a>
+            ))}
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
     <script is:inline>
       (() => {
         const body = document.body;
