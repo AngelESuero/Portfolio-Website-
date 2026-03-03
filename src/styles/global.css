@@ -564,7 +564,11 @@ body[data-header-mode='peek'][data-header-reveal='hidden'] .site-header {
 .site-header .header-actions .pill,
 .site-header .header-actions button,
 .site-header .header-actions .view-settings-open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 38px;
+  line-height: 1;
 }
 
 @media (min-width: 768px) and (max-width: 1760px) {
