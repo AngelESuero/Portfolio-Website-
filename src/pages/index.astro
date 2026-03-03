@@ -302,31 +302,39 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
         ))}
       </div>
 
-      <div class="mt-4 section-panels">
-        {homeSections.map((section, index) => (
-          <div
-            class:list={['section-panel', index === 0 && 'is-active']}
-            data-section-panel={section.id}
-            role="tabpanel"
-            aria-label={`${section.label} spotlight`}
-          >
-            {section.panelType === 'embed' ? (
-              section.items.length > 0 ? (
-                <div class="section-cards">
-                  {section.items.map((item) => (
-                    <div class="section-card-shell">
-                      <EmbedCard item={item} showResizeHint={true} />
-                    </div>
-                  ))}
-                </div>
+      <div class="mt-4 section-panels-shell">
+        <div class="section-swipe-rail" data-section-swipe-rail aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <div class="section-panels">
+          {homeSections.map((section, index) => (
+            <div
+              class:list={['section-panel', index === 0 && 'is-active']}
+              data-section-panel={section.id}
+              role="tabpanel"
+              aria-label={`${section.label} spotlight`}
+            >
+              {section.panelType === 'embed' ? (
+                section.items.length > 0 ? (
+                  <div class="section-cards">
+                    {section.items.map((item) => (
+                      <div class="section-card-shell">
+                        <EmbedCard item={item} showResizeHint={true} />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p class="text-sm text-zinc-400">No spotlight links configured yet.</p>
+                )
               ) : (
-                <p class="text-sm text-zinc-400">No spotlight links configured yet.</p>
-              )
-            ) : (
-              <AIAccountabilityPanel />
-            )}
-          </div>
-        ))}
+                <AIAccountabilityPanel />
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </section>
 
@@ -353,6 +361,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
   <script is:inline>
     (() => {
       const tablist = document.querySelector('.section-tablist');
+      const swipeRail = document.querySelector('[data-section-swipe-rail]');
       const sectionPanels = document.querySelector('.section-panels');
       const tabs = Array.from(document.querySelectorAll('[data-section-tab]'));
       const panels = Array.from(document.querySelectorAll('[data-section-panel]'));
@@ -417,6 +426,9 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
       });
 
       const swipeSurfaces = [tablist];
+      if (swipeRail instanceof HTMLElement) {
+        swipeSurfaces.push(swipeRail);
+      }
       if (sectionPanels instanceof HTMLElement) {
         swipeSurfaces.push(sectionPanels);
       }
@@ -424,6 +436,8 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
       let swipePointerId = -1;
       let swipeStartX = 0;
       let swipeStartY = 0;
+      let swipeStartButton = 0;
+      let handledMiddleActivation = false;
       let suppressClick = false;
       let swipeSurface = null;
 
@@ -444,6 +458,12 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
             if (!isTabSwipeEnabled() || event.button !== 1) return;
             if (surface === sectionPanels && isInteractivePanelTarget(event.target)) return;
             event.preventDefault();
+            if (handledMiddleActivation) return;
+            activateAdjacent(event.shiftKey ? -1 : 1);
+            handledMiddleActivation = true;
+            window.setTimeout(() => {
+              handledMiddleActivation = false;
+            }, 0);
           },
           true
         );
@@ -467,6 +487,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
           swipePointerId = event.pointerId;
           swipeStartX = event.clientX;
           swipeStartY = event.clientY;
+          swipeStartButton = event.button;
           suppressClick = false;
           swipeSurface = surface;
 
@@ -500,11 +521,24 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
           const horizontalSwipe = Math.abs(deltaX) > 56 && Math.abs(deltaX) > Math.abs(deltaY) * 1.15;
           if (horizontalSwipe) {
             suppressClick = true;
+            if (swipeStartButton === 1) {
+              handledMiddleActivation = true;
+              window.setTimeout(() => {
+                handledMiddleActivation = false;
+              }, 0);
+            }
           }
 
           endSwipe(event.pointerId);
 
           if (!horizontalSwipe) {
+            if (swipeStartButton === 1) {
+              activateAdjacent(event.shiftKey ? -1 : 1);
+              handledMiddleActivation = true;
+              window.setTimeout(() => {
+                handledMiddleActivation = false;
+              }, 0);
+            }
             suppressClick = false;
             return;
           }
@@ -791,6 +825,28 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
     animation: homeSectionPanelIn 220ms var(--ease-emphasized);
   }
 
+  .section-panels-shell {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .section-swipe-rail {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.34rem;
+    min-height: 1rem;
+    opacity: 0.72;
+  }
+
+  .section-swipe-rail span {
+    display: block;
+    width: clamp(2.1rem, 10vw, 3rem);
+    height: 2px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--tone-accent) 34%, var(--line2));
+  }
+
   .section-cards {
     display: flex;
     flex-wrap: wrap;
@@ -914,6 +970,10 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
       cursor: grab;
       user-select: none;
       -webkit-user-select: none;
+    }
+
+    html[data-tab-swipe='on'] .section-swipe-rail {
+      cursor: ew-resize;
     }
 
     html[data-tab-swipe='on'] .section-tablist.is-dragging {
