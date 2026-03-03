@@ -1,5 +1,7 @@
 import type { LinkHubProvider } from '../data/linkhub';
 
+const YOUTUBE_EMBED_BASE_URL = 'https://www.youtube-nocookie.com/embed';
+
 export type EmbedResolutionReason =
   | 'ok'
   | 'unsupported_url_shape'
@@ -80,14 +82,21 @@ export const resolveEmbed = (urlValue: string, preferredProvider?: LinkHubProvid
 
   if (provider === 'youtube') {
     if (parsed.pathname.startsWith('/embed/')) {
-      return { provider, embedUrl: urlValue, embeddable: true, reason: 'ok' };
+      const embedPath = parsed.pathname.replace(/^\/embed/, '');
+      const embedQuery = parsed.search || '';
+      return {
+        provider,
+        embedUrl: `${YOUTUBE_EMBED_BASE_URL}${embedPath}${embedQuery}`,
+        embeddable: true,
+        reason: 'ok'
+      };
     }
 
     const playlistId = parsed.searchParams.get('list');
     if (playlistId) {
       return {
         provider,
-        embedUrl: `https://www.youtube.com/embed/videoseries?list=${encodeURIComponent(playlistId)}`,
+        embedUrl: `${YOUTUBE_EMBED_BASE_URL}/videoseries?list=${encodeURIComponent(playlistId)}`,
         embeddable: true,
         reason: 'ok'
       };
@@ -97,18 +106,18 @@ export const resolveEmbed = (urlValue: string, preferredProvider?: LinkHubProvid
     if (host.includes('youtu.be')) {
       const id = parsed.pathname.split('/').filter(Boolean)[0];
       if (id) {
-        return { provider, embedUrl: `https://www.youtube.com/embed/${id}`, embeddable: true, reason: 'ok' };
+        return { provider, embedUrl: `${YOUTUBE_EMBED_BASE_URL}/${id}`, embeddable: true, reason: 'ok' };
       }
     }
 
     const shorts = parsed.pathname.match(/^\/shorts\/([^/]+)/);
     if (shorts?.[1]) {
-      return { provider, embedUrl: `https://www.youtube.com/embed/${shorts[1]}`, embeddable: true, reason: 'ok' };
+      return { provider, embedUrl: `${YOUTUBE_EMBED_BASE_URL}/${shorts[1]}`, embeddable: true, reason: 'ok' };
     }
 
     const videoId = parsed.searchParams.get('v');
     if (videoId) {
-      return { provider, embedUrl: `https://www.youtube.com/embed/${videoId}`, embeddable: true, reason: 'ok' };
+      return { provider, embedUrl: `${YOUTUBE_EMBED_BASE_URL}/${videoId}`, embeddable: true, reason: 'ok' };
     }
 
     return { provider, embedUrl: null, embeddable: false, reason: 'unsupported_url_shape' };

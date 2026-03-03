@@ -232,7 +232,7 @@ const xFeedMode = 'fallback' as const;
 const xFeedItems = localXFallbackItems
   .sort((a, b) => xPublishedAtToTimestamp(b.publishedAt) - xPublishedAtToTimestamp(a.publishedAt))
   .slice(0, 6);
-const youtubeUploadsEmbedUrl = `https://www.youtube.com/embed/videoseries?list=${youtubeUploadsPlaylistId}`;
+const youtubeUploadsEmbedUrl = `https://www.youtube-nocookie.com/embed/videoseries?list=${youtubeUploadsPlaylistId}`;
 const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
   .filter((item) => typeof item?.src === 'string' && item.src)
   .slice(0, 4)
