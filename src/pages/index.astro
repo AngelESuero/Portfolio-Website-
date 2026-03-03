@@ -48,8 +48,8 @@ interface BaseHomeSection {
   color: AccentColorKey;
   tone: SiteToneKey;
   panelType: SectionPanelType;
-}
   isLimited?: boolean;
+}
 
 interface EmbedHomeSection extends BaseHomeSection {
   panelType: 'embed';
@@ -106,8 +106,8 @@ const homeSections: HomeSection[] = [
     color: 'white',
     tone: 'presence',
     panelType: 'embed',
-    items: pickItems('video', ['growth-happiness-journey'])
     isLimited: true,
+    items: pickItems('video', ['growth-happiness-journey'])
   },
   {
     id: 'newark',
@@ -309,10 +309,10 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
             data-section-tab={section.id}
             data-color={section.color}
             data-tone={section.tone}
+            aria-label={section.isLimited ? `${section.label}, limited content` : undefined}
             aria-selected={index === 0 ? 'true' : 'false'}
             class:list={['section-tab', index === 0 && 'is-active']}
           >
-            aria-label={section.isLimited ? `${section.label}, limited content` : undefined}
             {section.label}{section.isLimited ? '*' : ''}
           </button>
         ))}
