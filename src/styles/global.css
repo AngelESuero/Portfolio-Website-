@@ -128,6 +128,10 @@ html[data-size='spacious'] {
   --space-scale: 1.16;
 }
 
+html {
+  font-size: calc(16px * var(--ui-scale));
+}
+
 :root.dark {
   color-scheme: dark;
   --tone-bg: #060911;
@@ -215,7 +219,7 @@ body[data-theme] {
 
 body {
   @apply font-body leading-relaxed;
-  font-size: calc(1rem * var(--ui-scale));
+  font-size: 1rem;
   line-height: var(--content-leading);
   color: var(--text);
   background-image:

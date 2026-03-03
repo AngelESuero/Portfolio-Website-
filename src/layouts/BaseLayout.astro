@@ -583,6 +583,10 @@ const exploreLinks = [
         };
 
         const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const setDynamicCssVar = (name, value) => {
+          root.style.setProperty(name, value);
+          document.body?.style?.setProperty?.(name, value);
+        };
 
         let currentBase = palette[DEFAULT_COLOR_KEY];
         let currentTone = DEFAULT_TONE_KEY;
@@ -645,23 +649,26 @@ const exploreLinks = [
           const next = derivePalette(currentBase);
           currentCircadian = next.circadian;
           root.dataset.circadianPhase = currentCircadian.phase;
-          root.style.setProperty('--accent', next.accent);
-          root.style.setProperty('--cursor', next.cursor);
-          root.style.setProperty('--tone-accent', next.toneAccent);
-          root.style.setProperty('--tone-accent-bright', next.toneAccentBright);
-          root.style.setProperty('--tone-accent-glow', next.toneAccentGlow);
-          root.style.setProperty('--tone-sky', next.toneSky);
-          root.style.setProperty('--tone-sky-bright', next.toneSkyBright);
-          root.style.setProperty('--accent-1', next.toneAccent);
-          root.style.setProperty('--accent-2', next.toneSky);
-          root.style.setProperty('--accent2', next.toneSky);
-          root.style.setProperty('--accent-rgb', rgbToTuple(hexToRgb(next.accent)));
-          root.style.setProperty('--cursor-rgb', rgbToTuple(hexToRgb(next.cursor)));
-          root.style.setProperty(
+          if (document.body) {
+            document.body.dataset.circadianPhase = currentCircadian.phase;
+          }
+          setDynamicCssVar('--accent', next.accent);
+          setDynamicCssVar('--cursor', next.cursor);
+          setDynamicCssVar('--tone-accent', next.toneAccent);
+          setDynamicCssVar('--tone-accent-bright', next.toneAccentBright);
+          setDynamicCssVar('--tone-accent-glow', next.toneAccentGlow);
+          setDynamicCssVar('--tone-sky', next.toneSky);
+          setDynamicCssVar('--tone-sky-bright', next.toneSkyBright);
+          setDynamicCssVar('--accent-1', next.toneAccent);
+          setDynamicCssVar('--accent-2', next.toneSky);
+          setDynamicCssVar('--accent2', next.toneSky);
+          setDynamicCssVar('--accent-rgb', rgbToTuple(hexToRgb(next.accent)));
+          setDynamicCssVar('--cursor-rgb', rgbToTuple(hexToRgb(next.cursor)));
+          setDynamicCssVar(
             '--street-warm',
             `rgb(${rgbToTuple(hexToRgb(next.toneAccent))} / ${clamp(0.052 * currentCircadian.warmScale, 0.024, 0.11)})`
           );
-          root.style.setProperty(
+          setDynamicCssVar(
             '--street-cool',
             `rgb(${rgbToTuple(hexToRgb(next.toneSky))} / ${clamp(0.052 * currentCircadian.coolScale, 0.022, 0.11)})`
           );
@@ -673,15 +680,18 @@ const exploreLinks = [
           const circadian = currentCircadian || getEffectiveCircadianProfile();
           currentTone = key;
           root.dataset.topicTone = key;
-          root.style.setProperty('--topic-warm-alpha', String(clamp(profile.warm * circadian.warmScale, 0.02, 0.12)));
-          root.style.setProperty('--topic-cool-alpha', String(clamp(profile.cool * circadian.coolScale, 0.02, 0.12)));
-          root.style.setProperty('--topic-shadow-alpha', String(clamp(profile.shadow + circadian.shadowDelta, 0.24, 0.48)));
-          root.style.setProperty(
+          if (document.body) {
+            document.body.dataset.topicTone = key;
+          }
+          setDynamicCssVar('--topic-warm-alpha', String(clamp(profile.warm * circadian.warmScale, 0.02, 0.12)));
+          setDynamicCssVar('--topic-cool-alpha', String(clamp(profile.cool * circadian.coolScale, 0.02, 0.12)));
+          setDynamicCssVar('--topic-shadow-alpha', String(clamp(profile.shadow + circadian.shadowDelta, 0.24, 0.48)));
+          setDynamicCssVar(
             '--topic-highlight-alpha',
             String(clamp(profile.highlight + circadian.highlightDelta, 0.006, 0.032))
           );
-          root.style.setProperty('--topic-depth-alpha', String(clamp(profile.depth + circadian.depthDelta, 0.2, 0.45)));
-          root.style.setProperty(
+          setDynamicCssVar('--topic-depth-alpha', String(clamp(profile.depth + circadian.depthDelta, 0.2, 0.45)));
+          setDynamicCssVar(
             '--topic-body-lift-alpha',
             String(clamp(profile.bodyLift + circadian.bodyLiftDelta, 0.012, 0.054))
           );
@@ -698,6 +708,9 @@ const exploreLinks = [
           const nextMode = normalizeCircadianMode(modeInput);
           currentCircadianMode = nextMode;
           root.dataset.circadianMode = nextMode;
+          if (document.body) {
+            document.body.dataset.circadianMode = nextMode;
+          }
           if (persist) {
             safeSet(localStorageRef, KEY_CIRCADIAN_MODE, nextMode);
           }
