@@ -199,13 +199,13 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
 {hasPhotoGarlandAssets && (
   <div class="garland-photo-real" aria-hidden="true">
     {photoGarland.left && (
-      <div class="garland-photo-hanger garland-photo-hanger-left">
-        <img class="garland-photo-hanger__image" src={photoGarland.left} alt="" loading="eager" decoding="async" />
+      <div class="garland-photo-patch garland-photo-patch-left">
+        <img class="garland-photo-patch__image" src={photoGarland.left} alt="" loading="eager" decoding="async" />
       </div>
     )}
     {photoGarland.right && (
-      <div class="garland-photo-hanger garland-photo-hanger-right">
-        <img class="garland-photo-hanger__image" src={photoGarland.right} alt="" loading="eager" decoding="async" />
+      <div class="garland-photo-patch garland-photo-patch-right">
+        <img class="garland-photo-patch__image" src={photoGarland.right} alt="" loading="eager" decoding="async" />
       </div>
     )}
   </div>
@@ -227,41 +227,85 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
     --garland-retract-progress: 1;
   }
 
-  .garland-photo-hanger {
+  .garland-photo-patch {
     position: absolute;
-    top: calc(var(--header-height, 64px) + 44px);
-    width: clamp(96px, 8vw, 140px);
-    opacity: calc(0.46 - 0.08 * var(--garland-retract-progress));
+    top: calc(var(--header-height, 64px) + 6px);
+    width: clamp(82px, 7vw, 120px);
+    height: clamp(120px, 18vh, 210px);
+    overflow: hidden;
+    isolation: isolate;
+    opacity: calc(0.16 - 0.035 * var(--garland-retract-progress));
     transition:
       opacity var(--garland-duration-soft) var(--ease-standard, ease),
       transform var(--garland-duration-strong) var(--ease-emphasized, ease);
   }
 
-  .garland-photo-hanger-left {
-    left: -34px;
+  .garland-photo-patch::before,
+  .garland-photo-patch::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .garland-photo-patch::before {
+    background:
+      linear-gradient(to bottom, rgba(2, 6, 12, 0.44) 0%, rgba(2, 6, 12, 0.12) 18%, transparent 40%, rgba(2, 6, 12, 0.38) 100%);
+  }
+
+  .garland-photo-patch-left {
+    left: clamp(-62px, -4.8vw, -38px);
     transform-origin: top left;
     transform:
-      translateX(calc((-18px * var(--garland-retract-progress)) + (var(--garland-wind-x, 0px) * -0.08)))
-      rotate(calc(var(--garland-wind-strength, 0) * -0.08deg));
+      translateX(calc((-5px * var(--garland-retract-progress)) + (var(--garland-wind-x, 0px) * -0.02)))
+      rotate(calc(var(--garland-wind-strength, 0) * -0.03deg));
   }
 
-  .garland-photo-hanger-right {
-    right: -34px;
+  .garland-photo-patch-left::after {
+    background:
+      linear-gradient(to right, rgba(2, 6, 12, 0.98) 0%, rgba(2, 6, 12, 0.86) 18%, rgba(2, 6, 12, 0.26) 42%, transparent 62%, rgba(2, 6, 12, 0.76) 100%),
+      linear-gradient(to bottom, transparent 0%, transparent 60%, rgba(2, 6, 12, 0.74) 100%);
+  }
+
+  .garland-photo-patch-right {
+    right: clamp(-62px, -4.8vw, -38px);
     transform-origin: top right;
     transform:
-      translateX(calc((18px * var(--garland-retract-progress)) + (var(--garland-wind-x, 0px) * 0.08)))
-      rotate(calc(var(--garland-wind-strength, 0) * 0.08deg));
+      translateX(calc((5px * var(--garland-retract-progress)) + (var(--garland-wind-x, 0px) * 0.02)))
+      rotate(calc(var(--garland-wind-strength, 0) * 0.03deg));
   }
 
-  .garland-photo-hanger__image {
+  .garland-photo-patch-right::after {
+    background:
+      linear-gradient(to left, rgba(2, 6, 12, 0.98) 0%, rgba(2, 6, 12, 0.86) 18%, rgba(2, 6, 12, 0.26) 42%, transparent 62%, rgba(2, 6, 12, 0.76) 100%),
+      linear-gradient(to bottom, transparent 0%, transparent 60%, rgba(2, 6, 12, 0.74) 100%);
+  }
+
+  .garland-photo-patch__image {
+    position: absolute;
+    top: -8%;
     display: block;
-    width: 100%;
-    height: auto;
+    height: 138%;
+    width: auto;
+    max-width: none;
     filter:
-      saturate(0.7)
-      brightness(0.62)
+      saturate(0.4)
+      brightness(0.3)
       contrast(0.96)
-      drop-shadow(0 10px 22px rgba(0, 0, 0, 0.18));
+      sepia(0.08)
+      drop-shadow(0 8px 14px rgba(0, 0, 0, 0.14));
+  }
+
+  .garland-photo-patch-left .garland-photo-patch__image {
+    left: 0;
+    transform-origin: top left;
+    transform: scale(1.03);
+  }
+
+  .garland-photo-patch-right .garland-photo-patch__image {
+    right: 0;
+    transform-origin: top right;
+    transform: scale(1.03);
   }
 
   .garland-real {
@@ -300,11 +344,29 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
     filter: saturate(0.42) brightness(0.7);
   }
 
-  .garland-real[data-has-photo-assets='true'] .header-vine-band,
-  .garland-real[data-has-photo-assets='true'] .wire,
+  .garland-real[data-has-photo-assets='true'] .wire-left,
+  .garland-real[data-has-photo-assets='true'] .wire-right,
+  .garland-real[data-has-photo-assets='true'] .wire-bottom,
   .garland-real[data-has-photo-assets='true'] .leaf-track,
   .garland-real[data-has-photo-assets='true'] .vine-lane {
     display: none;
+  }
+
+  .garland-real[data-has-photo-assets='true'] .wire-top {
+    display: block;
+    top: calc(var(--header-height, 64px) - 2px);
+    left: clamp(16px, 1.8vw, 28px);
+    right: clamp(16px, 1.8vw, 28px);
+    border-top-width: 1px;
+    border-top-color: color-mix(in oklab, var(--garland-highlight) 18%, transparent);
+    opacity: calc(0.5 - 0.08 * var(--garland-retract-progress));
+    filter: drop-shadow(0 0 6px color-mix(in oklab, var(--garland-highlight) 10%, transparent));
+  }
+
+  .garland-real[data-has-photo-assets='true'] .header-vine-band {
+    left: clamp(20px, 2.1vw, 32px);
+    right: clamp(20px, 2.1vw, 32px);
+    opacity: calc(0.14 - 0.035 * var(--garland-retract-progress));
   }
 
   .garland-real::before {
@@ -896,18 +958,19 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
       inset: 2px;
     }
 
-    .garland-photo-hanger {
-      top: calc(var(--header-height, 64px) + 34px);
-      width: clamp(74px, 12vw, 102px);
-      opacity: calc(0.38 - 0.06 * var(--garland-retract-progress));
+    .garland-photo-patch {
+      top: calc(var(--header-height, 64px) + 8px);
+      width: clamp(56px, 7vw, 86px);
+      height: clamp(96px, 15vh, 150px);
+      opacity: calc(0.12 - 0.03 * var(--garland-retract-progress));
     }
 
-    .garland-photo-hanger-left {
-      left: -30px;
+    .garland-photo-patch-left {
+      left: clamp(-42px, -6vw, -26px);
     }
 
-    .garland-photo-hanger-right {
-      right: -30px;
+    .garland-photo-patch-right {
+      right: clamp(-42px, -6vw, -26px);
     }
 
     .garland-real {
@@ -988,7 +1051,7 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .garland-photo-hanger,
+    .garland-photo-patch,
     .header-vine-cluster__leaf,
     .header-vine-band__inner,
     .leaf-track-left,
