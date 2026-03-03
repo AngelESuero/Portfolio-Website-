@@ -4,12 +4,23 @@ import profile from '../data/profile';
 ---
 
 <BaseLayout title="About - a_e.s_" theme="archive">
-  <h1 class="text-4xl">About</h1>
-  <p class="mt-4 max-w-3xl">{profile.long_bio}</p>
-  <h2 class="mt-8 font-display text-2xl">Principles</h2>
-  <ul class="list-disc space-y-2 pl-6">
-    {profile.mottos.map((motto) => <li>{motto}</li>)}
-  </ul>
-  <h2 class="mt-8 font-display text-2xl">Current Focus</h2>
-  <p class="mt-2">Building a timeline-forward home for sound, visuals, essays, and civic collaborations.</p>
+  <section class="view-surface">
+    <header class="view-surface-header">
+      <p class="view-surface-kicker">Profile</p>
+      <h1>About</h1>
+      <p>{profile.long_bio}</p>
+    </header>
+
+    <section class="mt-8">
+      <h2 class="font-display text-2xl">Principles</h2>
+      <ul class="mt-4 list-disc space-y-2 pl-6">
+        {profile.mottos.map((motto) => <li>{motto}</li>)}
+      </ul>
+    </section>
+
+    <section class="mt-8">
+      <h2 class="font-display text-2xl">Current Focus</h2>
+      <p class="mt-3">Building a timeline-forward home for sound, visuals, essays, and civic collaborations.</p>
+    </section>
+  </section>
 </BaseLayout>
