@@ -85,12 +85,12 @@ const timelineRanges = [7, 14, 30];
         <svg id="timelineSvg" viewBox="0 0 560 192" class="tracker-chart" aria-label="Meditation timeline">
           <defs>
             <linearGradient id="trackerLineGlow" x1="0%" x2="100%" y1="0%" y2="0%">
-              <stop offset="0%" stop-color="#ff4d4d"></stop>
-              <stop offset="100%" stop-color="#ffa16a"></stop>
+              <stop offset="0%" stop-color="#ff8282"></stop>
+              <stop offset="100%" stop-color="#ffbd97"></stop>
             </linearGradient>
             <linearGradient id="trackerAreaGlow" x1="0%" x2="0%" y1="0%" y2="100%">
-              <stop offset="0%" stop-color="#ff5b5b" stop-opacity="0.34"></stop>
-              <stop offset="100%" stop-color="#ff5b5b" stop-opacity="0"></stop>
+              <stop offset="0%" stop-color="#ff8c8c" stop-opacity="0.34"></stop>
+              <stop offset="100%" stop-color="#ff8c8c" stop-opacity="0"></stop>
             </linearGradient>
           </defs>
           <line id="timelineBaseline" x1="14" y1="152" x2="546" y2="152" stroke="rgba(255,255,255,0.2)" stroke-dasharray="4 4"></line>
@@ -292,7 +292,7 @@ const timelineRanges = [7, 14, 30];
         .map((coord) => {
           const isToday = coord.day === today;
           const radius = isToday ? 5.5 : 4;
-          const fill = isToday ? '#ffffff' : '#ff7171';
+          const fill = isToday ? '#ffffff' : '#ff9c9c';
           return `<g><circle cx="${coord.x}" cy="${coord.y}" r="${radius}" fill="${fill}"></circle><title>${coord.day}: ${coord.minutes} mins</title></g>`;
         })
         .join('');
@@ -385,36 +385,36 @@ const timelineRanges = [7, 14, 30];
 
   .tracker-card {
     border-radius: 1.7rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.14);
     padding: 1.2rem;
-    background: linear-gradient(160deg, rgba(10, 16, 30, 0.88), rgba(4, 8, 18, 0.86));
-    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.38);
+    background: linear-gradient(160deg, rgba(14, 22, 38, 0.9), rgba(8, 13, 24, 0.88));
+    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.28);
   }
 
   .tracker-card--timer {
     background:
-      radial-gradient(90% 130% at 14% -10%, rgba(66, 114, 255, 0.18), transparent 58%),
-      linear-gradient(180deg, rgba(9, 12, 25, 0.95), rgba(3, 6, 14, 0.92));
+      radial-gradient(90% 130% at 14% -10%, rgba(96, 143, 255, 0.22), transparent 58%),
+      linear-gradient(180deg, rgba(12, 16, 30, 0.94), rgba(8, 11, 20, 0.9));
   }
 
   .tracker-card--streak {
-    background: linear-gradient(120deg, #070b18, #070d26 38%, #7d0f20);
+    background: linear-gradient(120deg, #090e1f, #091131 38%, #a45763);
   }
 
   .tracker-card--mood {
-    background: linear-gradient(120deg, #312061, #1a1450 44%, #070b1a);
+    background: linear-gradient(120deg, #6f6390, #5f5b85 44%, #53545f);
   }
 
   .tracker-card--stats {
     background:
-      radial-gradient(120% 90% at 4% -20%, rgba(53, 95, 255, 0.26), transparent 62%),
-      linear-gradient(180deg, #0a0f25, #070a18);
+      radial-gradient(120% 90% at 4% -20%, rgba(86, 124, 255, 0.3), transparent 62%),
+      linear-gradient(180deg, #545766, #51545d);
   }
 
   .tracker-card--timeline {
     background:
-      radial-gradient(100% 70% at 100% 0%, rgba(255, 76, 76, 0.17), transparent 70%),
-      linear-gradient(160deg, #0b1229, #090b1a);
+      radial-gradient(100% 70% at 100% 0%, rgba(255, 130, 130, 0.2), transparent 70%),
+      linear-gradient(160deg, #545969, #53545f);
   }
 
   .tracker-kicker {
@@ -422,7 +422,7 @@ const timelineRanges = [7, 14, 30];
     font-size: 0.87rem;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.64);
+    color: rgba(255, 255, 255, 0.76);
   }
 
   .tracker-minute-picker {
@@ -434,9 +434,9 @@ const timelineRanges = [7, 14, 30];
   }
 
   .tracker-chip {
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.86);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.9);
     border-radius: 999px;
     min-width: 3.1rem;
     padding: 0.46rem 0.8rem;
@@ -457,19 +457,19 @@ const timelineRanges = [7, 14, 30];
     border: 0;
     border-radius: 999px;
     padding: 0.9rem 1rem 1rem;
-    background: linear-gradient(180deg, #ff2a2a, #e51212);
+    background: linear-gradient(180deg, #ff6a6a, #ed5959);
     color: #fff;
     font-family: 'Space Grotesk', sans-serif;
     font-size: clamp(1.4rem, 5vw, 2rem);
     font-weight: 700;
     letter-spacing: -0.01em;
-    box-shadow: 0 16px 30px rgba(255, 20, 20, 0.38);
+    box-shadow: 0 16px 30px rgba(255, 89, 89, 0.32);
   }
 
   .tracker-message {
     margin: 0.68rem 0 0;
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.72);
+    color: rgba(255, 255, 255, 0.8);
   }
 
   .tracker-streak-row {
@@ -512,9 +512,9 @@ const timelineRanges = [7, 14, 30];
   }
 
   .tracker-pill {
-    border: 1px solid rgba(255, 255, 255, 0.26);
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.9);
     border-radius: 999px;
     padding: 0.44rem 0.8rem;
     font-size: 0.87rem;
@@ -530,7 +530,7 @@ const timelineRanges = [7, 14, 30];
   .tracker-mood-today {
     margin: 0.65rem 0 0;
     font-size: 0.95rem;
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.82);
   }
 
   .tracker-mood-value {
@@ -550,7 +550,7 @@ const timelineRanges = [7, 14, 30];
   .tracker-total-unit {
     font-size: 0.63em;
     margin-left: 0.34rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.72);
     font-weight: 500;
   }
 
@@ -565,7 +565,7 @@ const timelineRanges = [7, 14, 30];
     flex: 1;
     height: 0.65rem;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.18);
     overflow: hidden;
   }
 
@@ -573,19 +573,19 @@ const timelineRanges = [7, 14, 30];
     height: 100%;
     width: 0%;
     border-radius: inherit;
-    background: linear-gradient(90deg, #425fff, #6ba7ff);
+    background: linear-gradient(90deg, #567cff, #8bd9ff);
     transition: width 240ms ease;
   }
 
   .tracker-level-label {
     margin: 0;
     white-space: nowrap;
-    color: rgba(255, 255, 255, 0.72);
+    color: rgba(255, 255, 255, 0.8);
   }
 
   .tracker-sessions {
     margin: 0.6rem 0 0;
-    color: rgba(255, 255, 255, 0.56);
+    color: rgba(255, 255, 255, 0.68);
     font-size: 0.9rem;
   }
 
@@ -609,9 +609,9 @@ const timelineRanges = [7, 14, 30];
   }
 
   .tracker-range {
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.76);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.82);
     border-radius: 999px;
     padding: 0.26rem 0.68rem;
     font-size: 0.74rem;
@@ -633,7 +633,7 @@ const timelineRanges = [7, 14, 30];
 
   .tracker-summary {
     margin: 0.28rem 0 0;
-    color: rgba(255, 255, 255, 0.72);
+    color: rgba(255, 255, 255, 0.8);
     font-size: 0.87rem;
   }
 

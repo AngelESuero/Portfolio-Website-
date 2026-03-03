@@ -232,32 +232,32 @@ const exploreLinks = [
           }
         })();
         const palette = {
-          yellow: '#A79A62',
-          blue: '#6D8488',
-          orange: '#9B7653',
-          red: '#8B5952',
-          white: '#C3BCA9',
-          black: '#49433E',
-          violet: '#7D7688',
-          indigo: '#5F6C7A'
+          yellow: '#c1b891',
+          blue: '#99a9ac',
+          orange: '#b99f87',
+          red: '#ae8b86',
+          white: '#d5d0c3',
+          black: '#807b78',
+          violet: '#a49fac',
+          indigo: '#8f98a2'
         };
         const LEGACY_COLOR_ALIASES = {
           white: 'violet',
           black: 'indigo'
         };
         const toneProfiles = {
-          balance: { warm: 0.044, cool: 0.026, shadow: 0.33, highlight: 0.013, depth: 0.31, bodyLift: 0.03 },
-          clarity: { warm: 0.038, cool: 0.03, shadow: 0.3, highlight: 0.017, depth: 0.27, bodyLift: 0.035 },
-          devotion: { warm: 0.056, cool: 0.03, shadow: 0.35, highlight: 0.012, depth: 0.33, bodyLift: 0.028 },
-          contemplation: { warm: 0.036, cool: 0.028, shadow: 0.39, highlight: 0.01, depth: 0.36, bodyLift: 0.02 },
-          discernment: { warm: 0.034, cool: 0.03, shadow: 0.37, highlight: 0.011, depth: 0.34, bodyLift: 0.024 },
-          vitality: { warm: 0.06, cool: 0.034, shadow: 0.31, highlight: 0.015, depth: 0.29, bodyLift: 0.034 },
-          grounding: { warm: 0.052, cool: 0.024, shadow: 0.41, highlight: 0.009, depth: 0.38, bodyLift: 0.018 },
-          compassion: { warm: 0.05, cool: 0.034, shadow: 0.3, highlight: 0.018, depth: 0.28, bodyLift: 0.036 },
-          harmony: { warm: 0.046, cool: 0.032, shadow: 0.32, highlight: 0.016, depth: 0.3, bodyLift: 0.033 },
-          seva: { warm: 0.048, cool: 0.028, shadow: 0.34, highlight: 0.013, depth: 0.32, bodyLift: 0.03 },
-          intensity: { warm: 0.056, cool: 0.026, shadow: 0.36, highlight: 0.012, depth: 0.33, bodyLift: 0.026 },
-          presence: { warm: 0.042, cool: 0.028, shadow: 0.32, highlight: 0.015, depth: 0.3, bodyLift: 0.032 }
+          balance: { warm: 0.056, cool: 0.034, shadow: 0.29, highlight: 0.018, depth: 0.25, bodyLift: 0.04 },
+          clarity: { warm: 0.05, cool: 0.038, shadow: 0.26, highlight: 0.022, depth: 0.22, bodyLift: 0.044 },
+          devotion: { warm: 0.07, cool: 0.038, shadow: 0.31, highlight: 0.016, depth: 0.28, bodyLift: 0.038 },
+          contemplation: { warm: 0.046, cool: 0.034, shadow: 0.35, highlight: 0.014, depth: 0.31, bodyLift: 0.028 },
+          discernment: { warm: 0.044, cool: 0.038, shadow: 0.33, highlight: 0.015, depth: 0.29, bodyLift: 0.032 },
+          vitality: { warm: 0.075, cool: 0.042, shadow: 0.27, highlight: 0.02, depth: 0.24, bodyLift: 0.044 },
+          grounding: { warm: 0.065, cool: 0.03, shadow: 0.37, highlight: 0.013, depth: 0.33, bodyLift: 0.024 },
+          compassion: { warm: 0.062, cool: 0.042, shadow: 0.26, highlight: 0.023, depth: 0.23, bodyLift: 0.046 },
+          harmony: { warm: 0.058, cool: 0.04, shadow: 0.28, highlight: 0.021, depth: 0.25, bodyLift: 0.042 },
+          seva: { warm: 0.06, cool: 0.034, shadow: 0.3, highlight: 0.018, depth: 0.27, bodyLift: 0.038 },
+          intensity: { warm: 0.07, cool: 0.032, shadow: 0.32, highlight: 0.016, depth: 0.28, bodyLift: 0.034 },
+          presence: { warm: 0.053, cool: 0.034, shadow: 0.28, highlight: 0.02, depth: 0.25, bodyLift: 0.04 }
         };
         const circadianStops = [
           {
@@ -685,11 +685,11 @@ const exploreLinks = [
           setDynamicCssVar('--cursor-rgb', rgbToTuple(hexToRgb(next.cursor)));
           setDynamicCssVar(
             '--street-warm',
-            `rgb(${rgbToTuple(hexToRgb(next.toneAccent))} / ${clamp(0.052 * currentCircadian.warmScale, 0.024, 0.11)})`
+            `rgb(${rgbToTuple(hexToRgb(next.toneAccent))} / ${clamp(0.064 * currentCircadian.warmScale, 0.024, 0.11)})`
           );
           setDynamicCssVar(
             '--street-cool',
-            `rgb(${rgbToTuple(hexToRgb(next.toneSky))} / ${clamp(0.052 * currentCircadian.coolScale, 0.022, 0.11)})`
+            `rgb(${rgbToTuple(hexToRgb(next.toneSky))} / ${clamp(0.064 * currentCircadian.coolScale, 0.022, 0.11)})`
           );
         };
 

@@ -289,7 +289,7 @@ const youtubeStatusId = 'home-social-youtube-status';
   }
 
   .home-social-card {
-    --social-accent: color-mix(in srgb, var(--tone-accent) 42%, #ffffff 58%);
+    --social-accent: color-mix(in srgb, var(--tone-accent) 34%, #ffffff 66%);
     border: 1px solid var(--line2);
     border-radius: 0.92rem;
     background:
@@ -304,15 +304,15 @@ const youtubeStatusId = 'home-social-youtube-status';
   }
 
   .home-social-card[data-provider='x'] {
-    --social-accent: #8ac4ff;
+    --social-accent: #add6ff;
   }
 
   .home-social-card[data-provider='youtube'] {
-    --social-accent: #ff8585;
+    --social-accent: #ffaaaa;
   }
 
   .home-social-card[data-provider='instagram'] {
-    --social-accent: #ffb87a;
+    --social-accent: #ffcda2;
   }
 
   .home-social-card:hover,
@@ -347,7 +347,7 @@ const youtubeStatusId = 'home-social-youtube-status';
     border: 1px solid var(--line2);
     border-radius: 0.78rem;
     overflow: hidden;
-    background: rgba(6, 10, 17, 0.55);
+    background: color-mix(in srgb, var(--tone-surface-strong) 78%, transparent);
   }
 
   .home-social-frame-x {
@@ -371,11 +371,11 @@ const youtubeStatusId = 'home-social-youtube-status';
     border: 1px solid var(--line2);
     border-radius: 0.66rem;
     padding: 0.58rem 0.62rem;
-    background: rgba(6, 10, 17, 0.42);
+    background: color-mix(in srgb, var(--tone-surface) 72%, transparent);
   }
 
   .home-social-x-list li a {
-    color: #f4f4f5;
+    color: var(--tone-text);
     text-decoration: none;
     font-weight: 600;
     line-height: 1.4;
@@ -395,7 +395,7 @@ const youtubeStatusId = 'home-social-youtube-status';
   .home-social-x-summary {
     margin: 0.24rem 0 0;
     font-size: 0.8rem;
-    color: rgba(228, 230, 236, 0.9);
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
     line-height: 1.45;
   }
 
@@ -414,7 +414,7 @@ const youtubeStatusId = 'home-social-youtube-status';
   }
 
   .home-social-x-empty code {
-    background: rgba(6, 10, 17, 0.55);
+    background: color-mix(in srgb, var(--tone-surface-strong) 78%, transparent);
     border: 1px solid var(--line2);
     border-radius: 0.4rem;
     padding: 0.06rem 0.28rem;
@@ -429,7 +429,7 @@ const youtubeStatusId = 'home-social-youtube-status';
     height: 100%;
     min-height: 24.5rem;
     border: 0;
-    background: #060911;
+    background: var(--tone-bg);
   }
 
   .home-social-youtube-status {
@@ -449,7 +449,7 @@ const youtubeStatusId = 'home-social-youtube-status';
     border: 1px solid var(--line2);
     border-radius: 0.62rem;
     overflow: hidden;
-    background: rgba(6, 10, 17, 0.45);
+    background: color-mix(in srgb, var(--tone-surface) 76%, transparent);
   }
 
   .home-social-ig-tile img {
@@ -464,7 +464,7 @@ const youtubeStatusId = 'home-social-youtube-status';
     border-radius: 0.72rem;
     padding: 0.86rem;
     color: var(--tone-muted);
-    background: rgba(6, 10, 17, 0.35);
+    background: color-mix(in srgb, var(--tone-surface) 62%, transparent);
     min-height: 8rem;
     display: flex;
     align-items: center;

@@ -4,14 +4,14 @@ import EmbedCard from '../components/EmbedCard.astro';
 import { LINK_HUB_CATEGORIES, LINK_HUB_ICONS } from '../data/linkhub';
 
 const ACCENT_SWATCHES: Record<string, string> = {
-  yellow: '#A79A62',
-  blue: '#6D8488',
-  orange: '#9B7653',
-  red: '#8B5952',
-  white: '#C3BCA9',
-  black: '#49433E',
-  violet: '#7D7688',
-  indigo: '#5F6C7A'
+  yellow: '#c1b891',
+  blue: '#99a9ac',
+  orange: '#b99f87',
+  red: '#ae8b86',
+  white: '#d5d0c3',
+  black: '#807b78',
+  violet: '#a49fac',
+  indigo: '#8f98a2'
 };
 const getAccentSwatch = (value?: string) => ACCENT_SWATCHES[String(value || '').trim().toLowerCase()] || ACCENT_SWATCHES.blue;
 
