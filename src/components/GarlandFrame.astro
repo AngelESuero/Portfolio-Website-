@@ -327,12 +327,12 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
 
   .garland-photo-patch {
     position: absolute;
-    top: calc(var(--header-height, 64px) + 4px);
+    top: calc(var(--header-height, 64px) - 8px);
     width: clamp(92px, 7.6vw, 132px);
     height: clamp(156px, 21vh, 248px);
     overflow: hidden;
     isolation: isolate;
-    opacity: calc(0.28 - 0.06 * var(--garland-retract-progress));
+    opacity: calc(0.364 - 0.078 * var(--garland-retract-progress));
     transition:
       opacity var(--garland-duration-soft) var(--ease-standard, ease),
       transform var(--garland-duration-strong) var(--ease-emphasized, ease);
@@ -1057,10 +1057,10 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
     }
 
     .garland-photo-patch {
-      top: calc(var(--header-height, 64px) + 6px);
+      top: calc(var(--header-height, 64px) - 2px);
       width: clamp(68px, 8vw, 96px);
       height: clamp(116px, 16vh, 176px);
-      opacity: calc(0.2 - 0.045 * var(--garland-retract-progress));
+      opacity: calc(0.26 - 0.059 * var(--garland-retract-progress));
     }
 
     .garland-photo-patch-left {
@@ -1187,7 +1187,7 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
       z-index: 0;
       pointer-events: none;
       border-radius: inherit;
-      opacity: 0.035;
+      opacity: 0.046;
       background-image:
         linear-gradient(to bottom, rgba(2, 6, 12, 0.18) 0%, rgba(2, 6, 12, 0.04) 18%, transparent 34%, rgba(2, 6, 12, 0.08) 100%),
         var(--garland-bubble-left-image, none),
@@ -1199,8 +1199,8 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
         clamp(54px, 12%, 84px) clamp(82px, 20%, 132px);
       background-position:
         0 0,
-        -14px -10px,
-        calc(100% + 14px) -10px;
+        -14px -22px,
+        calc(100% + 14px) -22px;
       filter: saturate(0.56) brightness(0.5) contrast(1) sepia(0.03);
       transform: translateY(-2px);
       transition:
@@ -1209,17 +1209,17 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
     }
 
     [data-garland-bubble][data-garland-bubble-hot='true']::after {
-      opacity: 0.14;
+      opacity: 0.182;
       transform: translateY(-3px);
     }
 
     html[data-site-active='true'] [data-garland-bubble]::after {
-      opacity: 0.02;
+      opacity: 0.026;
       transform: translateY(-4px);
     }
 
     html[data-site-active='true'] [data-garland-bubble][data-garland-bubble-hot='true']::after {
-      opacity: 0.11;
+      opacity: 0.143;
       transform: translateY(-5px);
     }
 
@@ -1233,19 +1233,19 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
 
     @media (max-width: 860px) {
       [data-garland-bubble]::after {
-        opacity: 0.025;
+        opacity: 0.033;
         background-size:
           100% 100%,
           clamp(44px, 14%, 64px) clamp(64px, 18%, 96px),
           clamp(44px, 14%, 64px) clamp(64px, 18%, 96px);
         background-position:
           0 0,
-          -10px -8px,
-          calc(100% + 10px) -8px;
+          -10px -16px,
+          calc(100% + 10px) -16px;
       }
 
       [data-garland-bubble][data-garland-bubble-hot='true']::after {
-        opacity: 0.1;
+        opacity: 0.13;
       }
     }
 
