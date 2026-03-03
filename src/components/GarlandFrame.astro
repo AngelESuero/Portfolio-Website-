@@ -217,22 +217,64 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
       const selector = '.card:not(.aia-hero), .panel, .view-surface';
       const minWidth = 260;
       const minHeight = 96;
+      let lastPointerX = window.innerWidth / 2;
+      let lastPointerY = window.innerHeight * 0.42;
+      let paintFrame = null;
 
       const paintBubbleGarlands = () => {
         const elements = document.querySelectorAll(selector);
+        let nearestBubble = null;
+        let nearestDistance = Number.POSITIVE_INFINITY;
+
         for (const node of elements) {
           const element = node;
           const rect = element.getBoundingClientRect();
           const eligible = rect.width >= minWidth && rect.height >= minHeight;
           if (eligible) {
             element.setAttribute('data-garland-bubble', '');
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const distance = Math.hypot(lastPointerX - centerX, lastPointerY - centerY);
+            if (distance < nearestDistance) {
+              nearestDistance = distance;
+              nearestBubble = element;
+            }
           } else {
             element.removeAttribute('data-garland-bubble');
+            element.dataset.garlandBubbleHot = 'false';
           }
+        }
+
+        for (const node of elements) {
+          const element = node;
+          if (!element.hasAttribute('data-garland-bubble')) continue;
+          element.dataset.garlandBubbleHot = element === nearestBubble ? 'true' : 'false';
         }
       };
 
-      const requestPaint = () => window.requestAnimationFrame(paintBubbleGarlands);
+      const requestPaint = () => {
+        if (paintFrame) return;
+        paintFrame = window.requestAnimationFrame(() => {
+          paintFrame = null;
+          paintBubbleGarlands();
+        });
+      };
+
+      const updatePointerAnchor = (event) => {
+        lastPointerX = event.clientX;
+        lastPointerY = event.clientY;
+        requestPaint();
+      };
+
+      const handleWindowBlur = () => {
+        requestPaint();
+      };
+
+      const handleVisibility = () => {
+        if (!document.hidden) {
+          requestPaint();
+        }
+      };
 
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', requestPaint, { once: true });
@@ -240,8 +282,12 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
         requestPaint();
       }
 
+      window.addEventListener('pointermove', updatePointerAnchor, { passive: true });
+      window.addEventListener('blur', handleWindowBlur);
       window.addEventListener('resize', requestPaint, { passive: true });
+      window.addEventListener('scroll', requestPaint, { passive: true });
       document.addEventListener('astro:page-load', requestPaint);
+      document.addEventListener('visibilitychange', handleVisibility);
     })();
   </script>
 )}
@@ -1131,7 +1177,7 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
       z-index: 0;
       pointer-events: none;
       border-radius: inherit;
-      opacity: 0.26;
+      opacity: 0.09;
       background-image:
         linear-gradient(to bottom, rgba(2, 6, 12, 0.24) 0%, rgba(2, 6, 12, 0.04) 24%, transparent 42%, rgba(2, 6, 12, 0.12) 100%),
         var(--bubbleGarlandLeft),
@@ -1152,18 +1198,32 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
         transform 590ms var(--ease-emphasized, ease);
     }
 
+    [data-garland-bubble][data-garland-bubble-hot='true']::after {
+      opacity: 0.28;
+      transform: translateY(-3px);
+    }
+
     html[data-site-active='true'] [data-garland-bubble]::after {
-      opacity: 0.16;
+      opacity: 0.06;
       transform: translateY(-4px);
+    }
+
+    html[data-site-active='true'] [data-garland-bubble][data-garland-bubble-hot='true']::after {
+      opacity: 0.22;
+      transform: translateY(-5px);
     }
 
     html[data-site-scroll-active='true'] [data-garland-bubble]::after {
       transform: translateY(-2px) translateX(calc(var(--garland-wind-x, 0px) * 0.04));
     }
 
+    html[data-site-scroll-active='true'] [data-garland-bubble][data-garland-bubble-hot='true']::after {
+      transform: translateY(-3px) translateX(calc(var(--garland-wind-x, 0px) * 0.04));
+    }
+
     @media (max-width: 860px) {
       [data-garland-bubble]::after {
-        opacity: 0.2;
+        opacity: 0.07;
         background-size:
           100% 100%,
           clamp(62px, 24%, 88px) auto,
@@ -1172,6 +1232,10 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
           0 0,
           -8px -6px,
           calc(100% + 8px) -6px;
+      }
+
+      [data-garland-bubble][data-garland-bubble-hot='true']::after {
+        opacity: 0.22;
       }
     }
 
