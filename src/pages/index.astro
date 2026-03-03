@@ -11,6 +11,7 @@ import HomeSocialFeeds from '../components/HomeSocialFeeds.astro';
 import { LINK_HUB_CATEGORIES, type AccentColorKey, type LinkHubItem } from '../data/linkhub';
 import igManifest from '../data/ig.json';
 import xFallbackItems from '../data/x-fallback';
+import youtubeFeed from '../data/youtube.json';
 
 import rooms from '../data/rooms';
 import agiTimelineData from '../data/agi-timeline.json';
@@ -247,6 +248,14 @@ const xFeedItems = localXFallbackItems
   .sort((a, b) => xPublishedAtToTimestamp(b.publishedAt) - xPublishedAtToTimestamp(a.publishedAt))
   .slice(0, 6);
 const youtubeUploadsEmbedUrl = `https://www.youtube-nocookie.com/embed/videoseries?list=${youtubeUploadsPlaylistId}`;
+const latestYoutubeItem = (Array.isArray(youtubeFeed?.items) ? youtubeFeed.items : [])
+  .map((item) => ({
+    url: typeof item?.url === 'string' ? item.url.trim() : '',
+    publishedAt: typeof item?.publishedAt === 'string' ? item.publishedAt : ''
+  }))
+  .filter((item) => item.url)
+  .sort((a, b) => xPublishedAtToTimestamp(b.publishedAt) - xPublishedAtToTimestamp(a.publishedAt))[0];
+const youtubePrimaryUrl = latestYoutubeItem?.url || '';
 const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
   .filter((item) => typeof item?.src === 'string' && item.src)
   .slice(0, 4)
@@ -264,10 +273,10 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
         <span class="home-hero__ivy home-hero__ivy--left" aria-hidden="true"></span>
         <span class="home-hero__ivy home-hero__ivy--right" aria-hidden="true"></span>
         <p class="text-xs uppercase tracking-[0.2em] text-zinc-500">Timeline / Archive</p>
-        <h1 class="mx-auto max-w-3xl font-display text-4xl font-bold md:text-6xl text-accent">A Path Toward Life</h1>
-        <p class="mx-auto max-w-4xl text-lg">{profile.long_bio}</p>
+        <h1 class="mx-auto max-w-3xl font-display text-3xl font-bold sm:text-4xl md:text-6xl text-accent">A Path Toward Life</h1>
+        <p class="mx-auto max-w-4xl text-base sm:text-lg">{profile.long_bio}</p>
         <div class="flex flex-wrap justify-center gap-2" aria-label="Identity chips">
-          {profile.roles.map((role) => <span class="chip rounded-full px-3 py-1 text-sm">{role}</span>)}
+          {profile.roles.map((role) => <span class="chip rounded-full px-3 py-1 text-xs sm:text-sm">{role}</span>)}
         </div>
         <dl class="home-hero__pulse" aria-label="Archive pulse">
           {archivePulseItems.map((item) => (
@@ -356,6 +365,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
       xFeedItems={xFeedItems}
       xFeedMode={xFeedMode}
       youtubeUploadsEmbedUrl={youtubeUploadsEmbedUrl}
+      youtubePrimaryUrl={youtubePrimaryUrl}
       youtubeChannelUrl={profile.social_links.youtube}
       instagramProfileUrl={profile.social_links.instagram}
       instagramArchiveUrl="/instagram"
@@ -896,6 +906,60 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
       flex-basis: 100%;
       width: 100%;
       min-width: 100%;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .home-hero {
+      min-height: auto;
+      border-radius: 1.05rem;
+      background:
+        linear-gradient(180deg, rgba(5, 9, 17, 0.38), rgba(4, 8, 15, 0.84)),
+        linear-gradient(135deg, rgba(8, 13, 22, 0.34), rgba(4, 8, 15, 0.72)),
+        url('/images/bg-station.jpg');
+      box-shadow:
+        0 18px 42px rgba(0, 0, 0, 0.34),
+        0 1px 0 rgba(255, 255, 255, 0.03) inset;
+    }
+
+    .home-hero::before,
+    .home-hero::after,
+    .home-hero__content::after,
+    .home-hero__ivy {
+      display: none;
+    }
+
+    .home-hero__content {
+      width: 100%;
+      padding:
+        2.8rem
+        0.7rem
+        1.45rem;
+      text-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
+    }
+
+    .home-hero__content::before {
+      inset:
+        0.7rem
+        0.2rem
+        0.35rem;
+      border-radius: 0.92rem;
+      background:
+        linear-gradient(
+          180deg,
+          rgba(8, 13, 22, 0.12),
+          rgba(8, 13, 22, 0.34) 60%,
+          rgba(8, 13, 22, 0.56)
+        );
+      backdrop-filter: none;
+      box-shadow:
+        0 16px 32px rgba(0, 0, 0, 0.2),
+        0 1px 0 rgba(255, 255, 255, 0.04) inset;
+    }
+
+    .home-hero__pulse-item {
+      backdrop-filter: none;
+      padding: 0.62rem 0.7rem;
     }
   }
 

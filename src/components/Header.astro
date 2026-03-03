@@ -66,7 +66,7 @@ const isActive = (href: string) => {
       </button>
       <a
         href={profile.site_url}
-        class="header-action-pill pill rounded px-3 py-1 text-sm hidden sm:inline-flex"
+        class="header-live header-action-pill pill rounded px-3 py-1 text-sm"
         aria-label="Open live site"
       >
         Live
@@ -131,7 +131,6 @@ const isActive = (href: string) => {
     const themeToggle = document.getElementById('theme-toggle');
     const mobileToggle = document.getElementById('mobile-nav-toggle');
     const mobileNav = document.getElementById('mobile-nav');
-
     const closeMobileNav = () => {
       if (!mobileNav || !mobileToggle) return;
       mobileNav.hidden = true;

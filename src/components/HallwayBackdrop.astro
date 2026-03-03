@@ -666,10 +666,40 @@ const sparkSeeds = [
       opacity: 0.11;
     }
   }
+
+  @media (max-width: 767px), (pointer: coarse) {
+    .hallway__focusField,
+    .hallway__memories,
+    .hallway__neon,
+    .hallway__grain,
+    .hallway__cursorLight {
+      display: none;
+    }
+
+    .hallway__photo {
+      inset: 0;
+      opacity: 0.28;
+      filter: saturate(0.9) contrast(1) brightness(0.42);
+      transform: none;
+      transition: opacity 320ms ease;
+    }
+
+    .hallway__fog,
+    .hallway__atmosphere,
+    .hallway__depth {
+      opacity: 0.04;
+    }
+
+    .hallway__walls {
+      opacity: 0.08;
+    }
+  }
 </style>
 
 <script is:inline>
   (() => {
+    if (window.matchMedia('(max-width: 860px), (pointer: coarse)').matches) return;
+
     const hallway = document.querySelector('.hallway');
     if (!hallway) return;
 

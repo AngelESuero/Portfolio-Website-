@@ -1,4 +1,6 @@
 ---
+import { getEmbedAspectRatio, getEmbedViewMode, resolveEmbed } from '../lib/embed-resolver';
+
 interface InstagramPreviewItem {
   src: string;
   caption?: string;
@@ -17,6 +19,7 @@ interface HomeSocialFeedsProps {
   xFeedItems: XFeedItem[];
   xFeedMode?: 'x' | 'fallback';
   youtubeUploadsEmbedUrl: string;
+  youtubePrimaryUrl?: string;
   youtubeChannelUrl: string;
   instagramProfileUrl: string;
   instagramArchiveUrl: string;
@@ -28,6 +31,7 @@ const {
   xFeedItems,
   xFeedMode = 'x',
   youtubeUploadsEmbedUrl,
+  youtubePrimaryUrl = '',
   youtubeChannelUrl,
   instagramProfileUrl,
   instagramArchiveUrl,
@@ -46,6 +50,7 @@ const xCardDek =
   displayMode === 'x'
     ? `Latest short-form notes and commentary from @${normalizedXHandle}.`
     : 'Recent archive updates shown while X feed sync is unavailable.';
+const homeSocialRootId = 'home-social-feeds-root';
 const xSecondaryHref = displayMode === 'x' ? xProfileUrl : '/social';
 const xSecondaryLabel = displayMode === 'x' ? 'Open profile' : 'Open social hub';
 const toTimestamp = (value?: string): number => {
@@ -78,10 +83,27 @@ const previewItems = (Array.isArray(instagramPreview) ? instagramPreview : [])
   .slice(0, 4);
 const hasPreview = previewItems.length > 0;
 const youtubeFrameId = 'home-social-youtube-frame';
+const youtubeEmbedId = 'home-social-youtube-embed';
 const youtubeStatusId = 'home-social-youtube-status';
+const defaultYoutubeSourceUrl = typeof youtubePrimaryUrl === 'string' && youtubePrimaryUrl.trim() ? youtubePrimaryUrl.trim() : youtubeUploadsEmbedUrl;
+const defaultYoutubeResolution = resolveEmbed(defaultYoutubeSourceUrl, 'youtube');
+const fallbackYoutubeAspectRatio = getEmbedAspectRatio('youtube', youtubeUploadsEmbedUrl) || '10 / 11';
+const fallbackYoutubeViewMode = getEmbedViewMode('youtube', youtubeUploadsEmbedUrl);
+const hasDefaultYoutubeEmbed = defaultYoutubeResolution.embeddable && Boolean(defaultYoutubeResolution.embedUrl);
+const defaultYoutubeEmbedUrl = defaultYoutubeResolution.embedUrl || youtubeUploadsEmbedUrl;
+const defaultYoutubeAspectRatio = hasDefaultYoutubeEmbed
+  ? getEmbedAspectRatio(defaultYoutubeResolution.provider, defaultYoutubeSourceUrl) || fallbackYoutubeAspectRatio
+  : fallbackYoutubeAspectRatio;
+const defaultYoutubeViewMode = hasDefaultYoutubeEmbed
+  ? getEmbedViewMode(defaultYoutubeResolution.provider, defaultYoutubeSourceUrl)
+  : fallbackYoutubeViewMode;
+const defaultYoutubeStatus =
+  hasDefaultYoutubeEmbed && defaultYoutubeSourceUrl !== youtubeUploadsEmbedUrl
+    ? 'Showing latest upload preview.'
+    : 'Showing uploads playlist.';
 ---
 
-<section class="home-social-feeds" aria-label="Social feeds">
+<section id={homeSocialRootId} class="home-social-feeds" aria-label="Social feeds">
   <header class="home-social-feeds-header">
     <p class="home-social-feeds-kicker">Social feeds</p>
     <h2 class="font-display text-2xl">Social Feeds</h2>
@@ -131,17 +153,23 @@ const youtubeStatusId = 'home-social-youtube-status';
     <article class="home-social-card" data-provider="youtube">
       <p class="home-social-card-kicker">Uploads</p>
       <h3>YouTube</h3>
-      <p class="home-social-card-dek">Latest uploads playlist from your channel.</p>
-      <div id={youtubeFrameId} class="home-social-frame home-social-frame-youtube">
+      <p class="home-social-card-dek">Latest upload adapts to playlists, standard videos, and Shorts.</p>
+      <div
+        id={youtubeFrameId}
+        class="home-social-frame home-social-frame-youtube"
+        data-view-mode={defaultYoutubeViewMode}
+        style={`--youtube-frame-aspect-ratio:${defaultYoutubeAspectRatio}`}
+      >
         <iframe
-          src={youtubeUploadsEmbedUrl}
+          id={youtubeEmbedId}
+          src={defaultYoutubeEmbedUrl}
           title="YouTube uploads"
           loading="lazy"
           allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
           allowfullscreen
         ></iframe>
       </div>
-      <p id={youtubeStatusId} class="home-social-youtube-status" aria-live="polite">Showing uploads playlist.</p>
+      <p id={youtubeStatusId} class="home-social-youtube-status" aria-live="polite">{defaultYoutubeStatus}</p>
       <p class="home-social-links">
         <a href="/social/youtube">Open full feed</a>
         <a href={youtubeChannelUrl} target="_blank" rel="noopener">Open channel</a>
@@ -173,13 +201,109 @@ const youtubeStatusId = 'home-social-youtube-status';
   </div>
 </section>
 
-<script is:inline define:vars={{ youtubeStatusId }}>
+<script
+  is:inline
+  define:vars={{
+    homeSocialRootId,
+    youtubeEmbedId,
+    youtubeFrameId,
+    youtubeStatusId,
+    youtubeUploadsEmbedUrl,
+    fallbackYoutubeAspectRatio,
+    fallbackYoutubeViewMode
+  }}
+>
   (() => {
+    const root = document.getElementById(homeSocialRootId);
+    const frame = document.getElementById(youtubeFrameId);
+    const iframe = document.getElementById(youtubeEmbedId);
     const status = document.getElementById(youtubeStatusId);
-    if (!status) return;
+    if (!root || !frame || !iframe || !status) return;
 
     const setStatus = (message) => {
       status.textContent = message;
+    };
+
+    const applyEmbedState = (state) => {
+      if (!(iframe instanceof HTMLIFrameElement)) return;
+      frame.dataset.viewMode = state.viewMode;
+      frame.style.setProperty('--youtube-frame-aspect-ratio', state.aspectRatio);
+      if (iframe.src !== state.src) {
+        iframe.src = state.src;
+      }
+    };
+
+    const buildEmbedState = (value) => {
+      if (!value) {
+        return {
+          src: youtubeUploadsEmbedUrl,
+          aspectRatio: fallbackYoutubeAspectRatio,
+          viewMode: fallbackYoutubeViewMode
+        };
+      }
+
+      try {
+        const parsed = new URL(value);
+        const host = parsed.hostname.toLowerCase();
+        const playlistId = parsed.searchParams.get('list');
+
+        if (playlistId && (parsed.pathname === '/playlist' || parsed.pathname === '/watch' || parsed.pathname === '/embed/videoseries')) {
+          return {
+            src: `https://www.youtube-nocookie.com/embed/videoseries?list=${encodeURIComponent(playlistId)}`,
+            aspectRatio: '10 / 11',
+            viewMode: 'stack'
+          };
+        }
+
+        if (host.includes('youtu.be')) {
+          const id = parsed.pathname.split('/').filter(Boolean)[0];
+          if (id) {
+            return {
+              src: `https://www.youtube-nocookie.com/embed/${id}`,
+              aspectRatio: '16 / 9',
+              viewMode: 'landscape'
+            };
+          }
+        }
+
+        const shortsMatch = parsed.pathname.match(/^\/shorts\/([^/]+)/);
+        if (shortsMatch?.[1]) {
+          return {
+            src: `https://www.youtube-nocookie.com/embed/${shortsMatch[1]}`,
+            aspectRatio: '9 / 16',
+            viewMode: 'portrait'
+          };
+        }
+
+        const videoId = parsed.searchParams.get('v');
+        if (videoId) {
+          return {
+            src: `https://www.youtube-nocookie.com/embed/${videoId}`,
+            aspectRatio: '16 / 9',
+            viewMode: 'landscape'
+          };
+        }
+
+        if (parsed.pathname.startsWith('/embed/')) {
+          return {
+            src: value,
+            aspectRatio: parsed.pathname === '/embed/videoseries' && playlistId ? '10 / 11' : '16 / 9',
+            viewMode: parsed.pathname === '/embed/videoseries' && playlistId ? 'stack' : 'landscape'
+          };
+        }
+      } catch {
+        return {
+          src: youtubeUploadsEmbedUrl,
+          aspectRatio: fallbackYoutubeAspectRatio,
+          viewMode: fallbackYoutubeViewMode
+        };
+      }
+
+      return {
+        src: youtubeUploadsEmbedUrl,
+        aspectRatio: fallbackYoutubeAspectRatio,
+        viewMode: fallbackYoutubeViewMode
+      };
     };
 
     const formatDate = (value) => {
@@ -192,63 +316,104 @@ const youtubeStatusId = 'home-social-youtube-status';
       }).format(date);
     };
 
-    fetch('/api/social-rss?slug=youtube')
-      .then((response) => {
-        if (!response.ok) throw new Error(`RSS endpoint returned ${response.status}`);
-        return response.json();
-      })
-      .then((payload) => {
-        const items = Array.isArray(payload?.items) ? payload.items : [];
-        const latest = items[0];
-        if (!latest) {
+    const hydrateYoutube = () => {
+      fetch('/api/social-rss?slug=youtube')
+        .then((response) => {
+          if (!response.ok) throw new Error(`RSS endpoint returned ${response.status}`);
+          return response.json();
+        })
+        .then((payload) => {
+          const items = Array.isArray(payload?.items) ? payload.items : [];
+          const latest = items[0];
+          if (!latest) {
+            applyEmbedState(buildEmbedState(''));
+            setStatus('Showing uploads playlist.');
+            return;
+          }
+
+          applyEmbedState(buildEmbedState(String(latest.url || '').trim()));
+
+          const title = String(latest.title || '').trim();
+          const formattedDate = formatDate(latest.date || '');
+          if (title && formattedDate) {
+            setStatus(`Latest upload: ${title} (${formattedDate}).`);
+            return;
+          }
+
+          if (title) {
+            setStatus(`Latest upload: ${title}.`);
+            return;
+          }
+
+          setStatus(formattedDate ? `Latest upload updated ${formattedDate}.` : 'Showing uploads playlist.');
+        })
+        .catch(() => {
+          applyEmbedState(buildEmbedState(''));
           setStatus('Showing uploads playlist.');
-          return;
-        }
+        });
+    };
 
-        const title = String(latest.title || '').trim();
-        const formattedDate = formatDate(latest.date || '');
-        if (title && formattedDate) {
-          setStatus(`Latest upload: ${title} (${formattedDate}).`);
-          return;
-        }
+    if (typeof window.IntersectionObserver !== 'function') {
+      hydrateYoutube();
+      return;
+    }
 
-        if (title) {
-          setStatus(`Latest upload: ${title}.`);
-          return;
-        }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        hydrateYoutube();
+      },
+      { rootMargin: '280px 0px' }
+    );
 
-        setStatus(formattedDate ? `Latest upload updated ${formattedDate}.` : 'Showing uploads playlist.');
-      })
-      .catch(() => {
-        setStatus('Showing uploads playlist.');
-      });
+    observer.observe(root);
   })();
 </script>
 
 {!hasXItems && xTimelineHref && (
-  <script is:inline define:vars={{ xWidgetRootId }}>
+  <script is:inline define:vars={{ homeSocialRootId, xWidgetRootId }}>
     (() => {
+      const section = document.getElementById(homeSocialRootId);
       const root = document.getElementById(xWidgetRootId);
-      if (!root) return;
+      if (!section || !root) return;
 
-      const timelineLink = root.querySelector('a.twitter-timeline');
-      if (!timelineLink) return;
+      const hydrateX = () => {
+        const timelineLink = root.querySelector('a.twitter-timeline');
+        if (!timelineLink) return;
 
-      const twttr = window.twttr;
-      if (twttr?.widgets?.load) {
-        twttr.widgets.load(root);
+        const twttr = window.twttr;
+        if (twttr?.widgets?.load) {
+          twttr.widgets.load(root);
+          return;
+        }
+
+        const scriptId = 'x-timeline-widgets-script';
+        if (document.getElementById(scriptId)) return;
+
+        const script = document.createElement('script');
+        script.id = scriptId;
+        script.async = true;
+        script.src = 'https://platform.twitter.com/widgets.js';
+        script.charset = 'utf-8';
+        document.head.appendChild(script);
+      };
+
+      if (typeof window.IntersectionObserver !== 'function') {
+        hydrateX();
         return;
       }
 
-      const scriptId = 'x-timeline-widgets-script';
-      if (document.getElementById(scriptId)) return;
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return;
+          observer.disconnect();
+          hydrateX();
+        },
+        { rootMargin: '280px 0px' }
+      );
 
-      const script = document.createElement('script');
-      script.id = scriptId;
-      script.async = true;
-      script.src = 'https://platform.twitter.com/widgets.js';
-      script.charset = 'utf-8';
-      document.head.appendChild(script);
+      observer.observe(section);
     })();
   </script>
 )}
@@ -357,6 +522,10 @@ const youtubeStatusId = 'home-social-youtube-status';
     align-items: stretch;
   }
 
+  .home-social-frame-x iframe {
+    min-height: calc(24.5rem - 1.16rem);
+  }
+
   .home-social-x-list {
     margin: 0;
     padding: 0;
@@ -421,15 +590,29 @@ const youtubeStatusId = 'home-social-youtube-status';
   }
 
   .home-social-frame-youtube {
-    min-height: 24.5rem;
+    min-height: clamp(18rem, 42vw, 26rem);
+    height: auto;
+    aspect-ratio: var(--youtube-frame-aspect-ratio, 10 / 11);
+  }
+
+  .home-social-frame-youtube[data-view-mode='portrait'] {
+    min-height: clamp(22rem, 54vw, 30rem);
+  }
+
+  .home-social-frame-youtube[data-view-mode='stack'] {
+    min-height: clamp(20rem, 48vw, 28rem);
   }
 
   .home-social-frame iframe {
     width: 100%;
-    height: 100%;
-    min-height: 24.5rem;
+    display: block;
     border: 0;
     background: #060911;
+  }
+
+  .home-social-frame-youtube iframe {
+    height: 100%;
+    min-height: 100%;
   }
 
   .home-social-youtube-status {
@@ -529,14 +712,28 @@ const youtubeStatusId = 'home-social-youtube-status';
       border-radius: 0.7rem;
     }
 
-    .home-social-frame-x,
-    .home-social-frame-youtube,
-    .home-social-frame iframe {
+    .home-social-frame-x {
       min-height: 21.5rem;
     }
 
     .home-social-frame-x {
       padding: 0.5rem;
+    }
+
+    .home-social-frame-x iframe {
+      min-height: calc(21.5rem - 1rem);
+    }
+
+    .home-social-frame-youtube {
+      min-height: clamp(17rem, 38vw, 24rem);
+    }
+
+    .home-social-frame-youtube[data-view-mode='portrait'] {
+      min-height: clamp(20rem, 48vw, 28rem);
+    }
+
+    .home-social-frame-youtube[data-view-mode='stack'] {
+      min-height: clamp(19rem, 44vw, 26rem);
     }
 
     .home-social-x-empty {
