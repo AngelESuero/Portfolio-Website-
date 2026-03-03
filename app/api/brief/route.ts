@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createSupabaseAnonServerClient } from "../../../lib/server/supabase";
 
+export const runtime = "edge";
+
 export async function GET() {
   const supabase = createSupabaseAnonServerClient();
 

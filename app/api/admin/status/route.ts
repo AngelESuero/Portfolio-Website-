@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import type { IssueStatus } from "../../../../lib/types";
 import { requireAdminRequest } from "../../../../lib/server/admin";
 
+export const runtime = "edge";
+
 const allowedStatuses: IssueStatus[] = [
   "Submitted",
   "Under review",

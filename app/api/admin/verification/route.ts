@@ -3,6 +3,8 @@ import { requireAdminRequest } from "../../../../lib/server/admin";
 
 type VerificationDecision = "approve" | "deny";
 
+export const runtime = "edge";
+
 export async function GET(request: Request) {
   const adminAuth = await requireAdminRequest(request);
 

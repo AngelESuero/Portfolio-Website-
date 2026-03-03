@@ -7,6 +7,8 @@ import {
   isDuplicateKeyError
 } from "../../../../lib/server/supabase";
 
+export const runtime = "edge";
+
 export async function POST(request: Request) {
   const token = getBearerToken(request);
 

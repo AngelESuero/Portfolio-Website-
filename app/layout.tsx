@@ -6,7 +6,10 @@ import { PwaRegister } from "./components/PwaRegister";
 export const metadata: Metadata = {
   title: "Newark Civic Circuit",
   description: "Community-powered civic input for Newark residents.",
-  manifest: "/manifest.json"
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/icon.svg"
+  }
 };
 
 export const viewport: Viewport = {
