@@ -8,7 +8,9 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/build.mjs",
+    "build:next": "next build",
+    "build:pages": "npx --yes @cloudflare/next-on-pages@1",
     "start": "next start",
     "lint": "next lint"
   },
