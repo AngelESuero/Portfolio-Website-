@@ -64,10 +64,20 @@ const isActive = (href: string) => {
       >
         Menu
       </button>
-      <a href={profile.site_url} class="pill rounded px-3 py-1 text-sm hidden sm:inline-flex" aria-label="Open live site">
+      <a
+        href={profile.site_url}
+        class="header-action-pill pill rounded px-3 py-1 text-sm hidden sm:inline-flex"
+        aria-label="Open live site"
+      >
         Live
       </a>
-      <button id="theme-toggle" aria-label="Toggle dark mode" class="pill rounded px-3 py-1 text-sm">Theme</button>
+      <button
+        id="theme-toggle"
+        aria-label="Toggle dark mode"
+        class="header-action-pill pill rounded px-3 py-1 text-sm"
+      >
+        Theme
+      </button>
       <ViewSettings />
     </div>
   </div>

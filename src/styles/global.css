@@ -429,7 +429,9 @@ body[data-header-mode='peek'][data-header-reveal='hidden'] .site-header {
 }
 
 .site-header .site-shell-row {
-  max-width: clamp(1180px, 96vw, 1760px);
+  width: 100%;
+  max-width: none;
+  padding-inline: clamp(0.9rem, 1.8vw, 1.6rem);
 }
 
 .site-header .header-brand {
@@ -561,8 +563,7 @@ body[data-header-mode='peek'][data-header-reveal='hidden'] .site-header {
   flex-shrink: 0;
 }
 
-.site-header .header-actions .pill,
-.site-header .header-actions button,
+.site-header .header-actions .header-action-pill,
 .site-header .header-actions .view-settings-open {
   display: inline-flex;
   align-items: center;
@@ -571,7 +572,7 @@ body[data-header-mode='peek'][data-header-reveal='hidden'] .site-header {
   line-height: 1;
 }
 
-@media (min-width: 768px) and (max-width: 1760px) {
+@media (min-width: 768px) {
   .site-header .header-row {
     flex-wrap: wrap;
     row-gap: 0.7rem;
