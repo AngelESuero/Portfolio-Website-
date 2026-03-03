@@ -89,17 +89,20 @@ const isExternal = (url: string) => /^https?:\/\//i.test(url);
   }
 
   .room-card {
-    border: 1px solid color-mix(in srgb, var(--room-accent, var(--tone-accent)) 26%, var(--line));
+    border: 1px solid color-mix(in srgb, var(--room-accent, var(--tone-accent)) 48%, var(--line));
     border-radius: var(--radius);
     background:
       linear-gradient(
         180deg,
-        color-mix(in srgb, var(--room-accent, var(--tone-accent)) 10%, transparent),
-        color-mix(in srgb, var(--room-accent, var(--tone-accent)) 4%, var(--panel)) 34%,
+        color-mix(in srgb, var(--room-accent, var(--tone-accent)) 20%, transparent),
+        color-mix(in srgb, var(--room-accent, var(--tone-accent)) 10%, var(--panel)) 34%,
         var(--panel)
       );
     padding: 0.85rem;
-    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--room-accent, var(--tone-accent)) 12%, transparent);
+    box-shadow:
+      inset 0 3px 0 color-mix(in srgb, var(--room-accent, var(--tone-accent)) 76%, transparent),
+      inset 0 1px 0 color-mix(in srgb, white 7%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--room-accent, var(--tone-accent)) 14%, transparent);
   }
 
   .room-type {
@@ -107,13 +110,13 @@ const isExternal = (url: string) => /^https?:\/\//i.test(url);
     text-transform: uppercase;
     letter-spacing: 0.09em;
     font-size: 0.72rem;
-    color: color-mix(in srgb, var(--room-accent, var(--tone-accent)) 64%, var(--tone-muted) 36%);
+    color: color-mix(in srgb, var(--room-accent, var(--tone-accent)) 78%, var(--tone-muted) 22%);
   }
 
   .room-card h2 {
     margin: 0.45rem 0 0;
     font-size: 1.05rem;
-    color: color-mix(in srgb, var(--room-accent, var(--tone-accent)) 66%, var(--tone-text) 34%);
+    color: color-mix(in srgb, var(--room-accent, var(--tone-accent)) 82%, var(--tone-text) 18%);
   }
 
   .room-card > p {
@@ -141,7 +144,7 @@ const isExternal = (url: string) => /^https?:\/\//i.test(url);
   .room-link {
     display: inline-flex;
     margin-top: 0.85rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--room-accent, var(--tone-accent)) 45%, transparent);
+    border-bottom: 2px solid color-mix(in srgb, var(--room-accent, var(--tone-accent)) 62%, transparent);
     color: color-mix(in srgb, var(--room-accent, var(--tone-accent-glow)) 82%, white 18%);
     text-decoration: none;
   }
