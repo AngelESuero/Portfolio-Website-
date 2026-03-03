@@ -73,17 +73,20 @@ const exploreLinks = [
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <script is:inline>
       (() => {
+        const LEGACY_THEME_KEY = 'theme';
         const KEY_MODE = 'siteMode';
         const KEY_WALK = 'walkStep';
         const KEY_SIZE = 'siteSize';
         const KEY_TAB_SWIPE = 'homeTabSwipe';
         const DEFAULTS = { mode: 'normal', walkStep: 1, size: 'standard', tabSwipe: 'on' };
+        const THEME_DAY_START_HOUR = 6;
+        const THEME_NIGHT_START_HOUR = 18;
         const localStorageRef = (() => {
           try {
             return window.localStorage;
@@ -112,6 +115,23 @@ const exploreLinks = [
           } catch {}
         };
 
+        const getClockTheme = (date = new Date()) => {
+          const decimalHour = date.getHours() + date.getMinutes() / 60;
+          return decimalHour >= THEME_DAY_START_HOUR && decimalHour < THEME_NIGHT_START_HOUR ? 'light' : 'dark';
+        };
+        const normalizeTheme = (value) => (value === 'light' ? 'light' : 'dark');
+        const applyThemeToDom = (nextTheme = getClockTheme()) => {
+          const root = document.documentElement;
+          const theme = normalizeTheme(nextTheme);
+          root.classList.toggle('dark', theme === 'dark');
+          root.classList.toggle('light', theme === 'light');
+          root.style.colorScheme = theme;
+          root.dataset.themeMode = theme;
+          root.dataset.themeSource = 'clock';
+          root.dataset.themePeriod = theme === 'light' ? 'day' : 'night';
+          return theme;
+        };
+
         const normalizeMode = (value) =>
           value === 'walk' || value === 'explore' || value === 'normal' ? value : 'normal';
         const normalizeWalkStep = (value) => {
@@ -122,6 +142,9 @@ const exploreLinks = [
         const normalizeSize = (value) =>
           value === 'compact' || value === 'spacious' || value === 'standard' ? value : 'standard';
         const normalizeTabSwipe = (value) => (value === 'off' ? 'off' : 'on');
+
+        safeRemove(localStorageRef, LEGACY_THEME_KEY);
+        applyThemeToDom();
 
         const initialMode = normalizeMode(safeGet(localStorageRef, KEY_MODE));
         const initialWalkStep = normalizeWalkStep(safeGet(localStorageRef, KEY_WALK));

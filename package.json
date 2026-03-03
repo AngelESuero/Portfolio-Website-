@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
+    "dev": "NODE_OPTIONS=--require=./scripts/rollup-native-preload.cjs astro dev",
+    "build": "NODE_OPTIONS=--require=./scripts/rollup-native-preload.cjs astro build",
+    "preview": "NODE_OPTIONS=--require=./scripts/rollup-native-preload.cjs astro preview",
     "ig:manifest": "node scripts/generate-ig-manifest.mjs",
     "sync:agi": "node scripts/sync-agi-timeline.mjs",
     "sync:linktree": "node scripts/sync-linktree.mjs",
@@ -23,6 +23,9 @@
     "astro": "^5.17.2",
     "rss-parser": "^3.13.0",
     "zod": "^3.23.8"
+  },
+  "overrides": {
+    "shiki": "3.21.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",

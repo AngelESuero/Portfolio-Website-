@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap');
+/* Keep the global stylesheet offline-safe; font fallbacks are defined in the app theme. */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -148,6 +148,49 @@ html {
   --tone-surface-strong: rgba(10, 16, 26, 0.96);
 }
 
+:root.light {
+  color-scheme: light;
+  --bg0: #ece4d4;
+  --bg1: #f8f3e8;
+  --paper: rgba(250, 246, 238, 0.88);
+  --line: rgba(92, 74, 50, 0.12);
+  --text: rgba(45, 39, 30, 0.97);
+  --muted: rgba(82, 69, 52, 0.78);
+  --neon: #62797d;
+  --amber: #9c7a4f;
+  --accent: var(--neon);
+  --cursor: #a58260;
+  --accent-rgb: 98 121 125;
+  --cursor-rgb: 165 130 96;
+  --tone-bg: #f8f3e8;
+  --tone-bg-deep: #ece4d4;
+  --tone-surface: rgba(250, 246, 238, 0.92);
+  --tone-surface-strong: rgba(245, 238, 228, 0.96);
+  --tone-text: var(--text);
+  --tone-muted: var(--muted);
+  --tone-line: rgba(92, 74, 50, 0.13);
+  --tone-accent: #9c7a4f;
+  --tone-accent-bright: #b18c5d;
+  --tone-accent-glow: #7b5d33;
+  --tone-sky: #62797d;
+  --tone-sky-bright: #799095;
+  --accent-1: var(--tone-accent);
+  --accent-2: var(--tone-sky);
+  --accent2: var(--accent-2);
+  --line2: rgba(92, 74, 50, 0.08);
+  --panel: rgba(255, 255, 255, 0.7);
+  --street-noise: 0.018;
+  --street-vignette: 0.08;
+  --street-warm: rgba(156, 122, 79, 0.06);
+  --street-cool: rgba(98, 121, 125, 0.045);
+  --topic-warm-alpha: 0.048;
+  --topic-cool-alpha: 0.03;
+  --topic-shadow-alpha: 0.08;
+  --topic-highlight-alpha: 0.03;
+  --topic-depth-alpha: 0.06;
+  --topic-body-lift-alpha: 0.016;
+}
+
 body[data-theme='archive'] {
   --tone-accent: #e0bf6a;
   --tone-accent-bright: #f1d678;
@@ -223,6 +266,78 @@ body[data-theme='contact'] {
 body[data-theme] {
   --accent-1: var(--tone-accent);
   --accent-2: var(--tone-sky);
+}
+
+.light body[data-theme='archive'] {
+  --tone-accent: #9c7a4f;
+  --tone-accent-bright: #b18c5d;
+  --tone-accent-glow: #7b5d33;
+  --tone-sky: #60767a;
+  --tone-sky-bright: #789095;
+}
+
+.light body[data-theme='hub'] {
+  --tone-accent: #a07f52;
+  --tone-accent-bright: #b48e61;
+  --tone-accent-glow: #826540;
+  --tone-sky: #63787a;
+  --tone-sky-bright: #7b9092;
+}
+
+.light body[data-theme='social'] {
+  --tone-accent: #9a7d58;
+  --tone-accent-bright: #ad906a;
+  --tone-accent-glow: #7b6243;
+  --tone-sky: #657a76;
+  --tone-sky-bright: #7d928e;
+}
+
+.light body[data-theme='agi'] {
+  --tone-accent: #967a50;
+  --tone-accent-bright: #a98a61;
+  --tone-accent-glow: #785f3c;
+  --tone-sky: #5f7378;
+  --tone-sky-bright: #75898d;
+}
+
+.light body[data-theme='survival'] {
+  --tone-accent: #94744a;
+  --tone-accent-bright: #a88257;
+  --tone-accent-glow: #765834;
+  --tone-sky: #5e726d;
+  --tone-sky-bright: #748883;
+}
+
+.light body[data-theme='threads'] {
+  --tone-accent: #9b7c50;
+  --tone-accent-bright: #b08c60;
+  --tone-accent-glow: #7d6039;
+  --tone-sky: #667b80;
+  --tone-sky-bright: #7d9397;
+}
+
+.light body[data-theme='writing'] {
+  --tone-accent: #9d7d56;
+  --tone-accent-bright: #b28f67;
+  --tone-accent-glow: #7f6140;
+  --tone-sky: #687b82;
+  --tone-sky-bright: #80949a;
+}
+
+.light body[data-theme='work'] {
+  --tone-accent: #94764f;
+  --tone-accent-bright: #a7865d;
+  --tone-accent-glow: #765a3a;
+  --tone-sky: #637975;
+  --tone-sky-bright: #7b918c;
+}
+
+.light body[data-theme='contact'] {
+  --tone-accent: #9c7d58;
+  --tone-accent-bright: #b29169;
+  --tone-accent-glow: #7e6242;
+  --tone-sky: #677c7d;
+  --tone-sky-bright: #809698;
 }
 
 body {
@@ -1073,6 +1188,176 @@ html[data-mode='explore'] .mode-explore {
   border-color: var(--tone-accent);
   color: var(--tone-accent-glow);
   transform: translateY(-1px);
+}
+
+.light #cursor-aura {
+  filter: blur(18px) saturate(1.02);
+  mix-blend-mode: multiply;
+}
+
+.light body {
+  background-image:
+    radial-gradient(
+      960px 620px at 14% -8%,
+      rgb(var(--accent-rgb) / 0.05),
+      transparent 62%
+    ),
+    radial-gradient(
+      920px 600px at 86% -10%,
+      rgb(var(--cursor-rgb) / 0.04),
+      transparent 64%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.34),
+      rgba(231, 221, 203, 0.12)
+    ),
+    radial-gradient(
+      1120px 680px at 50% 0%,
+      color-mix(in oklab, var(--tone-accent) 8%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      860px 560px at 50% 18%,
+      color-mix(in oklab, var(--tone-sky) 6%, transparent),
+      transparent 56%
+    ),
+    linear-gradient(180deg, var(--bg1), var(--bg0));
+}
+
+.light .site-overlay {
+  background:
+    linear-gradient(to right, rgba(255, 255, 255, 0.42), transparent 28%),
+    linear-gradient(to left, rgba(111, 87, 53, 0.07), transparent 42%),
+    radial-gradient(1160px 720px at 16% 2%, rgb(var(--accent-rgb) / 0.035), transparent 64%),
+    radial-gradient(1160px 720px at 84% 4%, rgb(var(--cursor-rgb) / 0.03), transparent 66%),
+    linear-gradient(180deg, rgba(255, 248, 238, 0.18), rgba(229, 220, 203, 0.12) 44%, rgba(221, 208, 185, 0.16)),
+    radial-gradient(1200px 760px at 50% 0%, rgba(255, 255, 255, 0.18), rgba(232, 222, 204, 0.16) 72%, rgba(227, 214, 193, 0.08));
+}
+
+.light .card,
+.light .panel {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.5)),
+    radial-gradient(
+      120% 140% at 0% 0%,
+      color-mix(in srgb, var(--tone-accent) 10%, transparent),
+      transparent 46%
+    ),
+    rgba(245, 238, 228, 0.84);
+  border-color: color-mix(in srgb, var(--tone-accent) 10%, var(--line));
+  box-shadow:
+    0 16px 36px rgba(105, 83, 47, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.7) inset;
+}
+
+.light .card::before {
+  background:
+    linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0.22),
+      transparent 34%,
+      transparent 72%,
+      color-mix(in srgb, var(--tone-accent) 10%, transparent)
+    );
+}
+
+.light .card:hover {
+  border-color: color-mix(in oklab, var(--tone-accent) 22%, var(--line));
+  box-shadow:
+    0 16px 40px rgba(105, 83, 47, 0.12),
+    0 0 14px color-mix(in oklab, var(--tone-accent) 9%, transparent);
+}
+
+.light .site-header {
+  background:
+    linear-gradient(180deg, rgba(248, 243, 232, 0.94), rgba(248, 243, 232, 0.84)),
+    linear-gradient(90deg, rgba(132, 110, 74, 0.05), transparent 24%, transparent 76%, rgba(107, 129, 133, 0.05));
+  border-bottom-color: color-mix(in srgb, var(--tone-accent) 20%, var(--line2));
+  box-shadow: 0 10px 24px rgba(103, 84, 52, 0.08);
+}
+
+.light .site-header::before {
+  opacity: 0.7;
+}
+
+.light .site-header .header-brand {
+  text-shadow:
+    0 0 12px color-mix(in srgb, var(--tone-accent) 8%, transparent),
+    0 8px 18px rgba(120, 95, 60, 0.08);
+}
+
+.light .site-header .header-link {
+  border-color: color-mix(in srgb, var(--link-accent, var(--tone-accent)) 28%, rgba(90, 70, 42, 0.08));
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, white 78%, var(--link-accent, var(--tone-accent)) 22%),
+      color-mix(in srgb, white 88%, var(--link-accent, var(--tone-accent)) 12%)
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 0 0 1px color-mix(in srgb, var(--link-accent, var(--tone-accent)) 8%, transparent);
+  color: color-mix(in srgb, var(--tone-text) 76%, var(--link-accent, var(--tone-accent)) 24%);
+}
+
+.light .site-header .header-link::before {
+  background: radial-gradient(
+    120% 140% at 50% 50%,
+    color-mix(in srgb, var(--link-accent, var(--tone-accent)) 24%, transparent),
+    transparent 70%
+  );
+  mix-blend-mode: multiply;
+}
+
+.light .site-header .header-link::after {
+  background: color-mix(in srgb, var(--link-accent, var(--tone-accent)) 68%, var(--tone-text) 32%);
+}
+
+.light .site-header .header-link:hover,
+.light .site-header .header-link:focus-visible,
+.light .site-header .header-link[aria-current='page'] {
+  color: color-mix(in srgb, var(--link-accent, var(--tone-accent)) 70%, var(--tone-text) 30%);
+  border-color: color-mix(in srgb, var(--link-accent, var(--tone-accent)) 46%, transparent);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, white 66%, var(--link-accent, var(--tone-accent)) 34%),
+      color-mix(in srgb, white 80%, var(--link-accent, var(--tone-accent)) 20%)
+    );
+}
+
+.light .mobile-nav {
+  border-top-color: color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
+  background: rgba(248, 243, 232, 0.94);
+}
+
+.light :where(.pill, .chip, button) {
+  border-color: color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.48)),
+    rgba(242, 235, 223, 0.78);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.72) inset,
+    0 10px 20px rgba(102, 81, 45, 0.06);
+}
+
+.light :where(.pill:hover, .chip:hover, button:hover) {
+  border-color: color-mix(in srgb, var(--tone-accent) 26%, var(--line2));
+}
+
+.light .reading-prose pre {
+  background: rgba(243, 237, 228, 0.92);
+  border-color: color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+}
+
+.light .reading-prose :where(code):not(pre code) {
+  background: rgba(248, 243, 235, 0.92);
+  border-color: color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+}
+
+.light .walkthrough-step-link {
+  border-bottom-color: color-mix(in srgb, var(--tone-accent) 42%, transparent);
 }
 
 .mobile-editorial {

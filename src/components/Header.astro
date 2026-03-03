@@ -67,7 +67,15 @@ const isActive = (href: string) => {
       <a href={profile.site_url} class="pill rounded px-3 py-1 text-sm hidden sm:inline-flex" aria-label="Open live site">
         Live
       </a>
-      <button id="theme-toggle" aria-label="Toggle dark mode" class="pill rounded px-3 py-1 text-sm">Theme</button>
+      <span
+        id="theme-sensor-status"
+        class="pill rounded px-3 py-1 text-sm"
+        role="status"
+        aria-live="polite"
+        aria-label="Theme follows your local time"
+      >
+        Auto
+      </span>
       <ViewSettings />
     </div>
   </div>
@@ -95,32 +103,67 @@ const isActive = (href: string) => {
 <script is:inline>
   (() => {
     const root = document.documentElement;
-    const themeStorage = (() => {
-      try {
-        return window.localStorage;
-      } catch {
-        return null;
-      }
-    })();
-    const readTheme = () => {
-      try {
-        return typeof themeStorage?.getItem === 'function' ? themeStorage.getItem('theme') : null;
-      } catch {
-        return null;
-      }
-    };
-    const writeTheme = (value) => {
-      try {
-        themeStorage?.setItem?.('theme', value);
-      } catch {}
-    };
-
-    const saved = readTheme();
-    if (saved === 'dark') root.classList.add('dark');
-
-    const themeToggle = document.getElementById('theme-toggle');
+    const THEME_DAY_START_HOUR = 6;
+    const THEME_NIGHT_START_HOUR = 18;
+    const themeStatus = document.getElementById('theme-sensor-status');
     const mobileToggle = document.getElementById('mobile-nav-toggle');
     const mobileNav = document.getElementById('mobile-nav');
+    let currentTheme = root.classList.contains('light') ? 'light' : 'dark';
+    let themeClockTimer = null;
+
+    const getClockTheme = (date = new Date()) => {
+      const decimalHour = date.getHours() + date.getMinutes() / 60;
+      return decimalHour >= THEME_DAY_START_HOUR && decimalHour < THEME_NIGHT_START_HOUR ? 'light' : 'dark';
+    };
+    const normalizeTheme = (value) => (value === 'light' ? 'light' : 'dark');
+    const getThemeStatusLabel = (value) => (value === 'light' ? 'Daylight' : 'Night');
+    const applyTheme = (value) => {
+      const nextTheme = normalizeTheme(value);
+      const isDark = nextTheme === 'dark';
+      root.classList.toggle('dark', isDark);
+      root.classList.toggle('light', !isDark);
+      root.style.colorScheme = nextTheme;
+      root.dataset.themeMode = nextTheme;
+      root.dataset.themeSource = 'clock';
+      root.dataset.themePeriod = isDark ? 'night' : 'day';
+      currentTheme = nextTheme;
+      if (themeStatus instanceof HTMLElement) {
+        themeStatus.textContent = getThemeStatusLabel(nextTheme);
+        themeStatus.setAttribute(
+          'aria-label',
+          isDark ? 'Automatic theme active: night mode' : 'Automatic theme active: daylight mode'
+        );
+      }
+      return nextTheme;
+    };
+
+    const syncThemeWithClock = () => {
+      const nextTheme = getClockTheme();
+      const previousTheme = currentTheme;
+      const appliedTheme = applyTheme(nextTheme);
+      if (previousTheme !== appliedTheme) {
+        window.dispatchEvent(
+          new CustomEvent('theme:change', {
+            detail: { theme: appliedTheme, source: 'clock' }
+          })
+        );
+      }
+    };
+
+    const scheduleThemeSync = () => {
+      if (themeClockTimer) {
+        window.clearTimeout(themeClockTimer);
+      }
+      const now = new Date();
+      const delay = Math.max(1000, (60 - now.getSeconds()) * 1000 - now.getMilliseconds() + 120);
+      themeClockTimer = window.setTimeout(() => {
+        syncThemeWithClock();
+        scheduleThemeSync();
+      }, delay);
+    };
+
+    syncThemeWithClock();
+    scheduleThemeSync();
 
     const closeMobileNav = () => {
       if (!mobileNav || !mobileToggle) return;
@@ -128,11 +171,6 @@ const isActive = (href: string) => {
       mobileToggle.setAttribute('aria-expanded', 'false');
       mobileToggle.textContent = 'Menu';
     };
-
-    themeToggle?.addEventListener('click', () => {
-      root.classList.toggle('dark');
-      writeTheme(root.classList.contains('dark') ? 'dark' : 'light');
-    });
 
     mobileToggle?.addEventListener('click', () => {
       if (!mobileNav) return;
@@ -148,6 +186,13 @@ const isActive = (href: string) => {
 
     window.addEventListener('resize', () => {
       if (window.innerWidth >= 768) closeMobileNav();
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        syncThemeWithClock();
+        scheduleThemeSync();
+      }
     });
   })();
 </script>
