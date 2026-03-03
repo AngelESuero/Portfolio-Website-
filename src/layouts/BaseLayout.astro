@@ -1013,8 +1013,11 @@ const exploreLinks = [
         const initSiteActivity = () => {
           const ACTIVITY_IDLE_MS = 2240;
           let activityTimer = null;
+          let siteIsActive = false;
 
           const setSiteActive = (isActive) => {
+            if (siteIsActive === isActive) return;
+            siteIsActive = isActive;
             root.dataset.siteActive = isActive ? 'true' : 'false';
           };
 
@@ -1031,10 +1034,7 @@ const exploreLinks = [
           const listenerOptions = { passive: true };
           window.addEventListener('pointermove', markSiteActive, listenerOptions);
           window.addEventListener('pointerdown', markSiteActive, listenerOptions);
-          window.addEventListener('wheel', markSiteActive, listenerOptions);
-          window.addEventListener('scroll', markSiteActive, listenerOptions);
           window.addEventListener('touchstart', markSiteActive, listenerOptions);
-          window.addEventListener('touchmove', markSiteActive, listenerOptions);
           window.addEventListener('keydown', markSiteActive);
 
           document.addEventListener('visibilitychange', () => {
@@ -1048,57 +1048,13 @@ const exploreLinks = [
         };
 
         const initScrollWind = () => {
-          let decayTimer = null;
-          let lastScrollY = window.scrollY;
-          let lastTimestamp = performance.now();
-
           const clearWind = () => {
             root.dataset.siteScrollActive = 'false';
             root.style.setProperty('--garland-wind-x', '0px');
             root.style.setProperty('--garland-wind-strength', '0');
           };
 
-          if (prefersReducedMotion()) {
-            clearWind();
-            return;
-          }
-
-          const onScroll = () => {
-            const nextScrollY = window.scrollY;
-            const now = performance.now();
-            const delta = nextScrollY - lastScrollY;
-            const elapsed = Math.max(16, now - lastTimestamp);
-
-            lastScrollY = nextScrollY;
-            lastTimestamp = now;
-
-            if (Math.abs(delta) < 0.5) return;
-
-            const velocity = delta / elapsed;
-            const strength = clamp(Math.abs(velocity) * 22, 0, 1);
-            const windX = clamp(delta * 0.16, -5, 5);
-
-            root.dataset.siteScrollActive = 'true';
-            root.style.setProperty('--garland-wind-strength', strength.toFixed(3));
-            root.style.setProperty('--garland-wind-x', `${windX.toFixed(2)}px`);
-
-            if (decayTimer) window.clearTimeout(decayTimer);
-            decayTimer = window.setTimeout(() => {
-              clearWind();
-            }, 300);
-          };
-
           clearWind();
-          window.addEventListener('scroll', onScroll, { passive: true });
-          document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-              if (decayTimer) window.clearTimeout(decayTimer);
-              clearWind();
-              return;
-            }
-            lastScrollY = window.scrollY;
-            lastTimestamp = performance.now();
-          });
         };
 
         const handleColorClick = (event) => {
