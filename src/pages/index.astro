@@ -261,6 +261,8 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
   <div class="desktop-home">
     <section class="home-hero">
       <div class="home-hero__content space-y-6 text-center">
+        <span class="home-hero__ivy home-hero__ivy--left" aria-hidden="true"></span>
+        <span class="home-hero__ivy home-hero__ivy--right" aria-hidden="true"></span>
         <p class="text-xs uppercase tracking-[0.2em] text-zinc-500">Timeline / Archive</p>
         <h1 class="mx-auto max-w-3xl font-display text-4xl font-bold md:text-6xl text-accent">A Path Toward Life</h1>
         <p class="mx-auto max-w-4xl text-lg">{profile.long_bio}</p>
@@ -692,6 +694,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
 
   .home-hero__content {
     position: relative;
+    isolation: isolate;
     z-index: 4;
     width: min(100%, 56rem);
     padding:
@@ -705,19 +708,17 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
   .home-hero__content::after {
     content: '';
     position: absolute;
-    z-index: -1;
     pointer-events: none;
   }
 
   .home-hero__content::before {
+    z-index: 0;
     inset:
       clamp(1.1rem, 3vw, 2.2rem)
       clamp(0.8rem, 4vw, 2.4rem)
       clamp(1rem, 3vw, 2rem);
     border-radius: clamp(1.35rem, 3vw, 2.2rem);
     background:
-      url('/images/garland/left-vine.png'),
-      url('/images/garland/right-vine.png'),
       radial-gradient(
         52% 50% at 50% 34%,
         rgba(8, 13, 22, 0.08),
@@ -730,17 +731,6 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
         rgba(8, 13, 22, 0.14) 42%,
         rgba(8, 13, 22, 0.3)
       );
-    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
-    background-size:
-      clamp(78px, 12%, 112px) clamp(112px, 24%, 168px),
-      clamp(78px, 12%, 112px) clamp(112px, 24%, 168px),
-      auto,
-      auto;
-    background-position:
-      -20px -18px,
-      calc(100% + 20px) -18px,
-      50% 34%,
-      50% 50%;
     border: 1px solid rgba(255, 255, 255, 0.07);
     backdrop-filter: blur(14px) saturate(1.04);
     box-shadow:
@@ -749,6 +739,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
   }
 
   .home-hero__content::after {
+    z-index: 2;
     inset:
       clamp(1.45rem, 3.4vw, 2.5rem)
       clamp(1.1rem, 4.6vw, 2.8rem)
@@ -763,6 +754,42 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
         transparent 74%,
         rgba(242, 184, 75, 0.03)
       );
+  }
+
+  .home-hero__content > :not(.home-hero__ivy) {
+    position: relative;
+    z-index: 3;
+  }
+
+  .home-hero__ivy {
+    position: absolute;
+    top: clamp(0.2rem, 1vw, 0.9rem);
+    z-index: 1;
+    width: clamp(104px, 14%, 148px);
+    height: clamp(136px, 23%, 196px);
+    pointer-events: none;
+    background-repeat: no-repeat;
+    background-size: contain;
+    opacity: 0.7;
+    filter: saturate(0.7) brightness(0.78) contrast(0.94) drop-shadow(0 10px 14px rgba(0, 0, 0, 0.16));
+  }
+
+  .home-hero__ivy--left {
+    left: clamp(0.8rem, 2.4vw, 1.6rem);
+    background-image: url('/images/garland/left-vine.png');
+    background-position: left top;
+    transform: rotate(-4deg);
+    -webkit-mask-image: linear-gradient(160deg, rgba(0, 0, 0, 0.96) 18%, rgba(0, 0, 0, 0.9) 54%, transparent 100%);
+    mask-image: linear-gradient(160deg, rgba(0, 0, 0, 0.96) 18%, rgba(0, 0, 0, 0.9) 54%, transparent 100%);
+  }
+
+  .home-hero__ivy--right {
+    right: clamp(0.8rem, 2.4vw, 1.6rem);
+    background-image: url('/images/garland/right-vine.png');
+    background-position: right top;
+    transform: rotate(4deg);
+    -webkit-mask-image: linear-gradient(200deg, rgba(0, 0, 0, 0.96) 18%, rgba(0, 0, 0, 0.9) 54%, transparent 100%);
+    mask-image: linear-gradient(200deg, rgba(0, 0, 0, 0.96) 18%, rgba(0, 0, 0, 0.9) 54%, transparent 100%);
   }
 
   .home-hero__pulse {
@@ -1057,16 +1084,6 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
         0.5rem
         0.75rem;
       border-radius: 1.1rem;
-      background-size:
-        clamp(58px, 14%, 84px) clamp(82px, 22%, 126px),
-        clamp(58px, 14%, 84px) clamp(82px, 22%, 126px),
-        auto,
-        auto;
-      background-position:
-        -14px -12px,
-        calc(100% + 14px) -12px,
-        50% 34%,
-        50% 50%;
     }
 
     .home-hero__content::after {
@@ -1075,6 +1092,21 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
         0.8rem
         1rem;
       border-radius: 0.95rem;
+    }
+
+    .home-hero__ivy {
+      top: 0.3rem;
+      width: clamp(72px, 18vw, 104px);
+      height: clamp(94px, 24vw, 136px);
+      opacity: 0.66;
+    }
+
+    .home-hero__ivy--left {
+      left: 0.5rem;
+    }
+
+    .home-hero__ivy--right {
+      right: 0.5rem;
     }
 
     .home-hero__pulse {
