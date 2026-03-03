@@ -34,7 +34,11 @@ jobs:
 
       - name: Sync datasets
         run: |
-          npm run sync:data
+          npm run sync:agi
+          npm run sync:linktree
+          npm run sync:x
+          npm run sync:youtube
+          npm run sync:chess
           npm run ig:manifest
 
       - name: Commit & push if changed
@@ -47,6 +51,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add src/data/agi-timeline.json src/data/x-feed.json src/data/youtube.json src/data/chess.json src/data/ig.json
+          git add src/data/agi-timeline.json src/data/linktree-timeline.generated.ts src/data/x-feed.json src/data/youtube.json src/data/chess.json src/data/ig.json
           git commit -m "chore(data): hourly dataset sync"
           git push

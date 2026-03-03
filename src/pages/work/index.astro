@@ -2,9 +2,10 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import ProjectCard from '../../components/ProjectCard.astro';
+import { resolveProjectTimeline } from '../../data/linktree-timeline';
 
 const allProjects = (await getCollection('projects')).sort((a, b) => {
-  const yearDelta = a.data.year - b.data.year;
+  const yearDelta = resolveProjectTimeline(a.data).sortYear - resolveProjectTimeline(b.data).sortYear;
   if (yearDelta !== 0) return yearDelta;
 
   const timelineOrderA = a.data.timeline_order ?? Number.MAX_SAFE_INTEGER;

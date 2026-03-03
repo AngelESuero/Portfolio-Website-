@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { resolveProjectTimeline } from '../../data/linktree-timeline';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -9,6 +10,7 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await project.render();
+const timeline = resolveProjectTimeline(project.data);
 const linkLabels: Record<string, string> = {
   untitled: 'Untitled',
   youtube: 'YouTube',
@@ -29,7 +31,7 @@ const projectLinks = Object.entries(project.data.links)
 <BaseLayout title={`${project.data.title} — Work`} theme="work">
   <a href="/work" class="text-sm underline">← Back to Work</a>
   <h1 class="mt-2 font-display text-4xl">{project.data.title}</h1>
-  <p class="mt-1 text-zinc-600 dark:text-zinc-300">{project.data.year} · {project.data.status}</p>
+  <p class="mt-1 text-zinc-600 dark:text-zinc-300">{timeline.yearLabel} · {project.data.status}</p>
   <img src={project.data.cover_image} alt={project.data.title} class="mt-6 h-72 w-full rounded object-cover"/>
   <p class="mt-4">{project.data.description}</p>
   <div class="mt-4 flex flex-wrap gap-2">

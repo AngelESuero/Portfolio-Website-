@@ -6,6 +6,7 @@ import {
   VIDEO_URLS,
   getSpotifyPlaylistUrl
 } from './site-refs';
+import { applyLinktreeTimelineToHubItem } from './linktree-timeline';
 
 export type LinkHubProvider = 'spotify' | 'youtube' | 'soundcloud' | 'untitled' | 'substack' | 'instagram' | 'google_drive';
 export type LinkHubCategoryId = 'music' | 'writing' | 'video' | 'resources' | 'legal' | 'social';
@@ -56,7 +57,7 @@ export const LINK_HUB_ICONS: LinkHubIconLink[] = [
   { title: 'Email', url: '/contact', icon: '@' }
 ];
 
-export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
+const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
   {
     id: 'music',
     label: 'Music',
@@ -460,3 +461,8 @@ export const LINK_HUB_CATEGORIES: LinkHubCategory[] = [
     ]
   }
 ];
+
+export const LINK_HUB_CATEGORIES: LinkHubCategory[] = LINK_HUB_CATEGORY_SEEDS.map((category) => ({
+  ...category,
+  items: category.items.map((item) => applyLinktreeTimelineToHubItem(item))
+}));
