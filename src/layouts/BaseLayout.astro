@@ -1005,7 +1005,7 @@ const exploreLinks = [
         };
 
         const initFocusZoom = () => {
-          const stage = document.querySelector('.site-content-stage');
+          const stage = document.querySelector('.site-depth-stage');
           root.dataset.focusZoomActive = 'false';
 
           if (!(stage instanceof HTMLElement) || prefersReducedMotion()) {
@@ -1019,15 +1019,15 @@ const exploreLinks = [
             typeof window.matchMedia === 'function'
               ? window.matchMedia('(hover: hover) and (pointer: fine)').matches
               : false;
-          const DWELL_DELAY_MS = 960;
-          const ACTIVATE_DURATION_MS = 4800;
-          const FOCUS_DURATION_MS = 3200;
-          const RELEASE_DURATION_MS = 1500;
-          const MOVE_TOLERANCE_PX = 14;
+          const DWELL_DELAY_MS = 60 * 1000;
+          const ACTIVATE_DURATION_MS = 18000;
+          const FOCUS_DURATION_MS = 12000;
+          const RELEASE_DURATION_MS = 2600;
+          const MOVE_TOLERANCE_PX = 18;
           const CENTER_Y_RATIO = 0.42;
-          const ZOOM_SCALE = 1.045;
-          const MAX_PAN_X = 34;
-          const MAX_PAN_Y = 28;
+          const ZOOM_SCALE = 1.32;
+          const MAX_PAN_X = 110;
+          const MAX_PAN_Y = 84;
           let dwellTimer = null;
           let focusPinned = false;
           let focusX = window.innerWidth / 2;
@@ -1052,8 +1052,8 @@ const exploreLinks = [
 
             const originX = clamp((focusX / width) * 100, 8, 92);
             const originY = clamp((focusY / height) * 100, 8, 92);
-            const panX = clamp((width * 0.5 - focusX) * 0.042, -MAX_PAN_X, MAX_PAN_X);
-            const panY = clamp((height * CENTER_Y_RATIO - focusY) * 0.05, -MAX_PAN_Y, MAX_PAN_Y);
+            const panX = clamp((width * 0.5 - focusX) * 0.12, -MAX_PAN_X, MAX_PAN_X);
+            const panY = clamp((height * CENTER_Y_RATIO - focusY) * 0.14, -MAX_PAN_Y, MAX_PAN_Y);
 
             root.style.setProperty('--focus-zoom-origin-x', `${originX.toFixed(2)}%`);
             root.style.setProperty('--focus-zoom-origin-y', `${originY.toFixed(2)}%`);
@@ -1092,6 +1092,8 @@ const exploreLinks = [
             return anchor instanceof HTMLElement ? anchor : node;
           };
 
+          const hasFocusedIntent = () => Boolean(getFocusableTarget(document.activeElement));
+
           const syncFocusedElement = (node, duration = FOCUS_DURATION_MS) => {
             const target = getFocusableTarget(node);
             if (!target) return false;
@@ -1104,8 +1106,21 @@ const exploreLinks = [
             return true;
           };
 
+          const scheduleFocusedDwell = (node, duration = FOCUS_DURATION_MS) => {
+            const target = getFocusableTarget(node);
+            if (!target) return false;
+
+            clearDwellTimer();
+            dwellTimer = window.setTimeout(() => {
+              const activeTarget = getFocusableTarget(document.activeElement);
+              if (!activeTarget || activeTarget !== target) return;
+              syncFocusedElement(target, duration);
+            }, DWELL_DELAY_MS);
+            return true;
+          };
+
           const scheduleDwell = () => {
-            if (!canTrackPointer || focusPinned) return;
+            if (!canTrackPointer || focusPinned || hasFocusedIntent()) return;
             clearDwellTimer();
             dwellTimer = window.setTimeout(() => {
               engage(focusX, focusY, ACTIVATE_DURATION_MS);
@@ -1126,7 +1141,7 @@ const exploreLinks = [
             window.addEventListener(
               'pointermove',
               (event) => {
-                if (focusPinned) return;
+                if (focusPinned || hasFocusedIntent()) return;
 
                 const nextX = event.clientX;
                 const nextY = event.clientY;
@@ -1144,19 +1159,27 @@ const exploreLinks = [
             window.addEventListener(
               'pointerdown',
               () => {
-                if (!focusPinned) cancelAmbientZoom();
+                if (!focusPinned && !hasFocusedIntent()) cancelAmbientZoom();
               },
               { passive: true }
             );
           }
 
           document.addEventListener('focusin', (event) => {
-            syncFocusedElement(event.target);
+            if (root.dataset.focusZoomActive === 'true') {
+              syncFocusedElement(event.target, 1800);
+              return;
+            }
+            scheduleFocusedDwell(event.target);
           });
 
           document.addEventListener('focusout', () => {
             window.requestAnimationFrame(() => {
-              if (syncFocusedElement(document.activeElement, 1800)) return;
+              if (root.dataset.focusZoomActive === 'true') {
+                if (syncFocusedElement(document.activeElement, 1800)) return;
+              } else if (scheduleFocusedDwell(document.activeElement)) {
+                return;
+              }
               focusPinned = false;
               setInactive(RELEASE_DURATION_MS, true);
               scheduleDwell();
@@ -1166,7 +1189,11 @@ const exploreLinks = [
           window.addEventListener(
             'scroll',
             () => {
-              if (!focusPinned) cancelAmbientZoom();
+              if (!focusPinned) {
+                cancelAmbientZoom();
+                if (scheduleFocusedDwell(document.activeElement)) return;
+                scheduleDwell();
+              }
             },
             { passive: true }
           );
@@ -1174,7 +1201,11 @@ const exploreLinks = [
           window.addEventListener(
             'wheel',
             () => {
-              if (!focusPinned) cancelAmbientZoom();
+              if (!focusPinned) {
+                cancelAmbientZoom();
+                if (scheduleFocusedDwell(document.activeElement)) return;
+                scheduleDwell();
+              }
             },
             { passive: true }
           );
@@ -1198,7 +1229,7 @@ const exploreLinks = [
               return;
             }
 
-            if (syncFocusedElement(document.activeElement, 1800)) return;
+            if (scheduleFocusedDwell(document.activeElement)) return;
             scheduleDwell();
           });
         };
@@ -1503,9 +1534,11 @@ const exploreLinks = [
     data-header-reveal={showHeader ? 'visible' : 'hidden'}
     data-nav-phase="idle"
   >
-    <div id="cursor-aura" aria-hidden="true"></div>
-    <HallwayBackdrop accent="var(--accent)" />
-    <div class="site-overlay" aria-hidden="true"></div>
+    <div class="site-depth-stage" aria-hidden="true">
+      <div id="cursor-aura"></div>
+      <HallwayBackdrop accent="var(--accent)" />
+      <div class="site-overlay"></div>
+    </div>
     <GarlandFrame />
     <Header />
     <div class="site-content-stage">

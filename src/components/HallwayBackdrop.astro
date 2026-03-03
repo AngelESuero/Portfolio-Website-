@@ -104,6 +104,7 @@ const sparkSeeds = [
   .hallway {
     --focus-x: 50vw;
     --focus-y: 42vh;
+    --ambient-focus: 0;
     position: fixed;
     inset: 0;
     z-index: 0;
@@ -126,8 +127,18 @@ const sparkSeeds = [
     background-size: cover;
     background-repeat: no-repeat;
     filter: saturate(1.06) contrast(1.04) brightness(0.54);
-    opacity: 0.36;
-    transform: scale(1.03);
+    opacity: calc(0.36 + var(--ambient-focus) * 0.08);
+    transform:
+      translate3d(
+        calc((var(--hallway-x, 50vw) - 50vw) / 140),
+        calc((var(--hallway-y, 34vh) - 34vh) / 180),
+        0
+      )
+      scale(calc(1.03 + var(--ambient-focus) * 0.06));
+    transition:
+      opacity 9000ms linear,
+      transform 16000ms cubic-bezier(0.18, 0.84, 0.2, 1),
+      filter 9000ms ease;
   }
 
   .hallway__focusField {
@@ -151,9 +162,20 @@ const sparkSeeds = [
         rgb(255 255 255 / 0.022) 0 1px,
         transparent 1px 18px
       );
-    filter: blur(8px);
-    opacity: 0.52;
+    filter: blur(calc(8px - var(--ambient-focus) * 2px));
+    opacity: calc(0.52 + var(--ambient-focus) * 0.22);
     mix-blend-mode: screen;
+    transform:
+      translate3d(
+        calc((var(--focus-x) - 50vw) / 64),
+        calc((var(--focus-y) - 42vh) / 76),
+        0
+      )
+      scale(calc(1 + var(--ambient-focus) * 0.08));
+    transition:
+      opacity 10000ms linear,
+      filter 9000ms ease,
+      transform 14000ms cubic-bezier(0.18, 0.84, 0.2, 1);
   }
 
   .hallway__memories {
@@ -314,8 +336,12 @@ const sparkSeeds = [
   .hallway__vignette {
     position: absolute;
     inset: -10%;
-    background: radial-gradient(closest-side at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.72) 95%);
-    opacity: 0.34;
+    background: radial-gradient(closest-side at var(--focus-x) var(--focus-y), transparent 45%, rgba(0, 0, 0, 0.74) 92%);
+    opacity: calc(0.34 + var(--ambient-focus) * 0.24);
+    transform: scale(calc(1 + var(--ambient-focus) * 0.06));
+    transition:
+      opacity 12000ms linear,
+      transform 16000ms cubic-bezier(0.18, 0.84, 0.2, 1);
   }
 
   /* fog/mist */
@@ -350,9 +376,20 @@ const sparkSeeds = [
         rgba(255, 255, 255, 0.03),
         transparent 72%
       );
-    opacity: 0.1;
-    filter: blur(18px) saturate(1.08);
+    opacity: calc(0.1 + var(--ambient-focus) * 0.08);
+    filter: blur(calc(18px - var(--ambient-focus) * 3px)) saturate(calc(1.08 + var(--ambient-focus) * 0.12));
+    transform:
+      translate3d(
+        calc((var(--focus-x) - 50vw) / 120),
+        calc((var(--focus-y) - 42vh) / 140),
+        0
+      )
+      scale(calc(1 + var(--ambient-focus) * 0.05));
     animation: hallwayBreathe 24s ease-in-out infinite;
+    transition:
+      opacity 10000ms linear,
+      filter 9000ms ease,
+      transform 14000ms cubic-bezier(0.18, 0.84, 0.2, 1);
   }
 
   .hallway__depth {
@@ -371,13 +408,15 @@ const sparkSeeds = [
         transparent 1px 28px
       );
     mix-blend-mode: soft-light;
-    opacity: 0.24;
+    opacity: calc(0.24 + var(--ambient-focus) * 0.18);
     transform: translate3d(
       calc((var(--hallway-x, 50vw) - 50vw) / 58),
       calc((var(--hallway-y, 34vh) - 34vh) / 72),
       0
-    ) scale(1.04);
-    transition: transform var(--motion-slow, 420ms) var(--ease-standard, ease);
+    ) scale(calc(1.04 + var(--ambient-focus) * 0.14));
+    transition:
+      opacity 9000ms linear,
+      transform 12000ms cubic-bezier(0.18, 0.84, 0.2, 1);
   }
 
   /* corridor "walls" / subtle perspective */
@@ -399,7 +438,8 @@ const sparkSeeds = [
         rgba(0, 0, 0, 0.67)
       );
     transform: perspective(900px) rotateX(8deg);
-    opacity: 0.18;
+    opacity: calc(0.18 + var(--ambient-focus) * 0.08);
+    transition: opacity 10000ms linear, transform 14000ms cubic-bezier(0.18, 0.84, 0.2, 1);
   }
 
   /* neon tubes + glow edges */
@@ -424,8 +464,19 @@ const sparkSeeds = [
         transparent 76%,
         color-mix(in oklab, var(--accent) 16%, transparent)
       );
-    filter: blur(1px);
-    opacity: 0.28;
+    filter: blur(calc(1px + var(--ambient-focus) * 1.8px));
+    opacity: calc(0.28 + var(--ambient-focus) * 0.18);
+    transform:
+      translate3d(
+        calc((var(--hallway-x, 50vw) - 50vw) / 120),
+        calc((var(--hallway-y, 34vh) - 34vh) / 150),
+        0
+      )
+      scale(calc(1 + var(--ambient-focus) * 0.04));
+    transition:
+      opacity 9000ms linear,
+      filter 9000ms ease,
+      transform 13000ms cubic-bezier(0.18, 0.84, 0.2, 1);
   }
 
   /* grain (world texture) */
@@ -450,6 +501,10 @@ const sparkSeeds = [
     mix-blend-mode: overlay;
     opacity: 0.06;
     animation: hallwayBreathe 18s ease-in-out infinite reverse;
+  }
+
+  :global(html[data-focus-zoom-active='true']) .hallway {
+    --ambient-focus: 1;
   }
 
   /* cursor "flashlight" reveal */

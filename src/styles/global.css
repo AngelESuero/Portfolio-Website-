@@ -563,15 +563,23 @@ html[data-scroll-optimizing='true'] button {
   background: none;
 }
 
-.site-content-stage {
-  position: relative;
+.site-depth-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
   transform-origin: var(--focus-zoom-origin-x) var(--focus-zoom-origin-y);
   transform: translate3d(var(--focus-zoom-pan-x), var(--focus-zoom-pan-y), 0) scale(var(--focus-zoom-scale));
   transition: transform var(--focus-zoom-duration) cubic-bezier(0.18, 0.84, 0.2, 1);
 }
 
-html[data-focus-zoom-active='true'] .site-content-stage {
+html[data-focus-zoom-active='true'] .site-depth-stage {
   will-change: transform;
+}
+
+.site-content-stage {
+  position: relative;
 }
 
 main.page-shell {
@@ -670,7 +678,7 @@ body[data-nav-phase='exiting'] .site-overlay {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .site-content-stage {
+  .site-depth-stage {
     transition: none !important;
     transform: none !important;
   }
