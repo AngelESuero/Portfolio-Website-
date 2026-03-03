@@ -1373,27 +1373,36 @@ const exploreLinks = [
         const initHeaderReveal = () => {
           const body = document.body;
           const header = document.querySelector('.site-header');
-          if (!(body instanceof HTMLBodyElement) || !(header instanceof HTMLElement)) return;
+          const sensor = document.querySelector('.header-peek-sensor');
+          if (
+            !(body instanceof HTMLBodyElement) ||
+            !(header instanceof HTMLElement) ||
+            !(sensor instanceof HTMLElement)
+          ) {
+            return;
+          }
 
           if (body.dataset.headerMode !== 'peek') {
             body.dataset.headerReveal = 'visible';
             return;
           }
 
+          const prefersReducedMotion = typeof window.matchMedia === 'function'
+            ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+            : false;
           const canHover = typeof window.matchMedia === 'function'
             ? window.matchMedia('(hover: hover) and (pointer: fine)').matches
             : false;
 
-          if (!canHover) {
+          if (!canHover || prefersReducedMotion) {
             body.dataset.headerReveal = 'visible';
             return;
           }
 
-          const SHOW_EDGE_PX = 44;
-          const HIDE_BUFFER_PX = 36;
-          const HIDE_DELAY_MS = 90;
+          const TOP_LOCK_SCROLL_Y = 10;
+          const HIDE_DELAY_MS = 120;
           let hideTimer = null;
-          let pointerY = Number.POSITIVE_INFINITY;
+          let hoveringSensor = false;
           let hoveringHeader = false;
           let headerHasFocus = false;
 
@@ -1403,47 +1412,57 @@ const exploreLinks = [
             hideTimer = null;
           };
 
-          const readHeaderSize = () => {
-            const raw = window.getComputedStyle(root).getPropertyValue('--site-header-size');
-            const parsed = Number.parseFloat(raw);
-            if (Number.isFinite(parsed) && parsed > 0) return parsed;
-            return Math.max(52, Math.round(header.getBoundingClientRect().height));
-          };
-
           const setHeaderReveal = (nextState) => {
             if (body.dataset.headerReveal === nextState) return;
             body.dataset.headerReveal = nextState;
           };
 
-          const scheduleHide = () => {
-            if (hoveringHeader || headerHasFocus) return;
+          const shouldKeepVisible = () =>
+            hoveringSensor || hoveringHeader || headerHasFocus || window.scrollY <= TOP_LOCK_SCROLL_Y;
+
+          const showHeader = () => {
             clearHideTimer();
+            setHeaderReveal('visible');
+          };
+
+          const scheduleHide = () => {
+            clearHideTimer();
+            if (shouldKeepVisible()) {
+              setHeaderReveal('visible');
+              return;
+            }
             hideTimer = window.setTimeout(() => {
-              const hideThreshold = readHeaderSize() + HIDE_BUFFER_PX;
-              if (pointerY > hideThreshold && !hoveringHeader && !headerHasFocus) {
+              if (!shouldKeepVisible()) {
                 setHeaderReveal('hidden');
               }
             }, HIDE_DELAY_MS);
           };
 
-          header.addEventListener('pointerenter', () => {
-            hoveringHeader = true;
-            clearHideTimer();
-            setHeaderReveal('visible');
+          setHeaderReveal(window.scrollY <= TOP_LOCK_SCROLL_Y ? 'visible' : 'hidden');
+
+          sensor.addEventListener('pointerenter', () => {
+            hoveringSensor = true;
+            showHeader();
           });
 
-          header.addEventListener('pointerleave', (event) => {
+          sensor.addEventListener('pointerleave', () => {
+            hoveringSensor = false;
+            scheduleHide();
+          });
+
+          header.addEventListener('pointerenter', () => {
+            hoveringHeader = true;
+            showHeader();
+          });
+
+          header.addEventListener('pointerleave', () => {
             hoveringHeader = false;
-            if (event instanceof PointerEvent) {
-              pointerY = event.clientY;
-            }
             scheduleHide();
           });
 
           header.addEventListener('focusin', () => {
             headerHasFocus = true;
-            clearHideTimer();
-            setHeaderReveal('visible');
+            showHeader();
           });
 
           header.addEventListener('focusout', () => {
@@ -1452,29 +1471,10 @@ const exploreLinks = [
           });
 
           window.addEventListener(
-            'pointermove',
-            (event) => {
-              pointerY = event.clientY;
-              if (event.clientY <= SHOW_EDGE_PX) {
-                clearHideTimer();
-                setHeaderReveal('visible');
-                return;
-              }
-
-              const hideThreshold = readHeaderSize() + HIDE_BUFFER_PX;
-              if (event.clientY > hideThreshold) {
-                scheduleHide();
-              }
-            },
-            { passive: true }
-          );
-
-          window.addEventListener(
             'scroll',
             () => {
-              if (window.scrollY <= 12) {
-                clearHideTimer();
-                setHeaderReveal('visible');
+              if (window.scrollY <= TOP_LOCK_SCROLL_Y) {
+                showHeader();
                 return;
               }
               scheduleHide();
@@ -1485,7 +1485,13 @@ const exploreLinks = [
           document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
               clearHideTimer();
+              return;
             }
+            if (window.scrollY <= TOP_LOCK_SCROLL_Y) {
+              showHeader();
+              return;
+            }
+            scheduleHide();
           });
         };
 
@@ -1612,6 +1618,7 @@ const exploreLinks = [
       <div class="site-overlay"></div>
     </div>
     <GarlandFrame />
+    <div class="header-peek-sensor" aria-hidden="true"></div>
     <Header />
     <div class="site-content-stage">
       <main class="page-shell w-full">
