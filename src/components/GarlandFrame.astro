@@ -212,7 +212,13 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
 )}
 
 {hasPhotoGarlandAssets && (
-  <script is:inline>
+  <script
+    is:inline
+    define:vars={{
+      bubbleGarlandLeftSrc: photoGarland.left ?? '',
+      bubbleGarlandRightSrc: photoGarland.right ?? ''
+    }}
+  >
     (() => {
       const selector = '.card:not(.aia-hero), .panel, .view-surface';
       const minWidth = 260;
@@ -232,6 +238,14 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
           const eligible = rect.width >= minWidth && rect.height >= minHeight;
           if (eligible) {
             element.setAttribute('data-garland-bubble', '');
+            element.style.setProperty(
+              '--garland-bubble-left-image',
+              bubbleGarlandLeftSrc ? `url(${bubbleGarlandLeftSrc})` : 'none'
+            );
+            element.style.setProperty(
+              '--garland-bubble-right-image',
+              bubbleGarlandRightSrc ? `url(${bubbleGarlandRightSrc})` : 'none'
+            );
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
             const distance = Math.hypot(lastPointerX - centerX, lastPointerY - centerY);
@@ -242,6 +256,8 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
           } else {
             element.removeAttribute('data-garland-bubble');
             element.dataset.garlandBubbleHot = 'false';
+            element.style.removeProperty('--garland-bubble-left-image');
+            element.style.removeProperty('--garland-bubble-right-image');
           }
         }
 
@@ -1153,13 +1169,7 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
 </style>
 
 {hasPhotoGarlandAssets && (
-  <style
-    is:global
-    define:vars={{
-      bubbleGarlandLeft: photoGarland.left ? `url(${photoGarland.left})` : 'none',
-      bubbleGarlandRight: photoGarland.right ? `url(${photoGarland.right})` : 'none'
-    }}
-  >
+  <style is:global>
     [data-garland-bubble] {
       position: relative;
       isolation: isolate;
@@ -1180,8 +1190,8 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
       opacity: 0.09;
       background-image:
         linear-gradient(to bottom, rgba(2, 6, 12, 0.24) 0%, rgba(2, 6, 12, 0.04) 24%, transparent 42%, rgba(2, 6, 12, 0.12) 100%),
-        var(--bubbleGarlandLeft),
-        var(--bubbleGarlandRight);
+        var(--garland-bubble-left-image, none),
+        var(--garland-bubble-right-image, none);
       background-repeat: no-repeat, no-repeat, no-repeat;
       background-size:
         100% 100%,
