@@ -220,9 +220,9 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
     }}
   >
     (() => {
-      const selector = '.panel, .view-surface, .home-hero, .home-hero__content, .section-panel.is-active, .section-card-shell';
-      const minWidth = 360;
-      const minHeight = 140;
+      const selector = '.view-surface';
+      const minWidth = 320;
+      const minHeight = 120;
       let lastPointerX = window.innerWidth / 2;
       let lastPointerY = window.innerHeight * 0.42;
       let paintFrame = null;

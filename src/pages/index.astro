@@ -716,6 +716,8 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
       clamp(1rem, 3vw, 2rem);
     border-radius: clamp(1.35rem, 3vw, 2.2rem);
     background:
+      url('/images/garland/left-vine.png'),
+      url('/images/garland/right-vine.png'),
       radial-gradient(
         52% 50% at 50% 34%,
         rgba(8, 13, 22, 0.08),
@@ -728,6 +730,17 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
         rgba(8, 13, 22, 0.14) 42%,
         rgba(8, 13, 22, 0.3)
       );
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+    background-size:
+      clamp(78px, 12%, 112px) clamp(112px, 24%, 168px),
+      clamp(78px, 12%, 112px) clamp(112px, 24%, 168px),
+      auto,
+      auto;
+    background-position:
+      -20px -18px,
+      calc(100% + 20px) -18px,
+      50% 34%,
+      50% 50%;
     border: 1px solid rgba(255, 255, 255, 0.07);
     backdrop-filter: blur(14px) saturate(1.04);
     box-shadow:
@@ -1044,6 +1057,16 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
         0.5rem
         0.75rem;
       border-radius: 1.1rem;
+      background-size:
+        clamp(58px, 14%, 84px) clamp(82px, 22%, 126px),
+        clamp(58px, 14%, 84px) clamp(82px, 22%, 126px),
+        auto,
+        auto;
+      background-position:
+        -14px -12px,
+        calc(100% + 14px) -12px,
+        50% 34%,
+        50% 50%;
     }
 
     .home-hero__content::after {
