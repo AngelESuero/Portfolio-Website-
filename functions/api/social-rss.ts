@@ -119,10 +119,10 @@ export const onRequestGet: PagesFunction = async ({ request }) => {
   } catch (error) {
     const message = error instanceof Error ? error.message : 'RSS request failed';
     return new Response(JSON.stringify({ ok: false, message, items: [] }), {
-      status: 200,
+      status: 502,
       headers: {
         'content-type': 'application/json; charset=utf-8',
-        'cache-control': 'public, max-age=120'
+        'cache-control': 'no-store'
       }
     });
   } finally {

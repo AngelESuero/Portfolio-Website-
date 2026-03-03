@@ -4,6 +4,10 @@ interface ContactPayload {
   message: string;
 }
 
+interface Env {
+  CONTACT_WEBHOOK_URL?: string;
+}
+
 const jsonHeaders = {
   'content-type': 'application/json; charset=utf-8',
   'cache-control': 'no-store'
@@ -61,7 +65,71 @@ function successResponse(request: Request): Response {
   return Response.redirect(redirectUrl.toString(), 303);
 }
 
-export const onRequestPost: PagesFunction = async ({ request }) => {
+function errorResponse(request: Request, code: 'unavailable' | 'failed', message: string, status: number): Response {
+  if (isJsonRequest(request)) {
+    return new Response(JSON.stringify({ ok: false, message }), {
+      status,
+      headers: jsonHeaders
+    });
+  }
+
+  const redirectUrl = new URL(`/contact?error=${code}`, request.url);
+  return Response.redirect(redirectUrl.toString(), 303);
+}
+
+async function deliverMessage(payload: ContactPayload, env: Env) {
+  const webhookUrl = String(env.CONTACT_WEBHOOK_URL || '').trim();
+
+  if (!webhookUrl) {
+    return {
+      ok: false as const,
+      code: 'unavailable' as const,
+      message: 'Contact delivery is not configured.',
+      status: 503
+    };
+  }
+
+  const requestId = crypto.randomUUID().slice(0, 8);
+
+  try {
+    const response = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json; charset=utf-8',
+        'x-contact-request-id': requestId
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      console.error(
+        `[contact] delivery_failed request_id=${requestId} message_length=${payload.message.length} status=${response.status}`
+      );
+
+      return {
+        ok: false as const,
+        code: 'failed' as const,
+        message: 'Contact delivery failed. Please try again later.',
+        status: 502
+      };
+    }
+
+    console.log(`[contact] delivered request_id=${requestId} message_length=${payload.message.length}`);
+
+    return { ok: true as const };
+  } catch {
+    console.error(`[contact] delivery_failed request_id=${requestId} message_length=${payload.message.length}`);
+
+    return {
+      ok: false as const,
+      code: 'failed' as const,
+      message: 'Contact delivery failed. Please try again later.',
+      status: 502
+    };
+  }
+}
+
+export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   const payload = await readPayload(request);
 
   if (!payload.name || !payload.email || !payload.message) {
@@ -72,12 +140,11 @@ export const onRequestPost: PagesFunction = async ({ request }) => {
     return badRequest('Invalid email address.');
   }
 
-  const ip = request.headers.get('cf-connecting-ip') || 'unknown';
-  const ua = normalize(request.headers.get('user-agent') || 'unknown', 256);
+  const delivery = await deliverMessage(payload, env);
 
-  console.log(
-    `[contact] name="${payload.name}" email="${payload.email}" message_length=${payload.message.length} ip=${ip} ua="${ua}"`
-  );
+  if (!delivery.ok) {
+    return errorResponse(request, delivery.code, delivery.message, delivery.status);
+  }
 
   return successResponse(request);
 };

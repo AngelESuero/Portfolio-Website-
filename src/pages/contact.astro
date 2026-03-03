@@ -4,15 +4,26 @@ import profile from '../data/profile';
 import CopyButton from '../components/CopyButton.astro';
 
 const sent = Astro.url.searchParams.get('sent') === '1';
+const error = Astro.url.searchParams.get('error');
+const deliveryUnavailable = error === 'unavailable';
+const deliveryFailed = error === 'failed';
 ---
 
 <BaseLayout title="Contact - a_e.s_" theme="contact">
   <h1 class="font-display text-4xl">Contact</h1>
-  <p class="mt-2">Use the form for inquiries. Logs are captured via Cloudflare Pages Function.</p>
+  <p class="mt-2">Use the form for inquiries. Messages are forwarded only when contact delivery is configured.</p>
 
-  {sent && (
+  {sent && !error && (
     <p class="mt-4 rounded border border-emerald-300/70 bg-emerald-100/20 px-3 py-2 text-sm" role="status">
       Message sent. Thank you.
+    </p>
+  )}
+
+  {(deliveryUnavailable || deliveryFailed) && (
+    <p class="mt-4 rounded border border-amber-300/70 bg-amber-100/20 px-3 py-2 text-sm" role="alert">
+      {deliveryUnavailable
+        ? 'Contact delivery is not configured right now. Please use one of the direct links below.'
+        : 'Contact delivery failed. Please try again later or use one of the direct links below.'}
     </p>
   )}
 
