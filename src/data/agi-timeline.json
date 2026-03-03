@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-03T16:03:03.983Z",
+    "generatedAt": "2026-03-03T17:08:00.146Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,54 @@
     ]
   },
   "items": [
+    {
+      "id": "4d703812a8dd6cd1f7d2dba1e0a472e9ad033da3667404f592e3ca41defb2c43",
+      "title": "PRX Part 3 — Training a Text-to-Image Model in 24h!",
+      "url": "https://huggingface.co/blog/Photoroom/prx-part3",
+      "sourceId": "hf_blog",
+      "sourceName": "Hugging Face — Blog",
+      "publishedAt": "2026-03-03T16:50:49.000Z",
+      "summary": null,
+      "tags": [
+        "open-source",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://huggingface.co/blog/Photoroom/prx-part3"
+        },
+        {
+          "label": "Feed",
+          "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
+    {
+      "id": "5822fa33f1139082c44b917a0201b83c936fffab88dc6970837560fde264534b",
+      "title": "Gemini 3.1 Flash-Lite: Built for intelligence at scale",
+      "url": "https://deepmind.google/blog/gemini-3-1-flash-lite-built-for-intelligence-at-scale/",
+      "sourceId": "deepmind_blog",
+      "sourceName": "Google DeepMind — Blog",
+      "publishedAt": "2026-03-03T16:35:55.000Z",
+      "summary": "Gemini 3.1 Flash-Lite is our fastest and most cost-efficient Gemini 3 series model yet.",
+      "tags": [
+        "primary",
+        "research",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://deepmind.google/blog/gemini-3-1-flash-lite-built-for-intelligence-at-scale/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://deepmind.google/blog/feed/basic"
+        }
+      ]
+    },
     {
       "id": "5bcbb7ee7d48b08bfb74818b783a7de38dc9e243fac88c9a7ff8962df33ee554",
       "title": "Multi-Sourced, Multi-Agent Evidence Retrieval for Fact-Checking",
@@ -14995,59 +15043,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2506.18110"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "98068043bb419c6f93032beb098d4e3b46b460128e9a5ff5d9adcc1afd3a4dda",
-      "title": "LongWriter-Zero: Mastering Ultra-Long Text Generation via Reinforcement Learning",
-      "url": "https://arxiv.org/abs/2506.18841",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-03T05:00:00.000Z",
-      "summary": "arXiv:2506.18841v2 Announce Type: replace-cross Abstract: Ultra-long generation by large language models (LLMs) is a widely demanded scenario, yet it remains a significant challenge due to their maximum generation length limit and overall quality degradation as sequence length increases. Previous approaches, exemplified by LongWriter, typically rely on ''teaching'', which involves supervised fine-tuning (SFT) on synthetic long-form outputs. However, this strategy heavily depends on synthetic SFT data, which is difficult and costly to construct, often lacks coherence and consistency, and tends to be overly artificial and structurally monotonous. In this work, we propose an incentivization-based approach that, starting entirely from scratch and without relying on any annotated or synthetic data, leverages reinforcement learning (RL) to foster the emergence of ultra-long, high-quality text generation capabilities in LLMs. We perform RL training starting from a base model, similar to R1-Zero, guiding it to engage in reasoning that facilitates planning and refinement during the writing process. To support this, we employ specialized reward models that steer the LLM towards improved length control, writing quality, and structural formatting. Experimental evaluations show that our LongWriter-Zero model, trained from Qwen2.5-32B, consistently outperforms traditional SFT methods on long-form writing tasks, achieving state-of-the-art results across all metrics on WritingBench and Arena-Write, and even surpassing 100B+ models such as DeepSeek R1 and Qwen3-235B. We open-source our data and model checkpoints under https://huggingface.co/THU-KEG/LongWriter-Zero-32B",
-      "tags": [
-        "papers",
-        "reasoning",
-        "eval",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2506.18841"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "72782172df9793f4f2226b84732db54f44901cf3d10bf3ba7fac7d84dcae2da1",
-      "title": "Cognitive models can reveal interpretable value trade-offs in language models",
-      "url": "https://arxiv.org/abs/2506.20666",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-03T05:00:00.000Z",
-      "summary": "arXiv:2506.20666v4 Announce Type: replace-cross Abstract: Value trade-offs are an integral part of human decision-making and language use, however, current tools for interpreting such dynamic and multi-faceted notions of values in language models are limited. In cognitive science, so-called \"cognitive models\" provide formal accounts of such trade-offs in humans, by modeling the weighting of a speaker's competing utility functions in choosing an action or utterance. Here, we show that a leading cognitive model of polite speech can be used to systematically evaluate alignment-relevant trade-offs in language models via two encompassing settings: degrees of reasoning \"effort\" and system prompt manipulations in closed-source frontier models, and RL post-training dynamics of open-source models. Our results show that LLMs' behavioral profiles under the cognitive model a) shift predictably when they are prompted to prioritize certain goals, b) are amplified by a small reasoning budget, and c) can be used to diagnose other social behaviors such as sycophancy. Our findings from LLMs' post-training dynamics reveal large shifts in values early on in training and persistent effects of the choice of base model and pretraining data, compared to feedback dataset or alignment method. Our framework offers a flexible tool for probing behavioral profiles across diverse model types and gaining insights for shaping training regimes that better control trade-offs between values during model development.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "safety",
-        "training",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2506.20666"
         },
         {
           "label": "Feed",
