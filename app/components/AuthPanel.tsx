@@ -13,40 +13,83 @@ const tierLabels: Record<VerificationTier, string> = {
 
 export function AuthPanel() {
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [zip, setZip] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
   const [tier, setTier] = useState<VerificationTier>("unverified");
+  const [hasPendingRequest, setHasPendingRequest] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (!isSupabaseConfigured) return;
+  const syncAuthState = async () => {
+    if (!isSupabaseConfigured || !supabase) return;
 
-    const sync = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data.user) {
-        setUserId(data.user.id);
-        const { data: profile } = await supabase
-          .from("users")
-          .select("verification_tier, zipcode")
-          .eq("id", data.user.id)
-          .maybeSingle();
-        if (profile?.verification_tier) {
-          setTier(profile.verification_tier);
-          setZip(profile.zipcode ?? "");
-        }
-      } else {
-        setUserId(null);
-        setTier("unverified");
+    const { data } = await supabase.auth.getUser();
+
+    if (!data.user) {
+      setUserId(null);
+      setTier("unverified");
+      setHasPendingRequest(false);
+      setZip("");
+      return;
+    }
+
+    setUserId(data.user.id);
+
+    let { data: profile, error: profileError } = await supabase
+      .from("users")
+      .select("verification_tier")
+      .eq("id", data.user.id)
+      .maybeSingle();
+
+    if (!profile && !profileError) {
+      const { error: insertError } = await supabase.from("users").insert({ id: data.user.id });
+      if (insertError && insertError.code !== "23505") {
+        setStatus(insertError.message);
+        return;
       }
-    };
+
+      const reload = await supabase
+        .from("users")
+        .select("verification_tier")
+        .eq("id", data.user.id)
+        .maybeSingle();
+
+      profile = reload.data;
+      profileError = reload.error;
+    }
+
+    if (profileError) {
+      setStatus(profileError.message);
+      return;
+    }
+
+    setTier(profile?.verification_tier ?? "unverified");
+
+    const { data: pendingRequest, error: pendingError } = await supabase
+      .from("verification_requests")
+      .select("id")
+      .eq("user_id", data.user.id)
+      .eq("status", "pending")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (pendingError) {
+      setStatus(pendingError.message);
+      return;
+    }
+
+    setHasPendingRequest(Boolean(pendingRequest));
+  };
+
+  useEffect(() => {
+    if (!isSupabaseConfigured || !supabase) return;
 
     const { data: listener } = supabase.auth.onAuthStateChange(() => {
-      sync();
+      void syncAuthState();
     });
 
-    sync();
+    void syncAuthState();
 
     return () => {
       listener.subscription.unsubscribe();
@@ -54,7 +97,7 @@ export function AuthPanel() {
   }, []);
 
   const signIn = async () => {
-    if (!email) return;
+    if (!email || !supabase) return;
     setLoading(true);
     setStatus(null);
     const { error } = await supabase.auth.signInWithOtp({
@@ -72,44 +115,57 @@ export function AuthPanel() {
   };
 
   const signOut = async () => {
+    if (!supabase) return;
     await supabase.auth.signOut();
   };
 
-  const ensureProfile = async (uid: string) => {
-    await supabase.from("users").upsert({
-      id: uid,
-      verification_tier: tier,
-      zipcode: zip || null
-    });
-  };
-
-  const verifyLight = async () => {
-    if (!userId) return;
+  const requestLightVerification = async () => {
+    if (!userId || !supabase) return;
     if (!NEWARK_ZIPS.has(zip)) {
       setStatus("ZIP must be a Newark ZIP code.");
-      return;
-    }
-    if (!phone) {
-      setStatus("Phone number is required for light verification.");
       return;
     }
 
     setLoading(true);
     setStatus(null);
-    setTier("light");
-    await supabase.from("users").upsert({
-      id: userId,
-      verification_tier: "light",
-      zipcode: zip
+    const { data } = await supabase.auth.getSession();
+    const accessToken = data.session?.access_token;
+
+    if (!accessToken) {
+      setStatus("Sign in required.");
+      setLoading(false);
+      return;
+    }
+
+    const response = await fetch("/api/verification/request", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({ zipcode: zip })
     });
-    setStatus("Light verification activated. Phone is not stored.");
+
+    let payload: { message?: string } = {};
+    try {
+      payload = (await response.json()) as { message?: string };
+    } catch {
+      payload = {};
+    }
+
+    if (!response.ok) {
+      setStatus(payload.message || "Could not submit verification request.");
+      setLoading(false);
+      if (response.status === 409) {
+        await syncAuthState();
+      }
+      return;
+    }
+
+    setHasPendingRequest(true);
+    setStatus("Light verification request submitted for review.");
     setLoading(false);
   };
-
-  useEffect(() => {
-    if (!userId) return;
-    ensureProfile(userId);
-  }, [userId]);
 
   if (!isSupabaseConfigured) {
     return (
@@ -131,33 +187,45 @@ export function AuthPanel() {
           >
             Sign out
           </button>
-          <div className="rounded-xl bg-fog p-3">
-            <p className="font-medium text-ink">Upgrade to Light Verified</p>
-            <p className="text-xs text-slate/70">
-              Confirm a Newark ZIP and phone. We do not store your phone number.
-            </p>
-            <div className="mt-2 flex flex-col gap-2">
-              <input
-                value={phone}
-                onChange={(event) => setPhone(event.target.value)}
-                placeholder="Phone"
-                className="rounded-lg border border-slate/20 px-3 py-2"
-              />
-              <input
-                value={zip}
-                onChange={(event) => setZip(event.target.value)}
-                placeholder="Newark ZIP"
-                className="rounded-lg border border-slate/20 px-3 py-2"
-              />
-              <button
-                onClick={verifyLight}
-                disabled={loading}
-                className="rounded-lg bg-ink px-3 py-2 text-white disabled:opacity-60"
-              >
-                Verify (Light)
-              </button>
+          {tier === "light" || tier === "strong" ? (
+            <div className="rounded-xl bg-fog p-3">
+              <p className="font-medium text-ink">Verification active</p>
+              <p className="text-xs text-slate/70">
+                Your account is currently eligible to post and support issues.
+              </p>
             </div>
-          </div>
+          ) : hasPendingRequest ? (
+            <div className="rounded-xl bg-fog p-3">
+              <p className="font-medium text-ink">Light verification pending</p>
+              <p className="text-xs text-slate/70">
+                Your Newark ZIP was submitted for manual review. An admin must approve the request before
+                posting or support actions unlock.
+              </p>
+            </div>
+          ) : (
+            <div className="rounded-xl bg-fog p-3">
+              <p className="font-medium text-ink">Request Light Verified</p>
+              <p className="text-xs text-slate/70">
+                Submit a Newark ZIP for manual review. Approval is handled by an admin before the account
+                can post issues.
+              </p>
+              <div className="mt-2 flex flex-col gap-2">
+                <input
+                  value={zip}
+                  onChange={(event) => setZip(event.target.value)}
+                  placeholder="Newark ZIP"
+                  className="rounded-lg border border-slate/20 px-3 py-2"
+                />
+                <button
+                  onClick={requestLightVerification}
+                  disabled={loading}
+                  className="rounded-lg bg-ink px-3 py-2 text-white disabled:opacity-60"
+                >
+                  Request Light Verification
+                </button>
+              </div>
+            </div>
+          )}
           <div className="rounded-xl border border-slate/10 p-3 text-xs text-slate/70">
             Strong verification is coming soon.
           </div>

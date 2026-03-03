@@ -10,7 +10,7 @@ export default function BriefPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!isSupabaseConfigured) {
+    if (!isSupabaseConfigured || !supabase) {
       setLoading(false);
       return;
     }
@@ -75,8 +75,14 @@ export default function BriefPage() {
           </a>
         </div>
 
+        {!isSupabaseConfigured || !supabase ? (
+          <div className="rounded-2xl border border-amber/30 bg-amber/10 p-6 text-sm text-slate">
+            Supabase is not configured. Add env vars to enable the civic brief.
+          </div>
+        ) : null}
+
         {loading ? <p className="text-sm text-slate/60">Loading brief...</p> : null}
-        {!loading && recentIssues.length === 0 ? (
+        {!loading && isSupabaseConfigured && supabase && recentIssues.length === 0 ? (
           <div className="rounded-2xl border border-slate/10 bg-white p-6 text-sm text-slate/70">
             No issues in the last 30 days.
           </div>

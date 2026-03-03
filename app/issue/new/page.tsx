@@ -26,30 +26,79 @@ export default function NewIssuePage() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [tier, setTier] = useState<VerificationTier>("unverified");
+  const [hasPendingVerification, setHasPendingVerification] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!isSupabaseConfigured) return;
+    if (!isSupabaseConfigured || !supabase) return;
+
     const loadTier = async () => {
       const { data } = await supabase.auth.getUser();
-      if (!data.user) return;
-      await supabase.from("users").upsert({
-        id: data.user.id,
-        verification_tier: "unverified"
-      });
-      const { data: profile } = await supabase
+      if (!data.user) {
+        setTier("unverified");
+        setHasPendingVerification(false);
+        return;
+      }
+
+      let { data: profile, error: profileError } = await supabase
         .from("users")
         .select("verification_tier")
         .eq("id", data.user.id)
         .maybeSingle();
-      if (profile?.verification_tier) {
-        setTier(profile.verification_tier);
+
+      if (!profile && !profileError) {
+        const { error: insertError } = await supabase.from("users").insert({
+          id: data.user.id
+        });
+
+        if (insertError && insertError.code !== "23505") {
+          setStatus(insertError.message);
+          return;
+        }
+
+        const reload = await supabase
+          .from("users")
+          .select("verification_tier")
+          .eq("id", data.user.id)
+          .maybeSingle();
+
+        profile = reload.data;
+        profileError = reload.error;
       }
+
+      if (profileError) {
+        setStatus(profileError.message);
+        return;
+      }
+
+      setTier(profile?.verification_tier ?? "unverified");
+
+      const { data: pendingRequest, error: pendingError } = await supabase
+        .from("verification_requests")
+        .select("id")
+        .eq("user_id", data.user.id)
+        .eq("status", "pending")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (pendingError) {
+        setStatus(pendingError.message);
+        return;
+      }
+
+      setHasPendingVerification(Boolean(pendingRequest));
     };
-    loadTier();
+
+    void loadTier();
   }, []);
 
   const handleSubmit = async () => {
+    if (!supabase) {
+      setStatus("Supabase is not configured.");
+      return;
+    }
+
     if (!title || !body) {
       setStatus("Title and description are required.");
       return;
@@ -109,6 +158,19 @@ export default function NewIssuePage() {
     setImageFile(null);
     setLoading(false);
   };
+
+  if (!isSupabaseConfigured || !supabase) {
+    return (
+      <div>
+        <Header />
+        <main className="mx-auto max-w-3xl px-6 py-8">
+          <div className="rounded-2xl border border-amber/30 bg-amber/10 p-6 text-sm text-slate">
+            Supabase is not configured. Add env vars to enable issue posting.
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -183,7 +245,9 @@ export default function NewIssuePage() {
           {status ? <p className="text-sm text-slate/60">{status}</p> : null}
           {tier === "unverified" ? (
             <p className="text-xs text-amber">
-              Upgrade to Light verification in the home page panel to post.
+              {hasPendingVerification
+                ? "Verification pending review. An admin must approve it before you can post."
+                : "Request Light verification before posting issues."}
             </p>
           ) : null}
         </div>

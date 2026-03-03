@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createSupabaseAnonServerClient } from "../../../lib/server/supabase";
 
 export async function GET() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-  const supabase = createClient(supabaseUrl, supabaseAnonKey);
+  const supabase = createSupabaseAnonServerClient();
+
+  if (!supabase) {
+    return NextResponse.json({ error: "Supabase public config missing" }, { status: 500 });
+  }
 
   const since = new Date();
   since.setDate(since.getDate() - 30);

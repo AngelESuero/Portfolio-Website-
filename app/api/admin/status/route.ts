@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import type { IssueStatus } from "../../../../lib/types";
+import { requireAdminRequest } from "../../../../lib/server/admin";
 
 const allowedStatuses: IssueStatus[] = [
   "Submitted",
@@ -11,69 +11,50 @@ const allowedStatuses: IssueStatus[] = [
 ];
 
 export async function POST(request: Request) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
-  const adminIds = (process.env.ADMIN_USER_IDS || "").split(",").map((id) => id.trim());
+  const adminAuth = await requireAdminRequest(request);
 
-  if (!serviceRoleKey) {
-    return NextResponse.json({ error: "Service role key missing" }, { status: 500 });
+  if (!adminAuth.ok) {
+    return NextResponse.json({ error: adminAuth.message }, { status: adminAuth.status });
   }
 
-  const authHeader = request.headers.get("authorization") || "";
-  const token = authHeader.replace("Bearer ", "").trim();
+  let payload: unknown;
 
-  if (!token) {
-    return NextResponse.json({ error: "Authorization token required" }, { status: 401 });
+  try {
+    payload = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
   }
 
-  const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey);
-  const { data: userData } = await supabaseAuth.auth.getUser(token);
+  const payloadRecord = payload && typeof payload === "object" ? (payload as Record<string, unknown>) : {};
+  const issueId = typeof payloadRecord.issue_id === "string" ? payloadRecord.issue_id.trim() : "";
+  const toStatus = payloadRecord.to_status;
+  const note = typeof payloadRecord.note === "string" ? payloadRecord.note.trim() : null;
 
-  if (!userData.user || !adminIds.includes(userData.user.id)) {
-    return NextResponse.json({ error: "Admin access required" }, { status: 403 });
-  }
-
-  const payload = await request.json();
-  const { issue_id, to_status, note } = payload as {
-    issue_id: string;
-    to_status: IssueStatus;
-    note?: string;
-  };
-
-  if (!issue_id || !allowedStatuses.includes(to_status)) {
+  if (!issueId || typeof toStatus !== "string" || !allowedStatuses.includes(toStatus as IssueStatus)) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
 
-  const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
-
-  const { data: issue } = await supabaseAdmin
-    .from("issues")
-    .select("status")
-    .eq("id", issue_id)
-    .maybeSingle();
-
-  const fromStatus = issue?.status ?? null;
-
-  const { error: updateError } = await supabaseAdmin
-    .from("issues")
-    .update({ status: to_status })
-    .eq("id", issue_id);
-
-  if (updateError) {
-    return NextResponse.json({ error: updateError.message }, { status: 500 });
-  }
-
-  const { error: eventError } = await supabaseAdmin.from("status_events").insert({
-    issue_id,
-    actor_id: userData.user.id,
-    from_status: fromStatus,
-    to_status,
-    note: note ?? null
+  const { data, error } = await adminAuth.supabaseAdmin.rpc("admin_transition_issue_status", {
+    p_issue_id: issueId,
+    p_actor_id: adminAuth.userId,
+    p_to_status: toStatus,
+    p_note: note
   });
 
-  if (eventError) {
-    return NextResponse.json({ error: eventError.message }, { status: 500 });
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  if (data === "invalid_status") {
+    return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+  }
+
+  if (data === "not_found") {
+    return NextResponse.json({ error: "Issue not found" }, { status: 404 });
+  }
+
+  if (data !== "ok") {
+    return NextResponse.json({ error: "Unexpected admin status result" }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });

@@ -20,6 +20,7 @@ type StatusEvent = {
 export default function IssueDetailPage() {
   const params = useParams();
   const issueId = Array.isArray(params?.id) ? params?.id[0] : params?.id;
+  const cooldownMessage = "Please wait 30 seconds before posting another comment.";
 
   const [issue, setIssue] = useState<Issue | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -32,7 +33,7 @@ export default function IssueDetailPage() {
   const [cooldownUntil, setCooldownUntil] = useState<number | null>(null);
 
   useEffect(() => {
-    if (!issueId || !isSupabaseConfigured) return;
+    if (!issueId || !isSupabaseConfigured || !supabase) return;
 
     const load = async () => {
       const { data: issueData } = await supabase.from("issues").select("*").eq("id", issueId).maybeSingle();
@@ -95,10 +96,36 @@ export default function IssueDetailPage() {
       }
     };
 
-    load();
+    void load();
   }, [issueId]);
 
+  useEffect(() => {
+    if (!cooldownUntil) {
+      setStatus((current) => (current === cooldownMessage ? null : current));
+      return;
+    }
+
+    const remaining = cooldownUntil - Date.now();
+
+    if (remaining <= 0) {
+      setCooldownUntil(null);
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setCooldownUntil(null);
+    }, remaining);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [cooldownUntil]);
+
   const toggleSupport = async () => {
+    if (!supabase) {
+      setStatus("Supabase is not configured.");
+      return;
+    }
     if (!issueId) return;
     if (tier === "unverified") {
       setStatus("Light verification required to support issues.");
@@ -118,6 +145,10 @@ export default function IssueDetailPage() {
   };
 
   const toggleImpact = async () => {
+    if (!supabase) {
+      setStatus("Supabase is not configured.");
+      return;
+    }
     if (!issueId) return;
     if (tier === "unverified") {
       setStatus("Light verification required to tag impacts.");
@@ -137,9 +168,13 @@ export default function IssueDetailPage() {
   };
 
   const handleComment = async (body: string) => {
+    if (!supabase) {
+      setStatus("Supabase is not configured.");
+      return;
+    }
     if (!issueId) return;
     if (cooldownUntil && Date.now() < cooldownUntil) {
-      setStatus("Please wait before posting another comment.");
+      setStatus(cooldownMessage);
       return;
     }
     const { data } = await supabase.auth.getUser();
@@ -174,6 +209,10 @@ export default function IssueDetailPage() {
   };
 
   const handleReport = async (commentId: string) => {
+    if (!supabase) {
+      setStatus("Supabase is not configured.");
+      return;
+    }
     const { data } = await supabase.auth.getUser();
     if (!data.user) {
       setStatus("Sign in required to report.");
@@ -190,6 +229,19 @@ export default function IssueDetailPage() {
 
   if (!issueId) {
     return null;
+  }
+
+  if (!isSupabaseConfigured || !supabase) {
+    return (
+      <div>
+        <Header />
+        <main className="mx-auto max-w-4xl space-y-6 px-6 py-8">
+          <div className="rounded-2xl border border-amber/30 bg-amber/10 p-6 text-sm text-slate">
+            Supabase is not configured. Add env vars to enable issue details.
+          </div>
+        </main>
+      </div>
+    );
   }
 
   return (
@@ -264,8 +316,9 @@ export default function IssueDetailPage() {
         </section>
 
         <section className="space-y-4">
-          <CommentComposer onSubmit={handleComment} disabled={Boolean(cooldownUntil && Date.now() < cooldownUntil)} />
+          <CommentComposer onSubmit={handleComment} disabled={cooldownUntil !== null} />
           <CommentThread comments={comments} onReport={handleReport} />
+          {cooldownUntil !== null ? <p className="text-sm text-slate/60">{cooldownMessage}</p> : null}
         </section>
 
         {status ? <p className="text-sm text-slate/60">{status}</p> : null}
