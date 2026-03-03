@@ -67,7 +67,7 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         id: 'now-listening',
         title: 'Now Listening (Vol 4)',
         url: MUSIC_URLS.spotifyVol4,
-        year: '2026',
+        year: '2017-2018',
         tag: 'Vol 4',
         preferredEmbed: 'spotify'
       },
@@ -76,7 +76,6 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         title: 'My First Beat Tape',
         url: 'https://untitled.stream/library/project/W9oQWS6klQAAftkyx28QL',
         embedUrl: MUSIC_URLS.untitledMyFirstBeatTape,
-        year: '2026',
         tag: 'Project',
         preferredEmbed: 'untitled'
       },
@@ -85,31 +84,31 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         title: 'The Every Day Soundscape',
         url: MUSIC_URLS.untitledEveryDaySoundscape,
         embedUrl: `${MUSIC_URLS.untitledEveryDaySoundscape}/embed`,
-        year: '2026',
+        year: '2019',
         tag: 'Track',
         preferredEmbed: 'untitled'
       },
       {
         id: 'queries-beat-tape',
-        title: 'Queries Beat Tape',
+        title: 'Queries (The Beat Tape): Family... Love?',
         url: MUSIC_URLS.untitledQueriesBeatTape,
         embedUrl: `${MUSIC_URLS.untitledQueriesBeatTape}/embed`,
-        year: '2026',
+        year: '2020',
         tag: 'Project',
         preferredEmbed: 'untitled'
       },
       {
         id: 'scraps-2023-2024',
-        title: 'Scraps 2023-2024',
+        title: 'Scraps: Dark Days, Symptoms of An Ill Mind, & No Context Demos Tapes (2023-2024)',
         url: MUSIC_URLS.untitledScrapsInvite,
-        year: '2026',
+        year: '2023-2024',
         tag: 'Invite'
       },
       {
         id: 'vol-1-spotify',
         title: 'Volume 1 - Spotify',
         url: MUSIC_URLS.spotifyVol1,
-        year: '2026',
+        year: '2015-2016',
         tag: 'Vol 1',
         preferredEmbed: 'spotify'
       },
@@ -117,7 +116,7 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         id: 'vol-2-spotify',
         title: 'Volume 2 - Spotify',
         url: MUSIC_URLS.spotifyVol2,
-        year: '2026',
+        year: '2015-2016',
         tag: 'Vol 2',
         preferredEmbed: 'spotify'
       },
@@ -125,7 +124,7 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         id: 'vol-3-spotify',
         title: 'Volume 3 - Spotify',
         url: MUSIC_URLS.spotifyVol3,
-        year: '2026',
+        year: '2015-2016',
         tag: 'Vol 3',
         preferredEmbed: 'spotify'
       },
@@ -133,7 +132,7 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         id: 'vol-4-spotify',
         title: 'Volume 4 - Spotify',
         url: MUSIC_URLS.spotifyVol4,
-        year: '2026',
+        year: '2017-2018',
         tag: 'Vol 4',
         preferredEmbed: 'spotify'
       },
@@ -141,7 +140,7 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         id: 'vol-1-soundcloud',
         title: 'Volume 1 - SoundCloud',
         url: 'https://soundcloud.com/aesuero/sets/volume-1-angel-sueros-top-100',
-        year: '2026',
+        year: '2015-2016',
         tag: 'Vol 1',
         preferredEmbed: 'soundcloud'
       },
@@ -149,7 +148,7 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         id: 'vol-2-soundcloud',
         title: 'Volume 2 - SoundCloud',
         url: 'https://soundcloud.com/aesuero/sets/volume-2-angel-sueros-top-most',
-        year: '2026',
+        year: '2015-2016',
         tag: 'Vol 2',
         preferredEmbed: 'soundcloud'
       },
@@ -157,7 +156,7 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         id: 'vol-3-soundcloud',
         title: 'Volume 3 - SoundCloud',
         url: 'https://soundcloud.com/aesuero/sets/volume-3-angel-sueros-top-50',
-        year: '2026',
+        year: '2015-2016',
         tag: 'Vol 3',
         preferredEmbed: 'soundcloud'
       },
@@ -165,7 +164,7 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         id: 'vol-4-soundcloud',
         title: 'Volume 4 - SoundCloud',
         url: 'https://soundcloud.com/aesuero/sets/volume-4-angel-sueros-top-50',
-        year: '2026',
+        year: '2017-2018',
         tag: 'Vol 4',
         preferredEmbed: 'soundcloud'
       },
@@ -173,7 +172,7 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         id: 'vol-1-youtube-music',
         title: 'Volume 1 - YouTube Music',
         url: 'https://music.youtube.com/playlist?list=PL40ATpghmK-pbMGHG0bN4_71Kj_oCT6pI',
-        year: '2026',
+        year: '2015-2016',
         tag: 'Vol 1',
         preferredEmbed: 'youtube'
       },
@@ -181,7 +180,7 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         id: 'vol-2-youtube-music',
         title: 'Volume 2 - YouTube Music',
         url: 'https://music.youtube.com/playlist?list=PL40ATpghmK-rejOZXry9DjMORNXWCfQ9a',
-        year: '2026',
+        year: '2015-2016',
         tag: 'Vol 2',
         preferredEmbed: 'youtube'
       },
@@ -189,7 +188,7 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         id: 'vol-3-youtube-music',
         title: 'Volume 3 - YouTube Music',
         url: 'https://music.youtube.com/playlist?list=PL40ATpghmK-p2C15L1Ai2jY8EMpPs03a6',
-        year: '2026',
+        year: '2015-2016',
         tag: 'Vol 3',
         preferredEmbed: 'youtube'
       },
@@ -197,7 +196,7 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         id: 'vol-4-youtube-music',
         title: 'Volume 4 - YouTube Music',
         url: 'https://music.youtube.com/playlist?list=PL40ATpghmK-pfmvHYfs6BqSyYciYxK02G',
-        year: '2026',
+        year: '2017-2018',
         tag: 'Vol 4',
         preferredEmbed: 'youtube'
       },
@@ -205,28 +204,28 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         id: 'vol-3-smart-link',
         title: 'Volume 3 Smart Link',
         url: 'https://sdz.sh/FDoCqk',
-        year: '2026',
+        year: '2015-2016',
         tag: 'Smart Link'
       },
       {
         id: 'vol-4-smart-link',
         title: 'Volume 4 Smart Link',
         url: 'https://sdz.sh/yFOERE',
-        year: '2026',
+        year: '2017-2018',
         tag: 'Smart Link'
       },
       {
         id: 'vol-1-linktree',
         title: 'Volume 1 Linktree',
         url: 'https://linktr.ee/a_e.s_playlist',
-        year: '2026',
+        year: '2015-2016',
         tag: 'Linktree'
       },
       {
         id: 'vol-2-linktree',
         title: 'Volume 2 Linktree',
         url: 'https://linktr.ee/a_e.s_volume2',
-        year: '2026',
+        year: '2015-2016',
         tag: 'Linktree'
       },
       {
@@ -275,9 +274,9 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
       },
       {
         id: 'magazine-publication',
-        title: 'A Magazine Publication',
-        url: 'https://jstrieb.github.io/link-lock/',
-        year: '2026',
+        title: 'A Magazine Publication - The Art of Survival',
+        url: 'https://jstrieb.github.io/link-lock/#eyJ2IjoiMC4wLjEiLCJlIjoiNzkzazQ2c0hQdmlxVlRDNGZmbW1KOU5nY1JWMmtUNVRCV250QXhJcUJEZ080ejduL0dsT2dobVNhNWU0MURvUUdFL1BhbHZjZWZmYmZiY0xwenI0RWY2SmJSYXdoa1NEUVh4K2RQRytOR3g3NTY1UjJQTzVVelpCIiwicyI6Imx4S3czNXJUMmt2Y0ZETFVEb3Boa3c9PSIsImkiOiJrY3VDKzdCTjV6eHdIcWd2In0=',
+        year: '2022',
         tag: 'Locked'
       }
     ]
@@ -291,16 +290,16 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         id: 'everyday-life-video',
         title: 'The Everyday Life Video',
         url: VIDEO_URLS.everydayLifeVideo,
-        year: '2026',
+        year: '2019',
         tag: 'Feature',
         preferredEmbed: 'youtube'
       },
       {
         id: 'growth-happiness-journey',
-        title: 'Growth and Happiness Journey',
+        title: 'SCRAPS AFTER HEARTBREAKS MUSICVIDEO',
         url: 'https://youtu.be/ErIkkP7lmEw',
-        year: '2026',
-        tag: 'Growth',
+        year: '2023',
+        tag: 'Music Video',
         preferredEmbed: 'youtube'
       },
       {
@@ -345,15 +344,13 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         id: 'practicing-kriya',
         title: 'Practicing Kriya',
         url: 'https://drive.google.com/file/d/1TcERCTJS1opeyJJ3A5SSFHQBvF7LLBc6/view?usp=drivesdk',
-        year: '2024',
         tag: 'Wellbeing',
         preferredEmbed: 'google_drive'
       },
       {
         id: 'resources-for-humans',
-        title: 'Resources For Peeps / Humans',
+        title: 'Resources For Humans',
         url: 'https://linktr.ee/resourcesonlyforhumans',
-        year: '2026',
         tag: 'Wellbeing'
       },
       {
