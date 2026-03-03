@@ -428,6 +428,10 @@ body[data-header-mode='peek'][data-header-reveal='hidden'] .site-header {
   flex-wrap: nowrap;
 }
 
+.site-header .site-shell-row {
+  max-width: clamp(1180px, 96vw, 1760px);
+}
+
 .site-header .header-brand {
   flex-shrink: 0;
   white-space: nowrap;
@@ -561,6 +565,22 @@ body[data-header-mode='peek'][data-header-reveal='hidden'] .site-header {
 .site-header .header-actions button,
 .site-header .header-actions .view-settings-open {
   min-height: 38px;
+}
+
+@media (min-width: 768px) and (max-width: 1380px) {
+  .site-header .header-row {
+    flex-wrap: wrap;
+    row-gap: 0.7rem;
+  }
+
+  .site-header .header-nav {
+    order: 3;
+    flex: 1 0 100%;
+    width: 100%;
+    flex-wrap: wrap;
+    overflow-x: visible;
+    row-gap: 0.45rem;
+  }
 }
 
 .mobile-nav {
