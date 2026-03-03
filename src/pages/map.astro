@@ -4,12 +4,12 @@ import NeuralMap from '../components/NeuralMap.astro';
 ---
 
 <BaseLayout title="Organizational Atlas — a_e.s_" theme="archive">
-  <div class="atlas-page">
-    <header class="atlas-page__header mb-6">
-      <h1 class="font-display text-4xl">Organizational Atlas</h1>
-      <p class="mt-2 max-w-2xl text-zinc-600 dark:text-zinc-300">
-        Use the nine-category ring as the top layer of the archive. The center marks the authorial core, and each outer section
-        opens into the themes and concepts that organize the writing.
+  <div class="atlas-page" data-stage-mode="overview" data-chrome-state="full">
+    <header class="atlas-page__header">
+      <p class="atlas-page__eyebrow">Archive navigator</p>
+      <h1 class="atlas-page__title">Organizational Atlas</h1>
+      <p class="atlas-page__summary">
+        A page-scale map of the archive: start at the nine-category ring, then zoom inward toward denser concept lanes.
       </p>
     </header>
 
@@ -19,25 +19,87 @@ import NeuralMap from '../components/NeuralMap.astro';
 
 <style>
   .atlas-page {
-    margin-inline: calc(50% - 50vw + clamp(12px, 1.6vw, 28px));
+    margin-inline: calc(50% - 50vw + clamp(10px, 1vw, 22px));
+    padding-block: clamp(0.35rem, 1.1vh, 0.9rem) clamp(1rem, 2.4vh, 1.8rem);
   }
 
   .atlas-page__header {
-    padding-inline: clamp(0.35rem, 0.8vw, 0.8rem);
+    max-width: min(72rem, 100%);
+    padding-inline: clamp(0.3rem, 0.9vw, 0.9rem);
+    margin-bottom: clamp(0.6rem, 1.2vw, 1rem);
+    display: grid;
+    gap: 0.25rem;
+    transition:
+      opacity 220ms ease,
+      transform 220ms ease,
+      margin-bottom 220ms ease;
   }
 
   .atlas-page :global([data-neural-atlas]) {
-    width: min(100%, 1680px);
-    margin-inline: auto;
+    width: 100%;
   }
 
-  @media (max-width: 900px) {
+  .atlas-page__eyebrow,
+  .atlas-page__title,
+  .atlas-page__summary {
+    margin: 0;
+  }
+
+  .atlas-page__eyebrow {
+    color: var(--tone-accent-glow);
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .atlas-page__title {
+    color: var(--tone-text);
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 3vw, 3rem);
+    line-height: 0.96;
+    letter-spacing: -0.03em;
+  }
+
+  .atlas-page__summary {
+    max-width: 46rem;
+    color: var(--tone-muted);
+    font-size: clamp(0.92rem, 1vw, 1rem);
+    line-height: 1.45;
+  }
+
+  .atlas-page[data-stage-mode='inspect'] .atlas-page__header {
+    margin-bottom: clamp(0.4rem, 0.8vw, 0.7rem);
+    opacity: 0.92;
+    transform: translateY(-2px);
+  }
+
+  .atlas-page[data-stage-mode='immersive'] .atlas-page__header {
+    margin-bottom: clamp(0.3rem, 0.6vw, 0.55rem);
+    opacity: 0.84;
+    transform: translateY(-4px);
+  }
+
+  @media (max-width: 1100px) {
     .atlas-page {
       margin-inline: 0;
+      padding-block: 0 1rem;
     }
 
     .atlas-page__header {
       padding-inline: 0;
+      margin-bottom: 0.8rem;
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .atlas-page__title {
+      font-size: clamp(1.8rem, 8vw, 2.4rem);
+    }
+
+    .atlas-page__summary {
+      max-width: 100%;
     }
   }
 </style>
