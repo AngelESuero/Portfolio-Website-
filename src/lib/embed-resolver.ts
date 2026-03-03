@@ -177,7 +177,7 @@ export const resolveEmbed = (urlValue: string, preferredProvider?: LinkHubProvid
       return { provider, embedUrl: null, embeddable: false, reason: 'invite_link' };
     }
 
-    if (parsed.pathname.startsWith('/embed/')) {
+    if (parsed.pathname.startsWith('/embed/') || parsed.pathname.endsWith('/embed')) {
       return { provider, embedUrl: urlValue, embeddable: true, reason: 'ok' };
     }
 

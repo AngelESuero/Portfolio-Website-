@@ -26,8 +26,7 @@ const embedUrl = resolution.embedUrl;
 const embedHeight = getEmbedHeight(provider);
 const embedAspectRatio = getEmbedAspectRatio(provider);
 const hasAspectRatio = Boolean(embedAspectRatio);
-const usesCompactProviderFallback = showResizeHint && provider === 'google_drive';
-const isEmbeddable = resolution.embeddable && Boolean(embedUrl) && !usesCompactProviderFallback;
+const isEmbeddable = resolution.embeddable && Boolean(embedUrl);
 const isExternal = /^https?:\/\//i.test(item.url);
 const isLinktree = isLinktreeUrl(item.url);
 const isUntitledLibraryLink = (() => {
@@ -43,8 +42,6 @@ const frameStyle = hasAspectRatio
   : `--embed-height:${embedHeight}px`;
 const fallbackMessage = isLinktree
   ? 'Linktree is your active links hub. Open it to see the full live stack.'
-  : usesCompactProviderFallback
-    ? 'This preview opens more cleanly in Google Drive than in a compact card.'
   : isUntitledLibraryLink && !configuredEmbedUrl
     ? 'This item links to an editable Untitled page. Add an explicit embed URL to show an inline player.'
   : getEmbedFallbackMessage(resolution);
