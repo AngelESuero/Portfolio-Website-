@@ -415,20 +415,6 @@ body[data-header-mode='peek'][data-header-reveal='hidden'] .site-header {
   box-shadow: none;
 }
 
-html[data-scroll-optimizing='true'] #cursor-aura {
-  opacity: 0 !important;
-}
-
-html[data-scroll-optimizing='true'] .card,
-html[data-scroll-optimizing='true'] .panel,
-html[data-scroll-optimizing='true'] .site-header,
-html[data-scroll-optimizing='true'] .mobile-nav,
-html[data-scroll-optimizing='true'] .pill,
-html[data-scroll-optimizing='true'] .chip,
-html[data-scroll-optimizing='true'] button {
-  backdrop-filter: none !important;
-}
-
 .site-header nav a {
   border: 0 !important;
   background: transparent !important;

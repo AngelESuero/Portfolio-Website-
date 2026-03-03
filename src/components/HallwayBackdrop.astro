@@ -588,41 +588,12 @@ const sparkSeeds = [
     }
   }
 
-  :global(html[data-scroll-optimizing='true']) .hallway__photo,
-  :global(html[data-scroll-optimizing='true']) .hallway__focusField,
-  :global(html[data-scroll-optimizing='true']) .hallway__memoryBloom,
-  :global(html[data-scroll-optimizing='true']) .hallway__cursorLight {
-    filter: none;
-  }
-
-  :global(html[data-scroll-optimizing='true']) .hallway__focusField,
-  :global(html[data-scroll-optimizing='true']) .hallway__fog,
-  :global(html[data-scroll-optimizing='true']) .hallway__atmosphere,
-  :global(html[data-scroll-optimizing='true']) .hallway__grain,
-  :global(html[data-scroll-optimizing='true']) .hallway__cursorLight {
-    opacity: 0;
-  }
-
-  :global(html[data-scroll-optimizing='true']) .hallway__memories {
-    opacity: 0.42;
-  }
-
-  :global(html[data-scroll-optimizing='true']) .hallway__depth {
-    opacity: 0.08;
-    transform: none;
-    transition: none;
-  }
-
-  :global(html[data-scroll-optimizing='true']) .hallway__neon {
-    opacity: 0.1;
-  }
-
   :global(html[data-scroll-optimizing='true']) .hallway__memory,
   :global(html[data-scroll-optimizing='true']) .hallway__spark,
   :global(html[data-scroll-optimizing='true']) .hallway__fog,
   :global(html[data-scroll-optimizing='true']) .hallway__atmosphere,
   :global(html[data-scroll-optimizing='true']) .hallway__grain {
-    animation: none !important;
+    animation-play-state: paused !important;
   }
 
   @media (pointer: coarse) {
