@@ -85,6 +85,9 @@ type FlatDistrictSpine = {
   regionId: string;
 };
 
+const CORE_DETAIL =
+  'Nine organizational categories form a survival-weighted triangle around the center: society, resources, relationships, work, and activity sit lower, while well-being, growth, creativity, and order rise higher.';
+
 const STAGE_MODE_THRESHOLDS: Record<Exclude<StageMode, 'overview'>, number> = {
   inspect: 1.25,
   immersive: 2.1
@@ -585,10 +588,7 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
     <div class="map-hud">
       <p class="map-hud__eyebrow" data-map-focus>Authorial core</p>
       <p class="map-hud__title" data-map-title>You</p>
-      <p class="map-hud__detail" data-map-detail>
-        Nine organizational categories orbit the center: well-being, growth, relationships, work, creativity, activity,
-        order, resources, and society.
-      </p>
+      <p class="map-hud__detail" data-map-detail>{CORE_DETAIL}</p>
     </div>
 
     <div class="map-key" aria-label="Map guide">
@@ -612,7 +612,8 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
     districtSpinesData: districtSpines,
     conceptLinksData: conceptLinks,
     conceptBridgeData: conceptBridgePaths,
-    stageThresholds: STAGE_MODE_THRESHOLDS
+    stageThresholds: STAGE_MODE_THRESHOLDS,
+    coreDetail: CORE_DETAIL
   }}
 >
   (() => {
@@ -773,8 +774,7 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
         return {
           focus: 'Authorial core',
           title: 'You',
-          detail:
-            'Nine organizational categories orbit the center: well-being, growth, relationships, work, creativity, activity, order, resources, and society.'
+          detail: coreDetail
         };
       }
 
@@ -811,8 +811,7 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
       return {
         focus: 'Authorial core',
         title: 'You',
-        detail:
-          'Nine organizational categories orbit the center: well-being, growth, relationships, work, creativity, activity, order, resources, and society.'
+        detail: coreDetail
       };
     };
 

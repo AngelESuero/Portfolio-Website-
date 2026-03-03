@@ -71,7 +71,7 @@ export const MAP_REGIONS: MapRegion[] = [
     id: 'wellbeing',
     label: 'Well-Being',
     x: 1600,
-    y: 340,
+    y: 260,
     width: 470,
     height: 270,
     fill: 'rgba(68, 181, 44, 0.16)',
@@ -151,7 +151,7 @@ export const MAP_REGIONS: MapRegion[] = [
   {
     id: 'growth',
     label: 'Growth',
-    x: 2400,
+    x: 1180,
     y: 520,
     width: 440,
     height: 260,
@@ -232,8 +232,8 @@ export const MAP_REGIONS: MapRegion[] = [
   {
     id: 'relationships',
     label: 'Relationships',
-    x: 2810,
-    y: 960,
+    x: 1600,
+    y: 1860,
     width: 480,
     height: 280,
     fill: 'rgba(243, 127, 0, 0.16)',
@@ -313,8 +313,8 @@ export const MAP_REGIONS: MapRegion[] = [
   {
     id: 'work',
     label: 'Work',
-    x: 2790,
-    y: 1440,
+    x: 2140,
+    y: 1540,
     width: 430,
     height: 260,
     fill: 'rgba(232, 24, 24, 0.16)',
@@ -394,8 +394,8 @@ export const MAP_REGIONS: MapRegion[] = [
   {
     id: 'creativity',
     label: 'Creativity',
-    x: 2240,
-    y: 1810,
+    x: 2020,
+    y: 540,
     width: 470,
     height: 270,
     fill: 'rgba(122, 63, 178, 0.16)',
@@ -475,8 +475,8 @@ export const MAP_REGIONS: MapRegion[] = [
   {
     id: 'activity',
     label: 'Activity',
-    x: 1450,
-    y: 1920,
+    x: 2520,
+    y: 1120,
     width: 470,
     height: 270,
     fill: 'rgba(229, 36, 50, 0.16)',
@@ -556,8 +556,8 @@ export const MAP_REGIONS: MapRegion[] = [
   {
     id: 'order',
     label: 'Order',
-    x: 780,
-    y: 1680,
+    x: 760,
+    y: 860,
     width: 430,
     height: 260,
     fill: 'rgba(24, 98, 183, 0.16)',
@@ -637,8 +637,8 @@ export const MAP_REGIONS: MapRegion[] = [
   {
     id: 'resources',
     label: 'Resources',
-    x: 460,
-    y: 1100,
+    x: 1060,
+    y: 1540,
     width: 470,
     height: 270,
     fill: 'rgba(17, 151, 143, 0.16)',
@@ -718,8 +718,8 @@ export const MAP_REGIONS: MapRegion[] = [
   {
     id: 'society',
     label: 'Society',
-    x: 820,
-    y: 560,
+    x: 680,
+    y: 1120,
     width: 450,
     height: 270,
     fill: 'rgba(22, 131, 205, 0.16)',
@@ -799,15 +799,15 @@ export const MAP_REGIONS: MapRegion[] = [
 ];
 
 export const MAP_ROUTES: MapRoute[] = [
-  { source: 'society', target: 'wellbeing', tone: 'bridge', weight: 0.58 },
-  { source: 'wellbeing', target: 'growth', tone: 'bridge', weight: 0.62 },
-  { source: 'growth', target: 'relationships', tone: 'signal', weight: 0.58 },
-  { source: 'relationships', target: 'work', tone: 'signal', weight: 0.6 },
-  { source: 'work', target: 'creativity', tone: 'bridge', weight: 0.62 },
-  { source: 'creativity', target: 'activity', tone: 'bridge', weight: 0.58 },
-  { source: 'activity', target: 'order', tone: 'signal', weight: 0.56 },
-  { source: 'order', target: 'resources', tone: 'bridge', weight: 0.6 },
-  { source: 'resources', target: 'society', tone: 'root', weight: 0.64 }
+  { source: 'order', target: 'growth', tone: 'bridge', weight: 0.58 },
+  { source: 'growth', target: 'wellbeing', tone: 'bridge', weight: 0.62 },
+  { source: 'wellbeing', target: 'creativity', tone: 'signal', weight: 0.58 },
+  { source: 'creativity', target: 'activity', tone: 'signal', weight: 0.6 },
+  { source: 'activity', target: 'work', tone: 'bridge', weight: 0.62 },
+  { source: 'work', target: 'relationships', tone: 'bridge', weight: 0.58 },
+  { source: 'relationships', target: 'resources', tone: 'signal', weight: 0.56 },
+  { source: 'resources', target: 'society', tone: 'bridge', weight: 0.6 },
+  { source: 'society', target: 'order', tone: 'root', weight: 0.64 }
 ];
 
 export const MAP_CONCEPT_BRIDGES: MapConceptBridge[] = [
