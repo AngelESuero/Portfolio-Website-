@@ -18,13 +18,10 @@ export interface HomePhotoCollageSlot {
   tone?: HomePhotoTone;
 }
 
-const fallbackPhoto = '/images/bg-station.jpg';
-
-// Replace these `src` values with files you add under `/public/images/home-collage/`.
 export const homePhotoCollageSlots: HomePhotoCollageSlot[] = [
   {
     id: 'anchor',
-    src: fallbackPhoto,
+    src: '/images/home-collage/download-7.png',
     focus: '50% 58%',
     x: '50%',
     y: '55%',
@@ -40,8 +37,8 @@ export const homePhotoCollageSlots: HomePhotoCollageSlot[] = [
   },
   {
     id: 'sky-strip',
-    src: fallbackPhoto,
-    focus: '50% 18%',
+    src: '/images/home-collage/download-1.png',
+    focus: '50% 24%',
     x: '32%',
     y: '23%',
     width: 'clamp(18rem, 34vw, 32rem)',
@@ -57,8 +54,8 @@ export const homePhotoCollageSlots: HomePhotoCollageSlot[] = [
   },
   {
     id: 'portrait-left',
-    src: fallbackPhoto,
-    focus: '32% 38%',
+    src: '/images/home-collage/download-2.png',
+    focus: '52% 34%',
     x: '17%',
     y: '33%',
     width: 'clamp(8rem, 14vw, 12rem)',
@@ -74,8 +71,8 @@ export const homePhotoCollageSlots: HomePhotoCollageSlot[] = [
   },
   {
     id: 'portrait-right',
-    src: fallbackPhoto,
-    focus: '72% 46%',
+    src: '/images/home-collage/download-3.png',
+    focus: '48% 34%',
     x: '83%',
     y: '35%',
     width: 'clamp(9rem, 15vw, 13rem)',
@@ -91,8 +88,8 @@ export const homePhotoCollageSlots: HomePhotoCollageSlot[] = [
   },
   {
     id: 'square-accent',
-    src: fallbackPhoto,
-    focus: '58% 82%',
+    src: '/images/home-collage/download-4.png',
+    focus: '50% 52%',
     x: '71%',
     y: '71%',
     width: 'clamp(7rem, 13vw, 11rem)',
@@ -105,5 +102,22 @@ export const homePhotoCollageSlots: HomePhotoCollageSlot[] = [
     opacity: 0.38,
     blur: '1.5px',
     tone: 'cool'
+  },
+  {
+    id: 'lower-left',
+    src: '/images/home-collage/download.png',
+    focus: '50% 58%',
+    x: '31%',
+    y: '73%',
+    width: 'clamp(6.5rem, 11vw, 9.5rem)',
+    height: 'clamp(9rem, 16vw, 13rem)',
+    mobileX: '24%',
+    mobileY: '70%',
+    mobileWidth: '4.75rem',
+    mobileHeight: '6.8rem',
+    rotate: '-5deg',
+    opacity: 0.34,
+    blur: '0.75px',
+    tone: 'warm'
   }
 ];
