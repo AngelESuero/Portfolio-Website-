@@ -19,7 +19,7 @@ const photoGarland = {
   bottom: resolvePublicAsset(['images/garland/bottom-vine.webp', 'images/garland/bottom-vine.png'])
 };
 
-const hasPhotoGarlandAssets = Object.values(photoGarland).some(Boolean);
+const hasPhotoGarlandAssets = Object.values(photoGarland).every(Boolean);
 
 const leafCurves = [
   '74% 10% 68% 12% / 84% 8% 70% 10%',
@@ -336,13 +336,25 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
   }
 
   .garland-photo-rail__image {
-    background-size: 100% auto;
-    background-position: center top;
+    background-size: auto 100%;
+  }
+
+  .garland-photo-rail-left .garland-photo-rail__image {
+    background-position: left top;
+  }
+
+  .garland-photo-rail-right .garland-photo-rail__image {
+    background-position: right top;
   }
 
   .garland-photo-band__image {
-    background-size: contain;
-    background-position: center;
+    background-size: auto 100%;
+    background-repeat: repeat-x;
+    background-position: center top;
+  }
+
+  .garland-photo-band-bottom .garland-photo-band__image {
+    background-position: center bottom;
   }
 
   .garland-real {
@@ -382,6 +394,7 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
   }
 
   .garland-real[data-has-photo-assets='true'] .header-vine-band,
+  .garland-real[data-has-photo-assets='true'] .wire,
   .garland-real[data-has-photo-assets='true'] .leaf-track,
   .garland-real[data-has-photo-assets='true'] .vine-lane {
     display: none;
