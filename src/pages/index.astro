@@ -353,6 +353,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
   <script is:inline>
     (() => {
       const tablist = document.querySelector('.section-tablist');
+      const sectionPanels = document.querySelector('.section-panels');
       const tabs = Array.from(document.querySelectorAll('[data-section-tab]'));
       const panels = Array.from(document.querySelectorAll('[data-section-panel]'));
       if (!(tablist instanceof HTMLElement) || !tabs.length || !panels.length) return;
@@ -385,6 +386,15 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
         window.__setSiteTone?.(tone, { animate: true });
       };
 
+      const activateAdjacent = (direction) => {
+        const activeIndex = tabs.findIndex((tab) => tab.classList.contains('is-active'));
+        const nextTab = tabs[activeIndex + direction];
+        const nextId = nextTab?.getAttribute('data-section-tab');
+        if (!nextId) return false;
+        activate(nextId);
+        return true;
+      };
+
       tabs.forEach((tab) => {
         tab.addEventListener('click', () => {
           const id = tab.getAttribute('data-section-tab');
@@ -392,70 +402,93 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
         });
       });
 
-      let dragPointerId = -1;
-      let dragStartX = 0;
-      let dragStartScrollLeft = 0;
-      let suppressClick = false;
+      const swipeSurfaces = [tablist];
+      if (sectionPanels instanceof HTMLElement) {
+        swipeSurfaces.push(sectionPanels);
+      }
 
-      const endDrag = (pointerId) => {
-        if (dragPointerId !== pointerId) return;
-        if (tablist.hasPointerCapture(dragPointerId)) {
-          tablist.releasePointerCapture(dragPointerId);
+      let swipePointerId = -1;
+      let swipeStartX = 0;
+      let swipeStartY = 0;
+      let suppressClick = false;
+      let swipeSurface = null;
+
+      const endSwipe = (pointerId) => {
+        if (swipePointerId !== pointerId) return;
+        if (swipeSurface instanceof HTMLElement && swipeSurface.hasPointerCapture(swipePointerId)) {
+          swipeSurface.releasePointerCapture(swipePointerId);
         }
         tablist.classList.remove('is-dragging');
-        dragPointerId = -1;
+        swipeSurface = null;
+        swipePointerId = -1;
       };
 
-      tablist.addEventListener(
-        'click',
-        (event) => {
-          if (!suppressClick) return;
-          event.preventDefault();
-          event.stopPropagation();
+      swipeSurfaces.forEach((surface) => {
+        surface.addEventListener(
+          'click',
+          (event) => {
+            if (!suppressClick) return;
+            event.preventDefault();
+            event.stopPropagation();
+            suppressClick = false;
+          },
+          true
+        );
+
+        surface.addEventListener('pointerdown', (event) => {
+          if (event.pointerType !== 'mouse' || event.button !== 0) return;
+
+          swipePointerId = event.pointerId;
+          swipeStartX = event.clientX;
+          swipeStartY = event.clientY;
           suppressClick = false;
-        },
-        true
-      );
+          swipeSurface = surface;
 
-      tablist.addEventListener('pointerdown', (event) => {
-        if (event.pointerType !== 'mouse' || event.button !== 0) return;
-        if (tablist.scrollWidth <= tablist.clientWidth + 1) return;
+          if (surface === tablist) {
+            tablist.classList.add('is-dragging');
+          }
+          surface.setPointerCapture(event.pointerId);
+        });
 
-        dragPointerId = event.pointerId;
-        dragStartX = event.clientX;
-        dragStartScrollLeft = tablist.scrollLeft;
-        suppressClick = false;
+        surface.addEventListener('pointermove', (event) => {
+          if (swipePointerId !== event.pointerId) return;
 
-        tablist.classList.add('is-dragging');
-        tablist.setPointerCapture(event.pointerId);
-      });
+          const deltaX = event.clientX - swipeStartX;
+          const deltaY = event.clientY - swipeStartY;
+          const horizontalIntent = Math.abs(deltaX) > 12 && Math.abs(deltaX) > Math.abs(deltaY) * 1.15;
+          if (!horizontalIntent) return;
 
-      tablist.addEventListener('pointermove', (event) => {
-        if (dragPointerId !== event.pointerId) return;
-
-        const deltaX = event.clientX - dragStartX;
-        if (!suppressClick && Math.abs(deltaX) > 4) {
           suppressClick = true;
-        }
+          event.preventDefault();
+        });
 
-        if (!suppressClick) return;
-        tablist.scrollLeft = dragStartScrollLeft - deltaX;
-        event.preventDefault();
-      });
+        surface.addEventListener('pointerup', (event) => {
+          if (swipePointerId !== event.pointerId) return;
 
-      tablist.addEventListener('pointerup', (event) => {
-        const dragged = suppressClick;
-        endDrag(event.pointerId);
-        if (dragged) {
+          const deltaX = event.clientX - swipeStartX;
+          const deltaY = event.clientY - swipeStartY;
+          const horizontalSwipe = Math.abs(deltaX) > 56 && Math.abs(deltaX) > Math.abs(deltaY) * 1.15;
+          if (horizontalSwipe) {
+            suppressClick = true;
+          }
+
+          endSwipe(event.pointerId);
+
+          if (!horizontalSwipe) {
+            suppressClick = false;
+            return;
+          }
+
+          activateAdjacent(deltaX < 0 ? 1 : -1);
           window.setTimeout(() => {
             suppressClick = false;
           }, 0);
-        }
-      });
+        });
 
-      tablist.addEventListener('pointercancel', (event) => {
-        endDrag(event.pointerId);
-        suppressClick = false;
+        surface.addEventListener('pointercancel', (event) => {
+          endSwipe(event.pointerId);
+          suppressClick = false;
+        });
       });
 
       const first = tabs[0]?.getAttribute('data-section-tab');
@@ -846,7 +879,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
     }
   }
 
-  @media (max-width: 860px) and (pointer: fine) {
+  @media (pointer: fine) {
     .section-tablist {
       cursor: grab;
       user-select: none;
