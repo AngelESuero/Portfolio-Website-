@@ -220,9 +220,9 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
     }}
   >
     (() => {
-      const selector = '.card:not(.aia-hero), .panel, .view-surface';
-      const minWidth = 260;
-      const minHeight = 96;
+      const selector = '.panel, .view-surface, .home-hero, .home-hero__content, .section-panel.is-active, .section-card-shell';
+      const minWidth = 360;
+      const minHeight = 140;
       let lastPointerX = window.innerWidth / 2;
       let lastPointerY = window.innerHeight * 0.42;
       let paintFrame = null;
@@ -1187,21 +1187,21 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
       z-index: 0;
       pointer-events: none;
       border-radius: inherit;
-      opacity: 0.09;
+      opacity: 0.035;
       background-image:
-        linear-gradient(to bottom, rgba(2, 6, 12, 0.24) 0%, rgba(2, 6, 12, 0.04) 24%, transparent 42%, rgba(2, 6, 12, 0.12) 100%),
+        linear-gradient(to bottom, rgba(2, 6, 12, 0.18) 0%, rgba(2, 6, 12, 0.04) 18%, transparent 34%, rgba(2, 6, 12, 0.08) 100%),
         var(--garland-bubble-left-image, none),
         var(--garland-bubble-right-image, none);
       background-repeat: no-repeat, no-repeat, no-repeat;
       background-size:
         100% 100%,
-        clamp(84px, 22%, 128px) auto,
-        clamp(84px, 22%, 128px) auto;
+        clamp(54px, 12%, 84px) clamp(82px, 20%, 132px),
+        clamp(54px, 12%, 84px) clamp(82px, 20%, 132px);
       background-position:
         0 0,
-        -10px -8px,
-        calc(100% + 10px) -8px;
-      filter: saturate(0.48) brightness(0.44) contrast(0.98) sepia(0.04);
+        -14px -10px,
+        calc(100% + 14px) -10px;
+      filter: saturate(0.56) brightness(0.5) contrast(1) sepia(0.03);
       transform: translateY(-2px);
       transition:
         opacity 450ms var(--ease-standard, ease),
@@ -1209,17 +1209,17 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
     }
 
     [data-garland-bubble][data-garland-bubble-hot='true']::after {
-      opacity: 0.28;
+      opacity: 0.14;
       transform: translateY(-3px);
     }
 
     html[data-site-active='true'] [data-garland-bubble]::after {
-      opacity: 0.06;
+      opacity: 0.02;
       transform: translateY(-4px);
     }
 
     html[data-site-active='true'] [data-garland-bubble][data-garland-bubble-hot='true']::after {
-      opacity: 0.22;
+      opacity: 0.11;
       transform: translateY(-5px);
     }
 
@@ -1233,19 +1233,19 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
 
     @media (max-width: 860px) {
       [data-garland-bubble]::after {
-        opacity: 0.07;
+        opacity: 0.025;
         background-size:
           100% 100%,
-          clamp(62px, 24%, 88px) auto,
-          clamp(62px, 24%, 88px) auto;
+          clamp(44px, 14%, 64px) clamp(64px, 18%, 96px),
+          clamp(44px, 14%, 64px) clamp(64px, 18%, 96px);
         background-position:
           0 0,
-          -8px -6px,
-          calc(100% + 8px) -6px;
+          -10px -8px,
+          calc(100% + 10px) -8px;
       }
 
       [data-garland-bubble][data-garland-bubble-hot='true']::after {
-        opacity: 0.22;
+        opacity: 0.1;
       }
     }
 
