@@ -10,13 +10,16 @@ interface Props {
   description?: string;
   image?: string;
   theme?: string;
+  showHeader?: boolean;
 }
 
+const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const {
   title,
   description = 'Timeline and archive for A Path Toward Life',
   image = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80',
-  theme = 'archive'
+  theme = 'archive',
+  showHeader = currentPath === '/'
 } = Astro.props;
 const walkthroughSteps = [
   {
@@ -1003,7 +1006,10 @@ const exploreLinks = [
 
         const initHeaderMetrics = () => {
           const header = document.querySelector('.site-header');
-          if (!(header instanceof HTMLElement)) return;
+          if (!(header instanceof HTMLElement)) {
+            root.style.setProperty('--header-height', '0px');
+            return;
+          }
 
           const syncHeaderHeight = () => {
             const height = Math.max(52, Math.round(header.getBoundingClientRect().height));
@@ -1167,12 +1173,17 @@ const exploreLinks = [
     <meta name="twitter:card" content="summary_large_image" />
     <title>{title}</title>
   </head>
-  <body data-theme={theme}>
+  <body
+    data-theme={theme}
+    data-has-site-header={showHeader ? 'true' : 'false'}
+    data-nav-phase="idle"
+    style={!showHeader ? '--header-height: 0px;' : undefined}
+  >
     <div id="cursor-aura" aria-hidden="true"></div>
     <HallwayBackdrop accent="var(--accent)" />
     <div class="site-overlay" aria-hidden="true"></div>
     <GarlandFrame />
-    <Header />
+    {showHeader && <Header />}
     <main class="page-shell w-full">
       <div class="mode-normal">
         <slot />
@@ -1217,6 +1228,64 @@ const exploreLinks = [
       </section>
     </main>
     <Footer />
+    <script is:inline>
+      (() => {
+        const body = document.body;
+        if (!(body instanceof HTMLBodyElement)) return;
+
+        const EXIT_DELAY_MS = 320;
+        const prefersReducedMotion =
+          typeof window.matchMedia === 'function' ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+        let isNavigating = false;
+
+        const isEligibleLink = (event, link) => {
+          if (event.defaultPrevented || isNavigating) return false;
+          if (prefersReducedMotion?.matches) return false;
+          if (event.button !== 0) return false;
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return false;
+          if (link.target && link.target !== '_self') return false;
+          if (link.hasAttribute('download') || link.hasAttribute('data-no-route-transition')) return false;
+
+          const rawHref = link.getAttribute('href');
+          if (!rawHref || rawHref.startsWith('#')) return false;
+
+          let url;
+          try {
+            url = new URL(link.href, window.location.href);
+          } catch {
+            return false;
+          }
+
+          if (url.origin !== window.location.origin) return false;
+          if (url.protocol !== 'http:' && url.protocol !== 'https:') return false;
+          if (url.pathname === window.location.pathname && url.search === window.location.search) return false;
+
+          return true;
+        };
+
+        document.addEventListener('click', (event) => {
+          const target = event.target;
+          if (!(target instanceof Element)) return;
+
+          const link = target.closest('a[href]');
+          if (!(link instanceof HTMLAnchorElement)) return;
+          if (!isEligibleLink(event, link)) return;
+
+          event.preventDefault();
+          isNavigating = true;
+          body.dataset.navPhase = 'exiting';
+
+          window.setTimeout(() => {
+            window.location.assign(link.href);
+          }, EXIT_DELAY_MS);
+        });
+
+        window.addEventListener('pageshow', () => {
+          isNavigating = false;
+          body.dataset.navPhase = 'idle';
+        });
+      })();
+    </script>
     <script is:inline define:vars={{ walkthroughCount: walkthroughSteps.length }}>
       (() => {
         const list = Array.from(document.querySelectorAll('.walkthrough-step'));
