@@ -567,7 +567,7 @@ body[data-header-mode='peek'][data-header-reveal='hidden'] .site-header {
   min-height: 38px;
 }
 
-@media (min-width: 768px) and (max-width: 1380px) {
+@media (min-width: 768px) and (max-width: 1760px) {
   .site-header .header-row {
     flex-wrap: wrap;
     row-gap: 0.7rem;
