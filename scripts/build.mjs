@@ -1,13 +1,20 @@
 import { spawnSync } from "node:child_process";
 
-const isCloudflarePages = Boolean(process.env.CF_PAGES);
-const command = isCloudflarePages ? "npx" : "next";
-const args = isCloudflarePages
+const nestedPagesBuildFlag = "CLOUDFLARE_PAGES_INNER_BUILD";
+const forcePagesBuild = process.argv.includes("--pages");
+const isCloudflarePages = Boolean(process.env.CF_PAGES) || forcePagesBuild;
+const isNestedPagesBuild = process.env[nestedPagesBuildFlag] === "1";
+const shouldUsePagesAdapter = isCloudflarePages && !isNestedPagesBuild;
+
+const command = "npx";
+const args = shouldUsePagesAdapter
   ? ["--yes", "@cloudflare/next-on-pages@1"]
-  : ["build"];
+  : ["--no-install", "next", "build"];
 
 const result = spawnSync(command, args, {
-  env: process.env,
+  env: shouldUsePagesAdapter
+    ? { ...process.env, [nestedPagesBuildFlag]: "1" }
+    : process.env,
   shell: process.platform === "win32",
   stdio: "inherit"
 });
