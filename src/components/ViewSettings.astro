@@ -27,6 +27,14 @@
       </div>
     </div>
 
+    <div class="view-settings-tab-swipe" role="group" aria-label="Home tab drag">
+      <p>Home Tab Drag</p>
+      <div class="view-settings-tab-swipe-options">
+        <button type="button" class="view-tab-swipe-btn" data-tab-swipe="on">On</button>
+        <button type="button" class="view-tab-swipe-btn" data-tab-swipe="off">Off</button>
+      </div>
+    </div>
+
     <div class="view-settings-circadian" role="group" aria-label="Circadian color rhythm">
       <p>Color Rhythm</p>
       <div class="view-settings-circadian-options">
@@ -51,6 +59,7 @@
     const closeTargets = Array.from(modal.querySelectorAll('[data-close-view-settings]'));
     const modeButtons = Array.from(modal.querySelectorAll('.view-mode-btn'));
     const sizeButtons = Array.from(modal.querySelectorAll('.view-size-btn'));
+    const tabSwipeButtons = Array.from(modal.querySelectorAll('.view-tab-swipe-btn'));
     const circadianButtons = Array.from(modal.querySelectorAll('.view-circadian-btn'));
 
     const getApi = () => window.__modeSettings;
@@ -58,7 +67,7 @@
     const getState = () =>
       typeof getApi()?.getState === 'function'
         ? getApi().getState()
-        : { mode: 'normal', size: 'standard' };
+        : { mode: 'normal', size: 'standard', tabSwipe: 'on' };
     const getCircadianMode = () =>
       typeof getCircadianApi()?.getMode === 'function' ? getCircadianApi().getMode() : 'auto';
 
@@ -72,6 +81,11 @@
       });
       sizeButtons.forEach((button) => {
         const selected = button.getAttribute('data-size') === state.size;
+        button.classList.toggle('is-active', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
+      tabSwipeButtons.forEach((button) => {
+        const selected = button.getAttribute('data-tab-swipe') === state.tabSwipe;
         button.classList.toggle('is-active', selected);
         button.setAttribute('aria-pressed', String(selected));
       });
@@ -111,6 +125,14 @@
       button.addEventListener('click', () => {
         const size = button.getAttribute('data-size') || 'standard';
         getApi()?.setSize?.(size);
+        syncUi();
+      });
+    });
+
+    tabSwipeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const tabSwipe = button.getAttribute('data-tab-swipe') || 'on';
+        getApi()?.setTabSwipe?.(tabSwipe);
         syncUi();
       });
     });
@@ -237,7 +259,12 @@
     margin-top: 0.72rem;
   }
 
+  .view-settings-tab-swipe {
+    margin-top: 0.72rem;
+  }
+
   .view-settings-size p,
+  .view-settings-tab-swipe p,
   .view-settings-circadian p {
     margin: 0;
     color: var(--tone-muted);
@@ -253,7 +280,15 @@
     gap: 0.45rem;
   }
 
-  .view-size-btn {
+  .view-settings-tab-swipe-options {
+    margin-top: 0.4rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .view-size-btn,
+  .view-tab-swipe-btn {
     border: 1px solid var(--tone-line);
     border-radius: 0.58rem;
     background: rgba(9, 22, 44, 0.45);
@@ -262,7 +297,8 @@
     font-size: 0.78rem;
   }
 
-  .view-size-btn.is-active {
+  .view-size-btn.is-active,
+  .view-tab-swipe-btn.is-active {
     border-color: var(--tone-accent);
     color: var(--tone-accent-glow);
     background: rgba(214, 168, 53, 0.14);

@@ -82,7 +82,8 @@ const exploreLinks = [
         const KEY_MODE = 'siteMode';
         const KEY_WALK = 'walkStep';
         const KEY_SIZE = 'siteSize';
-        const DEFAULTS = { mode: 'normal', walkStep: 1, size: 'standard' };
+        const KEY_TAB_SWIPE = 'homeTabSwipe';
+        const DEFAULTS = { mode: 'normal', walkStep: 1, size: 'standard', tabSwipe: 'on' };
         const localStorageRef = (() => {
           try {
             return window.localStorage;
@@ -120,19 +121,23 @@ const exploreLinks = [
         };
         const normalizeSize = (value) =>
           value === 'compact' || value === 'spacious' || value === 'standard' ? value : 'standard';
+        const normalizeTabSwipe = (value) => (value === 'off' ? 'off' : 'on');
 
         const initialMode = normalizeMode(safeGet(localStorageRef, KEY_MODE));
         const initialWalkStep = normalizeWalkStep(safeGet(localStorageRef, KEY_WALK));
         const initialSize = normalizeSize(safeGet(localStorageRef, KEY_SIZE));
+        const initialTabSwipe = normalizeTabSwipe(safeGet(localStorageRef, KEY_TAB_SWIPE));
         const state = {
           mode: initialMode,
           walkStep: initialWalkStep,
-          size: initialSize
+          size: initialSize,
+          tabSwipe: initialTabSwipe
         };
 
         const applyToDom = () => {
           document.documentElement.dataset.mode = state.mode;
           document.documentElement.dataset.size = state.size;
+          document.documentElement.dataset.tabSwipe = state.tabSwipe;
           if (state.mode === 'walk') {
             document.documentElement.dataset.walkStep = String(state.walkStep);
           } else {
@@ -144,6 +149,7 @@ const exploreLinks = [
           safeSet(localStorageRef, KEY_MODE, state.mode);
           safeSet(localStorageRef, KEY_WALK, String(state.walkStep));
           safeSet(localStorageRef, KEY_SIZE, state.size);
+          safeSet(localStorageRef, KEY_TAB_SWIPE, state.tabSwipe);
         };
 
         const emit = () => {
@@ -176,13 +182,21 @@ const exploreLinks = [
             persist();
             emit();
           },
+          setTabSwipe(nextTabSwipe) {
+            state.tabSwipe = normalizeTabSwipe(nextTabSwipe);
+            applyToDom();
+            persist();
+            emit();
+          },
           reset() {
             safeRemove(localStorageRef, KEY_MODE);
             safeRemove(localStorageRef, KEY_WALK);
             safeRemove(localStorageRef, KEY_SIZE);
+            safeRemove(localStorageRef, KEY_TAB_SWIPE);
             state.mode = DEFAULTS.mode;
             state.walkStep = DEFAULTS.walkStep;
             state.size = DEFAULTS.size;
+            state.tabSwipe = DEFAULTS.tabSwipe;
             applyToDom();
             emit();
           }

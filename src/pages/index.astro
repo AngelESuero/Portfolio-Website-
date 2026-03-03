@@ -395,6 +395,20 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
         return true;
       };
 
+      const isTabSwipeEnabled = () => {
+        const state = window.__modeSettings?.getState?.();
+        return state?.tabSwipe !== 'off';
+      };
+
+      const isInteractivePanelTarget = (target) => {
+        if (!(target instanceof Element)) return false;
+        return Boolean(
+          target.closest(
+            'a[href], button, input, textarea, select, summary, iframe, video, audio, [contenteditable], [role="button"], [role="link"]'
+          )
+        );
+      };
+
       tabs.forEach((tab) => {
         tab.addEventListener('click', () => {
           const id = tab.getAttribute('data-section-tab');
@@ -425,6 +439,16 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
 
       swipeSurfaces.forEach((surface) => {
         surface.addEventListener(
+          'auxclick',
+          (event) => {
+            if (!isTabSwipeEnabled() || event.button !== 1) return;
+            if (surface === sectionPanels && isInteractivePanelTarget(event.target)) return;
+            event.preventDefault();
+          },
+          true
+        );
+
+        surface.addEventListener(
           'click',
           (event) => {
             if (!suppressClick) return;
@@ -436,13 +460,19 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
         );
 
         surface.addEventListener('pointerdown', (event) => {
-          if (event.pointerType !== 'mouse' || event.button !== 0) return;
+          if (event.pointerType !== 'mouse' || !isTabSwipeEnabled()) return;
+          if (event.button !== 0 && event.button !== 1) return;
+          if (surface === sectionPanels && isInteractivePanelTarget(event.target)) return;
 
           swipePointerId = event.pointerId;
           swipeStartX = event.clientX;
           swipeStartY = event.clientY;
           suppressClick = false;
           swipeSurface = surface;
+
+          if (event.button === 1) {
+            event.preventDefault();
+          }
 
           if (surface === tablist) {
             tablist.classList.add('is-dragging');
@@ -880,13 +910,13 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
   }
 
   @media (pointer: fine) {
-    .section-tablist {
+    html[data-tab-swipe='on'] .section-tablist {
       cursor: grab;
       user-select: none;
       -webkit-user-select: none;
     }
 
-    .section-tablist.is-dragging {
+    html[data-tab-swipe='on'] .section-tablist.is-dragging {
       cursor: grabbing;
       scroll-behavior: auto;
     }
