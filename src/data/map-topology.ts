@@ -56,6 +56,11 @@ export interface MapConceptBridge {
   tone: MapRouteTone;
 }
 
+export const MAP_TIME_RANGE = {
+  start: 2015,
+  end: 2025
+} as const;
+
 export const MAP_WORLD = {
   width: 3200,
   height: 2200
@@ -821,3 +826,60 @@ export const MAP_CONCEPT_BRIDGES: MapConceptBridge[] = [
   { source: 'baldwin', target: 'racial-construction', tone: 'signal' },
   { source: 'mass-media', target: 'consciousness-studies', tone: 'signal' }
 ];
+
+export const MAP_CONCEPT_YEARS: Record<string, number> = {
+  'epicurean-happiness': 2019,
+  'consciousness-studies': 2025,
+  'paradox-of-suffering': 2024,
+  'isha-kriya': 2024,
+  'awareness-self': 2024,
+  'cognitive-resilience': 2025,
+  'ib-rigor': 2018,
+  'nyu-expansion': 2020,
+  'intellectual-synthesis': 2022,
+  'gvz413': 2017,
+  'vulnerability': 2021,
+  'applied-humanism': 2025,
+  'acculturation': 2019,
+  'language-loss': 2019,
+  'identity-dissonance': 2019,
+  'friendship': 2019,
+  'coalition-building': 2022,
+  'relational-ethics': 2024,
+  'sacrifice-of-power': 2019,
+  'alienation': 2019,
+  'bartleby': 2019,
+  'job-automation': 2025,
+  'ai-displacement': 2025,
+  'museum-labor': 2024,
+  'essay-craft': 2017,
+  'journalism': 2022,
+  'rhetorical-critique': 2017,
+  'beyond-syntax': 2020,
+  'sensitive-child': 2021,
+  'newark-stories': 2020,
+  'water-distribution': 2022,
+  'fellowship-assignments': 2022,
+  'geographic-mapping': 2022,
+  'gh-plus': 2025,
+  'community-organization': 2025,
+  'practical-ethics': 2025,
+  'essay-codex': 2015,
+  'divorce-decree': 2015,
+  'raft-method': 2015,
+  'cartesian-judgment': 2018,
+  'knights-tour': 2018,
+  'tok-dialectic': 2019,
+  'descartes': 2018,
+  'nietzsche': 2018,
+  'epicurus': 2019,
+  'marx': 2019,
+  'harvey-zizek': 2020,
+  'baldwin': 2020,
+  'mass-media': 2016,
+  'neoliberalism': 2019,
+  'right-to-city': 2022,
+  'fascist-aesthetics': 2018,
+  'orwell-gattaca': 2017,
+  'racial-construction': 2020
+};

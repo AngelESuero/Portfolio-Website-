@@ -1,5 +1,5 @@
 ---
-import { MAP_CONCEPT_BRIDGES, MAP_REGIONS, MAP_ROUTES, MAP_WORLD } from '../data/map-topology';
+import { MAP_CONCEPT_BRIDGES, MAP_CONCEPT_YEARS, MAP_REGIONS, MAP_ROUTES, MAP_TIME_RANGE, MAP_WORLD } from '../data/map-topology';
 
 type StageMode = 'overview' | 'inspect' | 'immersive';
 
@@ -13,6 +13,11 @@ type FlatRegion = {
   rx: number;
   innerInset: number;
   innerRx: number;
+  outlinePath: string;
+  innerPath: string;
+  branchPaths: string[];
+  nucleusX: number;
+  nucleusY: number;
   fill: string;
   glow: string;
   summary: string;
@@ -26,7 +31,13 @@ type FlatDistrict = {
   x: number;
   y: number;
   radius: number;
+  shellRadius: number;
+  auraRadius: number;
   coreRadius: number;
+  branchPaths: string[];
+  labelX: number;
+  labelY: number;
+  labelAnchor: 'start' | 'middle' | 'end';
   description: string;
 };
 
@@ -37,8 +48,19 @@ type FlatConcept = {
   districtId: string;
   districtLabel: string;
   label: string;
+  year: number;
+  ageWeight: number;
+  depthOpacity: number;
   x: number;
   y: number;
+  auraRadius: number;
+  coreRadius: number;
+  stemPath: string;
+  labelX: number;
+  labelY: number;
+  labelAnchor: 'start' | 'middle' | 'end';
+  yearX: number;
+  yearY: number;
   detail: string;
   links: string[];
 };
@@ -54,6 +76,7 @@ type FlatPath = {
   sourceDistrict: string;
   targetDistrict: string;
   weight?: number;
+  depthOpacity?: number;
 };
 
 type FlatDistrictSpine = {
@@ -71,6 +94,9 @@ const WORLD_WIDTH = MAP_WORLD.width;
 const WORLD_HEIGHT = MAP_WORLD.height;
 const CORE_X = WORLD_WIDTH / 2;
 const CORE_Y = WORLD_HEIGHT / 2;
+const TIME_SPAN = Math.max(1, MAP_TIME_RANGE.end - MAP_TIME_RANGE.start);
+const DEPTH_VANISH_X = WORLD_WIDTH / 2;
+const DEPTH_VANISH_Y = 210;
 
 const curvePath = (x1: number, y1: number, x2: number, y2: number, bend = 0.16) => {
   const mx = (x1 + x2) / 2;
@@ -88,9 +114,64 @@ const curvePath = (x1: number, y1: number, x2: number, y2: number, bend = 0.16) 
   return `M ${x1.toFixed(2)} ${y1.toFixed(2)} Q ${cx.toFixed(2)} ${cy.toFixed(2)} ${x2.toFixed(2)} ${y2.toFixed(2)}`;
 };
 
+const rounded = (value: number) => value.toFixed(2);
+
+const neuronHullPath = (cx: number, cy: number, width: number, height: number) => {
+  const hw = width / 2;
+  const hh = height / 2;
+  const topY = cy - hh * 0.94;
+  const bottomY = cy + hh * 0.92;
+  const leftX = cx - hw * 0.96;
+  const rightX = cx + hw * 0.96;
+  const leftInnerX = cx - hw * 0.58;
+  const rightInnerX = cx + hw * 0.58;
+  const upperY = cy - hh * 0.62;
+  const lowerY = cy + hh * 0.58;
+
+  return [
+    `M ${rounded(cx)} ${rounded(topY)}`,
+    `C ${rounded(rightInnerX)} ${rounded(cy - hh)}, ${rounded(rightX)} ${rounded(upperY)}, ${rounded(rightX)} ${rounded(cy)}`,
+    `C ${rounded(rightX)} ${rounded(lowerY)}, ${rounded(rightInnerX * 0.985 + cx * 0.015)} ${rounded(bottomY)}, ${rounded(cx)} ${rounded(bottomY)}`,
+    `C ${rounded(leftInnerX * 0.985 + cx * 0.015)} ${rounded(bottomY)}, ${rounded(leftX)} ${rounded(lowerY * 0.995 + cy * 0.005)}, ${rounded(leftX)} ${rounded(cy)}`,
+    `C ${rounded(leftX)} ${rounded(upperY)}, ${rounded(leftInnerX)} ${rounded(cy - hh)}, ${rounded(cx)} ${rounded(topY)}`,
+    'Z'
+  ].join(' ');
+};
+
+const neuronBranch = (x1: number, y1: number, cx: number, cy: number, x2: number, y2: number) =>
+  `M ${rounded(x1)} ${rounded(y1)} Q ${rounded(cx)} ${rounded(cy)} ${rounded(x2)} ${rounded(y2)}`;
+
 const flatRegions: FlatRegion[] = MAP_REGIONS.map((region) => {
   const rx = Math.round(Math.min(region.width, region.height) * 0.24);
   const innerInset = 20;
+  const outlinePath = neuronHullPath(region.x, region.y, region.width, region.height);
+  const innerPath = neuronHullPath(region.x, region.y + 4, region.width - innerInset * 2, region.height - innerInset * 2);
+  const branchPaths = [
+    neuronBranch(
+      region.x - region.width * 0.43,
+      region.y - region.height * 0.08,
+      region.x - region.width * 0.62,
+      region.y - region.height * 0.24,
+      region.x - region.width * 0.74,
+      region.y - region.height * 0.34
+    ),
+    neuronBranch(
+      region.x + region.width * 0.42,
+      region.y - region.height * 0.06,
+      region.x + region.width * 0.64,
+      region.y - region.height * 0.18,
+      region.x + region.width * 0.77,
+      region.y - region.height * 0.28
+    ),
+    neuronBranch(
+      region.x + region.width * 0.18,
+      region.y + region.height * 0.34,
+      region.x + region.width * 0.34,
+      region.y + region.height * 0.58,
+      region.x + region.width * 0.22,
+      region.y + region.height * 0.76
+    )
+  ];
 
   return {
     id: region.id,
@@ -102,6 +183,11 @@ const flatRegions: FlatRegion[] = MAP_REGIONS.map((region) => {
     rx,
     innerInset,
     innerRx: Math.max(24, rx - 12),
+    outlinePath,
+    innerPath,
+    branchPaths,
+    nucleusX: region.x - region.width * 0.22,
+    nucleusY: region.y - region.height * 0.14,
     fill: region.fill,
     glow: region.glow,
     summary: region.summary
@@ -121,6 +207,48 @@ MAP_REGIONS.forEach((region) => {
   region.districts.forEach((district) => {
     const districtX = region.x + district.x;
     const districtY = region.y + district.y;
+    const shellRadius = Math.max(34, Math.round(district.radius * 0.4));
+    const auraRadius = shellRadius + 18;
+    let labelX = districtX;
+    let labelY = districtY - shellRadius - 16;
+    let labelAnchor: FlatDistrict['labelAnchor'] = 'middle';
+
+    if (district.x <= -22) {
+      labelX = districtX - shellRadius - 18;
+      labelY = districtY - 4;
+      labelAnchor = 'end';
+    } else if (district.x >= 22) {
+      labelX = districtX + shellRadius + 18;
+      labelY = districtY - 4;
+      labelAnchor = 'start';
+    }
+
+    const branchPaths = [
+      neuronBranch(
+        districtX - shellRadius * 0.46,
+        districtY - shellRadius * 0.14,
+        districtX - shellRadius * 1.04,
+        districtY - shellRadius * 0.46,
+        districtX - shellRadius * 1.22,
+        districtY - shellRadius * 0.18
+      ),
+      neuronBranch(
+        districtX + shellRadius * 0.42,
+        districtY - shellRadius * 0.06,
+        districtX + shellRadius * 0.98,
+        districtY - shellRadius * 0.34,
+        districtX + shellRadius * 1.2,
+        districtY - shellRadius * 0.02
+      ),
+      neuronBranch(
+        districtX + shellRadius * 0.08,
+        districtY + shellRadius * 0.46,
+        districtX + shellRadius * 0.22,
+        districtY + shellRadius * 1.02,
+        districtX - shellRadius * 0.08,
+        districtY + shellRadius * 1.26
+      )
+    ];
 
     flatDistricts.push({
       id: district.id,
@@ -130,13 +258,51 @@ MAP_REGIONS.forEach((region) => {
       x: districtX,
       y: districtY,
       radius: district.radius,
+      shellRadius,
+      auraRadius,
       coreRadius: Math.max(18, Math.round(district.radius * 0.24)),
+      branchPaths,
+      labelX,
+      labelY,
+      labelAnchor,
       description: district.description
     });
 
     districtCenters.push({ id: district.id, x: districtX, y: districtY });
 
     district.concepts.forEach((concept) => {
+      const baseConceptX = districtX + concept.x;
+      const baseConceptY = districtY + concept.y;
+      const year = MAP_CONCEPT_YEARS[concept.id] ?? MAP_TIME_RANGE.end;
+      const ageWeight = Math.max(0, Math.min(1, (MAP_TIME_RANGE.end - year) / TIME_SPAN));
+      const projectedX = baseConceptX + (DEPTH_VANISH_X - baseConceptX) * 0.16 * ageWeight;
+      const projectedY = baseConceptY + (DEPTH_VANISH_Y - baseConceptY) * 0.2 * ageWeight;
+      const depthScale = 1 - ageWeight * 0.24;
+      const auraRadius = Math.max(12, 18 * depthScale);
+      const coreRadius = Math.max(5.8, 8.5 * depthScale);
+      const depthOpacity = 0.94 - ageWeight * 0.34;
+      const labelOffset = 22 + ageWeight * 6;
+      let labelX = projectedX + labelOffset;
+      let labelY = projectedY - 7 - ageWeight * 2;
+      let labelAnchor: FlatConcept['labelAnchor'] = 'start';
+
+      if (concept.x <= -10) {
+        labelX = projectedX - labelOffset;
+        labelAnchor = 'end';
+      } else if (Math.abs(concept.x) < 10) {
+        labelX = projectedX;
+        labelY = projectedY + 28 + ageWeight * 4;
+        labelAnchor = 'middle';
+      }
+
+      if (concept.y > 18) labelY += 2;
+      if (concept.y < -18) labelY -= 2;
+
+      const stemTargetX = labelAnchor === 'start' ? labelX - 8 : labelAnchor === 'end' ? labelX + 8 : labelX;
+      const stemTargetY = labelAnchor === 'middle' ? labelY - 10 : labelY - 3;
+      const yearX = labelX;
+      const yearY = labelY + (labelAnchor === 'middle' ? 11 : 12);
+
       const flatConcept: FlatConcept = {
         id: concept.id,
         regionId: region.id,
@@ -144,8 +310,19 @@ MAP_REGIONS.forEach((region) => {
         districtId: district.id,
         districtLabel: district.label,
         label: concept.label,
-        x: districtX + concept.x,
-        y: districtY + concept.y,
+        year,
+        ageWeight,
+        depthOpacity,
+        x: projectedX,
+        y: projectedY,
+        auraRadius,
+        coreRadius,
+        stemPath: neuronBranch(projectedX, projectedY, (projectedX + stemTargetX) / 2, (projectedY + stemTargetY) / 2, stemTargetX, stemTargetY),
+        labelX,
+        labelY,
+        labelAnchor,
+        yearX,
+        yearY,
         detail: concept.detail,
         links: concept.links
       };
@@ -181,6 +358,7 @@ flatConcepts.forEach((concept) => {
     if (conceptLinkKeys.has(key)) return;
 
     conceptLinkKeys.add(key);
+    const depthOpacity = ((concept.depthOpacity ?? 1) + (target.depthOpacity ?? 1)) / 2;
     conceptLinks.push({
       id: key,
       d: curvePath(concept.x, concept.y, target.x, target.y, 0.14),
@@ -190,7 +368,8 @@ flatConcepts.forEach((concept) => {
       sourceRegion: concept.regionId,
       targetRegion: target.regionId,
       sourceDistrict: concept.districtId,
-      targetDistrict: target.districtId
+      targetDistrict: target.districtId,
+      depthOpacity
     });
   });
 });
@@ -231,7 +410,8 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
       sourceRegion: source.regionId,
       targetRegion: target.regionId,
       sourceDistrict: source.districtId,
-      targetDistrict: target.districtId
+      targetDistrict: target.districtId,
+      depthOpacity: ((source.depthOpacity ?? 1) + (target.depthOpacity ?? 1)) / 2
     } satisfies FlatPath
   ];
 });
@@ -300,33 +480,25 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
               role="button"
               aria-label={`Zoom to ${region.label}`}
             >
-              <rect
+              {region.branchPaths.map((branchPath) => (
+                <path class="atlas-region__branch" d={branchPath}></path>
+              ))}
+              <path
                 class="atlas-region__shadow"
-                x={region.x - region.width / 2 - 22}
-                y={region.y - region.height / 2 - 18}
-                width={region.width + 44}
-                height={region.height + 36}
-                rx={region.rx + 16}
+                d={region.outlinePath}
                 filter="url(#atlas-soft-blur)"
-              ></rect>
-              <rect
+              ></path>
+              <path
                 class="atlas-region__plate"
-                x={region.x - region.width / 2}
-                y={region.y - region.height / 2}
-                width={region.width}
-                height={region.height}
-                rx={region.rx}
-              ></rect>
-              <rect
+                d={region.outlinePath}
+              ></path>
+              <path
                 class="atlas-region__inner"
-                x={region.x - region.width / 2 + region.innerInset}
-                y={region.y - region.height / 2 + region.innerInset}
-                width={region.width - region.innerInset * 2}
-                height={region.height - region.innerInset * 2}
-                rx={region.innerRx}
-              ></rect>
-              <circle class="atlas-region__beacon" cx={region.x} cy={region.y} r="14"></circle>
-              <text class="atlas-region__label" x={region.x} y={region.y - region.height / 2 + 62} text-anchor="middle">
+                d={region.innerPath}
+              ></path>
+              <circle class="atlas-region__beacon" cx={region.nucleusX} cy={region.nucleusY} r="18"></circle>
+              <circle class="atlas-region__nucleus" cx={region.nucleusX} cy={region.nucleusY} r="8"></circle>
+              <text class="atlas-region__label" x={region.x} y={region.y - region.height / 2 + 48} text-anchor="middle">
                 {region.label}
               </text>
             </g>
@@ -348,10 +520,13 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
               role="button"
               aria-label={`Zoom to ${district.label}`}
             >
-              <circle class="atlas-district__halo" cx={district.x} cy={district.y} r={district.radius + 24}></circle>
-              <circle class="atlas-district__ring" cx={district.x} cy={district.y} r={district.radius}></circle>
+              {district.branchPaths.map((branchPath) => (
+                <path class="atlas-district__branch" d={branchPath}></path>
+              ))}
+              <circle class="atlas-district__halo" cx={district.x} cy={district.y} r={district.auraRadius}></circle>
+              <circle class="atlas-district__ring" cx={district.x} cy={district.y} r={district.shellRadius}></circle>
               <circle class="atlas-district__core" cx={district.x} cy={district.y} r={district.coreRadius}></circle>
-              <text class="atlas-district__label" x={district.x} y={district.y - district.radius - 18} text-anchor="middle">
+              <text class="atlas-district__label" x={district.labelX} y={district.labelY} text-anchor={district.labelAnchor}>
                 {district.label}
               </text>
             </g>
@@ -378,15 +553,20 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
           {flatConcepts.map((concept) => (
             <g
               data-concept={concept.id}
+              data-concept-year={concept.year}
               class="atlas-concept"
               tabindex="0"
               role="button"
               aria-label={`Zoom to ${concept.label}`}
             >
-              <circle class="atlas-concept__halo" cx={concept.x} cy={concept.y} r="24"></circle>
-              <circle class="atlas-concept__core" cx={concept.x} cy={concept.y} r="10"></circle>
-              <text class="atlas-concept__label" x={concept.x + 16} y={concept.y + 5}>
+              <path class="atlas-concept__stem" d={concept.stemPath}></path>
+              <circle class="atlas-concept__halo" cx={concept.x} cy={concept.y} r={concept.auraRadius}></circle>
+              <circle class="atlas-concept__core" cx={concept.x} cy={concept.y} r={concept.coreRadius}></circle>
+              <text class="atlas-concept__label" x={concept.labelX} y={concept.labelY} text-anchor={concept.labelAnchor}>
                 {concept.label}
+              </text>
+              <text class="atlas-concept__year" x={concept.yearX} y={concept.yearY} text-anchor={concept.labelAnchor}>
+                {concept.year}
               </text>
             </g>
           ))}
@@ -413,6 +593,7 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
 
     <div class="map-key" aria-label="Map guide">
       <p class="map-key__title">Zoom guide</p>
+      <p class="map-key__line">Time: older work recedes inward</p>
       <p class="map-key__line">Overview: regional routes</p>
       <p class="map-key__line">Closer: district lanes</p>
       <p class="map-key__line">Deep: concept bridges</p>
@@ -521,6 +702,9 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
       hoverType: null,
       hoverId: null,
       animationFrame: null,
+      stageTransitioning: false,
+      lockedCenter: null,
+      stageTransitionTimer: null,
       stageMode: 'overview',
       zoomTier: 'world',
       chromeState: 'full'
@@ -547,6 +731,22 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
         cancelAnimationFrame(state.animationFrame);
         state.animationFrame = null;
       }
+    };
+
+    const scheduleStageSettle = () => {
+      if (state.stageTransitionTimer) {
+        clearTimeout(state.stageTransitionTimer);
+      }
+
+      state.stageTransitionTimer = window.setTimeout(() => {
+        state.stageTransitionTimer = null;
+        if (!state.stageTransitioning) return;
+
+        recenterToCurrentFocus(state.lockedCenter);
+        state.lockedCenter = null;
+        state.stageTransitioning = false;
+        lastStageRect = wrap.getBoundingClientRect();
+      }, 240);
     };
 
     const tierMetaForScale = (scale) => {
@@ -584,7 +784,7 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
         return {
           focus: `${concept.regionLabel} / ${concept.districtLabel}`,
           title: concept.label,
-          detail: concept.detail
+          detail: `${concept.year} · ${concept.detail}`
         };
       }
 
@@ -660,10 +860,13 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
       const hasSelection = Boolean(state.activeRegionId || state.activeDistrictId || state.activeConceptId);
 
       if (state.stageMode !== nextMode) {
+        state.lockedCenter = currentCenter();
+        state.stageTransitioning = true;
         state.stageMode = nextMode;
         root.dataset.stageMode = nextMode;
         page?.setAttribute('data-stage-mode', nextMode);
         applyStageVars(nextMode);
+        scheduleStageSettle();
       }
 
       if (state.zoomTier !== nextTier.key) {
@@ -732,7 +935,8 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
     const updateScene = () => {
       const showDistricts = state.scale >= 1.04 || Boolean(state.activeRegionId);
       const showConcepts = state.scale >= 1.42 || Boolean(state.activeDistrictId) || Boolean(state.activeConceptId);
-      const showConceptLabels = state.scale >= 2.05 || Boolean(state.activeDistrictId) || Boolean(state.activeConceptId);
+      const showDistrictLabels = state.scale >= 1.92 || Boolean(state.activeDistrictId);
+      const showConceptLabels = state.scale >= 2.24 || Boolean(state.activeConceptId);
       const showBridges = state.scale >= 1.7 || Boolean(state.activeRegionId);
 
       routeEls.forEach((el) => {
@@ -780,6 +984,15 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
 
         el.classList.toggle('is-active', active);
         el.style.opacity = String(opacity);
+
+        const label = el.querySelector('.atlas-district__label');
+        if (!label) return;
+
+        const labelVisible =
+          active ||
+          (state.hoverType === 'district' && state.hoverId === district.id) ||
+          (relevant && showDistrictLabels);
+        label.setAttribute('opacity', labelVisible ? (active ? '0.96' : '0.82') : '0');
       });
 
       conceptLinkEls.forEach((el) => {
@@ -787,8 +1000,9 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
         if (!link) return;
 
         let opacity = 0;
-        if (showConcepts && conceptPathIsRelevant(link)) opacity = state.activeConceptId ? 0.72 : 0.36;
-        if (showConcepts && !conceptPathIsRelevant(link)) opacity = 0.04;
+        const depthOpacity = link.depthOpacity ?? 1;
+        if (showConcepts && conceptPathIsRelevant(link)) opacity = (state.activeConceptId ? 0.72 : 0.36) * depthOpacity;
+        if (showConcepts && !conceptPathIsRelevant(link)) opacity = 0.04 * depthOpacity;
         el.style.opacity = String(opacity);
       });
 
@@ -797,8 +1011,11 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
         if (!link) return;
 
         let opacity = 0;
-        if (showBridges && conceptPathIsRelevant(link)) opacity = state.activeConceptId ? 0.62 : state.activeRegionId ? 0.3 : 0.14;
-        if (showBridges && !conceptPathIsRelevant(link)) opacity = 0.03;
+        const depthOpacity = link.depthOpacity ?? 1;
+        if (showBridges && conceptPathIsRelevant(link)) {
+          opacity = (state.activeConceptId ? 0.62 : state.activeRegionId ? 0.3 : 0.14) * depthOpacity;
+        }
+        if (showBridges && !conceptPathIsRelevant(link)) opacity = 0.03 * depthOpacity;
         el.style.opacity = String(opacity);
       });
 
@@ -809,18 +1026,33 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
         const active = concept.id === state.activeConceptId;
         const relevant = conceptIsRelevant(concept);
         let opacity = 0;
+        const depthOpacity = concept.depthOpacity;
 
-        if (showConcepts && relevant) opacity = active ? 1 : state.activeConceptId ? 0.78 : state.activeDistrictId ? 0.88 : 0.72;
-        if (showConcepts && !relevant) opacity = state.activeRegionId ? 0.04 : 0.16;
+        if (showConcepts && relevant) {
+          opacity = (active ? 1 : state.activeConceptId ? 0.78 : state.activeDistrictId ? 0.88 : 0.72) * depthOpacity;
+        }
+        if (showConcepts && !relevant) opacity = (state.activeRegionId ? 0.04 : 0.16) * depthOpacity;
 
         el.classList.toggle('is-active', active);
         el.style.opacity = String(opacity);
 
         const label = el.querySelector('.atlas-concept__label');
         if (!label) return;
+        const yearLabel = el.querySelector('.atlas-concept__year');
 
-        const labelVisible = active || (relevant && showConceptLabels);
-        label.setAttribute('opacity', labelVisible ? '0.94' : '0');
+        const labelVisible =
+          active ||
+          (state.hoverType === 'concept' && state.hoverId === concept.id) ||
+          (relevant && showConceptLabels);
+        label.setAttribute('opacity', labelVisible ? String((active ? 0.96 : 0.76) * depthOpacity) : '0');
+
+        if (!yearLabel) return;
+
+        const yearVisible =
+          active ||
+          (state.hoverType === 'concept' && state.hoverId === concept.id) ||
+          (relevant && state.scale >= 2.7 && showConceptLabels);
+        yearLabel.setAttribute('opacity', yearVisible ? String((active ? 0.84 : 0.62) * depthOpacity) : '0');
       });
 
       syncStageState();
@@ -939,7 +1171,7 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
       }
     };
 
-    const zoomAtPoint = (clientX, clientY, direction) => {
+    const zoomAtPoint = (clientX, clientY, deltaY, deltaMode = 0) => {
       stopAnimation();
 
       const rect = svg.getBoundingClientRect();
@@ -947,7 +1179,9 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
       const viewportY = ((clientY - rect.top) / rect.height) * worldData.height;
       const anchorX = (viewportX - state.tx) / state.scale;
       const anchorY = (viewportY - state.ty) / state.scale;
-      const factor = direction > 0 ? 1.14 : 0.88;
+      const deltaUnit = deltaMode === 1 ? 16 : deltaMode === 2 ? rect.height : 1;
+      const normalizedDelta = clamp(deltaY * deltaUnit, -42, 42);
+      const factor = Math.exp(-normalizedDelta * 0.0022);
       const nextScale = clamp(state.scale * factor, MIN_SCALE, MAX_SCALE);
       const nextTx = viewportX - anchorX * nextScale;
       const nextTy = viewportY - anchorY * nextScale;
@@ -955,8 +1189,8 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
       setTransform(nextTx, nextTy, nextScale);
     };
 
-    const recenterToCurrentFocus = () => {
-      const center = currentCenter();
+    const recenterToCurrentFocus = (centerOverride = null) => {
+      const center = centerOverride || currentCenter();
       const centered = normalizeTransform(
         worldData.width / 2 - center.x * state.scale,
         worldData.height / 2 - center.y * state.scale,
@@ -1075,7 +1309,7 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
       'wheel',
       (event) => {
         event.preventDefault();
-        zoomAtPoint(event.clientX, event.clientY, event.deltaY < 0 ? 1 : -1);
+        zoomAtPoint(event.clientX, event.clientY, event.deltaY, event.deltaMode);
       },
       { passive: false }
     );
@@ -1088,12 +1322,12 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
 
       if (event.key === '+' || event.key === '=') {
         const rect = svg.getBoundingClientRect();
-        zoomAtPoint(rect.left + rect.width / 2, rect.top + rect.height / 2, 1);
+        zoomAtPoint(rect.left + rect.width / 2, rect.top + rect.height / 2, -36);
       }
 
       if (event.key === '-' || event.key === '_') {
         const rect = svg.getBoundingClientRect();
-        zoomAtPoint(rect.left + rect.width / 2, rect.top + rect.height / 2, -1);
+        zoomAtPoint(rect.left + rect.width / 2, rect.top + rect.height / 2, 36);
       }
     });
 
@@ -1105,6 +1339,11 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
         Math.abs(nextRect.width - lastStageRect.width) > 0.5 || Math.abs(nextRect.height - lastStageRect.height) > 0.5;
 
       if (!changed) return;
+
+      if (state.stageTransitioning) {
+        lastStageRect = nextRect;
+        return;
+      }
 
       lastStageRect = nextRect;
       recenterToCurrentFocus();
@@ -1121,6 +1360,21 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
       : null;
 
     resizeObserver?.observe(wrap);
+
+    wrap.addEventListener('transitionend', (event) => {
+      if (event.propertyName !== 'width' && event.propertyName !== 'height') return;
+      if (!state.stageTransitioning) return;
+
+      if (state.stageTransitionTimer) {
+        clearTimeout(state.stageTransitionTimer);
+        state.stageTransitionTimer = null;
+      }
+
+      recenterToCurrentFocus(state.lockedCenter);
+      state.lockedCenter = null;
+      state.stageTransitioning = false;
+      lastStageRect = wrap.getBoundingClientRect();
+    });
 
     window.addEventListener('resize', handleStageResize, { passive: true });
 
@@ -1454,12 +1708,16 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
   .atlas-district-spine,
   .atlas-concept-link,
   .atlas-concept-bridge,
+  .atlas-region__branch,
   .atlas-region__plate,
   .atlas-region__inner,
   .atlas-region__beacon,
+  .atlas-region__nucleus,
+  .atlas-district__branch,
   .atlas-district__halo,
   .atlas-district__ring,
   .atlas-district__core,
+  .atlas-concept__stem,
   .atlas-concept__halo,
   .atlas-concept__core {
     vector-effect: non-scaling-stroke;
@@ -1523,36 +1781,50 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
 
   .atlas-region__shadow {
     fill: var(--atlas-region-glow);
-    opacity: 0.42;
+    opacity: 0.26;
+  }
+
+  .atlas-region__branch {
+    fill: none;
+    stroke: color-mix(in srgb, var(--atlas-region-glow) 54%, rgba(206, 226, 255, 0.16));
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    opacity: 0.44;
   }
 
   .atlas-region__plate {
     fill: var(--atlas-region-fill);
-    stroke: color-mix(in srgb, var(--atlas-region-glow) 70%, rgba(212, 224, 245, 0.2));
-    stroke-width: 2.2;
+    stroke: color-mix(in srgb, var(--atlas-region-glow) 72%, rgba(220, 232, 248, 0.22));
+    stroke-width: 2.1;
   }
 
   .atlas-region__inner {
-    fill: rgba(7, 14, 24, 0.18);
-    stroke: color-mix(in srgb, var(--atlas-region-glow) 44%, rgba(212, 224, 245, 0.12));
-    stroke-width: 1.1;
-    stroke-dasharray: 12 10;
+    fill: rgba(7, 14, 24, 0.14);
+    stroke: color-mix(in srgb, var(--atlas-region-glow) 42%, rgba(212, 224, 245, 0.1));
+    stroke-width: 1;
+    stroke-dasharray: 10 12;
   }
 
   .atlas-region__beacon {
-    fill: color-mix(in srgb, var(--atlas-region-glow) 58%, rgba(255, 255, 255, 0.08));
-    stroke: rgba(255, 255, 255, 0.24);
+    fill: color-mix(in srgb, var(--atlas-region-glow) 28%, rgba(255, 255, 255, 0.06));
+    stroke: rgba(255, 255, 255, 0.18);
     stroke-width: 1.4;
+  }
+
+  .atlas-region__nucleus {
+    fill: color-mix(in srgb, white 62%, var(--atlas-region-glow) 38%);
+    stroke: rgba(8, 13, 22, 0.5);
+    stroke-width: 1.2;
   }
 
   .atlas-region__label {
     fill: var(--tone-text);
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 600;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
     paint-order: stroke fill;
     stroke: rgba(5, 9, 15, 0.72);
-    stroke-width: 5px;
+    stroke-width: 4px;
   }
 
   .atlas-region.is-active .atlas-region__plate {
@@ -1566,46 +1838,61 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
 
   .atlas-district-spine {
     fill: none;
-    stroke: rgba(179, 203, 241, 0.34);
-    stroke-width: 1.4;
-    stroke-dasharray: 8 10;
+    stroke: rgba(179, 203, 241, 0.26);
+    stroke-width: 1.2;
+    stroke-dasharray: 6 12;
     transition: opacity 160ms ease;
   }
 
+  .atlas-district__branch {
+    fill: none;
+    stroke: rgba(185, 208, 245, 0.2);
+    stroke-width: 1.3;
+    stroke-linecap: round;
+    transition: opacity 160ms ease, stroke-width 160ms ease;
+  }
+
   .atlas-district__halo {
-    fill: rgba(70, 118, 198, 0.05);
-    stroke: rgba(180, 205, 243, 0.12);
-    stroke-width: 1;
+    fill: rgba(70, 118, 198, 0.04);
+    stroke: rgba(180, 205, 243, 0.08);
+    stroke-width: 0.9;
     transition: opacity 160ms ease, stroke-width 160ms ease;
   }
 
   .atlas-district__ring {
-    fill: rgba(7, 14, 24, 0.2);
-    stroke: rgba(180, 205, 243, 0.34);
-    stroke-width: 1.3;
-    stroke-dasharray: 6 10;
+    fill: rgba(8, 14, 24, 0.32);
+    stroke: rgba(198, 220, 248, 0.28);
+    stroke-width: 1.5;
     transition: opacity 160ms ease, stroke-width 160ms ease;
   }
 
   .atlas-district__core {
-    fill: rgba(214, 228, 248, 0.08);
-    stroke: rgba(214, 228, 248, 0.24);
-    stroke-width: 1.3;
+    fill: rgba(222, 234, 250, 0.18);
+    stroke: rgba(214, 228, 248, 0.34);
+    stroke-width: 1.1;
   }
 
   .atlas-district__label {
-    fill: rgba(228, 236, 250, 0.92);
-    font-size: 18px;
-    letter-spacing: 0.04em;
+    fill: rgba(228, 236, 250, 0.88);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
     paint-order: stroke fill;
     stroke: rgba(5, 9, 15, 0.68);
-    stroke-width: 4px;
+    stroke-width: 3.5px;
+    opacity: 0;
+    pointer-events: none;
     transition: opacity 160ms ease;
   }
 
   .atlas-district.is-active .atlas-district__ring,
   .atlas-district.is-active .atlas-district__halo {
     stroke-width: 2.1;
+  }
+
+  .atlas-district.is-active .atlas-district__branch {
+    stroke-width: 1.7;
+    stroke: color-mix(in srgb, var(--tone-accent) 34%, rgba(185, 208, 245, 0.34));
   }
 
   .atlas-concept-link,
@@ -1639,39 +1926,68 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
     transition: opacity 160ms ease;
   }
 
+  .atlas-concept__stem {
+    fill: none;
+    stroke: rgba(204, 222, 248, 0.22);
+    stroke-width: 1;
+    stroke-linecap: round;
+    transition: opacity 160ms ease, stroke-width 160ms ease;
+    pointer-events: none;
+  }
+
   .atlas-concept__halo {
     fill: none;
-    stroke: rgba(201, 219, 247, 0.18);
-    stroke-width: 1.2;
+    stroke: rgba(201, 219, 247, 0.12);
+    stroke-width: 1;
     transition: opacity 160ms ease, stroke-width 160ms ease;
   }
 
   .atlas-concept__core {
-    fill: rgba(225, 235, 250, 0.94);
+    fill: rgba(225, 235, 250, 0.9);
     stroke: rgba(8, 13, 22, 0.86);
-    stroke-width: 2.2;
+    stroke-width: 1.8;
     transition: opacity 160ms ease, stroke-width 160ms ease;
   }
 
   .atlas-concept__label {
-    fill: rgba(233, 240, 251, 0.92);
-    font-size: 15px;
+    fill: rgba(233, 240, 251, 0.84);
+    font-size: 13px;
+    font-weight: 500;
     letter-spacing: 0.02em;
     paint-order: stroke fill;
     stroke: rgba(5, 9, 15, 0.72);
-    stroke-width: 4px;
+    stroke-width: 3px;
     pointer-events: none;
+    opacity: 0;
+    transition: opacity 160ms ease;
+  }
+
+  .atlas-concept__year {
+    fill: rgba(173, 191, 219, 0.8);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    paint-order: stroke fill;
+    stroke: rgba(5, 9, 15, 0.68);
+    stroke-width: 2.2px;
+    pointer-events: none;
+    opacity: 0;
     transition: opacity 160ms ease;
   }
 
   .atlas-concept.is-active .atlas-concept__halo {
-    stroke-width: 2.1;
-    stroke: color-mix(in srgb, var(--tone-accent) 62%, rgba(201, 219, 247, 0.28));
+    stroke-width: 1.8;
+    stroke: color-mix(in srgb, var(--tone-accent) 52%, rgba(201, 219, 247, 0.24));
   }
 
   .atlas-concept.is-active .atlas-concept__core {
-    stroke-width: 2.8;
+    stroke-width: 2.3;
     fill: color-mix(in srgb, white 88%, var(--tone-accent) 12%);
+  }
+
+  .atlas-concept.is-active .atlas-concept__stem {
+    stroke-width: 1.35;
+    stroke: color-mix(in srgb, var(--tone-accent) 36%, rgba(204, 222, 248, 0.3));
   }
 
   @media (max-width: 1100px) {
