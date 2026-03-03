@@ -62,6 +62,8 @@ type FlatDistrictSpine = {
 
 const WORLD_WIDTH = MAP_WORLD.width;
 const WORLD_HEIGHT = MAP_WORLD.height;
+const CORE_X = WORLD_WIDTH / 2;
+const CORE_Y = WORLD_HEIGHT / 2;
 
 const curvePath = (x1: number, y1: number, x2: number, y2: number, bend = 0.16) => {
   const mx = (x1 + x2) / 2;
@@ -231,8 +233,8 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
 <section data-neural-atlas class="rounded-2xl border border-zinc-300 bg-white/70 p-4 dark:border-zinc-700 dark:bg-zinc-900/60">
   <div class="mb-4 flex flex-wrap items-start justify-between gap-4">
     <p class="max-w-3xl text-sm text-zinc-600 dark:text-zinc-300">
-      Built like a concept atlas: zoom out for the main routes, zoom in to reveal districts, then dive deeper to inspect the
-      concept strands inside each area.
+      Built around nine organizational categories. The center holds the authorial core, while the outer ring groups the essay
+      archive into a cleaner navigation model.
     </p>
     <div class="map-controls">
       <div class="map-readout">
@@ -254,7 +256,7 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
       id="atlas-svg"
       viewBox={`0 0 ${WORLD_WIDTH} ${WORLD_HEIGHT}`}
       class="h-full w-full"
-      aria-label="Interactive concept atlas"
+      aria-label="Interactive organizational atlas"
     >
       <defs>
         <pattern id="atlas-grid" width="140" height="140" patternUnits="userSpaceOnUse">
@@ -285,6 +287,15 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
               class={`atlas-route atlas-route--${route.tone}`}
             ></path>
           ))}
+        </g>
+
+        <g id="core-layer">
+          <g id="atlas-core" class="atlas-core" tabindex="0" role="button" aria-label="Return to center overview">
+            <circle class="atlas-core__halo" cx={CORE_X} cy={CORE_Y} r="238"></circle>
+            <circle class="atlas-core__ring" cx={CORE_X} cy={CORE_Y} r="208"></circle>
+            <text class="atlas-core__label" x={CORE_X} y={CORE_Y + 10} text-anchor="middle">You</text>
+            <text class="atlas-core__sub" x={CORE_X} y={CORE_Y + 62} text-anchor="middle">authorial core</text>
+          </g>
         </g>
 
         <g id="region-layer">
@@ -392,10 +403,11 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
     </svg>
 
     <div class="map-hud">
-      <p class="map-hud__eyebrow" data-map-focus>All regions</p>
-      <p class="map-hud__title" data-map-title>Creative atlas</p>
+      <p class="map-hud__eyebrow" data-map-focus>Authorial core</p>
+      <p class="map-hud__title" data-map-title>You</p>
       <p class="map-hud__detail" data-map-detail>
-        Zoom toward a region to reveal its districts, then keep going to inspect the concept strands inside it.
+        Nine organizational categories orbit the center: well-being, growth, relationships, work, creativity, activity,
+        order, resources, and society.
       </p>
     </div>
 
@@ -426,6 +438,7 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
     const wrap = root?.querySelector('.map-wrap');
     const svg = root?.querySelector('#atlas-svg');
     const viewport = root?.querySelector('#viewport');
+    const coreEl = root?.querySelector('#atlas-core');
     const overviewBtn = root?.querySelector('#map-overview');
     const tierEl = root?.querySelector('[data-map-tier]');
     const zoomEl = root?.querySelector('[data-map-zoom]');
@@ -512,6 +525,15 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
     };
 
     const descriptorFor = (type, id) => {
+      if (type === 'core') {
+        return {
+          focus: 'Authorial core',
+          title: 'You',
+          detail:
+            'Nine organizational categories orbit the center: well-being, growth, relationships, work, creativity, activity, order, resources, and society.'
+        };
+      }
+
       if (type === 'concept') {
         const concept = conceptById.get(id);
         if (!concept) return null;
@@ -543,9 +565,10 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
       }
 
       return {
-        focus: 'All regions',
-        title: 'Creative atlas',
-        detail: 'Zoom toward a region to reveal its districts, then keep going to inspect the concept strands inside it.'
+        focus: 'Authorial core',
+        title: 'You',
+        detail:
+          'Nine organizational categories orbit the center: well-being, growth, relationships, work, creativity, activity, order, resources, and society.'
       };
     };
 
@@ -848,7 +871,7 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
     };
 
     const onPointerDown = (event) => {
-      if (event.target.closest('[data-region], [data-district], [data-concept]')) return;
+      if (event.target.closest('[data-region], [data-district], [data-concept], #atlas-core')) return;
 
       stopAnimation();
       state.dragging = true;
@@ -907,6 +930,25 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
     bindInteractive(regionEls, 'region', focusRegion);
     bindInteractive(districtEls, 'district', focusDistrict);
     bindInteractive(conceptEls, 'concept', focusConcept);
+
+    coreEl?.addEventListener('click', (event) => {
+      event.stopPropagation();
+      resetOverview();
+      setHover('core', 'atlas-core');
+    });
+
+    coreEl?.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        resetOverview();
+        setHover('core', 'atlas-core');
+      }
+    });
+
+    coreEl?.addEventListener('mouseenter', () => setHover('core', 'atlas-core'));
+    coreEl?.addEventListener('mouseleave', () => clearHover('core', 'atlas-core'));
+    coreEl?.addEventListener('focus', () => setHover('core', 'atlas-core'));
+    coreEl?.addEventListener('blur', () => clearHover('core', 'atlas-core'));
 
     overviewBtn?.addEventListener('click', () => {
       resetOverview();
@@ -1088,6 +1130,8 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
   }
 
   .atlas-route,
+  .atlas-core__halo,
+  .atlas-core__ring,
   .atlas-district-spine,
   .atlas-concept-link,
   .atlas-concept-bridge,
@@ -1121,6 +1165,36 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
   .atlas-route--root {
     stroke: color-mix(in srgb, var(--tone-accent-bright) 60%, var(--tone-line) 40%);
     stroke-dasharray: 4 11;
+  }
+
+  .atlas-core {
+    cursor: pointer;
+  }
+
+  .atlas-core__halo {
+    fill: rgba(226, 231, 241, 0.06);
+    stroke: rgba(226, 231, 241, 0.12);
+    stroke-width: 1.4;
+  }
+
+  .atlas-core__ring {
+    fill: rgba(230, 234, 242, 0.92);
+    stroke: rgba(13, 20, 35, 0.92);
+    stroke-width: 4;
+  }
+
+  .atlas-core__label {
+    fill: rgba(13, 20, 35, 0.98);
+    font-size: 112px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+  }
+
+  .atlas-core__sub {
+    fill: rgba(50, 60, 83, 0.9);
+    font-size: 28px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
   .atlas-region {

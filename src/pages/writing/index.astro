@@ -17,39 +17,80 @@ const fullDateFormatter = new Intl.DateTimeFormat('en-US', {
 const allTags = [...new Set(posts.flatMap((post) => post.data.tags.map((tag) => tag.trim().toLowerCase())))]
   .filter(Boolean)
   .sort((a, b) => a.localeCompare(b));
-const screenplayVault = [
+const corpusConstellations = [
   {
-    title: 'Script End-6',
-    logline: 'Current screenplay draft preserved as a baseline for iterative rewrites.',
-    status: 'Draft',
-    lastTouched: 'Feb 21, 2026',
-    nextAction: 'Rewrite the first 3 pages with a sharper opening beat.'
+    title: 'Philosophical Inquiry',
+    band: 'Theory',
+    summary: 'A sustained argument with skepticism, moral genealogy, dualism, fear, consciousness, and the question of a livable good.',
+    tension: 'How can a person think clearly enough to judge, act, and avoid inherited moral traps?',
+    anchors: 'Descartes Essay Outline, Nietzsche study notes, Is A Human Body Merely A Complex Physical System?, Acquiring American Happiness in the 21st Century'
   },
   {
-    title: 'Untitled Screenplay #2',
-    logline: 'Replace this with the core conflict and protagonist goal in one line.',
-    status: 'Outline',
-    lastTouched: 'Add date',
-    nextAction: 'Draft the opening sequence.'
+    title: 'Power and Political Economy',
+    band: 'Systems',
+    summary: 'Capitalism is treated as a machinery of alienation, dispossession, and managed distraction rather than a neutral background.',
+    tension: 'What does it cost a person or city to survive inside a structure built around extraction and hierarchy?',
+    anchors: 'The Sacrifice of Power, Entertainment, Suffering, and the Everyday, Theorizing Politics, Housing crisis research'
   },
   {
-    title: 'Untitled Screenplay #3',
-    logline: 'Use this slot for a shelved script you want to restart.',
-    status: 'Draft',
-    lastTouched: 'Add date',
-    nextAction: 'Do one focused rewrite pass.'
+    title: 'Urban Praxis and Newark',
+    band: 'Field',
+    summary: 'The writing stops being purely diagnostic and becomes logistical, geographic, and materially grounded in Newark.',
+    tension: 'How does theory hold up when it has to move water, build coalitions, and face infrastructure failure directly?',
+    anchors: 'Newark Water Coalition fellowship assignments, Ironbound reports, Right to the City analysis, Gallery Host Plus proposal'
+  },
+  {
+    title: 'Identity and Acculturation',
+    band: 'Identity',
+    summary: 'Race, language loss, and belonging are treated as socially engineered pressures with deep psychological consequences.',
+    tension: 'What happens when inherited identity weakens while dominant culture still refuses full recognition?',
+    anchors: 'Impacts of Acculturation, Baldwin-centered politics work, The Bluest Eye analysis'
+  },
+  {
+    title: 'Creative Resistance',
+    band: 'Art',
+    summary: 'Music, scripts, and narrative experiments become tools for recovering what rigid systems trained out of the self.',
+    tension: 'How does form itself become a way of surviving, reclaiming sensation, and resisting control?',
+    anchors: 'Beyond Syntax, Sensitive Child, Cocoa, End, The Art of Fighting Back / The Art of Survival'
+  },
+  {
+    title: 'AI and Future Systems',
+    band: 'Futures',
+    summary: 'The later work extends systemic critique into automation, AI governance, and the defense of human cognition.',
+    tension: 'How can emerging systems be used without surrendering labor dignity, memory, artists, or moral agency?',
+    anchors: 'Automation Feasibility: 2025-2035 Analysis, The Singularity Horizon, Accountability Pledge, AI well-being analyses'
+  }
+];
+
+const writingArc = [
+  {
+    period: '2015-2017',
+    title: 'Formalist Survival',
+    summary: 'A rigid, high-performance voice shaped by the Essay Codex, the Divorce Decree, and the need to survive restrictive academic structures.'
+  },
+  {
+    period: '2018-2022',
+    title: 'Systemic Deconstruction',
+    summary: 'The archive expands into philosophy, Marxist critique, race, literature, and historical power, using research to dismantle inherited narratives.'
+  },
+  {
+    period: '2022-2025',
+    title: 'Applied Humanism',
+    summary: 'Theory becomes praxis through Newark fieldwork, creative recovery, and technical writing on AI, automation, and institutional accountability.'
   }
 ];
 ---
 <BaseLayout title="Writing — a_e.s_" theme="writing">
   <section class="writing-hero">
-    <p class="writing-kicker">Archive / Essays / Notes</p>
+    <p class="writing-kicker">Systemic Humanist Archive / Essays / Reports</p>
     <h1 class="font-display text-4xl md:text-5xl">Writing</h1>
     <p class="writing-description">
-      Track process notes, longer essays, and archive fragments. Use tags to filter quickly.
+      This section now frames the writing as a connected corpus: philosophy, labor critique, Newark fieldwork, identity,
+      creative recovery, and AI futures all feed the same long argument about how people survive systems.
     </p>
     <div class="writing-meta">
       <p>{posts.length} {posts.length === 1 ? 'entry' : 'entries'}</p>
+      <p>Archive frame: 2015-2025</p>
       {posts[0] && <p>Latest: {fullDateFormatter.format(posts[0].data.date)}</p>}
     </div>
     <a class="writing-rss-link" href="/rss.xml">RSS feed</a>
@@ -59,26 +100,42 @@ const screenplayVault = [
 
   <section class="writing-vault" aria-labelledby="writing-vault-heading">
     <div class="writing-vault-header">
-      <h2 id="writing-vault-heading" class="font-display text-2xl">Screenplay Vault</h2>
-      <p>Visible reminders for unfinished scripts so iteration stays easy.</p>
+      <h2 id="writing-vault-heading" class="font-display text-2xl">Corpus Constellations</h2>
+      <p>The strongest recurring lanes in the archive, distilled from the larger essay history you provided.</p>
     </div>
     <ul class="writing-vault-list">
-      {screenplayVault.map((project) => (
+      {corpusConstellations.map((cluster) => (
         <li>
           <article class="writing-vault-card">
             <div class="writing-vault-topline">
-              <h3 class="font-display text-xl">{project.title}</h3>
-              <span class="writing-vault-status">{project.status}</span>
+              <h3 class="font-display text-xl">{cluster.title}</h3>
+              <span class="writing-vault-status">{cluster.band}</span>
             </div>
-            <p class="writing-vault-logline">{project.logline}</p>
+            <p class="writing-vault-logline">{cluster.summary}</p>
             <div class="writing-vault-meta">
-              <p><strong>Last touched:</strong> {project.lastTouched}</p>
-              <p><strong>Next action:</strong> {project.nextAction}</p>
+              <p><strong>Central tension:</strong> {cluster.tension}</p>
+              <p><strong>Anchor works:</strong> {cluster.anchors}</p>
             </div>
           </article>
         </li>
       ))}
     </ul>
+  </section>
+
+  <section class="writing-trajectory" aria-labelledby="writing-trajectory-heading">
+    <div class="writing-trajectory-header">
+      <h2 id="writing-trajectory-heading" class="font-display text-2xl">Intellectual Arc</h2>
+      <p>The archive reads less like isolated assignments and more like a decade-long transition in method and purpose.</p>
+    </div>
+    <div class="writing-trajectory-grid">
+      {writingArc.map((phase) => (
+        <article class="writing-trajectory-card">
+          <p class="writing-trajectory-period">{phase.period}</p>
+          <h3 class="font-display text-xl">{phase.title}</h3>
+          <p>{phase.summary}</p>
+        </article>
+      ))}
+    </div>
   </section>
 
   <section class="writing-archive" id="writing-list" aria-labelledby="writing-archive-heading">
@@ -228,6 +285,10 @@ const screenplayVault = [
     margin-top: clamp(1.3rem, 3vw, 2.4rem);
   }
 
+  .writing-trajectory {
+    margin-top: clamp(1.3rem, 3vw, 2.4rem);
+  }
+
   .writing-vault-header p {
     margin: 0.55rem 0 0;
     color: var(--tone-muted);
@@ -285,6 +346,43 @@ const screenplayVault = [
     margin: 0;
     color: var(--tone-muted);
     font-size: 0.86rem;
+  }
+
+  .writing-trajectory-header p {
+    margin: 0.55rem 0 0;
+    color: var(--tone-muted);
+    max-width: 68ch;
+  }
+
+  .writing-trajectory-grid {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 1rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .writing-trajectory-card {
+    border: 1px solid var(--line2);
+    border-radius: calc(var(--radius) * var(--space-scale));
+    background: linear-gradient(180deg, rgba(10, 14, 23, 0.72), rgba(7, 11, 18, 0.6));
+    padding: clamp(0.9rem, 2.2vw, 1.15rem);
+  }
+
+  .writing-trajectory-card h3 {
+    margin: 0.42rem 0 0;
+  }
+
+  .writing-trajectory-card p:last-child {
+    margin: 0.62rem 0 0;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .writing-trajectory-period {
+    margin: 0;
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tone-accent-glow);
   }
 
   .writing-archive-header {
@@ -415,6 +513,10 @@ const screenplayVault = [
   }
 
   @media (max-width: 700px) {
+    .writing-trajectory-grid {
+      grid-template-columns: 1fr;
+    }
+
     .writing-card-footer {
       align-items: flex-start;
       flex-direction: column;
