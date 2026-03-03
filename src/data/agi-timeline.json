@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-03T17:08:00.146Z",
+    "generatedAt": "2026-03-03T18:01:04.960Z",
     "sources": [
       {
         "id": "openai_news",
@@ -93,6 +93,52 @@
         {
           "label": "Feed",
           "url": "https://deepmind.google/blog/feed/basic"
+        }
+      ]
+    },
+    {
+      "id": "9783e45450d379c4cf29126d6380a1e2a6afebd8faa5a49b3ec3b96c4b8597ac",
+      "title": "GPT-5.3 Instant System Card",
+      "url": "https://openai.com/index/gpt-5-3-instant-system-card",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-03-03T10:00:00.000Z",
+      "summary": null,
+      "tags": [
+        "primary",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/gpt-5-3-instant-system-card"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
+    {
+      "id": "4a396a1991a46bc33be368469bb9de6aa1698e50f616a4edb0e20d8423523a6e",
+      "title": "GPT-5.3 Instant: Smoother, more useful everyday conversations",
+      "url": "https://openai.com/index/gpt-5-3-instant",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-03-03T10:00:00.000Z",
+      "summary": null,
+      "tags": [
+        "primary",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/gpt-5-3-instant"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
         }
       ]
     },
@@ -14991,58 +15037,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2506.16608"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "fb15fa569375ffbce6a52d5af6b315090f825c64e8f73541731e1af077519376",
-      "title": "Long-Context Generalization with Sparse Attention",
-      "url": "https://arxiv.org/abs/2506.16640",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-03T05:00:00.000Z",
-      "summary": "arXiv:2506.16640v4 Announce Type: replace-cross Abstract: Transformer-based architectures traditionally employ softmax to compute attention weights, which produces dense distributions over all tokens in a sequence. While effective in many settings, this density has been shown to be detrimental for tasks that demand precise focus on fixed-size patterns: as sequence length increases, non-informative tokens accumulate attention probability mass, leading to dispersion and representational collapse. We show in this paper that dynamically sparse attention mechanisms using $\\alpha$-entmax can avoid these issues, due to their ability to assign exact zeros to irrelevant tokens. Furthermore, we introduce Adaptive-Scalable Entmax (ASEntmax), which endows $\\alpha$-entmax with a learnable temperature parameter, allowing the attention distribution to interpolate between sparse (pattern-focused) and dense (softmax-like) regimes. Our empirical evaluation on synthetic tasks and language modeling demonstrates that ASEntmax substantially outperforms softmax, scalable softmax, and fixed-temperature $\\alpha$-entmax baselines, achieving up to 1000$\\times$ length extrapolation on synthetic benchmarks and superior long-context generalization on language modeling while preserving short-context performance, including better perplexity trends and higher retrieval accuracies at 8$\\times$ training length.",
-      "tags": [
-        "papers",
-        "eval",
-        "compute",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2506.16640"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "33e0c75fc39f965aed1a6d300d58cf0b2dd24501dae34e684b6cac03b67fada8",
-      "title": "RL for Reasoning by Adaptively Revealing Rationales",
-      "url": "https://arxiv.org/abs/2506.18110",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-03T05:00:00.000Z",
-      "summary": "arXiv:2506.18110v2 Announce Type: replace-cross Abstract: Learning in the combinatorially large output space of sequence generation problems is challenging as providing expert demonstrations scales poorly with sequence length, and RL struggles with sparse rewards. Between dense demonstrations in supervised training and no demonstrations in reinforcement learning lies an underexplored regime: partial supervision. We ask whether some classes of sequence learning problems become efficiently learnable by exploiting this gap. We address this by introducing adaptive backtracking (AdaBack), a per-sample curriculum learning algorithm that reveals a partial prefix of the target output. The supervision length is adjusted dynamically for each sample based on the model's past reward signal, allowing it to incrementally learn to complete reasoning chains by conditioning on correct partial solutions. We investigate this intermediate regime between SFT and RL and argue that per-sample curriculum learning is more than a trade-off between efficiency and generality--it can succeed in tasks with long sequences of latent dependencies where SFT and RL both fail to generalize. Using a synthetic task with latent parity constraints, we show that AdaBack reliably solves problems that are otherwise intractable. On three mathematical reasoning benchmarks, DeepScaleR, MATH, and GSM8k, we find that AdaBack enables models to solve problems that RL alone cannot, acquiring new reasoning capabilities through incremental exposure to partial solutions.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "eval",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2506.18110"
         },
         {
           "label": "Feed",
