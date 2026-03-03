@@ -5,13 +5,67 @@ const { accent = '#7BE7FF' } = Astro.props;
 
 const toCssValue = (value: string | number | undefined, fallback: string) =>
   value === undefined ? fallback : String(value);
+
+const sparkSeeds = [
+  {
+    x: '12%',
+    y: '20%',
+    size: '0.24rem',
+    driftX: '-0.9rem',
+    driftY: '-2.2rem',
+    duration: '4.2s',
+    delay: '-0.8s',
+    alpha: 0.9
+  },
+  {
+    x: '28%',
+    y: '74%',
+    size: '0.18rem',
+    driftX: '0.8rem',
+    driftY: '-1.8rem',
+    duration: '4.8s',
+    delay: '-2.1s',
+    alpha: 0.68
+  },
+  {
+    x: '52%',
+    y: '42%',
+    size: '0.26rem',
+    driftX: '-0.4rem',
+    driftY: '-2.7rem',
+    duration: '5.1s',
+    delay: '-1.2s',
+    alpha: 0.82
+  },
+  {
+    x: '76%',
+    y: '28%',
+    size: '0.16rem',
+    driftX: '1rem',
+    driftY: '-2.4rem',
+    duration: '4.6s',
+    delay: '-2.8s',
+    alpha: 0.58
+  },
+  {
+    x: '84%',
+    y: '72%',
+    size: '0.22rem',
+    driftX: '-0.7rem',
+    driftY: '-1.9rem',
+    duration: '5.4s',
+    delay: '-3.2s',
+    alpha: 0.74
+  }
+];
 ---
 
 <!-- Backdrop layers -->
 <div class="hallway" style={`--accent:${accent};--complement:var(--cursor);`} aria-hidden="true">
   <div class="hallway__photo"></div>
+  <div class="hallway__focusField"></div>
   <div class="hallway__memories">
-    {siteMemorySlots.map((slot: SiteMemorySlot) => (
+    {siteMemorySlots.map((slot: SiteMemorySlot, slotIndex: number) => (
       <div
         class:list={[
           'hallway__memory',
@@ -21,6 +75,16 @@ const toCssValue = (value: string | number | undefined, fallback: string) =>
         data-memory={slot.id}
       >
         <div class="hallway__memoryImage"></div>
+        <div class="hallway__memoryVeil"></div>
+        <div class="hallway__memoryBloom"></div>
+        <div class="hallway__memorySparks">
+          {sparkSeeds.map((spark, sparkIndex) => (
+            <span
+              class="hallway__spark"
+              style={`--spark-x:${spark.x};--spark-y:${spark.y};--spark-size:${spark.size};--spark-drift-x:${spark.driftX};--spark-drift-y:${spark.driftY};--spark-duration:${spark.duration};--spark-delay:calc(${spark.delay} - ${(slotIndex * 0.23 + sparkIndex * 0.17).toFixed(2)}s);--spark-alpha:${spark.alpha};`}
+            ></span>
+          ))}
+        </div>
       </div>
     ))}
   </div>
@@ -38,6 +102,8 @@ const toCssValue = (value: string | number | undefined, fallback: string) =>
 
 <style>
   .hallway {
+    --focus-x: 50vw;
+    --focus-y: 42vh;
     position: fixed;
     inset: 0;
     z-index: 0;
@@ -59,9 +125,35 @@ const toCssValue = (value: string | number | undefined, fallback: string) =>
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    filter: saturate(1.08) contrast(1.06) brightness(0.62);
-    opacity: 0.44;
+    filter: saturate(1.06) contrast(1.04) brightness(0.54);
+    opacity: 0.36;
     transform: scale(1.03);
+  }
+
+  .hallway__focusField {
+    position: absolute;
+    inset: -8%;
+    z-index: 1;
+    background:
+      radial-gradient(
+        420px 280px at var(--focus-x) var(--focus-y),
+        rgb(255 255 255 / 0.14),
+        rgb(198 225 255 / 0.08) 18%,
+        transparent 62%
+      ),
+      radial-gradient(
+        860px 560px at var(--focus-x) var(--focus-y),
+        color-mix(in oklab, var(--accent) 14%, transparent),
+        transparent 72%
+      ),
+      repeating-radial-gradient(
+        circle at var(--focus-x) var(--focus-y),
+        rgb(255 255 255 / 0.022) 0 1px,
+        transparent 1px 18px
+      );
+    filter: blur(8px);
+    opacity: 0.52;
+    mix-blend-mode: screen;
   }
 
   .hallway__memories {
@@ -73,6 +165,12 @@ const toCssValue = (value: string | number | undefined, fallback: string) =>
   }
 
   .hallway__memory {
+    --memory-focus-strength: 0.12;
+    --memory-presence: 0.14;
+    --memory-clarity: 0.12;
+    --memory-particle: 0.08;
+    --memory-cursor-x: 50%;
+    --memory-cursor-y: 50%;
     position: absolute;
     left: var(--memory-x);
     top: var(--memory-y);
@@ -82,7 +180,10 @@ const toCssValue = (value: string | number | undefined, fallback: string) =>
     overflow: hidden;
     transform: translate(-50%, -50%) rotate(var(--memory-rotate));
     opacity: 1;
-    will-change: transform, opacity;
+    box-shadow:
+      0 0 calc(18px + var(--memory-focus-strength) * 26px) rgb(210 231 255 / calc(0.02 + var(--memory-focus-strength) * 0.12)),
+      0 20px 44px rgb(0 0 0 / 0.12);
+    will-change: transform, opacity, box-shadow;
     animation: hallwayMemoryDrift var(--memory-duration) ease-in-out infinite alternate;
     animation-delay: var(--memory-delay);
     -webkit-mask-image: radial-gradient(circle at center, black 62%, transparent 100%);
@@ -94,21 +195,19 @@ const toCssValue = (value: string | number | undefined, fallback: string) =>
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid rgb(255 255 255 / calc(0.03 + var(--memory-focus-strength) * 0.16));
     box-shadow:
-      0 0 0 1px rgba(255, 255, 255, 0.015),
-      0 24px 44px rgba(0, 0, 0, 0.12);
-    opacity: 0;
-    animation: hallwayMemoryFrame var(--memory-duration) ease-in-out infinite;
-    animation-delay: var(--memory-delay);
+      0 0 0 1px rgb(255 255 255 / calc(0.02 + var(--memory-focus-strength) * 0.08)),
+      inset 0 0 26px rgb(255 255 255 / calc(0.01 + var(--memory-focus-strength) * 0.06));
+    opacity: calc(0.04 + var(--memory-focus-strength) * 0.28);
   }
 
   .hallway__memory.is-warm::after {
-    border-color: rgba(242, 184, 75, 0.08);
+    border-color: rgb(242 184 75 / calc(0.04 + var(--memory-focus-strength) * 0.18));
   }
 
   .hallway__memory.is-cool::after {
-    border-color: rgba(111, 183, 255, 0.08);
+    border-color: rgb(111 183 255 / calc(0.04 + var(--memory-focus-strength) * 0.18));
   }
 
   .hallway__memoryImage {
@@ -117,29 +216,98 @@ const toCssValue = (value: string | number | undefined, fallback: string) =>
     background-image:
       linear-gradient(
         180deg,
-        rgba(4, 8, 15, 0.02),
-        rgba(4, 8, 15, 0.08) 38%,
-        rgba(4, 8, 15, 0.18)
+        rgb(4 8 15 / 0.02),
+        rgb(4 8 15 / 0.06) 38%,
+        rgb(4 8 15 / 0.14)
       ),
       radial-gradient(
-        120% 100% at 50% 16%,
-        rgba(255, 255, 255, 0.12),
+        120% 100% at var(--memory-cursor-x) var(--memory-cursor-y),
+        rgb(255 255 255 / calc(0.05 + var(--memory-focus-strength) * 0.16)),
         transparent 44%
       ),
       var(--memory-image);
     background-position: center, center, var(--memory-focus);
     background-size: cover;
     background-repeat: no-repeat;
+    opacity: calc(0.04 + var(--memory-opacity) * (0.22 + var(--memory-presence) * 0.72));
     filter:
-      saturate(0.86)
-      contrast(1.06)
-      brightness(0.82)
-      blur(calc(var(--memory-blur) + 1px));
-    opacity: 0;
-    transform: scale(1.05);
+      saturate(calc(0.56 + var(--memory-clarity) * 0.64))
+      contrast(calc(0.94 + var(--memory-clarity) * 0.24))
+      brightness(calc(0.32 + var(--memory-clarity) * 0.74))
+      blur(calc((1 - var(--memory-clarity)) * 8px + var(--memory-blur) * 0.18));
+    transform: scale(calc(1.08 - var(--memory-clarity) * 0.08));
     will-change: transform, filter, opacity;
-    animation: hallwayMemoryPulse var(--memory-duration) cubic-bezier(0.42, 0, 0.18, 1) infinite;
-    animation-delay: var(--memory-delay);
+    transition:
+      opacity 180ms linear,
+      filter 180ms linear,
+      transform 180ms linear;
+  }
+
+  .hallway__memoryVeil,
+  .hallway__memoryBloom,
+  .hallway__memorySparks {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .hallway__memoryVeil {
+    background:
+      radial-gradient(
+        circle at var(--memory-cursor-x) var(--memory-cursor-y),
+        rgb(255 255 255 / calc(0.05 + var(--memory-focus-strength) * 0.08)) 0%,
+        rgb(255 255 255 / 0.02) 16%,
+        rgb(8 12 20 / 0.1) 32%,
+        rgb(4 8 15 / calc(0.22 + (1 - var(--memory-clarity)) * 0.18)) 60%,
+        rgb(2 4 8 / calc(0.52 + (1 - var(--memory-clarity)) * 0.24)) 100%
+      );
+    opacity: calc(0.26 + (1 - var(--memory-clarity)) * 0.42);
+    mix-blend-mode: multiply;
+    transition: opacity 180ms linear, background-position 180ms linear;
+  }
+
+  .hallway__memoryBloom {
+    background:
+      radial-gradient(
+        circle at var(--memory-cursor-x) var(--memory-cursor-y),
+        rgb(255 255 255 / calc(0.12 + var(--memory-focus-strength) * 0.18)) 0%,
+        rgb(172 214 255 / calc(0.06 + var(--memory-focus-strength) * 0.16)) 18%,
+        transparent 58%
+      );
+    filter: blur(calc(8px - var(--memory-focus-strength) * 4px));
+    opacity: calc(0.08 + var(--memory-focus-strength) * 0.56);
+    mix-blend-mode: screen;
+    transition: opacity 180ms linear, filter 180ms linear;
+  }
+
+  .hallway__memorySparks {
+    inset: -8%;
+    mix-blend-mode: screen;
+    opacity: calc(0.14 + var(--memory-particle) * 0.9);
+  }
+
+  .hallway__spark {
+    position: absolute;
+    left: var(--spark-x);
+    top: var(--spark-y);
+    width: var(--spark-size);
+    height: var(--spark-size);
+    border-radius: 999px;
+    background: radial-gradient(
+      circle,
+      rgb(255 255 255 / 0.95) 0%,
+      rgb(194 227 255 / 0.78) 34%,
+      transparent 72%
+    );
+    box-shadow:
+      0 0 10px rgb(206 231 255 / 0.24),
+      0 0 18px rgb(206 231 255 / 0.12);
+    opacity: calc(var(--spark-alpha) * (0.04 + var(--memory-particle) * 0.78));
+    transform: translate3d(0, 0, 0) scale(calc(0.45 + var(--memory-particle) * 0.9));
+    filter: blur(calc((1 - var(--memory-particle)) * 1.4px));
+    will-change: transform, opacity, filter;
+    animation: hallwaySparkLift var(--spark-duration) linear infinite;
+    animation-delay: var(--spark-delay);
   }
 
   /* vignette (like camera/scene) */
@@ -147,7 +315,7 @@ const toCssValue = (value: string | number | undefined, fallback: string) =>
     position: absolute;
     inset: -10%;
     background: radial-gradient(closest-side at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.72) 95%);
-    opacity: 0.54;
+    opacity: 0.34;
   }
 
   /* fog/mist */
@@ -159,7 +327,7 @@ const toCssValue = (value: string | number | undefined, fallback: string) =>
       radial-gradient(700px 320px at 70% 45%, rgba(255, 255, 255, 0.046), transparent 67%),
       radial-gradient(900px 420px at 50% 70%, rgba(255, 255, 255, 0.034), transparent 72%);
     filter: blur(11px);
-    opacity: 0.2;
+    opacity: 0.14;
     animation: hallwayFogDrift 28s ease-in-out infinite alternate;
   }
 
@@ -182,7 +350,7 @@ const toCssValue = (value: string | number | undefined, fallback: string) =>
         rgba(255, 255, 255, 0.03),
         transparent 72%
       );
-    opacity: 0.12;
+    opacity: 0.1;
     filter: blur(18px) saturate(1.08);
     animation: hallwayBreathe 24s ease-in-out infinite;
   }
@@ -231,7 +399,7 @@ const toCssValue = (value: string | number | undefined, fallback: string) =>
         rgba(0, 0, 0, 0.67)
       );
     transform: perspective(900px) rotateX(8deg);
-    opacity: 0.34;
+    opacity: 0.18;
   }
 
   /* neon tubes + glow edges */
@@ -257,7 +425,7 @@ const toCssValue = (value: string | number | undefined, fallback: string) =>
         color-mix(in oklab, var(--accent) 16%, transparent)
       );
     filter: blur(1px);
-    opacity: 0.44;
+    opacity: 0.28;
   }
 
   /* grain (world texture) */
@@ -294,11 +462,13 @@ const toCssValue = (value: string | number | undefined, fallback: string) =>
     transform: translate(-50%, -50%);
     background: radial-gradient(
       circle at center,
-      color-mix(in oklab, var(--cursor) 16%, transparent) 0%,
+      rgb(255 255 255 / 0.18) 0%,
+      color-mix(in oklab, var(--cursor) 18%, transparent) 22%,
+      color-mix(in oklab, var(--accent) 12%, transparent) 38%,
       transparent 72%
     );
-    filter: blur(12px);
-    opacity: calc(var(--cursor-light-visibility, 1) * 0.4);
+    filter: blur(10px);
+    opacity: calc(var(--cursor-light-visibility, 1) * 0.42);
     transition: opacity var(--motion-ambient, 1200ms) var(--ease-emphasized, ease);
     mix-blend-mode: screen;
   }
@@ -312,91 +482,44 @@ const toCssValue = (value: string | number | undefined, fallback: string) =>
     }
   }
 
-  @keyframes hallwayMemoryPulse {
-    0%,
-    100% {
-      opacity: 0;
-      filter:
-        saturate(0.8)
-        contrast(1.03)
-        brightness(0.66)
-        blur(calc(var(--memory-blur) + 3px));
-      transform: scale(1.07);
-    }
-
-    18% {
-      opacity: calc(var(--memory-opacity) * 0.55);
-      filter:
-        saturate(0.9)
-        contrast(1.06)
-        brightness(0.78)
-        blur(calc(var(--memory-blur) + 1px));
-      transform: scale(1.03);
-    }
-
-    42% {
-      opacity: calc(var(--memory-opacity) * 1.08);
-      filter:
-        saturate(1)
-        contrast(1.1)
-        brightness(0.94)
-        blur(calc(var(--memory-blur) * 0.35));
-      transform: scale(1.01);
-    }
-
-    56% {
-      opacity: calc(var(--memory-opacity) * 1.26);
-      filter:
-        saturate(1.04)
-        contrast(1.12)
-        brightness(1)
-        blur(0px);
-      transform: scale(1);
-    }
-
-    72% {
-      opacity: calc(var(--memory-opacity) * 0.72);
-      filter:
-        saturate(0.92)
-        contrast(1.08)
-        brightness(0.82)
-        blur(calc(var(--memory-blur) + 1px));
-      transform: scale(1.02);
-    }
-  }
-
   @keyframes hallwayMemoryDrift {
     from {
       transform:
         translate(
-          calc(-50% - 0.5rem),
-          calc(-50% - 0.25rem)
+          calc(-50% - 0.36rem),
+          calc(-50% - 0.18rem)
         )
-        rotate(calc(var(--memory-rotate) - 0.8deg));
+        rotate(calc(var(--memory-rotate) - 0.6deg));
     }
 
     to {
       transform:
         translate(
-          calc(-50% + 0.6rem),
-          calc(-50% + 0.4rem)
+          calc(-50% + 0.42rem),
+          calc(-50% + 0.24rem)
         )
-        rotate(calc(var(--memory-rotate) + 0.8deg));
+        rotate(calc(var(--memory-rotate) + 0.6deg));
     }
   }
 
-  @keyframes hallwayMemoryFrame {
-    0%,
+  @keyframes hallwaySparkLift {
+    0% {
+      transform: translate3d(0, 0, 0) scale(0.24);
+      filter: blur(0px);
+    }
+
+    65% {
+      transform: translate3d(var(--spark-drift-x), var(--spark-drift-y), 0) scale(1);
+      filter: blur(0.4px);
+    }
+
     100% {
-      opacity: 0;
-    }
-
-    48% {
-      opacity: 0.14;
-    }
-
-    60% {
-      opacity: 0.24;
+      transform: translate3d(
+        calc(var(--spark-drift-x) * 1.26),
+        calc(var(--spark-drift-y) * 1.4),
+        0
+      ) scale(0.24);
+      filter: blur(1.4px);
     }
   }
 
@@ -419,8 +542,7 @@ const toCssValue = (value: string | number | undefined, fallback: string) =>
   /* Respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .hallway__memory,
-    .hallway__memoryImage,
-    .hallway__memory::after,
+    .hallway__spark,
     .hallway__fog,
     .hallway__atmosphere,
     .hallway__grain {
@@ -442,19 +564,26 @@ const toCssValue = (value: string | number | undefined, fallback: string) =>
     }
 
     .hallway__memory::after {
-      animation: none;
-      opacity: 0.08;
+      opacity: 0.14;
     }
 
     .hallway__memoryImage {
-      animation: none;
-      opacity: calc(var(--memory-opacity) * 0.7);
+      opacity: calc(0.08 + var(--memory-opacity) * 0.58);
       filter:
-        saturate(0.94)
-        contrast(1.08)
-        brightness(0.86)
-        blur(calc(var(--memory-blur) * 0.5));
-      transform: scale(1.01);
+        saturate(0.84)
+        contrast(1.04)
+        brightness(0.72)
+        blur(calc(var(--memory-blur) * 0.35));
+      transform: scale(1.03);
+    }
+
+    .hallway__memoryVeil {
+      opacity: 0.32;
+    }
+
+    .hallway__memoryBloom,
+    .hallway__memorySparks {
+      opacity: 0.2;
     }
   }
 
@@ -467,11 +596,74 @@ const toCssValue = (value: string | number | undefined, fallback: string) =>
     }
 
     .hallway__atmosphere {
-      opacity: 0.18;
+      opacity: 0.08;
     }
 
     .hallway__depth {
-      opacity: 0.15;
+      opacity: 0.11;
     }
   }
 </style>
+
+<script is:inline>
+  (() => {
+    const hallway = document.querySelector('.hallway');
+    if (!hallway) return;
+
+    const memories = Array.from(hallway.querySelectorAll('.hallway__memory'));
+    if (!memories.length) return;
+
+    let pointerX = window.innerWidth / 2;
+    let pointerY = window.innerHeight * 0.42;
+    let frameId = 0;
+
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+    const applyFocus = () => {
+      frameId = 0;
+      hallway.style.setProperty('--focus-x', `${pointerX}px`);
+      hallway.style.setProperty('--focus-y', `${pointerY}px`);
+
+      const focusRadius = Math.min(window.innerWidth, window.innerHeight) * 0.34 + 180;
+      const ambientRadius = focusRadius * 1.9;
+
+      memories.forEach((memory) => {
+        const rect = memory.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const distance = Math.hypot(pointerX - centerX, pointerY - centerY);
+        const focus = clamp(1 - distance / focusRadius, 0, 1);
+        const ambient = clamp(1 - distance / ambientRadius, 0, 1);
+        const presence = clamp(0.08 + ambient * 0.26 + focus * 1.04, 0.08, 1.24);
+        const clarity = clamp(0.08 + ambient * 0.18 + focus * 0.78, 0.08, 1);
+        const particle = clamp(0.05 + ambient * 0.12 + focus * 0.92, 0.05, 1);
+        const localX = rect.width ? ((pointerX - rect.left) / rect.width) * 100 : 50;
+        const localY = rect.height ? ((pointerY - rect.top) / rect.height) * 100 : 50;
+
+        memory.style.setProperty('--memory-focus-strength', focus.toFixed(3));
+        memory.style.setProperty('--memory-presence', presence.toFixed(3));
+        memory.style.setProperty('--memory-clarity', clarity.toFixed(3));
+        memory.style.setProperty('--memory-particle', particle.toFixed(3));
+        memory.style.setProperty('--memory-cursor-x', `${clamp(localX, 0, 100).toFixed(1)}%`);
+        memory.style.setProperty('--memory-cursor-y', `${clamp(localY, 0, 100).toFixed(1)}%`);
+      });
+    };
+
+    const scheduleFocus = () => {
+      if (frameId) return;
+      frameId = window.requestAnimationFrame(applyFocus);
+    };
+
+    const handlePointerMove = (event) => {
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      scheduleFocus();
+    };
+
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    window.addEventListener('resize', scheduleFocus, { passive: true });
+    window.addEventListener('scroll', scheduleFocus, { passive: true });
+
+    applyFocus();
+  })();
+</script>
