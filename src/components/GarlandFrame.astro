@@ -199,17 +199,13 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
 {hasPhotoGarlandAssets && (
   <div class="garland-photo-real" aria-hidden="true">
     {photoGarland.left && (
-      <div class="garland-photo-rail garland-photo-rail-left">
-        <div class="garland-photo-rail__inner">
-          <span class="garland-photo-rail__image" style={`--garland-photo-image:url('${photoGarland.left}');`}></span>
-        </div>
+      <div class="garland-photo-hanger garland-photo-hanger-left">
+        <img class="garland-photo-hanger__image" src={photoGarland.left} alt="" loading="eager" decoding="async" />
       </div>
     )}
     {photoGarland.right && (
-      <div class="garland-photo-rail garland-photo-rail-right">
-        <div class="garland-photo-rail__inner">
-          <span class="garland-photo-rail__image" style={`--garland-photo-image:url('${photoGarland.right}');`}></span>
-        </div>
+      <div class="garland-photo-hanger garland-photo-hanger-right">
+        <img class="garland-photo-hanger__image" src={photoGarland.right} alt="" loading="eager" decoding="async" />
       </div>
     )}
   </div>
@@ -231,73 +227,41 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
     --garland-retract-progress: 1;
   }
 
-  .garland-photo-rail,
-  .garland-photo-band {
+  .garland-photo-hanger {
     position: absolute;
-    overflow: hidden;
+    top: calc(var(--header-height, 64px) + 44px);
+    width: clamp(96px, 8vw, 140px);
+    opacity: calc(0.46 - 0.08 * var(--garland-retract-progress));
+    transition:
+      opacity var(--garland-duration-soft) var(--ease-standard, ease),
+      transform var(--garland-duration-strong) var(--ease-emphasized, ease);
   }
 
-  .garland-photo-rail {
-    top: 24px;
-    bottom: 24px;
-    width: clamp(20px, 2.2vw, 34px);
-    opacity: calc(0.58 - 0.1 * var(--garland-retract-progress));
-    transition: opacity var(--garland-duration-soft) var(--ease-standard, ease);
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 16%, black 84%, transparent 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, black 16%, black 84%, transparent 100%);
-  }
-
-  .garland-photo-rail-left {
-    left: -2px;
-  }
-
-  .garland-photo-rail-right {
-    right: -2px;
-  }
-
-  .garland-photo-rail__inner,
-  .garland-photo-band__inner {
-    position: absolute;
-    inset: 0;
-    transition: transform var(--garland-duration-strong) var(--ease-emphasized, ease);
-  }
-
-  .garland-photo-rail-left .garland-photo-rail__inner {
-    transform-origin: left center;
+  .garland-photo-hanger-left {
+    left: -34px;
+    transform-origin: top left;
     transform:
-      translateX(calc(var(--garland-wind-x, 0px) * -0.12))
-      rotate(calc(var(--garland-wind-strength, 0) * -0.08deg))
-      scaleX(var(--garland-visible-ratio));
+      translateX(calc((-18px * var(--garland-retract-progress)) + (var(--garland-wind-x, 0px) * -0.08)))
+      rotate(calc(var(--garland-wind-strength, 0) * -0.08deg));
   }
 
-  .garland-photo-rail-right .garland-photo-rail__inner {
-    transform-origin: right center;
+  .garland-photo-hanger-right {
+    right: -34px;
+    transform-origin: top right;
     transform:
-      translateX(calc(var(--garland-wind-x, 0px) * 0.12))
-      rotate(calc(var(--garland-wind-strength, 0) * 0.08deg))
-      scaleX(var(--garland-visible-ratio));
+      translateX(calc((18px * var(--garland-retract-progress)) + (var(--garland-wind-x, 0px) * 0.08)))
+      rotate(calc(var(--garland-wind-strength, 0) * 0.08deg));
   }
 
-  .garland-photo-rail__image,
-  .garland-photo-band__image {
-    position: absolute;
-    inset: 0;
+  .garland-photo-hanger__image {
     display: block;
-    background-image: var(--garland-photo-image);
-    background-repeat: no-repeat;
-    filter: saturate(0.72) brightness(0.7) contrast(0.96);
-  }
-
-  .garland-photo-rail__image {
-    background-size: auto 100%;
-  }
-
-  .garland-photo-rail-left .garland-photo-rail__image {
-    background-position: left top;
-  }
-
-  .garland-photo-rail-right .garland-photo-rail__image {
-    background-position: right top;
+    width: 100%;
+    height: auto;
+    filter:
+      saturate(0.7)
+      brightness(0.62)
+      contrast(0.96)
+      drop-shadow(0 10px 22px rgba(0, 0, 0, 0.18));
   }
 
   .garland-real {
@@ -932,11 +896,18 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
       inset: 2px;
     }
 
-    .garland-photo-rail {
-      top: 20px;
-      bottom: 20px;
-      width: 18px;
-      opacity: calc(0.48 - 0.08 * var(--garland-retract-progress));
+    .garland-photo-hanger {
+      top: calc(var(--header-height, 64px) + 34px);
+      width: clamp(74px, 12vw, 102px);
+      opacity: calc(0.38 - 0.06 * var(--garland-retract-progress));
+    }
+
+    .garland-photo-hanger-left {
+      left: -30px;
+    }
+
+    .garland-photo-hanger-right {
+      right: -30px;
     }
 
     .garland-real {
@@ -1017,8 +988,7 @@ const headerBandTendrils = Array.from({ length: 4 }, (_, i) => ({
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .garland-photo-rail__inner,
-    .garland-photo-band__inner,
+    .garland-photo-hanger,
     .header-vine-cluster__leaf,
     .header-vine-band__inner,
     .leaf-track-left,
