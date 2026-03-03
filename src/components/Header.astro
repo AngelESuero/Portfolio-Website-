@@ -2,6 +2,18 @@
 import profile from '../data/profile';
 import ViewSettings from './ViewSettings.astro';
 
+const ACCENT_SWATCHES: Record<string, string> = {
+  yellow: '#A79A62',
+  blue: '#6D8488',
+  orange: '#9B7653',
+  red: '#8B5952',
+  white: '#C3BCA9',
+  black: '#49433E',
+  violet: '#7D7688',
+  indigo: '#5F6C7A'
+};
+const getAccentSwatch = (value?: string) => ACCENT_SWATCHES[String(value || '').trim().toLowerCase()] || ACCENT_SWATCHES.blue;
+
 const nav = [
   { label: 'Home', href: '/', color: 'white', tone: 'presence' },
   { label: 'About', href: '/about', color: 'blue', tone: 'clarity' },
@@ -33,6 +45,7 @@ const isActive = (href: string) => {
         <a
           href={item.href}
           class="header-link text-sm no-underline"
+          style={`--link-accent:${getAccentSwatch(item.color)}`}
           {...(item.color ? { 'data-color': item.color } : {})}
           {...(item.tone ? { 'data-tone': item.tone } : {})}
           {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
@@ -64,6 +77,7 @@ const isActive = (href: string) => {
         <a
           href={item.href}
           class="header-link mobile-nav-link no-underline"
+          style={`--link-accent:${getAccentSwatch(item.color)}`}
           {...(item.color ? { 'data-color': item.color } : {})}
           {...(item.tone ? { 'data-tone': item.tone } : {})}
           {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}

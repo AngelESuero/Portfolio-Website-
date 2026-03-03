@@ -60,6 +60,17 @@ interface AIAccountabilityHomeSection extends BaseHomeSection {
 }
 
 type HomeSection = EmbedHomeSection | AIAccountabilityHomeSection;
+const ACCENT_SWATCHES: Record<AccentColorKey, string> = {
+  yellow: '#A79A62',
+  blue: '#6D8488',
+  orange: '#9B7653',
+  red: '#8B5952',
+  white: '#C3BCA9',
+  black: '#49433E',
+  violet: '#7D7688',
+  indigo: '#5F6C7A'
+};
+const getAccentSwatch = (value: AccentColorKey) => ACCENT_SWATCHES[value] || ACCENT_SWATCHES.blue;
 
 const homeSections: HomeSection[] = [
   {
@@ -292,6 +303,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
           <button
             type="button"
             role="tab"
+            style={`--section-accent:${getAccentSwatch(section.color)}`}
             data-section-tab={section.id}
             data-color={section.color}
             data-tone={section.tone}
@@ -314,6 +326,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
         {homeSections.map((section, index) => (
           <div
             class:list={['section-panel', index === 0 && 'is-active']}
+            style={`--section-accent:${getAccentSwatch(section.color)}`}
             data-section-panel={section.id}
             role="tabpanel"
             aria-label={`${section.label} spotlight`}
@@ -765,13 +778,12 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
     justify-content: center;
     min-height: 42px;
     padding: 0.2rem 0.72rem 0.44rem;
-    border: 0;
+    border: 1px solid color-mix(in srgb, var(--section-accent, var(--tone-accent)) 22%, transparent);
     border-radius: 999px;
-    background: transparent;
-    box-shadow: none;
+    background: color-mix(in oklab, var(--section-accent, var(--tone-accent)) 7%, transparent);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--section-accent, var(--tone-accent)) 10%, transparent);
     backdrop-filter: none;
-    background: color-mix(in oklab, var(--tone-accent) 0%, transparent);
-    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--section-accent, var(--tone-accent)) 22%);
     font-size: 0.875rem;
     line-height: 1.15;
     cursor: pointer;
@@ -790,7 +802,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
     height: 1px;
     transform: scaleX(0);
     transform-origin: left center;
-    background: color-mix(in srgb, var(--tone-accent) 82%, #fff 18%);
+    background: color-mix(in srgb, var(--section-accent, var(--tone-accent)) 82%, #fff 18%);
     opacity: 0.8;
     transition:
       transform var(--motion-fast) var(--ease-emphasized),
@@ -800,8 +812,9 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
   .section-tab:hover,
   .section-tab:focus-visible,
   .section-tab.is-active {
-    color: var(--tone-accent-glow);
-    background: color-mix(in srgb, var(--tone-accent) 16%, transparent);
+    color: color-mix(in srgb, var(--section-accent, var(--tone-accent-glow)) 84%, white 16%);
+    border-color: color-mix(in srgb, var(--section-accent, var(--tone-accent)) 42%, transparent);
+    background: color-mix(in srgb, var(--section-accent, var(--tone-accent)) 18%, transparent);
     transform: translateY(-1px);
   }
 
@@ -819,6 +832,15 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
   .section-panel {
     display: none;
     overflow-x: visible;
+    padding-top: 0.55rem;
+    border-top: 1px solid color-mix(in srgb, var(--section-accent, var(--tone-accent)) 22%, transparent);
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--section-accent, var(--tone-accent)) 8%, transparent),
+        transparent 24%
+      );
+    border-radius: 1rem;
   }
 
   .section-panel.is-active {

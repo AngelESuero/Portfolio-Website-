@@ -352,6 +352,18 @@ html[data-cursor-idle='false'] {
   backdrop-filter: blur(12px) saturate(1.02);
 }
 
+.header-peek-sensor {
+  position: fixed;
+  inset: 0 0 auto;
+  height: 2rem;
+  z-index: 49;
+  pointer-events: none;
+}
+
+body[data-header-mode='peek'] .header-peek-sensor {
+  pointer-events: auto;
+}
+
 .site-header {
   background:
     linear-gradient(180deg, rgba(6, 10, 17, 0.92), rgba(6, 10, 17, 0.8)),
@@ -368,16 +380,17 @@ html[data-cursor-idle='false'] {
 
 body[data-header-mode='peek'] .site-header {
   margin-bottom: calc(var(--site-header-size, 64px) * -1);
+  will-change: transform, opacity, filter;
   transition:
-    opacity 200ms var(--ease-standard),
-    transform 200ms var(--ease-emphasized),
-    filter 180ms var(--ease-standard);
+    opacity 220ms var(--ease-standard),
+    transform 240ms var(--ease-emphasized),
+    filter 220ms var(--ease-standard);
 }
 
 body[data-header-mode='peek'][data-header-reveal='hidden'] .site-header {
   opacity: 0;
-  transform: translateY(calc(-1 * (var(--site-header-size, 64px) + 0.45rem))) scale(0.985);
-  filter: blur(10px);
+  transform: translateY(calc(-1 * (var(--site-header-size, 64px) + 0.2rem))) scale(0.992);
+  filter: blur(6px);
   pointer-events: none;
 }
 
@@ -458,7 +471,7 @@ html[data-scroll-optimizing='true'] button {
   min-height: 44px;
   flex-shrink: 0;
   white-space: nowrap;
-  color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+  color: color-mix(in srgb, var(--tone-text) 76%, var(--link-accent, var(--tone-accent)) 24%);
   transition:
     color var(--motion-fast) var(--ease-standard),
     text-shadow var(--motion-fast) var(--ease-standard);
@@ -476,7 +489,7 @@ html[data-scroll-optimizing='true'] button {
   transform: translateY(-50%) scale(0.9);
   background: radial-gradient(
     120% 140% at 50% 50%,
-    color-mix(in srgb, var(--tone-accent-glow) 42%, transparent),
+    color-mix(in srgb, var(--link-accent, var(--tone-accent-glow)) 42%, transparent),
     transparent 68%
   );
   filter: blur(12px);
@@ -497,7 +510,7 @@ html[data-scroll-optimizing='true'] button {
   height: 1px;
   transform: scaleX(0);
   transform-origin: left center;
-  background: color-mix(in srgb, var(--tone-accent) 82%, #fff 18%);
+  background: color-mix(in srgb, var(--link-accent, var(--tone-accent)) 82%, #fff 18%);
   opacity: 0.8;
   transition:
     transform var(--motion-fast) var(--ease-emphasized),
@@ -506,7 +519,7 @@ html[data-scroll-optimizing='true'] button {
 
 .site-header .header-link:hover,
 .site-header .header-link:focus-visible {
-  color: var(--tone-accent-glow);
+  color: color-mix(in srgb, var(--link-accent, var(--tone-accent-glow)) 82%, white 18%);
 }
 
 .site-header .header-link:hover::before,
@@ -524,7 +537,7 @@ html[data-scroll-optimizing='true'] button {
 }
 
 .site-header .header-link[aria-current='page'] {
-  color: var(--tone-accent-glow);
+  color: color-mix(in srgb, var(--link-accent, var(--tone-accent-glow)) 82%, white 18%);
 }
 
 .site-header .header-actions {

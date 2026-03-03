@@ -3,6 +3,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import EmbedCard from '../components/EmbedCard.astro';
 import { LINK_HUB_CATEGORIES, LINK_HUB_ICONS } from '../data/linkhub';
 
+const ACCENT_SWATCHES: Record<string, string> = {
+  yellow: '#A79A62',
+  blue: '#6D8488',
+  orange: '#9B7653',
+  red: '#8B5952',
+  white: '#C3BCA9',
+  black: '#49433E',
+  violet: '#7D7688',
+  indigo: '#5F6C7A'
+};
+const getAccentSwatch = (value?: string) => ACCENT_SWATCHES[String(value || '').trim().toLowerCase()] || ACCENT_SWATCHES.blue;
+
 const categoryIds = LINK_HUB_CATEGORIES.map((category) => category.id);
 const defaultItems = Object.fromEntries(
   LINK_HUB_CATEGORIES.map((category) => [category.id, category.items[0]?.id || ''])
@@ -36,6 +48,7 @@ const categoryColors = Object.fromEntries(LINK_HUB_CATEGORIES.map((category) => 
         <button
           type="button"
           role="tab"
+          style={`--hub-accent:${getAccentSwatch(category.color)}`}
           data-hub-tab={category.id}
           data-color={category.color}
           aria-selected={index === 0 ? 'true' : 'false'}
@@ -47,12 +60,18 @@ const categoryColors = Object.fromEntries(LINK_HUB_CATEGORIES.map((category) => 
     </div>
 
     {LINK_HUB_CATEGORIES.map((category, index) => (
-      <section class:list={['hub-panel', index === 0 && 'is-active']} data-hub-panel={category.id} aria-label={`${category.label} links`}>
+      <section
+        class:list={['hub-panel', index === 0 && 'is-active']}
+        style={`--hub-accent:${getAccentSwatch(category.color)}`}
+        data-hub-panel={category.id}
+        aria-label={`${category.label} links`}
+      >
         <div class="hub-subtabs" role="tablist" aria-label={`${category.label} links`}>
           {category.items.map((item, itemIndex) => (
             <button
               type="button"
               role="tab"
+              style={`--hub-accent:${getAccentSwatch(category.color)}`}
               data-hub-link-tab={item.id}
               data-hub-link-category={category.id}
               data-color={category.color}
@@ -289,11 +308,12 @@ const categoryColors = Object.fromEntries(LINK_HUB_CATEGORIES.map((category) => 
 
   .hub-tabs button,
   .hub-subtabs button {
+    border: 1px solid color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 24%, var(--line));
     border-radius: 999px;
     padding: 0.38rem 0.72rem;
     font-size: 0.8rem;
-    color: var(--tone-text);
-    background: color-mix(in srgb, var(--tone-accent) 0%, transparent);
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--hub-accent, var(--tone-accent)) 22%);
+    background: color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 7%, transparent);
     transition:
       color var(--motion-fast) var(--ease-standard),
       border-color var(--motion-fast) var(--ease-standard),
@@ -305,17 +325,17 @@ const categoryColors = Object.fromEntries(LINK_HUB_CATEGORIES.map((category) => 
   .hub-tabs button:focus-visible,
   .hub-subtabs button:hover,
   .hub-subtabs button:focus-visible {
-    border-color: color-mix(in srgb, var(--tone-accent-bright) 68%, var(--line2));
-    color: var(--tone-accent-glow);
-    background: color-mix(in srgb, var(--tone-accent) 14%, transparent);
+    border-color: color-mix(in srgb, var(--hub-accent, var(--tone-accent-bright)) 64%, var(--line2));
+    color: color-mix(in srgb, var(--hub-accent, var(--tone-accent-glow)) 82%, white 18%);
+    background: color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 16%, transparent);
     transform: translateY(-1px);
   }
 
   .hub-tabs button.is-active,
   .hub-subtabs button.is-active {
-    border-color: var(--tone-accent-bright);
-    color: var(--tone-accent-glow);
-    background: color-mix(in srgb, var(--tone-accent) 18%, transparent);
+    border-color: color-mix(in srgb, var(--hub-accent, var(--tone-accent-bright)) 72%, var(--line2));
+    color: color-mix(in srgb, var(--hub-accent, var(--tone-accent-glow)) 84%, white 16%);
+    background: color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 20%, transparent);
   }
 
   .hub-panel,
@@ -327,6 +347,18 @@ const categoryColors = Object.fromEntries(LINK_HUB_CATEGORIES.map((category) => 
   .hub-panel.is-active,
   .hub-link-panel.is-active {
     display: block;
+  }
+
+  .hub-panel.is-active {
+    padding-top: 0.4rem;
+    border-top: 1px solid color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 22%, transparent);
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 7%, transparent),
+        transparent 20%
+      );
+    border-radius: 1rem;
   }
 
   .hub-latest {

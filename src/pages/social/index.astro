@@ -3,6 +3,18 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import rooms from '../../data/rooms';
 import type { Room } from '../../data/rooms';
 
+const ACCENT_SWATCHES: Record<string, string> = {
+  yellow: '#A79A62',
+  blue: '#6D8488',
+  orange: '#9B7653',
+  red: '#8B5952',
+  white: '#C3BCA9',
+  black: '#49433E',
+  violet: '#7D7688',
+  indigo: '#5F6C7A'
+};
+const getAccentSwatch = (value?: string) => ACCENT_SWATCHES[String(value || '').trim().toLowerCase()] || ACCENT_SWATCHES.blue;
+
 const roomList = rooms as Room[];
 const isExternal = (url: string) => /^https?:\/\//i.test(url);
 ---
@@ -17,7 +29,11 @@ const isExternal = (url: string) => /^https?:\/\//i.test(url);
 
     <div class="room-grid">
       {roomList.map((room) => (
-        <article class="room-card" data-color={room.color || 'blue'}>
+        <article
+          class="room-card"
+          style={`--room-accent:${getAccentSwatch(room.color || 'blue')}`}
+          data-color={room.color || 'blue'}
+        >
           <p class="room-type">{room.room_type}</p>
           <h2>{room.title}</h2>
           <p>{room.description || 'Open room'}</p>
@@ -73,10 +89,17 @@ const isExternal = (url: string) => /^https?:\/\//i.test(url);
   }
 
   .room-card {
-    border: 1px solid var(--line);
+    border: 1px solid color-mix(in srgb, var(--room-accent, var(--tone-accent)) 26%, var(--line));
     border-radius: var(--radius);
-    background: var(--panel);
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--room-accent, var(--tone-accent)) 10%, transparent),
+        color-mix(in srgb, var(--room-accent, var(--tone-accent)) 4%, var(--panel)) 34%,
+        var(--panel)
+      );
     padding: 0.85rem;
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--room-accent, var(--tone-accent)) 12%, transparent);
   }
 
   .room-type {
@@ -84,12 +107,13 @@ const isExternal = (url: string) => /^https?:\/\//i.test(url);
     text-transform: uppercase;
     letter-spacing: 0.09em;
     font-size: 0.72rem;
-    color: var(--tone-muted);
+    color: color-mix(in srgb, var(--room-accent, var(--tone-accent)) 64%, var(--tone-muted) 36%);
   }
 
   .room-card h2 {
     margin: 0.45rem 0 0;
     font-size: 1.05rem;
+    color: color-mix(in srgb, var(--room-accent, var(--tone-accent)) 66%, var(--tone-text) 34%);
   }
 
   .room-card > p {
@@ -111,19 +135,19 @@ const isExternal = (url: string) => /^https?:\/\//i.test(url);
 
   .room-machines a:hover,
   .room-machines a:focus-visible {
-    color: var(--tone-accent-glow);
+    color: color-mix(in srgb, var(--room-accent, var(--tone-accent-glow)) 82%, white 18%);
   }
 
   .room-link {
     display: inline-flex;
     margin-top: 0.85rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 35%, transparent);
-    color: var(--tone-accent-glow);
+    border-bottom: 1px solid color-mix(in srgb, var(--room-accent, var(--tone-accent)) 45%, transparent);
+    color: color-mix(in srgb, var(--room-accent, var(--tone-accent-glow)) 82%, white 18%);
     text-decoration: none;
   }
 
   .room-link:hover,
   .room-link:focus-visible {
-    border-color: var(--tone-accent-bright);
+    border-color: color-mix(in srgb, var(--room-accent, var(--tone-accent-bright)) 72%, transparent);
   }
 </style>
