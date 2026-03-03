@@ -1045,6 +1045,10 @@ const exploreLinks = [
           const MAX_PAN_X = 110;
           const MAX_PAN_Y = 84;
           let dwellTimer = null;
+          let dwellDeadlineAt = 0;
+          let dwellMode = 'none';
+          let dwellTarget = null;
+          let dwellEngageDuration = ACTIVATE_DURATION_MS;
           let focusPinned = false;
           let focusX = window.innerWidth / 2;
           let focusY = window.innerHeight * CENTER_Y_RATIO;
@@ -1053,6 +1057,14 @@ const exploreLinks = [
             if (!dwellTimer) return;
             window.clearTimeout(dwellTimer);
             dwellTimer = null;
+          };
+
+          const resetDwellSchedule = () => {
+            clearDwellTimer();
+            dwellDeadlineAt = 0;
+            dwellMode = 'none';
+            dwellTarget = null;
+            dwellEngageDuration = ACTIVATE_DURATION_MS;
           };
 
           const setZoomDuration = (durationMs) => {
@@ -1081,7 +1093,7 @@ const exploreLinks = [
           };
 
           const setInactive = (duration = RELEASE_DURATION_MS, force = false) => {
-            clearDwellTimer();
+            resetDwellSchedule();
             if (focusPinned && !force) return;
 
             setZoomDuration(duration);
@@ -1117,34 +1129,65 @@ const exploreLinks = [
             if (!rect.width && !rect.height) return false;
 
             focusPinned = true;
-            clearDwellTimer();
+            resetDwellSchedule();
             engage(rect.left + rect.width / 2, rect.top + rect.height / 2, duration);
             return true;
+          };
+
+          const executeScheduledDwell = () => {
+            clearDwellTimer();
+            if (!dwellDeadlineAt) return;
+
+            const remainingDelay = dwellDeadlineAt - Date.now();
+            if (remainingDelay > 0) {
+              dwellTimer = window.setTimeout(executeScheduledDwell, remainingDelay);
+              return;
+            }
+
+            const mode = dwellMode;
+            const target = dwellTarget;
+            const duration = dwellEngageDuration;
+            resetDwellSchedule();
+
+            if (mode === 'focused') {
+              const activeTarget = getFocusableTarget(document.activeElement);
+              if (!activeTarget || activeTarget !== target) return;
+              syncFocusedElement(target, duration);
+              return;
+            }
+
+            if (focusPinned) return;
+            engage(focusX, focusY, duration);
+          };
+
+          const setDwellSchedule = (mode, duration, target = null, delay = DWELL_DELAY_MS) => {
+            const nextDelay = Math.max(0, Math.round(Number(delay) || 0));
+            resetDwellSchedule();
+            dwellDeadlineAt = Date.now() + nextDelay;
+            dwellMode = mode;
+            dwellTarget = target;
+            dwellEngageDuration = duration;
+
+            if (!document.hidden) {
+              dwellTimer = window.setTimeout(executeScheduledDwell, nextDelay);
+            }
           };
 
           const scheduleFocusedDwell = (node, duration = FOCUS_DURATION_MS) => {
             const target = getFocusableTarget(node);
             if (!target) return false;
 
-            clearDwellTimer();
-            dwellTimer = window.setTimeout(() => {
-              const activeTarget = getFocusableTarget(document.activeElement);
-              if (!activeTarget || activeTarget !== target) return;
-              syncFocusedElement(target, duration);
-            }, DWELL_DELAY_MS);
+            setDwellSchedule('focused', duration, target);
             return true;
           };
 
           const scheduleDwell = () => {
             if (!canTrackPointer || focusPinned || hasFocusedIntent()) return;
-            clearDwellTimer();
-            dwellTimer = window.setTimeout(() => {
-              engage(focusX, focusY, ACTIVATE_DURATION_MS);
-            }, DWELL_DELAY_MS);
+            setDwellSchedule('ambient', ACTIVATE_DURATION_MS);
           };
 
           const cancelAmbientZoom = () => {
-            clearDwellTimer();
+            resetDwellSchedule();
             if (!focusPinned && root.dataset.focusZoomActive === 'true') {
               setInactive(RELEASE_DURATION_MS);
             }
@@ -1240,9 +1283,22 @@ const exploreLinks = [
 
           document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
+              clearDwellTimer();
+              if (root.dataset.focusZoomActive === 'true') return;
+
               focusPinned = false;
-              setInactive(600, true);
+              if (!dwellDeadlineAt) {
+                dwellDeadlineAt = Date.now() + DWELL_DELAY_MS;
+              }
+              dwellMode = 'ambient';
+              dwellTarget = null;
+              dwellEngageDuration = ACTIVATE_DURATION_MS;
               return;
+            }
+
+            if (dwellDeadlineAt) {
+              executeScheduledDwell();
+              if (dwellDeadlineAt || root.dataset.focusZoomActive === 'true') return;
             }
 
             if (scheduleFocusedDwell(document.activeElement)) return;
