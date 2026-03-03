@@ -1332,59 +1332,63 @@ html[data-mode='explore'] .mode-explore {
 /* Make the section-color system read clearly at a glance instead of as a subtle tint. */
 .desktop-home .section-tab {
   position: relative;
-  padding-left: 1.45rem;
-  border-color: color-mix(in srgb, var(--section-accent, var(--tone-accent)) 64%, transparent);
+  padding-left: 1.3rem;
+  border-color: color-mix(in srgb, var(--section-accent, var(--tone-accent)) 54%, transparent);
   background:
     linear-gradient(
       180deg,
-      color-mix(in srgb, var(--section-accent, var(--tone-accent)) 38%, transparent),
-      color-mix(in srgb, var(--section-accent, var(--tone-accent)) 22%, transparent)
+      color-mix(in srgb, var(--section-accent, var(--tone-accent)) 28%, transparent),
+      color-mix(in srgb, var(--section-accent, var(--tone-accent)) 16%, transparent)
     );
-  color: color-mix(in srgb, var(--section-accent, var(--tone-accent)) 78%, white 22%);
+  color: color-mix(in srgb, var(--section-accent, var(--tone-accent)) 72%, white 28%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 0 0 1px color-mix(in srgb, var(--section-accent, var(--tone-accent)) 12%, transparent);
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 0 0 1px color-mix(in srgb, var(--section-accent, var(--tone-accent)) 8%, transparent);
 }
 
 .desktop-home .section-tab::before {
   content: '';
   position: absolute;
-  left: 0.78rem;
+  left: 0.7rem;
   top: 50%;
-  width: 0.46rem;
-  height: 0.46rem;
+  width: 0.4rem;
+  height: 0.4rem;
   border-radius: 999px;
-  transform: translateY(-62%);
-  background: color-mix(in srgb, var(--section-accent, var(--tone-accent)) 84%, white 16%);
+  transform: translateY(-56%);
+  background: color-mix(in srgb, var(--section-accent, var(--tone-accent)) 80%, white 20%);
   box-shadow: 0 0 0 1px color-mix(in srgb, black 28%, transparent);
+}
+
+.desktop-home .section-tab::after {
+  display: none;
 }
 
 .desktop-home .section-tab:hover,
 .desktop-home .section-tab:focus-visible,
 .desktop-home .section-tab.is-active {
-  border-color: color-mix(in srgb, var(--section-accent, var(--tone-accent)) 84%, transparent);
+  border-color: color-mix(in srgb, var(--section-accent, var(--tone-accent)) 72%, transparent);
   background:
     linear-gradient(
       180deg,
-      color-mix(in srgb, var(--section-accent, var(--tone-accent)) 52%, transparent),
-      color-mix(in srgb, var(--section-accent, var(--tone-accent)) 32%, transparent)
+      color-mix(in srgb, var(--section-accent, var(--tone-accent)) 40%, transparent),
+      color-mix(in srgb, var(--section-accent, var(--tone-accent)) 22%, transparent)
     );
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    0 10px 24px color-mix(in srgb, var(--section-accent, var(--tone-accent)) 16%, transparent);
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 8px 18px color-mix(in srgb, var(--section-accent, var(--tone-accent)) 10%, transparent);
 }
 
 .desktop-home .section-panel {
-  border-color: color-mix(in srgb, var(--section-accent, var(--tone-accent)) 42%, transparent);
+  border-color: color-mix(in srgb, var(--section-accent, var(--tone-accent)) 32%, transparent);
   background:
     linear-gradient(
       180deg,
-      color-mix(in srgb, var(--section-accent, var(--tone-accent)) 18%, transparent),
-      color-mix(in srgb, var(--section-accent, var(--tone-accent)) 8%, transparent) 28%,
+      color-mix(in srgb, var(--section-accent, var(--tone-accent)) 12%, transparent),
+      color-mix(in srgb, var(--section-accent, var(--tone-accent)) 5%, transparent) 24%,
       transparent 62%
     );
   box-shadow:
-    inset 5px 0 0 color-mix(in srgb, var(--section-accent, var(--tone-accent)) 82%, transparent),
+    inset 3px 0 0 color-mix(in srgb, var(--section-accent, var(--tone-accent)) 62%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
