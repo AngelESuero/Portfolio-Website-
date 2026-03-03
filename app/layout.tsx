@@ -1,12 +1,15 @@
 import "./globals.css";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { PwaRegister } from "./components/PwaRegister";
 
 export const metadata: Metadata = {
   title: "Newark Civic Circuit",
   description: "Community-powered civic input for Newark residents.",
-  manifest: "/manifest.json",
-  themeColor: "#0b0f14"
+  manifest: "/manifest.json"
+};
+
+export const viewport: Viewport = {
+  themeColor: "#54575b"
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

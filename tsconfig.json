@@ -28,11 +28,16 @@
   },
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "lib/**/*.ts",
+    "lib/**/*.tsx",
+    "tailwind.config.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".next",
+    "Portfolio-Website-"
   ]
 }

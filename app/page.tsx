@@ -147,17 +147,17 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen bg-black px-5 py-6 text-white md:px-8">
+    <main className="min-h-screen bg-[#4d4d4d] px-4 py-5 text-white sm:px-5 sm:py-6 md:px-8">
       <div className="mx-auto max-w-xl space-y-5">
-        <section className="rounded-3xl border border-white/10 bg-gradient-to-b from-[#090b16] to-black p-5">
+        <section className="rounded-3xl border border-white/10 bg-gradient-to-b from-[#53545c] to-[#4d4d4d] p-5">
           <p className="text-sm text-white/60">Select minutes</p>
-          <div className="mt-3 flex gap-2 overflow-x-auto pb-2">
+          <div className="mt-3 flex flex-wrap gap-2 pb-2 sm:flex-nowrap sm:overflow-x-auto sm:pr-1">
             {minuteChoices.map((choice) => (
               <button
                 key={choice}
                 onClick={() => setMinutes(choice)}
-                className={`min-w-16 rounded-full px-4 py-2 text-lg ${
-                  minutes === choice ? "bg-white text-black" : "bg-white/10 text-white/80"
+                className={`min-w-[4rem] rounded-full px-4 py-2 text-base sm:text-lg ${
+                  minutes === choice ? "bg-white text-[#4d4d4d]" : "bg-white/10 text-white/80"
                 }`}
               >
                 {choice}
@@ -166,24 +166,26 @@ export default function HomePage() {
           </div>
           <button
             onClick={startSession}
-            className="mt-4 w-full rounded-full bg-[#ff1a1a] px-5 py-4 text-center text-3xl font-medium tracking-tight"
+            className="mt-4 w-full rounded-full bg-[#ff5f5f] px-5 py-3.5 text-center text-2xl font-medium tracking-tight sm:py-4 sm:text-3xl"
           >
             Let&apos;s BOOM!
           </button>
           <p className="mt-3 text-sm text-white/60">{message}</p>
         </section>
 
-        <section className="rounded-3xl bg-gradient-to-r from-[#070b18] via-[#060b22] to-[#a60f1f] p-5">
+        <section className="rounded-3xl bg-gradient-to-r from-[#51545d] via-[#515464] to-[#c15762] p-5">
           <p className="text-white/60">Streak</p>
-          <div className="mt-2 flex items-end justify-between">
-            <p className="text-5xl font-semibold">{tracker.streakDays} days</p>
-            <p className="max-w-[180px] text-right text-2xl text-white/90">You&apos;ve reached a miracle moment!</p>
+          <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <p className="text-4xl font-semibold leading-none sm:text-5xl">{tracker.streakDays} days</p>
+            <p className="max-w-full text-left text-lg leading-tight text-white/90 sm:max-w-[180px] sm:text-right sm:text-2xl">
+              You&apos;ve reached a miracle moment!
+            </p>
           </div>
         </section>
 
-        <section className="rounded-3xl bg-gradient-to-r from-[#271d58] to-[#050814] p-5">
+        <section className="rounded-3xl bg-gradient-to-r from-[#68618a] to-[#50525b] p-5">
           <p className="text-white/60">Life-Hopscotch</p>
-          <p className="mt-2 text-5xl italic">How are you feeling?</p>
+          <p className="mt-2 text-3xl italic leading-tight sm:text-5xl">How are you feeling?</p>
           <div className="mt-4 flex flex-wrap gap-2">
             {moodChoices.map((mood) => (
               <button
@@ -191,7 +193,7 @@ export default function HomePage() {
                 onClick={() => setTracker((current) => ({ ...current, moodToday: mood }))}
                 className={`rounded-full border px-4 py-2 text-sm ${
                   tracker.moodToday === mood
-                    ? "border-white bg-white text-black"
+                    ? "border-white bg-white text-[#4d4d4d]"
                     : "border-white/30 bg-white/10 text-white"
                 }`}
               >
@@ -204,31 +206,31 @@ export default function HomePage() {
           </p>
         </section>
 
-        <section className="rounded-3xl bg-[#080d1f] p-5">
-          <p className="text-2xl text-white/60">Time meditated</p>
-          <p className="mt-2 text-6xl font-semibold">
+        <section className="rounded-3xl bg-[#525662] p-5">
+          <p className="text-xl text-white/60 sm:text-2xl">Time meditated</p>
+          <p className="mt-2 text-5xl font-semibold leading-none sm:text-6xl">
             {tracker.totalMinutes}
             <span className="ml-2 text-white/50">mins</span>
           </p>
-          <div className="mt-5 flex items-center justify-between gap-3">
+          <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
             <div className="h-3 w-full rounded-full bg-white/15">
-              <div className="h-full rounded-full bg-blue-500" style={{ width: `${levelProgress}%` }} />
+              <div className="h-full rounded-full bg-[#76a8f9]" style={{ width: `${levelProgress}%` }} />
             </div>
-            <p className="min-w-fit text-xl text-white/70">Level {level}</p>
+            <p className="min-w-fit self-end text-lg text-white/70 sm:self-auto sm:text-xl">Level {level}</p>
           </div>
           <p className="mt-3 text-sm text-white/50">Sessions completed: {tracker.sessions}</p>
         </section>
 
-        <section className="rounded-3xl bg-gradient-to-r from-[#0a1126] to-[#0d0a1a] p-5">
-          <div className="flex items-end justify-between gap-4">
-            <p className="text-2xl text-white/80">Timeline</p>
-            <div className="flex gap-2">
+        <section className="rounded-3xl bg-gradient-to-r from-[#545867] to-[#56545f] p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <p className="text-xl text-white/80 sm:text-2xl">Timeline</p>
+            <div className="flex flex-wrap gap-2">
               {timelineRanges.map((range) => (
                 <button
                   key={range}
                   onClick={() => setTimelineRange(range)}
                   className={`rounded-full px-3 py-1 text-xs ${
-                    timelineRange === range ? "bg-white text-black" : "bg-white/10 text-white/70"
+                    timelineRange === range ? "bg-white text-[#4d4d4d]" : "bg-white/10 text-white/70"
                   }`}
                 >
                   {range}d
@@ -237,15 +239,15 @@ export default function HomePage() {
             </div>
           </div>
           <div className="mt-5">
-            <svg viewBox={`0 0 ${timelineChart.width} ${timelineChart.height}`} className="h-44 w-full overflow-visible">
+            <svg viewBox={`0 0 ${timelineChart.width} ${timelineChart.height}`} className="h-40 w-full overflow-visible sm:h-44">
               <defs>
                 <linearGradient id="lineGlow" x1="0%" x2="100%" y1="0%" y2="0%">
-                  <stop offset="0%" stopColor="#ff4d4d" />
-                  <stop offset="100%" stopColor="#ff9f6e" />
+                  <stop offset="0%" stopColor="#ff8282" />
+                  <stop offset="100%" stopColor="#ffbc9a" />
                 </linearGradient>
                 <linearGradient id="areaGlow" x1="0%" x2="0%" y1="0%" y2="100%">
-                  <stop offset="0%" stopColor="#ff5b5b" stopOpacity="0.3" />
-                  <stop offset="100%" stopColor="#ff5b5b" stopOpacity="0" />
+                  <stop offset="0%" stopColor="#ff8c8c" stopOpacity="0.3" />
+                  <stop offset="100%" stopColor="#ff8c8c" stopOpacity="0" />
                 </linearGradient>
               </defs>
               <line
@@ -279,7 +281,7 @@ export default function HomePage() {
                 const isToday = coord.day === todayKey();
                 return (
                   <g key={coord.day}>
-                    <circle cx={coord.x} cy={coord.y} r={isToday ? 5.5 : 4} fill={isToday ? "#ffffff" : "#ff6d6d"} />
+                    <circle cx={coord.x} cy={coord.y} r={isToday ? 5.5 : 4} fill={isToday ? "#ffffff" : "#ff9999"} />
                     <title>{`${coord.day}: ${coord.minutes} mins`}</title>
                   </g>
                 );
@@ -295,10 +297,17 @@ export default function HomePage() {
               })}
             </svg>
           </div>
-          <p className="mt-2 text-sm text-white/60">
-            {timelineRange} day total: <span className="text-white">{timeline.total} mins</span> | Peak day:{" "}
-            <span className="text-white">{timeline.peak} mins</span> | Avg: <span className="text-white">{timeline.average} mins/day</span>
-          </p>
+          <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-sm text-white/60">
+            <span>
+              {timelineRange} day total: <span className="text-white">{timeline.total} mins</span>
+            </span>
+            <span>
+              Peak day: <span className="text-white">{timeline.peak} mins</span>
+            </span>
+            <span>
+              Avg: <span className="text-white">{timeline.average} mins/day</span>
+            </span>
+          </div>
         </section>
       </div>
     </main>

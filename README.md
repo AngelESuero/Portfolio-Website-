@@ -8,22 +8,25 @@ Newark-first civic engagement MVP for community input, prioritization, and non-b
 - Basic PWA (manifest + service worker)
 
 ## Local Setup
-1. Install dependencies
+1. Use Node 20
+   - `nvm use` (uses `.nvmrc`) or install `20.20.0`
+   - This project is pinned to Node 20 because the current Next.js/SWC setup is unstable on Node 22.
+2. Install dependencies
    - `npm install`
-2. Create a Supabase project
+3. Create a Supabase project
    - Enable Email auth (Magic Link) in Supabase Auth.
    - Set Site URL to `http://localhost:3000`.
-3. Run migrations
+4. Run migrations
    - Use Supabase SQL editor or CLI and run the SQL files in `supabase/migrations` in order.
    - Create the storage bucket:
      - Run: `insert into storage.buckets (id, name, public) values ('issue-images', 'issue-images', true);`
-4. Configure environment variables
+5. Configure environment variables
    - Create `.env.local` with:
      - `NEXT_PUBLIC_SUPABASE_URL=...`
      - `NEXT_PUBLIC_SUPABASE_ANON_KEY=...`
      - `SUPABASE_SERVICE_ROLE_KEY=...`
      - `ADMIN_USER_IDS=comma,separated,uuid,list`
-5. Start the dev server
+6. Start the dev server
    - `npm run dev`
 
 ## MVP Behavior
