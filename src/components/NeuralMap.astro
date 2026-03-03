@@ -1,698 +1,956 @@
 ---
-import { MAP_GROUP_ORDER, MAP_LINKS, MAP_NODES } from '../data/map-topology';
+import { MAP_CONCEPT_BRIDGES, MAP_REGIONS, MAP_ROUTES, MAP_WORLD } from '../data/map-topology';
 
-const edgeTypes = ['creates', 'supports', 'feeds_back', 'grounds'] as const;
-const edgeTypeLabels: Record<(typeof edgeTypes)[number], string> = {
-  creates: 'creates',
-  supports: 'supports',
-  feeds_back: 'feeds_back',
-  grounds: 'grounds'
+type FlatRegion = {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rx: number;
+  innerInset: number;
+  innerRx: number;
+  fill: string;
+  glow: string;
+  summary: string;
 };
+
+type FlatDistrict = {
+  id: string;
+  regionId: string;
+  regionLabel: string;
+  label: string;
+  x: number;
+  y: number;
+  radius: number;
+  coreRadius: number;
+  description: string;
+};
+
+type FlatConcept = {
+  id: string;
+  regionId: string;
+  regionLabel: string;
+  districtId: string;
+  districtLabel: string;
+  label: string;
+  x: number;
+  y: number;
+  detail: string;
+  links: string[];
+};
+
+type FlatPath = {
+  id: string;
+  d: string;
+  tone: string;
+  source: string;
+  target: string;
+  sourceRegion: string;
+  targetRegion: string;
+  sourceDistrict: string;
+  targetDistrict: string;
+  weight?: number;
+};
+
+type FlatDistrictSpine = {
+  id: string;
+  d: string;
+  regionId: string;
+};
+
+const WORLD_WIDTH = MAP_WORLD.width;
+const WORLD_HEIGHT = MAP_WORLD.height;
+
+const curvePath = (x1: number, y1: number, x2: number, y2: number, bend = 0.16) => {
+  const mx = (x1 + x2) / 2;
+  const my = (y1 + y2) / 2;
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const length = Math.max(1, Math.hypot(dx, dy));
+  const nx = -dy / length;
+  const ny = dx / length;
+  const direction = x1 <= x2 ? 1 : -1;
+  const curve = length * bend * direction;
+  const cx = mx + nx * curve;
+  const cy = my + ny * curve;
+
+  return `M ${x1.toFixed(2)} ${y1.toFixed(2)} Q ${cx.toFixed(2)} ${cy.toFixed(2)} ${x2.toFixed(2)} ${y2.toFixed(2)}`;
+};
+
+const flatRegions: FlatRegion[] = MAP_REGIONS.map((region) => {
+  const rx = Math.round(Math.min(region.width, region.height) * 0.24);
+  const innerInset = 20;
+
+  return {
+    id: region.id,
+    label: region.label,
+    x: region.x,
+    y: region.y,
+    width: region.width,
+    height: region.height,
+    rx,
+    innerInset,
+    innerRx: Math.max(24, rx - 12),
+    fill: region.fill,
+    glow: region.glow,
+    summary: region.summary
+  };
+});
+
+const regionLookup = new Map(flatRegions.map((region) => [region.id, region]));
+
+const flatDistricts: FlatDistrict[] = [];
+const flatConcepts: FlatConcept[] = [];
+const districtSpines: FlatDistrictSpine[] = [];
+const conceptLookup = new Map<string, FlatConcept>();
+
+MAP_REGIONS.forEach((region) => {
+  const districtCenters: Array<{ id: string; x: number; y: number }> = [];
+
+  region.districts.forEach((district) => {
+    const districtX = region.x + district.x;
+    const districtY = region.y + district.y;
+
+    flatDistricts.push({
+      id: district.id,
+      regionId: region.id,
+      regionLabel: region.label,
+      label: district.label,
+      x: districtX,
+      y: districtY,
+      radius: district.radius,
+      coreRadius: Math.max(18, Math.round(district.radius * 0.24)),
+      description: district.description
+    });
+
+    districtCenters.push({ id: district.id, x: districtX, y: districtY });
+
+    district.concepts.forEach((concept) => {
+      const flatConcept: FlatConcept = {
+        id: concept.id,
+        regionId: region.id,
+        regionLabel: region.label,
+        districtId: district.id,
+        districtLabel: district.label,
+        label: concept.label,
+        x: districtX + concept.x,
+        y: districtY + concept.y,
+        detail: concept.detail,
+        links: concept.links
+      };
+
+      flatConcepts.push(flatConcept);
+      conceptLookup.set(concept.id, flatConcept);
+    });
+  });
+
+  for (let index = 1; index < districtCenters.length; index += 1) {
+    const previous = districtCenters[index - 1];
+    const current = districtCenters[index];
+
+    if (!previous || !current) continue;
+
+    districtSpines.push({
+      id: `${region.id}__${previous.id}__${current.id}`,
+      d: curvePath(previous.x, previous.y, current.x, current.y, 0.12),
+      regionId: region.id
+    });
+  }
+});
+
+const conceptLinks: FlatPath[] = [];
+const conceptLinkKeys = new Set<string>();
+
+flatConcepts.forEach((concept) => {
+  concept.links.forEach((targetId) => {
+    const target = conceptLookup.get(targetId);
+    if (!target) return;
+
+    const key = [concept.id, targetId].sort().join('__');
+    if (conceptLinkKeys.has(key)) return;
+
+    conceptLinkKeys.add(key);
+    conceptLinks.push({
+      id: key,
+      d: curvePath(concept.x, concept.y, target.x, target.y, 0.14),
+      tone: 'local',
+      source: concept.id,
+      target: target.id,
+      sourceRegion: concept.regionId,
+      targetRegion: target.regionId,
+      sourceDistrict: concept.districtId,
+      targetDistrict: target.districtId
+    });
+  });
+});
+
+const routePaths = MAP_ROUTES.flatMap((route) => {
+  const source = regionLookup.get(route.source);
+  const target = regionLookup.get(route.target);
+  if (!source || !target) return [];
+
+  return [
+    {
+      id: `${route.source}__${route.target}`,
+      d: curvePath(source.x, source.y, target.x, target.y, 0.2),
+      tone: route.tone,
+      source: route.source,
+      target: route.target,
+      sourceRegion: route.source,
+      targetRegion: route.target,
+      sourceDistrict: '',
+      targetDistrict: '',
+      weight: route.weight ?? 0.5
+    } satisfies FlatPath
+  ];
+});
+
+const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
+  const source = conceptLookup.get(bridge.source);
+  const target = conceptLookup.get(bridge.target);
+  if (!source || !target) return [];
+
+  return [
+    {
+      id: `${bridge.source}__${bridge.target}`,
+      d: curvePath(source.x, source.y, target.x, target.y, 0.22),
+      tone: bridge.tone,
+      source: bridge.source,
+      target: bridge.target,
+      sourceRegion: source.regionId,
+      targetRegion: target.regionId,
+      sourceDistrict: source.districtId,
+      targetDistrict: target.districtId
+    } satisfies FlatPath
+  ];
+});
 ---
 
-<section class="rounded-2xl border border-zinc-300 bg-white/70 p-4 dark:border-zinc-700 dark:bg-zinc-900/60">
-  <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
-    <p class="text-sm text-zinc-600 dark:text-zinc-300">Drag to pan · Scroll to zoom · Click node to focus · Double-click node to expand neighbors.</p>
+<section data-neural-atlas class="rounded-2xl border border-zinc-300 bg-white/70 p-4 dark:border-zinc-700 dark:bg-zinc-900/60">
+  <div class="mb-4 flex flex-wrap items-start justify-between gap-4">
+    <p class="max-w-3xl text-sm text-zinc-600 dark:text-zinc-300">
+      Built like a concept atlas: zoom out for the main routes, zoom in to reveal districts, then dive deeper to inspect the
+      concept strands inside each area.
+    </p>
     <div class="map-controls">
-      <div class="map-mode" role="group" aria-label="Map mode">
-        <button id="map-mode-network" class="map-mode__btn is-active" type="button" aria-pressed="true">Network</button>
-        <button id="map-mode-spiral" class="map-mode__btn" type="button" aria-pressed="false">Spiral Up</button>
+      <div class="map-readout">
+        <span class="map-readout__label" data-map-tier>World view</span>
+        <span class="map-readout__value" data-map-zoom>90%</span>
       </div>
-      <button id="reset-map" class="rounded border border-zinc-400 px-3 py-1 text-sm hover:border-accent dark:border-zinc-600" type="button">Reset view</button>
+      <button
+        id="map-overview"
+        class="rounded border border-zinc-400 px-3 py-1 text-sm hover:border-accent dark:border-zinc-600"
+        type="button"
+      >
+        Overview
+      </button>
     </div>
   </div>
 
-  <div class="map-wrap relative h-[560px] overflow-hidden rounded-xl border border-zinc-300 bg-paper dark:border-zinc-700 dark:bg-zinc-950" tabindex="0" aria-label="Interactive neural map">
-    <svg id="neural-svg" viewBox="0 0 960 560" class="h-full w-full">
+  <div class="map-wrap relative h-[560px] overflow-hidden rounded-xl border border-zinc-300 bg-paper dark:border-zinc-700 dark:bg-zinc-950" tabindex="0">
+    <svg
+      id="atlas-svg"
+      viewBox={`0 0 ${WORLD_WIDTH} ${WORLD_HEIGHT}`}
+      class="h-full w-full"
+      aria-label="Interactive concept atlas"
+    >
       <defs>
-        <marker id="map-arrowhead" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" orient="auto" markerUnits="strokeWidth">
-          <path d="M0,0 L8,4 L0,8 z" class="map-arrowhead" />
-        </marker>
-        <marker id="map-spiral-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto" markerUnits="strokeWidth">
-          <path d="M0,0 L8,4 L0,8 z" class="map-spiral-arrow" />
-        </marker>
+        <pattern id="atlas-grid" width="140" height="140" patternUnits="userSpaceOnUse">
+          <path d="M 140 0 L 0 0 0 140" class="atlas-grid__line"></path>
+          <circle cx="0" cy="0" r="2.5" class="atlas-grid__dot"></circle>
+          <circle cx="70" cy="70" r="1.8" class="atlas-grid__dot atlas-grid__dot--soft"></circle>
+        </pattern>
+        <radialGradient id="atlas-vignette" cx="50%" cy="45%" r="68%">
+          <stop offset="0%" stop-color="#0b1627" stop-opacity="0"></stop>
+          <stop offset="72%" stop-color="#0b1627" stop-opacity="0.08"></stop>
+          <stop offset="100%" stop-color="#0b1627" stop-opacity="0.36"></stop>
+        </radialGradient>
+        <filter id="atlas-soft-blur">
+          <feGaussianBlur stdDeviation="14"></feGaussianBlur>
+        </filter>
       </defs>
 
       <g id="viewport">
-        <g id="guide-layer">
-          <path id="spiral-guide" class="spiral-guide" marker-end="url(#map-spiral-arrow)"></path>
-        </g>
+        <rect x="0" y="0" width={WORLD_WIDTH} height={WORLD_HEIGHT} class="atlas-ocean"></rect>
+        <rect x="0" y="0" width={WORLD_WIDTH} height={WORLD_HEIGHT} fill="url(#atlas-grid)" class="atlas-grid"></rect>
+        <rect x="0" y="0" width={WORLD_WIDTH} height={WORLD_HEIGHT} fill="url(#atlas-vignette)"></rect>
 
-        <g id="edge-layer">
-          {MAP_LINKS.map((link) => (
-            <line
-              data-edge={`${link.source}__${link.target}`}
-              data-source={link.source}
-              data-target={link.target}
-              data-type={link.type}
-              data-weight={String(link.weight ?? 0.5)}
-              data-directed={link.directed ? 'true' : 'false'}
-              x1="0"
-              y1="0"
-              x2="0"
-              y2="0"
-              class="map-edge"
-            />
+        <g id="route-layer">
+          {routePaths.map((route) => (
+            <path
+              d={route.d}
+              data-route={route.id}
+              class={`atlas-route atlas-route--${route.tone}`}
+            ></path>
           ))}
         </g>
 
-        <g id="node-layer">
-          {MAP_NODES.map((node) => (
-            <g data-node={node.id} data-group={node.group} data-alt={String(node.alt ?? '')} class="map-node" tabindex="0" role="button" aria-label={`Node ${node.label}`}>
-              <circle class="map-node-halo" r="22" cx="0" cy="0"></circle>
-              <circle class="map-node-core" r="18" cx="0" cy="0"></circle>
-              <text class="map-label" x="0" y="5" text-anchor="middle">{node.label}</text>
+        <g id="region-layer">
+          {flatRegions.map((region) => (
+            <g
+              data-region={region.id}
+              class="atlas-region"
+              style={`--atlas-region-fill:${region.fill}; --atlas-region-glow:${region.glow};`}
+              tabindex="0"
+              role="button"
+              aria-label={`Zoom to ${region.label}`}
+            >
+              <rect
+                class="atlas-region__shadow"
+                x={region.x - region.width / 2 - 22}
+                y={region.y - region.height / 2 - 18}
+                width={region.width + 44}
+                height={region.height + 36}
+                rx={region.rx + 16}
+                filter="url(#atlas-soft-blur)"
+              ></rect>
+              <rect
+                class="atlas-region__plate"
+                x={region.x - region.width / 2}
+                y={region.y - region.height / 2}
+                width={region.width}
+                height={region.height}
+                rx={region.rx}
+              ></rect>
+              <rect
+                class="atlas-region__inner"
+                x={region.x - region.width / 2 + region.innerInset}
+                y={region.y - region.height / 2 + region.innerInset}
+                width={region.width - region.innerInset * 2}
+                height={region.height - region.innerInset * 2}
+                rx={region.innerRx}
+              ></rect>
+              <circle class="atlas-region__beacon" cx={region.x} cy={region.y} r="14"></circle>
+              <text class="atlas-region__label" x={region.x} y={region.y - region.height / 2 + 62} text-anchor="middle">
+                {region.label}
+              </text>
+            </g>
+          ))}
+        </g>
+
+        <g id="district-spine-layer">
+          {districtSpines.map((spine) => (
+            <path d={spine.d} data-district-spine={spine.id} class="atlas-district-spine"></path>
+          ))}
+        </g>
+
+        <g id="district-layer">
+          {flatDistricts.map((district) => (
+            <g
+              data-district={district.id}
+              class="atlas-district"
+              tabindex="0"
+              role="button"
+              aria-label={`Zoom to ${district.label}`}
+            >
+              <circle class="atlas-district__halo" cx={district.x} cy={district.y} r={district.radius + 24}></circle>
+              <circle class="atlas-district__ring" cx={district.x} cy={district.y} r={district.radius}></circle>
+              <circle class="atlas-district__core" cx={district.x} cy={district.y} r={district.coreRadius}></circle>
+              <text class="atlas-district__label" x={district.x} y={district.y - district.radius - 18} text-anchor="middle">
+                {district.label}
+              </text>
+            </g>
+          ))}
+        </g>
+
+        <g id="concept-link-layer">
+          {conceptLinks.map((link) => (
+            <path d={link.d} data-concept-link={link.id} class="atlas-concept-link"></path>
+          ))}
+        </g>
+
+        <g id="concept-bridge-layer">
+          {conceptBridgePaths.map((link) => (
+            <path
+              d={link.d}
+              data-concept-bridge={link.id}
+              class={`atlas-concept-bridge atlas-concept-bridge--${link.tone}`}
+            ></path>
+          ))}
+        </g>
+
+        <g id="concept-layer">
+          {flatConcepts.map((concept) => (
+            <g
+              data-concept={concept.id}
+              class="atlas-concept"
+              tabindex="0"
+              role="button"
+              aria-label={`Zoom to ${concept.label}`}
+            >
+              <circle class="atlas-concept__halo" cx={concept.x} cy={concept.y} r="24"></circle>
+              <circle class="atlas-concept__core" cx={concept.x} cy={concept.y} r="10"></circle>
+              <text class="atlas-concept__label" x={concept.x + 16} y={concept.y + 5}>
+                {concept.label}
+              </text>
             </g>
           ))}
         </g>
       </g>
     </svg>
 
-    <div class="map-legend" aria-label="Edge type legend">
-      <p class="map-legend__title">Edge types</p>
-      <div class="map-legend__list">
-        {edgeTypes.map((type) => (
-          <button type="button" class="map-legend__item is-active" data-edge-filter={type} aria-pressed="true">
-            <span class={`map-legend__line map-legend__line--${type}`}></span>
-            <span>{edgeTypeLabels[type]}</span>
-          </button>
-        ))}
-      </div>
+    <div class="map-hud">
+      <p class="map-hud__eyebrow" data-map-focus>All regions</p>
+      <p class="map-hud__title" data-map-title>Creative atlas</p>
+      <p class="map-hud__detail" data-map-detail>
+        Zoom toward a region to reveal its districts, then keep going to inspect the concept strands inside it.
+      </p>
     </div>
 
-    <div id="map-tooltip" class="map-tooltip" hidden>
-      <p class="map-tooltip__label" data-tip-label></p>
-      <p data-tip-group></p>
-      <p data-tip-degree></p>
-      <p data-tip-alt></p>
+    <div class="map-key" aria-label="Map guide">
+      <p class="map-key__title">Zoom Guide</p>
+      <p>Overview: regional routes</p>
+      <p>Closer: district lanes</p>
+      <p>Deep: concept bridges</p>
     </div>
   </div>
 </section>
 
-<script is:inline define:vars={{ nodesData: MAP_NODES, linksData: MAP_LINKS, groupOrder: MAP_GROUP_ORDER }}>
+<script
+  is:inline
+  define:vars={{
+    worldData: MAP_WORLD,
+    regionsData: flatRegions,
+    districtsData: flatDistricts,
+    conceptsData: flatConcepts,
+    routesData: routePaths,
+    districtSpinesData: districtSpines,
+    conceptLinksData: conceptLinks,
+    conceptBridgeData: conceptBridgePaths
+  }}
+>
   (() => {
-    const wrap = document.querySelector('.map-wrap');
-    const viewport = document.getElementById('viewport');
-    const resetBtn = document.getElementById('reset-map');
-    const modeNetworkBtn = document.getElementById('map-mode-network');
-    const modeSpiralBtn = document.getElementById('map-mode-spiral');
-    const spiralGuide = document.getElementById('spiral-guide');
-    const tooltip = document.getElementById('map-tooltip');
+    const root = document.querySelector('[data-neural-atlas]');
+    const wrap = root?.querySelector('.map-wrap');
+    const svg = root?.querySelector('#atlas-svg');
+    const viewport = root?.querySelector('#viewport');
+    const overviewBtn = root?.querySelector('#map-overview');
+    const tierEl = root?.querySelector('[data-map-tier]');
+    const zoomEl = root?.querySelector('[data-map-zoom]');
+    const focusEl = root?.querySelector('[data-map-focus]');
+    const titleEl = root?.querySelector('[data-map-title]');
+    const detailEl = root?.querySelector('[data-map-detail]');
 
-    if (!wrap || !viewport || !tooltip) return;
+    if (!root || !wrap || !svg || !viewport || !tierEl || !zoomEl || !focusEl || !titleEl || !detailEl) return;
 
-    const nodeEls = Array.from(document.querySelectorAll('[data-node]'));
-    const edgeEls = Array.from(document.querySelectorAll('[data-edge]'));
-    const nodeElsById = new Map(
-      nodeEls
-        .map((el) => [el.getAttribute('data-node') || '', el])
-        .filter(([id]) => Boolean(id))
-    );
-    const edgeElsById = new Map(
-      edgeEls
-        .map((el) => [el.getAttribute('data-edge') || '', el])
-        .filter(([id]) => Boolean(id))
-    );
-    const legendBtns = Array.from(document.querySelectorAll('[data-edge-filter]'));
+    const regionEls = Array.from(root.querySelectorAll('[data-region]'));
+    const districtEls = Array.from(root.querySelectorAll('[data-district]'));
+    const conceptEls = Array.from(root.querySelectorAll('[data-concept]'));
+    const routeEls = Array.from(root.querySelectorAll('[data-route]'));
+    const districtSpineEls = Array.from(root.querySelectorAll('[data-district-spine]'));
+    const conceptLinkEls = Array.from(root.querySelectorAll('[data-concept-link]'));
+    const conceptBridgeEls = Array.from(root.querySelectorAll('[data-concept-bridge]'));
 
-    const WIDTH = 960;
-    const HEIGHT = 560;
-    const CENTER_X = WIDTH / 2;
-    const CENTER_Y = HEIGHT / 2;
-    const NODE_RADIUS = 18;
-    const PADDING = 18;
-    const MAX_ZOOM = 2.35;
-    const MIN_ZOOM = 0.62;
+    const regionById = new Map(regionsData.map((region) => [region.id, region]));
+    const districtById = new Map(districtsData.map((district) => [district.id, district]));
+    const conceptById = new Map(conceptsData.map((concept) => [concept.id, concept]));
+    const routeById = new Map(routesData.map((route) => [route.id, route]));
+    const districtSpineById = new Map(districtSpinesData.map((spine) => [spine.id, spine]));
+    const conceptLinkById = new Map(conceptLinksData.map((link) => [link.id, link]));
+    const conceptBridgeById = new Map(conceptBridgeData.map((bridge) => [bridge.id, bridge]));
 
-    const EDGE_STYLE = {
-      creates: { dash: '', color: 'color-mix(in srgb, var(--tone-accent) 76%, var(--tone-line) 24%)' },
-      supports: { dash: '9 6', color: 'color-mix(in srgb, var(--tone-sky) 74%, var(--tone-line) 26%)' },
-      feeds_back: { dash: '2 7', color: 'color-mix(in srgb, var(--tone-sky-bright) 70%, var(--tone-line) 30%)' },
-      grounds: { dash: '11 5 2 5', color: 'color-mix(in srgb, var(--tone-accent-bright) 62%, var(--tone-line) 38%)' }
+    const MIN_SCALE = 0.9;
+    const MAX_SCALE = 3.4;
+
+    const conceptNeighbors = new Map();
+    const connectConcepts = (a, b) => {
+      if (!conceptNeighbors.has(a)) conceptNeighbors.set(a, new Set());
+      if (!conceptNeighbors.has(b)) conceptNeighbors.set(b, new Set());
+      conceptNeighbors.get(a).add(b);
+      conceptNeighbors.get(b).add(a);
     };
 
-    const STORAGE_KEY = 'neural_map_mode';
-
-    const hashToUnit = (value) => {
-      let h = 2166136261;
-      for (let i = 0; i < value.length; i += 1) {
-        h ^= value.charCodeAt(i);
-        h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
-      }
-      return (h >>> 0) / 4294967295;
-    };
-
-    const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
-
-    const nodeById = new Map();
-    const degrees = new Map();
-    linksData.forEach((link) => {
-      degrees.set(link.source, (degrees.get(link.source) || 0) + 1);
-      degrees.set(link.target, (degrees.get(link.target) || 0) + 1);
-    });
-
-    const degreeValues = nodesData.map((n) => degrees.get(n.id) || 0);
-    const minDegree = Math.min(...degreeValues);
-    const maxDegree = Math.max(...degreeValues);
-    const degreeRange = Math.max(1, maxDegree - minDegree);
-
-    const groups = new Map();
-    nodesData.forEach((node) => {
-      const list = groups.get(node.group) || [];
-      list.push(node);
-      groups.set(node.group, list);
-    });
-    groups.forEach((list) => list.sort((a, b) => a.id.localeCompare(b.id)));
-
-    const runtimeNodes = nodesData.map((node, index) => {
-      const list = groups.get(node.group) || [];
-      const groupIndex = Math.max(0, groupOrder.indexOf(node.group));
-      const withinIndex = Math.max(0, list.findIndex((x) => x.id === node.id));
-      const jitter = hashToUnit(`${node.group}:${node.id}`) * 0.26;
-      const t = 0.68 + groupIndex * 0.98 + withinIndex * 0.53 + jitter;
-      const derivedAlt = clamp(((degrees.get(node.id) || 0) - minDegree) / degreeRange, 0, 1);
-      const alt = typeof node.alt === 'number' ? clamp(node.alt, 0, 1) : derivedAlt;
-      const seedAngle = hashToUnit(`${node.id}:seed`) * Math.PI * 2;
-      const seedRadius = 42 + hashToUnit(`${node.id}:radius`) * 26;
-      const x = CENTER_X + Math.cos(seedAngle) * seedRadius + (index - nodesData.length / 2) * 4;
-      const y = CENTER_Y + Math.sin(seedAngle) * seedRadius;
-
-      const state = {
-        ...node,
-        degree: degrees.get(node.id) || 0,
-        alt,
-        t,
-        x,
-        y,
-        vx: 0,
-        vy: 0,
-        fx: x,
-        fy: y
-      };
-      nodeById.set(node.id, state);
-      return state;
-    });
-
-    const runtimeLinks = linksData.map((link) => ({
-      source: link.source,
-      target: link.target,
-      type: link.type,
-      weight: typeof link.weight === 'number' ? clamp(link.weight, 0, 1) : 0.5,
-      directed: Boolean(link.directed)
-    }));
-
-    const linksByNode = new Map();
-    runtimeLinks.forEach((link) => {
-      linksByNode.set(link.source, [...(linksByNode.get(link.source) || []), link.target]);
-      linksByNode.set(link.target, [...(linksByNode.get(link.target) || []), link.source]);
-    });
+    conceptLinksData.forEach((link) => connectConcepts(link.source, link.target));
+    conceptBridgeData.forEach((link) => connectConcepts(link.source, link.target));
 
     const state = {
-      mode: localStorage.getItem(STORAGE_KEY) === 'spiral' ? 'spiral' : 'network',
+      scale: MIN_SCALE,
       tx: 0,
       ty: 0,
-      scale: 1,
-      draggingViewport: false,
-      dragPointerId: null,
+      dragging: false,
+      pointerId: null,
       startX: 0,
       startY: 0,
-      focusedId: null,
-      expanded: false,
-      hoveredId: null,
-      hiddenEdgeTypes: new Set(),
-      alpha: 0,
-      raf: null,
-      suppressClickId: null,
-      tooltipX: 0,
-      tooltipY: 0
+      activeRegionId: null,
+      activeDistrictId: null,
+      activeConceptId: null,
+      hoverType: null,
+      hoverId: null,
+      animationFrame: null
     };
 
-    const setTargets = () => {
-      if (state.mode === 'spiral') {
-        const a = 34;
-        const b = 25;
-        const altBoost = 118;
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
-        runtimeNodes.forEach((node) => {
-          const radius = a + b * node.t + node.alt * altBoost;
-          const theta = node.t;
-          node.fx = CENTER_X + Math.cos(theta) * radius;
-          node.fy = CENTER_Y + Math.sin(theta) * radius;
-        });
-        return;
+    const normalizeTransform = (tx, ty, scale) => {
+      if (scale <= 1) {
+        return {
+          tx: (worldData.width - worldData.width * scale) / 2,
+          ty: (worldData.height - worldData.height * scale) / 2
+        };
       }
 
-      const groupCount = Math.max(1, groupOrder.length);
-      const groupCenters = new Map();
-      groupOrder.forEach((group, index) => {
-        const angle = -Math.PI / 2 + (index / groupCount) * Math.PI * 2;
-        const radius = Math.min(WIDTH, HEIGHT) * 0.28;
-        groupCenters.set(group, {
-          x: CENTER_X + Math.cos(angle) * radius,
-          y: CENTER_Y + Math.sin(angle) * radius
-        });
+      return {
+        tx: clamp(tx, worldData.width - worldData.width * scale, 0),
+        ty: clamp(ty, worldData.height - worldData.height * scale, 0)
+      };
+    };
+
+    const stopAnimation = () => {
+      if (state.animationFrame) {
+        cancelAnimationFrame(state.animationFrame);
+        state.animationFrame = null;
+      }
+    };
+
+    const tierLabel = () => {
+      if (state.scale < 1.08) return 'World view';
+      if (state.scale < 1.72) return 'Region view';
+      if (state.scale < 2.38) return 'District view';
+      return 'Concept view';
+    };
+
+    const descriptorFor = (type, id) => {
+      if (type === 'concept') {
+        const concept = conceptById.get(id);
+        if (!concept) return null;
+        return {
+          focus: `${concept.regionLabel} / ${concept.districtLabel}`,
+          title: concept.label,
+          detail: concept.detail
+        };
+      }
+
+      if (type === 'district') {
+        const district = districtById.get(id);
+        if (!district) return null;
+        return {
+          focus: `${district.regionLabel} / district`,
+          title: district.label,
+          detail: district.description
+        };
+      }
+
+      if (type === 'region') {
+        const region = regionById.get(id);
+        if (!region) return null;
+        return {
+          focus: 'Region focus',
+          title: region.label,
+          detail: region.summary
+        };
+      }
+
+      return {
+        focus: 'All regions',
+        title: 'Creative atlas',
+        detail: 'Zoom toward a region to reveal its districts, then keep going to inspect the concept strands inside it.'
+      };
+    };
+
+    const currentDescriptor = () => {
+      if (state.hoverType && state.hoverId) {
+        const hovered = descriptorFor(state.hoverType, state.hoverId);
+        if (hovered) return hovered;
+      }
+
+      if (state.activeConceptId) {
+        const activeConcept = descriptorFor('concept', state.activeConceptId);
+        if (activeConcept) return activeConcept;
+      }
+
+      if (state.activeDistrictId) {
+        const activeDistrict = descriptorFor('district', state.activeDistrictId);
+        if (activeDistrict) return activeDistrict;
+      }
+
+      if (state.activeRegionId) {
+        const activeRegion = descriptorFor('region', state.activeRegionId);
+        if (activeRegion) return activeRegion;
+      }
+
+      return descriptorFor(null, null);
+    };
+
+    const updateHud = () => {
+      const descriptor = currentDescriptor();
+      if (!descriptor) return;
+
+      tierEl.textContent = tierLabel();
+      zoomEl.textContent = `${Math.round(state.scale * 100)}%`;
+      focusEl.textContent = descriptor.focus;
+      titleEl.textContent = descriptor.title;
+      detailEl.textContent = descriptor.detail;
+    };
+
+    const regionIsRelevant = (regionId) => !state.activeRegionId || regionId === state.activeRegionId;
+
+    const districtIsRelevant = (district) => {
+      if (state.activeDistrictId) return district.id === state.activeDistrictId;
+      if (state.activeRegionId) return district.regionId === state.activeRegionId;
+      return true;
+    };
+
+    const conceptIsRelevant = (concept) => {
+      if (state.activeConceptId) {
+        return concept.id === state.activeConceptId || conceptNeighbors.get(state.activeConceptId)?.has(concept.id);
+      }
+
+      if (state.activeDistrictId) return concept.districtId === state.activeDistrictId;
+      if (state.activeRegionId) return concept.regionId === state.activeRegionId;
+      return true;
+    };
+
+    const conceptPathIsRelevant = (path) => {
+      if (state.activeConceptId) {
+        return path.source === state.activeConceptId || path.target === state.activeConceptId;
+      }
+
+      if (state.activeDistrictId) {
+        return path.sourceDistrict === state.activeDistrictId || path.targetDistrict === state.activeDistrictId;
+      }
+
+      if (state.activeRegionId) {
+        return path.sourceRegion === state.activeRegionId || path.targetRegion === state.activeRegionId;
+      }
+
+      return true;
+    };
+
+    const applyTransform = () => {
+      viewport.setAttribute('transform', `translate(${state.tx.toFixed(2)} ${state.ty.toFixed(2)}) scale(${state.scale.toFixed(3)})`);
+    };
+
+    const updateScene = () => {
+      const showDistricts = state.scale >= 1.04 || Boolean(state.activeRegionId);
+      const showConcepts = state.scale >= 1.42 || Boolean(state.activeDistrictId) || Boolean(state.activeConceptId);
+      const showConceptLabels = state.scale >= 2.05 || Boolean(state.activeDistrictId) || Boolean(state.activeConceptId);
+      const showBridges = state.scale >= 1.7 || Boolean(state.activeRegionId);
+
+      routeEls.forEach((el) => {
+        const route = routeById.get(el.getAttribute('data-route') || '');
+        if (!route) return;
+
+        const touchesActive =
+          !state.activeRegionId || route.sourceRegion === state.activeRegionId || route.targetRegion === state.activeRegionId;
+        const opacity = !state.activeRegionId ? 0.34 : touchesActive ? 0.68 : 0.08;
+        const width = 1.3 + (route.weight || 0.5) * 1.9;
+
+        el.style.opacity = String(opacity);
+        el.style.strokeWidth = String(width);
       });
 
-      runtimeNodes.forEach((node) => {
-        const center = groupCenters.get(node.group) || { x: CENTER_X, y: CENTER_Y };
-        const phase = hashToUnit(`${node.id}:network`) * Math.PI * 2;
-        const spread = 26 + node.alt * 28;
-        node.fx = center.x + Math.cos(phase) * spread;
-        node.fy = center.y + Math.sin(phase) * spread;
+      regionEls.forEach((el) => {
+        const regionId = el.getAttribute('data-region') || '';
+        const active = regionId === state.activeRegionId;
+        const relevant = regionIsRelevant(regionId);
+        el.classList.toggle('is-active', active);
+        el.style.opacity = relevant ? '1' : showConcepts ? '0.12' : '0.24';
       });
+
+      districtSpineEls.forEach((el) => {
+        const spine = districtSpineById.get(el.getAttribute('data-district-spine') || '');
+        if (!spine) return;
+
+        const relevant = regionIsRelevant(spine.regionId);
+        let opacity = 0;
+        if (showDistricts && relevant) opacity = state.activeDistrictId ? 0.5 : 0.34;
+        if (showDistricts && !relevant) opacity = 0.05;
+        el.style.opacity = String(opacity);
+      });
+
+      districtEls.forEach((el) => {
+        const district = districtById.get(el.getAttribute('data-district') || '');
+        if (!district) return;
+
+        const active = district.id === state.activeDistrictId;
+        const relevant = districtIsRelevant(district);
+
+        let opacity = 0;
+        if (showDistricts && relevant) opacity = active ? 1 : state.activeRegionId ? 0.86 : 0.74;
+        if (showDistricts && !relevant) opacity = 0.05;
+
+        el.classList.toggle('is-active', active);
+        el.style.opacity = String(opacity);
+      });
+
+      conceptLinkEls.forEach((el) => {
+        const link = conceptLinkById.get(el.getAttribute('data-concept-link') || '');
+        if (!link) return;
+
+        let opacity = 0;
+        if (showConcepts && conceptPathIsRelevant(link)) opacity = state.activeConceptId ? 0.72 : 0.36;
+        if (showConcepts && !conceptPathIsRelevant(link)) opacity = 0.04;
+        el.style.opacity = String(opacity);
+      });
+
+      conceptBridgeEls.forEach((el) => {
+        const link = conceptBridgeById.get(el.getAttribute('data-concept-bridge') || '');
+        if (!link) return;
+
+        let opacity = 0;
+        if (showBridges && conceptPathIsRelevant(link)) opacity = state.activeConceptId ? 0.62 : state.activeRegionId ? 0.3 : 0.14;
+        if (showBridges && !conceptPathIsRelevant(link)) opacity = 0.03;
+        el.style.opacity = String(opacity);
+      });
+
+      conceptEls.forEach((el) => {
+        const concept = conceptById.get(el.getAttribute('data-concept') || '');
+        if (!concept) return;
+
+        const active = concept.id === state.activeConceptId;
+        const relevant = conceptIsRelevant(concept);
+        let opacity = 0;
+
+        if (showConcepts && relevant) opacity = active ? 1 : state.activeConceptId ? 0.78 : state.activeDistrictId ? 0.88 : 0.72;
+        if (showConcepts && !relevant) opacity = state.activeRegionId ? 0.04 : 0.16;
+
+        el.classList.toggle('is-active', active);
+        el.style.opacity = String(opacity);
+
+        const label = el.querySelector('.atlas-concept__label');
+        if (!label) return;
+
+        const labelVisible = active || (relevant && showConceptLabels);
+        label.setAttribute('opacity', labelVisible ? '0.94' : '0');
+      });
+
+      updateHud();
     };
 
-    const buildSpiralGuidePath = () => {
-      if (!spiralGuide) return;
-      const maxT = runtimeNodes.reduce((m, node) => Math.max(m, node.t + 1.2), 11.2);
-      const a = 34;
-      const b = 25;
-      const points = [];
-      for (let t = 0.2; t <= maxT; t += 0.16) {
-        const radius = a + b * t;
-        const x = CENTER_X + Math.cos(t) * radius;
-        const y = CENTER_Y + Math.sin(t) * radius;
-        points.push(`${x.toFixed(2)},${y.toFixed(2)}`);
-      }
-      if (!points.length) return;
-      const [head, ...rest] = points;
-      const d = `M ${head} ${rest.map((p) => `L ${p}`).join(' ')}`;
-      spiralGuide.setAttribute('d', d);
+    const setTransform = (tx, ty, scale) => {
+      state.scale = clamp(scale, MIN_SCALE, MAX_SCALE);
+      const normalized = normalizeTransform(tx, ty, state.scale);
+      state.tx = normalized.tx;
+      state.ty = normalized.ty;
+      applyTransform();
+      updateScene();
     };
 
-    const neighborhoodSet = (rootId, depth = 1) => {
-      const seen = new Set([rootId]);
-      let frontier = [rootId];
-      for (let level = 0; level < depth; level += 1) {
-        const next = [];
-        frontier.forEach((id) => {
-          (linksByNode.get(id) || []).forEach((neighbor) => {
-            if (!seen.has(neighbor)) {
-              seen.add(neighbor);
-              next.push(neighbor);
-            }
-          });
-        });
-        frontier = next;
-        if (!frontier.length) break;
-      }
-      return seen;
-    };
+    const animateTo = (tx, ty, scale) => {
+      stopAnimation();
 
-    const visibleEdge = (edge) => !state.hiddenEdgeTypes.has(edge.type);
+      const targetScale = clamp(scale, MIN_SCALE, MAX_SCALE);
+      const normalizedTarget = normalizeTransform(tx, ty, targetScale);
+      const startTx = state.tx;
+      const startTy = state.ty;
+      const startScale = state.scale;
+      const deltaTx = normalizedTarget.tx - startTx;
+      const deltaTy = normalizedTarget.ty - startTy;
+      const deltaScale = targetScale - startScale;
+      const startTime = performance.now();
+      const duration = 320;
 
-    const linkedToFocus = (edge, focusSet) => {
-      if (!focusSet) return false;
-      return focusSet.has(edge.source) || focusSet.has(edge.target);
-    };
+      const step = (now) => {
+        const progress = clamp((now - startTime) / duration, 0, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
 
-    const updateViewportTransform = () => {
-      viewport.setAttribute('transform', `translate(${state.tx} ${state.ty}) scale(${state.scale})`);
-    };
+        setTransform(startTx + deltaTx * eased, startTy + deltaTy * eased, startScale + deltaScale * eased);
 
-    const updateTooltip = () => {
-      if (!tooltip) return;
-      const id = state.hoveredId;
-      if (!id) {
-        tooltip.hidden = true;
-        return;
-      }
-
-      const node = nodeById.get(id);
-      if (!node) {
-        tooltip.hidden = true;
-        return;
-      }
-
-      const labelEl = tooltip.querySelector('[data-tip-label]');
-      const groupEl = tooltip.querySelector('[data-tip-group]');
-      const degreeEl = tooltip.querySelector('[data-tip-degree]');
-      const altEl = tooltip.querySelector('[data-tip-alt]');
-
-      if (labelEl) labelEl.textContent = node.label;
-      if (groupEl) groupEl.textContent = `group: ${node.group}`;
-      if (degreeEl) degreeEl.textContent = `connections: ${node.degree}`;
-      if (altEl) altEl.textContent = `altitude: ${node.alt.toFixed(2)}`;
-
-      const rect = wrap.getBoundingClientRect();
-      const x = clamp(state.tooltipX - rect.left + 12, 8, rect.width - 210);
-      const y = clamp(state.tooltipY - rect.top + 12, 8, rect.height - 96);
-      tooltip.style.transform = `translate(${x}px, ${y}px)`;
-      tooltip.hidden = false;
-    };
-
-    const renderStyles = () => {
-      const focusId = state.focusedId;
-      const focusSet = focusId ? neighborhoodSet(focusId, state.expanded ? 2 : 1) : null;
-      const hoveredId = state.hoveredId;
-
-      nodeEls.forEach((el) => {
-        const id = el.getAttribute('data-node') || '';
-        const core = el.querySelector('.map-node-core');
-        const halo = el.querySelector('.map-node-halo');
-        const label = el.querySelector('.map-label');
-        const isFocus = id === focusId;
-        const isHover = id === hoveredId;
-        const isNeighbor = focusSet ? focusSet.has(id) : false;
-        const isDimmed = focusSet ? !isNeighbor : false;
-
-        if (core) {
-          core.setAttribute('stroke-width', isFocus || isHover ? '2.8' : '1.8');
-          core.setAttribute('stroke', isFocus ? 'color-mix(in srgb, var(--tone-accent) 92%, #fff 8%)' : 'rgba(210, 222, 245, 0.56)');
-          core.setAttribute('fill', isDimmed ? 'rgba(16, 26, 42, 0.42)' : 'rgba(11, 19, 33, 0.92)');
+        if (progress < 1) {
+          state.animationFrame = requestAnimationFrame(step);
+        } else {
+          state.animationFrame = null;
         }
+      };
 
-        if (halo) {
-          halo.setAttribute('fill', 'none');
-          halo.setAttribute('stroke', 'color-mix(in srgb, var(--tone-accent) 70%, transparent)');
-          halo.setAttribute('stroke-width', isFocus ? '2' : isHover ? '1.4' : '0');
-          halo.setAttribute('opacity', isFocus ? '0.8' : isHover ? '0.45' : '0');
-        }
-
-        if (label) {
-          const showAllByZoom = state.mode === 'spiral' ? state.scale >= 1.52 : state.scale >= 1.38;
-          const showNeighborhood = Boolean(focusSet && focusSet.has(id) && state.scale >= 0.92);
-          const show = showAllByZoom || isFocus || isHover || showNeighborhood;
-          label.setAttribute('opacity', show ? '0.95' : '0');
-        }
-
-        el.setAttribute('opacity', isDimmed ? '0.28' : '1');
-      });
-
-      edgeEls.forEach((el) => {
-        const type = el.getAttribute('data-type') || 'supports';
-        const source = el.getAttribute('data-source') || '';
-        const target = el.getAttribute('data-target') || '';
-        const weight = Number(el.getAttribute('data-weight') || 0.5);
-        const directed = el.getAttribute('data-directed') === 'true';
-
-        const style = EDGE_STYLE[type] || EDGE_STYLE.supports;
-        const isHiddenByLegend = state.hiddenEdgeTypes.has(type);
-        const isLinked = focusSet
-          ? linkedToFocus({ source, target, type, weight, directed }, focusSet)
-          : false;
-        const shouldDim = focusSet ? !isLinked : false;
-
-        const baseWidth = 0.9 + weight * 1.75;
-        const width = isLinked ? baseWidth + (state.expanded ? 1.45 : 0.95) : baseWidth;
-        const opacity = isHiddenByLegend ? 0 : shouldDim ? 0.03 : isLinked ? 0.72 : 0.12 + weight * 0.10;
-
-        el.setAttribute('stroke', style.color);
-        el.setAttribute('stroke-dasharray', style.dash);
-        el.setAttribute('stroke-width', String(width));
-        el.setAttribute('opacity', String(opacity));
-        el.setAttribute('marker-end', directed && !isHiddenByLegend ? 'url(#map-arrowhead)' : '');
-        el.style.pointerEvents = isHiddenByLegend ? 'none' : 'auto';
-      });
-
-      if (spiralGuide) {
-        spiralGuide.setAttribute('opacity', state.mode === 'spiral' ? '0.22' : '0');
-      }
-
-      legendBtns.forEach((btn) => {
-        const type = btn.getAttribute('data-edge-filter');
-        if (!type) return;
-        const active = !state.hiddenEdgeTypes.has(type);
-        btn.classList.toggle('is-active', active);
-        btn.setAttribute('aria-pressed', String(active));
-      });
-
-      updateTooltip();
+      state.animationFrame = requestAnimationFrame(step);
     };
 
-    const renderPositions = () => {
-      runtimeNodes.forEach((node) => {
-        const el = nodeElsById.get(node.id);
-        if (!el) return;
-        el.setAttribute('transform', `translate(${node.x.toFixed(2)} ${node.y.toFixed(2)})`);
-      });
-
-      runtimeLinks.forEach((link) => {
-        const line = edgeElsById.get(`${link.source}__${link.target}`);
-        const source = nodeById.get(link.source);
-        const target = nodeById.get(link.target);
-        if (!line || !source || !target) return;
-        line.setAttribute('x1', source.x.toFixed(2));
-        line.setAttribute('y1', source.y.toFixed(2));
-        line.setAttribute('x2', target.x.toFixed(2));
-        line.setAttribute('y2', target.y.toFixed(2));
-      });
+    const centerOn = (x, y, scale) => {
+      animateTo(worldData.width / 2 - x * scale, worldData.height / 2 - y * scale, scale);
     };
 
-    const coolDown = () => {
-      state.alpha *= 0.968;
-      if (state.alpha < 0.005) state.alpha = 0;
+    const resetOverview = () => {
+      state.activeRegionId = null;
+      state.activeDistrictId = null;
+      state.activeConceptId = null;
+      animateTo(0, 0, MIN_SCALE);
     };
 
-    const tickPhysics = () => {
-      if (state.alpha <= 0) return;
+    const focusRegion = (regionId) => {
+      const region = regionById.get(regionId);
+      if (!region) return;
 
-      const alpha = state.alpha;
-      const targetStrength = state.mode === 'spiral' ? 0.084 : 0.062;
-      const repulsionBase = state.mode === 'spiral' ? 1850 : 2150;
+      state.activeRegionId = region.id;
+      state.activeDistrictId = null;
+      state.activeConceptId = null;
 
-      for (let i = 0; i < runtimeNodes.length; i += 1) {
-        const a = runtimeNodes[i];
-        for (let j = i + 1; j < runtimeNodes.length; j += 1) {
-          const b = runtimeNodes[j];
-          let dx = b.x - a.x;
-          let dy = b.y - a.y;
-          const distSq = dx * dx + dy * dy + 0.01;
-          const dist = Math.sqrt(distSq);
+      const targetScale = clamp(
+        Math.min(worldData.width / (region.width * 2.15), worldData.height / (region.height * 2.35)),
+        1.18,
+        1.72
+      );
 
-          const repulse = (repulsionBase * alpha) / distSq;
-          const rx = (dx / dist) * repulse;
-          const ry = (dy / dist) * repulse;
-
-          a.vx -= rx;
-          a.vy -= ry;
-          b.vx += rx;
-          b.vy += ry;
-
-          const minDist = NODE_RADIUS * 2.06;
-          if (dist < minDist && dist > 0.001) {
-            const push = ((minDist - dist) / minDist) * 0.38;
-            const cx = (dx / dist) * push;
-            const cy = (dy / dist) * push;
-            a.vx -= cx;
-            a.vy -= cy;
-            b.vx += cx;
-            b.vy += cy;
-          }
-        }
-      }
-
-      runtimeLinks.forEach((link) => {
-        if (!visibleEdge(link)) return;
-
-        const source = nodeById.get(link.source);
-        const target = nodeById.get(link.target);
-        if (!source || !target) return;
-
-        const dx = target.x - source.x;
-        const dy = target.y - source.y;
-        const dist = Math.sqrt(dx * dx + dy * dy) || 0.001;
-        const desired = state.mode === 'spiral' ? 96 + (1 - link.weight) * 72 : 110 + (1 - link.weight) * 70;
-        const spring = ((dist - desired) / dist) * (0.013 + link.weight * 0.016) * alpha;
-        const sx = dx * spring;
-        const sy = dy * spring;
-
-        source.vx += sx;
-        source.vy += sy;
-        target.vx -= sx;
-        target.vy -= sy;
-      });
-
-      runtimeNodes.forEach((node) => {
-        const altGain = 0.68 + node.alt * 0.36;
-        node.vx += (node.fx - node.x) * targetStrength * alpha * altGain;
-        node.vy += (node.fy - node.y) * targetStrength * alpha * altGain;
-
-        node.vx *= 0.86;
-        node.vy *= 0.86;
-
-        node.x = clamp(node.x + node.vx, PADDING, WIDTH - PADDING);
-        node.y = clamp(node.y + node.vy, PADDING, HEIGHT - PADDING);
-      });
-
-      coolDown();
+      centerOn(region.x, region.y, targetScale);
+      updateScene();
     };
 
-    const frame = () => {
-      tickPhysics();
-      renderPositions();
-      renderStyles();
+    const focusDistrict = (districtId) => {
+      const district = districtById.get(districtId);
+      if (!district) return;
 
-      if (state.alpha > 0.004) {
-        state.raf = window.requestAnimationFrame(frame);
-      } else {
-        state.raf = null;
+      state.activeRegionId = district.regionId;
+      state.activeDistrictId = district.id;
+      state.activeConceptId = null;
+
+      const targetScale = clamp(
+        Math.min(worldData.width / (district.radius * 7.2), worldData.height / (district.radius * 6.1)),
+        1.72,
+        2.36
+      );
+
+      centerOn(district.x, district.y, targetScale);
+      updateScene();
+    };
+
+    const focusConcept = (conceptId) => {
+      const concept = conceptById.get(conceptId);
+      if (!concept) return;
+
+      state.activeRegionId = concept.regionId;
+      state.activeDistrictId = concept.districtId;
+      state.activeConceptId = concept.id;
+
+      centerOn(concept.x, concept.y, 2.86);
+      updateScene();
+    };
+
+    const setHover = (type, id) => {
+      state.hoverType = type;
+      state.hoverId = id;
+      updateHud();
+    };
+
+    const clearHover = (type, id) => {
+      if (state.hoverType === type && state.hoverId === id) {
+        state.hoverType = null;
+        state.hoverId = null;
+        updateHud();
       }
     };
 
-    const restartSimulation = (strength = 1) => {
-      state.alpha = Math.max(state.alpha, strength);
-      if (!state.raf) state.raf = window.requestAnimationFrame(frame);
-    };
+    const zoomAtPoint = (clientX, clientY, direction) => {
+      stopAnimation();
 
-    const setMode = (mode) => {
-      state.mode = mode === 'spiral' ? 'spiral' : 'network';
-      localStorage.setItem(STORAGE_KEY, state.mode);
-      modeNetworkBtn?.classList.toggle('is-active', state.mode === 'network');
-      modeSpiralBtn?.classList.toggle('is-active', state.mode === 'spiral');
-      modeNetworkBtn?.setAttribute('aria-pressed', String(state.mode === 'network'));
-      modeSpiralBtn?.setAttribute('aria-pressed', String(state.mode === 'spiral'));
+      const rect = svg.getBoundingClientRect();
+      const viewportX = ((clientX - rect.left) / rect.width) * worldData.width;
+      const viewportY = ((clientY - rect.top) / rect.height) * worldData.height;
+      const anchorX = (viewportX - state.tx) / state.scale;
+      const anchorY = (viewportY - state.ty) / state.scale;
+      const factor = direction > 0 ? 1.14 : 0.88;
+      const nextScale = clamp(state.scale * factor, MIN_SCALE, MAX_SCALE);
+      const nextTx = viewportX - anchorX * nextScale;
+      const nextTy = viewportY - anchorY * nextScale;
 
-      setTargets();
-      buildSpiralGuidePath();
-      restartSimulation(1);
-      renderStyles();
-    };
-
-    const setFocus = (id, expanded) => {
-      state.focusedId = id;
-      state.expanded = expanded;
-      restartSimulation(0.36);
-      renderStyles();
-    };
-
-    const clearFocus = () => {
-      state.focusedId = null;
-      state.expanded = false;
-      renderStyles();
+      setTransform(nextTx, nextTy, nextScale);
     };
 
     const onPointerDown = (event) => {
-      if (event.target.closest('[data-node]')) return;
-      state.draggingViewport = true;
-      state.dragPointerId = event.pointerId;
+      if (event.target.closest('[data-region], [data-district], [data-concept]')) return;
+
+      stopAnimation();
+      state.dragging = true;
+      state.pointerId = event.pointerId;
       state.startX = event.clientX - state.tx;
       state.startY = event.clientY - state.ty;
+      wrap.classList.add('is-dragging');
       wrap.setPointerCapture(event.pointerId);
     };
 
     const onPointerMove = (event) => {
-      if (state.draggingViewport) {
-        state.tx = event.clientX - state.startX;
-        state.ty = event.clientY - state.startY;
-        updateViewportTransform();
-      }
-      state.tooltipX = event.clientX;
-      state.tooltipY = event.clientY;
-      updateTooltip();
+      if (!state.dragging) return;
+
+      setTransform(event.clientX - state.startX, event.clientY - state.startY, state.scale);
     };
 
     const onPointerUp = (event) => {
-      if (state.dragPointerId !== null && event.pointerId === state.dragPointerId) {
-        state.draggingViewport = false;
-        state.dragPointerId = null;
+      if (state.pointerId !== null && event.pointerId === state.pointerId) {
+        state.dragging = false;
+        state.pointerId = null;
+        wrap.classList.remove('is-dragging');
       }
     };
 
-    const onWheel = (event) => {
-      event.preventDefault();
-      const next = state.scale - event.deltaY * 0.001;
-      state.scale = clamp(next, MIN_ZOOM, MAX_ZOOM);
-      updateViewportTransform();
-      renderStyles();
+    const bindInteractive = (elements, type, handler) => {
+      elements.forEach((el) => {
+        const id =
+          el.getAttribute(`data-${type}`) ||
+          (type === 'district-spine' ? el.getAttribute('data-district-spine') : null) ||
+          (type === 'concept-link' ? el.getAttribute('data-concept-link') : null) ||
+          (type === 'concept-bridge' ? el.getAttribute('data-concept-bridge') : null);
+
+        if (!id) return;
+
+        if (type === 'region' || type === 'district' || type === 'concept') {
+          el.addEventListener('click', (event) => {
+            event.stopPropagation();
+            handler(id);
+          });
+
+          el.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              handler(id);
+            }
+          });
+
+          el.addEventListener('mouseenter', () => setHover(type, id));
+          el.addEventListener('mouseleave', () => clearHover(type, id));
+          el.addEventListener('focus', () => setHover(type, id));
+          el.addEventListener('blur', () => clearHover(type, id));
+        }
+      });
     };
 
-    nodeEls.forEach((el) => {
-      const id = el.getAttribute('data-node');
-      if (!id) return;
+    bindInteractive(regionEls, 'region', focusRegion);
+    bindInteractive(districtEls, 'district', focusDistrict);
+    bindInteractive(conceptEls, 'concept', focusConcept);
 
-      el.addEventListener('click', () => {
-        if (state.suppressClickId === id) {
-          state.suppressClickId = null;
-          return;
-        }
-        setFocus(id, false);
-      });
-
-      el.addEventListener('dblclick', () => {
-        state.suppressClickId = id;
-        setFocus(id, true);
-      });
-
-      el.addEventListener('mouseenter', (event) => {
-        state.hoveredId = id;
-        state.tooltipX = event.clientX;
-        state.tooltipY = event.clientY;
-        renderStyles();
-      });
-
-      el.addEventListener('mousemove', (event) => {
-        state.tooltipX = event.clientX;
-        state.tooltipY = event.clientY;
-        updateTooltip();
-      });
-
-      el.addEventListener('mouseleave', () => {
-        state.hoveredId = null;
-        renderStyles();
-      });
-
-      el.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          setFocus(id, false);
-        }
-        if (event.key === 'Escape') {
-          clearFocus();
-        }
-      });
-    });
-
-    legendBtns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const type = btn.getAttribute('data-edge-filter');
-        if (!type) return;
-
-        if (state.hiddenEdgeTypes.has(type)) {
-          state.hiddenEdgeTypes.delete(type);
-        } else {
-          state.hiddenEdgeTypes.add(type);
-        }
-        restartSimulation(0.28);
-        renderStyles();
-      });
-    });
-
-    modeNetworkBtn?.addEventListener('click', () => setMode('network'));
-    modeSpiralBtn?.addEventListener('click', () => setMode('spiral'));
-
-    resetBtn?.addEventListener('click', () => {
-      state.tx = 0;
-      state.ty = 0;
-      state.scale = 1;
-      state.focusedId = null;
-      state.expanded = false;
-      state.hoveredId = null;
-      updateViewportTransform();
-      setTargets();
-      buildSpiralGuidePath();
-      restartSimulation(1);
-      renderStyles();
+    overviewBtn?.addEventListener('click', () => {
+      resetOverview();
+      updateScene();
     });
 
     wrap.addEventListener('pointerdown', onPointerDown);
     wrap.addEventListener('pointermove', onPointerMove);
     wrap.addEventListener('pointerup', onPointerUp);
     wrap.addEventListener('pointercancel', onPointerUp);
-    wrap.addEventListener('wheel', onWheel, { passive: false });
-    wrap.addEventListener('dblclick', (event) => {
-      if (!event.target.closest('[data-node]')) {
+    wrap.addEventListener('pointerleave', () => {
+      if (state.dragging) return;
+      state.hoverType = null;
+      state.hoverId = null;
+      updateHud();
+    });
+
+    wrap.addEventListener(
+      'wheel',
+      (event) => {
         event.preventDefault();
+        zoomAtPoint(event.clientX, event.clientY, event.deltaY < 0 ? 1 : -1);
+      },
+      { passive: false }
+    );
+
+    wrap.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        resetOverview();
+        updateScene();
+      }
+
+      if (event.key === '+' || event.key === '=') {
+        const rect = svg.getBoundingClientRect();
+        zoomAtPoint(rect.left + rect.width / 2, rect.top + rect.height / 2, 1);
+      }
+
+      if (event.key === '-' || event.key === '_') {
+        const rect = svg.getBoundingClientRect();
+        zoomAtPoint(rect.left + rect.width / 2, rect.top + rect.height / 2, -1);
       }
     });
 
-    setTargets();
-    buildSpiralGuidePath();
-    updateViewportTransform();
-    setMode(state.mode);
-    renderPositions();
-    renderStyles();
-    restartSimulation(0.82);
+    setTransform(0, 0, MIN_SCALE);
   })();
 </script>
 
@@ -701,204 +959,357 @@ const edgeTypeLabels: Record<(typeof edgeTypes)[number], string> = {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.45rem;
+    gap: 0.55rem;
   }
 
-  .map-mode {
+  .map-readout {
+    border: 1px solid var(--line2);
+    border-radius: 999px;
+    background: rgba(8, 12, 20, 0.62);
+    backdrop-filter: blur(6px);
     display: inline-flex;
     align-items: center;
-    gap: 0.25rem;
-    border: 1px solid var(--line2);
-    border-radius: 999px;
-    background: rgba(8, 12, 20, 0.5);
-    padding: 0.2rem;
+    gap: 0.6rem;
+    padding: 0.28rem 0.72rem;
   }
 
-  .map-mode__btn {
-    border: 1px solid transparent;
-    border-radius: 999px;
-    background: transparent;
+  .map-readout__label {
     color: var(--tone-muted);
-    font-size: 0.78rem;
-    line-height: 1;
-    padding: 0.4rem 0.6rem;
-    cursor: pointer;
-    transition: border-color 140ms ease, color 140ms ease, background-color 140ms ease;
-  }
-
-  .map-mode__btn:hover,
-  .map-mode__btn:focus-visible {
-    color: var(--tone-text);
-    border-color: color-mix(in srgb, var(--tone-accent) 32%, var(--line2));
-  }
-
-  .map-mode__btn.is-active {
-    color: var(--tone-accent-glow);
-    background: rgba(215, 170, 47, 0.14);
-    border-color: rgba(215, 170, 47, 0.34);
-  }
-
-  .map-edge {
-    transition: opacity 120ms ease, stroke-width 140ms ease;
-  }
-
-  .map-node {
-    cursor: pointer;
-  }
-
-  .map-node-halo,
-  .map-node-core,
-  .map-label {
-    transition: opacity 120ms ease, stroke-width 140ms ease, fill 140ms ease, stroke 140ms ease;
-  }
-
-  .map-label {
-    fill: var(--tone-text);
-    font-size: 11.5px;
-    letter-spacing: 0.02em;
-    stroke: rgba(4, 8, 14, 0.85);
-    stroke-width: 3px;
-    paint-order: stroke fill;
-    pointer-events: none;
-  }
-
-  .spiral-guide {
-    fill: none;
-    stroke: color-mix(in srgb, var(--tone-accent) 38%, var(--tone-sky) 18%);
-    stroke-width: 1;
-    stroke-dasharray: 2 7;
-    opacity: 0;
-    transition: opacity 180ms ease;
-  }
-
-  .map-arrowhead {
-    fill: color-mix(in srgb, var(--tone-accent) 72%, var(--tone-line) 28%);
-  }
-
-  .map-spiral-arrow {
-    fill: color-mix(in srgb, var(--tone-accent) 55%, var(--tone-sky) 30%);
-  }
-
-  .map-legend {
-    position: absolute;
-    left: 0.7rem;
-    bottom: 0.7rem;
-    z-index: 5;
-    border: 1px solid var(--line2);
-    border-radius: 12px;
-    background: rgba(8, 12, 20, 0.74);
-    backdrop-filter: blur(6px);
-    padding: 0.55rem;
-    display: grid;
-    gap: 0.45rem;
-    max-width: min(100%, 250px);
-  }
-
-  .map-legend__title {
-    margin: 0;
-    font-size: 0.72rem;
+    font-size: 0.76rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--tone-muted);
   }
 
-  .map-legend__list {
-    display: grid;
-    gap: 0.34rem;
-  }
-
-  .map-legend__item {
-    border: 1px solid var(--line2);
-    border-radius: 999px;
-    background: rgba(8, 12, 20, 0.4);
-    color: var(--tone-muted);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.48rem;
-    justify-content: flex-start;
-    padding: 0.28rem 0.58rem;
-    font-size: 0.73rem;
-    text-transform: lowercase;
-    cursor: pointer;
-  }
-
-  .map-legend__item.is-active {
+  .map-readout__value {
     color: var(--tone-text);
-    border-color: color-mix(in srgb, var(--tone-accent) 24%, var(--line2));
+    font-size: 0.8rem;
+    font-weight: 600;
   }
 
-  .map-legend__line {
-    width: 1.3rem;
-    height: 0;
-    border-top-width: 2px;
-    border-top-style: solid;
-    opacity: 0.95;
+  .map-wrap {
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
   }
 
-  .map-legend__line--creates {
-    border-top-color: color-mix(in srgb, var(--tone-accent) 76%, var(--tone-line) 24%);
+  .map-wrap.is-dragging {
+    cursor: grabbing;
   }
 
-  .map-legend__line--supports {
-    border-top-color: color-mix(in srgb, var(--tone-sky) 74%, var(--tone-line) 26%);
-    border-top-style: dashed;
-  }
-
-  .map-legend__line--feeds_back {
-    border-top-color: color-mix(in srgb, var(--tone-sky-bright) 70%, var(--tone-line) 30%);
-    border-top-style: dotted;
-  }
-
-  .map-legend__line--grounds {
-    border-top-color: color-mix(in srgb, var(--tone-accent-bright) 62%, var(--tone-line) 38%);
-    border-top-style: dashed;
-  }
-
-  .map-tooltip {
+  .map-hud,
+  .map-key {
     position: absolute;
-    z-index: 8;
-    top: 0;
-    left: 0;
+    z-index: 6;
     border: 1px solid var(--line2);
-    border-radius: 12px;
-    background: rgba(8, 12, 20, 0.95);
-    color: var(--tone-text);
-    min-width: 160px;
-    max-width: 220px;
-    padding: 0.5rem 0.58rem;
-    pointer-events: none;
-    display: grid;
-    gap: 0.16rem;
+    border-radius: 14px;
+    background: rgba(8, 12, 20, 0.74);
+    backdrop-filter: blur(8px);
   }
 
-  .map-tooltip p {
+  .map-hud {
+    top: 0.85rem;
+    left: 0.85rem;
+    width: min(22rem, calc(100% - 1.7rem));
+    padding: 0.7rem 0.78rem;
+    display: grid;
+    gap: 0.24rem;
+  }
+
+  .map-hud__eyebrow {
+    margin: 0;
+    color: var(--tone-accent-glow);
+    font-size: 0.73rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .map-hud__title {
+    margin: 0;
+    color: var(--tone-text);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .map-hud__detail {
+    margin: 0;
+    color: var(--tone-muted);
+    font-size: 0.76rem;
+    line-height: 1.5;
+  }
+
+  .map-key {
+    right: 0.85rem;
+    bottom: 0.85rem;
+    padding: 0.62rem 0.72rem;
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .map-key__title,
+  .map-key p {
     margin: 0;
     font-size: 0.74rem;
-    line-height: 1.35;
+    line-height: 1.45;
+  }
+
+  .map-key__title {
+    color: var(--tone-text);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .map-key p {
     color: var(--tone-muted);
   }
 
-  .map-tooltip__label {
-    color: var(--tone-accent-glow) !important;
+  .atlas-ocean {
+    fill: #040913;
+  }
+
+  .atlas-grid {
+    opacity: 0.32;
+  }
+
+  .atlas-grid__line {
+    fill: none;
+    stroke: rgba(121, 149, 190, 0.08);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .atlas-grid__dot {
+    fill: rgba(121, 149, 190, 0.14);
+    vector-effect: non-scaling-stroke;
+  }
+
+  .atlas-grid__dot--soft {
+    fill: rgba(121, 149, 190, 0.08);
+  }
+
+  .atlas-route,
+  .atlas-district-spine,
+  .atlas-concept-link,
+  .atlas-concept-bridge,
+  .atlas-region__plate,
+  .atlas-region__inner,
+  .atlas-region__beacon,
+  .atlas-district__halo,
+  .atlas-district__ring,
+  .atlas-district__core,
+  .atlas-concept__halo,
+  .atlas-concept__core {
+    vector-effect: non-scaling-stroke;
+  }
+
+  .atlas-route {
+    fill: none;
+    stroke-linecap: round;
+    stroke-opacity: 1;
+    transition: opacity 160ms ease, stroke-width 160ms ease;
+  }
+
+  .atlas-route--bridge {
+    stroke: color-mix(in srgb, var(--tone-accent) 72%, var(--tone-line) 28%);
+  }
+
+  .atlas-route--signal {
+    stroke: color-mix(in srgb, var(--tone-sky) 76%, var(--tone-line) 24%);
+    stroke-dasharray: 14 10;
+  }
+
+  .atlas-route--root {
+    stroke: color-mix(in srgb, var(--tone-accent-bright) 60%, var(--tone-line) 40%);
+    stroke-dasharray: 4 11;
+  }
+
+  .atlas-region {
+    cursor: pointer;
+    transition: opacity 160ms ease;
+  }
+
+  .atlas-region__shadow {
+    fill: var(--atlas-region-glow);
+    opacity: 0.42;
+  }
+
+  .atlas-region__plate {
+    fill: var(--atlas-region-fill);
+    stroke: color-mix(in srgb, var(--atlas-region-glow) 70%, rgba(212, 224, 245, 0.2));
+    stroke-width: 2.2;
+  }
+
+  .atlas-region__inner {
+    fill: rgba(7, 14, 24, 0.18);
+    stroke: color-mix(in srgb, var(--atlas-region-glow) 44%, rgba(212, 224, 245, 0.12));
+    stroke-width: 1.1;
+    stroke-dasharray: 12 10;
+  }
+
+  .atlas-region__beacon {
+    fill: color-mix(in srgb, var(--atlas-region-glow) 58%, rgba(255, 255, 255, 0.08));
+    stroke: rgba(255, 255, 255, 0.24);
+    stroke-width: 1.4;
+  }
+
+  .atlas-region__label {
+    fill: var(--tone-text);
+    font-size: 28px;
     font-weight: 600;
-    font-size: 0.8rem !important;
+    letter-spacing: 0.04em;
+    paint-order: stroke fill;
+    stroke: rgba(5, 9, 15, 0.72);
+    stroke-width: 5px;
+  }
+
+  .atlas-region.is-active .atlas-region__plate {
+    stroke-width: 2.8;
+  }
+
+  .atlas-district {
+    cursor: pointer;
+    transition: opacity 160ms ease;
+  }
+
+  .atlas-district-spine {
+    fill: none;
+    stroke: rgba(179, 203, 241, 0.34);
+    stroke-width: 1.4;
+    stroke-dasharray: 8 10;
+    transition: opacity 160ms ease;
+  }
+
+  .atlas-district__halo {
+    fill: rgba(70, 118, 198, 0.05);
+    stroke: rgba(180, 205, 243, 0.12);
+    stroke-width: 1;
+    transition: opacity 160ms ease, stroke-width 160ms ease;
+  }
+
+  .atlas-district__ring {
+    fill: rgba(7, 14, 24, 0.2);
+    stroke: rgba(180, 205, 243, 0.34);
+    stroke-width: 1.3;
+    stroke-dasharray: 6 10;
+    transition: opacity 160ms ease, stroke-width 160ms ease;
+  }
+
+  .atlas-district__core {
+    fill: rgba(214, 228, 248, 0.08);
+    stroke: rgba(214, 228, 248, 0.24);
+    stroke-width: 1.3;
+  }
+
+  .atlas-district__label {
+    fill: rgba(228, 236, 250, 0.92);
+    font-size: 18px;
+    letter-spacing: 0.04em;
+    paint-order: stroke fill;
+    stroke: rgba(5, 9, 15, 0.68);
+    stroke-width: 4px;
+    transition: opacity 160ms ease;
+  }
+
+  .atlas-district.is-active .atlas-district__ring,
+  .atlas-district.is-active .atlas-district__halo {
+    stroke-width: 2.1;
+  }
+
+  .atlas-concept-link,
+  .atlas-concept-bridge {
+    fill: none;
+    stroke-linecap: round;
+    stroke-width: 1.25;
+    transition: opacity 160ms ease;
+  }
+
+  .atlas-concept-link {
+    stroke: rgba(191, 210, 243, 0.42);
+  }
+
+  .atlas-concept-bridge--bridge {
+    stroke: color-mix(in srgb, var(--tone-accent) 72%, var(--tone-line) 28%);
+  }
+
+  .atlas-concept-bridge--signal {
+    stroke: color-mix(in srgb, var(--tone-sky-bright) 70%, var(--tone-line) 30%);
+    stroke-dasharray: 5 9;
+  }
+
+  .atlas-concept-bridge--root {
+    stroke: color-mix(in srgb, var(--tone-accent-bright) 60%, var(--tone-line) 40%);
+    stroke-dasharray: 2 8;
+  }
+
+  .atlas-concept {
+    cursor: pointer;
+    transition: opacity 160ms ease;
+  }
+
+  .atlas-concept__halo {
+    fill: none;
+    stroke: rgba(201, 219, 247, 0.18);
+    stroke-width: 1.2;
+    transition: opacity 160ms ease, stroke-width 160ms ease;
+  }
+
+  .atlas-concept__core {
+    fill: rgba(225, 235, 250, 0.94);
+    stroke: rgba(8, 13, 22, 0.86);
+    stroke-width: 2.2;
+    transition: opacity 160ms ease, stroke-width 160ms ease;
+  }
+
+  .atlas-concept__label {
+    fill: rgba(233, 240, 251, 0.92);
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    paint-order: stroke fill;
+    stroke: rgba(5, 9, 15, 0.72);
+    stroke-width: 4px;
+    pointer-events: none;
+    transition: opacity 160ms ease;
+  }
+
+  .atlas-concept.is-active .atlas-concept__halo {
+    stroke-width: 2.1;
+    stroke: color-mix(in srgb, var(--tone-accent) 62%, rgba(201, 219, 247, 0.28));
+  }
+
+  .atlas-concept.is-active .atlas-concept__core {
+    stroke-width: 2.8;
+    fill: color-mix(in srgb, white 88%, var(--tone-accent) 12%);
   }
 
   @media (max-width: 800px) {
     .map-wrap {
       height: 72vh;
-      min-height: 460px;
+      min-height: 500px;
     }
 
-    .map-legend {
-      left: 0.55rem;
-      right: 0.55rem;
-      max-width: none;
+    .map-hud {
+      width: min(18rem, calc(100% - 1.2rem));
+      left: 0.6rem;
+      top: 0.6rem;
+      padding: 0.6rem 0.66rem;
     }
 
-    .map-legend__list {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.35rem;
+    .map-key {
+      left: 0.6rem;
+      right: 0.6rem;
+      bottom: 0.6rem;
+    }
+
+    .atlas-region__label {
+      font-size: 24px;
+    }
+
+    .atlas-district__label {
+      font-size: 16px;
+    }
+
+    .atlas-concept__label {
+      font-size: 13px;
     }
   }
 </style>
