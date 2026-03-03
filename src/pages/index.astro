@@ -321,23 +321,6 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
       </div>
 
       <div class="mt-4 section-panels-shell">
-        <div class="section-swipe-rail" role="group" aria-label="Section switcher">
-          <button type="button" class="section-swipe-rail__step" data-section-step="-1">
-            Prev
-          </button>
-          <div class="section-swipe-rail__track" data-section-swipe-track>
-            <span class="section-swipe-rail__label">Drag here or click a side</span>
-            <span class="section-swipe-rail__bars" aria-hidden="true">
-              <span></span>
-              <span></span>
-              <span></span>
-            </span>
-          </div>
-          <button type="button" class="section-swipe-rail__step" data-section-step="1">
-            Next
-          </button>
-        </div>
-
         <div class="section-panels">
         {homeSections.map((section, index) => (
           <div
@@ -391,9 +374,6 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
   <script is:inline>
     (() => {
       const tablist = document.querySelector('.section-tablist');
-      const swipeTrack = document.querySelector('[data-section-swipe-track]');
-      const sectionPanels = document.querySelector('.section-panels');
-      const stepButtons = Array.from(document.querySelectorAll('[data-section-step]'));
       const tabs = Array.from(document.querySelectorAll('[data-section-tab]'));
       const panels = Array.from(document.querySelectorAll('[data-section-panel]'));
       if (!(tablist instanceof HTMLElement) || !tabs.length || !panels.length) return;
@@ -426,185 +406,27 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
         window.__setSiteTone?.(tone, { animate: true });
       };
 
-      const activateAdjacent = (direction) => {
-        const activeIndex = tabs.findIndex((tab) => tab.classList.contains('is-active'));
-        const nextTab = tabs[activeIndex + direction];
-        const nextId = nextTab?.getAttribute('data-section-tab');
-        if (!nextId) return false;
-        activate(nextId);
-        return true;
-      };
-
-      const isTabSwipeEnabled = () => {
-        const state = window.__modeSettings?.getState?.();
-        return state?.tabSwipe !== 'off';
-      };
-
-      const isInteractivePanelTarget = (target) => {
-        if (!(target instanceof Element)) return false;
-        return Boolean(
-          target.closest(
-            'a[href], button, input, textarea, select, summary, iframe, video, audio, [contenteditable], [role="button"], [role="link"]'
-          )
-        );
-      };
-
       tabs.forEach((tab) => {
         tab.addEventListener('click', () => {
           const id = tab.getAttribute('data-section-tab');
           if (id) activate(id);
         });
-      });
+        tab.addEventListener('keydown', (event) => {
+          const currentIndex = tabs.indexOf(tab);
+          if (currentIndex === -1) return;
 
-      stepButtons.forEach((button) => {
-        button.addEventListener('click', () => {
-          const direction = Number.parseInt(button.getAttribute('data-section-step') || '0', 10);
-          if (direction === -1 || direction === 1) {
-            activateAdjacent(direction);
-          }
-        });
-      });
+          let nextIndex = -1;
+          if (event.key === 'ArrowRight') nextIndex = Math.min(currentIndex + 1, tabs.length - 1);
+          if (event.key === 'ArrowLeft') nextIndex = Math.max(currentIndex - 1, 0);
+          if (event.key === 'Home') nextIndex = 0;
+          if (event.key === 'End') nextIndex = tabs.length - 1;
+          if (nextIndex === -1 || nextIndex === currentIndex) return;
 
-      const swipeSurfaces = [tablist];
-      if (swipeTrack instanceof HTMLElement) {
-        swipeSurfaces.push(swipeTrack);
-      }
-      if (sectionPanels instanceof HTMLElement) {
-        swipeSurfaces.push(sectionPanels);
-      }
-
-      let swipePointerId = -1;
-      let swipeStartX = 0;
-      let swipeStartY = 0;
-      let swipeStartButton = 0;
-      let handledMiddleActivation = false;
-      let suppressClick = false;
-      let swipeSurface = null;
-
-      const endSwipe = (pointerId) => {
-        if (swipePointerId !== pointerId) return;
-        if (swipeSurface instanceof HTMLElement && swipeSurface.hasPointerCapture(swipePointerId)) {
-          swipeSurface.releasePointerCapture(swipePointerId);
-        }
-        tablist.classList.remove('is-dragging');
-        swipeSurface = null;
-        swipePointerId = -1;
-      };
-
-      swipeSurfaces.forEach((surface) => {
-        surface.addEventListener(
-          'auxclick',
-          (event) => {
-            if (!isTabSwipeEnabled() || event.button !== 1) return;
-            if (surface === sectionPanels && isInteractivePanelTarget(event.target)) return;
-            event.preventDefault();
-            if (handledMiddleActivation) return;
-            activateAdjacent(event.shiftKey ? -1 : 1);
-            handledMiddleActivation = true;
-            window.setTimeout(() => {
-              handledMiddleActivation = false;
-            }, 0);
-          },
-          true
-        );
-
-        surface.addEventListener(
-          'click',
-          (event) => {
-            if (!suppressClick) return;
-            event.preventDefault();
-            event.stopPropagation();
-            suppressClick = false;
-          },
-          true
-        );
-
-        surface.addEventListener('pointerdown', (event) => {
-          if (event.pointerType !== 'mouse' || !isTabSwipeEnabled()) return;
-          if (event.button !== 0 && event.button !== 1) return;
-          if (surface === sectionPanels && isInteractivePanelTarget(event.target)) return;
-
-          swipePointerId = event.pointerId;
-          swipeStartX = event.clientX;
-          swipeStartY = event.clientY;
-          swipeStartButton = event.button;
-          suppressClick = false;
-          swipeSurface = surface;
-
-          if (event.button === 1) {
-            event.preventDefault();
-          }
-
-          if (surface === tablist) {
-            tablist.classList.add('is-dragging');
-          }
-          surface.setPointerCapture(event.pointerId);
-        });
-
-        surface.addEventListener('pointermove', (event) => {
-          if (swipePointerId !== event.pointerId) return;
-
-          const deltaX = event.clientX - swipeStartX;
-          const deltaY = event.clientY - swipeStartY;
-          const horizontalIntent = Math.abs(deltaX) > 12 && Math.abs(deltaX) > Math.abs(deltaY) * 1.15;
-          if (!horizontalIntent) return;
-
-          suppressClick = true;
           event.preventDefault();
-        });
-
-        surface.addEventListener('pointerup', (event) => {
-          if (swipePointerId !== event.pointerId) return;
-
-          const deltaX = event.clientX - swipeStartX;
-          const deltaY = event.clientY - swipeStartY;
-          const horizontalSwipe = Math.abs(deltaX) > 56 && Math.abs(deltaX) > Math.abs(deltaY) * 1.15;
-          if (horizontalSwipe) {
-            suppressClick = true;
-            if (swipeStartButton === 1) {
-              handledMiddleActivation = true;
-              window.setTimeout(() => {
-                handledMiddleActivation = false;
-              }, 0);
-            }
-          }
-
-          endSwipe(event.pointerId);
-
-          if (!horizontalSwipe) {
-            if (surface === swipeTrack && swipeStartButton === 0 && swipeTrack instanceof HTMLElement) {
-              const bounds = swipeTrack.getBoundingClientRect();
-              const direction = event.clientX >= bounds.left + bounds.width / 2 ? 1 : -1;
-              const moved = activateAdjacent(direction);
-              if (moved) {
-                suppressClick = true;
-                window.setTimeout(() => {
-                  suppressClick = false;
-                }, 0);
-                return;
-              }
-            }
-
-            if (swipeStartButton === 1) {
-              activateAdjacent(event.shiftKey ? -1 : 1);
-              handledMiddleActivation = true;
-              window.setTimeout(() => {
-                handledMiddleActivation = false;
-              }, 0);
-            }
-            suppressClick = false;
-            return;
-          }
-
-          activateAdjacent(deltaX < 0 ? 1 : -1);
-          window.setTimeout(() => {
-            suppressClick = false;
-          }, 0);
-        });
-
-        surface.addEventListener('pointercancel', (event) => {
-          endSwipe(event.pointerId);
-          suppressClick = false;
+          const nextTab = tabs[nextIndex];
+          const id = nextTab?.getAttribute('data-section-tab');
+          nextTab?.focus();
+          if (id) activate(id);
         });
       });
 
@@ -927,84 +749,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
 
   .section-panels-shell {
     display: grid;
-    gap: 0.75rem;
-  }
-
-  .section-swipe-rail {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 0.42rem;
-    padding: 0.34rem 0.4rem;
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
-    border-radius: 999px;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0)),
-      color-mix(in srgb, var(--tone-bg) 92%, rgba(255, 255, 255, 0.02));
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
-  }
-
-  .section-swipe-rail__step {
-    border: 0;
-    border-radius: 999px;
-    padding: 0.42rem 0.72rem;
-    background: color-mix(in srgb, var(--tone-accent) 8%, transparent);
-    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
-    font-size: 0.72rem;
-    line-height: 1;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    cursor: pointer;
-    transition:
-      background-color var(--motion-fast) var(--ease-standard),
-      color var(--motion-fast) var(--ease-standard),
-      transform var(--motion-fast) var(--ease-emphasized);
-  }
-
-  .section-swipe-rail__step:hover,
-  .section-swipe-rail__step:focus-visible {
-    background: color-mix(in srgb, var(--tone-accent) 14%, transparent);
-    color: var(--tone-accent-glow);
-  }
-
-  .section-swipe-rail__step:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--tone-accent) 78%, transparent);
-    outline-offset: 2px;
-  }
-
-  .section-swipe-rail__track {
-    min-height: 2.35rem;
-    display: grid;
-    place-items: center;
-    gap: 0.22rem;
-    padding: 0.25rem 0.9rem;
-    border: 1px solid color-mix(in srgb, var(--line2) 74%, transparent);
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--tone-bg) 94%, rgba(255, 255, 255, 0.02));
-  }
-
-  .section-swipe-rail__label {
-    font-size: 0.68rem;
-    line-height: 1;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    color: color-mix(in srgb, var(--tone-text) 64%, var(--tone-muted) 36%);
-    text-transform: uppercase;
-  }
-
-  .section-swipe-rail__bars {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-  }
-
-  .section-swipe-rail__bars span {
-    display: block;
-    width: clamp(1.4rem, 6vw, 2.15rem);
-    height: 2px;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--tone-accent) 22%, var(--line2));
+    gap: 0.5rem;
   }
 
   .section-cards {
@@ -1133,27 +878,6 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
       width: min(88vw, 24rem);
       min-width: min(88vw, 24rem);
       scroll-snap-align: start;
-    }
-  }
-
-  @media (pointer: fine) {
-    html[data-tab-swipe='on'] .section-tablist {
-      cursor: grab;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
-    html[data-tab-swipe='on'] .section-swipe-rail {
-      cursor: default;
-    }
-
-    html[data-tab-swipe='on'] .section-swipe-rail__track {
-      cursor: ew-resize;
-    }
-
-    html[data-tab-swipe='on'] .section-tablist.is-dragging {
-      cursor: grabbing;
-      scroll-behavior: auto;
     }
   }
 
