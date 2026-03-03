@@ -468,11 +468,25 @@ html[data-scroll-optimizing='true'] button {
   position: relative;
   display: inline-flex;
   align-items: center;
+  padding: 0.34rem 0.68rem 0.42rem;
   min-height: 44px;
   flex-shrink: 0;
   white-space: nowrap;
-  color: color-mix(in srgb, var(--tone-text) 76%, var(--link-accent, var(--tone-accent)) 24%);
+  border: 1px solid color-mix(in srgb, var(--link-accent, var(--tone-accent)) 42%, transparent);
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--link-accent, var(--tone-accent)) 18%, transparent),
+      color-mix(in srgb, var(--link-accent, var(--tone-accent)) 10%, transparent)
+    );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 8%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--link-accent, var(--tone-accent)) 10%, transparent);
+  color: color-mix(in srgb, var(--tone-text) 52%, var(--link-accent, var(--tone-accent)) 48%);
   transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-base) var(--ease-standard),
     color var(--motion-fast) var(--ease-standard),
     text-shadow var(--motion-fast) var(--ease-standard);
 }
@@ -480,10 +494,8 @@ html[data-scroll-optimizing='true'] button {
 .site-header .header-link::before {
   content: '';
   position: absolute;
-  left: -0.35rem;
-  right: -0.35rem;
+  inset: 0;
   top: 52%;
-  height: 42%;
   border-radius: 999px;
   opacity: 0;
   transform: translateY(-50%) scale(0.9);
@@ -504,10 +516,10 @@ html[data-scroll-optimizing='true'] button {
 .site-header .header-link::after {
   content: '';
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 9px;
-  height: 1px;
+  left: 0.58rem;
+  right: 0.58rem;
+  bottom: 7px;
+  height: 2px;
   transform: scaleX(0);
   transform-origin: left center;
   background: color-mix(in srgb, var(--link-accent, var(--tone-accent)) 82%, #fff 18%);
@@ -520,6 +532,13 @@ html[data-scroll-optimizing='true'] button {
 .site-header .header-link:hover,
 .site-header .header-link:focus-visible {
   color: color-mix(in srgb, var(--link-accent, var(--tone-accent-glow)) 82%, white 18%);
+  border-color: color-mix(in srgb, var(--link-accent, var(--tone-accent)) 72%, transparent);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--link-accent, var(--tone-accent)) 28%, transparent),
+      color-mix(in srgb, var(--link-accent, var(--tone-accent)) 16%, transparent)
+    );
 }
 
 .site-header .header-link:hover::before,
@@ -538,6 +557,13 @@ html[data-scroll-optimizing='true'] button {
 
 .site-header .header-link[aria-current='page'] {
   color: color-mix(in srgb, var(--link-accent, var(--tone-accent-glow)) 82%, white 18%);
+  border-color: color-mix(in srgb, var(--link-accent, var(--tone-accent)) 78%, transparent);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--link-accent, var(--tone-accent)) 30%, transparent),
+      color-mix(in srgb, var(--link-accent, var(--tone-accent)) 18%, transparent)
+    );
 }
 
 .site-header .header-actions {
@@ -1301,6 +1327,156 @@ html[data-mode='explore'] .mode-explore {
   min-height: 0;
   aspect-ratio: 4 / 5;
   margin-inline: auto;
+}
+
+/* Make the section-color system read clearly at a glance instead of as a subtle tint. */
+.desktop-home .section-tab {
+  position: relative;
+  padding-left: 1.45rem;
+  border-color: color-mix(in srgb, var(--section-accent, var(--tone-accent)) 64%, transparent);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--section-accent, var(--tone-accent)) 38%, transparent),
+      color-mix(in srgb, var(--section-accent, var(--tone-accent)) 22%, transparent)
+    );
+  color: color-mix(in srgb, var(--section-accent, var(--tone-accent)) 78%, white 22%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1px color-mix(in srgb, var(--section-accent, var(--tone-accent)) 12%, transparent);
+}
+
+.desktop-home .section-tab::before {
+  content: '';
+  position: absolute;
+  left: 0.78rem;
+  top: 50%;
+  width: 0.46rem;
+  height: 0.46rem;
+  border-radius: 999px;
+  transform: translateY(-62%);
+  background: color-mix(in srgb, var(--section-accent, var(--tone-accent)) 84%, white 16%);
+  box-shadow: 0 0 0 1px color-mix(in srgb, black 28%, transparent);
+}
+
+.desktop-home .section-tab:hover,
+.desktop-home .section-tab:focus-visible,
+.desktop-home .section-tab.is-active {
+  border-color: color-mix(in srgb, var(--section-accent, var(--tone-accent)) 84%, transparent);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--section-accent, var(--tone-accent)) 52%, transparent),
+      color-mix(in srgb, var(--section-accent, var(--tone-accent)) 32%, transparent)
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 10px 24px color-mix(in srgb, var(--section-accent, var(--tone-accent)) 16%, transparent);
+}
+
+.desktop-home .section-panel {
+  border-color: color-mix(in srgb, var(--section-accent, var(--tone-accent)) 42%, transparent);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--section-accent, var(--tone-accent)) 18%, transparent),
+      color-mix(in srgb, var(--section-accent, var(--tone-accent)) 8%, transparent) 28%,
+      transparent 62%
+    );
+  box-shadow:
+    inset 5px 0 0 color-mix(in srgb, var(--section-accent, var(--tone-accent)) 82%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.hub-page .hub-tabs button,
+.hub-page .hub-subtabs button {
+  position: relative;
+  padding-left: 1.4rem;
+  border-color: color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 64%, transparent);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 38%, transparent),
+      color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 22%, transparent)
+    );
+  color: color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 78%, white 22%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1px color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 12%, transparent);
+}
+
+.hub-page .hub-tabs button::before,
+.hub-page .hub-subtabs button::before {
+  content: '';
+  position: absolute;
+  left: 0.74rem;
+  top: 50%;
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 999px;
+  transform: translateY(-50%);
+  background: color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 84%, white 16%);
+  box-shadow: 0 0 0 1px color-mix(in srgb, black 28%, transparent);
+}
+
+.hub-page .hub-tabs button:hover,
+.hub-page .hub-tabs button:focus-visible,
+.hub-page .hub-subtabs button:hover,
+.hub-page .hub-subtabs button:focus-visible,
+.hub-page .hub-tabs button.is-active,
+.hub-page .hub-subtabs button.is-active {
+  border-color: color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 86%, transparent);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 52%, transparent),
+      color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 32%, transparent)
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 10px 24px color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 16%, transparent);
+}
+
+.hub-page .hub-panel.is-active {
+  border-color: color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 42%, transparent);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 18%, transparent),
+      color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 8%, transparent) 24%,
+      transparent 60%
+    );
+  box-shadow:
+    inset 5px 0 0 color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 82%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.social-arcade .room-card {
+  position: relative;
+  border-color: color-mix(in srgb, var(--room-accent, var(--tone-accent)) 62%, transparent);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--room-accent, var(--tone-accent)) 28%, transparent),
+      color-mix(in srgb, var(--room-accent, var(--tone-accent)) 14%, var(--panel)) 30%,
+      var(--panel)
+    );
+  box-shadow:
+    inset 0 4px 0 color-mix(in srgb, var(--room-accent, var(--tone-accent)) 84%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 0 0 1px color-mix(in srgb, var(--room-accent, var(--tone-accent)) 12%, transparent);
+}
+
+.social-arcade .room-card h2 {
+  color: color-mix(in srgb, var(--room-accent, var(--tone-accent)) 84%, white 16%);
+}
+
+.social-arcade .room-type {
+  color: color-mix(in srgb, var(--room-accent, var(--tone-accent)) 86%, var(--tone-muted) 14%);
+}
+
+.social-arcade .room-link {
+  border-bottom-color: color-mix(in srgb, var(--room-accent, var(--tone-accent)) 72%, transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {
