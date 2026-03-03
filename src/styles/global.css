@@ -374,6 +374,20 @@ html[data-cursor-idle='false'] {
   box-shadow: none;
 }
 
+html[data-scroll-optimizing='true'] #cursor-aura {
+  opacity: 0 !important;
+}
+
+html[data-scroll-optimizing='true'] .card,
+html[data-scroll-optimizing='true'] .panel,
+html[data-scroll-optimizing='true'] .site-header,
+html[data-scroll-optimizing='true'] .mobile-nav,
+html[data-scroll-optimizing='true'] .pill,
+html[data-scroll-optimizing='true'] .chip,
+html[data-scroll-optimizing='true'] button {
+  backdrop-filter: none !important;
+}
+
 .site-header nav a {
   border: 0 !important;
   background: transparent !important;
@@ -425,20 +439,24 @@ html[data-cursor-idle='false'] {
 .site-header .header-link::before {
   content: '';
   position: absolute;
-  inset: 7px -0.45rem 7px;
+  left: -0.35rem;
+  right: -0.35rem;
+  top: 52%;
+  height: 42%;
   border-radius: 999px;
   opacity: 0;
-  transform: scale(0.96);
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in oklab, var(--tone-accent) 14%, transparent),
-      color-mix(in oklab, var(--tone-accent) 7%, transparent)
-    );
+  transform: translateY(-50%) scale(0.9);
+  background: radial-gradient(
+    120% 140% at 50% 50%,
+    color-mix(in srgb, var(--tone-accent-glow) 42%, transparent),
+    transparent 68%
+  );
+  filter: blur(12px);
+  mix-blend-mode: screen;
   transition:
     opacity var(--motion-fast) var(--ease-standard),
     transform var(--motion-fast) var(--ease-standard),
-    background-color var(--motion-base) var(--ease-standard);
+    filter var(--motion-fast) var(--ease-standard);
   pointer-events: none;
 }
 
@@ -467,7 +485,8 @@ html[data-cursor-idle='false'] {
 .site-header .header-link:focus-visible::before,
 .site-header .header-link[aria-current='page']::before {
   opacity: 1;
-  transform: scale(1);
+  transform: translateY(-50%) scale(1);
+  filter: blur(16px);
 }
 
 .site-header .header-link:hover::after,
