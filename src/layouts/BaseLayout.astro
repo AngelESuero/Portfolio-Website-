@@ -80,10 +80,17 @@ const exploreLinks = [
         const KEY_WALK = 'walkStep';
         const KEY_SIZE = 'siteSize';
         const DEFAULTS = { mode: 'normal', walkStep: 1, size: 'standard' };
+        const localStorageRef = (() => {
+          try {
+            return window.localStorage;
+          } catch {
+            return null;
+          }
+        })();
 
         const safeGet = (storage, key) => {
           try {
-            return storage.getItem(key);
+            return typeof storage?.getItem === 'function' ? storage.getItem(key) : null;
           } catch {
             return null;
           }
@@ -91,7 +98,13 @@ const exploreLinks = [
 
         const safeSet = (storage, key, value) => {
           try {
-            storage.setItem(key, value);
+            storage?.setItem?.(key, value);
+          } catch {}
+        };
+
+        const safeRemove = (storage, key) => {
+          try {
+            storage?.removeItem?.(key);
           } catch {}
         };
 
@@ -105,9 +118,9 @@ const exploreLinks = [
         const normalizeSize = (value) =>
           value === 'compact' || value === 'spacious' || value === 'standard' ? value : 'standard';
 
-        const initialMode = normalizeMode(safeGet(localStorage, KEY_MODE));
-        const initialWalkStep = normalizeWalkStep(safeGet(localStorage, KEY_WALK));
-        const initialSize = normalizeSize(safeGet(localStorage, KEY_SIZE));
+        const initialMode = normalizeMode(safeGet(localStorageRef, KEY_MODE));
+        const initialWalkStep = normalizeWalkStep(safeGet(localStorageRef, KEY_WALK));
+        const initialSize = normalizeSize(safeGet(localStorageRef, KEY_SIZE));
         const state = {
           mode: initialMode,
           walkStep: initialWalkStep,
@@ -125,9 +138,9 @@ const exploreLinks = [
         };
 
         const persist = () => {
-          safeSet(localStorage, KEY_MODE, state.mode);
-          safeSet(localStorage, KEY_WALK, String(state.walkStep));
-          safeSet(localStorage, KEY_SIZE, state.size);
+          safeSet(localStorageRef, KEY_MODE, state.mode);
+          safeSet(localStorageRef, KEY_WALK, String(state.walkStep));
+          safeSet(localStorageRef, KEY_SIZE, state.size);
         };
 
         const emit = () => {
@@ -161,9 +174,9 @@ const exploreLinks = [
             emit();
           },
           reset() {
-            localStorage.removeItem(KEY_MODE);
-            localStorage.removeItem(KEY_WALK);
-            localStorage.removeItem(KEY_SIZE);
+            safeRemove(localStorageRef, KEY_MODE);
+            safeRemove(localStorageRef, KEY_WALK);
+            safeRemove(localStorageRef, KEY_SIZE);
             state.mode = DEFAULTS.mode;
             state.walkStep = DEFAULTS.walkStep;
             state.size = DEFAULTS.size;
@@ -187,6 +200,20 @@ const exploreLinks = [
         const DEFAULT_COLOR_KEY = 'blue';
         const DEFAULT_TONE_KEY = 'balance';
         const DEFAULT_CIRCADIAN_MODE = 'auto';
+        const localStorageRef = (() => {
+          try {
+            return window.localStorage;
+          } catch {
+            return null;
+          }
+        })();
+        const sessionStorageRef = (() => {
+          try {
+            return window.sessionStorage;
+          } catch {
+            return null;
+          }
+        })();
         const palette = {
           yellow: '#A79A62',
           blue: '#6D8488',
@@ -355,7 +382,7 @@ const exploreLinks = [
 
         const safeGet = (storage, key) => {
           try {
-            return storage.getItem(key);
+            return typeof storage?.getItem === 'function' ? storage.getItem(key) : null;
           } catch {
             return null;
           }
@@ -363,13 +390,13 @@ const exploreLinks = [
 
         const safeSet = (storage, key, value) => {
           try {
-            storage.setItem(key, value);
+            storage?.setItem?.(key, value);
           } catch {}
         };
 
         const safeRemove = (storage, key) => {
           try {
-            storage.removeItem(key);
+            storage?.removeItem?.(key);
           } catch {}
         };
         const clamp = (value, min, max) => Math.min(max, Math.max(min, Number(value) || 0));
@@ -672,7 +699,7 @@ const exploreLinks = [
           currentCircadianMode = nextMode;
           root.dataset.circadianMode = nextMode;
           if (persist) {
-            safeSet(localStorage, KEY_CIRCADIAN_MODE, nextMode);
+            safeSet(localStorageRef, KEY_CIRCADIAN_MODE, nextMode);
           }
           if (refresh) {
             refreshCircadian();
@@ -687,7 +714,7 @@ const exploreLinks = [
         const getCircadianMode = () => currentCircadianMode;
 
         const initCircadianMode = () => {
-          const saved = normalizeCircadianMode(safeGet(localStorage, KEY_CIRCADIAN_MODE));
+          const saved = normalizeCircadianMode(safeGet(localStorageRef, KEY_CIRCADIAN_MODE));
           applyCircadianMode(saved, { persist: false, refresh: false });
         };
 
@@ -749,7 +776,7 @@ const exploreLinks = [
         };
 
         const readAccentHandoff = () => {
-          const raw = safeGet(sessionStorage, HANDOFF_KEY);
+          const raw = safeGet(sessionStorageRef, HANDOFF_KEY);
           if (!raw) return null;
 
           try {
@@ -766,7 +793,7 @@ const exploreLinks = [
         };
 
         const readToneHandoff = () => {
-          const raw = safeGet(sessionStorage, TONE_HANDOFF_KEY);
+          const raw = safeGet(sessionStorageRef, TONE_HANDOFF_KEY);
           if (!raw) return null;
 
           try {
@@ -785,7 +812,7 @@ const exploreLinks = [
         const writeAccentHandoff = (targetInput) => {
           const target = toHexFromInput(targetInput);
           safeSet(
-            sessionStorage,
+            sessionStorageRef,
             HANDOFF_KEY,
             JSON.stringify({
               from: currentBase,
@@ -798,7 +825,7 @@ const exploreLinks = [
         const writeToneHandoff = (targetInput) => {
           const target = normalizeToneKey(targetInput);
           safeSet(
-            sessionStorage,
+            sessionStorageRef,
             TONE_HANDOFF_KEY,
             JSON.stringify({
               from: currentTone,
@@ -867,7 +894,7 @@ const exploreLinks = [
         const initAccent = () => {
           const targetKey = getInitialColorKey();
           const handoff = readAccentHandoff();
-          safeRemove(sessionStorage, HANDOFF_KEY);
+          safeRemove(sessionStorageRef, HANDOFF_KEY);
 
           if (handoff && !prefersReducedMotion()) {
             applyAccent(handoff.from);
@@ -883,7 +910,7 @@ const exploreLinks = [
         const initTone = () => {
           const targetKey = getInitialToneKey();
           const handoff = readToneHandoff();
-          safeRemove(sessionStorage, TONE_HANDOFF_KEY);
+          safeRemove(sessionStorageRef, TONE_HANDOFF_KEY);
 
           if (handoff && !prefersReducedMotion()) {
             applyTopicTone(handoff.from);
@@ -950,8 +977,28 @@ const exploreLinks = [
           );
         };
 
+        const initHeaderMetrics = () => {
+          const header = document.querySelector('.site-header');
+          if (!(header instanceof HTMLElement)) return;
+
+          const syncHeaderHeight = () => {
+            const height = Math.max(52, Math.round(header.getBoundingClientRect().height));
+            root.style.setProperty('--header-height', `${height}px`);
+          };
+
+          syncHeaderHeight();
+          window.addEventListener('resize', syncHeaderHeight, { passive: true });
+
+          if ('ResizeObserver' in window) {
+            const observer = new ResizeObserver(() => {
+              syncHeaderHeight();
+            });
+            observer.observe(header);
+          }
+        };
+
         const initSiteActivity = () => {
-          const ACTIVITY_IDLE_MS = 1600;
+          const ACTIVITY_IDLE_MS = 2240;
           let activityTimer = null;
 
           const setSiteActive = (isActive) => {
@@ -984,6 +1031,60 @@ const exploreLinks = [
               return;
             }
             markSiteActive();
+          });
+        };
+
+        const initScrollWind = () => {
+          let decayTimer = null;
+          let lastScrollY = window.scrollY;
+          let lastTimestamp = performance.now();
+
+          const clearWind = () => {
+            root.dataset.siteScrollActive = 'false';
+            root.style.setProperty('--garland-wind-x', '0px');
+            root.style.setProperty('--garland-wind-strength', '0');
+          };
+
+          if (prefersReducedMotion()) {
+            clearWind();
+            return;
+          }
+
+          const onScroll = () => {
+            const nextScrollY = window.scrollY;
+            const now = performance.now();
+            const delta = nextScrollY - lastScrollY;
+            const elapsed = Math.max(16, now - lastTimestamp);
+
+            lastScrollY = nextScrollY;
+            lastTimestamp = now;
+
+            if (Math.abs(delta) < 0.5) return;
+
+            const velocity = delta / elapsed;
+            const strength = clamp(Math.abs(velocity) * 22, 0, 1);
+            const windX = clamp(delta * 0.16, -5, 5);
+
+            root.dataset.siteScrollActive = 'true';
+            root.style.setProperty('--garland-wind-strength', strength.toFixed(3));
+            root.style.setProperty('--garland-wind-x', `${windX.toFixed(2)}px`);
+
+            if (decayTimer) window.clearTimeout(decayTimer);
+            decayTimer = window.setTimeout(() => {
+              clearWind();
+            }, 300);
+          };
+
+          clearWind();
+          window.addEventListener('scroll', onScroll, { passive: true });
+          document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+              if (decayTimer) window.clearTimeout(decayTimer);
+              clearWind();
+              return;
+            }
+            lastScrollY = window.scrollY;
+            lastTimestamp = performance.now();
           });
         };
 
@@ -1033,7 +1134,9 @@ const exploreLinks = [
           initTone();
           initAccent();
           initCircadianClock();
+          initHeaderMetrics();
           initSiteActivity();
+          initScrollWind();
           initCursorLight();
           document.addEventListener('click', handleColorClick, { capture: true });
         };

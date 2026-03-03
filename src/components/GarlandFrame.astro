@@ -1,35 +1,74 @@
 ---
+const cycle = <T,>(values: T[], index: number): T => values[index % values.length];
+
+const leafCurves = [
+  '74% 10% 68% 12% / 84% 8% 70% 10%',
+  '66% 6% 78% 10% / 76% 8% 82% 14%',
+  '80% 12% 62% 14% / 88% 10% 64% 8%',
+  '71% 8% 76% 12% / 79% 10% 74% 12%'
+];
+
 const topLeaves = Array.from({ length: 40 }, (_, i) => ({
   x: 1.8 + i * 2.45,
   rot: i % 2 === 0 ? 36 : -42,
-  scale: 0.98 + (i % 5) * 0.04
+  scale: 0.98 + (i % 5) * 0.04,
+  width: cycle([26, 30, 28, 32], i),
+  height: cycle([40, 44, 42, 46], i),
+  curve: cycle(leafCurves, i),
+  vein: cycle(['8deg', '5deg', '11deg', '3deg'], i)
 }));
 
-const bottomLeaves = Array.from({ length: 38 }, (_, i) => ({
-  x: 2.1 + i * 2.5,
-  rot: i % 2 === 0 ? -32 : 38,
-  scale: 0.96 + (i % 4) * 0.045
+const bottomLeaves = Array.from({ length: 34 }, (_, i) => ({
+  x: 2.4 + i * 2.78 + cycle([0.18, -0.26, 0.42, -0.08, 0.31], i),
+  rot: cycle([-34, 26, -22, 33, -18, 21], i),
+  scale: 0.86 + cycle([0.02, 0.08, -0.02, 0.12, 0.05], i),
+  width: cycle([24, 29, 26, 31, 27], i),
+  height: cycle([36, 43, 38, 46, 40], i),
+  curve: cycle(leafCurves, i + 1),
+  vein: cycle(['6deg', '10deg', '4deg', '-2deg', '8deg'], i)
 }));
 
 const sideLeaves = Array.from({ length: 24 }, (_, i) => ({
-  y: 2.5 + i * 4.1,
-  leftRot: i % 2 === 0 ? 44 : 18,
-  rightRot: i % 2 === 0 ? -44 : -18,
-  scale: 0.96 + (i % 4) * 0.04
+  y: 2.8 + i * 4.05 + cycle([0.38, -0.18, 0.52, -0.08], i) + (i % 6 === 0 ? 0.85 : 0),
+  leftRot: cycle([42, 16, 35, 22, 48, 12], i),
+  rightRot: cycle([-42, -16, -35, -22, -48, -12], i),
+  scale: 0.84 + cycle([0.02, 0.08, 0.12, -0.01], i),
+  width: cycle([24, 27, 30, 26], i),
+  height: cycle([37, 41, 45, 39], i),
+  curve: cycle(leafCurves, i + 2),
+  vein: cycle(['7deg', '4deg', '10deg', '2deg'], i)
 }));
 
 const vineBranches = Array.from({ length: 18 }, (_, i) => ({
-  y: 4 + i * 5.1,
-  len: 16 + (i % 4) * 6,
-  leftRot: i % 2 === 0 ? 32 : -24,
-  rightRot: i % 2 === 0 ? -32 : 24
+  y: 4.4 + i * 4.95 + cycle([0.26, -0.16, 0.48, -0.06], i),
+  len: 15 + (i % 4) * 6 + (i % 3 === 0 ? 3 : 0),
+  leftRot: cycle([28, -18, 34, -22, 24, -14], i),
+  rightRot: cycle([-28, 18, -34, 22, -24, 14], i)
 }));
 
 const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
-  y: 6 + i * 9.4,
-  len: 20 + (i % 3) * 10,
-  leftRot: i % 2 === 0 ? -18 : 14,
-  rightRot: i % 2 === 0 ? 18 : -14
+  y: 6.5 + i * 8.9 + cycle([0.32, -0.12, 0.5], i),
+  len: 18 + (i % 3) * 9 + (i % 4 === 0 ? 4 : 0),
+  leftRot: cycle([-16, 11, -22, 14], i),
+  rightRot: cycle([16, -11, 22, -14], i)
+}));
+
+const headerBandClusters = Array.from({ length: 22 }, (_, i) => ({
+  x: 3.4 + i * 4.22 + cycle([0.16, -0.28, 0.34, -0.1], i),
+  len: 11 + (i % 4) * 4 + (i % 5 === 0 ? 2 : 0),
+  rot: cycle([22, -18, 28, -12, 16, -24], i),
+  leafRot: cycle([26, 14, 30, 18, 22, 12], i),
+  width: cycle([14, 16, 18, 15], i),
+  height: cycle([18, 20, 22, 19], i),
+  scale: 0.62 + cycle([0.03, 0.08, -0.01, 0.05], i),
+  curve: cycle(leafCurves, i + 3),
+  vein: cycle(['6deg', '3deg', '8deg', '2deg'], i)
+}));
+
+const headerBandTendrils = Array.from({ length: 7 }, (_, i) => ({
+  x: 8 + i * 13.3 + cycle([0.6, -0.8, 0.4], i),
+  len: 12 + (i % 3) * 4,
+  rot: cycle([-10, 12, -7, 9], i)
 }));
 
 ---
@@ -40,27 +79,62 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
   <span class="wire wire-left"></span>
   <span class="wire wire-right"></span>
 
+  <div class="header-vine-band">
+    <div class="header-vine-band__inner">
+      <div class="header-vine-band__stem"></div>
+      {headerBandClusters.map((cluster) => (
+        <span
+          class="header-vine-cluster"
+          style={`--x:${cluster.x}%;--len:${cluster.len}px;--rot:${cluster.rot}deg;--leaf-rot:${cluster.leafRot}deg;--leaf-w:${cluster.width}px;--leaf-h:${cluster.height}px;--leaf-scale:${cluster.scale};--leaf-curve:${cluster.curve};--leaf-vein-angle:${cluster.vein};`}
+        >
+          <span class="header-vine-cluster__sprig"></span>
+          <span class="header-vine-cluster__leaf"></span>
+        </span>
+      ))}
+      {headerBandTendrils.map((tendril) => (
+        <span
+          class="header-vine-band__tendril"
+          style={`--x:${tendril.x}%;--len:${tendril.len}px;--rot:${tendril.rot}deg;`}
+        ></span>
+      ))}
+    </div>
+  </div>
+
   <div class="leaf-track leaf-track-top">
     {topLeaves.map((leaf) => (
-      <span class="leaf leaf-top" style={`--x:${leaf.x}%;--rot:${leaf.rot}deg;--s:${leaf.scale};`}></span>
+      <span
+        class="leaf leaf-top"
+        style={`--x:${leaf.x}%;--rot:${leaf.rot}deg;--s:${leaf.scale};--leaf-w:${leaf.width}px;--leaf-h:${leaf.height}px;--leaf-curve:${leaf.curve};--leaf-vein-angle:${leaf.vein};`}
+      ></span>
     ))}
   </div>
 
   <div class="leaf-track leaf-track-bottom">
-    {bottomLeaves.map((leaf) => (
-      <span class="leaf leaf-bottom" style={`--x:${leaf.x}%;--rot:${leaf.rot}deg;--s:${leaf.scale};`}></span>
-    ))}
+    <div class="leaf-track-bottom__inner">
+      {bottomLeaves.map((leaf) => (
+        <span
+          class="leaf leaf-bottom"
+          style={`--x:${leaf.x}%;--rot:${leaf.rot}deg;--s:${leaf.scale};--leaf-w:${leaf.width}px;--leaf-h:${leaf.height}px;--leaf-curve:${leaf.curve};--leaf-vein-angle:${leaf.vein};`}
+        ></span>
+      ))}
+    </div>
   </div>
 
   <div class="leaf-track leaf-track-left">
     {sideLeaves.map((leaf) => (
-      <span class="leaf leaf-left" style={`--y:${leaf.y}%;--rot:${leaf.leftRot}deg;--s:${leaf.scale};`}></span>
+      <span
+        class="leaf leaf-left"
+        style={`--y:${leaf.y}%;--rot:${leaf.leftRot}deg;--s:${leaf.scale};--leaf-w:${leaf.width}px;--leaf-h:${leaf.height}px;--leaf-curve:${leaf.curve};--leaf-vein-angle:${leaf.vein};`}
+      ></span>
     ))}
   </div>
 
   <div class="leaf-track leaf-track-right">
     {sideLeaves.map((leaf) => (
-      <span class="leaf leaf-right" style={`--y:${leaf.y}%;--rot:${leaf.rightRot}deg;--s:${leaf.scale};`}></span>
+      <span
+        class="leaf leaf-right"
+        style={`--y:${leaf.y}%;--rot:${leaf.rightRot}deg;--s:${leaf.scale};--leaf-w:${leaf.width}px;--leaf-h:${leaf.height}px;--leaf-curve:${leaf.curve};--leaf-vein-angle:${leaf.vein};`}
+      ></span>
     ))}
   </div>
 
@@ -109,17 +183,25 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
     --garland-comp-light: color-mix(in oklab, var(--garland-comp) 64%, #ffddb7 36%);
     --garland-highlight: color-mix(in oklab, var(--accent) 16%, var(--garland-comp-light) 84%);
     --garland-wire: color-mix(in oklab, var(--garland-comp) 52%, #74604c 48%);
+    --garland-leaf-base: color-mix(in oklab, #4e6141 66%, var(--garland-comp-light) 34%);
+    --garland-leaf-shadow: color-mix(in oklab, #1f271d 76%, var(--garland-comp-deep) 24%);
+    --garland-leaf-highlight: color-mix(in oklab, #97a67a 74%, white 26%);
+    --garland-bark-mid: color-mix(in oklab, #4d3d2d 72%, var(--garland-comp) 28%);
+    --garland-bark-shadow: color-mix(in oklab, #20170f 78%, var(--garland-comp-deep) 22%);
+    --garland-bark-highlight: color-mix(in oklab, #6f5d49 72%, var(--garland-comp-light) 28%);
     --garland-retract-progress: 0;
-    --garland-side-shift: 50px;
-    --garland-leaf-shift: 36px;
-    --garland-bottom-shift: 47px;
+    --garland-visible-ratio: calc(1 - (0.96 * var(--garland-retract-progress)));
+    --garland-bottom-travel: 25px;
+    --garland-duration-strong: 590ms;
+    --garland-duration-soft: 450ms;
+    --garland-duration-fade: 730ms;
     position: fixed;
     inset: 4px;
     z-index: 0;
     pointer-events: none;
     opacity: 0.58;
-    filter: saturate(0.78) brightness(0.84);
-    transition: opacity 520ms var(--ease-standard, ease);
+    filter: saturate(0.74) brightness(0.86);
+    transition: opacity var(--garland-duration-fade) var(--ease-standard, ease);
   }
 
   :global(html[data-site-active='true']) .garland-real {
@@ -175,6 +257,142 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
     border-right: 3px solid color-mix(in oklab, var(--garland-wire) 52%, transparent);
   }
 
+  .header-vine-band {
+    position: absolute;
+    top: calc(var(--header-height, 64px) - 1px);
+    left: clamp(18px, 2.2vw, 32px);
+    right: clamp(18px, 2.2vw, 32px);
+    height: clamp(24px, 3vw, 38px);
+    z-index: 2;
+    opacity: calc(0.4 - 0.08 * var(--garland-retract-progress));
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%);
+    transition: opacity var(--garland-duration-soft) var(--ease-standard, ease);
+  }
+
+  .header-vine-band__inner {
+    position: absolute;
+    inset: 0;
+    transform-origin: top center;
+    transform:
+      translateX(calc(var(--garland-wind-x, 0px) * 0.38))
+      rotate(calc(var(--garland-wind-strength, 0) * 0.55deg))
+      scaleY(var(--garland-visible-ratio));
+    transition: transform var(--garland-duration-strong) var(--ease-emphasized, ease);
+  }
+
+  .header-vine-band__stem {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: 999px;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        color-mix(in oklab, var(--garland-bark-highlight) 56%, transparent) 0 8px,
+        color-mix(in oklab, var(--garland-bark-mid) 82%, transparent) 8px 16px
+      ),
+      linear-gradient(
+        180deg,
+        var(--garland-bark-highlight),
+        var(--garland-bark-mid) 58%,
+        var(--garland-bark-shadow)
+      );
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--garland-bark-highlight) 14%, transparent),
+      0 3px 10px rgba(0, 0, 0, 0.22);
+  }
+
+  .header-vine-cluster {
+    position: absolute;
+    left: var(--x);
+    top: 0;
+    width: 22px;
+    height: 100%;
+    transform: translateX(-50%);
+  }
+
+  .header-vine-cluster__sprig {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: var(--len);
+    height: 2px;
+    border-radius: 999px;
+    background:
+      linear-gradient(
+        90deg,
+        var(--garland-bark-highlight),
+        var(--garland-bark-mid) 58%,
+        var(--garland-bark-shadow)
+      );
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--garland-bark-highlight) 10%, transparent);
+    transform-origin: left center;
+    transform: translateX(-2px) translateY(1px) rotate(var(--rot));
+  }
+
+  .header-vine-cluster__leaf {
+    position: absolute;
+    left: 50%;
+    top: 4px;
+    width: var(--leaf-w);
+    height: var(--leaf-h);
+    border-radius: var(--leaf-curve);
+    background:
+      radial-gradient(
+        82% 88% at 28% 20%,
+        color-mix(in oklab, var(--garland-leaf-highlight) 18%, transparent),
+        transparent 40%
+      ),
+      linear-gradient(
+        162deg,
+        color-mix(in oklab, var(--garland-leaf-highlight) 22%, var(--garland-leaf-base) 78%) 0%,
+        var(--garland-leaf-base) 28%,
+        color-mix(in oklab, var(--garland-leaf-base) 78%, var(--garland-leaf-shadow) 22%) 62%,
+        var(--garland-leaf-shadow)
+      );
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, var(--garland-leaf-highlight) 12%, transparent),
+      0 2px 5px rgba(0, 0, 0, 0.14);
+    transform-origin: 18% 8%;
+    transform: translateX(6px) translateY(4px) rotate(var(--leaf-rot)) scale(var(--leaf-scale));
+    transition: transform var(--garland-duration-soft) var(--ease-standard, ease);
+  }
+
+  .header-vine-cluster__leaf::after {
+    content: '';
+    position: absolute;
+    left: 28%;
+    top: 2px;
+    bottom: 2px;
+    width: 2px;
+    border-radius: 999px;
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--garland-leaf-highlight) 34%, transparent),
+      color-mix(in oklab, var(--garland-bark-mid) 24%, transparent)
+    );
+    transform: rotate(var(--leaf-vein-angle));
+    opacity: 0.72;
+  }
+
+  .header-vine-band__tendril {
+    position: absolute;
+    left: var(--x);
+    top: 2px;
+    width: 14px;
+    height: var(--len);
+    border-left: 2px solid color-mix(in oklab, var(--garland-leaf-highlight) 24%, var(--garland-bark-highlight));
+    border-bottom: 2px solid color-mix(in oklab, var(--garland-leaf-highlight) 24%, var(--garland-bark-highlight));
+    border-radius: 0 0 0 18px;
+    opacity: 0.45;
+    transform-origin: top center;
+    transform: rotate(var(--rot));
+  }
+
   .leaf-track {
     position: absolute;
     z-index: 2;
@@ -182,7 +400,7 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
 
   .leaf-track-top,
   .leaf-track-bottom {
-    opacity: calc(0.46 - 0.2 * var(--garland-retract-progress));
+    opacity: calc(0.46 - 0.1 * var(--garland-retract-progress));
   }
 
   .leaf-track-top {
@@ -194,7 +412,17 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
     left: 0.8%;
     right: 0.8%;
     height: 52px;
-    transform: translateY(calc(var(--garland-bottom-shift) * var(--garland-retract-progress)));
+    transform:
+      translateX(calc(var(--garland-wind-x, 0px) * 0.14))
+      translateY(calc(var(--garland-bottom-travel) * var(--garland-retract-progress)));
+  }
+
+  .leaf-track-bottom__inner {
+    position: absolute;
+    inset: 0;
+    transform-origin: top center;
+    transform: scaleY(var(--garland-visible-ratio));
+    transition: transform var(--garland-duration-strong) var(--ease-emphasized, ease);
   }
 
   .leaf-track-left,
@@ -205,66 +433,307 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 9%, black 84%, transparent 100%);
     mask-image: linear-gradient(to bottom, transparent 0%, black 9%, black 84%, transparent 100%);
     transition:
-      transform 420ms var(--ease-emphasized, ease),
-      opacity 320ms var(--ease-standard, ease);
+      transform var(--garland-duration-strong) var(--ease-emphasized, ease),
+      opacity var(--garland-duration-soft) var(--ease-standard, ease);
   }
 
   .leaf-track-left {
     left: -14px;
-    transform: translateX(calc(var(--garland-leaf-shift) * -1 * var(--garland-retract-progress)));
+    transform-origin: right center;
+    transform:
+      translateX(calc(var(--garland-wind-x, 0px) * -0.58))
+      translateY(calc(var(--garland-wind-strength, 0) * 0.45px))
+      rotate(calc(var(--garland-wind-strength, 0) * -0.45deg))
+      scaleX(var(--garland-visible-ratio));
   }
 
   .leaf-track-right {
     right: -14px;
-    transform: translateX(calc(var(--garland-leaf-shift) * var(--garland-retract-progress)));
+    transform-origin: left center;
+    transform:
+      translateX(calc(var(--garland-wind-x, 0px) * 0.58))
+      translateY(calc(var(--garland-wind-strength, 0) * 0.45px))
+      rotate(calc(var(--garland-wind-strength, 0) * 0.45deg))
+      scaleX(var(--garland-visible-ratio));
   }
 
   .leaf-track-bottom {
     transition:
-      transform 420ms var(--ease-emphasized, ease),
-      opacity 320ms var(--ease-standard, ease);
+      transform var(--garland-duration-strong) var(--ease-emphasized, ease),
+      opacity var(--garland-duration-soft) var(--ease-standard, ease);
   }
 
   .leaf {
     position: absolute;
-    width: 29px;
-    height: 44px;
-    border-radius: 70% 0 70% 0 / 80% 0 80% 0;
+    width: var(--leaf-w, 29px);
+    height: var(--leaf-h, 44px);
+    border-radius: var(--leaf-curve, 74% 10% 68% 12% / 84% 8% 70% 10%);
     background:
+      radial-gradient(
+        78% 82% at 28% 22%,
+        color-mix(in oklab, var(--garland-leaf-highlight) 18%, transparent),
+        transparent 42%
+      ),
       linear-gradient(
-        148deg,
-        color-mix(in oklab, var(--garland-highlight) 82%, white 18%),
-        color-mix(in oklab, var(--garland-comp) 88%, #4e2915 12%) 62%,
-        color-mix(in oklab, var(--garland-comp-deep) 90%, black 10%)
+        164deg,
+        color-mix(in oklab, var(--garland-leaf-highlight) 22%, var(--garland-leaf-base) 78%) 0%,
+        var(--garland-leaf-base) 26%,
+        color-mix(in oklab, var(--garland-leaf-base) 74%, var(--garland-leaf-shadow) 26%) 62%,
+        var(--garland-leaf-shadow)
       );
     box-shadow:
-      inset 0 0 0 1px color-mix(in oklab, var(--garland-comp-light) 26%, transparent),
-      0 3px 9px rgba(0, 0, 0, 0.38);
+      inset 0 0 0 1px color-mix(in oklab, var(--garland-leaf-highlight) 12%, transparent),
+      0 3px 7px rgba(0, 0, 0, 0.24);
     transform-origin: center;
   }
 
   .leaf::after {
     content: '';
     position: absolute;
-    left: 46%;
+    left: 34%;
     top: 3px;
-    bottom: 3px;
+    bottom: 4px;
     width: 2px;
-    background: color-mix(in oklab, var(--garland-comp-light) 34%, transparent);
-    transform: rotate(8deg);
+    border-radius: 999px;
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--garland-leaf-highlight) 34%, transparent),
+      color-mix(in oklab, var(--garland-bark-mid) 28%, transparent)
+    );
+    transform: rotate(var(--leaf-vein-angle, 8deg));
+    opacity: 0.74;
   }
 
   .leaf::before {
     content: '';
     position: absolute;
-    inset: 2px 1px 10px 6px;
-    border-radius: 50% 0 42% 0 / 58% 0 52% 0;
-    background: linear-gradient(
-      150deg,
-      color-mix(in oklab, var(--garland-highlight) 22%, transparent),
-      transparent 68%
-    );
+    inset: 3px 4px 12px 6px;
+    border-radius: 56% 8% 48% 12% / 58% 8% 50% 12%;
+    background:
+      radial-gradient(
+        88% 86% at 34% 18%,
+        rgba(255, 255, 255, 0.04),
+        transparent 54%
+      ),
+      radial-gradient(
+        82% 92% at 72% 72%,
+        rgba(0, 0, 0, 0.08),
+        transparent 58%
+      );
+    mix-blend-mode: soft-light;
+    opacity: 0.52;
+  }
+
+  :global(html[data-site-scroll-active='true']) .leaf {
+    filter: saturate(1.02);
+  }
+
+  :global(html[data-site-scroll-active='true']) .leaf-left {
+    transform: rotate(calc(var(--rot) - (var(--garland-wind-strength, 0) * 0.65deg))) scale(var(--s));
+  }
+
+  :global(html[data-site-scroll-active='true']) .leaf-right {
+    transform: rotate(calc(var(--rot) + (var(--garland-wind-strength, 0) * 0.65deg))) scale(var(--s));
+  }
+
+  :global(html[data-site-scroll-active='true']) .header-vine-cluster__leaf {
+    transform:
+      translateX(calc(6px + (var(--garland-wind-x, 0px) * 0.18)))
+      translateY(calc(4px + (var(--garland-wind-strength, 0) * 0.45px)))
+      rotate(calc(var(--leaf-rot) + (var(--garland-wind-strength, 0) * 0.85deg)))
+      scale(var(--leaf-scale));
+  }
+
+  .vine-lane {
+    position: absolute;
+    top: 22px;
+    bottom: 22px;
+    width: 56px;
+    z-index: 1;
+    opacity: calc(0.74 - 0.18 * var(--garland-retract-progress));
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 84%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 84%, transparent 100%);
+    transition: opacity var(--garland-duration-soft) var(--ease-standard, ease);
+  }
+
+  .vine-lane-left {
+    left: -12px;
+    animation: garlandSideSwayLeft 18s ease-in-out infinite;
+  }
+
+  .vine-lane-right {
+    right: -12px;
+    animation: garlandSideSwayRight 19s ease-in-out infinite;
+  }
+
+  .vine-lane__inner {
+    position: absolute;
+    inset: 0;
+    transition: transform var(--garland-duration-strong) var(--ease-emphasized, ease);
+  }
+
+  .vine-lane-left .vine-lane__inner {
+    transform-origin: right center;
+    transform:
+      translateX(calc(var(--garland-wind-x, 0px) * -0.3))
+      rotate(calc(var(--garland-wind-strength, 0) * -0.18deg))
+      scaleX(var(--garland-visible-ratio));
+  }
+
+  .vine-lane-right .vine-lane__inner {
+    transform-origin: left center;
+    transform:
+      translateX(calc(var(--garland-wind-x, 0px) * 0.3))
+      rotate(calc(var(--garland-wind-strength, 0) * 0.18deg))
+      scaleX(var(--garland-visible-ratio));
+  }
+
+  .vine-main {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    border-radius: 999px;
+    background:
+      repeating-linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--garland-bark-highlight) 42%, transparent) 0 10px,
+        transparent 10px 18px
+      ),
+      linear-gradient(
+        180deg,
+        var(--garland-bark-highlight),
+        var(--garland-bark-mid) 32%,
+        var(--garland-bark-shadow)
+      );
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--garland-bark-highlight) 14%, transparent),
+      0 4px 12px rgba(0, 0, 0, 0.26);
+  }
+
+  .vine-main::after {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    border-radius: inherit;
+    background:
+      linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.03),
+        transparent 36%,
+        rgba(0, 0, 0, 0.06)
+      );
     opacity: 0.72;
+  }
+
+  .vine-main-left {
+    left: 19px;
+  }
+
+  .vine-main-right {
+    right: 19px;
+  }
+
+  .vine-branch {
+    position: absolute;
+    top: var(--y);
+    width: var(--len);
+    height: 3px;
+    border-radius: 999px;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        color-mix(in oklab, var(--garland-bark-highlight) 28%, transparent) 0 6px,
+        transparent 6px 11px
+      ),
+      linear-gradient(
+        90deg,
+        var(--garland-bark-highlight),
+        var(--garland-bark-mid) 48%,
+        var(--garland-bark-shadow)
+      );
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--garland-bark-highlight) 10%, transparent);
+  }
+
+  .vine-branch::after {
+    content: '';
+    position: absolute;
+    top: -7px;
+    right: -6px;
+    width: 12px;
+    height: 18px;
+    border-radius: 72% 12% 68% 14% / 82% 10% 70% 12%;
+    background:
+      radial-gradient(
+        80% 84% at 28% 20%,
+        color-mix(in oklab, var(--garland-leaf-highlight) 16%, transparent),
+        transparent 42%
+      ),
+      linear-gradient(
+        162deg,
+        color-mix(in oklab, var(--garland-leaf-highlight) 18%, var(--garland-leaf-base) 82%) 0%,
+        var(--garland-leaf-base) 28%,
+        color-mix(in oklab, var(--garland-leaf-base) 74%, var(--garland-leaf-shadow) 26%) 62%,
+        var(--garland-leaf-shadow)
+      );
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+    transform: rotate(24deg);
+  }
+
+  .vine-branch-left {
+    left: 21px;
+    transform-origin: left center;
+    transform: rotate(var(--rot));
+  }
+
+  .vine-branch-right {
+    right: 21px;
+    transform-origin: right center;
+    transform: rotate(var(--rot));
+  }
+
+  .vine-branch-right::after {
+    right: auto;
+    left: -6px;
+    transform: rotate(-24deg) scaleX(-1);
+  }
+
+  .vine-tendril {
+    position: absolute;
+    top: var(--y);
+    width: 16px;
+    height: var(--len);
+    opacity: 0.54;
+    transition: transform var(--garland-duration-soft) var(--ease-standard, ease);
+  }
+
+  .vine-lane-left .vine-tendril,
+  .vine-lane-right .vine-tendril {
+    animation: garlandTendrilGlow 11s ease-in-out infinite;
+  }
+
+  .vine-tendril-left {
+    left: 24px;
+    border-left: 2px solid color-mix(in oklab, var(--garland-leaf-highlight) 18%, var(--garland-bark-highlight));
+    border-bottom: 2px solid color-mix(in oklab, var(--garland-leaf-highlight) 18%, var(--garland-bark-highlight));
+    border-radius: 0 0 0 22px;
+    transform: rotate(var(--rot));
+  }
+
+  .vine-tendril-right {
+    right: 24px;
+    border-right: 2px solid color-mix(in oklab, var(--garland-leaf-highlight) 18%, var(--garland-bark-highlight));
+    border-bottom: 2px solid color-mix(in oklab, var(--garland-leaf-highlight) 18%, var(--garland-bark-highlight));
+    border-radius: 0 0 22px 0;
+    transform: rotate(var(--rot));
+  }
+
+  :global(html[data-site-scroll-active='true']) .vine-tendril-left {
+    transform: rotate(calc(var(--rot) - (var(--garland-wind-strength, 0) * 0.85deg)));
+  }
+
+  :global(html[data-site-scroll-active='true']) .vine-tendril-right {
+    transform: rotate(calc(var(--rot) + (var(--garland-wind-strength, 0) * 0.85deg)));
   }
 
   .leaf-top {
@@ -291,154 +760,13 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
     transform: rotate(var(--rot)) scale(var(--s));
   }
 
-  .vine-lane {
-    position: absolute;
-    top: 22px;
-    bottom: 22px;
-    width: 56px;
-    z-index: 1;
-    opacity: calc(0.8 - 0.22 * var(--garland-retract-progress));
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 84%, transparent 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 84%, transparent 100%);
-    transition: opacity 320ms var(--ease-standard, ease);
-  }
-
-  .vine-lane-left {
-    left: -12px;
-    animation: garlandSideSwayLeft 16s ease-in-out infinite;
-  }
-
-  .vine-lane-right {
-    right: -12px;
-    animation: garlandSideSwayRight 17s ease-in-out infinite;
-  }
-
-  .vine-lane__inner {
-    position: absolute;
-    inset: 0;
-    transition: transform 420ms var(--ease-emphasized, ease);
-  }
-
-  .vine-lane-left .vine-lane__inner {
-    transform: translateX(calc(var(--garland-side-shift) * -1 * var(--garland-retract-progress)));
-  }
-
-  .vine-lane-right .vine-lane__inner {
-    transform: translateX(calc(var(--garland-side-shift) * var(--garland-retract-progress)));
-  }
-
-  .vine-main {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 5px;
-    border-radius: 999px;
-    background:
-      linear-gradient(
-        180deg,
-        color-mix(in oklab, var(--garland-comp) 76%, #5b2f17 24%),
-        color-mix(in oklab, var(--garland-comp-deep) 80%, #190c09 20%)
-      );
-    box-shadow:
-      0 0 0 1px color-mix(in oklab, var(--garland-comp-light) 20%, transparent),
-      0 5px 16px rgba(0, 0, 0, 0.34);
-  }
-
-  .vine-main-left {
-    left: 19px;
-  }
-
-  .vine-main-right {
-    right: 19px;
-  }
-
-  .vine-branch {
-    position: absolute;
-    top: var(--y);
-    width: var(--len);
-    height: 3px;
-    border-radius: 999px;
-    background:
-      linear-gradient(
-        90deg,
-        color-mix(in oklab, var(--garland-comp) 82%, #78441f 18%),
-        color-mix(in oklab, var(--garland-comp-deep) 80%, #1a0d08 20%)
-      );
-    box-shadow: 0 0 0 1px color-mix(in oklab, var(--garland-comp-light) 14%, transparent);
-  }
-
-  .vine-branch::after {
-    content: '';
-    position: absolute;
-    top: -7px;
-    right: -6px;
-    width: 13px;
-    height: 20px;
-    border-radius: 70% 0 70% 0 / 80% 0 80% 0;
-    background:
-      linear-gradient(
-        148deg,
-        color-mix(in oklab, var(--garland-comp-light) 82%, #a85f2a 18%),
-        color-mix(in oklab, var(--garland-comp) 84%, #2f190f 16%)
-      );
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.24);
-    transform: rotate(28deg);
-  }
-
-  .vine-branch-left {
-    left: 21px;
-    transform-origin: left center;
-    transform: rotate(var(--rot));
-  }
-
-  .vine-branch-right {
-    right: 21px;
-    transform-origin: right center;
-    transform: rotate(var(--rot));
-  }
-
-  .vine-branch-right::after {
-    right: auto;
-    left: -6px;
-    transform: rotate(-28deg) scaleX(-1);
-  }
-
-  .vine-tendril {
-    position: absolute;
-    top: var(--y);
-    width: 16px;
-    height: var(--len);
-    opacity: 0.62;
-  }
-
-  .vine-lane-left .vine-tendril,
-  .vine-lane-right .vine-tendril {
-    animation: garlandTendrilGlow 9s ease-in-out infinite;
-  }
-
-  .vine-tendril-left {
-    left: 24px;
-    border-left: 2px solid color-mix(in oklab, var(--garland-comp-light) 54%, transparent);
-    border-bottom: 2px solid color-mix(in oklab, var(--garland-comp-light) 54%, transparent);
-    border-radius: 0 0 0 22px;
-    transform: rotate(var(--rot));
-  }
-
-  .vine-tendril-right {
-    right: 24px;
-    border-right: 2px solid color-mix(in oklab, var(--garland-comp-light) 54%, transparent);
-    border-bottom: 2px solid color-mix(in oklab, var(--garland-comp-light) 54%, transparent);
-    border-radius: 0 0 22px 0;
-    transform: rotate(var(--rot));
-  }
-
   @keyframes garlandSideSwayLeft {
     0%,
     100% {
       transform: translate3d(0, 0, 0);
     }
     50% {
-      transform: translate3d(-1.2px, 0.8px, 0);
+      transform: translate3d(-0.9px, 0.7px, 0);
     }
   }
 
@@ -448,27 +776,55 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
       transform: translate3d(0, 0, 0);
     }
     50% {
-      transform: translate3d(1.2px, 0.8px, 0);
+      transform: translate3d(0.9px, 0.7px, 0);
     }
   }
 
   @keyframes garlandTendrilGlow {
     0%,
     100% {
-      opacity: 0.52;
+      opacity: 0.44;
     }
     50% {
-      opacity: 0.72;
+      opacity: 0.62;
     }
   }
 
   @media (max-width: 860px) {
     .garland-real {
-      --garland-side-shift: 34px;
-      --garland-leaf-shift: 26px;
-      --garland-bottom-shift: 38px;
+      --garland-bottom-travel: 20px;
       inset: 2px;
       opacity: 0.52;
+    }
+
+    .header-vine-band {
+      left: 12px;
+      right: 12px;
+      height: 24px;
+      opacity: calc(0.3 - 0.06 * var(--garland-retract-progress));
+    }
+
+    .header-vine-band__inner {
+      transform:
+        translateX(calc(var(--garland-wind-x, 0px) * 0.22))
+        rotate(calc(var(--garland-wind-strength, 0) * 0.35deg))
+        scaleY(var(--garland-visible-ratio));
+    }
+
+    .header-vine-cluster__leaf {
+      transform:
+        translateX(5px)
+        translateY(3px)
+        rotate(var(--leaf-rot))
+        scale(calc(var(--leaf-scale) * 0.82));
+    }
+
+    :global(html[data-site-scroll-active='true']) .header-vine-cluster__leaf {
+      transform:
+        translateX(calc(5px + (var(--garland-wind-x, 0px) * 0.12)))
+        translateY(calc(3px + (var(--garland-wind-strength, 0) * 0.25px)))
+        rotate(calc(var(--leaf-rot) + (var(--garland-wind-strength, 0) * 0.45deg)))
+        scale(calc(var(--leaf-scale) * 0.82));
     }
 
     .leaf {
@@ -505,6 +861,7 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
     .leaf-track-right .leaf:nth-child(2n),
     .leaf-track-top .leaf:nth-child(2n),
     .leaf-track-bottom .leaf:nth-child(2n),
+    .header-vine-cluster:nth-child(3n + 2),
     .vine-lane .vine-branch:nth-child(2n),
     .vine-lane .vine-tendril:nth-child(2n) {
       display: none;
@@ -512,9 +869,12 @@ const vineTendrils = Array.from({ length: 10 }, (_, i) => ({
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .header-vine-cluster__leaf,
+    .header-vine-band__inner,
     .leaf-track-left,
     .leaf-track-right,
     .leaf-track-bottom,
+    .leaf-track-bottom__inner,
     .vine-lane,
     .vine-lane__inner,
     .vine-lane-left,
