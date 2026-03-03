@@ -4,13 +4,40 @@ import NeuralMap from '../components/NeuralMap.astro';
 ---
 
 <BaseLayout title="Organizational Atlas — a_e.s_" theme="archive">
-  <header class="mb-6">
-    <h1 class="font-display text-4xl">Organizational Atlas</h1>
-    <p class="mt-2 max-w-2xl text-zinc-600 dark:text-zinc-300">
-      Use the nine-category ring as the top layer of the archive. The center marks the authorial core, and each outer section
-      opens into the themes and concepts that organize the writing.
-    </p>
-  </header>
+  <div class="atlas-page">
+    <header class="atlas-page__header mb-6">
+      <h1 class="font-display text-4xl">Organizational Atlas</h1>
+      <p class="mt-2 max-w-2xl text-zinc-600 dark:text-zinc-300">
+        Use the nine-category ring as the top layer of the archive. The center marks the authorial core, and each outer section
+        opens into the themes and concepts that organize the writing.
+      </p>
+    </header>
 
-  <NeuralMap />
+    <NeuralMap />
+  </div>
 </BaseLayout>
+
+<style>
+  .atlas-page {
+    margin-inline: calc(50% - 50vw + clamp(12px, 1.6vw, 28px));
+  }
+
+  .atlas-page__header {
+    padding-inline: clamp(0.35rem, 0.8vw, 0.8rem);
+  }
+
+  .atlas-page :global([data-neural-atlas]) {
+    width: min(100%, 1680px);
+    margin-inline: auto;
+  }
+
+  @media (max-width: 900px) {
+    .atlas-page {
+      margin-inline: 0;
+    }
+
+    .atlas-page__header {
+      padding-inline: 0;
+    }
+  }
+</style>

@@ -251,7 +251,7 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
     </div>
   </div>
 
-  <div class="map-wrap relative h-[560px] overflow-hidden rounded-xl border border-zinc-300 bg-paper dark:border-zinc-700 dark:bg-zinc-950" tabindex="0">
+  <div class="map-wrap relative overflow-hidden rounded-xl border border-zinc-300 bg-paper dark:border-zinc-700 dark:bg-zinc-950" tabindex="0">
     <svg
       id="atlas-svg"
       viewBox={`0 0 ${WORLD_WIDTH} ${WORLD_HEIGHT}`}
@@ -1029,6 +1029,7 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
   }
 
   .map-wrap {
+    aspect-ratio: 3200 / 2200;
     cursor: grab;
     user-select: none;
     touch-action: none;
@@ -1355,9 +1356,16 @@ const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
     fill: color-mix(in srgb, white 88%, var(--tone-accent) 12%);
   }
 
+  @media (max-width: 1100px) {
+    .map-wrap {
+      aspect-ratio: auto;
+      height: 72vh;
+      min-height: 560px;
+    }
+  }
+
   @media (max-width: 800px) {
     .map-wrap {
-      height: 72vh;
       min-height: 500px;
     }
 
