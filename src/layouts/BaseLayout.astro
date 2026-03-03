@@ -1007,13 +1007,17 @@ const exploreLinks = [
         const initHeaderMetrics = () => {
           const header = document.querySelector('.site-header');
           if (!(header instanceof HTMLElement)) {
+            root.style.setProperty('--site-header-size', '0px');
             root.style.setProperty('--header-height', '0px');
             return;
           }
 
           const syncHeaderHeight = () => {
             const height = Math.max(52, Math.round(header.getBoundingClientRect().height));
-            root.style.setProperty('--header-height', `${height}px`);
+            const body = document.body;
+            const headerMode = body instanceof HTMLBodyElement ? body.dataset.headerMode : 'pinned';
+            root.style.setProperty('--site-header-size', `${height}px`);
+            root.style.setProperty('--header-height', headerMode === 'peek' ? '0px' : `${height}px`);
           };
 
           syncHeaderHeight();
@@ -1061,6 +1065,125 @@ const exploreLinks = [
               return;
             }
             markSiteActive();
+          });
+        };
+
+        const initHeaderReveal = () => {
+          const body = document.body;
+          const header = document.querySelector('.site-header');
+          if (!(body instanceof HTMLBodyElement) || !(header instanceof HTMLElement)) return;
+
+          if (body.dataset.headerMode !== 'peek') {
+            body.dataset.headerReveal = 'visible';
+            return;
+          }
+
+          const canHover = typeof window.matchMedia === 'function'
+            ? window.matchMedia('(hover: hover) and (pointer: fine)').matches
+            : false;
+
+          if (!canHover) {
+            body.dataset.headerReveal = 'visible';
+            return;
+          }
+
+          const SHOW_EDGE_PX = 24;
+          const HIDE_BUFFER_PX = 52;
+          const HIDE_DELAY_MS = 160;
+          let hideTimer = null;
+          let pointerY = Number.POSITIVE_INFINITY;
+          let hoveringHeader = false;
+          let headerHasFocus = false;
+
+          const clearHideTimer = () => {
+            if (!hideTimer) return;
+            window.clearTimeout(hideTimer);
+            hideTimer = null;
+          };
+
+          const readHeaderSize = () => {
+            const raw = window.getComputedStyle(root).getPropertyValue('--site-header-size');
+            const parsed = Number.parseFloat(raw);
+            if (Number.isFinite(parsed) && parsed > 0) return parsed;
+            return Math.max(52, Math.round(header.getBoundingClientRect().height));
+          };
+
+          const setHeaderReveal = (nextState) => {
+            if (body.dataset.headerReveal === nextState) return;
+            body.dataset.headerReveal = nextState;
+          };
+
+          const scheduleHide = () => {
+            if (hoveringHeader || headerHasFocus) return;
+            clearHideTimer();
+            hideTimer = window.setTimeout(() => {
+              const hideThreshold = readHeaderSize() + HIDE_BUFFER_PX;
+              if (pointerY > hideThreshold && !hoveringHeader && !headerHasFocus) {
+                setHeaderReveal('hidden');
+              }
+            }, HIDE_DELAY_MS);
+          };
+
+          header.addEventListener('pointerenter', () => {
+            hoveringHeader = true;
+            clearHideTimer();
+            setHeaderReveal('visible');
+          });
+
+          header.addEventListener('pointerleave', (event) => {
+            hoveringHeader = false;
+            if (event instanceof PointerEvent) {
+              pointerY = event.clientY;
+            }
+            scheduleHide();
+          });
+
+          header.addEventListener('focusin', () => {
+            headerHasFocus = true;
+            clearHideTimer();
+            setHeaderReveal('visible');
+          });
+
+          header.addEventListener('focusout', () => {
+            headerHasFocus = header.contains(document.activeElement);
+            if (!headerHasFocus) scheduleHide();
+          });
+
+          window.addEventListener(
+            'pointermove',
+            (event) => {
+              pointerY = event.clientY;
+              if (event.clientY <= SHOW_EDGE_PX) {
+                clearHideTimer();
+                setHeaderReveal('visible');
+                return;
+              }
+
+              const hideThreshold = readHeaderSize() + HIDE_BUFFER_PX;
+              if (event.clientY > hideThreshold) {
+                scheduleHide();
+              }
+            },
+            { passive: true }
+          );
+
+          window.addEventListener(
+            'scroll',
+            () => {
+              if (window.scrollY <= 12) {
+                clearHideTimer();
+                setHeaderReveal('visible');
+                return;
+              }
+              scheduleHide();
+            },
+            { passive: true }
+          );
+
+          document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+              clearHideTimer();
+            }
           });
         };
 
@@ -1152,6 +1275,7 @@ const exploreLinks = [
           initAccent();
           initCircadianClock();
           initHeaderMetrics();
+          initHeaderReveal();
           initSiteActivity();
           initScrollWind();
           initCursorLight();
@@ -1175,15 +1299,15 @@ const exploreLinks = [
   </head>
   <body
     data-theme={theme}
-    data-has-site-header={showHeader ? 'true' : 'false'}
+    data-header-mode={showHeader ? 'pinned' : 'peek'}
+    data-header-reveal={showHeader ? 'visible' : 'hidden'}
     data-nav-phase="idle"
-    style={!showHeader ? '--header-height: 0px;' : undefined}
   >
     <div id="cursor-aura" aria-hidden="true"></div>
     <HallwayBackdrop accent="var(--accent)" />
     <div class="site-overlay" aria-hidden="true"></div>
     <GarlandFrame />
-    {showHeader && <Header />}
+    <Header />
     <main class="page-shell w-full">
       <div class="mode-normal">
         <slot />
