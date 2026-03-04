@@ -2,6 +2,8 @@ import type { LinkHubProvider } from '../data/linkhub';
 
 const YOUTUBE_EMBED_BASE_URL = 'https://www.youtube-nocookie.com/embed';
 
+export type EmbedViewMode = 'landscape' | 'portrait' | 'stack';
+
 export type EmbedResolutionReason =
   | 'ok'
   | 'unsupported_url_shape'
@@ -196,8 +198,39 @@ export const getEmbedHeight = (provider: LinkHubProvider | null): number => {
   return 300;
 };
 
-export const getEmbedAspectRatio = (provider: LinkHubProvider | null): string | null => {
-  if (provider === 'youtube') return '16 / 9';
+const getYouTubeViewMode = (urlValue?: string): EmbedViewMode => {
+  const parsed = typeof urlValue === 'string' ? parseUrl(urlValue) : null;
+  if (!parsed) return 'landscape';
+
+  const hasPlaylist = Boolean(parsed.searchParams.get('list'));
+  if (hasPlaylist && (parsed.pathname === '/playlist' || parsed.pathname === '/embed/videoseries')) {
+    return 'stack';
+  }
+
+  if (hasPlaylist && parsed.pathname === '/watch') {
+    return 'stack';
+  }
+
+  if (/^\/shorts\/[^/]+/.test(parsed.pathname)) {
+    return 'portrait';
+  }
+
+  return 'landscape';
+};
+
+export const getEmbedViewMode = (provider: LinkHubProvider | null, urlValue?: string): EmbedViewMode => {
+  if (provider === 'youtube') return getYouTubeViewMode(urlValue);
+  if (provider === 'instagram') return 'portrait';
+  return 'landscape';
+};
+
+export const getEmbedAspectRatio = (provider: LinkHubProvider | null, urlValue?: string): string | null => {
+  if (provider === 'youtube') {
+    const viewMode = getYouTubeViewMode(urlValue);
+    if (viewMode === 'portrait') return '9 / 16';
+    if (viewMode === 'stack') return '10 / 11';
+    return '16 / 9';
+  }
   if (provider === 'instagram') return '4 / 5';
   return null;
 };
