@@ -2,6 +2,8 @@ import type { LinkHubProvider } from '../data/linkhub';
 
 const YOUTUBE_EMBED_BASE_URL = 'https://www.youtube-nocookie.com/embed';
 
+export type EmbedViewMode = 'landscape' | 'portrait' | 'stack';
+
 export type EmbedResolutionReason =
   | 'ok'
   | 'unsupported_url_shape'
@@ -196,8 +198,39 @@ export const getEmbedHeight = (provider: LinkHubProvider | null): number => {
   return 300;
 };
 
-export const getEmbedAspectRatio = (provider: LinkHubProvider | null): string | null => {
-  if (provider === 'youtube') return '16 / 9';
+const getYouTubeViewMode = (urlValue?: string): EmbedViewMode => {
+  const parsed = typeof urlValue === 'string' ? parseUrl(urlValue) : null;
+  if (!parsed) return 'landscape';
+
+  const hasPlaylist = Boolean(parsed.searchParams.get('list'));
+  if (hasPlaylist && (parsed.pathname === '/playlist' || parsed.pathname === '/embed/videoseries')) {
+    return 'stack';
+  }
+
+  if (hasPlaylist && parsed.pathname === '/watch') {
+    return 'stack';
+  }
+
+  if (/^\/shorts\/[^/]+/.test(parsed.pathname)) {
+    return 'portrait';
+  }
+
+  return 'landscape';
+};
+
+export const getEmbedViewMode = (provider: LinkHubProvider | null, urlValue?: string): EmbedViewMode => {
+  if (provider === 'youtube') return getYouTubeViewMode(urlValue);
+  if (provider === 'instagram') return 'portrait';
+  return 'landscape';
+};
+
+export const getEmbedAspectRatio = (provider: LinkHubProvider | null, urlValue?: string): string | null => {
+  if (provider === 'youtube') {
+    const viewMode = getYouTubeViewMode(urlValue);
+    if (viewMode === 'portrait') return '9 / 16';
+    if (viewMode === 'stack') return '10 / 11';
+    return '16 / 9';
+  }
   if (provider === 'instagram') return '4 / 5';
   return null;
 };
@@ -207,20 +240,20 @@ export const getEmbedFallbackMessage = (resolution: EmbedResolution): string => 
     resolution.provider === 'untitled' &&
     (resolution.reason === 'unsupported_url_shape' || resolution.reason === 'invite_link')
   ) {
-    return 'Untitled renders inline only with a dedicated /embed/ link. Open source to view this piece.';
+    return "Untitled links need a dedicated /embed URL for inline playback. Open the original link to view this piece.";
   }
 
   if (resolution.provider === 'instagram' && resolution.reason === 'profile_only') {
-    return 'Instagram profile links do not embed here. Use a specific post or reel URL.';
+    return "Profiles can't be embedded here. Open the Instagram profile or use a specific post/reel URL.";
   }
 
   if (resolution.provider === 'google_drive' && resolution.reason === 'unsupported_url_shape') {
-    return "This Drive link can't be embedded from its current URL shape. Open source below.";
+    return "This Drive URL format can't be embedded here. Open the file link directly.";
   }
 
   if (resolution.reason === 'placeholder') {
-    return 'Embed unavailable until a real source URL is configured.';
+    return 'Embed preview is unavailable until a real source URL is configured.';
   }
 
-  return 'Embed unavailable for this source.';
+  return "This source can't be embedded inline. Open the original link.";
 };

@@ -719,6 +719,26 @@ body[data-header-mode='peek'][data-header-reveal='hidden'] .site-header {
   }
 }
 
+@media (min-width: 1024px) and (max-width: 1720px) {
+  .site-header .header-actions {
+    gap: 0.35rem;
+  }
+
+  .site-header .header-live,
+  .site-header .header-theme-status {
+    display: none;
+  }
+
+  .site-header .header-nav {
+    gap: clamp(0.52rem, 0.75vw, 0.78rem);
+  }
+
+  .site-header .header-link {
+    padding: 0.3rem 0.56rem 0.36rem;
+    min-height: 40px;
+  }
+}
+
 @media (max-width: 767px) {
   .site-header .header-row {
     align-items: flex-start;
