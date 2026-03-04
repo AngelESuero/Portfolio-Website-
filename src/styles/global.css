@@ -140,6 +140,12 @@ html {
   font-size: calc(16px * var(--ui-scale));
 }
 
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
 :root.dark {
   color-scheme: dark;
   --tone-bg: #060911;
