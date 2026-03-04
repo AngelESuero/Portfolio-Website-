@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-04T06:00:00.352Z",
+    "generatedAt": "2026-03-04T07:07:36.841Z",
     "sources": [
       {
         "id": "openai_news",
@@ -10724,6 +10724,280 @@
       ]
     },
     {
+      "id": "6afbf3dce1f87e7e7d5c06482271228293efafa9b59a65a31d086605f6fdb159",
+      "title": "See, Think, Act: Teaching Multimodal Agents to Effectively Interact with GUI by Identifying Toggles",
+      "url": "https://arxiv.org/abs/2509.13615",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-04T05:00:00.000Z",
+      "summary": "arXiv:2509.13615v3 Announce Type: replace Abstract: The advent of multimodal agents facilitates effective interaction within graphical user interface (GUI), especially in ubiquitous GUI control. However, their inability to reliably execute toggle control instructions remains a key bottleneck. To investigate this, we construct a state control benchmark with binary toggle instructions derived from public datasets. Evaluation results of existing agents demonstrate their notable unreliability, particularly when the current toggle state already matches the desired state. To address the challenge, we propose State-aware Reasoning (StaR), a multimodal reasoning method that enables agents to perceive the current toggle state, infer the desired state from the instruction, and act accordingly. Experiments on four multimodal agents demonstrate that StaR can improve toggle instruction execution accuracy by over 30\\%. Further evaluations on three public agentic benchmarks show that StaR also enhances general agentic task performance. Finally, evaluations on a dynamic environment highlight the potential of StaR for real-world applications. Code and benchmark: https://github.com/ZrW00/StaR.",
+      "tags": [
+        "papers",
+        "agents",
+        "reasoning",
+        "eval",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2509.13615"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "c9cda83c8e15baa409763373b9286a4edd600d9e346fcc484a71292c713576c0",
+      "title": "Spilled Energy in Large Language Models",
+      "url": "https://arxiv.org/abs/2602.18671",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-04T05:00:00.000Z",
+      "summary": "arXiv:2602.18671v4 Announce Type: replace Abstract: We reinterpret the final Large Language Model (LLM) softmax classifier as an Energy-Based Model (EBM), decomposing the sequence-to-sequence probability chain into multiple interacting EBMs at inference. This principled approach allows us to track \"energy spills\" during decoding, which we empirically show correlate with factual errors, biases, and failures. Similar to Orgad et al. (2025), our method localizes the exact answer token and subsequently tests for hallucinations. Crucially, however, we achieve this without requiring trained probe classifiers or activation ablations. Instead, we introduce two completely training-free metrics derived directly from output logits: spilled energy, which captures the discrepancy between energy values across consecutive generation steps that should theoretically match, and marginalized energy, which is measurable at a single step. Evaluated on nine benchmarks across state-of-the-art LLMs (including LLaMA, Mistral, and Gemma) and on synthetic algebraic operations (Qwen3), our approach demonstrates robust, competitive hallucination detection and cross-task generalization. Notably, these results hold for both pretrained and instruction-tuned variants without introducing any training overhead. Code available at: github.com/OmnAI-Lab/spilled-energy",
+      "tags": [
+        "papers",
+        "eval",
+        "inference",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.18671"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "fbcf0abf09b4b034f8a7c641b0b4034f2387be95ae3e4903c7fe5daba48e2cb8",
+      "title": "Model Already Knows the Best Noise: Bayesian Active Noise Selection via Attention in Video Diffusion Model",
+      "url": "https://arxiv.org/abs/2505.17561",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-04T05:00:00.000Z",
+      "summary": "arXiv:2505.17561v3 Announce Type: replace-cross Abstract: The choice of initial noise strongly affects quality and prompt alignment in video diffusion; different seeds for the same prompt can yield drastically different results. While recent methods use externally designed priors (e.g., frequency filtering or inter-frame smoothing), they often overlook internal model signals that indicate inherently preferable seeds. To address this, we propose ANSE (Active Noise Selection for Generation), a model-aware framework that selects high-quality seeds by quantifying attention-based uncertainty. At its core is BANSA (Bayesian Active Noise Selection via Attention), an acquisition function that measures entropy disagreement across multiple stochastic attention samples to estimate model confidence and consistency. For efficient inference-time deployment, we introduce a Bernoulli-masked approximation of BANSA that estimates scores from a single diffusion step and a subset of informative attention layers. Experiments across diverse text-to-video backbones demonstrate improved video quality and temporal coherence with marginal inference overhead, providing a principled and generalizable approach to noise selection in video diffusion. See our project page: https://anse-project.github.io/anse-project/.",
+      "tags": [
+        "papers",
+        "safety",
+        "inference",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2505.17561"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "a504ec38a3ecbb3e85dd21de36db2487173b7ab53686839b298f121398eefe45",
+      "title": "Theory of Code Space: Do Code Agents Understand Software Architecture?",
+      "url": "https://arxiv.org/abs/2603.00601",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-04T05:00:00.000Z",
+      "summary": "arXiv:2603.00601v2 Announce Type: replace-cross Abstract: AI code agents excel at isolated tasks yet struggle with complex, multi-file software engineering requiring understanding of how dozens of modules relate. We hypothesize these failures stem from inability to construct, maintain, and update coherent architectural beliefs during codebase exploration. We introduce Theory of Code Space (ToCS), a benchmark that evaluates this capability by placing agents in procedurally generated codebases under partial observability, requiring them to build structured belief states over module dependencies, cross-cutting invariants, and design intent. The framework features: (1) a procedural codebase generator producing medium-complexity Python projects with four typed edge categories reflecting different discovery methods -- from syntactic imports to config-driven dynamic wiring -- with planted architectural constraints and verified ground truth; (2) a partial observability harness where agents explore under a budget; and (3) periodic belief probing via structured JSON, producing a time-series of architectural understanding. We decompose the Active-Passive Gap from spatial reasoning benchmarks into selection and decision components, and introduce Architectural Constraint Discovery as a code-specific evaluation dimension. Preliminary experiments with four rule-based baselines and five frontier LLM agents from three providers validate discriminative power: methods span a wide performance range (F1 from 0.129 to 0.646), LLM agents discover semantic edge types invisible to all baselines, yet weaker models score below simple heuristics -- revealing that belief externalization, faithfully serializing internal understanding into structured JSON, is itself a non-trivial capability and a first-order confounder in belief-probing benchmarks. Open-source toolkit: https://github.com/che-shr-cat/tocs",
+      "tags": [
+        "papers",
+        "agents",
+        "reasoning",
+        "eval",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.00601"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "6af7c18a00bf8d7aff21b01fbf599c30afe3728ef8d81475acb3873fdd5aa48a",
+      "title": "IDER: IDempotent Experience Replay for Reliable Continual Learning",
+      "url": "https://arxiv.org/abs/2603.00624",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-04T05:00:00.000Z",
+      "summary": "arXiv:2603.00624v2 Announce Type: replace-cross Abstract: Catastrophic forgetting, the tendency of neural networks to forget previously learned knowledge when learning new tasks, has been a major challenge in continual learning (CL). To tackle this challenge, CL methods have been proposed and shown to reduce forgetting. Furthermore, CL models deployed in mission-critical settings can benefit from uncertainty awareness by calibrating their predictions to reliably assess their confidences. However, existing uncertainty-aware continual learning methods suffer from high computational overhead and incompatibility with mainstream replay methods. To address this, we propose idempotent experience replay (IDER), a novel approach based on the idempotent property where repeated function applications yield the same output. Specifically, we first adapt the training loss to make model idempotent on current data streams. In addition, we introduce an idempotence distillation loss. We feed the output of the current model back into the old checkpoint and then minimize the distance between this reprocessed output and the original output of the current model. This yields a simple and effective new baseline for building reliable continual learners, which can be seamlessly integrated with other CL approaches. Extensive experiments on different CL benchmarks demonstrate that IDER consistently improves prediction reliability while simultaneously boosting accuracy and reducing forgetting. Our results suggest the potential of idempotence as a promising principle for deploying efficient and trustworthy continual learning systems in real-world applications.Our code is available at https://github.com/YutingLi0606/Idempotent-Continual-Learning.",
+      "tags": [
+        "papers",
+        "eval",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.00624"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "9aafd91d4e858cc93dea29320401d0bc06d29cce3e849e8d81154b697a5b7579",
+      "title": "FastCode: Fast and Cost-Efficient Code Understanding and Reasoning",
+      "url": "https://arxiv.org/abs/2603.01012",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-04T05:00:00.000Z",
+      "summary": "arXiv:2603.01012v2 Announce Type: replace-cross Abstract: Repository-scale code reasoning is a cornerstone of modern AI-assisted software engineering, enabling Large Language Models (LLMs) to handle complex workflows from program comprehension to complex debugging. However, balancing accuracy with context cost remains a significant bottleneck, as existing agentic approaches often waste computational resources through inefficient, iterative full-text exploration. To address this, we introduce FastCode, a framework that decouples repository exploration from content consumption. FastCode utilizes a structural scouting mechanism to navigate a lightweight semantic-structural map of the codebase, allowing the system to trace dependencies and pinpoint relevant targets without the overhead of full-text ingestion. By leveraging structure-aware navigation tools regulated by a cost-aware policy, the framework constructs high-value contexts in a single, optimized step. Extensive evaluations on the SWE-QA, LongCodeQA, LOC-BENCH, and GitTaskBench benchmarks demonstrate that FastCode consistently outperforms state-of-the-art baselines in reasoning accuracy while significantly reducing token consumption, validating the efficiency of scouting-first strategies for large-scale code reasoning. Source code is available at https://github.com/HKUDS/FastCode.",
+      "tags": [
+        "papers",
+        "agents",
+        "reasoning",
+        "eval",
+        "policy",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.01012"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "617e20d40d8bf6174188ef76b24ff378e547253c910ed117f6fd26058d866542",
+      "title": "QIME: Constructing Interpretable Medical Text Embeddings via Ontology-Grounded Questions",
+      "url": "https://arxiv.org/abs/2603.01690",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-04T05:00:00.000Z",
+      "summary": "arXiv:2603.01690v2 Announce Type: replace-cross Abstract: While dense biomedical embeddings achieve strong performance, their black-box nature limits their utility in clinical decision-making. Recent question-based interpretable embeddings represent text as binary answers to natural-language questions, but these approaches often rely on heuristic or surface-level contrastive signals and overlook specialized domain knowledge. We propose QIME, an ontology-grounded framework for constructing interpretable medical text embeddings in which each dimension corresponds to a clinically meaningful yes/no question. By conditioning on cluster-specific medical concept signatures, QIME generates semantically atomic questions that capture fine-grained distinctions in biomedical text. Furthermore, QIME supports a training-free embedding construction strategy that eliminates per-question classifier training while further improving performance. Experiments across biomedical semantic similarity, clustering, and retrieval benchmarks show that QIME consistently outperforms prior interpretable embedding methods and substantially narrows the gap to strong black-box biomedical encoders, while providing concise and clinically informative explanations.",
+      "tags": [
+        "papers",
+        "eval",
+        "training"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.01690"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "c9ad052c62e210e3139e1d6aec21df29e869e252e4ba66c227703c35b178d199",
+      "title": "Solving Inverse PDE Problems using Minimization Methods and AI",
+      "url": "https://arxiv.org/abs/2603.01731",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-04T05:00:00.000Z",
+      "summary": "arXiv:2603.01731v2 Announce Type: replace-cross Abstract: Many physical and engineering systems require solving direct problems to predict behavior and inverse problems to determine unknown parameters from measurement. In this work, we study both aspects for systems governed by differential equations, contrasting well-established numerical methods with new AI-based techniques, specifically Physics-Informed Neural Networks (PINNs). We first analyze the logistic differential equation, using its closed-form solution to verify numerical schemes and validate PINN performance. We then address the Porous Medium Equation (PME), a nonlinear partial differential equation with no general closed-form solution, building strong solvers of the direct problem and testing techniques for parameter estimation in the inverse problem. Our results suggest that PINNs can closely estimate solutions at competitive computational cost, and thus propose an effective tool for solving both direct and inverse problems for complex systems.",
+      "tags": [
+        "papers"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.01731"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "aaa8200c593388b412f3d1c9ee76d5cd64e340aa538f4c4cfa2ee429e4ff25da",
+      "title": "Rethinking Policy Diversity in Ensemble Policy Gradient in Large-Scale Reinforcement Learning",
+      "url": "https://arxiv.org/abs/2603.01741",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-04T05:00:00.000Z",
+      "summary": "arXiv:2603.01741v2 Announce Type: replace-cross Abstract: Scaling reinforcement learning to tens of thousands of parallel environments requires overcoming the limited exploration capacity of a single policy. Ensemble-based policy gradient methods, which employ multiple policies to collect diverse samples, have recently been proposed to promote exploration. However, merely broadening the exploration space does not always enhance learning capability, since excessive exploration can reduce exploration quality or compromise training stability. In this work, we theoretically analyze the impact of inter-policy diversity on learning efficiency in policy ensembles, and propose Coupled Policy Optimization which regulates diversity through KL constraints between policies. The proposed method enables effective exploration and outperforms strong baselines such as SAPG, PBT, and PPO across multiple tasks, including challenging dexterous manipulation, in terms of both sample efficiency and final performance. Furthermore, analysis of policy diversity and effective sample size during training reveals that follower policies naturally distribute around the leader, demonstrating the emergence of structured and efficient exploratory behavior. Our results indicate that diverse exploration under appropriate regulation is key to achieving stable and sample-efficient learning in ensemble policy gradient methods. Project page at https://naoki04.github.io/paper-cpo/ .",
+      "tags": [
+        "papers",
+        "policy",
+        "training"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.01741"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "baf9f1355d3e8b57a00b6a1c2b09eee601458530bbfed6ebefd711b1e16ffc5e",
+      "title": "Hyperparameter Trajectory Inference with Conditional Lagrangian Optimal Transport",
+      "url": "https://arxiv.org/abs/2603.01771",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-04T05:00:00.000Z",
+      "summary": "arXiv:2603.01771v2 Announce Type: replace-cross Abstract: Neural networks (NNs) often have critical behavioural trade-offs that are set at design time with hyperparameters-such as reward weights in reinforcement learning or quantile targets in regression. Post-deployment, however, user preferences can evolve, making initial settings undesirable, necessitating potentially expensive retraining. To circumvent this, we introduce the task of Hyperparameter Trajectory Inference (HTI): to learn, from observed data, how a NN's conditional output distribution changes with its hyperparameters, and construct a surrogate model that approximates the NN at unobserved hyperparameter settings. HTI requires extending existing trajectory inference approaches to incorporate conditions, exacerbating the challenge of ensuring inferred paths are feasible. We propose an approach based on conditional Lagrangian optimal transport, jointly learning the Lagrangian function governing hyperparameter-induced dynamics along with the associated optimal transport maps and geodesics between observed marginals, which form the surrogate model. We incorporate inductive biases based on the manifold hypothesis and least-action principles into the learned Lagrangian, improving surrogate model feasibility. We empirically demonstrate that our approach reconstructs NN outputs across various hyperparameter spectra better than other alternatives.",
+      "tags": [
+        "papers",
+        "inference",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.01771"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "8677e0c7fce5d98f2fdbb24d4992773c42f38b5f308c0e4ca1648f8e10aa6dd7",
+      "title": "CodecFlow: Efficient Bandwidth Extension via Conditional Flow Matching in Neural Codec Latent Space",
+      "url": "https://arxiv.org/abs/2603.02022",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-04T05:00:00.000Z",
+      "summary": "arXiv:2603.02022v2 Announce Type: replace-cross Abstract: Speech Bandwidth Extension improves clarity and intelligibility by restoring/inferring appropriate high-frequency content for low-bandwidth speech. Existing methods often rely on spectrogram or waveform modeling, which can incur higher computational cost and have limited high-frequency fidelity. Neural audio codecs offer compact latent representations that better preserve acoustic detail, yet accurately recovering high-resolution latent information remains challenging due to representation mismatch. We present CodecFlow, a neural codec-based BWE framework that performs efficient speech reconstruction in a compact latent space. CodecFlow employs a voicing-aware conditional flow converter on continuous codec embeddings and a structure-constrained residual vector quantizer to improve latent alignment stability. Optimized end-to-end, CodecFlow achieves strong spectral fidelity and enhanced perceptual quality on 8 kHz to 16 kHz and 44.1 kHz speech BWE tasks.",
+      "tags": [
+        "papers",
+        "safety",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.02022"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
       "id": "fe9188c1b49c08f0b031e027feb94adeb36fc8fcdbf172d4f83c8d166d1d1a49",
       "title": "How to Minimize Game Runtime Inference Costs with Coding Agents",
       "url": "https://developer.nvidia.com/blog/how-to-minimize-game-runtime-inference-costs-with-coding-agents/",
@@ -14933,278 +15207,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.00144"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "726da3030f1c07460f0902243b4ae08736fd9eea1f110c0623e76ff705c2aab0",
-      "title": "M-Gaussian: An Magnetic Gaussian Framework for Efficient Multi-Stack MRI Reconstruction",
-      "url": "https://arxiv.org/abs/2603.00145",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-03T05:00:00.000Z",
-      "summary": "arXiv:2603.00145v1 Announce Type: cross Abstract: Magnetic Resonance Imaging (MRI) is a crucial non-invasive imaging modality. In routine clinical practice, multi-stack thick-slice acquisitions are widely used to reduce scan time and motion sensitivity, particularly in challenging scenarios such as fetal brain imaging. However, the resulting severe through-plane anisotropy compromises volumetric analysis and downstream quantitative assessment, necessitating robust reconstruction of isotropic high-resolution volumes. Implicit neural representation methods, while achieving high quality, suffer from computational inefficiency due to complex network structures. We present M-Gaussian, adapting 3D Gaussian Splatting to MRI reconstruction. Our contributions include: (1) Magnetic Gaussian primitives with physics-consistent volumetric rendering, (2) neural residual field for high-frequency detail refinement, and (3) multi-resolution progressive training. Our method achieves an optimal balance between quality and speed. On the FeTA dataset, M-Gaussian achieves 40.31 dB PSNR while being 14 times faster, representing the first successful adaptation of 3D Gaussian Splatting to multi-stack MRI reconstruction.",
-      "tags": [
-        "papers",
-        "training",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.00145"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "e0480658bbee446f3d26b949069968b61d9d4940102d90c28e6e706a6b1f7438",
-      "title": "Physics-Consistent Diffusion for Efficient Fluid Super-Resolution via Multiscale Residual Correction",
-      "url": "https://arxiv.org/abs/2603.00149",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-03T05:00:00.000Z",
-      "summary": "arXiv:2603.00149v1 Announce Type: cross Abstract: Existing image SR and generic diffusion models transfer poorly to fluid SR: they are sampling-intensive, ignore physical constraints, and often yield spectral mismatch and spurious divergence. We address fluid super-resolution (SR) with \\textbf{ReMD} (\\underline{Re}sidual-\\underline{M}ultigrid \\underline{D}iffusion), a physics-consistent diffusion framework. At each reverse step, ReMD performs a \\emph{multigrid residual correction}: the update direction is obtained by coupling data consistency with lightweight physics cues and then correcting the residual across scales; the multiscale hierarchy is instantiated with a \\emph{multi-wavelet} basis to capture both large structures and fine vortical details. This coarse-to-fine design accelerates convergence and preserves fine structures while remaining equation-free. Across atmospheric and oceanic benchmarks, ReMD improves accuracy and spectral fidelity, reduces divergence, and reaches comparable quality with markedly fewer sampling steps than diffusion baselines. Our results show that enforcing physics consistency \\emph{inside} the diffusion process via multigrid residual correction and multi-wavelet multiscale modeling is an effective route to efficient fluid SR. Our code are available on https://github.com/lizhihao2022/ReMD.",
-      "tags": [
-        "papers",
-        "eval",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.00149"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "8819ac33f00b6b4b30c5ea534932ba9be46ecad1bb856469df81e2c29d40d9a8",
-      "title": "Dr. Seg: Revisiting GRPO Training for Visual Large Language Models through Perception-Oriented Design",
-      "url": "https://arxiv.org/abs/2603.00152",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-03T05:00:00.000Z",
-      "summary": "arXiv:2603.00152v1 Announce Type: cross Abstract: Following the success of Group Relative Policy Optimization (GRPO) in foundation LLMs, an increasing number of works have sought to adapt GRPO to Visual Large Language Models (VLLMs) for visual perception tasks (e.g., detection and segmentation). However, much of this line of research rests on a long-standing yet unexamined assumption: training paradigms developed for language reasoning can be transferred seamlessly to visual perception. Our experiments show that this assumption is not valid, revealing intrinsic differences between reasoning-oriented and perception-oriented settings. Using reasoning segmentation as a representative case, we surface two overlooked factors: (i) the need for a broader output space, and (ii) the importance of fine-grained, stable rewards. Building on these observations, we propose Dr.~Seg, a simple, plug-and-play GRPO-based framework consisting of a Look-to-Confirm mechanism and a Distribution-Ranked Reward module, requiring no architectural modifications and integrating seamlessly with existing GRPO-based VLLMs. Extensive experiments demonstrate that Dr.~Seg improves performance in complex visual scenarios while maintaining strong generalization. Code and models will be available at https://github.com/xVI-group-SCU/Dr-Seg.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "policy",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.00152"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "3b1f2dd71fe2266c3d788e8abc77099ebdc90244f9b305ae59fd24a838c3e683",
-      "title": "Pulse-Driven Neural Architecture: Learnable Oscillatory Dynamics for Robust Continuous-Time Sequence Processing",
-      "url": "https://arxiv.org/abs/2603.00153",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-03T05:00:00.000Z",
-      "summary": "arXiv:2603.00153v1 Announce Type: cross Abstract: We introduce PDNA (Pulse-Driven Neural Architecture), a method for augmenting continuous-time recurrent networks with learnable oscillatory dynamics that maintain internal state evolution independently of external input. Built on Closed-form Continuous-time (CfC) networks, PDNA adds two components: (1) a pulse module that generates structured oscillations $A \\cdot \\sin(\\omega t + \\varphi(h))$ with learnable frequencies and state-dependent phase, and (2) a self-attend module that applies recurrent self-attention to the hidden state. Through a controlled ablation study on sequential MNIST (sMNIST) with five random seeds, we evaluate gap robustness -- the ability to maintain performance when portions of the input sequence are removed at test time. Our key finding is that structured oscillatory dynamics significantly improve robustness to input interruptions: the self-attend variant achieves a statistically significant 2.78 percentage point multi-gap advantage over baseline ($p = 0.041$), while the pulse variant shows a 4.62 pp advantage with large effect size (Cohen's $d = 0.87$). A noise control (random perturbation of equal magnitude) provides no benefit, confirming that the advantage is structural rather than merely dynamic. These results provide evidence that continuous-time models can benefit from biologically-inspired internal oscillatory mechanisms for temporal robustness.",
-      "tags": [
-        "papers",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.00153"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "5cec3bafd3967b1b779f068eed9c62f57b8f03c2ee3832bb756475243d3a4756",
-      "title": "EfficientPosterGen: Semantic-aware Efficient Poster Generation via Token Compression and Accurate Violation Detection",
-      "url": "https://arxiv.org/abs/2603.00155",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-03T05:00:00.000Z",
-      "summary": "arXiv:2603.00155v1 Announce Type: cross Abstract: Automated academic poster generation aims to distill lengthy research papers into concise, visually coherent presentations. Existing Multimodal Large Language Models (MLLMs) based approaches, however, suffer from three critical limitations: low information density in full-paper inputs, excessive token consumption, and unreliable layout verification. We present EfficientPosterGen, an end-to-end framework that addresses these challenges through semantic-aware retrieval and token-efficient multimodal generation. EfficientPosterGen introduces three core innovations: (1) Semantic-aware Key Information Retrieval (SKIR), which constructs a semantic contribution graph to model inter-segment relationships and selectively preserves important content; (2) Visual-based Context Compression (VCC), which renders selected text segments into images to shift textual information into the visual modality, significantly reducing token usage while generating poster-ready bullet points; and (3) Agentless Layout Violation Detection (ALVD), a deterministic color-gradient-based algorithm that reliably detects content overflow and spatial sparsity without auxiliary MLLMs. Extensive experiments demonstrate that EfficientPosterGen achieves substantial improvements in token efficiency and layout reliability while maintaining high poster quality, offering a scalable solution for automated academic poster generation. Our code is available at https://github.com/vinsontang1/EfficientPosterGen-Code.",
-      "tags": [
-        "papers",
-        "agents",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.00155"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "ffcd32f5b05b23539f9429b75ebecf67f69048f68fd9fadb5a2fb8b762a0d558",
-      "title": "FlowPortrait: Reinforcement Learning for Audio-Driven Portrait Video Generation",
-      "url": "https://arxiv.org/abs/2603.00159",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-03T05:00:00.000Z",
-      "summary": "arXiv:2603.00159v1 Announce Type: cross Abstract: Generating realistic talking-head videos remains challenging due to persistent issues such as imperfect lip synchronization, unnatural motion, and evaluation metrics that correlate poorly with human perception. We propose FlowPortrait, a reinforcement-learning framework for audio-driven portrait animation built on a multimodal backbone for autoregressive audio-to-video generation. FlowPortrait introduces a human-aligned evaluation system based on Multimodal Large Language Models (MLLMs) to assess lip-sync accuracy, expressiveness, and motion quality. These signals are combined with perceptual and temporal consistency regularizers to form a stable composite reward, which is used to post-train the generator via Group Relative Policy Optimization (GRPO). Extensive experiments, including both automatic evaluations and human preference studies, demonstrate that FlowPortrait consistently produces higher-quality talking-head videos, highlighting the effectiveness of reinforcement learning for portrait animation.",
-      "tags": [
-        "papers",
-        "eval",
-        "policy",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.00159"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "fa2bcad1f1c3151d41a919d9827d4e44158221f2d36d4c646d6de7e34ab2289c",
-      "title": "DINOv3 Meets YOLO26 for Weed Detection in Vegetable Crops",
-      "url": "https://arxiv.org/abs/2603.00160",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-03T05:00:00.000Z",
-      "summary": "arXiv:2603.00160v1 Announce Type: cross Abstract: Developing robust models for precision vegetable weeding is currently constrained by the scarcity of large-scale, annotated weed-crop datasets. To address this limitation, this study proposes a foundational crop-weed detection model by integrating heterogeneous datasets and leveraging self-supervised learning. A total of 618,642 crop-weed images were initially collected and subsequently refined to 199,388 filtered images for fine-tuning a DINOv3 vision transformer (ViT-small) through a sequential curation strategy. The fine-tuned DINOv3 backbone was then integrated into YOLO26, serving either as a primary backbone or part of a dual-backbone architecture. A feature alignment loss was introduced in the dual backbone framework to enhance feature fusion with minimal computational overhead. Experimental results show that the proposed DINOv3-finetuned ViT-small-based YOLO26-large achieved up to a +5.4% mAP50 gain on in-domain images collected in the 2025 season. Moreover, it demonstrated strong cross-domain generalization with mAP50 improvements of +14.0% on the 2021-2023 season dataset and +11.9% on the 2024 season dataset, compared to the standard YOLO26-large. Although the DINOv3-YOLO26-large model has 45.6% more parameters and a 2.9x increase in inference latency, it maintains real-time performance at ~28.5 frames per second (fps). The curated dataset and software programs developed in this study will be made publicly available.",
-      "tags": [
-        "papers",
-        "safety",
-        "inference",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.00160"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "5e49aa20c75281719e3ea07e13ec08bceee38ed81fe87710d9326a82b7885fb2",
-      "title": "Reverse CAPTCHA: Evaluating LLM Susceptibility to Invisible Unicode Instruction Injection",
-      "url": "https://arxiv.org/abs/2603.00164",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-03T05:00:00.000Z",
-      "summary": "arXiv:2603.00164v1 Announce Type: cross Abstract: We introduce Reverse CAPTCHA, an evaluation framework that tests whether large language models follow invisible Unicode-encoded instructions embedded in otherwise normal-looking text. Unlike traditional CAPTCHAs that distinguish humans from machines, our benchmark exploits a capability gap: models can perceive Unicode control characters that are invisible to human readers. We evaluate five models from two providers across two encoding schemes (zero-width binary and Unicode Tags), four hint levels, two payload framings, and with tool use enabled or disabled. Across 8,308 model outputs, we find that tool use dramatically amplifies compliance (Cohen's h up to 1.37, a large effect), that models exhibit provider-specific encoding preferences (OpenAI models decode zero-width binary; Anthropic models prefer Unicode Tags), and that explicit decoding instructions increase compliance by up to 95 percentage points within a single model and encoding. All pairwise model differences are statistically significant (p < 0.05, Bonferroni-corrected). These results highlight an underexplored attack surface for prompt injection via invisible Unicode payloads.",
-      "tags": [
-        "papers",
-        "eval",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.00164"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "4ece397650bcbba3e0b7999d8f6eb248df8eba7ed1ebb21ef6e49862f5154e00",
-      "title": "Exploring the AI Obedience: Why is Generating a Pure Color Image Harder than CyberPunk?",
-      "url": "https://arxiv.org/abs/2603.00166",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-03T05:00:00.000Z",
-      "summary": "arXiv:2603.00166v1 Announce Type: cross Abstract: Recent advances in generative AI have demonstrated remarkable ability to produce high-quality content. However, these models often exhibit \"Paradox of Simplicity\": while they can render intricate landscapes, they often fail at simple, deterministic tasks. To address this, we formalize Obedience as the ability to align with instructions and establish a hierarchical grading system ranging from basic semantic alignment to pixel-level systemic precision, which provides a unified paradigm for incorporating and categorizing existing literature. Then, we conduct case studies to identify common obedience gaps, revealing how generative priors often override logical constraints. To evaluate high-level obedience, we present VIOLIN (VIsual Obedience Level-4 EvaluatIoN), the first benchmark focused on pure color generation across six variants. Extensive experiments on SOTA models reveal fundamental obedience limitations and further exploratory insights. By establishing this framework, we aim to draw more attention on AI Obedience and encourage deeper exploration to bridge this gap.",
-      "tags": [
-        "papers",
-        "eval",
-        "safety",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.00166"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "9178204140b6d50f4d579619f4bc498dc8ddb88456aea23b0347bd222e4693bf",
-      "title": "A Novel Evolutionary Method for Automated Skull-Face Overlay in Computer-Aided Craniofacial Superimposition",
-      "url": "https://arxiv.org/abs/2603.00170",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-03T05:00:00.000Z",
-      "summary": "arXiv:2603.00170v1 Announce Type: cross Abstract: Craniofacial Superimposition is a forensic technique for identifying skeletal remains by comparing a post-mortem skull with ante-mortem facial photographs. A critical step in this process is Skull-Face Overlay (SFO). This stage involves aligning a 3D skull model with a 2D facial image, typically guided by cranial and facial landmarks' correspondence. However, its accuracy is undermined by individual variability in soft-tissue thickness, introducing significant uncertainty into the overlay. This paper introduces Lilium, an automated evolutionary method to enhance the accuracy and robustness of SFO. Lilium explicitly models soft-tissue variability using a 3D cone-based representation whose parameters are optimized via a Differential Evolution algorithm. The method enforces anatomical, morphological, and photographic plausibility through a combination of constraints: landmark matching, camera parameter consistency, head pose alignment, skull containment within facial boundaries, and region parallelism. This emulation of the usual forensic practitioners' approach leads Lilium to outperform the state-of-the-art method in terms of both accuracy and robustness.",
-      "tags": [
-        "papers",
-        "safety",
-        "compute",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.00170"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "068dec700332ebd2cfc1560dd0c4df4a8e25d7e042caca22006c3b7171310048",
-      "title": "AdaFocus: Knowing When and Where to Look for Adaptive Visual Reasoning",
-      "url": "https://arxiv.org/abs/2603.00171",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-03T05:00:00.000Z",
-      "summary": "arXiv:2603.00171v1 Announce Type: cross Abstract: Multimodal Large Language Models (MLLMs) are shifting towards \"Thinking with Images\" by actively exploring image details. While effective, large-scale training is computationally expensive, which has spurred growing interest in lightweight, training-free solutions. However, existing training-free methods suffer from two flaws: perceptual redundancy from indiscriminate cropping, which adds overhead and noise; and a drift between semantic intent and spatial attention, which prevents accurate localization of user-focused regions. To address these challenges, we propose AdaFocus, a novel training-free framework designed for adaptive visual reasoning. AdaFocus follows a two-stage pipeline: a confidence-based module decides when to crop, and a semantic-guided localization module determines where to crop. This enables adaptive visual reasoning without additional training. Experimentally, AdaFocus delivers substantial performance gains while achieving approximately 4.0\\times speedup inference speedup than the SOTA method ZoomEyes, representing a significant advance in both accuracy and efficiency.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "inference",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.00171"
         },
         {
           "label": "Feed",
