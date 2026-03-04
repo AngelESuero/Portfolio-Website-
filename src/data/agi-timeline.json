@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-04T17:58:38.516Z",
+    "generatedAt": "2026-03-04T19:07:57.894Z",
     "sources": [
       {
         "id": "openai_news",
@@ -49,6 +49,31 @@
   },
   "items": [
     {
+      "id": "003c319430c8d89162bc093af77ec54f5fad5da5a9156b1b6d38f3d72a343d02",
+      "title": "Phi-4-reasoning-vision and the lessons of training a multimodal reasoning model",
+      "url": "https://www.microsoft.com/en-us/research/blog/phi-4-reasoning-vision-and-the-lessons-of-training-a-multimodal-reasoning-model/",
+      "sourceId": "msr_blog",
+      "sourceName": "Microsoft Research — Blog",
+      "publishedAt": "2026-03-04T18:05:57.000Z",
+      "summary": "We are pleased to announce Phi-4-reasoning-vision-15B, a 15 billion parameter open‑weight multimodal reasoning model, available through Microsoft Foundry (opens in new tab), HuggingFace (opens in new tab) and GitHub (opens in new tab). Phi-4-reasoning-vision-15B is a broadly capable model that can be used for a wide array of vision-language tasks such as image captioning, asking […] The post Phi-4-reasoning-vision and the lessons of training a multimodal reasoning model appeared first on Microsoft Research.",
+      "tags": [
+        "research",
+        "reasoning",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://www.microsoft.com/en-us/research/blog/phi-4-reasoning-vision-and-the-lessons-of-training-a-multimodal-reasoning-model/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://www.microsoft.com/en-us/research/blog/feed/"
+        }
+      ]
+    },
+    {
       "id": "83f85340af2ca7e49763cc4bb61c6433c0337ed40098da4ff13bbe1972315908",
       "title": "Tuning Flash Attention for Peak Performance in NVIDIA CUDA Tile",
       "url": "https://developer.nvidia.com/blog/tuning-flash-attention-for-peak-performance-in-nvidia-cuda-tile/",
@@ -68,6 +93,29 @@
         {
           "label": "Feed",
           "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
+    {
+      "id": "d6b0f0df7e866ef1ebcb923dbdb30f60a5804138de9a1f097e1c485e61015a34",
+      "title": "Extending single-minus amplitudes to gravitons",
+      "url": "https://openai.com/index/extending-single-minus-amplitudes-to-gravitons",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-03-04T10:00:00.000Z",
+      "summary": "A new preprint extends single-minus amplitudes to gravitons, with GPT-5.2 Pro helping derive and verify nonzero graviton tree amplitudes in quantum gravity.",
+      "tags": [
+        "primary",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/extending-single-minus-amplitudes-to-gravitons"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
         }
       ]
     },
@@ -11069,6 +11117,29 @@
       ]
     },
     {
+      "id": "d18943fea8419aaef187c20b4d0336ba492c60be70d9e982435511775ea1c410",
+      "title": "How Axios uses AI to help deliver high-impact local journalism",
+      "url": "https://openai.com/index/axios-allison-murphy",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-03-04T00:00:00.000Z",
+      "summary": "Axios COO Allison Murphy explains how the company uses AI to support local reporters, streamline newsroom workflows, and deliver high-impact local journalism at scale.",
+      "tags": [
+        "primary",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/axios-allison-murphy"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
+    {
       "id": "fe9188c1b49c08f0b031e027feb94adeb36fc8fcdbf172d4f83c8d166d1d1a49",
       "title": "How to Minimize Game Runtime Inference Costs with Coding Agents",
       "url": "https://developer.nvidia.com/blog/how-to-minimize-game-runtime-inference-costs-with-coding-agents/",
@@ -15122,86 +15193,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.00133"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "304d55dd1a4a34148f5e95f754a58870866cc7cecbb1f87f8043e4f121b24198",
-      "title": "TinyVLM: Zero-Shot Object Detection on Microcontrollers via Vision-Language Distillation with Matryoshka Embeddings",
-      "url": "https://arxiv.org/abs/2603.00136",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-03T05:00:00.000Z",
-      "summary": "arXiv:2603.00136v1 Announce Type: cross Abstract: Zero-shot object detection enables recognising novel objects without task-specific training, but current approaches rely on large vision language models (VLMs) like CLIP that require hundreds of megabytes of memory - far exceeding the constraints of micro controller units (MCUs). We present TinyVLM, the first framework enabling zero-shot object detection on resource-constrained MCUs with less than 1MB of memory. Our approach introduces three key innovations: (1) a decoupled architecture that separates visual inference from text encoding, allowing precomputed class embeddings to be stored in flash memory; (2) Matryoshka distillation that trains nested embeddings at multiple dimensions (16-256), enabling flexible accuracy-memory trade-offs; and (3) quantized embedding storage that reduces class prototype memory by 4x with minimal accuracy loss. Trained on Conceptual Captions 3M (CC3M), TinyVLM achieves competitive zero-shot accuracy on COCO, Flowers102, and Food101 while requiring only 285KB of RAM and 892KB of flash memory for the deployed vision encoder. We demonstrate real-time inference at 26 FPS on STM32H7 and over 1,000 FPS on MAX78000 with its CNN accelerator, enabling practical zero-shot detection on edge devices for the first time.",
-      "tags": [
-        "papers",
-        "compute",
-        "inference",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.00136"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "b80c595cfccca72b6e5e018867654b7acc47d39caa1863d3ed09ec22de78c2fb",
-      "title": "MAML-KT: Addressing Cold Start Problem in Knowledge Tracing for New Students via Few-Shot Model-Agnostic Meta Learning",
-      "url": "https://arxiv.org/abs/2603.00137",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-03T05:00:00.000Z",
-      "summary": "arXiv:2603.00137v1 Announce Type: cross Abstract: Knowledge tracing (KT) models are commonly evaluated by training on early interactions from all students and testing on later responses. While effective for measuring average predictive performance, this evaluation design obscures a cold start scenario that arises in deployment, where models must infer the knowledge state of previously unseen students from only a few initial interactions. Prior studies have shown that under this setting, standard empirically risk-minimized KT models such as DKT, DKVMN and SAKT exhibit substantially lower early accuracy than previously reported. We frame new-student performance prediction as a few-shot learning problem and introduce MAML-KT, a model-agnostic meta learning approach that learns an initialization optimized for rapid adaptation to new students using one or two gradient updates. We evaluate MAML-KT on ASSIST2009, ASSIST2015 and ASSIST2017 using a controlled cold start protocol that trains on a subset of students and tests on held-out learners across early interaction windows (questions 3-10 and 11-15), scaling cohort sizes from 10 to 50 students. Across datasets, MAML-KT achieves higher early accuracy than prior KT models in nearly all cold start conditions, with gains persisting as cohort size increases. On ASSIST2017, we observe a transient drop in early performance that coincides with many students encountering previously unseen skills. Further analysis suggests that these drops coincide with skill novelty rather than model instability, consistent with prior work on skill-level cold start. Overall, optimizing KT models for rapid adaptation reduces early prediction error for new students and provides a clearer lens for interpreting early accuracy fluctuations, distinguishing model limitations from genuine learning and knowledge acquisition dynamics.",
-      "tags": [
-        "papers",
-        "eval",
-        "training",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.00137"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "64cf973a508a66553339b223252f269772a826aba4098cac8f2ddf5ae8017677",
-      "title": "Steering Away from Memorization: Reachability-Constrained Reinforcement Learning for Text-to-Image Diffusion",
-      "url": "https://arxiv.org/abs/2603.00140",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-03T05:00:00.000Z",
-      "summary": "arXiv:2603.00140v1 Announce Type: cross Abstract: Text-to-image diffusion models often memorize training data, revealing a fundamental failure to generalize beyond the training set. Current mitigation strategies typically sacrifice image quality or prompt alignment to reduce memorization. To address this, we propose Reachability-Aware Diffusion Steering (RADS), an inference-time framework that prevents memorization while preserving generation fidelity. RADS models the diffusion denoising process as a dynamical system and applies concepts from reachability analysis to approximate the \"backward reachable tube\"--the set of intermediate states that inevitably evolve into memorized samples. We then formulate mitigation as a constrained reinforcement learning (RL) problem, where a policy learns to steer the trajectory away from memorization via minimal perturbations in the caption embedding space. Empirical evaluations show that RADS achieves a superior Pareto frontier between generation diversity (SSCD), quality (FID), and alignment (CLIP) compared to state-of-the-art baselines. Crucially, RADS provides robust mitigation without modifying the diffusion backbone, offering a plug-and-play solution for safe generation. Our website is available at: https://s-karnik.github.io/rads-memorization-project-page/.",
-      "tags": [
-        "papers",
-        "eval",
-        "safety",
-        "policy",
-        "inference",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.00140"
         },
         {
           "label": "Feed",
