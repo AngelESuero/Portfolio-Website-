@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-04T07:07:36.841Z",
+    "generatedAt": "2026-03-04T07:53:14.241Z",
     "sources": [
       {
         "id": "openai_news",
@@ -10998,6 +10998,31 @@
       ]
     },
     {
+      "id": "9178204140b6d50f4d579619f4bc498dc8ddb88456aea23b0347bd222e4693bf",
+      "title": "A Novel Evolutionary Method for Automated Skull-Face Overlay in Computer-Aided Craniofacial Superimposition",
+      "url": "https://arxiv.org/abs/2603.00170",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-04T05:00:00.000Z",
+      "summary": "arXiv:2603.00170v2 Announce Type: replace-cross Abstract: Craniofacial Superimposition is a forensic technique for identifying skeletal remains by comparing a post-mortem skull with ante-mortem facial photographs. A critical step in this process is Skull-Face Overlay (SFO). This stage involves aligning a 3D skull model with a 2D facial image, typically guided by cranial and facial landmarks' correspondence. However, its accuracy is undermined by individual variability in soft-tissue thickness, introducing significant uncertainty into the overlay. This paper introduces Lilium, an automated evolutionary method to enhance the accuracy and robustness of SFO. Lilium explicitly models soft-tissue variability using a 3D cone-based representation whose parameters are optimized via a Differential Evolution algorithm. The method enforces anatomical, morphological, and photographic plausibility through a combination of constraints: landmark matching, camera parameter consistency, head pose alignment, skull containment within facial boundaries, and region parallelism. This emulation of the usual forensic practitioners' approach leads Lilium to outperform the state-of-the-art method in terms of both accuracy and robustness.",
+      "tags": [
+        "papers",
+        "safety",
+        "compute",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.00170"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
       "id": "fe9188c1b49c08f0b031e027feb94adeb36fc8fcdbf172d4f83c8d166d1d1a49",
       "title": "How to Minimize Game Runtime Inference Costs with Coding Agents",
       "url": "https://developer.nvidia.com/blog/how-to-minimize-game-runtime-inference-costs-with-coding-agents/",
@@ -15181,32 +15206,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.00142"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "ac44841901b40dc706b2e5cb6d32712dee67903cd47bbe418f173e65da3d3e17",
-      "title": "Disentangled Hierarchical VAE for 3D Human-Human Interaction Generation",
-      "url": "https://arxiv.org/abs/2603.00144",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-03T05:00:00.000Z",
-      "summary": "arXiv:2603.00144v1 Announce Type: cross Abstract: Generating realistic 3D Human-Human Interaction (HHI) requires coherent modeling of the physical plausibility of the agents and their interaction semantics. Existing methods compress all motion information into a single latent representation, limiting their ability to capture fine-grained actions and inter-agent interactions. This often leads to semantic misalignment and physically implausible artifacts, such as penetration or missed contact. We propose Disentangled Hierarchical Variational Autoencoder (DHVAE) based latent diffusion for structured and controllable HHI generation. DHVAE explicitly disentangles the global interaction context and individual motion patterns into a decoupled latent structure by employing a CoTransformer module. To mitigate implausible and physically inconsistent contacts in HHI, we incorporate contrastive learning constraints with our DHVAE to promote a more discriminative and physically plausible latent interaction space. For high-fidelity interaction synthesis, DHVAE employs a DDIM-based diffusion denoising process in the hierarchical latent space, enhanced by a skip-connected AdaLN-Transformer denoiser. Extensive evaluations show that DHVAE achieves superior motion fidelity, text alignment, and physical plausibility with greater computational efficiency.",
-      "tags": [
-        "papers",
-        "agents",
-        "eval",
-        "safety",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.00144"
         },
         {
           "label": "Feed",
