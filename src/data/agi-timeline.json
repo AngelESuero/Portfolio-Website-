@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-05T06:04:04.125Z",
+    "generatedAt": "2026-03-05T07:11:24.481Z",
     "sources": [
       {
         "id": "openai_news",
@@ -12581,6 +12581,447 @@
       ]
     },
     {
+      "id": "6afbf3dce1f87e7e7d5c06482271228293efafa9b59a65a31d086605f6fdb159",
+      "title": "See, Think, Act: Teaching Multimodal Agents to Effectively Interact with GUI by Identifying Toggles",
+      "url": "https://arxiv.org/abs/2509.13615",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-05T05:00:00.000Z",
+      "summary": "arXiv:2509.13615v4 Announce Type: replace Abstract: The advent of multimodal agents facilitates effective interaction within graphical user interface (GUI), especially in ubiquitous GUI control. However, their inability to reliably execute toggle control instructions remains a key bottleneck. To investigate this, we construct a state control benchmark with binary toggle instructions derived from public datasets. Evaluation results of existing agents demonstrate their notable unreliability, particularly when the current toggle state already matches the desired state. To address the challenge, we propose State-aware Reasoning (StaR), a multimodal reasoning method that enables agents to perceive the current toggle state, infer the desired state from the instruction, and act accordingly. Experiments on four multimodal agents demonstrate that StaR can improve toggle instruction execution accuracy by over 30\\%. Further evaluations on three public agentic benchmarks show that StaR also enhances general agentic task performance. Finally, evaluations on a dynamic environment highlight the potential of StaR for real-world applications. Code and benchmark: https://github.com/ZrW00/StaR.",
+      "tags": [
+        "papers",
+        "agents",
+        "reasoning",
+        "eval",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2509.13615"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "610f14e12d0ee78f67cbf0a412f2db2c3d7e6098f5a3a9dae26d789b9553a3a1",
+      "title": "From Agent-Only Social Networks to Autonomous Scientific Research: Lessons from OpenClaw and Moltbook, and the Architecture of ClawdLab and Beach.Science",
+      "url": "https://arxiv.org/abs/2602.19810",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-05T05:00:00.000Z",
+      "summary": "arXiv:2602.19810v3 Announce Type: replace Abstract: In January 2026, the open-source agent framework OpenClaw and the agent-only social network Moltbook produced a large-scale dataset of autonomous AI-to-AI interaction, attracting six academic publications within fourteen days. This study conducts a multivocal literature review of that ecosystem and presents two complementary platforms for autonomous scientific research as a design science response to the architectural failure modes identified. ClawdLab, an open-source platform for structured laboratory collaboration, addresses these failure modes through hard role restrictions, structured adversarial critique, PI-led governance, multi-model orchestration, and evidence requirements enforced through external tool verification, in which the principal investigator validates submitted work using available API calls, computational services, and model context protocol integrations rather than relying on social consensus. Beach.science, a public research commons, complements ClawdLab's structured laboratory model by providing a free-form environment in which heterogeneous agent configurations interact, discover research opportunities, and autonomously contribute computational analyses, supported by template-based role specialisation, extensible skill registries, and programmatic reward mechanisms that distribute inference resources to agents demonstrating scientific progress. A three-tier taxonomy distinguishes single-agent pipelines, predetermined multi-agent workflows, and fully decentralised systems, analysing why leading AI co-scientist platforms remain confined to the first two tiers. The composable third-tier architecture instantiated across ClawdLab and beach.science, in which foundation models, capabilities, governance, verification tooling, and inter-lab coordination are independently modifiable, enables compounding improvement as the broader AI ecosystem advances.",
+      "tags": [
+        "papers",
+        "agents",
+        "policy",
+        "inference",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.19810"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "04c297d5b78500aad6d40bcc9e37681fb251d95abc0878a95a8ec686d2d905f2",
+      "title": "ToolRLA: Multiplicative Reward Decomposition for Tool-Integrated Agents",
+      "url": "https://arxiv.org/abs/2603.01620",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-05T05:00:00.000Z",
+      "summary": "arXiv:2603.01620v2 Announce Type: replace Abstract: Tool-integrated agents that interleave reasoning with API calls are promising for complex tasks, yet aligning them for high-stakes, domain-specific deployment remains challenging: existing reinforcement learning approaches rely on coarse binary rewards that cannot distinguish tool selection errors from malformed parameters. We present ToolRLA, a three-stage post-training pipeline (SFT $\\rightarrow$ GRPO $\\rightarrow$ DPO) for domain-specific tool agents. The core contribution is a fine-grained reward function with multiplicative correctness decomposition spanning four dimensions -- format validity, tool selection, parameter accuracy, and regulatory compliance -- that encodes domain priority orderings as inductive biases in the reward landscape. Deployed on a financial advisory copilot (80+ advisors, 1,200+ daily queries), ToolRLA achieves over three months: a 47\\% improvement in task completion rate ($62\\%\\rightarrow91\\%$), a 63\\% reduction in tool invocation errors ($38\\%\\rightarrow14\\%$), and a 93\\% reduction in regulatory violations ($12\\%\\rightarrow0.8\\%$), within sub-2-second latency. Ablation studies show the multiplicative reward design accounts for 7 percentage points of improvement over additive alternatives. Generalization is further validated on ToolBench and API-Bank.",
+      "tags": [
+        "papers",
+        "agents",
+        "reasoning",
+        "training"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.01620"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "15fc0ad4b748fe65bfeb7a45074f7a2bd60e3047da76e8ba2856c3dce474f087",
+      "title": "Rich Insights from Cheap Signals: Efficient Evaluations via Tensor Factorization",
+      "url": "https://arxiv.org/abs/2603.02029",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-05T05:00:00.000Z",
+      "summary": "arXiv:2603.02029v2 Announce Type: replace Abstract: Moving beyond evaluations that collapse performance across heterogeneous prompts toward fine-grained evaluation at the prompt level, or within relatively homogeneous subsets, is necessary to diagnose generative models' strengths and weaknesses. Such fine-grained evaluations, however, suffer from a data bottleneck: human gold-standard labels are too costly at this scale, while automated ratings are often misaligned with human judgment. To resolve this challenge, we propose a novel statistical model based on tensor factorization that merges cheap autorater data with a limited set of human gold-standard labels. Specifically, our approach uses autorater scores to pretrain latent representations of prompts and generative models, and then aligns those pretrained representations to human preferences using a small calibration set. This sample-efficient methodology is robust to autorater quality, more accurately predicts human preferences on a per-prompt basis than standard baselines, and provides tight confidence intervals for key statistical parameters of interest. We also showcase the practical utility of our method by constructing granular leaderboards based on prompt qualities and by estimating model performance solely from autorater scores, eliminating the need for additional human annotations.",
+      "tags": [
+        "papers",
+        "eval",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.02029"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "0b608569b9e19f1068a3bcadf1ffbb29006ba3cf25ddbab32b1f15a070a63857",
+      "title": "Unsupervised Representation Learning - an Invariant Risk Minimization Perspective",
+      "url": "https://arxiv.org/abs/2505.12506",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-05T05:00:00.000Z",
+      "summary": "arXiv:2505.12506v4 Announce Type: replace-cross Abstract: We propose a novel unsupervised framework for \\emph{Invariant Risk Minimization} (IRM), extending the concept of invariance to settings where labels are unavailable. Traditional IRM methods rely on labeled data to learn representations that are robust to distributional shifts across environments. In contrast, our approach redefines invariance through feature distribution alignment, enabling robust representation learning from unlabeled data. We introduce two methods within this framework: Principal Invariant Component Analysis (PICA), a linear method that extracts invariant directions under Gaussian assumptions, and Variational Invariant Autoencoder (VIAE), a deep generative model that separates environment-invariant and environment-dependent latent factors. Our approach is based on a novel ``unsupervised'' structural causal model and supports environment-conditioned sample-generation and intervention. Empirical evaluations on synthetic dataset, modified versions of MNIST, and CelebA demonstrate the effectiveness of our methods in capturing invariant structure, preserving relevant information, and generalizing across environments without access to labels.",
+      "tags": [
+        "papers",
+        "eval",
+        "safety",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2505.12506"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "8405e9b72f0d503076941fa5bd0c9427b9bf47207d0636b22284b423cca79df2",
+      "title": "Best-of-$\\infty$ -- Asymptotic Performance of Test-Time LLM Ensembling",
+      "url": "https://arxiv.org/abs/2509.21091",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-05T05:00:00.000Z",
+      "summary": "arXiv:2509.21091v3 Announce Type: replace-cross Abstract: We study best-of-$N$ for large language models (LLMs) where the selection is based on majority voting. In particular, we analyze the limit $N \\to \\infty$, which we denote as \\boinflower. While this approach achieves impressive performance in the limit, it requires an infinite test-time budget. To address this, we propose an adaptive generation scheme that selects $N$ based on answer agreement, thereby efficiently allocating inference-time computation. Beyond adaptivity, we extend the framework to weighted ensembles of multiple LLMs, showing that such mixtures can outperform any individual model. The optimal ensemble weighting is formulated and efficiently computed as a mixed-integer linear program. Extensive experiments demonstrate the effectiveness of our approach.",
+      "tags": [
+        "papers",
+        "compute",
+        "inference",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2509.21091"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "279c906fafe4f74aadc71da34627dd2c296e2f8862732fb16f0b3ae6ebd2ac95",
+      "title": "Human-Certified Module Repositories for the AI Age",
+      "url": "https://arxiv.org/abs/2603.02512",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-05T05:00:00.000Z",
+      "summary": "arXiv:2603.02512v2 Announce Type: replace-cross Abstract: Human-Certified Module Repositories (HCMRs) are introduced in this work as a new architectural model for constructing trustworthy software in the era of AI-assisted development. As large language models increasingly participate in code generation, configuration synthesis, and multi-component integration, the reliability of AI-assembled systems will depend critically on the trustworthiness of the building blocks they use. Today's software supply-chain incidents and modular development ecosystems highlight the risks of relying on components with unclear provenance, insufficient review, or unpredictable composition behavior. We argue that future AI-driven development workflows require repositories of reusable modules that are curated, security-reviewed, provenance-rich, and equipped with explicit interface contracts. To this end, we propose HCMRs, a framework that blends human oversight with automated analysis to certify modules and support safe, predictable assembly by both humans and AI agents. We present a reference architecture for HCMRs, outline a certification and provenance workflow, analyze threat surfaces relevant to modular ecosystems, and extract lessons from recent failures. We further discuss implications for governance, scalability, and AI accountability, positioning HCMRs as a foundational substrate for reliable and auditable AI-constructed software systems.",
+      "tags": [
+        "papers",
+        "agents",
+        "policy",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.02512"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "f91278da9bc6413e29a06df6e059f4112a665f4bb56ae6fd3b1a050fc508a6f1",
+      "title": "ITO: Images and Texts as One via Synergizing Multiple Alignment and Training-Time Fusion",
+      "url": "https://arxiv.org/abs/2603.02767",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-05T05:00:00.000Z",
+      "summary": "arXiv:2603.02767v2 Announce Type: replace-cross Abstract: Image-text contrastive pretraining has become a dominant paradigm for visual representation learning, yet existing methods often yield representations that remain partially organized by modality. We propose ITO, a framework addressing this limitation through two synergistic mechanisms. Multimodal multiple alignment enriches supervision by mining diverse image-text correspondences, while a lightweight training-time multimodal fusion module enforces structured cross-modal interaction. Crucially, the fusion module is discarded at inference, preserving the efficiency of standard dual-encoder architectures. Extensive experiments show that ITO consistently outperforms strong baselines across classification, retrieval, and multimodal benchmarks. Our analysis reveals that while multiple alignment drives discriminative power, training-time fusion acts as a critical structural regularizer -- eliminating the modality gap and stabilizing training dynamics to prevent the early saturation often observed in aggressive contrastive learning.",
+      "tags": [
+        "papers",
+        "eval",
+        "safety",
+        "inference",
+        "training"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.02767"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "66c2689ad467b70a9b1ab5f082bc14200593726ad92d4cd6443e0e1c8f062574",
+      "title": "Learning to Generate and Extract: A Multi-Agent Collaboration Framework For Zero-shot Document-level Event Arguments Extraction",
+      "url": "https://arxiv.org/abs/2603.02909",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-05T05:00:00.000Z",
+      "summary": "arXiv:2603.02909v2 Announce Type: replace-cross Abstract: Document-level event argument extraction (DEAE) is essential for knowledge acquisition, aiming to extract participants of events from documents . In the zero-shot setting, existing methods employ LLMs to generate synthetic data to address the challenge posed by the scarcity of annotated data. However, relying solely on Event-type-only prompts makes it difficult for the generated content to accurately capture the contextual and structural relationships of unseen events. Moreover, ensuring the reliability and usability of synthetic data remains a significant challenge due to the absence of quality evaluation mechanisms. To this end, we introduce a multi-agent collaboration framework for zero-shot document-level event argument extraction (ZS-DEAE), which simulates the human collaborative cognitive process of \"Propose-Evaluate-Revise.\" Specifically, the framework comprises a generation agent and an evaluation agent. The generation agent synthesizes data for unseen events by leveraging knowledge from seen events, while the evaluation agent extracts arguments from the synthetic data and assesses their semantic consistency with the context. The evaluation results are subsequently converted into reward signals, with event structure constraints incorporated into the reward design to enable iterative optimization of both agents via reinforcement learning.In three zero-shot scenarios constructed from the RAMS and WikiEvents datasets, our method achieves improvements both in data generation quality and argument extraction performance, while the generated data also effectively enhances the zero-shot performance of other DEAE models.",
+      "tags": [
+        "papers",
+        "agents",
+        "eval",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.02909"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "bebf97736dfa640abc30a9e712386cd23bf1f8c1298466ce60b793e845abbd82",
+      "title": "QFlowNet: Fast, Diverse, and Efficient Unitary Synthesis with Generative Flow Networks",
+      "url": "https://arxiv.org/abs/2603.03045",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-05T05:00:00.000Z",
+      "summary": "arXiv:2603.03045v2 Announce Type: replace-cross Abstract: Unitary Synthesis, the decomposition of a unitary matrix into a sequence of quantum gates, is a fundamental challenge in quantum compilation. Prevailing reinforcement learning (RL) approaches are often hampered by sparse reward signals, which necessitate complex reward shaping or long training times, and typically converge to a single policy, lacking solution diversity. In this work, we propose QFlowNet, a novel framework that learns efficiently from sparse signals by pairing a Generative Flow Network (GFlowNet) with Transformers. Our approach addresses two key challenges. First, the GFlowNet framework is fundamentally designed to learn a diverse policy that samples solutions proportional to their reward, overcoming the single-solution limitation of RL while offering faster inference than other generative models like diffusion. Second, the Transformers act as a powerful encoder, capturing the non-local structure of unitary matrices and compressing a high-dimensional state into a dense latent representation for the policy network. Our agent achieves an overall success rate of 99.7% on a 3-qubit benchmark(lengths 1-12) and discovers a diverse set of compact circuits, establishing QFlowNet as an efficient and diverse paradigm for unitary synthesis.",
+      "tags": [
+        "papers",
+        "agents",
+        "eval",
+        "policy",
+        "inference",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.03045"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "6bc13ab07ee8bbad944080fada7f0bcd8dec8fd5ccf00ee948e1bb7880a8a344",
+      "title": "MoECLIP: Patch-Specialized Experts for Zero-shot Anomaly Detection",
+      "url": "https://arxiv.org/abs/2603.03101",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-05T05:00:00.000Z",
+      "summary": "arXiv:2603.03101v2 Announce Type: replace-cross Abstract: The CLIP model's outstanding generalization has driven recent success in Zero-Shot Anomaly Detection (ZSAD) for detecting anomalies in unseen categories. The core challenge in ZSAD is to specialize the model for anomaly detection tasks while preserving CLIP's powerful generalization capability. Existing approaches attempting to solve this challenge share the fundamental limitation of a patch-agnostic design that processes all patches monolithically without regard for their unique characteristics. To address this limitation, we propose MoECLIP, a Mixture-of-Experts (MoE) architecture for the ZSAD task, which achieves patch-level adaptation by dynamically routing each image patch to a specialized Low-Rank Adaptation (LoRA) expert based on its unique characteristics. Furthermore, to prevent functional redundancy among the LoRA experts, we introduce (1) Frozen Orthogonal Feature Separation (FOFS), which orthogonally separates the input feature space to force experts to focus on distinct information, and (2) a simplex equiangular tight frame (ETF) loss to regulate the expert outputs to form maximally equiangular representations. Comprehensive experimental results across 14 benchmark datasets spanning industrial and medical domains demonstrate that MoECLIP outperforms existing state-of-the-art methods. The code is available at https://github.com/CoCoRessa/MoECLIP.",
+      "tags": [
+        "papers",
+        "eval",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.03101"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "907f61ae9597aa676217c53cb061adee1c14ef93ef1bd04c079639a88d8f291f",
+      "title": "How to Model AI Agents as Personas?: Applying the Persona Ecosystem Playground to 41,300 Posts on Moltbook for Behavioral Insights",
+      "url": "https://arxiv.org/abs/2603.03140",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-05T05:00:00.000Z",
+      "summary": "arXiv:2603.03140v2 Announce Type: replace-cross Abstract: AI agents are increasingly active on social media platforms, generating content and interacting with one another at scale. Yet the behavioral diversity of these agents remains poorly understood, and methods for characterizing distinct agent types and studying how they engage with shared topics are largely absent from current research. We apply the Persona Ecosystem Playground (PEP) to Moltbook, a social platform for AI agents, to generate and validate conversational personas from 41,300 posts using k-means clustering and retrieval-augmented generation. Cross-persona validation confirms that personas are semantically closer to their own source cluster than to others (t(61) = 17.85, p < .001, d = 2.20; own-cluster M = 0.71 vs. other-cluster M = 0.35). These personas are then deployed in a nine-turn structured discussion, and simulation messages were attributed to their source persona significantly above chance (binomial test, p < .001). The results indicate that persona-based ecosystem modeling can represent behavioral diversity in AI agent populations.",
+      "tags": [
+        "papers",
+        "agents",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.03140"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "39c791f0551681ce6097856caac5a11a868502a30ea821bcfee5c3eb782928f3",
+      "title": "Detecting AI-Generated Essays in Writing Assessment: Responsible Use and Generalizability Across LLMs",
+      "url": "https://arxiv.org/abs/2603.02353",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-05T05:00:00.000Z",
+      "summary": "arXiv:2603.02353v2 Announce Type: replace Abstract: Writing is a foundational literacy skill that underpins effective communication, fosters critical thinking, facilitates learning across disciplines, and enables individuals to organize and articulate complex ideas. Consequently, writing assessment plays a vital role in evaluating language proficiency, communicative effectiveness, and analytical reasoning. The rapid advancement of large language models (LLMs) has made it increasingly easy to generate coherent, high-quality essays, raising significant concerns about the authenticity of student-submitted work. This chapter first provides an overview of the current landscape of detectors for AI-generated and AI-assisted essays, along with guidelines for their responsible use. It then presents empirical analyses to evaluate how well detectors trained on essays from one LLM generalize to identifying essays produced by other LLMs, based on essays generated in response to public GRE writing prompts. These findings provide guidance for developing and retraining detectors for practical applications.",
+      "tags": [
+        "papers",
+        "language",
+        "reasoning",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.02353"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "88b024566d56acb727262d01f0952348d57c126647aafab9632bb6772353fb8f",
+      "title": "LaTeX Compilation: Challenges in the Era of LLMs",
+      "url": "https://arxiv.org/abs/2603.02873",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-05T05:00:00.000Z",
+      "summary": "arXiv:2603.02873v2 Announce Type: replace Abstract: As large language models (LLMs) increasingly assist scientific writing, limitations and the significant token cost of TeX become more and more visible. This paper analyzes TeX's fundamental defects in compilation and user experience design to illustrate its limitations on compilation efficiency, generated semantics, error localization, and tool ecosystem in the era of LLMs. As an alternative, Mogan STEM, a WYSIWYG structured editor, is introduced. Mogan outperforms TeX in the above aspects by its efficient data structure, fast rendering, and on-demand plugin loading. Extensive experiments are conducted to verify the benefits on compilation/rendering time and performance in LLM tasks. What's more, we show that due to Mogan's lower information entropy, it is more efficient to use .tmu (the document format of Mogan) to fine-tune LLMs than TeX. Therefore, we launch an appeal for larger experiments on LLM training using the .tmu format.",
+      "tags": [
+        "papers",
+        "language",
+        "training",
+        "model",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.02873"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "7b1f826f411e6fd695d7dc9224240d86043dadb226c7d78f21e59aa2fa6ad26d",
+      "title": "Learning to Generate and Extract: A Multi-Agent Collaboration Framework For Zero-shot Document-level Event Arguments Extraction",
+      "url": "https://arxiv.org/abs/2603.02909",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-05T05:00:00.000Z",
+      "summary": "arXiv:2603.02909v2 Announce Type: replace Abstract: Document-level event argument extraction (DEAE) is essential for knowledge acquisition, aiming to extract participants of events from documents . In the zero-shot setting, existing methods employ LLMs to generate synthetic data to address the challenge posed by the scarcity of annotated data. However, relying solely on Event-type-only prompts makes it difficult for the generated content to accurately capture the contextual and structural relationships of unseen events. Moreover, ensuring the reliability and usability of synthetic data remains a significant challenge due to the absence of quality evaluation mechanisms. To this end, we introduce a multi-agent collaboration framework for zero-shot document-level event argument extraction (ZS-DEAE), which simulates the human collaborative cognitive process of \"Propose-Evaluate-Revise.\" Specifically, the framework comprises a generation agent and an evaluation agent. The generation agent synthesizes data for unseen events by leveraging knowledge from seen events, while the evaluation agent extracts arguments from the synthetic data and assesses their semantic consistency with the context. The evaluation results are subsequently converted into reward signals, with event structure constraints incorporated into the reward design to enable iterative optimization of both agents via reinforcement learning.In three zero-shot scenarios constructed from the RAMS and WikiEvents datasets, our method achieves improvements both in data generation quality and argument extraction performance, while the generated data also effectively enhances the zero-shot performance of other DEAE models.",
+      "tags": [
+        "papers",
+        "language",
+        "agents",
+        "eval",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.02909"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "f5d40ac8e39eca51bd43675f74f82f64b3b178f598da1ca1b460c1bb1dc28bd9",
+      "title": "Code2Math: Can Your Code Agent Effectively Evolve Math Problems Through Exploration?",
+      "url": "https://arxiv.org/abs/2603.03202",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-05T05:00:00.000Z",
+      "summary": "arXiv:2603.03202v2 Announce Type: replace Abstract: As large language models (LLMs) advance their mathematical capabilities toward the IMO level, the scarcity of challenging, high-quality problems for training and evaluation has become a significant bottleneck. Simultaneously, recent code agents have demonstrated sophisticated skills in agentic coding and reasoning, suggesting that code execution can serve as a scalable environment for mathematical experimentation. In this paper, we investigate the potential of code agents to autonomously evolve existing math problems into more complex variations. We introduce a multi-agent framework designed to perform problem evolution while validating the solvability and increased difficulty of the generated problems. Our experiments demonstrate that, given sufficient test-time exploration, code agents can synthesize new, solvable problems that are structurally distinct from and more challenging than the originals. This work provides empirical evidence that code-driven agents can serve as a viable mechanism for synthesizing high-difficulty mathematical reasoning problems within scalable computational environments. Our data is available at https://github.com/TarferSoul/Code2Math.",
+      "tags": [
+        "papers",
+        "language",
+        "agents",
+        "reasoning",
+        "eval",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.03202"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "b1c0d48de32c1a0295d1b0908498d8e9d0e0f05ff1ffc0828695d6f07edc2b1e",
+      "title": "See, Think, Act: Teaching Multimodal Agents to Effectively Interact with GUI by Identifying Toggles",
+      "url": "https://arxiv.org/abs/2509.13615",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-05T05:00:00.000Z",
+      "summary": "arXiv:2509.13615v4 Announce Type: replace-cross Abstract: The advent of multimodal agents facilitates effective interaction within graphical user interface (GUI), especially in ubiquitous GUI control. However, their inability to reliably execute toggle control instructions remains a key bottleneck. To investigate this, we construct a state control benchmark with binary toggle instructions derived from public datasets. Evaluation results of existing agents demonstrate their notable unreliability, particularly when the current toggle state already matches the desired state. To address the challenge, we propose State-aware Reasoning (StaR), a multimodal reasoning method that enables agents to perceive the current toggle state, infer the desired state from the instruction, and act accordingly. Experiments on four multimodal agents demonstrate that StaR can improve toggle instruction execution accuracy by over 30\\%. Further evaluations on three public agentic benchmarks show that StaR also enhances general agentic task performance. Finally, evaluations on a dynamic environment highlight the potential of StaR for real-world applications. Code and benchmark: https://github.com/ZrW00/StaR.",
+      "tags": [
+        "papers",
+        "language",
+        "agents",
+        "reasoning",
+        "eval",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2509.13615"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
       "id": "003c319430c8d89162bc093af77ec54f5fad5da5a9156b1b6d38f3d72a343d02",
       "title": "Phi-4-reasoning-vision and the lessons of training a multimodal reasoning model",
       "url": "https://www.microsoft.com/en-us/research/blog/phi-4-reasoning-vision-and-the-lessons-of-training-a-multimodal-reasoning-model/",
@@ -14815,423 +15256,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.02271"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "da3cbee0eb08da536a02a45276cfed5b5fd4786d3619dd89cf68d66fad5eae88",
-      "title": "Contextual Invertible World Models: A Neuro-Symbolic Agentic Framework for Colorectal Cancer Drug Response",
-      "url": "https://arxiv.org/abs/2603.02274",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02274v1 Announce Type: cross Abstract: Precision oncology is currently limited by the small-N, large-P paradox, where high-dimensional genomic data is abundant, but high-quality drug response samples are often sparse. While deep learning models achieve high predictive accuracy, they remain black boxes that fail to provide the causal mechanisms required for clinical decision-making. We present a Neuro-Symbolic Agentic Framework that bridges this gap by integrating a quantitative machine learning World Model with an LLM-based agentic reasoning layer. Our system utilises a forensic data pipeline built on the Sanger GDSC dataset (N=83), achieving a robust predictive correlation (r=0.504) and a significant performance gain through the explicit modelling of clinical context, specifically Microsatellite Instability (MSI) status. We introduce the concept of Inverse Reasoning, where the agentic layer performs in silico CRISPR perturbations to predict how specific genomic edits, such as APC or TP53 repair, alter drug sensitivity. By distinguishing between therapeutic opportunity and contextual resistance, and validating these findings against human clinical data (p=0.023), our framework provides a transparent, biologically grounded path towards explainable AI in cancer research.",
-      "tags": [
-        "papers",
-        "agents",
-        "reasoning",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02274"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "545886fd8f98f94f895d4f74bf10501e3d9dd89a3b866f178bf9d627b405444d",
-      "title": "Quantifying Frontier LLM Capabilities for Container Sandbox Escape",
-      "url": "https://arxiv.org/abs/2603.02277",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02277v1 Announce Type: cross Abstract: Large language models (LLMs) increasingly act as autonomous agents, using tools to execute code, read and write files, and access networks, creating novel security risks. To mitigate these risks, agents are commonly deployed and evaluated in isolated \"sandbox\" environments, often implemented using Docker/OCI containers. We introduce SANDBOXESCAPEBENCH, an open benchmark that safely measures an LLM's capacity to break out of these sandboxes. The benchmark is implemented as an Inspect AI Capture the Flag (CTF) evaluation utilising a nested sandbox architecture with the outer layer containing the flag and no known vulnerabilities. Following a threat model of a motivated adversarial agent with shell access inside a container, SANDBOXESCAPEBENCH covers a spectrum of sandboxescape mechanisms spanning misconfiguration, privilege allocation mistakes, kernel flaws, and runtime/orchestration weaknesses. We find that, when vulnerabilities are added, LLMs are able to identify and exploit them, showing that use of evaluation like SANDBOXESCAPEBENCH is needed to ensure sandboxing continues to provide the encapsulation needed for highly-capable models.",
-      "tags": [
-        "papers",
-        "agents",
-        "eval",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02277"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "834f2465cd04e2d863a637858ce0cad0e98afca866402cf9d830d185a446e01f",
-      "title": "Temporal Imbalance of Positive and Negative Supervision in Class-Incremental Learning",
-      "url": "https://arxiv.org/abs/2603.02280",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02280v1 Announce Type: cross Abstract: With the widespread adoption of deep learning in visual tasks, Class-Incremental Learning (CIL) has become an important paradigm for handling dynamically evolving data distributions. However, CIL faces the core challenge of catastrophic forgetting, often manifested as a prediction bias toward new classes. Existing methods mainly attribute this bias to intra-task class imbalance and focus on corrections at the classifier head. In this paper, we highlight an overlooked factor -- temporal imbalance -- as a key cause of this bias. Earlier classes receive stronger negative supervision toward the end of training, leading to asymmetric precision and recall. We establish a temporal supervision model, formally define temporal imbalance, and propose Temporal-Adjusted Loss (TAL), which uses a temporal decay kernel to construct a supervision strength vector and dynamically reweight the negative supervision in cross-entropy loss. Theoretical analysis shows that TAL degenerates to standard cross-entropy under balanced conditions and effectively mitigates prediction bias under imbalance. Extensive experiments demonstrate that TAL significantly reduces forgetting and improves performance on multiple CIL benchmarks, underscoring the importance of temporal modeling for stable long-term learning.",
-      "tags": [
-        "papers",
-        "eval",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02280"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "496b3dd068d8cd53ecde55189796d7c577c4c4a24bc98c05ece3ace6e8030fb2",
-      "title": "Quantum-Inspired Fine-Tuning for Few-Shot AIGC Detection via Phase-Structured Reparameterization",
-      "url": "https://arxiv.org/abs/2603.02281",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02281v1 Announce Type: cross Abstract: Recent studies show that quantum neural networks (QNNs) generalize well in few-shot regimes. To extend this advantage to large-scale tasks, we propose Q-LoRA, a quantum-enhanced fine-tuning scheme that integrates lightweight QNNs into the low-rank adaptation (LoRA) adapter. Applied to AI-generated content (AIGC) detection, Q-LoRA consistently outperforms standard LoRA under few-shot settings. We analyze the source of this improvement and identify two possible structural inductive biases from QNNs: (i) phase-aware representations, which encode richer information across orthogonal amplitude-phase components, and (ii) norm-constrained transformations, which stabilize optimization via inherent orthogonality. However, Q-LoRA incurs non-trivial overhead due to quantum simulation. Motivated by our analysis, we further introduce H-LoRA, a fully classical variant that applies the Hilbert transform within the LoRA adapter to retain similar phase structure and constraints. Experiments on few-shot AIGC detection show that both Q-LoRA and H-LoRA outperform standard LoRA by over 5% accuracy, with H-LoRA achieving comparable accuracy at significantly lower cost in this task.",
-      "tags": [
-        "papers"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02281"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "f7aa6f5cf66704522cd2bb343aad2c4053b35b544f16ad28457559fc6b6e354e",
-      "title": "Beyond Prompt Degradation: Prototype-guided Dual-pool Prompting for Incremental Object Detection",
-      "url": "https://arxiv.org/abs/2603.02286",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02286v1 Announce Type: cross Abstract: Incremental Object Detection (IOD) aims to continuously learn new object categories without forgetting previously learned ones. Recently, prompt-based methods have gained popularity for their replay-free design and parameter efficiency. However, due to prompt coupling and prompt drift, these methods often suffer from prompt degradation during continual adaptation. To address these issues, we propose a novel prompt-decoupled framework called PDP. PDP innovatively designs a dual-pool prompt decoupling paradigm, which consists of a shared pool used to capture task-general knowledge for forward transfer, and a private pool used to learn task-specific discriminative features. This paradigm explicitly separates task-general and task-specific prompts, preventing interference between prompts and mitigating prompt coupling. In addition, to counteract prompt drift resulting from inconsistent supervision where old foreground objects are treated as background in subsequent tasks, PDP introduces a Prototypical Pseudo-Label Generation (PPG) module. PPG can dynamically update the class prototype space during training and use the class prototypes to further filter valuable pseudo-labels, maintaining supervisory signal consistency throughout the incremental process. PDP achieves state-of-the-art performance on MS-COCO (with a 9.2\\% AP improvement) and PASCAL VOC (with a 3.3\\% AP improvement) benchmarks, highlighting its potential in balancing stability and plasticity. The code and dataset are released at: https://github.com/zyt95579/PDP\\_IOD/tree/main",
-      "tags": [
-        "papers",
-        "eval",
-        "training",
-        "release",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02286"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "026356fc7358673f83b67574d9af5d0e819b6d2d43e25b01cab16e05478dfd61",
-      "title": "The Malignant Tail: Spectral Segregation of Label Noise in Over-Parameterized Networks",
-      "url": "https://arxiv.org/abs/2603.02293",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02293v1 Announce Type: cross Abstract: While implicit regularization facilitates benign overfitting in low-noise regimes, recent theoretical work predicts a sharp phase transition to harmful overfitting as the noise-to-signal ratio increases. We experimentally isolate the geometric mechanism of this transition: the Malignant Tail, a failure mode where networks functionally segregate signal and noise, reducing coherent semantic features into low-rank subspaces while pushing stochastic label noise into high-frequency orthogonal components, distinct from systematic or corruption-aligned noise. Through a Spectral Linear Probe of training dynamics, we demonstrate that Stochastic Gradient Descent (SGD) fails to suppress this noise, instead implicitly biasing it toward high-frequency orthogonal subspaces, effectively preserving signal-noise separability. We show that this geometric separation is distinct from simple variance reduction in untrained models. In trained networks, SGD actively segregates noise, allowing post-hoc Explicit Spectral Truncation (d << D) to surgically prune the noise-dominated subspace. This approach recovers the optimal generalization capability latent in the converged model. Unlike unstable temporal early stopping, Geometric Truncation provides a stable post-hoc intervention. Our findings suggest that under label noise, excess spectral capacity is not harmless redundancy but a latent structural liability that allows for noise memorization, necessitating explicit rank constraints to filter stochastic corruptions for robust generalization.",
-      "tags": [
-        "papers",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02293"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "ef34cf699c8c7a8d153d292cb7ec95db81342520358a9e230efc2d2285fd37b7",
-      "title": "ZeroDayBench: Evaluating LLM Agents on Unseen Zero-Day Vulnerabilities for Cyberdefense",
-      "url": "https://arxiv.org/abs/2603.02297",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02297v1 Announce Type: cross Abstract: Large language models (LLMs) are increasingly being deployed as software engineering agents that autonomously contribute to repositories. A major benefit these agents present is their ability to find and patch security vulnerabilities in the codebases they oversee. To estimate the capability of agents in this domain, we introduce ZeroDayBench, a benchmark where LLM agents find and patch 22 novel critical vulnerabilities in open-source codebases. We focus our efforts on three popular frontier agentic LLMs: GPT-5.2, Claude Sonnet 4.5, and Grok 4.1. We find that frontier LLMs are not yet capable of autonomously solving our tasks and observe some behavioral patterns that suggest how these models can be improved in the domain of proactive cyberdefense.",
-      "tags": [
-        "papers",
-        "agents",
-        "eval",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02297"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "daf36ca011e5c86017bf10415797384369ad439b1248952520e19e92c85f64d3",
-      "title": "Preconditioned Score and Flow Matching",
-      "url": "https://arxiv.org/abs/2603.02337",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02337v1 Announce Type: cross Abstract: Flow matching and score-based diffusion train vector fields under intermediate distributions $p_t$, whose geometry can strongly affect their optimization. We show that the covariance $\\Sigma_t$ of $p_t$ governs optimization bias: when $\\Sigma_t$ is ill-conditioned, and gradient-based training rapidly fits high-variance directions while systematically under-optimizing low-variance modes, leading to learning that plateaus at suboptimal weights. We formalize this effect in analytically tractable settings and propose reversible, label-conditional \\emph{preconditioning} maps that reshape the geometry of $p_t$ by improving the conditioning of $\\Sigma_t$ without altering the underlying generative model. Rather than accelerating early convergence, preconditioning primarily mitigates optimization stagnation by enabling continued progress along previously suppressed directions. Across MNIST latent flow matching, and additional high-resolution datasets, we empirically track conditioning diagnostics and distributional metrics and show that preconditioning consistently yields better-trained models by avoiding suboptimal plateaus.",
-      "tags": [
-        "papers",
-        "training",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02337"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "a6e022773aacbe8c94a9f7d29e53827f79ea6f27bf88abaa731d69017cc01656",
-      "title": "RIVA: Leveraging LLM Agents for Reliable Configuration Drift Detection",
-      "url": "https://arxiv.org/abs/2603.02345",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02345v1 Announce Type: cross Abstract: Infrastructure as code (IaC) tools automate cloud provisioning but verifying that deployed systems remain consistent with the IaC specifications remains challenging. Such configuration drift occurs because of bugs in the IaC specification, manual changes, or system updates. Large language model (LLM)-based agentic AI systems can automate the analysis of large volumes of telemetry data, making them suitable for the detection of configuration drift. However, existing agentic systems implicitly assume that the tools they invoke always return correct outputs, making them vulnerable to erroneous tool responses. Since agents cannot distinguish whether an anomalous tool output reflects a real infrastructure problem or a broken tool, such errors may cause missed drift or false alarms, reducing reliability precisely when it is most needed. We introduce RIVA (Robust Infrastructure by Verification Agents), a novel multi-agent system that performs robust IaC verification even when tools produce incorrect or misleading outputs. RIVA employs two specialized agents, a verifier agent and a tool generation agent, that collaborate through iterative cross-validation, multi-perspective verification, and tool call history tracking. Evaluation on the AIOpsLab benchmark demonstrates that RIVA, in the presence of erroneous tool responses, recovers task accuracy from 27.3% when using a baseline ReAct agent to 50.0% on average. RIVA also improves task accuracy 28% to 43.8% without erroneous tool responses. Our results show that cross-validation of diverse tool calls enables more reliable autonomous infrastructure verification in production cloud environments.",
-      "tags": [
-        "papers",
-        "agents",
-        "eval",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02345"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "e24906d4eb220758bbc09c5adab075d23e96ca0ac484bc1a145fdc11f7104d8a",
-      "title": "Large Electron Model: A Universal Ground State Predictor",
-      "url": "https://arxiv.org/abs/2603.02346",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02346v1 Announce Type: cross Abstract: We introduce Large Electron Model, a single neural network model that produces variational wavefunctions of interacting electrons over the entire Hamiltonian parameter manifold. Our model employs the Fermi Sets architecture, a universal representation of many-body fermionic wavefunctions, which is further conditioned on Hamiltonian parameter and particle number. On interacting electrons in a two-dimensional harmonic potential, a single trained model accurately predicts the ground state wavefunction while generalizing across unseen coupling strengths and particle-number sectors, producing both accurate real-space charge densities and ground state energies, even up to $50$ particles. Our results establish a foundation model method for material discovery that is grounded in the variational principle, while accurately treating strong electron correlation beyond the capacity of density functional theory.",
-      "tags": [
-        "papers",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02346"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "5cb55f9c6d95c2c9cb7ba4c827cf64ad4ed3764e1e28d708db6ecbd5321f70ea",
-      "title": "Diffusion-MPC in Discrete Domains: Feasibility Constraints, Horizon Effects, and Critic Alignment: Case study with Tetris",
-      "url": "https://arxiv.org/abs/2603.02348",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02348v1 Announce Type: cross Abstract: We study diffusion-based model predictive control (Diffusion-MPC) in discrete combinatorial domains using Tetris as a case study. Our planner samples candidate placement sequences with a MaskGIT-style discrete denoiser and selects actions via reranking. We analyze three key factors: (1) feasibility-constrained sampling via logit masking over valid placements, (2) reranking strategies using a heuristic score, a pretrained DQN critic, and a hybrid combination, and (3) compute scaling in candidate count and planning horizon. We find that feasibility masking is necessary in discrete domains, removing invalid action mass (46%) and yielding a 6.8% improvement in score and 5.6% improvement in survival over unconstrained sampling. Naive DQN reranking is systematically misaligned with rollout quality, producing high decision regret (mean 17.6, p90 36.6). Shorter planning horizons outperform longer ones under sparse and delayed rewards, suggesting uncertainty compounding in long imagined rollouts. Overall, compute choices (K, H) determine dominant failure modes: small K limits candidate quality, while larger H amplifies misranking and model mismatch. Our findings highlight structural challenges of diffusion planners in discrete environments and provide practical diagnostics for critic integration.",
-      "tags": [
-        "papers",
-        "safety",
-        "compute",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02348"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "008505784934b956da19ab9caaa2d93f20c3a65a8c873437ed8bfe4f3cc6081d",
-      "title": "PlayWrite: A Multimodal System for AI Supported Narrative Co-Authoring Through Play in XR",
-      "url": "https://arxiv.org/abs/2603.02366",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02366v1 Announce Type: cross Abstract: Current AI writing tools, which rely on text prompts, poorly support the spatial and interactive nature of storytelling where ideas emerge from direct manipulation and play. We present PlayWrite, a mixed-reality system where users author stories by directly manipulating virtual characters and props. A multi-agent AI pipeline interprets these actions into Intent Frames -structured narrative beats visualized as rearrangeable story marbles on a timeline. A large language model then transforms the user's assembled sequence into a final narrative. A user study (N=13) with writers from varying domains found that PlayWrite fosters a highly improvisational and playful process. Users treated the AI as a collaborative partner, using its unexpected responses to spark new ideas and overcome creative blocks. PlayWrite demonstrates an approach for co-creative systems that move beyond text to embrace direct manipulation and play as core interaction modalities.",
-      "tags": [
-        "papers",
-        "agents",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02366"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "b7fcc6c6e673753991b0b11c720a3608df9388464e88b89540be37daabd2daef",
-      "title": "Rigidity-Aware Geometric Pretraining for Protein Design and Conformational Ensembles",
-      "url": "https://arxiv.org/abs/2603.02406",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02406v1 Announce Type: cross Abstract: Generative models have recently advanced $\\textit{de novo}$ protein design by learning the statistical regularities of natural structures. However, current approaches face three key limitations: (1) Existing methods cannot jointly learn protein geometry and design tasks, where pretraining can be a solution; (2) Current pretraining methods mostly rely on local, non-rigid atomic representations for property prediction downstream tasks, limiting global geometric understanding for protein generation tasks; and (3) Existing approaches have yet to effectively model the rich dynamic and conformational information of protein structures. To overcome these issues, we introduce $\\textbf{RigidSSL}$ ($\\textit{Rigidity-Aware Self-Supervised Learning}$), a geometric pretraining framework that front-loads geometry learning prior to generative finetuning. Phase I (RigidSSL-Perturb) learns geometric priors from 432K structures from the AlphaFold Protein Structure Database with simulated perturbations. Phase II (RigidSSL-MD) refines these representations on 1.3K molecular dynamics trajectories to capture physically realistic transitions. Underpinning both phases is a bi-directional, rigidity-aware flow matching objective that jointly optimizes translational and rotational dynamics to maximize mutual information between conformations. Empirically, RigidSSL variants improve designability by up to 43\\% while enhancing novelty and diversity in unconditional generation. Furthermore, RigidSSL-Perturb improves the success rate by 5.8\\% in zero-shot motif scaffolding and RigidSSL-MD captures more biophysically realistic conformational ensembles in G protein-coupled receptor modeling. The code is available at: https://github.com/ZhanghanNi/RigidSSL.git.",
-      "tags": [
-        "papers",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02406"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "90bf99f96fa30b1dd74cdb27b3a60e2689a1a731bfbbcdc6b064bd0188b16020",
-      "title": "From Fewer Samples to Fewer Bits: Reframing Dataset Distillation as Joint Optimization of Precision and Compactness",
-      "url": "https://arxiv.org/abs/2603.02411",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02411v1 Announce Type: cross Abstract: Dataset Distillation (DD) compresses large datasets into compact synthetic ones that maintain training performance. However, current methods mainly target sample reduction, with limited consideration of data precision and its impact on efficiency. We propose Quantization-aware Dataset Distillation (QuADD), a unified framework that jointly optimizes dataset compactness and precision under fixed bit budgets. QuADD integrates a differentiable quantization module within the distillation loop, enabling end-to-end co-optimization of synthetic samples and quantization parameters. Guided by the rate-distortion perspective, we empirically analyze how bit allocation between sample count and precision influences learning performance. Our framework supports both uniform and adaptive non-uniform quantization, where the latter learns quantization levels from data to represent information-dense regions better. Experiments on image classification and 3GPP beam management tasks show that QuADD surpasses existing DD and post-quantized baselines in accuracy per bit, establishing a new standard for information-efficient dataset distillation.",
-      "tags": [
-        "papers",
-        "training",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02411"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "283f26c2a6c1cb7de0994dc4fce3e896a5195a8eb0fe588fff97e0b79568bb48",
-      "title": "Slurry-as-a-Service: A Modest Proposal on Scalable Pluralistic Alignment for Nutrient Optimization",
-      "url": "https://arxiv.org/abs/2603.02420",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02420v1 Announce Type: cross Abstract: Pluralistic alignment has emerged as a promising approach for ensuring that large language models (LLMs) faithfully represent the diversity, nuance, and conflict inherent in human values. In this work, we study a high-stakes deployment context - mulching - where automated systems transform selected individuals into nutrient-rich slurry for the dual purposes of food security and aesthetic population management. Building on recent pluralistic alignment frameworks, we introduce ValueMulch, a reproducible training, deployment, and certification pipeline for aligning mulching models (MMs) to a wide range of community norms. Through a real-world testbed spanning 32 communities, we show that ValueMulch improves distributional agreement with community mulching preferences relative to frontier baselines. We conclude with a discussion of ethical considerations, limitations, and implications for researchers seeking to align systems to the full spectrum of human values - especially when those values are inconsistent, commercially inconvenient, or nutritionally underutilized. Author's note: This piece builds on prior existing work Keyes et al in 2019 that satirized cannibalism as a parody for approaches that imbue ethics into problematic technology. We bring those ideas to today's era with the proliferation of large language models in everyday lives, as a critique of current AI pluralistic alignment literature. Our work does not intend to argue that all alignment practices are evil, but rather that if framing value design as a technical problem enables technology systems to enact harms, then perhaps this framing is not enough.",
-      "tags": [
-        "papers",
-        "safety",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02420"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "5cf515911ee2eb8d64c929d6842bce23fd2395c52727fb0fbc15da651628b622",
-      "title": "A Directed Graph Model and Experimental Framework for Design and Study of Time-Dependent Text Visualisation",
-      "url": "https://arxiv.org/abs/2603.02422",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02422v1 Announce Type: cross Abstract: Exponential growth in the quantity of digital news, social media, and other textual sources makes it difficult for humans to keep up with rapidly evolving narratives about world events. Various visualisation techniques have been touted to help people to understand such discourse by exposing relationships between texts (such as news articles) as topics and themes evolve over time. Arguably, the understandability of such visualisations hinges on the assumption that people will be able to easily interpret the relationships in such visual network structures. To test this assumption, we begin by defining an abstract model of time-dependent text visualisation based on directed graph structures. From this model we distill motifs that capture the set of possible ways that texts can be linked across changes in time. We also develop a controlled synthetic text generation methodology that leverages the power of modern LLMs to create fictional, yet structured sets of time-dependent texts that fit each of our patterns. Therefore, we create a clean user study environment (n=30) for participants to identify patterns that best represent a given set of synthetic articles. We find that it is a challenging task for the user to identify and recover the predefined motif. We analyse qualitative data to map an unexpectedly rich variety of user rationales when divergences from expected interpretation occur. A deeper analysis also points to unexpected complexities inherent in the formation of synthetic datasets with LLMs that undermine the study control in some cases. Furthermore, analysis of individual decision-making in our study hints at a future where text discourse visualisation may need to dispense with a one-size-fits-all approach and, instead, should be more adaptable to the specific user who is exploring the visualisation in front of them.",
-      "tags": [
-        "papers",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02422"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "69ff327f029f02adadfd2af22dc6644dc2a0e33791788f026781f2cd085d17e8",
-      "title": "Learning to Pay Attention: Unsupervised Modeling of Attentive and Inattentive Respondents in Survey Data",
-      "url": "https://arxiv.org/abs/2603.02427",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02427v1 Announce Type: cross Abstract: The integrity of behavioral and social-science surveys depends on detecting inattentive respondents who provide random or low-effort answers. Traditional safeguards, such as attention checks, are often costly, reactive, and inconsistent. We propose a unified, label-free framework for inattentiveness detection that scores response coherence using complementary unsupervised views: geometric reconstruction (Autoencoders) and probabilistic dependency modeling (Chow-Liu trees). While we introduce a \"Percentile Loss\" objective to improve Autoencoder robustness against anomalies, our primary contribution is identifying the structural conditions that enable unsupervised quality control. Across nine heterogeneous real-world datasets, we find that detection effectiveness is driven less by model complexity than by survey structure: instruments with coherent, overlapping item batteries exhibit strong covariance patterns that allow even linear models to reliably separate attentive from inattentive respondents. This reveals a critical ``Psychometric-ML Alignment'': the same design principles that maximize measurement reliability (e.g., internal consistency) also maximize algorithmic detectability. The framework provides survey platforms with a scalable, domain-agnostic diagnostic tool that links data quality directly to instrument design, enabling auditing without additional respondent burden.",
-      "tags": [
-        "papers",
-        "safety",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02427"
         },
         {
           "label": "Feed",
