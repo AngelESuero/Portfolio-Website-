@@ -83,42 +83,54 @@
     const getCircadianMode = () =>
       typeof getCircadianApi()?.getMode === 'function' ? getCircadianApi().getMode() : 'auto';
     const isLabMode = () => getState().surfaceMode === 'lab';
+    let lastUiSignature = '';
+
+    const syncPressedState = (button, selected) => {
+      if (!(button instanceof HTMLElement)) return;
+      if (button.classList.contains('is-active') !== selected) {
+        button.classList.toggle('is-active', selected);
+      }
+      const pressed = String(selected);
+      if (button.getAttribute('aria-pressed') !== pressed) {
+        button.setAttribute('aria-pressed', pressed);
+      }
+    };
 
     const syncUi = () => {
       const state = getState();
       const circadianMode = getCircadianMode();
+      const signature = `${state.surfaceMode}|${state.mode}|${state.size}|${state.tabSwipe}|${circadianMode}`;
+      if (signature === lastUiSignature) return;
+      if (state.surfaceMode !== 'lab' && modal.hidden) {
+        lastUiSignature = signature;
+        return;
+      }
 
       surfaceButtons.forEach((button) => {
         const selected = button.getAttribute('data-surface-mode') === state.surfaceMode;
-        button.classList.toggle('is-active', selected);
-        button.setAttribute('aria-pressed', String(selected));
+        syncPressedState(button, selected);
       });
       modeButtons.forEach((button) => {
         const selected = button.getAttribute('data-mode') === state.mode;
-        button.classList.toggle('is-active', selected);
-        button.setAttribute('aria-pressed', String(selected));
+        syncPressedState(button, selected);
       });
       sizeButtons.forEach((button) => {
         const selected = button.getAttribute('data-size') === state.size;
-        button.classList.toggle('is-active', selected);
-        button.setAttribute('aria-pressed', String(selected));
+        syncPressedState(button, selected);
       });
       tabSwipeButtons.forEach((button) => {
         const selected = button.getAttribute('data-tab-swipe') === state.tabSwipe;
-        button.classList.toggle('is-active', selected);
-        button.setAttribute('aria-pressed', String(selected));
+        syncPressedState(button, selected);
       });
       circadianButtons.forEach((button) => {
         const selected = button.getAttribute('data-circadian-mode') === circadianMode;
-        button.classList.toggle('is-active', selected);
-        button.setAttribute('aria-pressed', String(selected));
+        syncPressedState(button, selected);
       });
+      lastUiSignature = signature;
     };
 
     const syncVisibility = () => {
-      const show = isLabMode();
-      root.hidden = !show;
-      if (!show) {
+      if (!isLabMode() && !modal.hidden) {
         modal.hidden = true;
         document.body.style.removeProperty('overflow');
       }
@@ -146,8 +158,6 @@
       button.addEventListener('click', () => {
         const surfaceMode = button.getAttribute('data-surface-mode') === 'lab' ? 'lab' : 'viewer';
         getApi()?.setSurfaceMode?.(surfaceMode);
-        syncUi();
-        syncVisibility();
       });
     });
 
@@ -155,7 +165,6 @@
       button.addEventListener('click', () => {
         const mode = button.getAttribute('data-mode') || 'normal';
         getApi()?.setMode?.(mode);
-        syncUi();
       });
     });
 
@@ -163,7 +172,6 @@
       button.addEventListener('click', () => {
         const size = button.getAttribute('data-size') || 'standard';
         getApi()?.setSize?.(size);
-        syncUi();
       });
     });
 
@@ -171,7 +179,6 @@
       button.addEventListener('click', () => {
         const tabSwipe = button.getAttribute('data-tab-swipe') || 'on';
         getApi()?.setTabSwipe?.(tabSwipe);
-        syncUi();
       });
     });
 
@@ -179,20 +186,17 @@
       button.addEventListener('click', () => {
         const mode = button.getAttribute('data-circadian-mode') || 'auto';
         getCircadianApi()?.setMode?.(mode);
-        syncUi();
       });
     });
 
     resetBtn.addEventListener('click', () => {
       getApi()?.reset?.();
       getCircadianApi()?.reset?.();
-      syncUi();
-      syncVisibility();
     });
 
     window.addEventListener('modesettings:change', () => {
-      syncUi();
       syncVisibility();
+      syncUi();
     });
     window.addEventListener('circadian:change', syncUi);
     syncUi();

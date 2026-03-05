@@ -121,6 +121,7 @@ const isActive = (href: string) => {
     const surfaceModeButtons = Array.from(document.querySelectorAll('[data-surface-mode-btn]'));
     let currentTheme = root.classList.contains('light') ? 'light' : 'dark';
     let themeClockTimer = null;
+    let renderedSurfaceMode = '';
 
     const getClockTheme = (date = new Date()) => {
       const decimalHour = date.getHours() + date.getMinutes() / 60;
@@ -181,13 +182,20 @@ const isActive = (href: string) => {
     const syncSurfaceModeUi = () => {
       const state = getModeState();
       const activeSurfaceMode = state?.surfaceMode === 'lab' ? 'lab' : 'viewer';
+      if (activeSurfaceMode === renderedSurfaceMode) return;
+      renderedSurfaceMode = activeSurfaceMode;
 
       surfaceModeButtons.forEach((button) => {
         if (!(button instanceof HTMLElement)) return;
         const targetSurfaceMode = button.getAttribute('data-surface-mode-btn') === 'lab' ? 'lab' : 'viewer';
         const isActive = targetSurfaceMode === activeSurfaceMode;
-        button.classList.toggle('is-active', isActive);
-        button.setAttribute('aria-pressed', String(isActive));
+        if (button.classList.contains('is-active') !== isActive) {
+          button.classList.toggle('is-active', isActive);
+        }
+        const nextPressed = String(isActive);
+        if (button.getAttribute('aria-pressed') !== nextPressed) {
+          button.setAttribute('aria-pressed', nextPressed);
+        }
       });
     };
 
@@ -195,7 +203,6 @@ const isActive = (href: string) => {
       button.addEventListener('click', () => {
         const nextSurfaceMode = button.getAttribute('data-surface-mode-btn') === 'lab' ? 'lab' : 'viewer';
         window.__modeSettings?.setSurfaceMode?.(nextSurfaceMode);
-        syncSurfaceModeUi();
       });
     });
 
