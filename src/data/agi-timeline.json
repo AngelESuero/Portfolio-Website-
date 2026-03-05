@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-05T20:53:53.446Z",
+    "generatedAt": "2026-03-05T21:51:46.453Z",
     "sources": [
       {
         "id": "openai_news",
@@ -13210,6 +13210,30 @@
       ]
     },
     {
+      "id": "cd7b6911c24fb87449093824aa8138ad71a8bb75a5909fe9f118f3212beff126",
+      "title": "Introducing ChatGPT for Excel and new financial data integrations",
+      "url": "https://openai.com/index/chatgpt-for-excel",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-03-05T00:00:00.000Z",
+      "summary": "OpenAI introduces ChatGPT for Excel and new financial app integrations, powered by GPT-5.4 to accelerate modeling, research, and analysis in regulated environments.",
+      "tags": [
+        "primary",
+        "release",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/chatgpt-for-excel"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
+    {
       "id": "003c319430c8d89162bc093af77ec54f5fad5da5a9156b1b6d38f3d72a343d02",
       "title": "Phi-4-reasoning-vision and the lessons of training a multimodal reasoning model",
       "url": "https://www.microsoft.com/en-us/research/blog/phi-4-reasoning-vision-and-the-lessons-of-training-a-multimodal-reasoning-model/",
@@ -15218,30 +15242,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.02254"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "5c5e6aa3635c67eb068b30a438dcb3ca08285fae508bb4597a60871d4375b725",
-      "title": "MEBM-Speech: Multi-scale Enhanced BrainMagic for Robust MEG Speech Detection",
-      "url": "https://arxiv.org/abs/2603.02255",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02255v1 Announce Type: cross Abstract: We propose MEBM-Speech, a multi-scale enhanced neural decoder for speech activity detection from non-invasive magnetoencephalography (MEG) signals. Built upon the BrainMagic backbone, MEBM-Speech integrates three complementary temporal modeling mechanisms: a multi-scale convolutional module for short-term pattern extraction, a bidirectional LSTM (BiLSTM) for long-range context modeling, and a depthwise separable convolutional layer for efficient cross-scale feature fusion. A lightweight temporal jittering strategy and average pooling further improve onset robustness and boundary stability. The model performs continuous probabilistic decoding of MEG signals, enabling fine-grained detection of speech versus silence states - an ability crucial for both cognitive neuroscience and clinical applications. Comprehensive evaluations on the LibriBrain Competition 2025 Track1 benchmark demonstrate strong performance, achieving an average F1 macro of 89.3% on the validation set and comparable results on the official test leaderboard. These findings highlight the effectiveness of multi-scale temporal representation learning for robust MEG-based speech decoding.",
-      "tags": [
-        "papers",
-        "eval",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02255"
         },
         {
           "label": "Feed",
