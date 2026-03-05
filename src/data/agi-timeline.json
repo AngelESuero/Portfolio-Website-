@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-05T15:07:46.310Z",
+    "generatedAt": "2026-03-05T16:06:24.059Z",
     "sources": [
       {
         "id": "openai_news",
@@ -13045,6 +13045,28 @@
       ]
     },
     {
+      "id": "67dc99e37d6707b087937485c2d7d2bec71481193bc4d527e07a5bbf12ef0839",
+      "title": "Introducing Modular Diffusers - Composable Building Blocks for Diffusion Pipelines",
+      "url": "https://huggingface.co/blog/modular-diffusers",
+      "sourceId": "hf_blog",
+      "sourceName": "Hugging Face — Blog",
+      "publishedAt": "2026-03-05T00:00:00.000Z",
+      "summary": null,
+      "tags": [
+        "open-source"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://huggingface.co/blog/modular-diffusers"
+        },
+        {
+          "label": "Feed",
+          "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
+    {
       "id": "003c319430c8d89162bc093af77ec54f5fad5da5a9156b1b6d38f3d72a343d02",
       "title": "Phi-4-reasoning-vision and the lessons of training a multimodal reasoning model",
       "url": "https://www.microsoft.com/en-us/research/blog/phi-4-reasoning-vision-and-the-lessons-of-training-a-multimodal-reasoning-model/",
@@ -15230,32 +15252,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.02267"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "f859770e04a063afa38a289efe0ec2da3f4b0a084d2aeaf884b2365b95c6b2e2",
-      "title": "PRISM: Exploring Heterogeneous Pretrained EEG Foundation Model Transfer to Clinical Differential Diagnosis",
-      "url": "https://arxiv.org/abs/2603.02268",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02268v1 Announce Type: cross Abstract: EEG foundation models are typically pretrained on narrow-source clinical archives and evaluated on benchmarks from the same ecosystem, leaving unclear whether representations encode neural physiology or recording-distribution artifacts. We introduce PRISM (Population Representative Invariant Signal Model), a masked autoencoder ablated along two axes -- pretraining population and downstream adaptation -- with architecture and preprocessing fixed. We compare a narrow-source EU/US corpus (TUH + PhysioNet) against a geographically diverse pool augmented with multi-center South Asian clinical recordings across multiple EEG systems. Three findings emerge. First, narrow-source pretraining yields stronger linear probes on distribution-matched benchmarks, while diverse pretraining produces more adaptable representations under fine-tuning -- a trade-off invisible under single-protocol evaluation. Trained on three source corpora, PRISM matches or outperforms REVE (92 datasets, 60,000+ hours) on the majority of tasks, demonstrating that targeted diversity can substitute for indiscriminate scale and that dataset count is a confounding variable in model comparison. Second, on a clinically challenging and previously untested task -- distinguishing epilepsy from diagnostic mimickers via interictal EEG -- the diverse checkpoint outperforms the narrow-source checkpoint by +12.3 pp balanced accuracy, the largest gap across all evaluations. Third, systematic inconsistencies between EEG-Bench and EEG-FM-Bench reverse model rankings on identical datasets by up to 24 pp; we identify six concrete sources including split construction, checkpoint selection, segment length, and normalization, showing these factors compound non-additively.",
-      "tags": [
-        "papers",
-        "eval",
-        "training",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02268"
         },
         {
           "label": "Feed",

@@ -2,7 +2,7 @@
 
 export const LINKTREE_TIMELINE_META = {
   "schemaVersion": 1,
-  "generatedAt": "2026-03-05T15:11:44.913Z",
+  "generatedAt": "2026-03-05T16:10:22.451Z",
   "sourceUrl": "https://linktr.ee/a_e.s_",
   "sourceUpdatedAt": "2026-02-16T17:38:55.000Z",
   "itemCount": 24
