@@ -8,7 +8,17 @@ import {
 } from './site-refs';
 import { applyLinktreeTimelineToHubItem } from './linktree-timeline';
 
-export type LinkHubProvider = 'spotify' | 'youtube' | 'soundcloud' | 'untitled' | 'substack' | 'instagram' | 'google_drive';
+export type LinkHubProvider =
+  | 'spotify'
+  | 'youtube'
+  | 'soundcloud'
+  | 'untitled'
+  | 'substack'
+  | 'instagram'
+  | 'google_drive'
+  | 'threads'
+  | 'tiktok'
+  | 'x';
 export type LinkHubCategoryId = 'music' | 'writing' | 'video' | 'resources' | 'legal' | 'social';
 export type AccentColorKey = 'yellow' | 'blue' | 'orange' | 'red' | 'white' | 'black' | 'violet' | 'indigo';
 

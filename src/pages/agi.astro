@@ -205,8 +205,8 @@ function normalizeItem(raw: any, index: number): AGITimelineItem | null {
   const headline = String(raw?.headline || raw?.title || '').trim();
   if (!headline) return null;
 
-  const sourceName = String(raw?.sourceName || raw?.sourceId || 'Unknown source');
-  const sourceId = String(raw?.sourceId || 'unknown');
+  const sourceName = String(raw?.sourceName || raw?.sourceId || 'Archive source');
+  const sourceId = String(raw?.sourceId || 'source');
   const url = String(raw?.url || 'https://github.com/AngelESuero/Portfolio-Website-');
 
   let year = Number(raw?.year);

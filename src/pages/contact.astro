@@ -20,11 +20,16 @@ const deliveryFailed = error === 'failed';
   )}
 
   {(deliveryUnavailable || deliveryFailed) && (
-    <p class="mt-4 rounded border border-amber-300/70 bg-amber-100/20 px-3 py-2 text-sm" role="alert">
-      {deliveryUnavailable
-        ? 'Form delivery is currently unavailable. Please use one of the direct links below.'
-        : 'Contact delivery failed. Please try again later or use one of the direct links below.'}
-    </p>
+    <>
+      <p class="viewer-only mt-4 rounded border border-amber-300/70 bg-amber-100/20 px-3 py-2 text-sm" role="alert">
+        Messaging portal is temporarily paused. Please use one of the direct links below.
+      </p>
+      <p class="lab-only mt-4 rounded border border-amber-300/70 bg-amber-100/20 px-3 py-2 text-sm" role="alert">
+        {deliveryUnavailable
+          ? 'Form delivery is currently unavailable. Please use one of the direct links below.'
+          : 'Contact delivery failed. Please try again later or use one of the direct links below.'}
+      </p>
+    </>
   )}
 
   <div class="viewer-only mt-5 max-w-xl rounded border border-zinc-300/40 bg-zinc-200/10 px-3 py-2 text-sm">

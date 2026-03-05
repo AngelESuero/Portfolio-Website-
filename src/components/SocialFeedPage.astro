@@ -1,10 +1,12 @@
 ---
 import {
+  getAuthoredFallbackExcerpt,
   getEmbedAspectRatio,
   getEmbedFallbackMessage,
   getEmbedHeight,
   getEmbedViewMode,
   getLinkCtaLabel,
+  getProviderBadgeLabel,
   resolveEmbed,
   resolveInternalRoute
 } from '../lib/embed-resolver';
@@ -182,6 +184,11 @@ const xTimelineHref = showXTimeline ? `https://x.com/${xTimelineHandle}` : '';
           const aspectRatio = getEmbedAspectRatio(resolution.provider, embed.sourceUrl);
           const viewMode = getEmbedViewMode(resolution.provider, embed.sourceUrl);
           const hasAspectRatio = Boolean(aspectRatio);
+          const providerBadgeLabel = getProviderBadgeLabel(resolution.provider, embed.url);
+          const fallbackDescription = getAuthoredFallbackExcerpt(resolution.provider, {
+            itemExcerpt: embed.label ? `${embed.label}.` : '',
+            urlValue: embed.url
+          });
           const frameStyle = hasAspectRatio
             ? `--embed-aspect-ratio:${aspectRatio}`
             : `--embed-height:${height}px`;
@@ -200,11 +207,20 @@ const xTimelineHref = showXTimeline ? `https://x.com/${xTimelineHandle}` : '';
                 </div>
               ) : embed.internalRoute ? (
                 <div class="social-embed-internal">
-                  <p class="social-embed-badge">Internal</p>
+                  <p class="social-embed-badge">Internal Archive</p>
                   <p>{embed.internalRoute.description}</p>
                 </div>
               ) : (
-                <div class="social-embed-fallback">{getEmbedFallbackMessage(resolution)}</div>
+                <div class="social-embed-fallback">
+                  <div class="social-embed-fallback-preview" aria-hidden="true">
+                    <span>{providerBadgeLabel}</span>
+                  </div>
+                  <div class="social-embed-fallback-copy">
+                    <p class="social-embed-fallback-badge">{providerBadgeLabel}</p>
+                    <p class="social-embed-fallback-description viewer-only">{fallbackDescription}</p>
+                    <p class="social-embed-fallback-description lab-only">{getEmbedFallbackMessage(resolution)}</p>
+                  </div>
+                </div>
               )}
               <figcaption>
                 {embed.label && <span>{embed.label}</span>}
@@ -475,17 +491,59 @@ const xTimelineHref = showXTimeline ? `https://x.com/${xTimelineHandle}` : '';
 
   .social-embed-fallback {
     min-height: 12rem;
-    border: 1px dashed rgba(113, 113, 122, 0.36);
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 20%, rgba(113, 113, 122, 0.36));
     border-radius: 0.72rem;
-    background: rgba(2, 6, 23, 0.55);
-    color: rgba(82, 82, 91, 0.92);
-    padding: 0.86rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    line-height: 1.5;
+    overflow: hidden;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 10%, transparent), transparent 68%),
+      rgba(2, 6, 23, 0.55);
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
+
+  .social-embed-fallback-preview {
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 16%, rgba(113, 113, 122, 0.38));
+    padding: 0.52rem 0.64rem;
+    background:
+      linear-gradient(120deg, color-mix(in srgb, var(--tone-accent) 18%, transparent), transparent),
+      linear-gradient(180deg, rgba(8, 12, 20, 0.55), rgba(8, 12, 20, 0.35));
+  }
+
+  .social-embed-fallback-preview span {
+    display: inline-flex;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 48%, rgba(113, 113, 122, 0.45));
+    border-radius: 999px;
+    padding: 0.1rem 0.46rem;
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--tone-accent-glow);
+    background: color-mix(in srgb, var(--tone-accent) 16%, transparent);
+  }
+
+  .social-embed-fallback-copy {
+    padding: 0.76rem 0.86rem;
+    display: grid;
+    align-content: center;
+    gap: 0.35rem;
+  }
+
+  .social-embed-fallback-badge,
+  .social-embed-fallback-description {
+    margin: 0;
+  }
+
+  .social-embed-fallback-badge {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .social-embed-fallback-description {
     font-size: 0.82rem;
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
   }
 
   .social-embed-internal {

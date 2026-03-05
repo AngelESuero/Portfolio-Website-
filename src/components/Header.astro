@@ -68,19 +68,19 @@ const isActive = (href: string) => {
         <button type="button" class="header-mode-btn is-active" data-surface-mode-btn="viewer" aria-pressed="true">Viewer</button>
         <button type="button" class="header-mode-btn" data-surface-mode-btn="lab" aria-pressed="false">Lab</button>
       </div>
-      <a href={profile.site_url} class="header-live header-lab-only pill rounded px-3 py-1 text-sm" aria-label="Open live site">
+      <a href={profile.site_url} class="header-live lab-only-inline-flex pill rounded px-3 py-1 text-sm" aria-label="Open live site">
         Live
       </a>
       <span
         id="theme-sensor-status"
-        class="header-theme-status header-lab-only pill rounded px-3 py-1 text-sm"
+        class="header-theme-status lab-only-inline-flex pill rounded px-3 py-1 text-sm"
         role="status"
         aria-live="polite"
         aria-label="Theme follows your local time"
       >
         Auto
       </span>
-      <div class="header-lab-only">
+      <div class="lab-only">
         <ViewSettings />
       </div>
     </div>
@@ -103,7 +103,7 @@ const isActive = (href: string) => {
           {item.label}
         </a>
       ))}
-      <a href={profile.site_url} class="header-lab-only pill rounded px-3 py-1 text-sm w-fit mt-2" aria-label="Open live site">
+      <a href={profile.site_url} class="lab-only-inline-flex pill rounded px-3 py-1 text-sm w-fit mt-2" aria-label="Open live site">
         Live
       </a>
     </div>

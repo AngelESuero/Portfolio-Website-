@@ -14,6 +14,10 @@
     </div>
   </header>
 
+  <p class="card aia-public-fallback" data-aia-public-fallback hidden>
+    Archive snapshot: interactive charts are unavailable right now. Core accountability notes remain visible below.
+  </p>
+
   <section class="aia-kpis" aria-label="Key AI accountability metrics">
     <article class="card aia-kpi">
       <p class="aia-kicker">Training emission</p>
@@ -203,6 +207,10 @@
     const chartShells = () => Array.from(panel.querySelectorAll('[data-chart-shell]'));
 
     const showFallback = () => {
+      const state = window.__modeSettings?.getState?.();
+      const isViewerMode = state?.surfaceMode !== 'lab';
+      const panelFallback = panel.querySelector('[data-aia-public-fallback]');
+
       chartShells().forEach((shell) => {
         const canvas = shell.querySelector('canvas');
         const fallback = shell.querySelector('.aia-chart-fallback');
@@ -210,9 +218,13 @@
           canvas.setAttribute('hidden', 'true');
         }
         if (fallback instanceof HTMLElement) {
-          fallback.hidden = false;
+          fallback.hidden = isViewerMode;
         }
       });
+
+      if (panelFallback instanceof HTMLElement) {
+        panelFallback.hidden = !isViewerMode;
+      }
     };
 
     const readTone = (token, fallback) => {
@@ -486,6 +498,18 @@
     --aia-line-strong: color-mix(in srgb, var(--tone-accent) 20%, var(--line2));
     display: grid;
     gap: 1rem;
+  }
+
+  .aia-public-fallback {
+    margin: 0;
+    padding: 0.76rem 0.9rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 10%, transparent), transparent 68%),
+      color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
+    font-size: 0.83rem;
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
   }
 
   .aia-hero {

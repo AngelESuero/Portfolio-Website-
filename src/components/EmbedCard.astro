@@ -1,11 +1,13 @@
 ---
 import type { LinkHubItem } from '../data/linkhub';
 import {
+  getAuthoredFallbackExcerpt,
   getEmbedAspectRatio,
   getEmbedFallbackMessage,
   getEmbedHeight,
   getEmbedViewMode,
   getLinkCtaLabel,
+  getProviderBadgeLabel,
   resolveEmbed,
   resolveInternalRoute
 } from '../lib/embed-resolver';
@@ -55,6 +57,14 @@ const fallbackMessage = isLinktree
   : isUntitledLibraryLink && !configuredEmbedUrl
     ? "Untitled library pages can't be embedded directly. Open the original link or add a dedicated /embed URL."
   : getEmbedFallbackMessage(resolution);
+const metadataExcerpt = [item.tag ? `${item.tag} archive signal.` : '', item.year ? `Archive frame: ${item.year}.` : '']
+  .filter(Boolean)
+  .join(' ');
+const authoredFallbackExcerpt = getAuthoredFallbackExcerpt(provider, {
+  itemExcerpt: metadataExcerpt,
+  urlValue: item.url
+});
+const providerBadgeLabel = getProviderBadgeLabel(provider, item.url);
 const ctaLabel = getLinkCtaLabel(item.url, provider);
 ---
 
@@ -68,7 +78,7 @@ const ctaLabel = getLinkCtaLabel(item.url, provider);
 
   {internalRoute ? (
     <div class="hub-internal-preview">
-      <p class="hub-internal-badge">Internal</p>
+      <p class="hub-internal-badge">Internal Archive</p>
       <p class="hub-internal-description">{internalRoute.description}</p>
     </div>
   ) : isEmbeddable ? (
@@ -84,13 +94,20 @@ const ctaLabel = getLinkCtaLabel(item.url, provider);
           title={`${item.title} embed`}
         ></iframe>
       </div>
-      <p class="hub-note">
+      <p class="hub-note lab-only">
         If the embed fails, open the original link below.
       </p>
     </div>
   ) : (
-    <div class="reader-frame">
-      <p>{fallbackMessage}</p>
+    <div class="hub-fallback-shell">
+      <div class="hub-fallback-preview" aria-hidden="true">
+        <span>{providerBadgeLabel}</span>
+      </div>
+      <div class="hub-fallback-copy">
+        <p class="hub-fallback-badge">{providerBadgeLabel}</p>
+        <p class="hub-fallback-description viewer-only">{authoredFallbackExcerpt}</p>
+        <p class="hub-fallback-description lab-only">{fallbackMessage}</p>
+      </div>
     </div>
   )}
 
@@ -166,17 +183,57 @@ const ctaLabel = getLinkCtaLabel(item.url, provider);
     border-top: 1px solid var(--line2);
   }
 
-  .reader-frame {
-    border: 1px dashed var(--line);
+  .hub-fallback-shell {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
     border-radius: 12px;
-    padding: 0.75rem;
-    color: var(--tone-muted);
-    font-size: 0.83rem;
-    background: rgba(6, 10, 17, 0.4);
+    overflow: hidden;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 9%, transparent), transparent 68%),
+      color-mix(in srgb, var(--tone-surface-strong) 90%, transparent);
   }
 
-  .reader-frame p {
+  .hub-fallback-preview {
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
+    padding: 0.5rem 0.65rem;
+    background:
+      linear-gradient(120deg, color-mix(in srgb, var(--tone-accent) 18%, transparent), transparent),
+      linear-gradient(180deg, rgba(8, 12, 20, 0.62), rgba(8, 12, 20, 0.4));
+  }
+
+  .hub-fallback-preview span {
+    display: inline-flex;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 42%, transparent);
+    border-radius: 999px;
+    padding: 0.1rem 0.44rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tone-accent-glow);
+    background: color-mix(in srgb, var(--tone-accent) 18%, transparent);
+  }
+
+  .hub-fallback-copy {
+    padding: 0.62rem 0.72rem;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .hub-fallback-badge,
+  .hub-fallback-description {
     margin: 0;
+  }
+
+  .hub-fallback-badge {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .hub-fallback-description {
+    font-size: 0.83rem;
+    line-height: 1.45;
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
   }
 
   .hub-internal-preview {

@@ -73,23 +73,23 @@ const INTERNAL_ROUTE_COPY: Array<{ match: (pathname: string) => boolean; ctaLabe
   },
   {
     match: (pathname) => pathname.startsWith('/work'),
-    ctaLabel: 'Open Work',
-    description: 'Browse project outcomes, process notes, and timeline-indexed work.'
+    ctaLabel: 'Open Work Archive',
+    description: 'Project outcomes, process notes, and timeline-indexed work.'
   },
   {
     match: (pathname) => pathname.startsWith('/writing'),
     ctaLabel: 'Open Writing',
-    description: 'Read long-form writing, dispatches, and archive notes.'
+    description: 'Long-form writing, dispatches, and archive notes.'
   },
   {
     match: (pathname) => pathname.startsWith('/map'),
     ctaLabel: 'Open Map',
-    description: 'Navigate the concept atlas and relationship clusters.'
+    description: 'Concept atlas and relationship clusters.'
   },
   {
     match: (pathname) => pathname.startsWith('/now'),
     ctaLabel: 'Open Now',
-    description: 'See current focus, active projects, and near-term direction.'
+    description: 'Current focus, active projects, and near-term direction.'
   },
   {
     match: (pathname) => pathname.startsWith('/social') || pathname.startsWith('/room'),
@@ -152,12 +152,15 @@ export const getLinkCtaLabel = (urlValue: string, provider: LinkHubProvider | nu
   const internalRoute = resolveInternalRoute(urlValue);
   if (internalRoute) return internalRoute.ctaLabel;
   if (isLinktreeHost(urlValue)) return 'Open Linktree';
+  if (provider === 'threads') return 'Open on Threads';
+  if (provider === 'tiktok') return 'Open on TikTok';
+  if (provider === 'x') return 'Open on X';
   if (provider === 'youtube') return 'Watch on YouTube';
   if (provider === 'spotify') return 'Listen on Spotify';
   if (provider === 'soundcloud') return 'Listen on SoundCloud';
-  if (provider === 'instagram') return 'Open on Instagram';
+  if (provider === 'instagram') return 'Open Instagram Profile';
   if (provider === 'substack') return 'Read on Substack';
-  if (provider === 'untitled') return 'Open on untitled.stream';
+  if (provider === 'untitled') return 'Listen on Untitled';
   if (provider === 'google_drive') return 'Open file';
   return 'Open link';
 };
@@ -174,6 +177,9 @@ export const providerFromUrl = (urlValue: string): LinkHubProvider | null => {
   if (host.includes('untitled.stream')) return 'untitled';
   if (host.includes('substack.com')) return 'substack';
   if (host.includes('drive.google.com')) return 'google_drive';
+  if (host.includes('threads.net')) return 'threads';
+  if (host.includes('tiktok.com')) return 'tiktok';
+  if (host === 'x.com' || host === 'www.x.com' || host.includes('twitter.com')) return 'x';
 
   return null;
 };
@@ -368,6 +374,49 @@ export const getEmbedAspectRatio = (provider: LinkHubProvider | null, urlValue?:
   }
   if (provider === 'instagram') return '4 / 5';
   return null;
+};
+
+export const getProviderBadgeLabel = (provider: LinkHubProvider | null, urlValue?: string): string => {
+  if (provider === 'youtube') return 'YouTube';
+  if (provider === 'spotify') return 'Spotify';
+  if (provider === 'soundcloud') return 'SoundCloud';
+  if (provider === 'instagram') return 'Instagram';
+  if (provider === 'threads') return 'Threads';
+  if (provider === 'tiktok') return 'TikTok';
+  if (provider === 'substack') return 'Substack';
+  if (provider === 'untitled') return 'Untitled';
+  if (provider === 'google_drive') return 'Google Drive';
+  if (provider === 'x') return 'X';
+  if (urlValue && isLinktreeHost(urlValue)) return 'Linktree';
+  return 'Link';
+};
+
+const AUTHORED_FALLBACK_DEFAULTS: Partial<Record<LinkHubProvider, string>> = {
+  instagram: 'Visual field notes and daily fragments from the path.',
+  threads: 'Short signals and daily transmissions from the archive.',
+  tiktok: 'Short-form movement, sound, and visual experiments.',
+  substack: 'Longer writing and extended signals from the path.',
+  untitled: 'Raw session - part of the living archive.',
+  spotify: 'Raw session - part of the living archive.',
+  youtube: 'Raw session - part of the living archive.'
+};
+
+export const getAuthoredFallbackExcerpt = (
+  provider: LinkHubProvider | null,
+  options?: { itemExcerpt?: string; urlValue?: string }
+): string => {
+  const itemExcerpt = String(options?.itemExcerpt || '').trim();
+  if (itemExcerpt) return itemExcerpt;
+
+  if (options?.urlValue && isLinktreeHost(options.urlValue)) {
+    return 'Support routing and archive chronology across the wider network.';
+  }
+
+  if (provider && AUTHORED_FALLBACK_DEFAULTS[provider]) {
+    return AUTHORED_FALLBACK_DEFAULTS[provider] || 'Open this archive signal in its original source.';
+  }
+
+  return 'Open this archive signal in its original source.';
 };
 
 export const getEmbedFallbackMessage = (resolution: EmbedResolution): string => {

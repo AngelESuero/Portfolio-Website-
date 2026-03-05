@@ -73,7 +73,7 @@ const exploreLinks = [
 ---
 
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en" class="dark" data-surface-mode="viewer" data-mode="normal">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -1698,7 +1698,7 @@ const exploreLinks = [
           <slot />
         </div>
 
-        <section class="mode-walk view-surface" aria-labelledby="walkthrough-heading">
+        <section class="mode-walk view-surface lab-only" aria-labelledby="walkthrough-heading">
           <header class="view-surface-header">
             <p class="view-surface-kicker">Walkthrough mode</p>
             <h1 id="walkthrough-heading">Walkthrough</h1>
@@ -1723,7 +1723,7 @@ const exploreLinks = [
           </div>
         </section>
 
-        <section class="mode-explore view-surface" aria-labelledby="explore-heading">
+        <section class="mode-explore view-surface lab-only" aria-labelledby="explore-heading">
           <header class="view-surface-header">
             <p class="view-surface-kicker">Explore mode</p>
             <h1 id="explore-heading">Explore</h1>

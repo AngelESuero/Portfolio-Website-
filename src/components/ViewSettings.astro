@@ -201,8 +201,12 @@
 </script>
 
 <style>
-  :global(html[data-surface-mode='viewer']) .view-settings {
+  .view-settings {
     display: none;
+  }
+
+  :global(html[data-surface-mode='lab']) .view-settings {
+    display: block;
   }
 
   .view-settings-open {

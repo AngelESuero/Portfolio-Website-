@@ -158,12 +158,12 @@ const formatDateLabel = (value: unknown, fallback: string): string => {
 const projectCount = allProjects.length;
 const projectTypeCount = new Set(allProjects.map((project) => project.data.type)).size;
 const postCount = allPosts.length;
-const latestPostDateLabel = formatDateLabel(allPosts[0]?.data?.date, 'recently');
+const latestPostDateLabel = formatDateLabel(allPosts[0]?.data?.date, 'Archive snapshot');
 const roomList = Array.isArray(rooms) ? rooms : [];
 const roomCount = roomList.length;
 const machineCount = roomList.reduce((count, room) => count + (Array.isArray(room.machines) ? room.machines.length : 0), 0);
 const agiSignalCount = Array.isArray(agiTimelineData?.items) ? agiTimelineData.items.length : 0;
-const agiUpdatedAtLabel = formatDateLabel(agiTimelineData?.meta?.generatedAt, 'Updated recently');
+const agiUpdatedAtLabel = formatDateLabel(agiTimelineData?.meta?.generatedAt, 'Live sync unavailable - showing cached.');
 const reflectionItems = [
   {
     id: 'work',
@@ -212,16 +212,16 @@ const reflectionItems = [
 ];
 const archivePulseItems = [
   {
-    label: 'Featured now',
+    label: 'Threads',
     value: pluralize(threads.length, 'thread')
+  },
+  {
+    label: 'Rooms',
+    value: pluralize(roomCount, 'room')
   },
   {
     label: 'Writing archive',
     value: pluralize(postCount, 'entry', 'entries')
-  },
-  {
-    label: 'Rooms mapped',
-    value: pluralize(roomCount, 'room')
   },
   {
     label: 'Last signal',
