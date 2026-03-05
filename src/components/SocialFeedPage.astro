@@ -1,5 +1,13 @@
 ---
-import { getEmbedAspectRatio, getEmbedFallbackMessage, getEmbedHeight, resolveEmbed } from '../lib/embed-resolver';
+import {
+  getEmbedAspectRatio,
+  getEmbedFallbackMessage,
+  getEmbedHeight,
+  getEmbedViewMode,
+  getLinkCtaLabel,
+  resolveEmbed,
+  resolveInternalRoute
+} from '../lib/embed-resolver';
 
 interface SocialFeaturedLink {
   label: string;
@@ -54,10 +62,15 @@ const hasManualItems = normalizedManualItems.length > 0;
 const hasRss = !hasManualLatestSource && config.mode === 'rss' && Boolean(config.rss_url);
 const featuredLinks = Array.isArray(config.featured) ? config.featured : [];
 const embeds = Array.isArray(config.embeds) ? config.embeds : [];
-const resolvedEmbeds = embeds.map((embed) => ({
-  ...embed,
-  resolution: resolveEmbed(typeof embed.embedUrl === 'string' && embed.embedUrl.trim() ? embed.embedUrl : embed.url)
-}));
+const resolvedEmbeds = embeds.map((embed) => {
+  const sourceUrl = typeof embed.embedUrl === 'string' && embed.embedUrl.trim() ? embed.embedUrl : embed.url;
+  return {
+    ...embed,
+    sourceUrl,
+    internalRoute: resolveInternalRoute(embed.url),
+    resolution: resolveEmbed(sourceUrl)
+  };
+});
 const showInstagramPreview = config.local_preview === 'instagram' && igPreview.length > 0;
 const isExternal = (url: string) => /^https?:\/\//i.test(url);
 const xTimelineHandle =
@@ -117,7 +130,7 @@ const xTimelineHref = showXTimeline ? `https://x.com/${xTimelineHandle}` : '';
         ))}
       </ul>
     ) : (
-      <p class="social-empty">Add featured links in <code>src/data/social.ts</code>.</p>
+      <p class="social-empty">Featured links are being curated for this room.</p>
     )}
   </section>
 
@@ -159,21 +172,22 @@ const xTimelineHref = showXTimeline ? `https://x.com/${xTimelineHandle}` : '';
         {resolvedEmbeds.map((embed) => {
           const resolution = embed.resolution;
           const embedSource = resolution.embedUrl;
-          const isEmbeddable = resolution.embeddable && Boolean(embedSource);
+          const isEmbeddable = !embed.internalRoute && resolution.embeddable && Boolean(embedSource);
           const isResizableEmbed =
             resolution.provider === 'google_drive' ||
             resolution.provider === 'youtube' ||
             resolution.provider === 'instagram';
           const sourceExternal = isExternal(embed.url);
           const height = getEmbedHeight(resolution.provider);
-          const aspectRatio = getEmbedAspectRatio(resolution.provider);
+          const aspectRatio = getEmbedAspectRatio(resolution.provider, embed.sourceUrl);
+          const viewMode = getEmbedViewMode(resolution.provider, embed.sourceUrl);
           const hasAspectRatio = Boolean(aspectRatio);
           const frameStyle = hasAspectRatio
             ? `--embed-aspect-ratio:${aspectRatio}`
             : `--embed-height:${height}px`;
 
           return (
-            <figure class="social-embed-card" data-provider={resolution.provider || 'none'}>
+            <figure class="social-embed-card" data-provider={resolution.provider || 'none'} data-view-mode={viewMode}>
               {isEmbeddable ? (
                 <div class:list={['social-embed-frame', isResizableEmbed && 'is-resizable', hasAspectRatio && 'has-aspect-ratio']} style={frameStyle}>
                   <iframe
@@ -184,12 +198,19 @@ const xTimelineHref = showXTimeline ? `https://x.com/${xTimelineHandle}` : '';
                     allowfullscreen={resolution.provider === 'youtube'}
                   ></iframe>
                 </div>
+              ) : embed.internalRoute ? (
+                <div class="social-embed-internal">
+                  <p class="social-embed-badge">Internal</p>
+                  <p>{embed.internalRoute.description}</p>
+                </div>
               ) : (
                 <div class="social-embed-fallback">{getEmbedFallbackMessage(resolution)}</div>
               )}
               <figcaption>
                 {embed.label && <span>{embed.label}</span>}
-                <a href={embed.url} {...(sourceExternal ? { target: '_blank', rel: 'noopener' } : {})}>Open source</a>
+                <a href={embed.url} {...(sourceExternal ? { target: '_blank', rel: 'noopener' } : {})}>
+                  {getLinkCtaLabel(embed.url, resolution.provider)}
+                </a>
               </figcaption>
             </figure>
           );
@@ -467,6 +488,38 @@ const xTimelineHref = showXTimeline ? `https://x.com/${xTimelineHandle}` : '';
     font-size: 0.82rem;
   }
 
+  .social-embed-internal {
+    min-height: 12rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 26%, rgba(113, 113, 122, 0.35));
+    border-radius: 0.72rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 10%, transparent), transparent 62%),
+      rgba(255, 255, 255, 0.7);
+    color: rgba(39, 39, 42, 0.94);
+    padding: 0.86rem;
+    display: grid;
+    align-content: center;
+    gap: 0.45rem;
+    line-height: 1.5;
+    font-size: 0.82rem;
+  }
+
+  .social-embed-internal p {
+    margin: 0;
+  }
+
+  .social-embed-badge {
+    width: fit-content;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 46%, rgba(113, 113, 122, 0.45));
+    border-radius: 999px;
+    padding: 0.12rem 0.5rem;
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--tone-accent-glow);
+    background: color-mix(in srgb, var(--tone-accent) 16%, transparent);
+  }
+
   .social-x-widget {
     margin-top: 0.72rem;
     border: 1px solid rgba(113, 113, 122, 0.36);
@@ -541,8 +594,16 @@ const xTimelineHref = showXTimeline ? `https://x.com/${xTimelineHandle}` : '';
   :root.dark .social-summary,
   :root.dark .social-empty,
   :root.dark .social-embed-card figcaption,
-  :root.dark .social-embed-fallback {
+  :root.dark .social-embed-fallback,
+  :root.dark .social-embed-internal {
     color: rgba(212, 212, 216, 0.9);
+  }
+
+  :root.dark .social-embed-internal {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 12%, transparent), transparent 62%),
+      rgba(2, 6, 23, 0.55);
+    border-color: color-mix(in srgb, var(--tone-accent) 26%, rgba(113, 113, 122, 0.42));
   }
 
   :root.dark .social-actions a,

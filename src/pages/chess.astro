@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { formatFreshnessLabel } from '../lib/freshness';
 
 const seedChess = {
   meta: {
@@ -43,6 +44,9 @@ const isSeedOnly = snapshots.every(
 );
 
 const ratingLabel = (value) => (typeof value === 'number' ? String(value) : '—');
+const freshnessLabel = formatFreshnessLabel(meta.generatedAt);
+const playerName =
+  typeof meta?.player?.username === 'string' && meta.player.username.trim() ? meta.player.username.trim() : 'Archive player';
 ---
 
 <BaseLayout title="Chess Elo Tracker" description="Living archive chess rating snapshots." theme="agi">
@@ -54,11 +58,11 @@ const ratingLabel = (value) => (typeof value === 'number' ? String(value) : '—
         Build-time cached snapshots from Chess.com.
       </p>
       <p class="chess-meta">
-        Last updated: <span>{meta.generatedAt ?? 'unknown'}</span>
+        <span>{freshnessLabel}</span>
       </p>
       <p class="chess-meta">
         Player: <a href={meta?.player?.profileUrl ?? 'https://www.chess.com/'} target="_blank" rel="noopener">
-          {meta?.player?.username ?? 'unknown'}
+          {playerName}
         </a>
       </p>
     </header>
@@ -92,7 +96,7 @@ const ratingLabel = (value) => (typeof value === 'number' ? String(value) : '—
         <ul>
           {snapshots.map((snap) => (
             <li>
-              <span class="date">{snap.date || 'unknown date'}</span>
+              <span class="date">{snap.date || 'Archival snapshot'}</span>
               <span>Rapid {ratingLabel(snap.rapid)}</span>
               <span>Blitz {ratingLabel(snap.blitz)}</span>
               <span>Bullet {ratingLabel(snap.bullet)}</span>

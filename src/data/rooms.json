@@ -94,14 +94,14 @@
     "destination": "https://discord.gg/rNjaEQbe",
     "machines": [
       {
-        "title": "Neighborhood Corner",
-        "summary": "Community chat and public lounge server.",
+        "title": "Discord (server): Neighborhood Corner channel",
+        "summary": "Neighborhood Corner inside the shared Discord server.",
         "kind": "external",
         "url": "https://discord.gg/rNjaEQbe"
       },
       {
-        "title": "Creator's Corner",
-        "summary": "Creator-focused server for sharing and collab.",
+        "title": "Discord (server): Creator's Corner channel",
+        "summary": "Creator's Corner inside the same Discord server.",
         "kind": "external",
         "url": "https://discord.gg/rNjaEQbe"
       }

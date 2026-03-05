@@ -676,6 +676,39 @@ body[data-header-mode='peek'][data-header-reveal='hidden'] .site-header {
   flex-shrink: 0;
 }
 
+.site-header .header-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.22rem;
+  padding: 0.18rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--tone-accent) 22%, var(--line2));
+  background: color-mix(in srgb, var(--tone-surface-strong) 78%, transparent);
+}
+
+.site-header .header-mode-btn {
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  padding: 0.32rem 0.64rem;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.site-header .header-mode-btn.is-active {
+  color: color-mix(in srgb, var(--tone-accent-glow) 84%, white 16%);
+  background: color-mix(in srgb, var(--tone-accent) 24%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--tone-accent) 44%, transparent),
+    0 0 14px color-mix(in srgb, var(--tone-accent) 10%, transparent);
+}
+
+html[data-surface-mode='viewer'] .header-lab-only {
+  display: none !important;
+}
+
 .site-header .header-live {
   display: none;
 }
@@ -1113,17 +1146,53 @@ select:focus-visible {
   display: none;
 }
 
-html[data-mode='walk'] .mode-normal,
-html[data-mode='explore'] .mode-normal {
+html[data-surface-mode='lab'][data-mode='walk'] .mode-normal,
+html[data-surface-mode='lab'][data-mode='explore'] .mode-normal {
   display: none;
 }
 
-html[data-mode='walk'] .mode-walk {
+html[data-surface-mode='lab'][data-mode='walk'] .mode-walk {
   display: block;
 }
 
-html[data-mode='explore'] .mode-explore {
+html[data-surface-mode='lab'][data-mode='explore'] .mode-explore {
   display: block;
+}
+
+.lab-only,
+.lab-only-inline,
+.lab-only-inline-flex {
+  display: none !important;
+}
+
+.viewer-only {
+  display: block !important;
+}
+
+.viewer-only-inline {
+  display: inline !important;
+}
+
+.viewer-only-inline-flex {
+  display: inline-flex !important;
+}
+
+html[data-surface-mode='lab'] .lab-only {
+  display: block !important;
+}
+
+html[data-surface-mode='lab'] .lab-only-inline {
+  display: inline !important;
+}
+
+html[data-surface-mode='lab'] .lab-only-inline-flex {
+  display: inline-flex !important;
+}
+
+html[data-surface-mode='lab'] .viewer-only,
+html[data-surface-mode='lab'] .viewer-only-inline,
+html[data-surface-mode='lab'] .viewer-only-inline-flex {
+  display: none !important;
 }
 
 .view-surface {

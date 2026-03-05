@@ -289,6 +289,29 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
       </div>
     </section>
 
+    <section class="home-start viewer-only" aria-labelledby="home-start-heading">
+      <p class="home-start-kicker">Start here</p>
+      <h2 id="home-start-heading" class="home-start-title">Choose your first path</h2>
+      <div class="home-start-grid">
+        <a class="home-start-card" href="/work">
+          <span>Selected Work</span>
+          <small>Projects and outcomes</small>
+        </a>
+        <a class="home-start-card" href="/map">
+          <span>Map</span>
+          <small>Mind and concept atlas</small>
+        </a>
+        <a class="home-start-card" href="/now">
+          <span>Now</span>
+          <small>Current focus and direction</small>
+        </a>
+        <a class="home-start-card" href="/?lab=1&view=walk">
+          <span>Guide</span>
+          <small>Walkthrough in Lab Mode</small>
+        </a>
+      </div>
+    </section>
+
     <section class="mt-12 md:mt-14">
       <h2 class="font-display text-2xl">Featured Threads</h2>
       <div class="mt-4 flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:overflow-visible">
@@ -670,6 +693,77 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
     font-size: clamp(0.94rem, 1.7vw, 1.08rem);
     line-height: 1.22;
     color: color-mix(in srgb, var(--tone-accent-glow) 92%, white 8%);
+  }
+
+  .home-start {
+    margin-top: clamp(1rem, 2.4vw, 1.6rem);
+    padding: clamp(0.95rem, 1.8vw, 1.2rem);
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 22%, var(--line2));
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 11%, transparent), transparent 62%),
+      color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
+  }
+
+  .home-start-kicker,
+  .home-start-title {
+    margin: 0;
+  }
+
+  .home-start-kicker {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .home-start-title {
+    margin-top: 0.35rem;
+    font-size: clamp(1.2rem, 2vw, 1.6rem);
+    line-height: 1.15;
+  }
+
+  .home-start-grid {
+    margin-top: 0.75rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.6rem;
+  }
+
+  .home-start-card {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 24%, var(--line2));
+    border-radius: 0.82rem;
+    padding: 0.7rem 0.74rem;
+    display: grid;
+    gap: 0.28rem;
+    text-decoration: none;
+    color: color-mix(in srgb, var(--tone-text) 92%, var(--tone-muted) 8%);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 16%, transparent), transparent 64%),
+      color-mix(in srgb, var(--tone-surface) 90%, transparent);
+    transition:
+      border-color 140ms ease,
+      transform 140ms ease,
+      color 140ms ease;
+  }
+
+  .home-start-card span {
+    font-family: var(--font-display);
+    font-size: 0.98rem;
+    line-height: 1.2;
+  }
+
+  .home-start-card small {
+    color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
+    font-size: 0.76rem;
+    line-height: 1.4;
+  }
+
+  .home-start-card:hover,
+  .home-start-card:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 58%, var(--line2));
+    color: var(--tone-accent-glow);
+    transform: translateY(-1px);
   }
 
   .section-tablist {

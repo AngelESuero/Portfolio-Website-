@@ -1,20 +1,29 @@
-<div class="view-settings">
-  <button id="view-settings-open" class="view-settings-open" type="button" aria-haspopup="dialog" aria-label="View settings">
-    <span class="view-settings-open__full">View settings</span>
-    <span class="view-settings-open__short" aria-hidden="true">Settings</span>
+<div class="view-settings" data-lab-controls>
+  <button id="view-settings-open" class="view-settings-open" type="button" aria-haspopup="dialog" aria-label="Lab controls">
+    <span class="view-settings-open__full">Lab Controls</span>
+    <span class="view-settings-open__short" aria-hidden="true">Lab</span>
   </button>
 </div>
 
 <div id="view-settings-modal" class="view-settings-modal" hidden>
-  <button type="button" class="view-settings-backdrop" data-close-view-settings aria-label="Close view settings"></button>
+  <button type="button" class="view-settings-backdrop" data-close-view-settings aria-label="Close lab controls"></button>
   <section class="view-settings-panel" role="dialog" aria-modal="true" aria-labelledby="view-settings-title">
     <header class="view-settings-header">
-      <h2 id="view-settings-title">View settings</h2>
+      <h2 id="view-settings-title">Lab Controls</h2>
       <button type="button" class="view-settings-close" data-close-view-settings aria-label="Close">×</button>
     </header>
+    <p class="view-settings-note">Builder tools are only visible in Lab Mode.</p>
 
-    <div class="view-settings-modes" role="group" aria-label="Site mode">
-      <button type="button" class="view-mode-btn" data-mode="normal">Normal</button>
+    <div class="view-settings-surface" role="group" aria-label="Surface mode">
+      <p>Surface</p>
+      <div class="view-settings-surface-options">
+        <button type="button" class="view-surface-btn" data-surface-mode="viewer">Viewer</button>
+        <button type="button" class="view-surface-btn" data-surface-mode="lab">Lab</button>
+      </div>
+    </div>
+
+    <div class="view-settings-modes" role="group" aria-label="Lab view mode">
+      <button type="button" class="view-mode-btn" data-mode="normal">Page</button>
       <button type="button" class="view-mode-btn" data-mode="walk">Walkthrough</button>
       <button type="button" class="view-mode-btn" data-mode="explore">Explore</button>
     </div>
@@ -52,12 +61,14 @@
 
 <script is:inline>
   (() => {
+    const root = document.querySelector('[data-lab-controls]');
     const openBtn = document.getElementById('view-settings-open');
     const modal = document.getElementById('view-settings-modal');
     const resetBtn = document.getElementById('view-settings-reset');
-    if (!openBtn || !modal || !resetBtn) return;
+    if (!root || !openBtn || !modal || !resetBtn) return;
 
     const closeTargets = Array.from(modal.querySelectorAll('[data-close-view-settings]'));
+    const surfaceButtons = Array.from(modal.querySelectorAll('.view-surface-btn'));
     const modeButtons = Array.from(modal.querySelectorAll('.view-mode-btn'));
     const sizeButtons = Array.from(modal.querySelectorAll('.view-size-btn'));
     const tabSwipeButtons = Array.from(modal.querySelectorAll('.view-tab-swipe-btn'));
@@ -68,13 +79,20 @@
     const getState = () =>
       typeof getApi()?.getState === 'function'
         ? getApi().getState()
-        : { mode: 'normal', size: 'standard', tabSwipe: 'on' };
+        : { surfaceMode: 'viewer', mode: 'normal', size: 'standard', tabSwipe: 'on' };
     const getCircadianMode = () =>
       typeof getCircadianApi()?.getMode === 'function' ? getCircadianApi().getMode() : 'auto';
+    const isLabMode = () => getState().surfaceMode === 'lab';
 
     const syncUi = () => {
       const state = getState();
       const circadianMode = getCircadianMode();
+
+      surfaceButtons.forEach((button) => {
+        const selected = button.getAttribute('data-surface-mode') === state.surfaceMode;
+        button.classList.toggle('is-active', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
       modeButtons.forEach((button) => {
         const selected = button.getAttribute('data-mode') === state.mode;
         button.classList.toggle('is-active', selected);
@@ -97,7 +115,17 @@
       });
     };
 
+    const syncVisibility = () => {
+      const show = isLabMode();
+      root.hidden = !show;
+      if (!show) {
+        modal.hidden = true;
+        document.body.style.removeProperty('overflow');
+      }
+    };
+
     const openModal = () => {
+      if (!isLabMode()) return;
       syncUi();
       modal.hidden = false;
       document.body.style.overflow = 'hidden';
@@ -112,6 +140,15 @@
     closeTargets.forEach((node) => node.addEventListener('click', closeModal));
     window.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && !modal.hidden) closeModal();
+    });
+
+    surfaceButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const surfaceMode = button.getAttribute('data-surface-mode') === 'lab' ? 'lab' : 'viewer';
+        getApi()?.setSurfaceMode?.(surfaceMode);
+        syncUi();
+        syncVisibility();
+      });
     });
 
     modeButtons.forEach((button) => {
@@ -150,15 +187,24 @@
       getApi()?.reset?.();
       getCircadianApi()?.reset?.();
       syncUi();
+      syncVisibility();
     });
 
-    window.addEventListener('modesettings:change', syncUi);
+    window.addEventListener('modesettings:change', () => {
+      syncUi();
+      syncVisibility();
+    });
     window.addEventListener('circadian:change', syncUi);
     syncUi();
+    syncVisibility();
   })();
 </script>
 
 <style>
+  :global(html[data-surface-mode='viewer']) .view-settings {
+    display: none;
+  }
+
   .view-settings-open {
     border: 1px solid var(--tone-line);
     border-radius: 999px;
@@ -217,7 +263,7 @@
 
   .view-settings-panel {
     position: relative;
-    width: min(32rem, calc(100vw - 2rem));
+    width: min(34rem, calc(100vw - 2rem));
     border: 1px solid var(--tone-line);
     border-radius: 0.86rem;
     background: var(--tone-surface-strong);
@@ -238,12 +284,25 @@
     font-size: 1rem;
   }
 
+  .view-settings-note {
+    margin: 0.46rem 0 0;
+    color: var(--tone-muted);
+    font-size: 0.8rem;
+  }
+
   .view-settings-close {
     border: 0;
     background: transparent;
     color: var(--tone-muted);
     font-size: 1.3rem;
     line-height: 1;
+  }
+
+  .view-settings-surface,
+  .view-settings-size,
+  .view-settings-tab-swipe,
+  .view-settings-circadian {
+    margin-top: 0.72rem;
   }
 
   .view-settings-modes {
@@ -253,35 +312,7 @@
     gap: 0.45rem;
   }
 
-  .view-mode-btn {
-    border: 1px solid var(--tone-line);
-    border-radius: 0.58rem;
-    background: color-mix(in srgb, var(--tone-sky) 10%, var(--tone-surface));
-    color: var(--tone-text);
-    padding: 0.55rem 0.4rem;
-    font-size: 0.79rem;
-  }
-
-  .view-mode-btn.is-active {
-    border-color: var(--tone-accent);
-    color: var(--tone-accent-glow);
-    background: color-mix(in srgb, var(--tone-accent) 18%, transparent);
-  }
-
-  .view-settings-actions {
-    margin-top: 0.72rem;
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  .view-settings-size {
-    margin-top: 0.72rem;
-  }
-
-  .view-settings-tab-swipe {
-    margin-top: 0.72rem;
-  }
-
+  .view-settings-surface p,
   .view-settings-size p,
   .view-settings-tab-swipe p,
   .view-settings-circadian p {
@@ -292,48 +323,32 @@
     letter-spacing: 0.08em;
   }
 
-  .view-settings-size-options {
-    margin-top: 0.4rem;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.45rem;
-  }
-
-  .view-settings-tab-swipe-options {
-    margin-top: 0.4rem;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.45rem;
-  }
-
-  .view-size-btn,
-  .view-tab-swipe-btn {
-    border: 1px solid var(--tone-line);
-    border-radius: 0.58rem;
-    background: color-mix(in srgb, var(--tone-sky) 10%, var(--tone-surface));
-    color: var(--tone-text);
-    padding: 0.5rem 0.38rem;
-    font-size: 0.78rem;
-  }
-
-  .view-size-btn.is-active,
-  .view-tab-swipe-btn.is-active {
-    border-color: var(--tone-accent);
-    color: var(--tone-accent-glow);
-    background: color-mix(in srgb, var(--tone-accent) 18%, transparent);
-  }
-
-  .view-settings-circadian {
-    margin-top: 0.72rem;
-  }
-
+  .view-settings-surface-options,
+  .view-settings-size-options,
+  .view-settings-tab-swipe-options,
   .view-settings-circadian-options {
     margin-top: 0.4rem;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.45rem;
   }
 
+  .view-settings-surface-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .view-settings-size-options {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .view-settings-tab-swipe-options,
+  .view-settings-circadian-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .view-surface-btn,
+  .view-mode-btn,
+  .view-size-btn,
+  .view-tab-swipe-btn,
   .view-circadian-btn {
     border: 1px solid var(--tone-line);
     border-radius: 0.58rem;
@@ -343,10 +358,20 @@
     font-size: 0.78rem;
   }
 
+  .view-surface-btn.is-active,
+  .view-mode-btn.is-active,
+  .view-size-btn.is-active,
+  .view-tab-swipe-btn.is-active,
   .view-circadian-btn.is-active {
     border-color: var(--tone-accent);
     color: var(--tone-accent-glow);
     background: color-mix(in srgb, var(--tone-accent) 18%, transparent);
+  }
+
+  .view-settings-actions {
+    margin-top: 0.72rem;
+    display: flex;
+    justify-content: flex-end;
   }
 
   .view-settings-actions button {

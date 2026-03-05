@@ -4,6 +4,7 @@ import MusicConsole from '../../components/MusicConsole.astro';
 import rooms from '../../data/rooms';
 import type { Room } from '../../data/rooms';
 import { SOCIAL_URLS } from '../../data/site-refs';
+import { getLinkCtaLabel, providerFromUrl } from '../../lib/embed-resolver';
 
 export function getStaticPaths() {
   const roomList = rooms as Room[];
@@ -57,7 +58,7 @@ const embedMachines = room.machines.filter((machine) => machine.kind === 'embed'
               allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
             ></iframe>
             <p>
-              <a href={machine.url} target="_blank" rel="noopener">Open source</a>
+              <a href={machine.url} target="_blank" rel="noopener">{getLinkCtaLabel(machine.url, providerFromUrl(machine.url))}</a>
             </p>
           </article>
         ))}

@@ -1,6 +1,14 @@
 import type { LinkHubProvider } from '../data/linkhub';
+import { SITE } from '../data/site-refs';
 
 const YOUTUBE_EMBED_BASE_URL = 'https://www.youtube-nocookie.com/embed';
+const SITE_ORIGIN = (() => {
+  try {
+    return new URL(SITE.baseUrl).origin;
+  } catch {
+    return '';
+  }
+})();
 
 export type EmbedViewMode = 'landscape' | 'portrait' | 'stack';
 
@@ -19,12 +27,139 @@ export type EmbedResolution = {
   reason: EmbedResolutionReason;
 };
 
+export interface InternalRouteInfo {
+  pathname: string;
+  ctaLabel: string;
+  description: string;
+}
+
 const parseUrl = (value: string): URL | null => {
   try {
     return new URL(value);
   } catch {
     return null;
   }
+};
+
+const normalizePathname = (pathname: string): string => {
+  const trimmed = pathname.replace(/\/+$/, '');
+  return trimmed || '/';
+};
+
+const parseInternalPathname = (urlValue: string): string | null => {
+  if (typeof urlValue !== 'string') return null;
+  const trimmed = urlValue.trim();
+  if (!trimmed) return null;
+
+  if (trimmed.startsWith('/') && !trimmed.startsWith('//')) {
+    const parsedRelative = parseUrl(`${SITE.baseUrl}${trimmed}`);
+    return parsedRelative ? normalizePathname(parsedRelative.pathname) : normalizePathname(trimmed.split('?')[0] || '/');
+  }
+
+  const parsed = parseUrl(trimmed);
+  if (!parsed) return null;
+  if (SITE_ORIGIN && parsed.origin === SITE_ORIGIN) {
+    return normalizePathname(parsed.pathname);
+  }
+
+  return null;
+};
+
+const INTERNAL_ROUTE_COPY: Array<{ match: (pathname: string) => boolean; ctaLabel: string; description: string }> = [
+  {
+    match: (pathname) => pathname === '/',
+    ctaLabel: 'Open Home',
+    description: 'Return to the archive landing page and start from the curated entry points.'
+  },
+  {
+    match: (pathname) => pathname.startsWith('/work'),
+    ctaLabel: 'Open Work',
+    description: 'Browse project outcomes, process notes, and timeline-indexed work.'
+  },
+  {
+    match: (pathname) => pathname.startsWith('/writing'),
+    ctaLabel: 'Open Writing',
+    description: 'Read long-form writing, dispatches, and archive notes.'
+  },
+  {
+    match: (pathname) => pathname.startsWith('/map'),
+    ctaLabel: 'Open Map',
+    description: 'Navigate the concept atlas and relationship clusters.'
+  },
+  {
+    match: (pathname) => pathname.startsWith('/now'),
+    ctaLabel: 'Open Now',
+    description: 'See current focus, active projects, and near-term direction.'
+  },
+  {
+    match: (pathname) => pathname.startsWith('/social') || pathname.startsWith('/room'),
+    ctaLabel: 'Open Social',
+    description: 'Jump into social rooms, feeds, and platform handoff routes.'
+  },
+  {
+    match: (pathname) => pathname.startsWith('/contact'),
+    ctaLabel: 'Open Contact',
+    description: 'Open direct contact options and outreach paths.'
+  },
+  {
+    match: (pathname) => pathname.startsWith('/agi'),
+    ctaLabel: 'Open AGI',
+    description: 'Review AGI timeline signals, analysis views, and source tracking.'
+  },
+  {
+    match: (pathname) => pathname.startsWith('/survival-os'),
+    ctaLabel: 'Open Survival OS',
+    description: 'Open the survival framework and AI transition guidance.'
+  },
+  {
+    match: (pathname) => pathname === '/rss.xml',
+    ctaLabel: 'Open feed',
+    description: 'Open the RSS feed endpoint for subscriptions and integrations.'
+  }
+];
+
+const getInternalRouteCopy = (pathname: string): InternalRouteInfo => {
+  const match = INTERNAL_ROUTE_COPY.find((entry) => entry.match(pathname));
+  if (!match) {
+    return {
+      pathname,
+      ctaLabel: 'Open page',
+      description: 'Open this internal page in the archive.'
+    };
+  }
+
+  return {
+    pathname,
+    ctaLabel: match.ctaLabel,
+    description: match.description
+  };
+};
+
+const isLinktreeHost = (urlValue: string): boolean => {
+  const parsed = parseUrl(urlValue);
+  return Boolean(parsed?.hostname.toLowerCase().includes('linktr.ee'));
+};
+
+export const resolveInternalRoute = (urlValue: string): InternalRouteInfo | null => {
+  const pathname = parseInternalPathname(urlValue);
+  if (!pathname) return null;
+  return getInternalRouteCopy(pathname);
+};
+
+export const isInternalUrl = (urlValue: string): boolean => Boolean(resolveInternalRoute(urlValue));
+
+export const getLinkCtaLabel = (urlValue: string, provider: LinkHubProvider | null): string => {
+  const internalRoute = resolveInternalRoute(urlValue);
+  if (internalRoute) return internalRoute.ctaLabel;
+  if (isLinktreeHost(urlValue)) return 'Open Linktree';
+  if (provider === 'youtube') return 'Watch on YouTube';
+  if (provider === 'spotify') return 'Listen on Spotify';
+  if (provider === 'soundcloud') return 'Listen on SoundCloud';
+  if (provider === 'instagram') return 'Open on Instagram';
+  if (provider === 'substack') return 'Read on Substack';
+  if (provider === 'untitled') return 'Open on untitled.stream';
+  if (provider === 'google_drive') return 'Open file';
+  return 'Open link';
 };
 
 export const providerFromUrl = (urlValue: string): LinkHubProvider | null => {

@@ -1,6 +1,14 @@
 ---
 import type { LinkHubItem } from '../data/linkhub';
-import { getEmbedAspectRatio, getEmbedFallbackMessage, getEmbedHeight, getEmbedViewMode, resolveEmbed } from '../lib/embed-resolver';
+import {
+  getEmbedAspectRatio,
+  getEmbedFallbackMessage,
+  getEmbedHeight,
+  getEmbedViewMode,
+  getLinkCtaLabel,
+  resolveEmbed,
+  resolveInternalRoute
+} from '../lib/embed-resolver';
 
 interface Props {
   item: LinkHubItem;
@@ -27,7 +35,8 @@ const embedHeight = getEmbedHeight(provider);
 const embedAspectRatio = getEmbedAspectRatio(provider, resolvedUrl);
 const embedViewMode = getEmbedViewMode(provider, resolvedUrl);
 const hasAspectRatio = Boolean(embedAspectRatio);
-const isEmbeddable = resolution.embeddable && Boolean(embedUrl);
+const internalRoute = resolveInternalRoute(item.url);
+const isEmbeddable = !internalRoute && resolution.embeddable && Boolean(embedUrl);
 const isExternal = /^https?:\/\//i.test(item.url);
 const isLinktree = isLinktreeUrl(item.url);
 const isUntitledLibraryLink = (() => {
@@ -46,18 +55,7 @@ const fallbackMessage = isLinktree
   : isUntitledLibraryLink && !configuredEmbedUrl
     ? "Untitled library pages can't be embedded directly. Open the original link or add a dedicated /embed URL."
   : getEmbedFallbackMessage(resolution);
-const ctaLabel = (() => {
-  if (!isExternal) return 'Open page';
-  if (isLinktree) return 'Open Linktree';
-  if (provider === 'youtube') return 'Watch on YouTube';
-  if (provider === 'spotify') return 'Listen on Spotify';
-  if (provider === 'soundcloud') return 'Listen on SoundCloud';
-  if (provider === 'instagram') return 'Open on Instagram';
-  if (provider === 'substack') return 'Read on Substack';
-  if (provider === 'untitled') return 'Open on untitled.stream';
-  if (provider === 'google_drive') return 'Open file';
-  return 'Open link';
-})();
+const ctaLabel = getLinkCtaLabel(item.url, provider);
 ---
 
 <article class="card hub-card" data-provider={provider || 'none'} data-view-mode={embedViewMode}>
@@ -68,7 +66,12 @@ const ctaLabel = (() => {
 
   <h3>{item.title}</h3>
 
-  {isEmbeddable ? (
+  {internalRoute ? (
+    <div class="hub-internal-preview">
+      <p class="hub-internal-badge">Internal</p>
+      <p class="hub-internal-description">{internalRoute.description}</p>
+    </div>
+  ) : isEmbeddable ? (
     <div class="hub-embed">
       <div class:list={['hub-embed-frame', hasAspectRatio && 'has-aspect-ratio']} style={frameStyle}>
         <iframe
@@ -174,6 +177,37 @@ const ctaLabel = (() => {
 
   .reader-frame p {
     margin: 0;
+  }
+
+  .hub-internal-preview {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 22%, var(--line2));
+    border-radius: 12px;
+    padding: 0.75rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 10%, transparent), transparent 62%),
+      color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .hub-internal-badge {
+    margin: 0;
+    width: fit-content;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 42%, transparent);
+    border-radius: 999px;
+    padding: 0.12rem 0.5rem;
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--tone-accent-glow);
+    background: color-mix(in srgb, var(--tone-accent) 18%, transparent);
+  }
+
+  .hub-internal-description {
+    margin: 0;
+    font-size: 0.83rem;
+    line-height: 1.45;
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
   }
 
   .hub-link {

@@ -64,23 +64,33 @@ const isActive = (href: string) => {
       >
         Menu
       </button>
-      <a href={profile.site_url} class="header-live pill rounded px-3 py-1 text-sm" aria-label="Open live site">
+      <div class="header-mode-toggle" role="group" aria-label="Site mode">
+        <button type="button" class="header-mode-btn is-active" data-surface-mode-btn="viewer" aria-pressed="true">Viewer</button>
+        <button type="button" class="header-mode-btn" data-surface-mode-btn="lab" aria-pressed="false">Lab</button>
+      </div>
+      <a href={profile.site_url} class="header-live header-lab-only pill rounded px-3 py-1 text-sm" aria-label="Open live site">
         Live
       </a>
       <span
         id="theme-sensor-status"
-        class="header-theme-status pill rounded px-3 py-1 text-sm"
+        class="header-theme-status header-lab-only pill rounded px-3 py-1 text-sm"
         role="status"
         aria-live="polite"
         aria-label="Theme follows your local time"
       >
         Auto
       </span>
-      <ViewSettings />
+      <div class="header-lab-only">
+        <ViewSettings />
+      </div>
     </div>
   </div>
   <nav id="mobile-nav" aria-label="Mobile navigation" class="mobile-nav md:hidden" hidden>
     <div class="site-shell-row mobile-nav-inner">
+      <div class="header-mode-toggle" role="group" aria-label="Site mode">
+        <button type="button" class="header-mode-btn is-active" data-surface-mode-btn="viewer" aria-pressed="true">Viewer</button>
+        <button type="button" class="header-mode-btn" data-surface-mode-btn="lab" aria-pressed="false">Lab</button>
+      </div>
       {nav.map((item) => (
         <a
           href={item.href}
@@ -93,7 +103,7 @@ const isActive = (href: string) => {
           {item.label}
         </a>
       ))}
-      <a href={profile.site_url} class="pill rounded px-3 py-1 text-sm w-fit mt-2" aria-label="Open live site">
+      <a href={profile.site_url} class="header-lab-only pill rounded px-3 py-1 text-sm w-fit mt-2" aria-label="Open live site">
         Live
       </a>
     </div>
@@ -108,6 +118,7 @@ const isActive = (href: string) => {
     const themeStatus = document.getElementById('theme-sensor-status');
     const mobileToggle = document.getElementById('mobile-nav-toggle');
     const mobileNav = document.getElementById('mobile-nav');
+    const surfaceModeButtons = Array.from(document.querySelectorAll('[data-surface-mode-btn]'));
     let currentTheme = root.classList.contains('light') ? 'light' : 'dark';
     let themeClockTimer = null;
 
@@ -164,6 +175,32 @@ const isActive = (href: string) => {
 
     syncThemeWithClock();
     scheduleThemeSync();
+
+    const getModeState = () =>
+      typeof window.__modeSettings?.getState === 'function' ? window.__modeSettings.getState() : { surfaceMode: 'viewer' };
+    const syncSurfaceModeUi = () => {
+      const state = getModeState();
+      const activeSurfaceMode = state?.surfaceMode === 'lab' ? 'lab' : 'viewer';
+
+      surfaceModeButtons.forEach((button) => {
+        if (!(button instanceof HTMLElement)) return;
+        const targetSurfaceMode = button.getAttribute('data-surface-mode-btn') === 'lab' ? 'lab' : 'viewer';
+        const isActive = targetSurfaceMode === activeSurfaceMode;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-pressed', String(isActive));
+      });
+    };
+
+    surfaceModeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const nextSurfaceMode = button.getAttribute('data-surface-mode-btn') === 'lab' ? 'lab' : 'viewer';
+        window.__modeSettings?.setSurfaceMode?.(nextSurfaceMode);
+        syncSurfaceModeUi();
+      });
+    });
+
+    window.addEventListener('modesettings:change', syncSurfaceModeUi);
+    syncSurfaceModeUi();
 
     const closeMobileNav = () => {
       if (!mobileNav || !mobileToggle) return;

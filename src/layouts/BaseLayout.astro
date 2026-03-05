@@ -80,11 +80,18 @@ const exploreLinks = [
     <script is:inline>
       (() => {
         const LEGACY_THEME_KEY = 'theme';
+        const KEY_SURFACE_MODE = 'siteSurfaceMode';
         const KEY_MODE = 'siteMode';
         const KEY_WALK = 'walkStep';
         const KEY_SIZE = 'siteSize';
         const KEY_TAB_SWIPE = 'homeTabSwipe';
-        const DEFAULTS = { mode: 'normal', walkStep: 1, size: 'standard', tabSwipe: 'on' };
+        const DEFAULTS = {
+          surfaceMode: 'viewer',
+          mode: 'normal',
+          walkStep: 1,
+          size: 'standard',
+          tabSwipe: 'on'
+        };
         const THEME_DAY_START_HOUR = 6;
         const THEME_NIGHT_START_HOUR = 18;
         const localStorageRef = (() => {
@@ -134,6 +141,7 @@ const exploreLinks = [
 
         const normalizeMode = (value) =>
           value === 'walk' || value === 'explore' || value === 'normal' ? value : 'normal';
+        const normalizeSurfaceMode = (value) => (value === 'lab' ? 'lab' : 'viewer');
         const normalizeWalkStep = (value) => {
           const parsed = Number.parseInt(String(value || ''), 10);
           if (Number.isNaN(parsed)) return 1;
@@ -146,22 +154,43 @@ const exploreLinks = [
         safeRemove(localStorageRef, LEGACY_THEME_KEY);
         applyThemeToDom();
 
+        const query = new URLSearchParams(window.location.search);
+        const queryLab = query.get('lab');
+        const querySurfaceMode = queryLab === '1' ? 'lab' : queryLab === '0' ? 'viewer' : null;
+        const queryView = query.get('view');
+        const queryMode = queryView ? normalizeMode(queryView) : null;
+
+        const initialSurfaceMode = normalizeSurfaceMode(querySurfaceMode ?? safeGet(localStorageRef, KEY_SURFACE_MODE));
         const initialMode = normalizeMode(safeGet(localStorageRef, KEY_MODE));
         const initialWalkStep = normalizeWalkStep(safeGet(localStorageRef, KEY_WALK));
         const initialSize = normalizeSize(safeGet(localStorageRef, KEY_SIZE));
         const initialTabSwipe = normalizeTabSwipe(safeGet(localStorageRef, KEY_TAB_SWIPE));
         const state = {
+          surfaceMode: initialSurfaceMode,
           mode: initialMode,
           walkStep: initialWalkStep,
           size: initialSize,
           tabSwipe: initialTabSwipe
         };
 
+        if (queryMode) {
+          state.mode = queryMode;
+        }
+
+        if (querySurfaceMode) {
+          safeSet(localStorageRef, KEY_SURFACE_MODE, querySurfaceMode);
+        }
+        if (queryMode) {
+          safeSet(localStorageRef, KEY_MODE, queryMode);
+        }
+
         const applyToDom = () => {
-          document.documentElement.dataset.mode = state.mode;
+          const activeMode = state.surfaceMode === 'lab' ? state.mode : 'normal';
+          document.documentElement.dataset.surfaceMode = state.surfaceMode;
+          document.documentElement.dataset.mode = activeMode;
           document.documentElement.dataset.size = state.size;
           document.documentElement.dataset.tabSwipe = state.tabSwipe;
-          if (state.mode === 'walk') {
+          if (state.surfaceMode === 'lab' && state.mode === 'walk') {
             document.documentElement.dataset.walkStep = String(state.walkStep);
           } else {
             delete document.documentElement.dataset.walkStep;
@@ -169,6 +198,7 @@ const exploreLinks = [
         };
 
         const persist = () => {
+          safeSet(localStorageRef, KEY_SURFACE_MODE, state.surfaceMode);
           safeSet(localStorageRef, KEY_MODE, state.mode);
           safeSet(localStorageRef, KEY_WALK, String(state.walkStep));
           safeSet(localStorageRef, KEY_SIZE, state.size);
@@ -176,9 +206,10 @@ const exploreLinks = [
         };
 
         const emit = () => {
+          const activeMode = state.surfaceMode === 'lab' ? state.mode : 'normal';
           window.dispatchEvent(
             new CustomEvent('modesettings:change', {
-              detail: { ...state }
+              detail: { ...state, activeMode }
             })
           );
         };
@@ -187,8 +218,23 @@ const exploreLinks = [
           getState() {
             return { ...state };
           },
+          setSurfaceMode(nextSurfaceMode) {
+            state.surfaceMode = normalizeSurfaceMode(nextSurfaceMode);
+            applyToDom();
+            persist();
+            emit();
+          },
+          toggleSurfaceMode() {
+            state.surfaceMode = state.surfaceMode === 'lab' ? 'viewer' : 'lab';
+            applyToDom();
+            persist();
+            emit();
+          },
           setMode(nextMode) {
             state.mode = normalizeMode(nextMode);
+            if (state.mode === 'walk' || state.mode === 'explore') {
+              state.surfaceMode = 'lab';
+            }
             applyToDom();
             persist();
             emit();
@@ -212,10 +258,13 @@ const exploreLinks = [
             emit();
           },
           reset() {
+            const preservedSurfaceMode = state.surfaceMode;
+            safeRemove(localStorageRef, KEY_SURFACE_MODE);
             safeRemove(localStorageRef, KEY_MODE);
             safeRemove(localStorageRef, KEY_WALK);
             safeRemove(localStorageRef, KEY_SIZE);
             safeRemove(localStorageRef, KEY_TAB_SWIPE);
+            state.surfaceMode = preservedSurfaceMode;
             state.mode = DEFAULTS.mode;
             state.walkStep = DEFAULTS.walkStep;
             state.size = DEFAULTS.size;
@@ -1792,28 +1841,5 @@ const exploreLinks = [
         paint();
       })();
     </script>
-    <style is:global>
-      .mode-normal {
-        display: block;
-      }
-
-      .mode-walk,
-      .mode-explore {
-        display: none;
-      }
-
-      html[data-mode='walk'] .mode-normal,
-      html[data-mode='explore'] .mode-normal {
-        display: none;
-      }
-
-      html[data-mode='walk'] .mode-walk {
-        display: block;
-      }
-
-      html[data-mode='explore'] .mode-explore {
-        display: block;
-      }
-    </style>
   </body>
 </html>

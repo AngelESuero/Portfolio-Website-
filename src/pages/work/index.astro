@@ -15,6 +15,16 @@ const allProjects = (await getCollection('projects')).sort((a, b) => {
   return a.data.title.localeCompare(b.data.title);
 });
 const types = ['all', 'music', 'video', 'writing', 'civic'];
+const isDraftDescription = (value: string): boolean => {
+  const normalized = String(value || '').trim();
+  if (!normalized) return true;
+  if (/^\[[^\]]+\]$/.test(normalized)) return true;
+  return /^(add description|tbd|coming soon|placeholder)$/i.test(normalized);
+};
+const projectCards = allProjects.map((project) => ({
+  project,
+  isDraft: isDraftDescription(project.data.description)
+}));
 ---
 <BaseLayout title="Work — a_e.s_" theme="work">
   <h1 class="font-display text-4xl">Work / Projects</h1>
@@ -23,20 +33,50 @@ const types = ['all', 'music', 'video', 'writing', 'civic'];
     {types.map((type) => <button class="filter rounded border border-zinc-400 px-3 py-1 text-sm dark:border-zinc-600" data-filter={type}>{type}</button>)}
   </div>
   <div class="mt-6 flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:overflow-visible" id="project-grid">
-    {allProjects.map((project) => <div class="project-item" data-type={project.data.type}><ProjectCard project={project} /></div>)}
+    {projectCards.map(({ project, isDraft }) => (
+      <div class="project-item" data-type={project.data.type} data-draft={isDraft ? 'true' : 'false'}>
+        <ProjectCard project={project} isDraft={isDraft} />
+      </div>
+    ))}
   </div>
 </BaseLayout>
 
 <script is:inline>
-  const buttons = document.querySelectorAll('.filter');
-  const items = document.querySelectorAll('.project-item');
-  buttons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const filter = btn.dataset.filter;
+  (() => {
+    const buttons = Array.from(document.querySelectorAll('.filter'));
+    const items = Array.from(document.querySelectorAll('.project-item'));
+    if (!buttons.length || !items.length) return;
+
+    let activeFilter = 'all';
+    const isLabMode = () => window.__modeSettings?.getState?.()?.surfaceMode === 'lab';
+    const applyFilters = () => {
+      const labMode = isLabMode();
       items.forEach((item) => {
         const type = item.getAttribute('data-type');
-        item.style.display = filter === 'all' || filter === type ? 'block' : 'none';
+        const isDraft = item.getAttribute('data-draft') === 'true';
+        const typeMatch = activeFilter === 'all' || activeFilter === type;
+        const visible = typeMatch && (labMode || !isDraft);
+        item.style.display = visible ? 'block' : 'none';
+      });
+    };
+
+    const syncButtonState = () => {
+      buttons.forEach((button) => {
+        const selected = button.getAttribute('data-filter') === activeFilter;
+        button.setAttribute('aria-pressed', String(selected));
+      });
+    };
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        activeFilter = button.getAttribute('data-filter') || 'all';
+        syncButtonState();
+        applyFilters();
       });
     });
-  });
+
+    window.addEventListener('modesettings:change', applyFilters);
+    syncButtonState();
+    applyFilters();
+  })();
 </script>
