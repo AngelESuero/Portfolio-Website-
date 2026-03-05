@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-05T21:51:46.453Z",
+    "generatedAt": "2026-03-05T23:29:19.635Z",
     "sources": [
       {
         "id": "openai_news",
@@ -13234,6 +13234,53 @@
       ]
     },
     {
+      "id": "28235350a8b41783a6bb0d8c79555f660de7105d8f0e935eefee551bdd489ff5",
+      "title": "The five AI value models driving business reinvention",
+      "url": "https://openai.com/index/the-five-ai-value-models-driving-business-reinvention",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-03-05T00:00:00.000Z",
+      "summary": "Five AI value models show how leaders can sequence AI from workforce fluency to process reinvention and build durable business advantage.",
+      "tags": [
+        "primary",
+        "release",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/the-five-ai-value-models-driving-business-reinvention"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
+    {
+      "id": "0dae2088e0d9bb5d7dbd35a1e9e9668228a636d0efed74e7eacf65461fbf6b74",
+      "title": "Introducing the Adoption news channel",
+      "url": "https://openai.com/index/introducing-the-adoption-news-channel",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-03-05T00:00:00.000Z",
+      "summary": "Practical insights and frameworks to turn AI progress into business advantage",
+      "tags": [
+        "primary",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/introducing-the-adoption-news-channel"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
+    {
       "id": "003c319430c8d89162bc093af77ec54f5fad5da5a9156b1b6d38f3d72a343d02",
       "title": "Phi-4-reasoning-vision and the lessons of training a multimodal reasoning model",
       "url": "https://www.microsoft.com/en-us/research/blog/phi-4-reasoning-vision-and-the-lessons-of-training-a-multimodal-reasoning-model/",
@@ -15191,57 +15238,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.02241"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "8f34b403db80c6eaecb56c99beaf6a1ea40387e58d5741f3b73db7f08da23248",
-      "title": "Whisper-RIR-Mega: A Paired Clean-Reverberant Speech Benchmark for ASR Robustness to Room Acoustics",
-      "url": "https://arxiv.org/abs/2603.02252",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02252v1 Announce Type: cross Abstract: We introduce Whisper-RIR-Mega, a benchmark dataset of paired clean and reverberant speech for evaluating automatic speech recognition (ASR) robustness to room acoustics. Each sample pairs a clean LibriSpeech utterance with the same utterance convolved with a real room impulse response from the RIR-Mega corpus, with stratified splits by reverberation time (RT60) and direct-to-reverberant ratio (DRR). We evaluate five Whisper models (tiny through large-v3) on 1600 test samples and report word error rate (WER) and character error rate (CER) under clean and reverberant conditions. Reverberation consistently degrades performance across all model sizes; the reverb penalty in WER ranges from 0.12 to 1.07 percentage points depending on the model. We release the dataset, evaluation code, and baseline results to support reproducible research on robust ASR.",
-      "tags": [
-        "papers",
-        "eval",
-        "model",
-        "release",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02252"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "7f330a6d2b1201d5f21db5da80586826c302eeda804534556d56b7622201324d",
-      "title": "MEBM-Phoneme: Multi-scale Enhanced BrainMagic for End-to-End MEG Phoneme Classification",
-      "url": "https://arxiv.org/abs/2603.02254",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02254v1 Announce Type: cross Abstract: We propose MEBM-Phoneme, a multi-scale enhanced neural decoder for phoneme classification from non-invasive magnetoencephalography (MEG) signals. Built upon the BrainMagic backbone, MEBM-Phoneme integrates a short-term multi-scale convolutional module to augment the native mid-term encoder, with fused representations via depthwise separable convolution for efficient cross-scale integration. A convolutional attention layer dynamically weights temporal dependencies to refine feature aggregation. To address class imbalance and session-specific distributional shifts, we introduce a stacking-based local validation set alongside weighted cross-entropy loss and random temporal augmentation. Comprehensive evaluations on LibriBrain Competition 2025 Track2 demonstrate robust generalization, achieving competitive phoneme decoding accuracy on the validation and official test leaderboard. These results underscore the value of hierarchical temporal modeling and training stabilization for advancing MEG-based speech perception analysis.",
-      "tags": [
-        "papers",
-        "eval",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02254"
         },
         {
           "label": "Feed",
