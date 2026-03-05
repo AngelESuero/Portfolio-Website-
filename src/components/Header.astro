@@ -3,14 +3,14 @@ import profile from '../data/profile';
 import ViewSettings from './ViewSettings.astro';
 
 const ACCENT_SWATCHES: Record<string, string> = {
-  yellow: '#A79A62',
-  blue: '#6D8488',
-  orange: '#9B7653',
-  red: '#8B5952',
-  white: '#C3BCA9',
-  black: '#49433E',
-  violet: '#7D7688',
-  indigo: '#5F6C7A'
+  yellow: '#dcc56e',
+  blue: '#7cb8c0',
+  orange: '#d6a06b',
+  red: '#c77b73',
+  white: '#eadfc0',
+  black: '#6b6158',
+  violet: '#a28ed0',
+  indigo: '#7392c1'
 };
 const getAccentSwatch = (value?: string) => ACCENT_SWATCHES[String(value || '').trim().toLowerCase()] || ACCENT_SWATCHES.blue;
 
@@ -64,25 +64,33 @@ const isActive = (href: string) => {
       >
         Menu
       </button>
-      <a
-        href={profile.site_url}
-        class="header-live header-action-pill pill rounded px-3 py-1 text-sm"
-        aria-label="Open live site"
-      >
+      <div class="header-mode-toggle" role="group" aria-label="Site mode">
+        <button type="button" class="header-mode-btn is-active" data-surface-mode-btn="viewer" aria-pressed="true">Viewer</button>
+        <button type="button" class="header-mode-btn" data-surface-mode-btn="lab" aria-pressed="false">Lab</button>
+      </div>
+      <a href={profile.site_url} class="header-live lab-only-inline-flex pill rounded px-3 py-1 text-sm" aria-label="Open live site">
         Live
       </a>
-      <button
-        id="theme-toggle"
-        aria-label="Toggle dark mode"
-        class="header-action-pill pill rounded px-3 py-1 text-sm"
+      <span
+        id="theme-sensor-status"
+        class="header-theme-status lab-only-inline-flex pill rounded px-3 py-1 text-sm"
+        role="status"
+        aria-live="polite"
+        aria-label="Theme follows your local time"
       >
-        Theme
-      </button>
-      <ViewSettings />
+        Auto
+      </span>
+      <div class="lab-only">
+        <ViewSettings />
+      </div>
     </div>
   </div>
   <nav id="mobile-nav" aria-label="Mobile navigation" class="mobile-nav md:hidden" hidden>
     <div class="site-shell-row mobile-nav-inner">
+      <div class="header-mode-toggle" role="group" aria-label="Site mode">
+        <button type="button" class="header-mode-btn is-active" data-surface-mode-btn="viewer" aria-pressed="true">Viewer</button>
+        <button type="button" class="header-mode-btn" data-surface-mode-btn="lab" aria-pressed="false">Lab</button>
+      </div>
       {nav.map((item) => (
         <a
           href={item.href}
@@ -95,7 +103,7 @@ const isActive = (href: string) => {
           {item.label}
         </a>
       ))}
-      <a href={profile.site_url} class="pill rounded px-3 py-1 text-sm w-fit mt-2" aria-label="Open live site">
+      <a href={profile.site_url} class="lab-only-inline-flex pill rounded px-3 py-1 text-sm w-fit mt-2" aria-label="Open live site">
         Live
       </a>
     </div>
@@ -105,43 +113,107 @@ const isActive = (href: string) => {
 <script is:inline>
   (() => {
     const root = document.documentElement;
-    const themeStorage = (() => {
-      try {
-        return window.localStorage;
-      } catch {
-        return null;
-      }
-    })();
-    const readTheme = () => {
-      try {
-        return typeof themeStorage?.getItem === 'function' ? themeStorage.getItem('theme') : null;
-      } catch {
-        return null;
-      }
-    };
-    const writeTheme = (value) => {
-      try {
-        themeStorage?.setItem?.('theme', value);
-      } catch {}
-    };
-
-    const saved = readTheme();
-    if (saved === 'dark') root.classList.add('dark');
-
-    const themeToggle = document.getElementById('theme-toggle');
+    const THEME_DAY_START_HOUR = 6;
+    const THEME_NIGHT_START_HOUR = 18;
+    const themeStatus = document.getElementById('theme-sensor-status');
     const mobileToggle = document.getElementById('mobile-nav-toggle');
     const mobileNav = document.getElementById('mobile-nav');
+    const surfaceModeButtons = Array.from(document.querySelectorAll('[data-surface-mode-btn]'));
+    let currentTheme = root.classList.contains('light') ? 'light' : 'dark';
+    let themeClockTimer = null;
+    let renderedSurfaceMode = '';
+
+    const getClockTheme = (date = new Date()) => {
+      const decimalHour = date.getHours() + date.getMinutes() / 60;
+      return decimalHour >= THEME_DAY_START_HOUR && decimalHour < THEME_NIGHT_START_HOUR ? 'light' : 'dark';
+    };
+    const normalizeTheme = (value) => (value === 'light' ? 'light' : 'dark');
+    const getThemeStatusLabel = (value) => (value === 'light' ? 'Day' : 'Night');
+    const applyTheme = (value) => {
+      const nextTheme = normalizeTheme(value);
+      const isDark = nextTheme === 'dark';
+      root.classList.toggle('dark', isDark);
+      root.classList.toggle('light', !isDark);
+      root.style.colorScheme = nextTheme;
+      root.dataset.themeMode = nextTheme;
+      root.dataset.themeSource = 'clock';
+      root.dataset.themePeriod = isDark ? 'night' : 'day';
+      currentTheme = nextTheme;
+      if (themeStatus instanceof HTMLElement) {
+        themeStatus.textContent = getThemeStatusLabel(nextTheme);
+        themeStatus.setAttribute(
+          'aria-label',
+          isDark ? 'Automatic theme active: night mode' : 'Automatic theme active: daylight mode'
+        );
+      }
+      return nextTheme;
+    };
+
+    const syncThemeWithClock = () => {
+      const nextTheme = getClockTheme();
+      const previousTheme = currentTheme;
+      const appliedTheme = applyTheme(nextTheme);
+      if (previousTheme !== appliedTheme) {
+        window.dispatchEvent(
+          new CustomEvent('theme:change', {
+            detail: { theme: appliedTheme, source: 'clock' }
+          })
+        );
+      }
+    };
+
+    const scheduleThemeSync = () => {
+      if (themeClockTimer) {
+        window.clearTimeout(themeClockTimer);
+      }
+      const now = new Date();
+      const delay = Math.max(1000, (60 - now.getSeconds()) * 1000 - now.getMilliseconds() + 120);
+      themeClockTimer = window.setTimeout(() => {
+        syncThemeWithClock();
+        scheduleThemeSync();
+      }, delay);
+    };
+
+    syncThemeWithClock();
+    scheduleThemeSync();
+
+    const getModeState = () =>
+      typeof window.__modeSettings?.getState === 'function' ? window.__modeSettings.getState() : { surfaceMode: 'viewer' };
+    const syncSurfaceModeUi = () => {
+      const state = getModeState();
+      const activeSurfaceMode = state?.surfaceMode === 'lab' ? 'lab' : 'viewer';
+      if (activeSurfaceMode === renderedSurfaceMode) return;
+      renderedSurfaceMode = activeSurfaceMode;
+
+      surfaceModeButtons.forEach((button) => {
+        if (!(button instanceof HTMLElement)) return;
+        const targetSurfaceMode = button.getAttribute('data-surface-mode-btn') === 'lab' ? 'lab' : 'viewer';
+        const isActive = targetSurfaceMode === activeSurfaceMode;
+        if (button.classList.contains('is-active') !== isActive) {
+          button.classList.toggle('is-active', isActive);
+        }
+        const nextPressed = String(isActive);
+        if (button.getAttribute('aria-pressed') !== nextPressed) {
+          button.setAttribute('aria-pressed', nextPressed);
+        }
+      });
+    };
+
+    surfaceModeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const nextSurfaceMode = button.getAttribute('data-surface-mode-btn') === 'lab' ? 'lab' : 'viewer';
+        window.__modeSettings?.setSurfaceMode?.(nextSurfaceMode);
+      });
+    });
+
+    window.addEventListener('modesettings:change', syncSurfaceModeUi);
+    syncSurfaceModeUi();
     const closeMobileNav = () => {
       if (!mobileNav || !mobileToggle) return;
       mobileNav.hidden = true;
       mobileToggle.setAttribute('aria-expanded', 'false');
       mobileToggle.textContent = 'Menu';
     };
-
-    themeToggle?.addEventListener('click', () => {
-      root.classList.toggle('dark');
-      writeTheme(root.classList.contains('dark') ? 'dark' : 'light');
-    });
 
     mobileToggle?.addEventListener('click', () => {
       if (!mobileNav) return;
@@ -157,6 +229,13 @@ const isActive = (href: string) => {
 
     window.addEventListener('resize', () => {
       if (window.innerWidth >= 768) closeMobileNav();
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        syncThemeWithClock();
+        scheduleThemeSync();
+      }
     });
   })();
 </script>

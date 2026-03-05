@@ -24,6 +24,9 @@
     "rss-parser": "^3.13.0",
     "zod": "^3.23.8"
   },
+  "overrides": {
+    "shiki": "3.21.0"
+  },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
     "tailwindcss": "^3.4.17"

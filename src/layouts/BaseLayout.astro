@@ -73,17 +73,27 @@ const exploreLinks = [
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark" data-surface-mode="viewer" data-mode="normal">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <script is:inline>
       (() => {
+        const LEGACY_THEME_KEY = 'theme';
+        const KEY_SURFACE_MODE = 'siteSurfaceMode';
         const KEY_MODE = 'siteMode';
         const KEY_WALK = 'walkStep';
         const KEY_SIZE = 'siteSize';
         const KEY_TAB_SWIPE = 'homeTabSwipe';
-        const DEFAULTS = { mode: 'normal', walkStep: 1, size: 'standard', tabSwipe: 'on' };
+        const DEFAULTS = {
+          surfaceMode: 'viewer',
+          mode: 'normal',
+          walkStep: 1,
+          size: 'standard',
+          tabSwipe: 'on'
+        };
+        const THEME_DAY_START_HOUR = 6;
+        const THEME_NIGHT_START_HOUR = 18;
         const localStorageRef = (() => {
           try {
             return window.localStorage;
@@ -112,8 +122,26 @@ const exploreLinks = [
           } catch {}
         };
 
+        const getClockTheme = (date = new Date()) => {
+          const decimalHour = date.getHours() + date.getMinutes() / 60;
+          return decimalHour >= THEME_DAY_START_HOUR && decimalHour < THEME_NIGHT_START_HOUR ? 'light' : 'dark';
+        };
+        const normalizeTheme = (value) => (value === 'light' ? 'light' : 'dark');
+        const applyThemeToDom = (nextTheme = getClockTheme()) => {
+          const root = document.documentElement;
+          const theme = normalizeTheme(nextTheme);
+          root.classList.toggle('dark', theme === 'dark');
+          root.classList.toggle('light', theme === 'light');
+          root.style.colorScheme = theme;
+          root.dataset.themeMode = theme;
+          root.dataset.themeSource = 'clock';
+          root.dataset.themePeriod = theme === 'light' ? 'day' : 'night';
+          return theme;
+        };
+
         const normalizeMode = (value) =>
           value === 'walk' || value === 'explore' || value === 'normal' ? value : 'normal';
+        const normalizeSurfaceMode = (value) => (value === 'lab' ? 'lab' : 'viewer');
         const normalizeWalkStep = (value) => {
           const parsed = Number.parseInt(String(value || ''), 10);
           if (Number.isNaN(parsed)) return 1;
@@ -123,39 +151,106 @@ const exploreLinks = [
           value === 'compact' || value === 'spacious' || value === 'standard' ? value : 'standard';
         const normalizeTabSwipe = (value) => (value === 'off' ? 'off' : 'on');
 
-        const initialMode = normalizeMode(safeGet(localStorageRef, KEY_MODE));
-        const initialWalkStep = normalizeWalkStep(safeGet(localStorageRef, KEY_WALK));
-        const initialSize = normalizeSize(safeGet(localStorageRef, KEY_SIZE));
-        const initialTabSwipe = normalizeTabSwipe(safeGet(localStorageRef, KEY_TAB_SWIPE));
+        safeRemove(localStorageRef, LEGACY_THEME_KEY);
+        applyThemeToDom();
+
+        const query = new URLSearchParams(window.location.search);
+        const queryLab = query.get('lab');
+        const querySurfaceMode = queryLab === '1' ? 'lab' : queryLab === '0' ? 'viewer' : null;
+        const queryView = query.get('view');
+        const queryMode = queryView ? normalizeMode(queryView) : null;
+
+        const storedSurfaceMode = safeGet(localStorageRef, KEY_SURFACE_MODE);
+        const storedMode = safeGet(localStorageRef, KEY_MODE);
+        const storedWalkStep = safeGet(localStorageRef, KEY_WALK);
+        const storedSize = safeGet(localStorageRef, KEY_SIZE);
+        const storedTabSwipe = safeGet(localStorageRef, KEY_TAB_SWIPE);
+        const initialSurfaceMode = normalizeSurfaceMode(querySurfaceMode ?? storedSurfaceMode);
+        const initialMode = normalizeMode(storedMode);
+        const initialWalkStep = normalizeWalkStep(storedWalkStep);
+        const initialSize = normalizeSize(storedSize);
+        const initialTabSwipe = normalizeTabSwipe(storedTabSwipe);
         const state = {
+          surfaceMode: initialSurfaceMode,
           mode: initialMode,
           walkStep: initialWalkStep,
           size: initialSize,
           tabSwipe: initialTabSwipe
         };
+        const root = document.documentElement;
+        const persisted = {
+          surfaceMode: normalizeSurfaceMode(storedSurfaceMode),
+          mode: normalizeMode(storedMode),
+          walkStep: String(normalizeWalkStep(storedWalkStep)),
+          size: normalizeSize(storedSize),
+          tabSwipe: normalizeTabSwipe(storedTabSwipe)
+        };
+
+        if (queryMode) {
+          state.mode = queryMode;
+        }
+
+        if (querySurfaceMode) {
+          safeSet(localStorageRef, KEY_SURFACE_MODE, querySurfaceMode);
+        }
+        if (queryMode) {
+          safeSet(localStorageRef, KEY_MODE, queryMode);
+        }
+
+        const setDataAttr = (key, value) => {
+          if (root.dataset[key] !== value) {
+            root.dataset[key] = value;
+          }
+        };
+
+        const removeDataAttr = (key) => {
+          if (Object.prototype.hasOwnProperty.call(root.dataset, key)) {
+            delete root.dataset[key];
+          }
+        };
 
         const applyToDom = () => {
-          document.documentElement.dataset.mode = state.mode;
-          document.documentElement.dataset.size = state.size;
-          document.documentElement.dataset.tabSwipe = state.tabSwipe;
-          if (state.mode === 'walk') {
-            document.documentElement.dataset.walkStep = String(state.walkStep);
+          const activeMode = state.surfaceMode === 'lab' ? state.mode : 'normal';
+          setDataAttr('surfaceMode', state.surfaceMode);
+          setDataAttr('mode', activeMode);
+          setDataAttr('size', state.size);
+          setDataAttr('tabSwipe', state.tabSwipe);
+          if (state.surfaceMode === 'lab' && state.mode === 'walk') {
+            setDataAttr('walkStep', String(state.walkStep));
           } else {
-            delete document.documentElement.dataset.walkStep;
+            removeDataAttr('walkStep');
           }
         };
 
         const persist = () => {
-          safeSet(localStorageRef, KEY_MODE, state.mode);
-          safeSet(localStorageRef, KEY_WALK, String(state.walkStep));
-          safeSet(localStorageRef, KEY_SIZE, state.size);
-          safeSet(localStorageRef, KEY_TAB_SWIPE, state.tabSwipe);
+          const walkStep = String(state.walkStep);
+          if (persisted.surfaceMode !== state.surfaceMode) {
+            safeSet(localStorageRef, KEY_SURFACE_MODE, state.surfaceMode);
+            persisted.surfaceMode = state.surfaceMode;
+          }
+          if (persisted.mode !== state.mode) {
+            safeSet(localStorageRef, KEY_MODE, state.mode);
+            persisted.mode = state.mode;
+          }
+          if (persisted.walkStep !== walkStep) {
+            safeSet(localStorageRef, KEY_WALK, walkStep);
+            persisted.walkStep = walkStep;
+          }
+          if (persisted.size !== state.size) {
+            safeSet(localStorageRef, KEY_SIZE, state.size);
+            persisted.size = state.size;
+          }
+          if (persisted.tabSwipe !== state.tabSwipe) {
+            safeSet(localStorageRef, KEY_TAB_SWIPE, state.tabSwipe);
+            persisted.tabSwipe = state.tabSwipe;
+          }
         };
 
         const emit = () => {
+          const activeMode = state.surfaceMode === 'lab' ? state.mode : 'normal';
           window.dispatchEvent(
             new CustomEvent('modesettings:change', {
-              detail: { ...state }
+              detail: { ...state, activeMode }
             })
           );
         };
@@ -164,39 +259,73 @@ const exploreLinks = [
           getState() {
             return { ...state };
           },
+          setSurfaceMode(nextSurfaceMode) {
+            const normalized = normalizeSurfaceMode(nextSurfaceMode);
+            if (state.surfaceMode === normalized) return;
+            state.surfaceMode = normalized;
+            applyToDom();
+            persist();
+            emit();
+          },
+          toggleSurfaceMode() {
+            state.surfaceMode = state.surfaceMode === 'lab' ? 'viewer' : 'lab';
+            applyToDom();
+            persist();
+            emit();
+          },
           setMode(nextMode) {
-            state.mode = normalizeMode(nextMode);
+            const normalized = normalizeMode(nextMode);
+            const nextSurfaceMode = normalized === 'walk' || normalized === 'explore' ? 'lab' : state.surfaceMode;
+            if (state.mode === normalized && state.surfaceMode === nextSurfaceMode) return;
+            state.mode = normalized;
+            if (nextSurfaceMode !== state.surfaceMode) {
+              state.surfaceMode = nextSurfaceMode;
+            }
             applyToDom();
             persist();
             emit();
           },
           setWalkStep(nextStep) {
-            state.walkStep = normalizeWalkStep(nextStep);
+            const normalized = normalizeWalkStep(nextStep);
+            if (state.walkStep === normalized) return;
+            state.walkStep = normalized;
             applyToDom();
             persist();
             emit();
           },
           setSize(nextSize) {
-            state.size = normalizeSize(nextSize);
+            const normalized = normalizeSize(nextSize);
+            if (state.size === normalized) return;
+            state.size = normalized;
             applyToDom();
             persist();
             emit();
           },
           setTabSwipe(nextTabSwipe) {
-            state.tabSwipe = normalizeTabSwipe(nextTabSwipe);
+            const normalized = normalizeTabSwipe(nextTabSwipe);
+            if (state.tabSwipe === normalized) return;
+            state.tabSwipe = normalized;
             applyToDom();
             persist();
             emit();
           },
           reset() {
+            const preservedSurfaceMode = state.surfaceMode;
+            safeRemove(localStorageRef, KEY_SURFACE_MODE);
             safeRemove(localStorageRef, KEY_MODE);
             safeRemove(localStorageRef, KEY_WALK);
             safeRemove(localStorageRef, KEY_SIZE);
             safeRemove(localStorageRef, KEY_TAB_SWIPE);
+            state.surfaceMode = preservedSurfaceMode;
             state.mode = DEFAULTS.mode;
             state.walkStep = DEFAULTS.walkStep;
             state.size = DEFAULTS.size;
             state.tabSwipe = DEFAULTS.tabSwipe;
+            persisted.surfaceMode = state.surfaceMode;
+            persisted.mode = state.mode;
+            persisted.walkStep = String(state.walkStep);
+            persisted.size = state.size;
+            persisted.tabSwipe = state.tabSwipe;
             applyToDom();
             emit();
           }
@@ -232,32 +361,32 @@ const exploreLinks = [
           }
         })();
         const palette = {
-          yellow: '#A79A62',
-          blue: '#6D8488',
-          orange: '#9B7653',
-          red: '#8B5952',
-          white: '#C3BCA9',
-          black: '#49433E',
-          violet: '#7D7688',
-          indigo: '#5F6C7A'
+          yellow: '#dcc56e',
+          blue: '#7cb8c0',
+          orange: '#d6a06b',
+          red: '#c77b73',
+          white: '#eadfc0',
+          black: '#6b6158',
+          violet: '#a28ed0',
+          indigo: '#7392c1'
         };
         const LEGACY_COLOR_ALIASES = {
           white: 'violet',
           black: 'indigo'
         };
         const toneProfiles = {
-          balance: { warm: 0.044, cool: 0.026, shadow: 0.33, highlight: 0.013, depth: 0.31, bodyLift: 0.03 },
-          clarity: { warm: 0.038, cool: 0.03, shadow: 0.3, highlight: 0.017, depth: 0.27, bodyLift: 0.035 },
-          devotion: { warm: 0.056, cool: 0.03, shadow: 0.35, highlight: 0.012, depth: 0.33, bodyLift: 0.028 },
-          contemplation: { warm: 0.036, cool: 0.028, shadow: 0.39, highlight: 0.01, depth: 0.36, bodyLift: 0.02 },
-          discernment: { warm: 0.034, cool: 0.03, shadow: 0.37, highlight: 0.011, depth: 0.34, bodyLift: 0.024 },
-          vitality: { warm: 0.06, cool: 0.034, shadow: 0.31, highlight: 0.015, depth: 0.29, bodyLift: 0.034 },
-          grounding: { warm: 0.052, cool: 0.024, shadow: 0.41, highlight: 0.009, depth: 0.38, bodyLift: 0.018 },
-          compassion: { warm: 0.05, cool: 0.034, shadow: 0.3, highlight: 0.018, depth: 0.28, bodyLift: 0.036 },
-          harmony: { warm: 0.046, cool: 0.032, shadow: 0.32, highlight: 0.016, depth: 0.3, bodyLift: 0.033 },
-          seva: { warm: 0.048, cool: 0.028, shadow: 0.34, highlight: 0.013, depth: 0.32, bodyLift: 0.03 },
-          intensity: { warm: 0.056, cool: 0.026, shadow: 0.36, highlight: 0.012, depth: 0.33, bodyLift: 0.026 },
-          presence: { warm: 0.042, cool: 0.028, shadow: 0.32, highlight: 0.015, depth: 0.3, bodyLift: 0.032 }
+          balance: { warm: 0.068, cool: 0.046, shadow: 0.25, highlight: 0.024, depth: 0.22, bodyLift: 0.048 },
+          clarity: { warm: 0.062, cool: 0.052, shadow: 0.22, highlight: 0.028, depth: 0.2, bodyLift: 0.052 },
+          devotion: { warm: 0.08, cool: 0.048, shadow: 0.27, highlight: 0.02, depth: 0.25, bodyLift: 0.044 },
+          contemplation: { warm: 0.054, cool: 0.042, shadow: 0.31, highlight: 0.018, depth: 0.28, bodyLift: 0.034 },
+          discernment: { warm: 0.052, cool: 0.046, shadow: 0.3, highlight: 0.019, depth: 0.26, bodyLift: 0.038 },
+          vitality: { warm: 0.088, cool: 0.056, shadow: 0.24, highlight: 0.026, depth: 0.21, bodyLift: 0.052 },
+          grounding: { warm: 0.075, cool: 0.038, shadow: 0.34, highlight: 0.016, depth: 0.3, bodyLift: 0.03 },
+          compassion: { warm: 0.074, cool: 0.054, shadow: 0.22, highlight: 0.029, depth: 0.2, bodyLift: 0.054 },
+          harmony: { warm: 0.07, cool: 0.05, shadow: 0.24, highlight: 0.027, depth: 0.22, bodyLift: 0.05 },
+          seva: { warm: 0.072, cool: 0.042, shadow: 0.27, highlight: 0.022, depth: 0.24, bodyLift: 0.044 },
+          intensity: { warm: 0.08, cool: 0.04, shadow: 0.29, highlight: 0.02, depth: 0.25, bodyLift: 0.04 },
+          presence: { warm: 0.064, cool: 0.044, shadow: 0.24, highlight: 0.026, depth: 0.22, bodyLift: 0.048 }
         };
         const circadianStops = [
           {
@@ -685,11 +814,11 @@ const exploreLinks = [
           setDynamicCssVar('--cursor-rgb', rgbToTuple(hexToRgb(next.cursor)));
           setDynamicCssVar(
             '--street-warm',
-            `rgb(${rgbToTuple(hexToRgb(next.toneAccent))} / ${clamp(0.052 * currentCircadian.warmScale, 0.024, 0.11)})`
+            `rgb(${rgbToTuple(hexToRgb(next.toneAccent))} / ${clamp(0.078 * currentCircadian.warmScale, 0.024, 0.12)})`
           );
           setDynamicCssVar(
             '--street-cool',
-            `rgb(${rgbToTuple(hexToRgb(next.toneSky))} / ${clamp(0.052 * currentCircadian.coolScale, 0.022, 0.11)})`
+            `rgb(${rgbToTuple(hexToRgb(next.toneSky))} / ${clamp(0.078 * currentCircadian.coolScale, 0.022, 0.12)})`
           );
         };
 
@@ -1497,8 +1626,10 @@ const exploreLinks = [
 
         const initScrollWind = () => {
           const SCROLL_IDLE_MS = 260;
+          const LISTENER_OPTIONS = { passive: true };
           let scrollTimer = null;
           let scrollOptimizing = false;
+          let labGestureListenersAttached = false;
 
           const setScrollOptimizing = (isActive) => {
             if (scrollOptimizing === isActive) return;
@@ -1527,10 +1658,42 @@ const exploreLinks = [
             }, SCROLL_IDLE_MS);
           };
 
+          const attachLabGestureListeners = () => {
+            if (labGestureListenersAttached) return;
+            labGestureListenersAttached = true;
+            window.addEventListener('wheel', markScrolling, LISTENER_OPTIONS);
+            window.addEventListener('touchmove', markScrolling, LISTENER_OPTIONS);
+          };
+
+          const detachLabGestureListeners = () => {
+            if (!labGestureListenersAttached) return;
+            labGestureListenersAttached = false;
+            window.removeEventListener('wheel', markScrolling);
+            window.removeEventListener('touchmove', markScrolling);
+          };
+
+          const syncLabGestureListeners = (surfaceMode) => {
+            const resolvedMode =
+              surfaceMode === 'lab'
+                ? 'lab'
+                : window.__modeSettings?.getState?.()?.surfaceMode === 'lab'
+                  ? 'lab'
+                  : 'viewer';
+            if (resolvedMode === 'lab') {
+              attachLabGestureListeners();
+              return;
+            }
+            detachLabGestureListeners();
+          };
+
           clearWind();
-          window.addEventListener('scroll', markScrolling, { passive: true });
-          window.addEventListener('wheel', markScrolling, { passive: true });
-          window.addEventListener('touchmove', markScrolling, { passive: true });
+          window.addEventListener('scroll', markScrolling, LISTENER_OPTIONS);
+          syncLabGestureListeners(root.dataset.surfaceMode);
+          window.addEventListener('modesettings:change', (event) => {
+            const nextSurfaceMode =
+              event instanceof CustomEvent && event.detail ? event.detail.surfaceMode : null;
+            syncLabGestureListeners(nextSurfaceMode);
+          });
           document.addEventListener('visibilitychange', () => {
             if (document.hidden) clearWind();
           });
@@ -1626,7 +1789,7 @@ const exploreLinks = [
           <slot />
         </div>
 
-        <section class="mode-walk view-surface" aria-labelledby="walkthrough-heading">
+        <section class="mode-walk view-surface lab-only" aria-labelledby="walkthrough-heading">
           <header class="view-surface-header">
             <p class="view-surface-kicker">Walkthrough mode</p>
             <h1 id="walkthrough-heading">Walkthrough</h1>
@@ -1651,7 +1814,7 @@ const exploreLinks = [
           </div>
         </section>
 
-        <section class="mode-explore view-surface" aria-labelledby="explore-heading">
+        <section class="mode-explore view-surface lab-only" aria-labelledby="explore-heading">
           <header class="view-surface-header">
             <p class="view-surface-kicker">Explore mode</p>
             <h1 id="explore-heading">Explore</h1>
@@ -1769,28 +1932,5 @@ const exploreLinks = [
         paint();
       })();
     </script>
-    <style is:global>
-      .mode-normal {
-        display: block;
-      }
-
-      .mode-walk,
-      .mode-explore {
-        display: none;
-      }
-
-      html[data-mode='walk'] .mode-normal,
-      html[data-mode='explore'] .mode-normal {
-        display: none;
-      }
-
-      html[data-mode='walk'] .mode-walk {
-        display: block;
-      }
-
-      html[data-mode='explore'] .mode-explore {
-        display: block;
-      }
-    </style>
   </body>
 </html>

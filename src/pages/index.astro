@@ -63,14 +63,14 @@ interface AIAccountabilityHomeSection extends BaseHomeSection {
 
 type HomeSection = EmbedHomeSection | AIAccountabilityHomeSection;
 const ACCENT_SWATCHES: Record<AccentColorKey, string> = {
-  yellow: '#A79A62',
-  blue: '#6D8488',
-  orange: '#9B7653',
-  red: '#8B5952',
-  white: '#C3BCA9',
-  black: '#49433E',
-  violet: '#7D7688',
-  indigo: '#5F6C7A'
+  yellow: '#dcc56e',
+  blue: '#7cb8c0',
+  orange: '#d6a06b',
+  red: '#c77b73',
+  white: '#eadfc0',
+  black: '#6b6158',
+  violet: '#a28ed0',
+  indigo: '#7392c1'
 };
 const getAccentSwatch = (value: AccentColorKey) => ACCENT_SWATCHES[value] || ACCENT_SWATCHES.blue;
 
@@ -158,12 +158,12 @@ const formatDateLabel = (value: unknown, fallback: string): string => {
 const projectCount = allProjects.length;
 const projectTypeCount = new Set(allProjects.map((project) => project.data.type)).size;
 const postCount = allPosts.length;
-const latestPostDateLabel = formatDateLabel(allPosts[0]?.data?.date, 'recently');
+const latestPostDateLabel = formatDateLabel(allPosts[0]?.data?.date, 'Archive snapshot');
 const roomList = Array.isArray(rooms) ? rooms : [];
 const roomCount = roomList.length;
 const machineCount = roomList.reduce((count, room) => count + (Array.isArray(room.machines) ? room.machines.length : 0), 0);
 const agiSignalCount = Array.isArray(agiTimelineData?.items) ? agiTimelineData.items.length : 0;
-const agiUpdatedAtLabel = formatDateLabel(agiTimelineData?.meta?.generatedAt, 'Updated recently');
+const agiUpdatedAtLabel = formatDateLabel(agiTimelineData?.meta?.generatedAt, 'Live sync unavailable - showing cached.');
 const reflectionItems = [
   {
     id: 'work',
@@ -212,16 +212,16 @@ const reflectionItems = [
 ];
 const archivePulseItems = [
   {
-    label: 'Featured now',
+    label: 'Threads',
     value: pluralize(threads.length, 'thread')
+  },
+  {
+    label: 'Rooms',
+    value: pluralize(roomCount, 'room')
   },
   {
     label: 'Writing archive',
     value: pluralize(postCount, 'entry', 'entries')
-  },
-  {
-    label: 'Rooms mapped',
-    value: pluralize(roomCount, 'room')
   },
   {
     label: 'Last signal',
@@ -289,6 +289,29 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
       </div>
     </section>
 
+    <section class="home-start viewer-only" aria-labelledby="home-start-heading">
+      <p class="home-start-kicker">Start here</p>
+      <h2 id="home-start-heading" class="home-start-title">Choose your first path</h2>
+      <div class="home-start-grid">
+        <a class="home-start-card" href="/work">
+          <span>Selected Work</span>
+          <small>Projects and outcomes</small>
+        </a>
+        <a class="home-start-card" href="/map">
+          <span>Map</span>
+          <small>Mind and concept atlas</small>
+        </a>
+        <a class="home-start-card" href="/now">
+          <span>Now</span>
+          <small>Current focus and direction</small>
+        </a>
+        <a class="home-start-card" href="/?lab=1&view=walk">
+          <span>Guide</span>
+          <small>Walkthrough in Lab Mode</small>
+        </a>
+      </div>
+    </section>
+
     <section class="mt-12 md:mt-14">
       <h2 class="font-display text-2xl">Featured Threads</h2>
       <div class="mt-4 flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:overflow-visible">
@@ -324,7 +347,8 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
             aria-selected={index === 0 ? 'true' : 'false'}
             class:list={['section-tab', index === 0 && 'is-active']}
           >
-            {section.label}{section.isLimited ? '*' : ''}
+            <span>{section.label}</span>
+            {section.isLimited && <span class="section-tab-badge">Limited</span>}
           </button>
         ))}
       </div>
@@ -344,7 +368,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
                 <div class="section-cards">
                   {section.items.map((item) => (
                     <div class="section-card-shell">
-                      <EmbedCard item={item} showResizeHint={true} />
+                      <EmbedCard item={item} />
                     </div>
                   ))}
                 </div>
@@ -656,11 +680,11 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
   }
 
   .home-hero__pulse-label {
-    font-size: 0.66rem;
+    font-size: 0.74rem;
     line-height: 1.2;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: color-mix(in srgb, var(--tone-text) 64%, var(--tone-muted) 36%);
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
   }
 
   .home-hero__pulse-value {
@@ -669,6 +693,77 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
     font-size: clamp(0.94rem, 1.7vw, 1.08rem);
     line-height: 1.22;
     color: color-mix(in srgb, var(--tone-accent-glow) 92%, white 8%);
+  }
+
+  .home-start {
+    margin-top: clamp(1rem, 2.4vw, 1.6rem);
+    padding: clamp(0.95rem, 1.8vw, 1.2rem);
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 22%, var(--line2));
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 11%, transparent), transparent 62%),
+      color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
+  }
+
+  .home-start-kicker,
+  .home-start-title {
+    margin: 0;
+  }
+
+  .home-start-kicker {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .home-start-title {
+    margin-top: 0.35rem;
+    font-size: clamp(1.2rem, 2vw, 1.6rem);
+    line-height: 1.15;
+  }
+
+  .home-start-grid {
+    margin-top: 0.75rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.6rem;
+  }
+
+  .home-start-card {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 24%, var(--line2));
+    border-radius: 0.82rem;
+    padding: 0.7rem 0.74rem;
+    display: grid;
+    gap: 0.28rem;
+    text-decoration: none;
+    color: color-mix(in srgb, var(--tone-text) 92%, var(--tone-muted) 8%);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 16%, transparent), transparent 64%),
+      color-mix(in srgb, var(--tone-surface) 90%, transparent);
+    transition:
+      border-color 140ms ease,
+      transform 140ms ease,
+      color 140ms ease;
+  }
+
+  .home-start-card span {
+    font-family: var(--font-display);
+    font-size: 0.98rem;
+    line-height: 1.2;
+  }
+
+  .home-start-card small {
+    color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
+    font-size: 0.76rem;
+    line-height: 1.4;
+  }
+
+  .home-start-card:hover,
+  .home-start-card:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 58%, var(--line2));
+    color: var(--tone-accent-glow);
+    transform: translateY(-1px);
   }
 
   .section-tablist {
@@ -684,6 +779,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 0.35rem;
     min-height: 40px;
     padding: 0.3rem 0.82rem;
     border: 1px solid color-mix(in srgb, var(--section-accent, var(--tone-accent)) 48%, transparent);
@@ -707,6 +803,21 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
       color var(--motion-fast) var(--ease-standard),
       background-color var(--motion-base) var(--ease-standard),
       transform var(--motion-fast) var(--ease-emphasized);
+  }
+
+  .section-tab-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--section-accent, var(--tone-accent)) 68%, transparent);
+    background: color-mix(in srgb, var(--section-accent, var(--tone-accent)) 24%, transparent);
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--section-accent, var(--tone-accent)) 18%);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1;
+    padding: 0.18rem 0.4rem;
   }
 
   .section-tab::after {
@@ -763,33 +874,20 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
   }
 
   .section-cards {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-content: flex-start;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.75rem;
-    align-items: flex-start;
+    align-items: stretch;
     width: min(100%, 78rem);
     margin-inline: auto;
     min-width: 0;
   }
 
   .section-card-shell {
-    flex: 1 1 calc((100% - 1.5rem) / 3);
-    width: calc((100% - 1.5rem) / 3);
-    min-width: min(100%, 22rem);
+    width: 100%;
+    min-width: 0;
+    height: 100%;
     max-width: 100%;
-  }
-
-  @media (pointer: fine) {
-    .section-card-shell {
-      resize: both;
-      overflow: auto;
-      min-width: 22rem;
-      min-height: 20rem;
-      max-width: min(1400px, 96vw);
-      max-height: min(90vh, 1100px);
-    }
   }
 
   .section-card-shell :global(.hub-card) {
@@ -798,6 +896,12 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
 
   .section-card-shell :global(.hub-embed) {
     min-width: 100%;
+  }
+
+  @media (min-width: 861px) and (max-width: 1279px) {
+    .section-cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @media (max-width: 860px) {
@@ -874,6 +978,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
     }
 
     .section-cards {
+      display: flex;
       flex-wrap: nowrap;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
@@ -887,6 +992,7 @@ const instagramPreview = (Array.isArray(igManifest) ? igManifest : [])
       flex: 0 0 auto;
       width: min(88vw, 24rem);
       min-width: min(88vw, 24rem);
+      height: auto;
       scroll-snap-align: start;
     }
   }

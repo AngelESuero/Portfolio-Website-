@@ -2,6 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import '../styles/agi-timeline.css';
 import type { AGITimelineItem, AGITimelinePhase } from '../data/agi-timeline-structure';
+import { getLinkCtaLabel, providerFromUrl } from '../lib/embed-resolver';
+import { formatFreshnessLabel } from '../lib/freshness';
 
 const phaseOrder: Record<AGITimelinePhase, number> = {
   agentic_stumble: 0,
@@ -203,8 +205,8 @@ function normalizeItem(raw: any, index: number): AGITimelineItem | null {
   const headline = String(raw?.headline || raw?.title || '').trim();
   if (!headline) return null;
 
-  const sourceName = String(raw?.sourceName || raw?.sourceId || 'Unknown source');
-  const sourceId = String(raw?.sourceId || 'unknown');
+  const sourceName = String(raw?.sourceName || raw?.sourceId || 'Archive source');
+  const sourceId = String(raw?.sourceId || 'source');
   const url = String(raw?.url || 'https://github.com/AngelESuero/Portfolio-Website-');
 
   let year = Number(raw?.year);
@@ -316,7 +318,7 @@ const itemsByPhase: Record<AGITimelinePhase, AGITimelineItem[]> = {
   moment_of_truth: agiItems.filter((item) => item.phase === 'moment_of_truth')
 };
 
-const lastUpdated = agiMeta?.generatedAt ? new Date(agiMeta.generatedAt).toLocaleString() : 'unknown';
+const lastUpdatedLabel = formatFreshnessLabel(agiMeta?.generatedAt);
 const analystBaseItems = [...agiItems].sort((a, b) => b.year - a.year).slice(0, 12);
 const analystPinnedItems = agiItems.filter((item) => manualPinnedIds.has(item.id));
 const analystTopItems = [
@@ -388,7 +390,9 @@ const analystTopItems = [
                         <strong>Why it matters:</strong> {item.public.implication}
                       </div>
                       {item.public.analogy && <div class="beat-analogy">Think of it like: {item.public.analogy}</div>}
-                      <a class="beat-link" href={item.url} target="_blank" rel="noreferrer">Open source</a>
+                      <a class="beat-link" href={item.url} target="_blank" rel="noreferrer">
+                        {getLinkCtaLabel(item.url, providerFromUrl(item.url))}
+                      </a>
                     </div>
                   </article>
                 ))}
@@ -408,7 +412,7 @@ const analystTopItems = [
         <header class="analyst-header">
           <h2>AGI Timeline: Measurable Indicators (2026-2032)</h2>
           <p>Data-driven assessment using benchmark direction, infrastructure signals, and source-backed updates.</p>
-          <p class="analyst-meta">Last updated: {lastUpdated} · Entries: {agiItems.length}</p>
+          <p class="analyst-meta">{lastUpdatedLabel} · Entries: {agiItems.length}</p>
         </header>
 
         <div class="metrics-grid">

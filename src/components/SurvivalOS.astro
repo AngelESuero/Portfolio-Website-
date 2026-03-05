@@ -98,7 +98,8 @@ const transitionBridgeRows = [
 
 <section class="view-surface">
   <header class="view-surface-header">
-    <p class="view-surface-kicker">AI-generated content</p>
+    <p class="view-surface-kicker viewer-only">Drafted with AI support for clarity; reviewed and maintained by Angel.</p>
+    <p class="view-surface-kicker lab-only">AI-assisted draft provenance and editorial controls.</p>
     <h1>Survival OS + AI Transition</h1>
     <p>
       One operating model: transition signals mapped to survival risk, infrastructure reliability, and social stability.
@@ -263,24 +264,27 @@ const transitionBridgeRows = [
   </div>
 </section>
 
-<section class="view-surface mt-4">
+<section class="view-surface mt-4 lab-only">
   <header class="view-surface-header">
-    <p class="view-surface-kicker">Publication hardening</p>
-    <h1>Fact tune-ups before publish</h1>
-    <p>Short list of claims to phrase carefully and cite directly.</p>
+    <p class="view-surface-kicker">Research notes</p>
+    <h1>Publication hardening</h1>
+    <p>Editorial scaffolding preserved for Lab Mode review.</p>
   </header>
 
-  <div class="mt-4 grid gap-3">
-    {tuneUps.map((item) => (
-      <article class="card p-4">
-        <h3 class="font-semibold">{item.claim}</h3>
-        <p class="mt-1 text-[var(--tone-muted)]">{item.note}</p>
-        <p class="mt-2 text-sm">
-          <a class="underline" href={item.source} target="_blank" rel="noreferrer">Source</a>
-        </p>
-      </article>
-    ))}
-  </div>
+  <details class="mt-4 card p-4" open>
+    <summary class="cursor-pointer list-none font-semibold">Fact tune-ups before publish</summary>
+    <div class="mt-3 grid gap-3">
+      {tuneUps.map((item) => (
+        <article class="card p-4">
+          <h3 class="font-semibold">{item.claim}</h3>
+          <p class="mt-1 text-[var(--tone-muted)]">{item.note}</p>
+          <p class="mt-2 text-sm">
+            <a class="underline" href={item.source} target="_blank" rel="noreferrer">Source</a>
+          </p>
+        </article>
+      ))}
+    </div>
+  </details>
 </section>
 
 <section id="sources" class="view-surface mt-4">
