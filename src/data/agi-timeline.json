@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-05T13:37:49.733Z",
+    "generatedAt": "2026-03-05T15:07:46.310Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,29 @@
     ]
   },
   "items": [
+    {
+      "id": "43a2612fe6b6893861cb47b14d1655419397369608a62d10fe07c18c9ab203d3",
+      "title": "Bringing Robotics AI to Embedded Platforms: Dataset Recording, VLA Fine‑Tuning, and On‑Device Optimizations",
+      "url": "https://huggingface.co/blog/nxp/bringing-robotics-ai-to-embedded-platforms",
+      "sourceId": "hf_blog",
+      "sourceName": "Hugging Face — Blog",
+      "publishedAt": "2026-03-05T14:16:49.000Z",
+      "summary": null,
+      "tags": [
+        "open-source",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://huggingface.co/blog/nxp/bringing-robotics-ai-to-embedded-platforms"
+        },
+        {
+          "label": "Feed",
+          "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
     {
       "id": "f4f43160ae8181231457084a24c4a88bd42ef098fc12f5dda4e57cfad76ac2cc",
       "title": "Asymmetric Goal Drift in Coding Agents Under Value Conflict",
@@ -15233,29 +15256,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.02268"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "ab872e74182aae114ab8d0fd4c01d4b2303c47dc905b3c4d985690014e216fca",
-      "title": "Characterizing VLA Models: Identifying the Action Generation Bottleneck for Edge AI Architectures",
-      "url": "https://arxiv.org/abs/2603.02271",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02271v1 Announce Type: cross Abstract: Vision-Language-Action (VLA) models are an emerging class of workloads critical for robotics and embodied AI at the edge. As these models scale, they demonstrate significant capability gains, yet they must be deployed locally to meet the strict latency requirements of real-time applications. This paper characterizes VLA performance on two generations of edge hardware, viz. the Nvidia Jetson Orin and Thor platforms. Using MolmoAct-7B, a state-of-the-art VLA model, we identify a primary execution bottleneck: up to 75% of end-to-end latency is consumed by the memory-bound action-generation phase. Through analytical modeling and simulations, we project the hardware requirements for scaling to 100B parameter models. We also explore the impact of high-bandwidth memory technologies and processing-in-memory (PIM) as promising future pathways in edge systems for embodied AI.",
-      "tags": [
-        "papers",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02271"
         },
         {
           "label": "Feed",
