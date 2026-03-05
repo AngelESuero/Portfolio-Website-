@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-05T16:06:24.059Z",
+    "generatedAt": "2026-03-05T18:23:26.636Z",
     "sources": [
       {
         "id": "openai_news",
@@ -49,6 +49,52 @@
   },
   "items": [
     {
+      "id": "c1d8139775388f92bca58ffede7e592d7e25754872961f19eec1cf65d51e9528",
+      "title": "NVIDIA Blackwell Sets STAC-AI Record for LLM Inference in Finance",
+      "url": "https://developer.nvidia.com/blog/nvidia-blackwell-sets-stac-ai-record-for-llm-inference-in-finance/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-03-05T18:00:00.000Z",
+      "summary": "Large language models (LLMs) are revolutionizing the financial trading landscape by enabling sophisticated analysis of vast amounts of unstructured data to... Large language models (LLMs) are revolutionizing the financial trading landscape by enabling sophisticated analysis of vast amounts of unstructured data to generate actionable trading insights. These advanced AI systems can process financial news, social media sentiment, earnings reports, and market data to predict stock price movements and automate investment strategies with unprecedented… Source",
+      "tags": [
+        "compute",
+        "inference",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/nvidia-blackwell-sets-stac-ai-record-for-llm-inference-in-finance/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
+    {
+      "id": "da12e564cf77426b27b29ea99db28bd2a306bd8c59ef3613ddf6a68b68c86fcc",
+      "title": "Controlling Floating-Point Determinism in NVIDIA CCCL",
+      "url": "https://developer.nvidia.com/blog/controlling-floating-point-determinism-in-nvidia-cccl/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-03-05T17:00:00.000Z",
+      "summary": "A computation is considered deterministic if multiple runs with the same input data produce the same bitwise result. While this may seem like a simple property... Source",
+      "tags": [
+        "compute"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/controlling-floating-point-determinism-in-nvidia-cccl/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
+    {
       "id": "43a2612fe6b6893861cb47b14d1655419397369608a62d10fe07c18c9ab203d3",
       "title": "Bringing Robotics AI to Embedded Platforms: Dataset Recording, VLA Fine‑Tuning, and On‑Device Optimizations",
       "url": "https://huggingface.co/blog/nxp/bringing-robotics-ai-to-embedded-platforms",
@@ -68,6 +114,103 @@
         {
           "label": "Feed",
           "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
+    {
+      "id": "9a51c99489a2220b1d07f23de872e57c6f39e1d556201cda45f63bf9bb6cfda8",
+      "title": "Introducing GPT-5.4",
+      "url": "https://openai.com/index/introducing-gpt-5-4",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-03-05T10:00:00.000Z",
+      "summary": "Introducing GPT-5.4, OpenAI’s most most capable and efficient frontier model for professional work, with state-of-the-art coding, computer use, tool search, and 1M-token context.",
+      "tags": [
+        "primary",
+        "release",
+        "compute",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/introducing-gpt-5-4"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
+    {
+      "id": "5fb0f62a8ad8fbba706d03813ba494ce80f64589f39cc453b526041d4bd75c91",
+      "title": "Reasoning models struggle to control their chains of thought, and that’s good",
+      "url": "https://openai.com/index/reasoning-models-chain-of-thought-controllability",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-03-05T10:00:00.000Z",
+      "summary": "OpenAI introduces CoT-Control and finds reasoning models struggle to control their chains of thought, reinforcing monitorability as an AI safety safeguard.",
+      "tags": [
+        "primary",
+        "release",
+        "reasoning",
+        "safety",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/reasoning-models-chain-of-thought-controllability"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
+    {
+      "id": "a031686970443644765b46db4cdfb20f05d6eef3ebc73c96b411fe9e28068688",
+      "title": "GPT-5.4 Thinking System Card",
+      "url": "https://openai.com/index/gpt-5-4-thinking-system-card",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-03-05T10:00:00.000Z",
+      "summary": null,
+      "tags": [
+        "primary",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/gpt-5-4-thinking-system-card"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
+    {
+      "id": "473af8d9528586e16408db142a62cc9ad1b1f6edbd705dc4baf2a93a911c4667",
+      "title": "Ensuring AI use in education leads to opportunity",
+      "url": "https://openai.com/index/ai-education-opportunity",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-03-05T09:00:00.000Z",
+      "summary": "OpenAI shares new tools, certifications, and measurement resources to help schools and universities close AI capability gaps and expand opportunity.",
+      "tags": [
+        "primary",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/ai-education-opportunity"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
         }
       ]
     },
@@ -15099,159 +15242,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.02255"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "d012db18e07171791cfa5ec2e3435a341f92baac685b83a5978e2e477737a7a4",
-      "title": "Universal Conceptual Structure in Neural Translation: Probing NLLB-200's Multilingual Geometry",
-      "url": "https://arxiv.org/abs/2603.02258",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02258v1 Announce Type: cross Abstract: Do neural machine translation models learn language-universal conceptual representations, or do they merely cluster languages by surface similarity? We investigate this question by probing the representation geometry of Meta's NLLB-200, a 200-language encoder-decoder Transformer, through six experiments that bridge NLP interpretability with cognitive science theories of multilingual lexical organization. Using the Swadesh core vocabulary list embedded across 135 languages, we find that the model's embedding distances significantly correlate with phylogenetic distances from the Automated Similarity Judgment Program ($\\rho = 0.13$, $p = 0.020$), demonstrating that NLLB-200 has implicitly learned the genealogical structure of human languages. We show that frequently colexified concept pairs from the CLICS database exhibit significantly higher embedding similarity than non-colexified pairs ($U = 42656$, $p = 1.33 \\times 10^{-11}$, $d = 0.96$), indicating that the model has internalized universal conceptual associations. Per-language mean-centering of embeddings improves the between-concept to within-concept distance ratio by a factor of 1.19, providing geometric evidence for a language-neutral conceptual store analogous to the anterior temporal lobe hub identified in bilingual neuroimaging. Semantic offset vectors between fundamental concept pairs (e.g., man to woman, big to small) show high cross-lingual consistency (mean cosine = 0.84), suggesting that second-order relational structure is preserved across typologically diverse languages. We release InterpretCognates, an open-source interactive toolkit for exploring these phenomena, alongside a fully reproducible analysis pipeline.",
-      "tags": [
-        "papers",
-        "model",
-        "release"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02258"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "0aa254033ad05d85e883f3105c15c20cbfc3c1f63afbe3ca2b2dea664e2dcbc1",
-      "title": "Silent Sabotage During Fine-Tuning: Few-Shot Rationale Poisoning of Compact Medical LLMs",
-      "url": "https://arxiv.org/abs/2603.02262",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02262v1 Announce Type: cross Abstract: Supervised fine-tuning (SFT) is essential for the development of medical large language models (LLMs), yet prior poisoning studies have mainly focused on the detectable backdoor attacks. We propose a novel poisoning attack targeting the reasoning process of medical LLMs during SFT. Unlike backdoor attacks, our method injects poisoned rationales into few-shot training data, leading to stealthy degradation of model performance on targeted medical topics. Results showed that knowledge overwriting was ineffective, while rationale poisoning caused significant decline on the accuracy of the target subject, as long as no correct samples of the same subject appear in the dataset. A minimum number and ratio of poisoned samples was needed to carry out an effective and stealthy attack, which was more efficient and accurate than catastrophic forgetting. We demonstrate though this study the risk of SFT-stage poisoning, hoping to spur more studies of defense in the sensitive medical domain.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "training",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02262"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "33685517110f8b95f0ecd6ca91f3de5d7c52321719a5ae488076377ab287301f",
-      "title": "Social-JEPA: Emergent Geometric Isomorphism",
-      "url": "https://arxiv.org/abs/2603.02263",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02263v1 Announce Type: cross Abstract: World models compress rich sensory streams into compact latent codes that anticipate future observations. We let separate agents acquire such models from distinct viewpoints of the same environment without any parameter sharing or coordination. After training, their internal representations exhibit a striking emergent property: the two latent spaces are related by an approximate linear isometry, enabling transparent translation between them. This geometric consensus survives large viewpoint shifts and scant overlap in raw pixels. Leveraging the learned alignment, a classifier trained on one agent can be ported to the other with no additional gradient steps, while distillation-like migration accelerates later learning and markedly reduces total compute. The findings reveal that predictive learning objectives impose strong regularities on representation geometry, suggesting a lightweight path to interoperability among decentralized vision systems. The code is available at https://anonymous.4open.science/r/Social-JEPA-5C57.",
-      "tags": [
-        "papers",
-        "agents",
-        "safety",
-        "compute",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02263"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "c4c7dbdb9ad20970556232f73a9dc8ca5bc5563d5a613e733f673ae6c52080eb",
-      "title": "High-order Knowledge Based Network Controllability Robustness Prediction: A Hypergraph Neural Network Approach",
-      "url": "https://arxiv.org/abs/2603.02265",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02265v1 Announce Type: cross Abstract: In order to evaluate the invulnerability of networks against various types of attacks and provide guidance for potential performance enhancement as well as controllability maintenance, network controllability robustness (NCR) has attracted increasing attention in recent years. Traditionally, controllability robustness is determined by attack simulations, which are computationally time-consuming and only applicable to small-scale networks. Although some machine learning-based methods for predicting network controllability robustness have been proposed, they mainly focus on pairwise interactions in complex networks, and the underlying relationships between high-order structural information and controllability robustness have not been explored. In this paper, a dual hypergraph attention neural network model based on high-order knowledge (NCR-HoK) is proposed to accomplish robustness learning and controllability robustness curve prediction. Through a node feature encoder, hypergraph construction with high-order relations, and a dedicated dual hypergraph attention module, the proposed method can effectively learn three types of network information simultaneously: explicit structural information in the original graph, high-order connection information in local neighborhoods, and hidden features in the embedding space. Notably, we explore for the first time the impact of high-order knowledge on network controllability robustness. Compared with state-of-the-art methods for network robustness learning, the proposed method achieves superior performance on both synthetic and real-world networks with low computational overhead.",
-      "tags": [
-        "papers",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02265"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "b5997f6d68a2f771cdca04d7cb942b5c3cd575061e4ebb4ab756b197763a2489",
-      "title": "When Scaling Fails: Mitigating Audio Perception Decay of LALMs via Multi-Step Perception-Aware Reasoning",
-      "url": "https://arxiv.org/abs/2603.02266",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02266v1 Announce Type: cross Abstract: Test-Time Scaling has shown notable efficacy in addressing complex problems through scaling inference compute. However, within Large Audio-Language Models (LALMs), an unintuitive phenomenon exists: post-training models for structured reasoning trajectories results in marginal or even negative gains compared to post-training for direct answering. To investigate it, we introduce CAFE, an evaluation framework designed to precisely quantify audio reasoning errors. Evaluation results reveal LALMs struggle with perception during reasoning and encounter a critical bottleneck: reasoning performance suffers from audio perception decay as reasoning length extends. To address it, we propose MPAR$^2$, a paradigm that encourages dynamic perceptual reasoning and decomposes complex questions into perception-rich sub-problems. Leveraging reinforcement learning, MPAR$^2$ improves perception performance on CAFE from 31.74% to 63.51% and effectively mitigates perception decay, concurrently enhancing reasoning capabilities to achieve a significant 74.59% accuracy on the MMAU benchmark. Further analysis demonstrates that MPAR$^2$ reinforces LALMs to attend to audio input and dynamically adapts reasoning budget to match task complexity.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "eval",
-        "compute",
-        "inference",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02266"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "c9cc45693d29f44b1bb48df73144412ab1edc492b54485d72f43cfd346781e4c",
-      "title": "Boosting Meta-Learning for Few-Shot Text Classification via Label-guided Distance Scaling",
-      "url": "https://arxiv.org/abs/2603.02267",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-04T05:00:00.000Z",
-      "summary": "arXiv:2603.02267v1 Announce Type: cross Abstract: Few-shot text classification aims to recognize unseen classes with limited labeled text samples. Existing approaches focus on boosting meta-learners by developing complex algorithms in the training stage. However, the labeled samples are randomly selected during the testing stage, so they may not provide effective supervision signals, leading to misclassification. To address this issue, we propose a \\textbf{L}abel-guided \\textbf{D}istance \\textbf{S}caling (LDS) strategy. The core of our method is exploiting label semantics as supervision signals in both the training and testing stages. Specifically, in the training stage, we design a label-guided loss to inject label semantic information, pulling closer the sample representations and corresponding label representations. In the testing stage, we propose a Label-guided Scaler which scales sample representations with label semantics to provide additional supervision signals. Thus, even if labeled sample representations are far from class centers, our Label-guided Scaler pulls them closer to their class centers, thereby mitigating the misclassification. We combine two common meta-learners to verify the effectiveness of the method. Extensive experimental results demonstrate that our approach significantly outperforms state-of-the-art models. All datasets and codes are available at https://anonymous.4open.science/r/Label-guided-Text-Classification.",
-      "tags": [
-        "papers",
-        "training",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.02267"
         },
         {
           "label": "Feed",
