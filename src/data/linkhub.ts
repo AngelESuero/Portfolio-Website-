@@ -112,7 +112,7 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         title: 'Scraps: Dark Days, Symptoms of An Ill Mind, & No Context Demos Tapes (2023-2024)',
         url: MUSIC_URLS.untitledScrapsInvite,
         year: '2023-2024',
-        tag: 'Invite'
+        tag: 'Archive note'
       },
       {
         id: 'vol-1-spotify',
@@ -281,13 +281,6 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         url: '/rss.xml',
         year: '2026',
         tag: 'Feed'
-      },
-      {
-        id: 'magazine-publication',
-        title: 'A Magazine Publication - The Art of Survival',
-        url: 'https://jstrieb.github.io/link-lock/#eyJ2IjoiMC4wLjEiLCJlIjoiNzkzazQ2c0hQdmlxVlRDNGZmbW1KOU5nY1JWMmtUNVRCV250QXhJcUJEZ080ejduL0dsT2dobVNhNWU0MURvUUdFL1BhbHZjZWZmYmZiY0xwenI0RWY2SmJSYXdoa1NEUVh4K2RQRytOR3g3NTY1UjJQTzVVelpCIiwicyI6Imx4S3czNXJUMmt2Y0ZETFVEb3Boa3c9PSIsImkiOiJrY3VDKzdCTjV6eHdIcWd2In0=',
-        year: '2022',
-        tag: 'Locked'
       }
     ]
   },
@@ -319,6 +312,26 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         year: '2026',
         tag: 'Uploads',
         preferredEmbed: 'youtube'
+      }
+    ]
+  },
+  {
+    id: 'resources',
+    label: 'Resources',
+    color: 'yellow',
+    items: [
+      {
+        id: 'practicing-kriya',
+        title: 'Practicing Kriya',
+        url: 'https://drive.google.com/file/d/1TcERCTJS1opeyJJ3A5SSFHQBvF7LLBc6/view?usp=drivesdk',
+        tag: 'Wellbeing',
+        preferredEmbed: 'google_drive'
+      },
+      {
+        id: 'resources-for-humans',
+        title: 'Resources For Humans',
+        url: 'https://linktr.ee/resourcesonlyforhumans',
+        tag: 'Wellbeing'
       },
       {
         id: 'upa-yoga-playlist',
@@ -342,26 +355,6 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         url: 'https://youtube.com/@morningbrewdailyshow?si=cxR3h5lKr2MMs8MP',
         year: '2026',
         tag: 'Society'
-      }
-    ]
-  },
-  {
-    id: 'resources',
-    label: 'Resources',
-    color: 'yellow',
-    items: [
-      {
-        id: 'practicing-kriya',
-        title: 'Practicing Kriya',
-        url: 'https://drive.google.com/file/d/1TcERCTJS1opeyJJ3A5SSFHQBvF7LLBc6/view?usp=drivesdk',
-        tag: 'Wellbeing',
-        preferredEmbed: 'google_drive'
-      },
-      {
-        id: 'resources-for-humans',
-        title: 'Resources For Humans',
-        url: 'https://linktr.ee/resourcesonlyforhumans',
-        tag: 'Wellbeing'
       },
       {
         id: 'miracle-of-mind-play',

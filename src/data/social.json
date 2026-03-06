@@ -42,13 +42,13 @@
     "description": "Long-form writing, dispatches, and behind-the-scenes notes.",
     "primary_url": "https://substack.com/@aesu?r=2ejeld&shareImageVariant=blur&utm_medium=ios&utm_source=profile",
     "mode": "rss",
-    "rss_url": "https://aesarchive.substack.com/feed",
+    "rss_url": "https://aesu.substack.com/feed",
     "featured": [
       {
         "label": "Profile",
         "url": "https://substack.com/@aesu?r=2ejeld&shareImageVariant=blur&utm_medium=ios&utm_source=profile"
       },
-      { "label": "Publication feed", "url": "https://aesarchive.substack.com" }
+      { "label": "Publication feed", "url": "https://aesu.substack.com" }
     ]
   },
   {
