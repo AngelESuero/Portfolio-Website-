@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-06T19:05:03.959Z",
+    "generatedAt": "2026-03-06T19:48:56.732Z",
     "sources": [
       {
         "id": "openai_news",
@@ -13328,6 +13328,30 @@
       ]
     },
     {
+      "id": "e2fff5527747734a8e53249e9474f94d3d6dd282120977669d818b36dc881662",
+      "title": "RADAR: Learning to Route with Asymmetry-aware DistAnce Representations",
+      "url": "https://arxiv.org/abs/2603.03388",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-06T05:00:00.000Z",
+      "summary": "arXiv:2603.03388v2 Announce Type: replace-cross Abstract: Recent neural solvers have achieved strong performance on vehicle routing problems (VRPs), yet they mainly assume symmetric Euclidean distances, restricting applicability to real-world scenarios. A core challenge is encoding the relational features in asymmetric distance matrices of VRPs. Early attempts directly encoded these matrices but often failed to produce compact embeddings and generalized poorly at scale. In this paper, we propose RADAR, a scalable neural framework that augments existing neural VRP solvers with the ability to handle asymmetric inputs. RADAR addresses asymmetry from both static and dynamic perspectives. It leverages Singular Value Decomposition (SVD) on the asymmetric distance matrix to initialize compact and generalizable embeddings that inherently encode the static asymmetry in the inbound and outbound costs of each node. To further model dynamic asymmetry in embedding interactions during encoding, it replaces the standard softmax with Sinkhorn normalization that imposes joint row and column distance awareness in attention weights. Extensive experiments on synthetic and real-world benchmarks across various VRPs show that RADAR outperforms strong baselines on both in-distribution and out-of-distribution instances, demonstrating robust generalization and superior performance in solving asymmetric VRPs.",
+      "tags": [
+        "papers",
+        "eval",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.03388"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
       "id": "c1d8139775388f92bca58ffede7e592d7e25754872961f19eec1cf65d51e9528",
       "title": "NVIDIA Blackwell Sets STAC-AI Record for LLM Inference in Finance",
       "url": "https://developer.nvidia.com/blog/nvidia-blackwell-sets-stac-ai-record-for-llm-inference-in-finance/",
@@ -15237,35 +15261,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.03379"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "37ec97bc0d258c76c19b26aa4e6196f55a4490ae01fa14ba1de3a5da8a309ca4",
-      "title": "LiteVLA-Edge: Quantized On-Device Multimodal Control for Embedded Robotics",
-      "url": "https://arxiv.org/abs/2603.03380",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-05T05:00:00.000Z",
-      "summary": "arXiv:2603.03380v1 Announce Type: cross Abstract: Vision-Language-Action (VLA) models provide a unified framework for perception, language conditioning, and action generation, but many existing systems remain difficult to deploy in embedded robotic settings because of their computational requirements and inference latency. In this paper, we present LiteVLA-Edge, a deployment-oriented VLA pipeline for fully on-device inference on Jetson Orin-class hardware. Our approach combines supervised image-to-action fine-tuning in FP32 with post-training 4-bit GGUF quantization and GPU-accelerated inference through the \\texttt{llama.cpp} runtime. Under our deployment configuration, LiteVLA-Edge achieves a mean end-to-end latency of 150.5\\,ms (approximately 6.6\\,Hz) while operating entirely offline within a ROS~2-integrated perception--reasoning--action pipeline. Rather than introducing a new policy objective, our contribution is a practical systems path for executing compact multimodal control models locally on embedded hardware while preserving modular interfaces between perception, reasoning, and actuation. These results establish timing feasibility for reactive language-conditioned control and provide a reproducible baseline for future task-level evaluation of on-device VLAs in robotics.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "eval",
-        "policy",
-        "compute",
-        "inference",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.03380"
         },
         {
           "label": "Feed",
