@@ -31,10 +31,10 @@ const categoryColors = Object.fromEntries(LINK_HUB_CATEGORIES.map((category) => 
     <header class="hub-header">
       <p class="hub-kicker">Timeline hub</p>
       <h1>Link Hub</h1>
-      <p class="hub-dek">Every primary link gets its own sub-tab. Embeds are shown when providers support them.</p>
+      <p class="hub-dek">Curated routes by lane. Open what you need, then return to the native archive pages.</p>
     </header>
 
-    <nav class="hub-icons" aria-label="Primary links">
+    <nav class="hub-icons lab-only" aria-label="Primary links">
       {LINK_HUB_ICONS.map((item) => (
         <a href={item.url} {...(/^https?:\/\//i.test(item.url) ? { target: '_blank', rel: 'noopener' } : {})} aria-label={`Open ${item.title}`}>
           <span>{item.icon}</span>

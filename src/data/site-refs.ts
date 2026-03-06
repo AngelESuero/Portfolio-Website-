@@ -13,8 +13,8 @@ export const SOCIAL_URLS = {
   threads: 'https://www.threads.com/@a_e.s',
   twitch: 'https://www.twitch.tv/thatoneyonder',
   substackProfile: 'https://substack.com/@aesu?r=2ejeld&shareImageVariant=blur&utm_medium=ios&utm_source=profile',
-  substackPublication: 'https://aesarchive.substack.com',
-  substackFeed: 'https://aesarchive.substack.com/feed',
+  substackPublication: 'https://aesu.substack.com',
+  substackFeed: 'https://aesu.substack.com/feed',
   linktree: 'https://linktr.ee/a_e.s_',
   discordHub: '/discord',
   discordCreators: 'https://discord.gg/bB6uFZSH',
@@ -30,7 +30,7 @@ export const MUSIC_URLS = {
   untitledMyFirstBeatTape: 'https://untitled.stream/embed/m8IEX655GwMH',
   untitledEveryDaySoundscape: 'https://untitled.stream/library/track/tbolNlQAX1cXSZr3bLWeh',
   untitledQueriesBeatTape: 'https://untitled.stream/library/project/yJu7cTKC0F3qvrRqs2EzA',
-  untitledScrapsInvite: 'https://untitled.stream/invite/sUL08iLtaVYP3UbF2ehDg'
+  untitledScrapsInvite: '/work/scraps-dark-days-symptoms-no-context-demos-2023-2024'
 } as const;
 
 export const VIDEO_URLS = {

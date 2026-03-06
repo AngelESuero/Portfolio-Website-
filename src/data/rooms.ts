@@ -31,7 +31,7 @@ const rooms: Room[] = [
         title: 'Untitled Console',
         summary: 'Live stream player for sessions and rough sets.',
         kind: 'embed',
-        url: 'https://untitled.stream/m8IEX655GwMH',
+        url: 'https://untitled.stream/library/project/W9oQWS6klQAAftkyx28QL',
         embed_url: 'https://untitled.stream/embed/m8IEX655GwMH'
       },
       {
