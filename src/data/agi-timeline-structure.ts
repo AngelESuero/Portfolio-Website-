@@ -1,7 +1,14 @@
-export type AGITimelinePhase =
-  | 'agentic_stumble'
-  | 'infrastructure_convergence'
-  | 'moment_of_truth';
+export type AGITimelineWave =
+  | 'software_disruption_now'
+  | 'broad_labor_stress'
+  | 'physical_economy_disruption'
+  | 'scenario_territory';
+
+export type AGITimelineKind = 'signal' | 'thesis';
+export type AGITimelineDomain = 'software' | 'labor' | 'robotics' | 'energy' | 'policy';
+export type AGITimelineConfidence = 'low' | 'medium' | 'high';
+export type AGITimelineHorizon = 'near' | 'mid' | 'long';
+export type AGIEvidenceType = 'paper' | 'benchmark' | 'deployment' | 'labor' | 'policy' | 'interpretation';
 
 export interface AGICitation {
   label: string;
@@ -17,7 +24,12 @@ export interface AGIReference {
 
 export interface AGITimelineItem {
   id: string;
-  phase: AGITimelinePhase;
+  phase: AGITimelineWave;
+  kind: AGITimelineKind;
+  domain: AGITimelineDomain;
+  confidence: AGITimelineConfidence;
+  timeHorizon: AGITimelineHorizon;
+  evidenceType: AGIEvidenceType;
   year: number;
   headline: string;
   url: string;

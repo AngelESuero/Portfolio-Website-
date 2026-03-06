@@ -1,204 +1,77 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import '../styles/agi-timeline.css';
-import type { AGITimelineItem, AGITimelinePhase } from '../data/agi-timeline-structure';
+import type {
+  AGIEvidenceType,
+  AGITimelineConfidence,
+  AGITimelineDomain,
+  AGITimelineHorizon,
+  AGITimelineItem,
+  AGITimelineKind,
+  AGITimelineWave
+} from '../data/agi-timeline-structure';
 import { getLinkCtaLabel, providerFromUrl } from '../lib/embed-resolver';
 import { formatFreshnessLabel } from '../lib/freshness';
 
-const phaseOrder: Record<AGITimelinePhase, number> = {
-  agentic_stumble: 0,
-  infrastructure_convergence: 1,
-  moment_of_truth: 2
+const waveOrder: Record<AGITimelineWave, number> = {
+  software_disruption_now: 0,
+  broad_labor_stress: 1,
+  physical_economy_disruption: 2,
+  scenario_territory: 3
 };
 
-const phaseMeta: Record<
-  AGITimelinePhase,
-  { title: string; years: string; theme: string; marker: string; probability: string }
-> = {
-  agentic_stumble: {
-    title: 'Agentic Stumble',
-    years: '2026-2027',
-    theme: 'The fumbling first steps toward agentic reasoning.',
-    marker: 'I',
-    probability: '<10%'
+const waveMeta: Record<AGITimelineWave, { title: string; years: string; thesis: string; marker: string }> = {
+  software_disruption_now: {
+    title: 'Software disruption now',
+    years: 'Now-2027',
+    thesis: 'Utility is already spreading across writing, coding, support, research, and operations.',
+    marker: 'I'
   },
-  infrastructure_convergence: {
-    title: 'Infrastructure Convergence',
-    years: '2028-2029',
-    theme: 'Building the energy and compute backbone AGI requires.',
-    marker: 'II',
-    probability: '30-50%'
+  broad_labor_stress: {
+    title: 'Broad labor stress',
+    years: '2027-2031',
+    thesis: 'Transition pressure expands across sectors; painful reallocation can happen without collapse.',
+    marker: 'II'
   },
-  moment_of_truth: {
-    title: 'Moment of Truth',
-    years: '2030-2032',
-    theme: 'The threshold window where general capability could lock in.',
-    marker: 'III',
-    probability: '70-90%'
+  physical_economy_disruption: {
+    title: 'Physical-economy disruption',
+    years: '2030-2035',
+    thesis: 'Robotics and autonomous logistics become plausible broad disruptors, but rollout is constrained.',
+    marker: 'III'
+  },
+  scenario_territory: {
+    title: 'Scenario territory',
+    years: 'After 2035',
+    thesis: 'Energy, supply chains, regulation, and reliability dominate; treat this as branching scenarios.',
+    marker: 'IV'
   }
 };
 
-const seedAgi = {
-  meta: { schemaVersion: 1, generatedAt: null, sources: [] },
-  items: [
-    {
-      id: 'seed-agentic',
-      phase: 'agentic_stumble',
-      year: 2026,
-      headline: 'Reasoning agents expand while reliability remains brittle.',
-      url: 'https://github.com/AngelESuero/Portfolio-Website-',
-      sourceId: 'seed',
-      sourceName: 'Local',
-      publishedAt: new Date().toISOString(),
-      summary: 'Seed entry to guarantee never-empty rendering.',
-      tags: ['seed'],
-      citations: [{ label: 'Repo', url: 'https://github.com/AngelESuero/Portfolio-Website-' }],
-      public: {
-        summary: 'AI systems are more capable, but still inconsistent under ambiguous tasks.',
-        implication: 'Performance gains do not yet mean dependable autonomy in real workflows.',
-        analogy: 'Fast reflexes, uneven judgment.'
-      },
-      analyst: {
-        metric: 'HLE benchmark posture',
-        value: 'Constrained',
-        dataSource: 'Seed baseline',
-        trend: 'stable',
-        context: 'Closed benchmarks move faster than open-ended reasoning quality.'
-      },
-      engineer: {
-        technicalDetail:
-          'System-2 style reasoning helps but does not fully solve reliability, tool-use drift, or long horizon planning errors.',
-        bottleneck: 'Evaluation under ambiguity remains weaker than narrow-task benchmarks.',
-        references: [{ title: 'Local seed entry' }]
-      }
-    },
-    {
-      id: 'seed-infra',
-      phase: 'infrastructure_convergence',
-      year: 2029,
-      headline: 'Energy and hardware supply chains become the pace setter.',
-      url: 'https://github.com/AngelESuero/Portfolio-Website-',
-      sourceId: 'seed',
-      sourceName: 'Local',
-      publishedAt: new Date().toISOString(),
-      summary: 'Seed entry to guarantee never-empty rendering.',
-      tags: ['seed'],
-      citations: [{ label: 'Repo', url: 'https://github.com/AngelESuero/Portfolio-Website-' }],
-      public: {
-        summary: 'Compute growth starts depending more on infrastructure than model ideas alone.',
-        implication: 'Power, datacenters, and interconnects become the gating layer.',
-        analogy: 'Blueprints are ready, but the grid must catch up.'
-      },
-      analyst: {
-        metric: 'Infrastructure readiness',
-        value: 'In progress',
-        dataSource: 'Seed baseline',
-        trend: 'improving',
-        context: 'Capacity expansion changes deployment timing more than pure model quality gains.'
-      },
-      engineer: {
-        technicalDetail: 'Cluster economics and throughput per watt dominate feasibility at scale.',
-        architectureNote: 'Efficiency wins shift value from raw scale to better utilization.',
-        references: [{ title: 'Local seed entry' }]
-      }
-    },
-    {
-      id: 'seed-truth',
-      phase: 'moment_of_truth',
-      year: 2031,
-      headline: 'Capability, reliability, and governance alignment intersect.',
-      url: 'https://github.com/AngelESuero/Portfolio-Website-',
-      sourceId: 'seed',
-      sourceName: 'Local',
-      publishedAt: new Date().toISOString(),
-      summary: 'Seed entry to guarantee never-empty rendering.',
-      tags: ['seed'],
-      citations: [{ label: 'Repo', url: 'https://github.com/AngelESuero/Portfolio-Website-' }],
-      public: {
-        summary: 'The decisive window is less about a single breakthrough and more about convergence.',
-        implication: 'Technical maturity and institutional readiness both determine outcomes.',
-        analogy: 'Multiple locks opening at once.'
-      },
-      analyst: {
-        metric: 'Convergence probability',
-        value: 'Rising',
-        dataSource: 'Seed baseline',
-        trend: 'improving',
-        context: 'High-impact probability rises when infra, eval, and safety controls align.'
-      },
-      engineer: {
-        technicalDetail: 'Dependable autonomy requires robust eval loops, safer deployment controls, and sustained compute economics.',
-        bottleneck: 'Verification and governance lag can neutralize capability advances.',
-        references: [{ title: 'Local seed entry' }]
-      }
-    }
-  ] satisfies AGITimelineItem[]
-};
-
-const manualAgiItems: AGITimelineItem[] = [
-  {
-    id: 'manual-youtube-z19uezhjzag',
-    phase: 'agentic_stumble',
-    year: 2026,
-    headline: 'YouTube signal: AGI reference video',
-    url: 'https://www.youtube.com/watch?v=Z19UEZHJzAg',
-    sourceId: 'manual',
-    sourceName: 'Manual curation',
-    publishedAt: '2026-02-19T00:00:00.000Z',
-    summary: 'Curated external AGI reference video added to the timeline.',
-    tags: ['manual', 'youtube', 'video', 'agi'],
-    citations: [{ label: 'YouTube', url: 'https://www.youtube.com/watch?v=Z19UEZHJzAg' }],
-    public: {
-      summary: 'A curated video signal added to track AGI narrative momentum.',
-      implication: 'Media signals shape how quickly AGI expectations spread to broader audiences.',
-      analogy: 'A widely shared clip that shifts the room before the data catches up.'
-    },
-    analyst: {
-      metric: 'Narrative signal velocity',
-      value: 'Elevated',
-      dataSource: 'YouTube',
-      trend: 'stable',
-      context: 'External media references can amplify perceived timeline urgency.'
-    },
-    engineer: {
-      technicalDetail: 'This entry is a curated narrative signal linked for cross-view context.',
-      bottleneck: 'Narrative momentum does not substitute for reliability and deployment readiness.',
-      references: [
-        {
-          title: 'YouTube signal',
-          authors: 'YouTube',
-          link: 'https://www.youtube.com/watch?v=Z19UEZHJzAg'
-        }
-      ]
-    }
-  }
-];
-
-const manualPinnedIds = new Set(manualAgiItems.map((item) => item.id));
+const validKinds: AGITimelineKind[] = ['signal', 'thesis'];
+const validDomains: AGITimelineDomain[] = ['software', 'labor', 'robotics', 'energy', 'policy'];
+const validConfidence: AGITimelineConfidence[] = ['low', 'medium', 'high'];
+const validHorizons: AGITimelineHorizon[] = ['near', 'mid', 'long'];
+const validEvidence: AGIEvidenceType[] = ['paper', 'benchmark', 'deployment', 'labor', 'policy', 'interpretation'];
 
 async function safeJsonImport(path: string, fallback: any) {
   try {
-    const mod = await import(path);
+    const mod = await import(/* @vite-ignore */ path);
     return mod?.default ?? fallback;
   } catch {
     return fallback;
   }
 }
 
-function isPhase(value: string): value is AGITimelinePhase {
-  return value === 'agentic_stumble' || value === 'infrastructure_convergence' || value === 'moment_of_truth';
+function asEnum<T extends string>(value: unknown, options: T[], fallback: T): T {
+  const normalized = String(value || '').toLowerCase() as T;
+  return options.includes(normalized) ? normalized : fallback;
 }
 
-function derivePhase(year: number, tags: string[]): AGITimelinePhase {
-  const lowerTags = tags.map((tag) => String(tag || '').toLowerCase());
-
-  if (lowerTags.includes('policy') || lowerTags.includes('governance')) {
-    return 'moment_of_truth';
-  }
-
-  if (year >= 2030) return 'moment_of_truth';
-  if (year >= 2028) return 'infrastructure_convergence';
-  return 'agentic_stumble';
+function inferWave(year: number, domain: AGITimelineDomain): AGITimelineWave {
+  if (year >= 2036) return 'scenario_territory';
+  if (year >= 2030 && domain !== 'software') return 'physical_economy_disruption';
+  if (year >= 2027) return 'broad_labor_stress';
+  return 'software_disruption_now';
 }
 
 function normalizeItem(raw: any, index: number): AGITimelineItem | null {
@@ -208,6 +81,7 @@ function normalizeItem(raw: any, index: number): AGITimelineItem | null {
   const sourceName = String(raw?.sourceName || raw?.sourceId || 'Archive source');
   const sourceId = String(raw?.sourceId || 'source');
   const url = String(raw?.url || 'https://github.com/AngelESuero/Portfolio-Website-');
+  const summary = String(raw?.summary || '').trim() || `Signal from ${sourceName}.`;
 
   let year = Number(raw?.year);
   if (!Number.isFinite(year)) {
@@ -216,37 +90,31 @@ function normalizeItem(raw: any, index: number): AGITimelineItem | null {
   }
 
   const tags = Array.isArray(raw?.tags) ? raw.tags.map((tag: unknown) => String(tag)) : [];
-  const phase = isPhase(String(raw?.phase || '')) ? raw.phase : derivePhase(year, tags);
-
-  const summary = String(raw?.summary || '').trim() || `Signal from ${sourceName}.`;
+  const domain = asEnum(raw?.domain ?? tags.find((t: string) => validDomains.includes(t as AGITimelineDomain)), validDomains, 'software');
+  const phase = asEnum(raw?.phase, Object.keys(waveMeta) as AGITimelineWave[], inferWave(year, domain));
+  const kind = asEnum(raw?.kind, validKinds, raw?.id?.includes('thesis') ? 'thesis' : 'signal');
+  const confidence = asEnum(raw?.confidence, validConfidence, kind === 'thesis' ? 'medium' : 'low');
+  const timeHorizon = asEnum(raw?.timeHorizon, validHorizons, year >= 2035 ? 'long' : year >= 2028 ? 'mid' : 'near');
+  const evidenceType = asEnum(raw?.evidenceType, validEvidence, kind === 'thesis' ? 'interpretation' : 'paper');
 
   const citations = Array.isArray(raw?.citations)
     ? raw.citations
-        .map((citation: any) => ({
-          label: String(citation?.label || 'Source'),
-          url: String(citation?.url || url)
-        }))
+        .map((citation: any) => ({ label: String(citation?.label || 'Source'), url: String(citation?.url || url) }))
         .filter((citation: { label: string; url: string }) => /^https?:\/\//i.test(citation.url))
     : [{ label: 'Source', url }];
 
   const analystTrend = String(raw?.analyst?.trend || '').toLowerCase();
   const trend =
-    analystTrend === 'improving' || analystTrend === 'stable' || analystTrend === 'concerning'
-      ? analystTrend
-      : 'neutral';
-
-  const references = Array.isArray(raw?.engineer?.references)
-    ? raw.engineer.references.map((ref: any) => ({
-        title: String(ref?.title || 'Reference'),
-        authors: ref?.authors ? String(ref.authors) : undefined,
-        conference: ref?.conference ? String(ref.conference) : undefined,
-        link: ref?.link ? String(ref.link) : undefined
-      }))
-    : citations.map((citation: { label: string; url: string }) => ({ title: citation.label, link: citation.url }));
+    analystTrend === 'improving' || analystTrend === 'stable' || analystTrend === 'concerning' ? analystTrend : 'neutral';
 
   return {
     id: String(raw?.id || `agi-${index}`),
     phase,
+    kind,
+    domain,
+    confidence,
+    timeHorizon,
+    evidenceType,
     year,
     headline,
     url,
@@ -258,10 +126,7 @@ function normalizeItem(raw: any, index: number): AGITimelineItem | null {
     citations,
     public: {
       summary: String(raw?.public?.summary || summary),
-      implication: String(
-        raw?.public?.implication ||
-          `This signal affects AGI timelines by shifting confidence in ${phaseMeta[phase].title.toLowerCase()}.`
-      ),
+      implication: String(raw?.public?.implication || `Impacts ${domain} systems in the ${waveMeta[phase].title.toLowerCase()} window.`),
       analogy: raw?.public?.analogy ? String(raw.public.analogy) : undefined
     },
     analyst: {
@@ -275,82 +140,57 @@ function normalizeItem(raw: any, index: number): AGITimelineItem | null {
       technicalDetail: String(raw?.engineer?.technicalDetail || summary),
       architectureNote: raw?.engineer?.architectureNote ? String(raw.engineer.architectureNote) : undefined,
       bottleneck: raw?.engineer?.bottleneck ? String(raw.engineer.bottleneck) : undefined,
-      parameter: raw?.engineer?.parameter
-        ? {
-            name: String(raw.engineer.parameter.name || 'Parameter'),
-            value: String(raw.engineer.parameter.value || ''),
-            equation: raw.engineer.parameter.equation ? String(raw.engineer.parameter.equation) : undefined
-          }
-        : undefined,
-      references
+      references: Array.isArray(raw?.engineer?.references)
+        ? raw.engineer.references
+        : citations.map((citation: { label: string; url: string }) => ({ title: citation.label, link: citation.url }))
     }
   };
 }
 
-const agiData = await safeJsonImport('../data/agi-timeline.json', seedAgi);
-const rawItems = Array.isArray(agiData?.items) ? agiData.items : seedAgi.items;
-const combinedRawItems = [...rawItems, ...manualAgiItems];
-const combinedById = new Map<string, unknown>();
+const liveData = await safeJsonImport('../data/agi-timeline.json', { items: [], meta: {} });
+const curatedData = await safeJsonImport('../data/agi-curated-timeline.json', { items: [], meta: {} });
 
-combinedRawItems.forEach((item, index) => {
-  const id = typeof item === 'object' && item && 'id' in item ? String((item as { id: string }).id) : `item-${index}`;
-  combinedById.set(id, item);
-});
+const rawItems = [...(Array.isArray(liveData?.items) ? liveData.items : []), ...(Array.isArray(curatedData?.items) ? curatedData.items : [])];
 
-const dedupedRawItems = [...combinedById.values()];
-
-const normalizedItems = dedupedRawItems
+const agiItems = rawItems
   .map((raw, index) => normalizeItem(raw, index))
   .filter((item): item is AGITimelineItem => Boolean(item))
   .sort((a, b) => {
-    const phaseDelta = phaseOrder[a.phase] - phaseOrder[b.phase];
-    if (phaseDelta !== 0) return phaseDelta;
+    const waveDelta = waveOrder[a.phase] - waveOrder[b.phase];
+    if (waveDelta !== 0) return waveDelta;
     if (a.year !== b.year) return a.year - b.year;
     return a.headline.localeCompare(b.headline);
   });
 
-const agiItems = normalizedItems.length ? normalizedItems : seedAgi.items;
-const agiMeta = agiData?.meta ?? seedAgi.meta;
-
-const itemsByPhase: Record<AGITimelinePhase, AGITimelineItem[]> = {
-  agentic_stumble: agiItems.filter((item) => item.phase === 'agentic_stumble'),
-  infrastructure_convergence: agiItems.filter((item) => item.phase === 'infrastructure_convergence'),
-  moment_of_truth: agiItems.filter((item) => item.phase === 'moment_of_truth')
+const itemsByWave: Record<AGITimelineWave, AGITimelineItem[]> = {
+  software_disruption_now: agiItems.filter((item) => item.phase === 'software_disruption_now'),
+  broad_labor_stress: agiItems.filter((item) => item.phase === 'broad_labor_stress'),
+  physical_economy_disruption: agiItems.filter((item) => item.phase === 'physical_economy_disruption'),
+  scenario_territory: agiItems.filter((item) => item.phase === 'scenario_territory')
 };
 
-const lastUpdatedLabel = formatFreshnessLabel(agiMeta?.generatedAt);
-const analystBaseItems = [...agiItems].sort((a, b) => b.year - a.year).slice(0, 12);
-const analystPinnedItems = agiItems.filter((item) => manualPinnedIds.has(item.id));
-const analystTopItems = [
-  ...[...analystBaseItems, ...analystPinnedItems].reduce((byId, item) => byId.set(item.id, item), new Map<string, AGITimelineItem>()).values()
-].sort((a, b) => {
-  if (a.year !== b.year) return b.year - a.year;
-  return a.headline.localeCompare(b.headline);
-});
+const analystItems = [...agiItems].sort((a, b) => b.year - a.year).slice(0, 24);
+const domainGroups = validDomains.map((domain) => ({ domain, items: analystItems.filter((item) => item.domain === domain) }));
+const bottleneckItems = agiItems.filter((item) => item.engineer.bottleneck).slice(0, 12);
+const dependencyRows = [
+  ['Reliable software agents', 'Broader labor substitution signals'],
+  ['Labor transition institutions', 'Deployment pace in robotics + logistics'],
+  ['Energy + supply-chain throughput', 'Physical-economy scale-up'],
+  ['Policy + reliability standards', 'Long-horizon scenario branching']
+];
+
+const lastUpdatedLabel = formatFreshnessLabel(liveData?.meta?.generatedAt || curatedData?.meta?.generatedAt);
 ---
 
-<BaseLayout title="AGI Monitor 2026 // Strategic Assessment" description="AGI strategic monitor with public, analyst, and engineering views." theme="agi">
+<BaseLayout title="AGI Monitor // Sober 4-Wave Timeline" description="AGI monitor with public, analyst, and engineering views." theme="agi">
   <section class="agi-monitor" id="agi-monitor">
     <nav class="agi-nav sticky top-0 z-20 py-3">
       <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 md:flex-row">
-        <div class="flex items-center gap-3">
-          <div class="h-2.5 w-2.5 animate-pulse rounded-full bg-[var(--tone-accent)] shadow-[0_0_12px_var(--tone-accent)]"></div>
-          <div>
-            <h1 class="text-base font-bold uppercase tracking-tight md:text-lg">AGI Monitor</h1>
-            <p class="text-xs uppercase tracking-[0.2em] text-[var(--tone-muted)]">Feb 2026 Strategic Assessment</p>
-          </div>
-        </div>
-
+        <h1 class="text-base font-bold uppercase tracking-tight md:text-lg">AGI Monitor — Sober Timeline</h1>
         <div class="level-switcher" role="tablist" aria-label="Timeline view mode">
-          <button type="button" id="btn-public" class="level-btn active" data-mode="public" role="tab" aria-selected="true" aria-controls="view-public">
-            Public
-          </button>
-          <button type="button" id="btn-analyst" class="level-btn" data-mode="analyst" role="tab" aria-selected="false" aria-controls="view-analyst">
-            Analyst
-          </button>
-          <button type="button" id="btn-engineer" class="level-btn" data-mode="engineer" role="tab" aria-selected="false" aria-controls="view-engineer">
-            Engineer
-          </button>
+          <button type="button" id="btn-public" class="level-btn active" data-mode="public" role="tab" aria-selected="true" aria-controls="view-public">Public</button>
+          <button type="button" id="btn-analyst" class="level-btn" data-mode="analyst" role="tab" aria-selected="false" aria-controls="view-analyst">Analyst</button>
+          <button type="button" id="btn-engineer" class="level-btn" data-mode="engineer" role="tab" aria-selected="false" aria-controls="view-engineer">Engineer</button>
         </div>
       </div>
     </nav>
@@ -358,239 +198,82 @@ const analystTopItems = [
     <main class="mx-auto max-w-7xl px-4 py-8 md:py-12">
       <div id="view-public" class="agi-view-panel agi-public-timeline" role="tabpanel" aria-labelledby="btn-public">
         <div class="timeline-intro">
-          <h2>The Path to AGI</h2>
-          <p class="dek">
-            From Agentic Stumble through Infrastructure Convergence to the Moment of Truth. This timeline progressively reveals depth by audience.
-          </p>
+          <h2>A sober 4-wave AGI timeline</h2>
+          <p class="dek">Software shock now, systemic labor shock next, physical-economy disruption earliest in the early 2030s, then scenario territory.</p>
+          <p class="overlap-note">Caveat: these waves overlap and amplify each other. They do not wait politely for sequence boundaries.</p>
         </div>
 
-        {(Object.keys(phaseMeta) as AGITimelinePhase[]).map((phase) => (
-          <article class="act" data-phase={phase}>
+        {(Object.keys(waveMeta) as AGITimelineWave[]).map((wave) => (
+          <article class="act" data-phase={wave}>
             <header class="act-header">
-              <div class="act-icon">{phaseMeta[phase].marker}</div>
+              <div class="act-icon">{waveMeta[wave].marker}</div>
               <div>
-                <h3>{phaseMeta[phase].title}</h3>
-                <p class="act-years">{phaseMeta[phase].years}</p>
-                <p class="act-theme">{phaseMeta[phase].theme}</p>
+                <h3>{waveMeta[wave].title}</h3>
+                <p class="act-years">{waveMeta[wave].years}</p>
+                <p class="act-theme">{waveMeta[wave].thesis}</p>
               </div>
             </header>
 
-            {itemsByPhase[phase].length > 0 ? (
-              <div class="act-beats">
-                {itemsByPhase[phase].map((item) => (
-                  <article class="beat">
-                    <div class="beat-marker">
-                      <span class="beat-year">{item.year}</span>
-                      <div class="beat-dot"></div>
-                    </div>
-                    <div class="beat-content">
-                      <h4>{item.headline}</h4>
-                      <p class="beat-summary">{item.public.summary}</p>
-                      <div class="beat-implication">
-                        <strong>Why it matters:</strong> {item.public.implication}
-                      </div>
-                      {item.public.analogy && <div class="beat-analogy">Think of it like: {item.public.analogy}</div>}
-                      <a class="beat-link" href={item.url} target="_blank" rel="noreferrer">
-                        {getLinkCtaLabel(item.url, providerFromUrl(item.url))}
-                      </a>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            ) : (
-              <p class="beat-summary">No entries mapped to this phase yet.</p>
-            )}
-
-            <div class="act-summary">
-              <p>AGI probability by end of phase: {phaseMeta[phase].probability}</p>
-            </div>
+            {itemsByWave[wave].slice(0, 5).map((item) => (
+              <article class="beat">
+                <div class="beat-marker"><span class="beat-year">{item.year}</span><div class="beat-dot"></div></div>
+                <div class="beat-content">
+                  <h4>{item.headline}</h4>
+                  <p class="beat-summary">{item.public.summary}</p>
+                  <div class="beat-implication"><strong>Why it matters:</strong> {item.public.implication}</div>
+                  <p class="chip-row"><span class={`chip ${item.kind}`}>{item.kind}</span><span class="chip">{item.domain}</span><span class="chip">{item.timeHorizon}</span></p>
+                  <a class="beat-link" href={item.url} target="_blank" rel="noreferrer">{getLinkCtaLabel(item.url, providerFromUrl(item.url))}</a>
+                </div>
+              </article>
+            ))}
           </article>
         ))}
       </div>
 
       <div id="view-analyst" class="agi-view-panel agi-analyst-view is-hidden" role="tabpanel" aria-labelledby="btn-analyst">
         <header class="analyst-header">
-          <h2>AGI Timeline: Measurable Indicators (2026-2032)</h2>
-          <p>Data-driven assessment using benchmark direction, infrastructure signals, and source-backed updates.</p>
+          <h2>Analyst view: signals vs thesis inventory</h2>
           <p class="analyst-meta">{lastUpdatedLabel} · Entries: {agiItems.length}</p>
         </header>
-
         <div class="metrics-grid">
-          {analystTopItems.map((item) => (
+          {analystItems.map((item) => (
             <article class="metric-card" data-trend={item.analyst.trend}>
-              <div class="metric-header">
-                <time datetime={String(item.year)}>{item.year}</time>
-                <span class="metric-status">{item.analyst.trend === 'improving' ? 'up' : item.analyst.trend === 'concerning' ? 'down' : 'flat'}</span>
-              </div>
+              <div class="metric-header"><time>{item.year}</time><span>{item.kind}</span></div>
               <h3>{item.headline}</h3>
-              <div class="metric-display">
-                <div class="metric-value">{item.analyst.value}</div>
-                <div class="metric-name">{item.analyst.metric}</div>
-              </div>
-              {item.analyst.context && <p class="metric-context">{item.analyst.context}</p>}
-              <div class="metric-source">Source: {item.analyst.dataSource}</div>
+              <p class="chip-row"><span class="chip">{item.domain}</span><span class="chip">{item.confidence}</span><span class="chip">{item.evidenceType}</span></p>
+              <p class="metric-context">{item.analyst.context}</p>
+              <div class="metric-source">{item.analyst.dataSource}</div>
             </article>
           ))}
         </div>
-
         <section>
-          <h3>Timeline Comparison: Public Forecasts vs Engineering Reality</h3>
-          <div class="forecast-table-wrap">
-            <table class="forecast-table">
-              <thead>
-                <tr>
-                  <th>Timeline Phase</th>
-                  <th>Optimistic Forecast</th>
-                  <th>Engineering Consensus</th>
-                  <th>Key Bottleneck</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Agentic Stumble</strong></td>
-                  <td>2026-2027</td>
-                  <td>2026-2027</td>
-                  <td>Reliability under ambiguity</td>
-                </tr>
-                <tr>
-                  <td><strong>Infrastructure Convergence</strong></td>
-                  <td>2027-2029</td>
-                  <td>2028-2029</td>
-                  <td>Energy and supply chain throughput</td>
-                </tr>
-                <tr>
-                  <td><strong>Moment of Truth</strong></td>
-                  <td>2029-2031</td>
-                  <td>2030-2032</td>
-                  <td>Verification and governance alignment</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <section>
-          <h3>Estimated AGI Probability by Phase</h3>
-          <div class="probability-heatmap">
-            {(Object.keys(phaseMeta) as AGITimelinePhase[]).map((phase) => (
-              <div class="probability-bar">
-                <div class="phase-label">{phaseMeta[phase].title}</div>
-                <div class="probability-scale">
-                  <div
-                    class="probability-fill"
-                    style={`width:${phase === 'agentic_stumble' ? '8%' : phase === 'infrastructure_convergence' ? '40%' : '80%'}`}
-                  ></div>
-                  <span class="probability-value">{phaseMeta[phase].probability}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+          <h3>Grouped by domain</h3>
+          {domainGroups.map((group) => (
+            group.items.length > 0 && <p><strong>{group.domain}</strong>: {group.items.length} tracked items.</p>
+          ))}
         </section>
       </div>
 
       <div id="view-engineer" class="agi-view-panel agi-engineer-view is-hidden" role="tabpanel" aria-labelledby="btn-engineer">
         <header class="engineer-header">
-          <h2>AGI Technical Timeline: Architectural and Bottleneck Analysis</h2>
-          <p>Engineering-grade view of reliability limits, architecture notes, and citations.</p>
+          <h2>Engineer view: bottlenecks and dependencies</h2>
         </header>
-
-        {agiItems.map((item) => (
+        {bottleneckItems.map((item) => (
           <article class="technical-card">
-            <header class="tech-header">
-              <div>
-                <time>{item.year}</time>
-                <h3>{item.headline}</h3>
-              </div>
-              <div class="tech-badges">
-                {item.engineer.architectureNote && <span class="badge architecture">Architecture</span>}
-                {item.engineer.bottleneck && <span class="badge bottleneck">Bottleneck</span>}
-                {item.engineer.parameter && <span class="badge metric">Metric</span>}
-              </div>
-            </header>
-
+            <header class="tech-header"><div><time>{item.year}</time><h3>{item.headline}</h3></div><span class="badge bottleneck">{item.phase}</span></header>
             <div class="tech-content">
-              <section class="tech-section">
-                <h4>Technical detail</h4>
-                <p>{item.engineer.technicalDetail}</p>
-              </section>
-
-              {item.engineer.architectureNote && (
-                <section class="tech-section">
-                  <h4>Architecture note</h4>
-                  <div class="code-block"><pre>{item.engineer.architectureNote}</pre></div>
-                </section>
-              )}
-
-              {item.engineer.parameter && (
-                <section class="tech-section">
-                  <h4>Key parameter</h4>
-                  <div class="parameter-display">
-                    <div class="param-name">{item.engineer.parameter.name}</div>
-                    <div class="param-value">{item.engineer.parameter.value}</div>
-                    {item.engineer.parameter.equation && <div class="param-equation">{item.engineer.parameter.equation}</div>}
-                  </div>
-                </section>
-              )}
-
-              {item.engineer.bottleneck && (
-                <section class="tech-section bottleneck-section">
-                  <h4>Critical bottleneck</h4>
-                  <p>{item.engineer.bottleneck}</p>
-                </section>
-              )}
-
-              {item.engineer.references && item.engineer.references.length > 0 && (
-                <section class="tech-section">
-                  <h4>References and citations</h4>
-                  <ul class="references-list">
-                    {item.engineer.references.map((ref) => (
-                      <li>
-                        <strong>{ref.title}</strong>
-                        {(ref.authors || ref.conference) && (
-                          <div class="meta">
-                            {[ref.authors, ref.conference].filter(Boolean).join(' · ')}
-                            {ref.link && (
-                              <a href={ref.link} target="_blank" rel="noreferrer">
-                                open
-                              </a>
-                            )}
-                          </div>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              )}
+              <section class="tech-section"><h4>Technical detail</h4><p>{item.engineer.technicalDetail}</p></section>
+              <section class="tech-section bottleneck-section"><h4>Critical bottleneck</h4><p>{item.engineer.bottleneck}</p></section>
             </div>
           </article>
         ))}
 
         <section class="critical-path">
-          <h3>Critical Path: Dependencies and Unlocks</h3>
+          <h3>Dependency chain (non-deterministic)</h3>
           <div class="dependency-graph">
-            <div class="dependency-node">
-              <div class="node-title">Energy Infrastructure Online</div>
-              <div class="node-status">2028-2030</div>
-              <div class="node-impact">Unlocks: larger and cheaper inference clusters.</div>
-            </div>
-            <div class="arrow">v</div>
-            <div class="dependency-node">
-              <div class="node-title">Stable RSI Loops</div>
-              <div class="node-status">2027-2028</div>
-              <div class="node-impact">Unlocks: faster autonomous optimization cycles.</div>
-            </div>
-            <div class="arrow">v</div>
-            <div class="dependency-node">
-              <div class="node-title">Superhuman Coder Window</div>
-              <div class="node-status">2027+</div>
-              <div class="node-impact">Unlocks: accelerated software and toolchain iteration.</div>
-            </div>
-            <div class="arrow">v</div>
-            <div class="dependency-node critical">
-              <div class="node-title">AGI Emergence Window</div>
-              <div class="node-status">2030-2032</div>
-              <div class="node-impact">Moment of truth under technical + governance constraints.</div>
-            </div>
+            {dependencyRows.map((row) => (
+              <div class="dependency-node"><div class="node-title">{row[0]}</div><div class="node-impact">Enables: {row[1]}</div></div>
+            ))}
           </div>
         </section>
       </div>
@@ -602,55 +285,20 @@ const analystTopItems = [
       const MODE_KEY = 'agi-view-mode';
       const root = document.getElementById('agi-monitor');
       if (!root) return;
-
       const validModes = ['public', 'analyst', 'engineer'];
-
       const setMode = (nextMode) => {
         const mode = validModes.includes(nextMode) ? nextMode : 'public';
-
-        document.querySelectorAll('.agi-view-panel').forEach((panel) => {
-          panel.classList.toggle('is-hidden', panel.id !== `view-${mode}`);
-        });
-
+        document.querySelectorAll('.agi-view-panel').forEach((panel) => panel.classList.toggle('is-hidden', panel.id !== `view-${mode}`));
         document.querySelectorAll('.level-btn').forEach((button) => {
           const active = button.getAttribute('data-mode') === mode;
           button.classList.toggle('active', active);
           button.setAttribute('aria-selected', String(active));
         });
-
-        try {
-          localStorage.setItem(MODE_KEY, mode);
-        } catch {}
+        window.localStorage.setItem(MODE_KEY, mode);
       };
-
-      document.querySelectorAll('.level-btn').forEach((button) => {
-        button.addEventListener('click', () => {
-          const mode = button.getAttribute('data-mode') || 'public';
-          setMode(mode);
-        });
-      });
-
-      document.addEventListener('keydown', (event) => {
-        const target = event.target;
-        if (
-          target instanceof HTMLElement &&
-          (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName))
-        ) {
-          return;
-        }
-
-        if (event.key === 'p' || event.key === 'P') setMode('public');
-        if (event.key === 'a' || event.key === 'A') setMode('analyst');
-        if (event.key === 'e' || event.key === 'E') setMode('engineer');
-      });
-
-      let initialMode = 'public';
-      try {
-        const saved = localStorage.getItem(MODE_KEY);
-        if (saved && validModes.includes(saved)) initialMode = saved;
-      } catch {}
-
-      setMode(initialMode);
+      document.querySelectorAll('.level-btn').forEach((button) => button.addEventListener('click', () => setMode(button.getAttribute('data-mode'))));
+      const savedMode = window.localStorage.getItem(MODE_KEY) || 'public';
+      setMode(savedMode);
     })();
   </script>
 </BaseLayout>

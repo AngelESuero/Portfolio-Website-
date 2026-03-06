@@ -2,6 +2,7 @@
   --agi-phase-1: #ef62ff;
   --agi-phase-2: #ffc93d;
   --agi-phase-3: #4fe07c;
+  --agi-phase-4: #8ca6ff;
   --agi-accent: var(--tone-accent);
 }
 
@@ -124,12 +125,16 @@
   background: linear-gradient(180deg, var(--agi-phase-1), transparent);
 }
 
-.act[data-phase='infrastructure_convergence']::before {
+.act[data-phase='broad_labor_stress']::before {
   background: linear-gradient(180deg, var(--agi-phase-2), transparent);
 }
 
-.act[data-phase='moment_of_truth']::before {
+.act[data-phase='physical_economy_disruption']::before {
   background: linear-gradient(180deg, var(--agi-phase-3), transparent);
+}
+
+.act[data-phase='scenario_territory']::before {
+  background: linear-gradient(180deg, var(--agi-phase-4), transparent);
 }
 
 .act-header {
@@ -164,12 +169,16 @@
   color: var(--agi-phase-1);
 }
 
-.act[data-phase='infrastructure_convergence'] .act-years {
+.act[data-phase='broad_labor_stress'] .act-years {
   color: var(--agi-phase-2);
 }
 
-.act[data-phase='moment_of_truth'] .act-years {
+.act[data-phase='physical_economy_disruption'] .act-years {
   color: var(--agi-phase-3);
+}
+
+.act[data-phase='scenario_territory'] .act-years {
+  color: var(--agi-phase-4);
 }
 
 .act-theme {
@@ -699,4 +708,30 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+.overlap-note {
+  margin-top: 0.8rem;
+  color: var(--tone-muted);
+  font-size: 0.9rem;
+}
+
+.chip-row {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin: 0.5rem 0;
+}
+
+.chip {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  font-size: 0.74rem;
+  color: var(--tone-muted);
+}
+
+.chip.thesis {
+  color: var(--tone-accent);
+  border-color: var(--tone-accent);
 }

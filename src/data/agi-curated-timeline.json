@@ -1,0 +1,175 @@
+{
+  "meta": {
+    "schemaVersion": 1,
+    "generatedAt": "2026-03-06T18:00:00.000Z",
+    "sources": [
+      {
+        "id": "curated_thesis",
+        "name": "Sober AGI timeline thesis",
+        "type": "manual",
+        "url": "https://github.com/AngelESuero/Portfolio-Website-"
+      }
+    ]
+  },
+  "items": [
+    {
+      "id": "thesis-software-2026",
+      "phase": "software_disruption_now",
+      "kind": "thesis",
+      "domain": "software",
+      "confidence": "high",
+      "timeHorizon": "near",
+      "evidenceType": "interpretation",
+      "year": 2026,
+      "headline": "Software disruption is already broad and measurable",
+      "url": "https://github.com/AngelESuero/Portfolio-Website-",
+      "sourceId": "curated_thesis",
+      "sourceName": "Sober AGI timeline thesis",
+      "publishedAt": "2026-03-06T18:00:00.000Z",
+      "summary": "Track utility and labor effects in writing, coding, support, research, and operations rather than waiting for a single AGI arrival date.",
+      "tags": ["thesis", "software", "labor-effects"],
+      "citations": [
+        {
+          "label": "Timeline thesis",
+          "url": "https://github.com/AngelESuero/Portfolio-Website-"
+        }
+      ],
+      "public": {
+        "summary": "The fastest-moving disruption is software work that can be decomposed into repetitive reasoning and execution loops.",
+        "implication": "The important question now is measured utility and labor impact, not binary AGI declarations.",
+        "analogy": "Less like a moon landing and more like electrification spreading unevenly across firms."
+      },
+      "analyst": {
+        "metric": "Adoption depth",
+        "value": "Rising",
+        "dataSource": "Cross-sector deployments",
+        "trend": "improving",
+        "context": "Utilization and workflow substitution are more informative than model demo quality."
+      },
+      "engineer": {
+        "technicalDetail": "Reliability gains are real in bounded tasks, but end-to-end autonomy still needs human fallback paths.",
+        "bottleneck": "Ground-truth evaluation for open-ended workflows lags deployment speed.",
+        "references": [
+          {
+            "title": "Sober timeline thesis",
+            "link": "https://github.com/AngelESuero/Portfolio-Website-"
+          }
+        ]
+      }
+    },
+    {
+      "id": "thesis-labor-2028",
+      "phase": "broad_labor_stress",
+      "kind": "thesis",
+      "domain": "labor",
+      "confidence": "medium",
+      "timeHorizon": "mid",
+      "evidenceType": "labor",
+      "year": 2029,
+      "headline": "Labor-market stress broadens in the late 2020s",
+      "url": "https://github.com/AngelESuero/Portfolio-Website-",
+      "sourceId": "curated_thesis",
+      "sourceName": "Sober AGI timeline thesis",
+      "publishedAt": "2026-03-06T18:00:00.000Z",
+      "summary": "Expect painful reallocation and bargaining pressure before any clean macro collapse narrative.",
+      "tags": ["thesis", "labor", "transition"],
+      "citations": [
+        {
+          "label": "Timeline thesis",
+          "url": "https://github.com/AngelESuero/Portfolio-Website-"
+        }
+      ],
+      "public": {
+        "summary": "Sector-specific automation pressure becomes harder to dismiss as isolated churn.",
+        "implication": "Transition dynamics matter: retraining, wage compression, and role redesign can be severe without total collapse."
+      },
+      "analyst": {
+        "metric": "Displacement breadth",
+        "value": "Expanding",
+        "dataSource": "Labor indicators",
+        "trend": "concerning",
+        "context": "Watch cross-industry consistency rather than single-company layoffs."
+      },
+      "engineer": {
+        "technicalDetail": "Automation value scales when orchestration, QA, and exception handling are integrated into production systems.",
+        "bottleneck": "Institutional adaptation is slower than model iteration cycles."
+      }
+    },
+    {
+      "id": "thesis-physical-2032",
+      "phase": "physical_economy_disruption",
+      "kind": "thesis",
+      "domain": "robotics",
+      "confidence": "medium",
+      "timeHorizon": "mid",
+      "evidenceType": "deployment",
+      "year": 2032,
+      "headline": "Physical-economy disruption becomes plausible in early 2030s",
+      "url": "https://github.com/AngelESuero/Portfolio-Website-",
+      "sourceId": "curated_thesis",
+      "sourceName": "Sober AGI timeline thesis",
+      "publishedAt": "2026-03-06T18:00:00.000Z",
+      "summary": "Robotics momentum is meaningful, but should not be treated as proof of immediate economy-wide humanoid saturation.",
+      "tags": ["thesis", "robotics", "deployment"],
+      "citations": [
+        {
+          "label": "Timeline thesis",
+          "url": "https://github.com/AngelESuero/Portfolio-Website-"
+        }
+      ],
+      "public": {
+        "summary": "The first broad physical disruption window likely requires years of deployment learning.",
+        "implication": "Autonomous logistics and industrial robotics can scale before general-purpose humanoids are ubiquitous."
+      },
+      "analyst": {
+        "metric": "Real-world reliability",
+        "value": "Developing",
+        "dataSource": "Deployment telemetry",
+        "trend": "stable",
+        "context": "Pilot success is not equivalent to mass deployment economics."
+      },
+      "engineer": {
+        "technicalDetail": "Durability, maintenance intervals, and safety certification dominate scaling pace.",
+        "bottleneck": "Field reliability under noisy, long-horizon operations remains unresolved at scale."
+      }
+    },
+    {
+      "id": "thesis-scenario-2036",
+      "phase": "scenario_territory",
+      "kind": "thesis",
+      "domain": "energy",
+      "confidence": "low",
+      "timeHorizon": "long",
+      "evidenceType": "interpretation",
+      "year": 2036,
+      "headline": "After 2035, use scenarios not precise forecasts",
+      "url": "https://github.com/AngelESuero/Portfolio-Website-",
+      "sourceId": "curated_thesis",
+      "sourceName": "Sober AGI timeline thesis",
+      "publishedAt": "2026-03-06T18:00:00.000Z",
+      "summary": "Energy build-out, supply chains, regulation, and reliability become dominant uncertainty drivers.",
+      "tags": ["thesis", "energy", "policy", "scenario"],
+      "citations": [
+        {
+          "label": "Timeline thesis",
+          "url": "https://github.com/AngelESuero/Portfolio-Website-"
+        }
+      ],
+      "public": {
+        "summary": "Beyond 2035 the uncertainty fan widens, so deterministic date claims become less credible.",
+        "implication": "Planning should shift to contingencies and stress tests across energy, policy, and logistics constraints."
+      },
+      "analyst": {
+        "metric": "Forecast confidence",
+        "value": "Low",
+        "dataSource": "Scenario modeling",
+        "trend": "neutral",
+        "context": "Confidence should decrease as horizon length and system complexity increase."
+      },
+      "engineer": {
+        "technicalDetail": "Long-range outcomes depend on non-ML bottlenecks as much as model capability curves.",
+        "bottleneck": "Power availability and regulated deployment surfaces can dominate pure algorithmic progress."
+      }
+    }
+  ]
+}
