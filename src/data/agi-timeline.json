@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-06T14:58:34.560Z",
+    "generatedAt": "2026-03-06T15:54:08.848Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,32 @@
     ]
   },
   "items": [
+    {
+      "id": "96bc83f6a83b5198b9ba6ceaba736f1942b0af439910790eb25734e07b050881",
+      "title": "How Balyasny Asset Management built an AI research engine for investing",
+      "url": "https://openai.com/index/balyasny-asset-management",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-03-06T07:00:00.000Z",
+      "summary": "See how Balyasny built an AI research system with GPT-5.4, rigorous model evaluation, and agent workflows to transform investment analysis at scale.",
+      "tags": [
+        "primary",
+        "release",
+        "agents",
+        "eval",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/balyasny-asset-management"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
     {
       "id": "81c35152836cec822e59286fd50cf51205b9804f79e18df0b751c82ec4307522",
       "title": "SkillNet: Create, Evaluate, and Connect AI Skills",
@@ -15240,30 +15266,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.03390"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "b9db6e0c4ba5dd1a3f4de6672cb1e4e590c1d80ef8e189d2a56030d2640b0516",
-      "title": "Zero-Knowledge Federated Learning with Lattice-Based Hybrid Encryption for Quantum-Resilient Medical AI",
-      "url": "https://arxiv.org/abs/2603.03398",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-05T05:00:00.000Z",
-      "summary": "arXiv:2603.03398v1 Announce Type: cross Abstract: Federated Learning (FL) enables collaborative training of medical AI models across hospitals without centralizing patient data. However, the exchange of model updates exposes critical vulnerabilities: gradient inversion attacks can reconstruct patient information, Byzantine clients can poison the global model, and the \\emph{Harvest Now, Decrypt Later} (HNDL) threat renders today's encrypted traffic vulnerable to future quantum adversaries.We introduce \\textbf{ZKFL-PQ} (\\emph{Zero-Knowledge Federated Learning, Post-Quantum}), a three-tiered cryptographic protocol that hybridizes (i) ML-KEM (FIPS~203) for quantum-resistant key encapsulation, (ii) lattice-based Zero-Knowledge Proofs for verifiable \\emph{norm-constrained} gradient integrity, and (iii) BFV homomorphic encryption for privacy-preserving aggregation. We formalize the security model and prove correctness and zero-knowledge properties under the Module-LWE, Ring-LWE, and SIS assumptions \\emph{in the classical random oracle model}. We evaluate ZKFL-PQ on synthetic medical imaging data across 5 federated clients over 10 training rounds. Our protocol achieves \\textbf{100\\% rejection of norm-violating updates} while maintaining model accuracy at 100\\%, compared to a catastrophic drop to 23\\% under standard FL. The computational overhead (factor $\\sim$20$\\times$) is analyzed and shown to be compatible with clinical research workflows operating on daily or weekly training cycles. We emphasize that the current defense guarantees rejection of large-norm malicious updates; robustness against subtle low-norm or directional poisoning remains future work.",
-      "tags": [
-        "papers",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.03398"
         },
         {
           "label": "Feed",
