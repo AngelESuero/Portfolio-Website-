@@ -1,7 +1,18 @@
-export type AGITimelinePhase =
-  | 'agentic_stumble'
-  | 'infrastructure_convergence'
-  | 'moment_of_truth';
+export type AGITimelineWave =
+  | 'software_disruption_now'
+  | 'broad_labor_stress'
+  | 'physical_economy_disruption'
+  | 'scenario_territory';
+
+export type AGITimelineKind = 'signal' | 'thesis';
+
+export type AGITimelineDomain = 'software' | 'labor' | 'robotics' | 'energy' | 'policy';
+
+export type AGITimelineConfidence = 'low' | 'medium' | 'high';
+
+export type AGITimeHorizon = 'near' | 'mid' | 'long';
+
+export type AGIEvidenceType = 'paper' | 'benchmark' | 'deployment' | 'labor' | 'policy' | 'interpretation';
 
 export interface AGICitation {
   label: string;
@@ -15,10 +26,30 @@ export interface AGIReference {
   link?: string;
 }
 
+export interface AGIWaveDefinition {
+  id: AGITimelineWave;
+  title: string;
+  timebox: string;
+  publicThesis: string;
+  narrative: string;
+  overlap: string;
+  analystFocus: string;
+  engineerFocus: string;
+  gates: string[];
+  laneStart: number;
+  laneEnd: number;
+}
+
 export interface AGITimelineItem {
   id: string;
-  phase: AGITimelinePhase;
+  wave: AGITimelineWave;
+  kind: AGITimelineKind;
+  domain: AGITimelineDomain;
+  confidence: AGITimelineConfidence;
+  timeHorizon: AGITimeHorizon;
+  evidenceType: AGIEvidenceType;
   year: number;
+  timingLabel?: string;
   headline: string;
   url: string;
   sourceId: string;
@@ -27,27 +58,36 @@ export interface AGITimelineItem {
   summary: string;
   tags: string[];
   citations: AGICitation[];
+  whyIncluded?: string;
   public: {
     summary: string;
     implication: string;
+    caution?: string;
     analogy?: string;
   };
   analyst: {
-    metric: string;
-    value: string | number;
-    dataSource: string;
-    trend: 'improving' | 'stable' | 'concerning' | 'neutral';
-    context?: string;
+    thesisRole: string;
+    context: string;
+    watchFor?: string;
   };
   engineer: {
     technicalDetail: string;
     architectureNote?: string;
     bottleneck?: string;
-    parameter?: {
-      name: string;
-      value: string;
-      equation?: string;
-    };
+    dependencies?: string[];
+    unlocks?: string[];
     references?: AGIReference[];
   };
+}
+
+export interface AGITimelineMeta {
+  schemaVersion: number;
+  thesisVersion: string;
+  updatedAt: string;
+}
+
+export interface AGITimelineDataset {
+  meta: AGITimelineMeta;
+  waves: AGIWaveDefinition[];
+  items: AGITimelineItem[];
 }
