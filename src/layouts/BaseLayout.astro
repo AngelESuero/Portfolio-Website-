@@ -11,6 +11,9 @@ interface Props {
   image?: string;
   theme?: string;
   showHeader?: boolean;
+  renderHeader?: boolean;
+  renderFooter?: boolean;
+  fullBleed?: boolean;
 }
 
 const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
@@ -19,7 +22,10 @@ const {
   description = 'Timeline and archive for A Path Toward Life',
   image = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80',
   theme = 'archive',
-  showHeader = currentPath === '/'
+  showHeader = currentPath === '/',
+  renderHeader = true,
+  renderFooter = true,
+  fullBleed = false
 } = Astro.props;
 const walkthroughSteps = [
   {
@@ -1771,7 +1777,7 @@ const exploreLinks = [
   </head>
   <body
     data-theme={theme}
-    data-header-mode={showHeader ? 'pinned' : 'peek'}
+    data-header-mode={renderHeader ? (showHeader ? 'pinned' : 'peek') : 'hidden'}
     data-header-reveal={showHeader ? 'visible' : 'hidden'}
     data-nav-phase="idle"
   >
@@ -1782,9 +1788,9 @@ const exploreLinks = [
     </div>
     <GarlandFrame />
     <div class="header-peek-sensor" aria-hidden="true"></div>
-    <Header />
+    {renderHeader && <Header />}
     <div class="site-content-stage">
-      <main class="page-shell w-full">
+      <main class="page-shell w-full" style={fullBleed ? 'padding:0;' : undefined}>
         <div class="mode-normal">
           <slot />
         </div>
@@ -1827,7 +1833,7 @@ const exploreLinks = [
           </div>
         </section>
       </main>
-      <Footer />
+      {renderFooter && <Footer />}
     </div>
     <script is:inline>
       (() => {
