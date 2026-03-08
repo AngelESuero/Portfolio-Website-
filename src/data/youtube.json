@@ -1,12 +1,23 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-07T23:41:20.596Z",
+    "generatedAt": "2026-03-08T03:16:32.574Z",
     "channelUrl": "https://www.youtube.com/@a_e.s_4",
     "channelId": "UCQeJiBS72gxrZXw5GmqtocA",
     "feedUrl": "https://www.youtube.com/feeds/videos.xml?channel_id=UCQeJiBS72gxrZXw5GmqtocA"
   },
   "items": [
+    {
+      "id": "50234b08e8ede94d5ad9f28b8516b0ec3becbf604b93f1f56737bf3c262bd570",
+      "title": "Road To ”Z“ Rank",
+      "url": "https://www.youtube.com/watch?v=60xQEkglHtE",
+      "videoId": "60xQEkglHtE",
+      "publishedAt": "2026-03-08T00:57:56.000Z",
+      "series": [
+        "Uploads"
+      ],
+      "thumbnailUrl": "https://i.ytimg.com/vi/60xQEkglHtE/hqdefault.jpg"
+    },
     {
       "id": "e77e4c03c13798df8ebfa5d24c5fded041003b52a6815a8fd45f0358f48ac9e2",
       "title": "Road To ”Z“ Rank",
@@ -160,17 +171,6 @@
         "Uploads"
       ],
       "thumbnailUrl": "https://i.ytimg.com/vi/T6V6gMhmQpM/hqdefault.jpg"
-    },
-    {
-      "id": "10e14d76e19a0d29ef86a94dff6597fc4bf67fe7ee79b2a40909c6194aefc4c6",
-      "title": "Waiting For Society To Change... Or A Job To Hit Me Back...",
-      "url": "https://www.youtube.com/watch?v=8cvs2ReK9A0",
-      "videoId": "8cvs2ReK9A0",
-      "publishedAt": "2026-02-17T12:57:51.000Z",
-      "series": [
-        "Uploads"
-      ],
-      "thumbnailUrl": "https://i.ytimg.com/vi/8cvs2ReK9A0/hqdefault.jpg"
     }
   ]
 }
