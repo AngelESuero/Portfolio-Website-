@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-09T05:04:42.265Z",
+    "generatedAt": "2026-03-09T06:12:26.989Z",
     "sources": [
       {
         "id": "openai_news",
@@ -9372,6 +9372,239 @@
       ]
     },
     {
+      "id": "0bd31acb0b80c4628bf5db3103efce22f73863e6b3b37a5e7c76e73746b14900",
+      "title": "MatRIS: Toward Reliable and Efficient Pretrained Machine Learning Interatomic Potentials",
+      "url": "https://arxiv.org/abs/2603.02002",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-09T04:00:00.000Z",
+      "summary": "arXiv:2603.02002v3 Announce Type: replace-cross Abstract: Foundation MLIPs demonstrate broad applicability across diverse material systems and have emerged as a powerful and transformative paradigm in chemical and computational materials science. Equivariant MLIPs achieve state-of-the-art accuracy in a wide range of benchmarks by incorporating equivariant inductive bias. However, the reliance on tensor products and high-degree representations makes them computationally costly. This raises a fundamental question: as quantum mechanical-based datasets continue to expand, can we develop a more compact model to thoroughly exploit high-dimensional atomic interactions? In this work, we present MatRIS (\\textbf{Mat}erials \\textbf{R}epresentation and \\textbf{I}nteraction \\textbf{S}imulation), an invariant MLIP that introduces attention-based modeling of three-body interactions. MatRIS leverages a novel separable attention mechanism with linear complexity $O(N)$, enabling both scalability and expressiveness. MatRIS delivers accuracy comparable to that of leading equivariant models on a wide range of popular benchmarks (Matbench-Discovery, MatPES, MDR phonon, Molecular dataset, etc). Taking Matbench-Discovery as an example, MatRIS achieves an F1 score of up to 0.847 and attains comparable accuracy at a lower training cost. The work indicates that our carefully designed invariant models can match or exceed the accuracy of equivariant models at a fraction of the cost, shedding light on the development of accurate and efficient MLIPs.",
+      "tags": [
+        "papers",
+        "eval",
+        "training",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.02002"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "747c98bb113d2ffc07bb6ca7729f1d80d6dd98dae941787ad882be1db56dafc7",
+      "title": "Kiwi-Edit: Versatile Video Editing via Instruction and Reference Guidance",
+      "url": "https://arxiv.org/abs/2603.02175",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-09T04:00:00.000Z",
+      "summary": "arXiv:2603.02175v3 Announce Type: replace-cross Abstract: Instruction-based video editing has witnessed rapid progress, yet current methods often struggle with precise visual control, as natural language is inherently limited in describing complex visual nuances. Although reference-guided editing offers a robust solution, its potential is currently bottlenecked by the scarcity of high-quality paired training data. To bridge this gap, we introduce a scalable data generation pipeline that transforms existing video editing pairs into high-fidelity training quadruplets, leveraging image generative models to create synthesized reference scaffolds. Using this pipeline, we construct RefVIE, a large-scale dataset tailored for instruction-reference-following tasks, and establish RefVIE-Bench for comprehensive evaluation. Furthermore, we propose a unified editing architecture, Kiwi-Edit, that synergizes learnable queries and latent visual features for reference semantic guidance. Our model achieves significant gains in instruction following and reference fidelity via a progressive multi-stage training curriculum. Extensive experiments demonstrate that our data and architecture establish a new state-of-the-art in controllable video editing. All datasets, models, and code is released at https://github.com/showlab/Kiwi-Edit.",
+      "tags": [
+        "papers",
+        "eval",
+        "training",
+        "model",
+        "release",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.02175"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "3b8f650022c2705f0d2de835779b9fe882ed9596beda4e1e27da913b93437806",
+      "title": "Fine-Tuning and Evaluating Conversational AI for Agricultural Advisory",
+      "url": "https://arxiv.org/abs/2603.03294",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-09T04:00:00.000Z",
+      "summary": "arXiv:2603.03294v2 Announce Type: replace-cross Abstract: Large Language Models show promise for agricultural advisory, yet vanilla models exhibit unsupported recommendations, generic advice lacking specific, actionable detail, and communication styles misaligned with smallholder farmer needs. In high stakes agricultural contexts, where recommendation accuracy has direct consequences for farmer outcomes, these limitations pose challenges for responsible deployment. We present a hybrid LLM architecture that decouples factual retrieval from conversational delivery: supervised fine-tuning with LoRA on expert-curated GOLDEN FACTS (atomic, verified units of agricultural knowledge) optimizes fact recall, while a separate stitching layer transforms retrieved facts into culturally appropriate, safety-aware responses. Our evaluation framework, DG-EVAL, performs atomic fact verification (measuring recall, precision, and contradiction detection) against expert-curated ground truth rather than Wikipedia or retrieved documents. Experiments across multiple model configurations on crops and queries from Bihar, India show that fine-tuning on curated data substantially improves fact recall and F1, while maintaining high relevance. Using a fine-tuned smaller model achieves comparable or better factual quality at a fraction of the cost of frontier models. A stitching layer further improves safety subscores while maintaining high conversational quality. We release the farmerchat-prompts library to enable reproducible development of domain-specific agricultural AI.",
+      "tags": [
+        "papers",
+        "eval",
+        "safety",
+        "model",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.03294"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "9171c9c5d6ae268766d7fa5b9c1bc2b5e8a8a0528475731bb0d5e5f756e6fa43",
+      "title": "Fragile Thoughts: How Large Language Models Handle Chain-of-Thought Perturbations",
+      "url": "https://arxiv.org/abs/2603.03332",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-09T04:00:00.000Z",
+      "summary": "arXiv:2603.03332v2 Announce Type: replace-cross Abstract: Chain-of-Thought (CoT) prompting has emerged as a foundational technique for eliciting reasoning from Large Language Models (LLMs), yet the robustness of this approach to corruptions in intermediate reasoning steps remains poorly understood. This paper presents a comprehensive empirical evaluation of LLM robustness to a structured taxonomy of 5 CoT perturbation types: \\textit{MathError, UnitConversion, Sycophancy, SkippedSteps,} and \\textit{ExtraSteps}. We evaluate 13 models spanning three orders of magnitude in parameter count (3B to 1.5T\\footnote{Assumed parameter count of closed models}), testing their ability to complete mathematical reasoning tasks despite perturbations injected at different points in the reasoning chain. Our key findings reveal heterogeneous vulnerability patterns: MathError perturbations produce the most severe degradation in small models (50-60\\% accuracy loss) but show strong scaling benefits; UnitConversion remains challenging across all scales (20-30\\% loss even for largest models); ExtraSteps incur minimal accuracy degradation (0-6\\%) regardless of scale; Sycophancy produces modest effects (7\\% loss for small models); and SkippedSteps cause intermediate damage (15\\% loss). Scaling relationships follow power-law patterns, with model size serving as a protective factor against some perturbations but offering limited defense against dimensional reasoning tasks. These findings have direct implications for deploying LLMs in multi-stage reasoning pipelines and underscore the necessity of task-specific robustness assessments and mitigation strategies. The code and results are available https://github.com/Mystic-Slice/CoTPerturbation.",
+      "tags": [
+        "papers",
+        "reasoning",
+        "eval",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.03332"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "7452ae70cf40ec992064ce80e9f2bab09c3cc4ca8bf9f0ff6795a509b1538ed1",
+      "title": "Measuring AI R&D Automation",
+      "url": "https://arxiv.org/abs/2603.03992",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-09T04:00:00.000Z",
+      "summary": "arXiv:2603.03992v3 Announce Type: replace-cross Abstract: The automation of AI R&D (AIRDA) could have significant implications, but its extent and ultimate effects remain uncertain. We need empirical data to resolve these uncertainties, but existing data (primarily capability benchmarks) may not reflect real-world automation or capture its broader consequences, such as whether AIRDA accelerates capabilities more than safety progress or whether our ability to oversee AI R&D can keep pace with its acceleration. To address these gaps, this work proposes metrics to track the extent of AIRDA and its effects on AI progress and oversight. The metrics span dimensions such as capital share of AI R&D spending, researcher time allocation, and AI subversion incidents, and could help decision makers understand the potential consequences of AIRDA, implement appropriate safety measures, and maintain awareness of the pace of AI development. We recommend that companies and third parties (e.g. non-profit research organisations) start to track these metrics, and that governments support these efforts.",
+      "tags": [
+        "papers",
+        "eval",
+        "safety"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.03992"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "b2ea42b6eb19541cc5ad8627e7971826ec468e44f70945e2c06926d1cf52563d",
+      "title": "Simulating Meaning, Nevermore! Introducing ICR: A Semiotic-Hermeneutic Metric for Evaluating Meaning in LLM Text Summaries",
+      "url": "https://arxiv.org/abs/2603.04413",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-09T04:00:00.000Z",
+      "summary": "arXiv:2603.04413v2 Announce Type: replace Abstract: Meaning in human language is relational, context dependent, and emergent, arising from dynamic systems of signs rather than fixed word-concept mappings. In computational settings, this semiotic and interpretive complexity complicates the generation and evaluation of meaning. This article proposes an interdisciplinary framework for studying meaning in large language model (LLM) generated language by integrating semiotics and hermeneutics with qualitative research methods. We review prior scholarship on meaning and machines, examining how linguistic signs are transformed into vectorized representations in static and contextualized embedding models, and identify gaps between statistical approximation and human interpretive meaning. We then introduce the Inductive Conceptual Rating (ICR) metric, a qualitative evaluation approach grounded in inductive content analysis and reflexive thematic analysis, designed to assess semantic accuracy and meaning alignment in LLM-outputs beyond lexical similarity metrics. We apply ICR in an empirical comparison of LLM generated and human generated thematic summaries across five datasets (N = 50 to 800). While LLMs achieve high linguistic similarity, they underperform on semantic accuracy, particularly in capturing contextually grounded meanings. Performance improves with larger datasets but remains variable across models, potentially reflecting differences in the frequency and coherence of recurring concepts and meanings. We conclude by arguing for evaluation frameworks that leverage systematic qualitative interpretation practices when assessing meaning in LLM-generated outputs from reference texts.",
+      "tags": [
+        "papers",
+        "language",
+        "eval",
+        "safety",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.04413"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "d71a2babd61c4f83743f779d1a517e54cc1d04527041cdf308bd2dd1dcac0901",
+      "title": "Can LLMs Capture Expert Uncertainty? A Comparative Analysis of Value Alignment in Ethnographic Qualitative Research",
+      "url": "https://arxiv.org/abs/2603.04897",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-09T04:00:00.000Z",
+      "summary": "arXiv:2603.04897v2 Announce Type: replace Abstract: Qualitative analysis of open-ended interviews plays a central role in ethnographic and economic research by uncovering individuals' values, motivations, and culturally embedded financial behaviors. While large language models (LLMs) offer promising support for automating and enriching such interpretive work, their ability to produce nuanced, reliable interpretations under inherent task ambiguity remains unclear. In our work we evaluate LLMs on the task of identifying the top three human values expressed in long-form interviews based on the Schwartz Theory of Basic Values framework. We compare their outputs to expert annotations, analyzing both performance and uncertainty patterns relative to the experts. Results show that LLMs approach the human ceiling on set-based metrics (F1, Jaccard) but struggle to recover exact value rankings, as reflected in lower RBO scores. While the average Schwartz value distributions of most models closely match those of human analysts, their uncertainty structures across the Schwartz values diverge from expert uncertainty patterns. Among the evaluated models, Qwen performs closest to expert-level agreement and exhibits the strongest alignment with expert Schwartz value distributions. LLM ensemble methods yield consistent gains across metrics, with Majority Vote and Borda Count performing best. Notably, systematic overemphasis on certain Schwartz values, like Security, suggests both the potential of LLMs to provide complementary perspectives and the need to further investigate model-induced value biases. Overall, our findings highlight both the promise and the limitations of LLMs as collaborators in inherently ambiguous qualitative value analysis.",
+      "tags": [
+        "papers",
+        "language",
+        "safety",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.04897"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "1db080d20f600606046e8f6de4f443c8e556c64cf3ff48800c05e2d87b655e30",
+      "title": "ThaiSafetyBench: Assessing Language Model Safety in Thai Cultural Contexts",
+      "url": "https://arxiv.org/abs/2603.04992",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-09T04:00:00.000Z",
+      "summary": "arXiv:2603.04992v2 Announce Type: replace Abstract: The safety evaluation of large language models (LLMs) remains largely centered on English, leaving non-English languages and culturally grounded risks underexplored. In this work, we investigate LLM safety in the context of the Thai language and culture and introduce ThaiSafetyBench, an open-source benchmark comprising 1,954 malicious prompts written in Thai. The dataset covers both general harmful prompts and attacks that are explicitly grounded in Thai cultural, social, and contextual nuances. Using ThaiSafetyBench, we evaluate 24 LLMs, with GPT-4.1 and Gemini-2.5-Pro serving as LLM-as-a-judge evaluators. Our results show that closed-source models generally demonstrate stronger safety performance than open-source counterparts, raising important concerns regarding the robustness of openly available models. Moreover, we observe a consistently higher Attack Success Rate (ASR) for Thai-specific, culturally contextualized attacks compared to general Thai-language attacks, highlighting a critical vulnerability in current safety alignment methods. To improve reproducibility and cost efficiency, we further fine-tune a DeBERTa-based harmful response classifier, which we name ThaiSafetyClassifier. The model achieves a weighted F1 score of 84.4%, matching GPT-4.1 judgments. We publicly release the fine-tuning weights and training scripts to support reproducibility. Finally, we introduce the ThaiSafetyBench leaderboard to provide continuously updated safety evaluations and encourage community participation. - ThaiSafetyBench HuggingFace Dataset: https://huggingface.co/datasets/typhoon-ai/ThaiSafetyBench - ThaiSafetyBench Github: https://github.com/trapoom555/ThaiSafetyBench - ThaiSafetyClassifier HuggingFace Model: https://huggingface.co/typhoon-ai/ThaiSafetyClassifier - ThaiSafetyBench Leaderboard: https://huggingface.co/spaces/typhoon-ai/ThaiSafetyBench-Leaderboard",
+      "tags": [
+        "papers",
+        "language",
+        "eval",
+        "safety",
+        "training",
+        "model",
+        "release",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.04992"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "562bde50dba9b86e3c455fc7affb438a9fec07dc5e55c06e931fad735837b2d3",
+      "title": "Oral to Web: Digitizing 'Zero Resource'Languages of Bangladesh",
+      "url": "https://arxiv.org/abs/2603.05272",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-09T04:00:00.000Z",
+      "summary": "arXiv:2603.05272v2 Announce Type: replace Abstract: We present the Multilingual Cloud Corpus, the first national-scale, parallel, multimodal linguistic dataset of Bangladesh's ethnic and indigenous languages. Despite being home to approximately 40 minority languages spanning four language families, Bangladesh has lacked a systematic, cross-family digital corpus for these predominantly oral, computationally \"zero resource\" varieties, 14 of which are classified as endangered. Our corpus comprises 85792 structured textual entries, each containing a Bengali stimulus text, an English translation, and an IPA transcription, together with approximately 107 hours of transcribed audio recordings, covering 42 language varieties from the Tibeto-Burman, Indo-European, Austro-Asiatic, and Dravidian families, plus two genetically unclassified languages. The data were collected through systematic fieldwork over 90 days across nine districts of Bangladesh, involving 16 data collectors, 77 speakers, and 43 validators, following a predefined elicitation template of 2224 unique items organized at three levels of linguistic granularity: isolated lexical items (475 words across 22 semantic domains), grammatical constructions (887 sentences across 21 categories including verbal conjugation paradigms), and directed speech (862 prompts across 46 conversational scenarios). Post-field processing included IPA transcription by 10 linguists with independent adjudication by 6 reviewers. The complete dataset is publicly accessible through the Multilingual Cloud platform (multiling.cloud), providing searchable access to annotated audio and textual data for all documented varieties. We describe the corpus design, fieldwork methodology, dataset structure, and per-language coverage, and discuss implications for endangered language documentation, low-resource NLP, and digital preservation in linguistically diverse developing countries.",
+      "tags": [
+        "papers",
+        "language",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.05272"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
       "id": "64059cac79937377ee584c5b7f34009d41db07a3787927f89d94a3ffd1d8ae55",
       "title": "Conversational LLM Evaluations in Minutes with NVIDIA NeMo Evaluator Agent Skills",
       "url": "https://huggingface.co/blog/nvidia/model-evaluation-skill",
@@ -14910,236 +15143,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2506.07915"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "78aab898a7e5b63cbb7ae62a8a9c308fd00dd5d6bad9fb599b2733f57102fb04",
-      "title": "BridgeDrive: Diffusion Bridge Policy for Closed-Loop Trajectory Planning in Autonomous Driving",
-      "url": "https://arxiv.org/abs/2509.23589",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-06T05:00:00.000Z",
-      "summary": "arXiv:2509.23589v4 Announce Type: replace Abstract: Diffusion-based planners have shown strong potential for autonomous driving by capturing multi-modal driving behaviors. A key challenge is how to effectively guide these models for safe and reactive planning in closed-loop settings, where the ego vehicle's actions influence future states. Recent work leverages typical expert driving behaviors (i.e., anchors) to guide diffusion planners but relies on a truncated diffusion schedule that introduces an asymmetry between the forward and denoising processes, diverging from the core principles of diffusion models. To address this, we introduce BridgeDrive, a novel anchor-guided diffusion bridge policy for closed-loop trajectory planning. Our approach formulates planning as a diffusion bridge that directly transforms coarse anchor trajectories into refined, context-aware plans, ensuring theoretical consistency between the forward and reverse processes. BridgeDrive is compatible with efficient ODE solvers, enabling real-time deployment. We achieve state-of-the-art performance on the Bench2Drive closed-loop evaluation benchmark, improving the success rate by 7.72% and 2.45% over prior arts with PDM-Lite and LEAD datasets, respectively. Project page: https://github.com/shuliu-ethz/BridgeDrive.",
-      "tags": [
-        "papers",
-        "eval",
-        "policy",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2509.23589"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "e5ff5e5ee80de34999f598d23d84f33b15b0cafd339981b053e9e6b990aeab71",
-      "title": "Beyond Prefixes: Graph-as-Memory Cross-Attention for Knowledge Graph Completion with Large Language Models",
-      "url": "https://arxiv.org/abs/2510.08966",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-06T05:00:00.000Z",
-      "summary": "arXiv:2510.08966v2 Announce Type: replace Abstract: Fusing Knowledge Graphs with Large Language Models (LLMs) is crucial for knowledge-intensive tasks like knowledge graph completion. Existing LLM-based approaches typically inject graph information via prefix concatenation, resulting in shallow interactions that fail to support fine-grained evidence retrieval during generation. Beyond prefixes, we propose Graph-as-Memory Tuning (GMT), a new paradigm that represents local graph structure as explicit graph memory and injects it into LLMs via deep, token-wise cross-attention. Specifically, GMT first employs a Semantic Graph Module to encode context-aware semantics from local neighborhoods guided by knowledge-enhanced relations, and compresses them into a fixed number of graph memory tokens. A Graph-as-Memory Cross-Attention Fusion Module then integrates these tokens into multiple Transformer layers, allowing LLM hidden state to dynamically retrieve relevant graph evidence. To enable efficient adaptation, GMT applies LoRA only to the memory cross-attention while keeping the base LLM frozen. Extensive experiments show that GMT significantly outperforms prefix-tuning and other strong baselines, providing more potent signals for robust reasoning. The code is published at https://github.com/tongruiliu/GMT.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2510.08966"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "690fb48178636c12e6a9a12b43505294548c621ca8f467b3c5858d4303fa0fb8",
-      "title": "OmniVideoBench: Towards Audio-Visual Understanding Evaluation for Omni MLLMs",
-      "url": "https://arxiv.org/abs/2510.10689",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-06T05:00:00.000Z",
-      "summary": "arXiv:2510.10689v3 Announce Type: replace Abstract: Recent advances in multimodal large language models (MLLMs) have demonstrated substantial potential in video understanding. However, existing benchmarks fail to comprehensively evaluate synergistic reasoning capabilities across audio and visual modalities, often neglecting either one of the modalities or integrating them in a logically inconsistent manner. To bridge this gap, we introduce OmniVideoBench, a large-scale and rigorously designed benchmark dedicated to assessing synergistic audio-visual understanding, with a strong emphasis on modality complementarity and logical consistency. Specifically, OmniVideoBench comprises 1000 high-quality question-answer(QA) pairs, each annotated with step-by-step reasoning traces, derived from 628 diverse videos ranging from several seconds to 30 minutes, and manually verified to guarantee complete correctness and uniqueness. Moreover, OmniVideoBench encompasses 13 carefully designed question types, covering temporal reasoning, spatial localization, counting, causal inference, summarization, and beyond, thereby capturing the essential challenges of video understanding. Evaluation of multiple MLLMs on OmniVideoBench reveals a pronounced gap between model performance and human reasoning, with open-source models lagging significantly behind their closed-source counterparts, underscoring the inherent difficulty of genuine audio-visual reasoning. We will release OmniVideoBench to foster the development of MLLMs with stronger and more generalizable reasoning capabilities.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "eval",
-        "inference",
-        "model",
-        "release"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2510.10689"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "3e7e98662d13a9af894651bcc5c2787a550241600460e3c675ce8fd305fdd6a4",
-      "title": "CoRPO: Adding a Correctness Bias to GRPO Improves Generalization",
-      "url": "https://arxiv.org/abs/2511.04439",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-06T05:00:00.000Z",
-      "summary": "arXiv:2511.04439v3 Announce Type: replace Abstract: Group-Relative Policy Optimization (GRPO) has emerged as the standard for training reasoning capabilities in large language models through reinforcement learning. By estimating advantages using group-mean rewards rather than a learned critic, GRPO has enabled efficient scaling of reinforcement learning from verifiable rewards (RLVR). However, we identify a fundamental limitation: GRPO's mean baseline can assign positive advantages to incorrect solutions simply because they outperform a poorly-performing group average. It leads to overestimation of advantages and reinforcement of incorrect behaviours. To address this, we propose Correctness-Relative Policy Optimization (CoRPO), a simple modification to the GRPO objective that clips the minimum baseline to a fixed correctness threshold. We show that baseline clipping introduces a protective bias to advantage estimation that mitigates overfitting while preserving effective exploration. Empirically, CoRPO-trained models improve cross-domain reasoning, generalizing more consistently to out-of-domain (OOD) tasks. When trained on coding tasks, CoRPO outperforms GRPO on math, and vice-versa, indicating that CoRPO learns robust, transferable reasoning patterns rather than task-specific solutions.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "policy",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2511.04439"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "63cd947c14d06a635bee2841844d336dadae617a004a5d5564269444192d1cf1",
-      "title": "DAP: A Discrete-token Autoregressive Planner for Autonomous Driving",
-      "url": "https://arxiv.org/abs/2511.13306",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-06T05:00:00.000Z",
-      "summary": "arXiv:2511.13306v2 Announce Type: replace Abstract: Gaining sustainable performance improvement with scaling data and model budget remains a pivotal yet unresolved challenge in autonomous driving. While autoregressive models exhibited promising data-scaling efficiency in planning tasks, predicting ego trajectories alone suffers sparse supervision and weakly constrains how scene evolution should shape ego motion. Therefore, we introduce DAP, a discrete-token autoregressive planner that jointly forecasts BEV semantics and ego trajectories, thereby enforcing comprehensive representation learning and allowing predicted dynamics to directly condition ego motion. In addition, we incorporate a reinforcement-learning-based fine-tuning, which preserves supervised behavior cloning priors while injecting reward-guided improvements. Despite a compact 160M parameter budget, DAP achieves state-of-the-art performance on open-loop metrics and delivers competitive closed-loop results on the NAVSIM benchmark. Overall, the fully discrete-token autoregressive formulation operating on both rasterized BEV and ego actions provides a compact yet scalable planning paradigm for autonomous driving.",
-      "tags": [
-        "papers",
-        "eval",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2511.13306"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "1db774737a8d9fe92051e8a79b6c9b21b00aab10db7d9001465c4e26746ce36d",
-      "title": "Towards Trustworthy Legal AI through LLM Agents and Formal Reasoning",
-      "url": "https://arxiv.org/abs/2511.21033",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-06T05:00:00.000Z",
-      "summary": "arXiv:2511.21033v2 Announce Type: replace Abstract: Legal decisions should be logical and based on statutory laws. While large language models(LLMs) are good at understanding legal text, they cannot provide verifiable justifications. We present L4L, a solver-centric framework that enforces formal alignment between LLM-based legal reasoning and statutory laws. The framework integrates role-differentiated LLM agents with SMT-backed verification, combining the flexibility of natural language with the rigor of symbolic reasoning. Our approach operates in four stages: (1) Statute Knowledge Building, where LLMs autoformalize legal provisions into logical constraints and validate them through case-level testing; (2) Dual Fact-and-Statute Extraction, in which the prosecutor-and defense-aligned agents independently map case narratives to argument tuples; (3) Solver-Centric Adjudication, where SMT solvers check the legal admissibility and consistency of the arguments against the formalized statute knowledge; (4) Judicial Rendering, in which a judge agent integrates solver-validated reasoning with statutory interpretation and similar precedents to produce a legally grounded verdict. Experiments on public legal benchmarks show that L4L consistently outperforms baselines, while providing auditable justifications that enable trustworthy legal AI.",
-      "tags": [
-        "papers",
-        "agents",
-        "reasoning",
-        "eval",
-        "safety",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2511.21033"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "5bcbeb339f24b134e9b478db4515abb74fdc249effc963810f99e801e22fb0a3",
-      "title": "ClinNoteAgents: An LLM Multi-Agent System for Predicting and Interpreting Heart Failure 30-Day Readmission from Clinical Notes",
-      "url": "https://arxiv.org/abs/2512.07081",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-06T05:00:00.000Z",
-      "summary": "arXiv:2512.07081v2 Announce Type: replace Abstract: Heart failure (HF) is one of the leading causes of rehospitalization among older adults in the United States. Although clinical notes contain rich, detailed patient information and make up a large portion of electronic health records (EHRs), they remain underutilized for HF readmission risk analysis. Traditional computational models for HF readmission often rely on expert-crafted rules, medical thesauri, and ontologies to interpret clinical notes, which are typically written under time pressure and may contain misspellings, abbreviations, and domain-specific jargon. We present ClinNoteAgents, an LLM-based multi-agent framework that transforms free-text clinical notes into (1) structured representations of clinical and social risk factors for association analysis and (2) clinician-style abstractions for HF 30-day readmission prediction. We evaluate ClinNoteAgents on 3,544 notes from 2,065 patients (readmission rate=35.16%), demonstrating high extraction fidelity for clinical variables (conditional accuracy >= 90% for multiple vitals), key risk factor identification, and preservation of predictive signal despite 60 to 90% text reduction. By reducing reliance on structured fields and minimizing manual annotation and model training, ClinNoteAgents provides a scalable and interpretable approach to note-based HF readmission risk modeling in data-limited healthcare systems.",
-      "tags": [
-        "papers",
-        "agents",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2512.07081"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "dfd24a9e90e1a916e3c2177395f20dfbbb80b4a7188ac7bf4145cce7a9e15dc7",
-      "title": "Achieving Olympia-Level Geometry Large Language Model Agent via Complexity Boosting Reinforcement Learning",
-      "url": "https://arxiv.org/abs/2512.10534",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-06T05:00:00.000Z",
-      "summary": "arXiv:2512.10534v3 Announce Type: replace Abstract: Large language model (LLM) agents exhibit strong mathematical problem-solving abilities and can even solve International Mathematical Olympiad (IMO) level problems with the assistance of formal proof systems. However, due to weak heuristics for auxiliary constructions, AI for geometry problem solving remains dominated by expert models such as AlphaGeometry 2, which rely heavily on large-scale data synthesis and search for both training and evaluation. In this work, we make the first attempt to build a medalist-level LLM agent for geometry and present InternGeometry. InternGeometry overcomes the heuristic limitations in geometry by iteratively proposing propositions and auxiliary constructions, verifying them with a symbolic engine, and reflecting on the engine's feedback to guide subsequent proposals. A dynamic memory mechanism enables InternGeometry to conduct more than two hundred interactions with the symbolic engine per problem. To further accelerate learning, we introduce Complexity-Boosting Reinforcement Learning (CBRL), which gradually increases the complexity of synthesized problems across training stages. Built on InternThinker-32B, InternGeometry solves 44 of 50 IMO geometry problems (2000-2024), exceeding the average gold medalist score (40.9), using only 13K training examples, just 0.004% of the data used by AlphaGeometry 2, demonstrating the potential of LLM agents on expert-level geometry tasks. InternGeometry can also propose novel auxiliary constructions for IMO problems that do not appear in human solutions.",
-      "tags": [
-        "papers",
-        "agents",
-        "eval",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2512.10534"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "e594fb4c2f407dc90779e99adff8b99a111ff29d2f1f279a7f0ae4df9de76366",
-      "title": "HydroGEM: A Self Supervised Zero Shot Hybrid TCN Transformer Foundation Model for Continental Scale Streamflow Quality Control",
-      "url": "https://arxiv.org/abs/2512.14106",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-06T05:00:00.000Z",
-      "summary": "arXiv:2512.14106v3 Announce Type: replace Abstract: Advances in sensor networks have enabled real-time stream discharge monitoring, yet persistent sensor malfunctions limit data utility. Manual quality control by expert hydrologists cannot scale with networks generating millions of measurements annually. We introduce HydroGEM, a foundation model for continental-scale streamflow quality control designed to support human expertise. HydroGEM uses self-supervised pretraining on 6.03 million clean sequences from 3,724 USGS stations to learn general hydrological representations, followed by fine-tuning with synthetic anomalies for detection and reconstruction. A hybrid TCN-Transformer architecture (14.2M parameters) captures both local and long-range temporal dependencies, while hierarchical normalization handles six orders of magnitude in discharge. On held-out observations from 799 stations with 18 synthetic anomaly types grounded in USGS standards, HydroGEM achieves F1=0.792 for detection and 68.7% reconstruction error reduction, outperforming the strongest baseline by 36.3%. For cross-national validation on 100 Environment and Climate Change Canada stations using tolerant evaluation with a plus or minus 24-hour buffer, HydroGEM achieves Tolerant F1=0.70 with 90.1% segment-level event detection, demonstrating cross-national generalization. The model maintains consistent detection across correction magnitudes and aligns with operational seasonal patterns, with peak flagging during winter ice-affected periods matching hydrologists' correction behavior. Architectural separation between simplified training anomalies and complex test anomalies confirms that performance reflects learned hydrometric principles rather than pattern memorization.",
-      "tags": [
-        "papers",
-        "eval",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2512.14106"
         },
         {
           "label": "Feed",
