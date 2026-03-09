@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-09T19:11:35.838Z",
+    "generatedAt": "2026-03-09T19:53:07.086Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,30 @@
     ]
   },
   "items": [
+    {
+      "id": "f55cab7406d52b7a36e752710a7ed7950aae551b79bb6a4eeafbb22bbab2c644",
+      "title": "Implementing Falcon-H1 Hybrid Architecture in NVIDIA Megatron Core",
+      "url": "https://developer.nvidia.com/blog/implementing-falcon-h1-hybrid-architecture-in-nvidia-megatron-core/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-03-09T19:30:00.000Z",
+      "summary": "In the rapidly evolving landscape of large language model (LLM) development, NVIDIA Megatron Core has emerged as the foundational framework for training massive... In the rapidly evolving landscape of large language model (LLM) development, NVIDIA Megatron Core has emerged as the foundational framework for training massive transformer models at scale. The open source library offers industry-leading parallelism and GPU-optimized performance. Now developed GitHub-first in the NVIDIA/Megatron-LM repo, Megatron Core is increasingly shaped by contributions from… Source",
+      "tags": [
+        "compute",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/implementing-falcon-h1-hybrid-architecture-in-nvidia-megatron-core/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
     {
       "id": "d83889c8a7bae36697849ee6c9af151421e0254371fec3077c51fa554fe95bf6",
       "title": "Granite 4.0 1B Speech: Compact, Multilingual, and Built for the Edge",
@@ -15104,30 +15128,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.05500"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "b2b61bb961ab26c85e36c92b8fde363c13e764416a3465a38a3fb8c0df902169",
-      "title": "RoboPocket: Improve Robot Policies Instantly with Your Phone",
-      "url": "https://arxiv.org/abs/2603.05504",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-06T05:00:00.000Z",
-      "summary": "arXiv:2603.05504v1 Announce Type: cross Abstract: Scaling imitation learning is fundamentally constrained by the efficiency of data collection. While handheld interfaces have emerged as a scalable solution for in-the-wild data acquisition, they predominantly operate in an open-loop manner: operators blindly collect demonstrations without knowing the underlying policy's weaknesses, leading to inefficient coverage of critical state distributions. Conversely, interactive methods like DAgger effectively address covariate shift but rely on physical robot execution, which is costly and difficult to scale. To reconcile this trade-off, we introduce RoboPocket, a portable system that enables Robot-Free Instant Policy Iteration using single consumer smartphones. Its core innovation is a Remote Inference framework that visualizes the policy's predicted trajectory via Augmented Reality (AR) Visual Foresight. This immersive feedback allows collectors to proactively identify potential failures and focus data collection on the policy's weak regions without requiring a physical robot. Furthermore, we implement an asynchronous Online Finetuning pipeline that continuously updates the policy with incoming data, effectively closing the learning loop in minutes. Extensive experiments demonstrate that RoboPocket adheres to data scaling laws and doubles the data efficiency compared to offline scaling strategies, overcoming their long-standing efficiency bottleneck. Moreover, our instant iteration loop also boosts sample efficiency by up to 2$\\times$ in distributed environments a small number of interactive corrections per person. Project page and videos: https://robo-pocket.github.io.",
-      "tags": [
-        "papers",
-        "policy",
-        "inference"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.05504"
         },
         {
           "label": "Feed",
