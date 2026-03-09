@@ -366,19 +366,21 @@ const exploreLinks = [
             return null;
           }
         })();
+        const ATMOSPHERIC_BLUE = '#587a95';
+        const READABLE_BLUE_DARK = '#7fa3bf';
+        const READABLE_BLUE_LIGHT = '#4b6a82';
         const palette = {
-          yellow: '#dcc56e',
-          blue: '#7cb8c0',
-          orange: '#d6a06b',
-          red: '#c77b73',
-          white: '#eadfc0',
-          black: '#6b6158',
-          violet: '#a28ed0',
-          indigo: '#7392c1'
+          ochre: '#b97a2d',
+          blue: ATMOSPHERIC_BLUE,
+          red: '#a64a3b',
+          white: '#ede3d1',
+          black: '#171715'
         };
         const LEGACY_COLOR_ALIASES = {
-          white: 'violet',
-          black: 'indigo'
+          yellow: 'ochre',
+          orange: 'ochre',
+          violet: 'blue',
+          indigo: 'blue'
         };
         const toneProfiles = {
           balance: { warm: 0.068, cool: 0.046, shadow: 0.25, highlight: 0.024, depth: 0.22, bodyLift: 0.048 },
@@ -717,13 +719,16 @@ const exploreLinks = [
           const circadian = getEffectiveCircadianProfile();
           const accent = applyCircadianTone(baseHex, circadian);
           const companion = deriveCompanion(accent);
-          const sky = applyCircadianTone(companion, circadian, {
+          const sky = applyCircadianTone(ATMOSPHERIC_BLUE, circadian, {
             hueWeight: 0.18,
             saturationWeight: 0.52,
             lightnessWeight: 0.42,
             warmWeight: 0.52,
             coolWeight: 0.44
           });
+          const readableSky = root.classList.contains('light') || root.dataset.themeMode === 'light'
+            ? READABLE_BLUE_LIGHT
+            : READABLE_BLUE_DARK;
           return {
             accent,
             cursor: companion,
@@ -731,7 +736,7 @@ const exploreLinks = [
             toneAccentBright: mixHex(accent, '#ffffff', 0.1),
             toneAccentGlow: mixHex(accent, '#ffffff', 0.16),
             toneSky: mixHex(sky, '#ffffff', 0.12),
-            toneSkyBright: mixHex(sky, '#ffffff', 0.2),
+            toneSkyBright: readableSky,
             circadian
           };
         };

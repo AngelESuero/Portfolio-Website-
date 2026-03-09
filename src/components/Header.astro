@@ -3,27 +3,24 @@ import profile from '../data/profile';
 import ViewSettings from './ViewSettings.astro';
 
 const ACCENT_SWATCHES: Record<string, string> = {
-  yellow: '#dcc56e',
-  blue: '#7cb8c0',
-  orange: '#d6a06b',
-  red: '#c77b73',
-  white: '#eadfc0',
-  black: '#6b6158',
-  violet: '#a28ed0',
-  indigo: '#7392c1'
+  ochre: '#b97a2d',
+  blue: '#587a95',
+  red: '#a64a3b',
+  white: '#ede3d1',
+  black: '#171715'
 };
 const getAccentSwatch = (value?: string) => ACCENT_SWATCHES[String(value || '').trim().toLowerCase()] || ACCENT_SWATCHES.blue;
 
 const nav = [
-  { label: 'Home', href: '/', color: 'white', tone: 'presence' },
+  { label: 'Home', href: '/', color: 'ochre', tone: 'presence' },
   { label: 'About', href: '/about', color: 'blue', tone: 'clarity' },
-  { label: 'Work', href: '/work', color: 'orange', tone: 'seva' },
-  { label: 'Writing', href: '/writing', color: 'black', tone: 'contemplation' },
-  { label: 'Social', href: '/social', color: 'red', tone: 'vitality' },
-  { label: 'AGI Timeline', href: '/agi', color: 'black', tone: 'discernment' },
-  { label: 'AI x Survival', href: '/survival-os', color: 'red', tone: 'vitality' },
-  { label: 'Survival Support', href: '/survival-support', color: 'yellow', tone: 'grounding' },
-  { label: 'Map', href: '/map', color: 'yellow', tone: 'grounding' },
+  { label: 'Work', href: '/work', color: 'ochre', tone: 'seva' },
+  { label: 'Writing', href: '/writing', color: 'white', tone: 'contemplation' },
+  { label: 'Social', href: '/social', color: 'blue', tone: 'harmony' },
+  { label: 'AGI Timeline', href: '/agi', color: 'blue', tone: 'discernment' },
+  { label: 'AI x Survival', href: '/survival-os', color: 'red', tone: 'grounding' },
+  { label: 'Survival Support', href: '/survival-support', color: 'ochre', tone: 'grounding' },
+  { label: 'Map', href: '/map', color: 'blue', tone: 'presence' },
   { label: 'Now', href: '/now', color: 'white', tone: 'presence' },
   { label: 'Contact', href: '/contact', color: 'white', tone: 'harmony' },
   { label: 'Link Hub', href: '/link-hub', color: 'blue', tone: 'harmony' }
