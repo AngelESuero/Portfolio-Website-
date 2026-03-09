@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-09T16:14:35.302Z",
+    "generatedAt": "2026-03-09T17:11:42.721Z",
     "sources": [
       {
         "id": "openai_news",
@@ -49,6 +49,30 @@
   },
   "items": [
     {
+      "id": "3deca7b069f3b7b90807f64c01c574b4fefb89eb3949def1eec28a03f04fb1f2",
+      "title": "Enhancing Distributed Inference Performance with the NVIDIA Inference Transfer Library",
+      "url": "https://developer.nvidia.com/blog/enhancing-distributed-inference-performance-with-the-nvidia-inference-transfer-library/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-03-09T17:00:00.000Z",
+      "summary": "Deploying large language models (LLMs) requires large-scale distributed inference, which spreads model computation and request handling across many GPUs and... Deploying large language models (LLMs) requires large-scale distributed inference, which spreads model computation and request handling across many GPUs and nodes to scale to more users while reducing latency. Distributed inference frameworks use techniques such as disaggregated serving, KV cache loading, and wide expert parallelism. In disaggregated serving environments… Source",
+      "tags": [
+        "compute",
+        "inference",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/enhancing-distributed-inference-performance-with-the-nvidia-inference-transfer-library/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
+    {
       "id": "b2e86d459500ca07ee23d9241e5d1de9ed9b3288bddc57f7df49bcff513c602d",
       "title": "Removing the Guesswork from Disaggregated Serving",
       "url": "https://developer.nvidia.com/blog/removing-the-guesswork-from-disaggregated-serving/",
@@ -68,6 +92,29 @@
         {
           "label": "Feed",
           "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
+    {
+      "id": "159b3884602bc237850b31dd8911383dd018897406e999577c281371e8d1bedb",
+      "title": "OpenAI to acquire Promptfoo",
+      "url": "https://openai.com/index/openai-to-acquire-promptfoo",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-03-09T10:00:00.000Z",
+      "summary": "OpenAI is acquiring Promptfoo, an AI security platform that helps enterprises identify and remediate vulnerabilities in AI systems during development.",
+      "tags": [
+        "primary",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/openai-to-acquire-promptfoo"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
         }
       ]
     },
@@ -15088,57 +15135,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2503.11832"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "bbf1f0bc146338d041537474f7854d239edf30a125ef78b00edc2d1b8cb6203a",
-      "title": "Foam-Agent: Towards Automated Intelligent CFD Workflows",
-      "url": "https://arxiv.org/abs/2505.04997",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-06T05:00:00.000Z",
-      "summary": "arXiv:2505.04997v2 Announce Type: replace Abstract: Computational fluid dynamics (CFD) has been the main workhorse of computational physics. Yet its steep learning curve and fragmented, multi-stage workflow create significant barriers. To address these challenges, we present Foam-Agent, a multi-agent framework leveraging large language models (LLMs) to automate the end-to-end CFD workflow from a single natural language prompt. Foam-Agent orchestrates the comprehensive simulation workflow from mesh generation and high-performance computing job scripting to post-processing visualization. The system integrates retrieval-augmented generation with dependency-aware scheduling to synthesize high-fidelity simulation configurations. Furthermore, Foam-Agent adopts the Model Context Protocol to expose its core functions as discrete, callable tools. This allows for flexible integration and use by any other agentic systems. Evaluated on 110 simulation tasks, Foam-Agent achieved a state-of-the-art execution success rate of 88.2% without expert intervention. These results demonstrate how specialized multi-agent systems can effectively reduce expertise barriers and streamline complex fluid simulations.",
-      "tags": [
-        "papers",
-        "agents",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2505.04997"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "693ff0a040327ca5c693c2efda701d862dfb7980fa92c3445bf7db5568b3edf9",
-      "title": "Ice Cream Doesn't Cause Drowning: Benchmarking LLMs Against Statistical Pitfalls in Causal Inference",
-      "url": "https://arxiv.org/abs/2505.13770",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-06T05:00:00.000Z",
-      "summary": "arXiv:2505.13770v2 Announce Type: replace Abstract: Reliable causal inference is essential for making decisions in high-stakes areas like medicine, economics, and public policy. However, it remains unclear whether large language models (LLMs) can handle rigorous and trustworthy statistical causal inference. Current benchmarks usually involve simplified tasks. For example, these tasks might only ask LLMs to identify semantic causal relationships or draw conclusions directly from raw data. As a result, models may overlook important statistical pitfalls, such as Simpson's paradox or selection bias. This oversight limits the applicability of LLMs in the real world. To address these limitations, we propose CausalPitfalls, a comprehensive benchmark designed to rigorously evaluate the capability of LLMs in overcoming common causal inference pitfalls. Our benchmark features structured challenges across multiple difficulty levels, each paired with grading rubrics. This approach allows us to quantitatively measure both causal reasoning capabilities and the reliability of LLMs' responses. We evaluate models using two protocols: (1) direct prompting, which assesses intrinsic causal reasoning, and (2) code-assisted prompting, where models generate executable code for explicit statistical analysis. Additionally, we validate the effectiveness of this judge by comparing its scoring with assessments from human experts. Our results reveal significant limitations in current LLMs when performing statistical causal inference. The CausalPitfalls benchmark provides essential guidance and quantitative metrics to advance the development of trustworthy causal reasoning systems.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "eval",
-        "policy",
-        "inference",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2505.13770"
         },
         {
           "label": "Feed",
