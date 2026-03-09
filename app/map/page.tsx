@@ -1,5 +1,5 @@
-import OrbMindMapPrototype from "../components/OrbMindMapPrototype";
+import LifeMapSemanticOrb from "../components/LifeMapSemanticOrb";
 
 export default function MapPage() {
-  return <OrbMindMapPrototype />;
+  return <LifeMapSemanticOrb />;
 }
