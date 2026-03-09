@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-09T20:51:45.042Z",
+    "generatedAt": "2026-03-09T21:47:50.966Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,29 @@
     ]
   },
   "items": [
+    {
+      "id": "6c605791ef5d4b89cca53dfc54d82f030aaf9977535f5cfee1b4b400d12c7ed3",
+      "title": "CUDA 13.2 Introduces Enhanced CUDA Tile Support and New Python Features",
+      "url": "https://developer.nvidia.com/blog/cuda-13-2-introduces-enhanced-cuda-tile-support-and-new-python-features/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-03-09T21:13:18.000Z",
+      "summary": "CUDA 13.2 arrives with a major update: NVIDIA CUDA Tile is now supported on devices of compute capability 8.X architectures (NVIDIA Ampere and NVIDIA Ada), as... CUDA 13.2 arrives with a major update: NVIDIA CUDA Tile is now supported on devices of compute capability 8.X architectures (NVIDIA Ampere and NVIDIA Ada), as well as 10.X and 12.X architectures (NVIDIA Blackwell). In an upcoming release of the CUDA Toolkit, all GPU architectures starting with Ampere will be fully supported. If you’re using Ampere, Ada, or Blackwell GPU architectures… Source",
+      "tags": [
+        "compute",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/cuda-13-2-introduces-enhanced-cuda-tile-support-and-new-python-features/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
     {
       "id": "f55cab7406d52b7a36e752710a7ed7950aae551b79bb6a4eeafbb22bbab2c644",
       "title": "Implementing Falcon-H1 Hybrid Architecture in NVIDIA Megatron Core",
@@ -15103,30 +15126,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.05488"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "5b016b415d112c2dd23aa80a95761d219195e251ac19f41a667e039bc274eafc",
-      "title": "Censored LLMs as a Natural Testbed for Secret Knowledge Elicitation",
-      "url": "https://arxiv.org/abs/2603.05494",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-06T05:00:00.000Z",
-      "summary": "arXiv:2603.05494v1 Announce Type: cross Abstract: Large language models sometimes produce false or misleading responses. Two approaches to this problem are honesty elicitation -- modifying prompts or weights so that the model answers truthfully -- and lie detection -- classifying whether a given response is false. Prior work evaluates such methods on models specifically trained to lie or conceal information, but these artificial constructions may not resemble naturally-occurring dishonesty. We instead study open-weights LLMs from Chinese developers, which are trained to censor politically sensitive topics: Qwen3 models frequently produce falsehoods about subjects like Falun Gong or the Tiananmen protests while occasionally answering correctly, indicating they possess knowledge they are trained to suppress. Using this as a testbed, we evaluate a suite of elicitation and lie detection techniques. For honesty elicitation, sampling without a chat template, few-shot prompting, and fine-tuning on generic honesty data most reliably increase truthful responses. For lie detection, prompting the censored model to classify its own responses performs near an uncensored-model upper bound, and linear probes trained on unrelated data offer a cheaper alternative. The strongest honesty elicitation techniques also transfer to frontier open-weights models including DeepSeek R1. Notably, no technique fully eliminates false responses. We release all prompts, code, and transcripts.",
-      "tags": [
-        "papers",
-        "model",
-        "release"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.05494"
         },
         {
           "label": "Feed",
