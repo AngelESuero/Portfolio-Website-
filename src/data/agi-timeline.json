@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-09T15:12:26.439Z",
+    "generatedAt": "2026-03-09T16:14:35.302Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,29 @@
     ]
   },
   "items": [
+    {
+      "id": "b2e86d459500ca07ee23d9241e5d1de9ed9b3288bddc57f7df49bcff513c602d",
+      "title": "Removing the Guesswork from Disaggregated Serving",
+      "url": "https://developer.nvidia.com/blog/removing-the-guesswork-from-disaggregated-serving/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-03-09T16:00:00.000Z",
+      "summary": "Deploying and optimizing large language models (LLMs) for high-performance, cost-effective serving can be an overwhelming engineering problem. The ideal... Deploying and optimizing large language models (LLMs) for high-performance, cost-effective serving can be an overwhelming engineering problem. The ideal configuration for any given workload (such as hardware, parallelism, and prefill/decode split) resides in a massive, multi-dimensional search space that is impossible to explore manually or through exhaustive testing. AIConfigurator… Source",
+      "tags": [
+        "compute",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/removing-the-guesswork-from-disaggregated-serving/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
     {
       "id": "595ce5eb561fa41ac282d2f7cb7295549c9d8305a54ff4a613c503e21a979f2a",
       "title": "RoboLayout: Differentiable 3D Scene Generation for Embodied Agents",
@@ -15116,33 +15139,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2505.13770"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "8681fca180baeb1473754566b2f7efb924d1f31e0ad199f6972e66b5d11f4c55",
-      "title": "A Signal Contract for Online Language Grounding and Discovery in Decision-Making",
-      "url": "https://arxiv.org/abs/2506.07915",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-06T05:00:00.000Z",
-      "summary": "arXiv:2506.07915v2 Announce Type: replace Abstract: Autonomous systems increasingly receive time-sensitive contextual updates from humans through natural language, yet embedding language understanding inside decision-makers couples grounding to learning or planning. This increases redeployment burden when language conventions or domain knowledge change and can hinder diagnosability by confounding grounding errors with control errors. We address online language grounding where messy, evolving verbal reports are converted into control-relevant signals during execution through an interface that localises language updates while keeping downstream decision-makers language-agnostic. We propose LUCIFER (Language Understanding and Context-Infused Framework for Exploration and Behavior Refinement), an inference-only middleware that exposes a Signal Contract. The contract provides four outputs, policy priors, reward potentials, admissible-option constraints, and telemetry-based action prediction for efficient information gathering. We validate LUCIFER in a search-and-rescue (SAR)-inspired testbed using dual-phase, dual-client evaluation: (i) component benchmarks show reasoning-based extraction remains robust on self-correcting reports where pattern-matching baselines degrade, and (ii) system-level ablations with two structurally distinct clients (hierarchical RL and a hybrid A*+heuristics planner) show consistent necessity and synergy. Grounding improves safety, discovery improves information-collection efficiency, and only their combination achieves both.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "eval",
-        "safety",
-        "policy",
-        "inference"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2506.07915"
         },
         {
           "label": "Feed",
