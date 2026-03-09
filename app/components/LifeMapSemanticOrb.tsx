@@ -459,7 +459,6 @@ export default function LifeMapSemanticOrb() {
   const [zoom, setZoom] = useState(1);
   const [dragging, setDragging] = useState(false);
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
-  const [hoveredRegionId, setHoveredRegionId] = useState<string | null>(null);
   const [showOpens, setShowOpens] = useState(true);
   const [scrollPaused, setScrollPaused] = useState(false);
 
@@ -519,9 +518,9 @@ export default function LifeMapSemanticOrb() {
     return edges;
   }, [regionById]);
 
-  const focusRegionId = selectedRegionId || hoveredRegionId;
+  const focusRegionId = selectedRegionId;
   const selectedRegion = selectedRegionId ? regionById[selectedRegionId] : null;
-  const previewRegion = focusRegionId ? regionById[focusRegionId] : null;
+  const previewRegion = selectedRegion;
 
   const focusRelatedIds = useMemo(() => {
     const ids = new Set<string>();
@@ -600,7 +599,6 @@ export default function LifeMapSemanticOrb() {
       if (typing) return;
 
       if (event.key === "Escape") {
-        setHoveredRegionId(null);
         setSelectedRegionId(null);
       }
 
@@ -614,7 +612,6 @@ export default function LifeMapSemanticOrb() {
 
       if (event.key.toLowerCase() === "r") {
         setSelectedRegionId(null);
-        setHoveredRegionId(null);
         setZoom(1);
         setRotation({ pitch: -10, yaw: 18 });
       }
@@ -629,7 +626,6 @@ export default function LifeMapSemanticOrb() {
     if (!region) return;
 
     setSelectedRegionId(regionId);
-    setHoveredRegionId(null);
     setZoom((value) => Math.max(value, 1.06));
     setRotation({
       pitch: clamp(-region.elevation, -38, 38),
@@ -639,7 +635,6 @@ export default function LifeMapSemanticOrb() {
 
   const resetView = () => {
     setSelectedRegionId(null);
-    setHoveredRegionId(null);
     setZoom(1);
     setRotation({ pitch: -10, yaw: 18 });
   };
@@ -773,6 +768,38 @@ export default function LifeMapSemanticOrb() {
         @keyframes semanticPulse {
           0%, 100% { opacity: 0.45; transform: scale(1); }
           50% { opacity: 0.9; transform: scale(1.06); }
+        }
+
+        .orb-region {
+          cursor: pointer;
+        }
+
+        .orb-region .orb-region-ring,
+        .orb-region .orb-region-dot,
+        .orb-region .orb-region-label,
+        .orb-region .orb-region-phase {
+          transition:
+            opacity 120ms ease,
+            transform 120ms ease,
+            stroke-opacity 120ms ease;
+          transform-box: fill-box;
+          transform-origin: center;
+        }
+
+        .orb-region:hover .orb-region-ring {
+          opacity: 0.58;
+        }
+
+        .orb-region:hover .orb-region-dot {
+          transform: scale(1.16);
+        }
+
+        .orb-region:hover .orb-region-label {
+          opacity: 1;
+        }
+
+        .orb-region:hover .orb-region-phase {
+          opacity: 0.82;
         }
       `}</style>
 
@@ -992,13 +1019,12 @@ export default function LifeMapSemanticOrb() {
                   if (!point.visible) return null;
 
                   const isSelected = selectedRegionId === region.id;
-                  const isHovered = hoveredRegionId === region.id;
                   const related = focusRelatedIds.has(region.id);
                   const dimmed = Boolean(focusRegionId) && !related;
                   const x = center + point.x;
                   const y = center + point.y;
-                  const ringRadius = isSelected ? 26 : isHovered ? 22 : 18;
-                  const dotRadius = isSelected ? 12 : isHovered ? 10 : 8;
+                  const ringRadius = isSelected ? 26 : 18;
+                  const dotRadius = isSelected ? 12 : 8;
                   const labelAbove = point.y > 72;
                   const labelY = labelAbove ? -30 : 32;
                   const labelOpacity = dimmed ? 0.3 : point.opacity;
@@ -1006,20 +1032,16 @@ export default function LifeMapSemanticOrb() {
                   return (
                     <g
                       key={region.id}
+                      className="orb-region"
+                      data-selected={isSelected ? "true" : "false"}
                       transform={`translate(${x} ${y}) scale(${point.scale})`}
                       onPointerDown={(event) => event.stopPropagation()}
-                      onPointerEnter={() => setHoveredRegionId(region.id)}
-                      onPointerLeave={() =>
-                        setHoveredRegionId((current) =>
-                          current === region.id ? null : current
-                        )
-                      }
                       onClick={() =>
                         isSelected ? setSelectedRegionId(null) : focusRegion(region.id)
                       }
-                      style={{ cursor: "pointer" }}
                     >
                       <circle
+                        className="orb-region-ring"
                         r={ringRadius}
                         fill="rgba(255,255,255,0.02)"
                         stroke={region.accent}
@@ -1027,6 +1049,7 @@ export default function LifeMapSemanticOrb() {
                         opacity={dimmed ? 0.22 : 0.44}
                       />
                       <circle
+                        className="orb-region-dot"
                         r={dotRadius}
                         fill={region.accent}
                         opacity={labelOpacity}
@@ -1050,6 +1073,8 @@ export default function LifeMapSemanticOrb() {
                       )}
 
                       <text
+                        className="orb-region-label"
+                        pointerEvents="none"
                         y={labelY}
                         textAnchor="middle"
                         fontSize={isSelected ? 15 : 13}
@@ -1063,8 +1088,10 @@ export default function LifeMapSemanticOrb() {
                         {region.name}
                       </text>
 
-                      {(isSelected || isHovered) && (
+                      {isSelected && (
                         <text
+                          className="orb-region-phase"
+                          pointerEvents="none"
                           y={labelY + (labelAbove ? -16 : 18)}
                           textAnchor="middle"
                           fontSize={10}
