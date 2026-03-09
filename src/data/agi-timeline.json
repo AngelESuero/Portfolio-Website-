@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-09T17:11:42.721Z",
+    "generatedAt": "2026-03-09T18:01:57.780Z",
     "sources": [
       {
         "id": "openai_news",
@@ -9675,6 +9675,28 @@
       ]
     },
     {
+      "id": "906cda5ced7072d5649109f6e4c5803c65805525825996484de5a09cf9edc2b3",
+      "title": "LeRobot v0.5.0: Scaling Every Dimension",
+      "url": "https://huggingface.co/blog/lerobot-release-v050",
+      "sourceId": "hf_blog",
+      "sourceName": "Hugging Face — Blog",
+      "publishedAt": "2026-03-09T00:00:00.000Z",
+      "summary": null,
+      "tags": [
+        "open-source"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://huggingface.co/blog/lerobot-release-v050"
+        },
+        {
+          "label": "Feed",
+          "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
+    {
       "id": "64059cac79937377ee584c5b7f34009d41db07a3787927f89d94a3ffd1d8ae55",
       "title": "Conversational LLM Evaluations in Minutes with NVIDIA NeMo Evaluator Agent Skills",
       "url": "https://huggingface.co/blog/nvidia/model-evaluation-skill",
@@ -15109,32 +15131,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2503.07928"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "a409bb7a5e3ef0ab373f1337f7e337f4f0697e37fe9a144c153919fc705ddce0",
-      "title": "Safety Mirage: How Spurious Correlations Undermine VLM Safety Fine-Tuning and Can Be Mitigated by Machine Unlearning",
-      "url": "https://arxiv.org/abs/2503.11832",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-06T05:00:00.000Z",
-      "summary": "arXiv:2503.11832v4 Announce Type: replace Abstract: Recent vision language models (VLMs) have made remarkable strides in generative modeling with multimodal inputs, particularly text and images. However, their susceptibility to generating harmful content when exposed to unsafe queries raises critical safety concerns. While current alignment strategies primarily rely on supervised safety fine-tuning with curated datasets, we identify a fundamental limitation we call the ''safety mirage'', where supervised fine-tuning inadvertently reinforces spurious correlations between superficial textual patterns and safety responses, rather than fostering deep, intrinsic mitigation of harm. We show that these spurious correlations leave fine-tuned VLMs vulnerable even to a simple one-word modification-based attack, where substituting a single word in text queries with a spurious correlation-inducing alternative can effectively bypass safeguards. Additionally, these correlations contribute to the over-prudence, causing fine-tuned VLMs to refuse benign queries unnecessarily. To address these issues, we show machine unlearning (MU) as a powerful alternative to supervised safety fine-tuning, as it avoids biased feature-label mappings and directly removes harmful knowledge from VLMs while preserving their general capabilities. Extensive evaluations across safety benchmarks show that under MU-based alignment reduces the attack success rate by up to 60.27% and cuts unnecessary rejections by over 84.20%. WARNING: There exist AI generations that may be offensive in nature.",
-      "tags": [
-        "papers",
-        "eval",
-        "safety",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2503.11832"
         },
         {
           "label": "Feed",
