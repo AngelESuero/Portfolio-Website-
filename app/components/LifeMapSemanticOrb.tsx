@@ -452,6 +452,8 @@ function isExternalHref(href: string) {
 export default function LifeMapSemanticOrb() {
   const reducedMotion = useReducedMotion();
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const scrollResetRef = useRef<number | null>(null);
+  const isScrollingRef = useRef(false);
 
   const [rotation, setRotation] = useState<Rotation>({ pitch: -10, yaw: 18 });
   const [zoom, setZoom] = useState(1);
@@ -459,6 +461,7 @@ export default function LifeMapSemanticOrb() {
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
   const [hoveredRegionId, setHoveredRegionId] = useState<string | null>(null);
   const [showOpens, setShowOpens] = useState(true);
+  const [scrollPaused, setScrollPaused] = useState(false);
 
   const dragRef = useRef({
     pointerId: -1,
@@ -544,18 +547,50 @@ export default function LifeMapSemanticOrb() {
   }, [focusRegionId, regionById]);
 
   useEffect(() => {
-    if (reducedMotion || dragging || selectedRegionId) return undefined;
+    if (reducedMotion || dragging || selectedRegionId || scrollPaused) return undefined;
 
     let frame = 0;
+    let lastTick = 0;
 
-    const tick = () => {
-      setRotation((current) => ({ ...current, yaw: current.yaw + 0.16 }));
+    const tick = (time: number) => {
+      if (time - lastTick >= 120) {
+        lastTick = time;
+        setRotation((current) => ({ ...current, yaw: current.yaw + 0.08 }));
+      }
       frame = window.requestAnimationFrame(tick);
     };
 
     frame = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(frame);
-  }, [dragging, reducedMotion, selectedRegionId]);
+  }, [dragging, reducedMotion, scrollPaused, selectedRegionId]);
+
+  useEffect(() => {
+    const onScroll = () => {
+      if (!isScrollingRef.current) {
+        isScrollingRef.current = true;
+        setScrollPaused(true);
+      }
+
+      if (scrollResetRef.current !== null) {
+        window.clearTimeout(scrollResetRef.current);
+      }
+
+      scrollResetRef.current = window.setTimeout(() => {
+        isScrollingRef.current = false;
+        setScrollPaused(false);
+        scrollResetRef.current = null;
+      }, 160);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (scrollResetRef.current !== null) {
+        window.clearTimeout(scrollResetRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -651,6 +686,21 @@ export default function LifeMapSemanticOrb() {
   };
 
   const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+    const bounds = containerRef.current?.getBoundingClientRect();
+    if (!bounds) return;
+
+    const pointerX = event.clientX - bounds.left;
+    const pointerY = event.clientY - bounds.top;
+    const centerX = bounds.width / 2;
+    const centerY = bounds.height / 2;
+    const distanceFromCenter = Math.hypot(pointerX - centerX, pointerY - centerY);
+    const interactiveRadius =
+      Math.min(bounds.width, bounds.height) * 0.5 - 24;
+
+    if (distanceFromCenter > interactiveRadius) {
+      return;
+    }
+
     event.preventDefault();
     const delta = event.deltaY > 0 ? -0.1 : 0.1;
     setZoom((value) => clamp(value + delta, 0.86, 1.8));
