@@ -1,0 +1,245 @@
+---
+const showcaseCards = [
+  {
+    id: 'work',
+    kicker: 'Selected',
+    title: 'Selected Work',
+    copy: 'Projects, systems, and shipped outcomes gathered into one quieter overview.',
+    href: '/work',
+    cta: 'Enter work'
+  },
+  {
+    id: 'writing',
+    kicker: 'Writing',
+    title: 'Writing',
+    copy: 'Essays, field notes, and reflective threads gathered into the writing archive.',
+    href: '/writing',
+    cta: 'Visit writing'
+  },
+  {
+    id: 'music-production',
+    kicker: 'Thread',
+    title: 'Music / Production Sessions',
+    copy: 'Session logs, revision trails, and release notes from the studio side of the archive.',
+    href: '/threads/music-production-sessions',
+    cta: 'Open sessions'
+  },
+  {
+    id: 'av-museum',
+    kicker: 'Thread',
+    title: 'AV / Museum Work',
+    copy: 'Installation context, projection studies, and museum-floor AV constraints in one place.',
+    href: '/threads/av-museum-work',
+    cta: 'Open thread'
+  },
+  {
+    id: 'ai-accountability',
+    kicker: 'Accountability',
+    title: 'AI Accountability',
+    copy: 'A public accountability lens around infrastructure cost, civic impact, and responsibility.',
+    href: '/ai-accountability-pledge',
+    cta: 'Read pledge'
+  },
+  {
+    id: 'scraps',
+    kicker: 'Archive',
+    title: 'Scraps / Archive',
+    copy: 'Field notes on unfinished ideas, process fragments, and archive hygiene practices.',
+    href: '/threads/scraps-archive',
+    cta: 'Open archive'
+  }
+];
+---
+
+<section class="home-showcase card" data-home-showcase aria-labelledby="home-showcase-heading">
+  <div class="home-showcase__header">
+    <div class="space-y-2">
+      <p class="home-showcase__kicker">Offerings</p>
+      <h2 id="home-showcase-heading" class="font-display text-2xl">A few invitations inward</h2>
+      <p class="home-showcase__copy">
+        These stay open by default. The map above can quietly bring a few of them forward when you want a little more focus.
+      </p>
+    </div>
+    <p class="home-showcase__status" data-showcase-status aria-live="polite">
+      All of these remain open until one region asks for closer attention.
+    </p>
+  </div>
+
+  <div class="home-showcase__grid">
+    {showcaseCards.map((card) => (
+      <article class="home-showcase__card" data-card-id={card.id}>
+        <p class="home-showcase__card-kicker">{card.kicker}</p>
+        <h3 class="home-showcase__card-title">{card.title}</h3>
+        <p class="home-showcase__card-copy">{card.copy}</p>
+        <a class="home-showcase__card-link" href={card.href}>{card.cta}</a>
+      </article>
+    ))}
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    const root = document.currentScript?.previousElementSibling;
+    if (!(root instanceof HTMLElement) || !root.matches('[data-home-showcase]')) return;
+
+    const cards = Array.from(root.querySelectorAll('[data-card-id]'));
+    const status = root.querySelector('[data-showcase-status]');
+    const idleCopy = 'All of these remain open until one region asks for closer attention.';
+
+    const applyFocus = (detail = {}) => {
+      const relatedCards = Array.isArray(detail.relatedCards) ? detail.relatedCards : [];
+      const hasSelection = relatedCards.length > 0;
+
+      root.dataset.focusState = hasSelection ? 'active' : 'idle';
+
+      if (hasSelection && typeof detail.color === 'string' && detail.color.trim()) {
+        root.style.setProperty('--showcase-focus-accent', detail.color);
+      } else {
+        root.style.removeProperty('--showcase-focus-accent');
+      }
+
+      cards.forEach((card) => {
+        const cardId = card.getAttribute('data-card-id') || '';
+        const isRelated = hasSelection && relatedCards.includes(cardId);
+        card.classList.toggle('is-related', isRelated);
+        card.classList.toggle('is-muted', hasSelection && !isRelated);
+      });
+
+      if (status instanceof HTMLElement) {
+        status.textContent =
+          hasSelection && typeof detail.summary === 'string' && detail.summary.trim() ? detail.summary : idleCopy;
+      }
+    };
+
+    window.addEventListener('home-map:region-change', (event) => {
+      if (!(event instanceof CustomEvent)) return;
+      applyFocus(event.detail || {});
+    });
+
+    applyFocus();
+  })();
+</script>
+
+<style>
+  .home-showcase {
+    display: grid;
+    gap: 1rem;
+    padding: clamp(1rem, 2vw, 1.35rem);
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 16%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 9%, transparent), transparent 70%),
+      color-mix(in srgb, var(--tone-surface-strong) 92%, transparent);
+  }
+
+  .home-showcase__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 0.85rem;
+  }
+
+  .home-showcase__kicker,
+  .home-showcase__copy,
+  .home-showcase__status,
+  .home-showcase__card-kicker,
+  .home-showcase__card-title,
+  .home-showcase__card-copy {
+    margin: 0;
+  }
+
+  .home-showcase__kicker,
+  .home-showcase__card-kicker {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
+  }
+
+  .home-showcase__copy,
+  .home-showcase__status,
+  .home-showcase__card-copy {
+    color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
+  }
+
+  .home-showcase__status {
+    max-width: 24rem;
+    font-size: 0.92rem;
+  }
+
+  .home-showcase__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .home-showcase__card {
+    display: grid;
+    gap: 0.65rem;
+    padding: 0.95rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 16%, var(--line2));
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 7%, transparent), transparent 70%),
+      color-mix(in srgb, var(--tone-surface) 92%, transparent);
+    transition:
+      opacity 160ms ease,
+      border-color 160ms ease,
+      background-color 160ms ease,
+      box-shadow 160ms ease;
+  }
+
+  .home-showcase__card-title {
+    font-family: var(--font-display);
+    font-size: 1.02rem;
+    line-height: 1.18;
+  }
+
+  .home-showcase__card-copy {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .home-showcase__card-link {
+    width: fit-content;
+    color: color-mix(in srgb, var(--tone-accent-glow) 86%, white 14%);
+    text-decoration: underline;
+    text-underline-offset: 0.14em;
+    text-decoration-color: color-mix(in srgb, var(--tone-accent) 42%, transparent);
+  }
+
+  .home-showcase[data-focus-state='active'] .home-showcase__card.is-muted {
+    opacity: 0.58;
+  }
+
+  .home-showcase[data-focus-state='active'] .home-showcase__card.is-related {
+    opacity: 1;
+    border-color: color-mix(in srgb, var(--showcase-focus-accent, var(--tone-accent)) 48%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--showcase-focus-accent, var(--tone-accent)) 13%, transparent), transparent 70%),
+      color-mix(in srgb, var(--tone-surface) 95%, transparent);
+    box-shadow: 0 10px 26px color-mix(in srgb, var(--showcase-focus-accent, var(--tone-accent)) 10%, transparent);
+  }
+
+  @media (max-width: 1100px) {
+    .home-showcase__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 720px) {
+    .home-showcase__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .home-showcase__status {
+      max-width: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-showcase__card {
+      transition: none;
+    }
+  }
+</style>

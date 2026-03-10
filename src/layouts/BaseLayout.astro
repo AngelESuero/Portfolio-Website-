@@ -171,8 +171,9 @@ const exploreLinks = [
         const storedWalkStep = safeGet(localStorageRef, KEY_WALK);
         const storedSize = safeGet(localStorageRef, KEY_SIZE);
         const storedTabSwipe = safeGet(localStorageRef, KEY_TAB_SWIPE);
-        const initialSurfaceMode = normalizeSurfaceMode(querySurfaceMode ?? storedSurfaceMode);
-        const initialMode = normalizeMode(storedMode);
+        const isExplicitLabVisit = querySurfaceMode === 'lab';
+        const initialSurfaceMode = isExplicitLabVisit ? 'lab' : DEFAULTS.surfaceMode;
+        const initialMode = isExplicitLabVisit ? normalizeMode(queryMode ?? storedMode) : DEFAULTS.mode;
         const initialWalkStep = normalizeWalkStep(storedWalkStep);
         const initialSize = normalizeSize(storedSize);
         const initialTabSwipe = normalizeTabSwipe(storedTabSwipe);
@@ -185,22 +186,23 @@ const exploreLinks = [
         };
         const root = document.documentElement;
         const persisted = {
-          surfaceMode: normalizeSurfaceMode(storedSurfaceMode),
-          mode: normalizeMode(storedMode),
+          surfaceMode: isExplicitLabVisit ? initialSurfaceMode : DEFAULTS.surfaceMode,
+          mode: isExplicitLabVisit ? initialMode : DEFAULTS.mode,
           walkStep: String(normalizeWalkStep(storedWalkStep)),
           size: normalizeSize(storedSize),
           tabSwipe: normalizeTabSwipe(storedTabSwipe)
         };
 
-        if (queryMode) {
+        if (isExplicitLabVisit && queryMode) {
           state.mode = queryMode;
         }
 
-        if (querySurfaceMode) {
-          safeSet(localStorageRef, KEY_SURFACE_MODE, querySurfaceMode);
-        }
-        if (queryMode) {
-          safeSet(localStorageRef, KEY_MODE, queryMode);
+        if (isExplicitLabVisit) {
+          safeSet(localStorageRef, KEY_SURFACE_MODE, initialSurfaceMode);
+          safeSet(localStorageRef, KEY_MODE, state.mode);
+        } else {
+          safeSet(localStorageRef, KEY_SURFACE_MODE, DEFAULTS.surfaceMode);
+          safeSet(localStorageRef, KEY_MODE, DEFAULTS.mode);
         }
 
         const setDataAttr = (key, value) => {
