@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import HomeMapPreview from '../components/HomeMapPreview.astro';
 import profile from '../data/profile';
 import featuredThreads from '../data/featured_threads.json';
 import { getCollection } from 'astro:content';
@@ -7,6 +8,29 @@ import { getCollection } from 'astro:content';
 const allProjects = await getCollection('projects');
 const allPosts = (await getCollection('posts')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const threads = featuredThreads.featured_threads;
+const featuredThreadsPreview = threads.slice(0, 3);
+const startHereCards = [
+  {
+    href: '/work',
+    label: 'Selected Work',
+    description: 'Projects and outcomes'
+  },
+  {
+    href: '/writing',
+    label: 'Writing',
+    description: 'Essays and field notes'
+  },
+  {
+    href: '/map',
+    label: 'Map',
+    description: 'Concept and route atlas'
+  },
+  {
+    href: '/now',
+    label: 'Now',
+    description: 'Current focus and direction'
+  }
+];
 
 const shortDateFormatter = new Intl.DateTimeFormat('en-US', {
   month: 'short',
@@ -60,6 +84,21 @@ const heroPulseItems = [
       </div>
     </section>
 
+    <HomeMapPreview />
+
+    <section class="home-start mt-12 md:mt-14" aria-labelledby="home-start-heading">
+      <p class="home-start-kicker">Start here</p>
+      <h2 id="home-start-heading" class="home-start-title">Choose your first path</h2>
+      <div class="home-start-grid">
+        {startHereCards.map((card) => (
+          <a class="home-start-card" href={card.href}>
+            <span>{card.label}</span>
+            <small>{card.description}</small>
+          </a>
+        ))}
+      </div>
+    </section>
+
     <section class="home-featured mt-12 md:mt-14" aria-labelledby="featured-threads-heading">
       <div class="home-featured__header">
         <div class="space-y-2">
@@ -73,7 +112,7 @@ const heroPulseItems = [
       </div>
 
       <div class="home-featured__grid">
-        {threads.map((thread) => (
+        {featuredThreadsPreview.map((thread) => (
           <a
             href={thread.href}
             class="card threadCard p-4"
@@ -86,6 +125,24 @@ const heroPulseItems = [
           </a>
         ))}
       </div>
+    </section>
+
+    <section class="home-ai-callout mt-12 md:mt-14" aria-labelledby="home-ai-callout-heading">
+      <div class="card home-ai-callout__card">
+        <p class="home-ai-callout__kicker">Accountability</p>
+        <h2 id="home-ai-callout-heading" class="home-ai-callout__title">AI Accountability</h2>
+        <p class="home-ai-callout__copy">
+          AI is physical infrastructure with public costs. The accountability work stays visible, civic, and measurable.
+        </p>
+        <a href="/ai-accountability-pledge" class="home-ai-callout__link">Read the pledge</a>
+      </div>
+    </section>
+
+    <section class="home-now-signal mt-6" aria-label="Now signal">
+      <p>
+        <span class="home-now-signal__label">Now signal</span>
+        Current focus, active edits, and the next move live on <a href="/now">/now</a>.
+      </p>
     </section>
   </div>
 </BaseLayout>
@@ -315,6 +372,83 @@ const heroPulseItems = [
     color: color-mix(in srgb, var(--tone-accent-glow) 92%, white 8%);
   }
 
+  .home-start {
+    padding: clamp(0.95rem, 1.8vw, 1.2rem);
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 22%, var(--line2));
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 11%, transparent), transparent 62%),
+      color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
+  }
+
+  .home-start-kicker,
+  .home-start-title,
+  .home-ai-callout__kicker,
+  .home-ai-callout__title,
+  .home-ai-callout__copy,
+  .home-now-signal p {
+    margin: 0;
+  }
+
+  .home-start-kicker,
+  .home-ai-callout__kicker,
+  .home-now-signal__label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .home-start-title,
+  .home-ai-callout__title {
+    margin-top: 0.35rem;
+    font-size: clamp(1.2rem, 2vw, 1.6rem);
+    line-height: 1.15;
+  }
+
+  .home-start-grid {
+    margin-top: 0.75rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.6rem;
+  }
+
+  .home-start-card {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 24%, var(--line2));
+    border-radius: 0.82rem;
+    padding: 0.7rem 0.74rem;
+    display: grid;
+    gap: 0.28rem;
+    text-decoration: none;
+    color: color-mix(in srgb, var(--tone-text) 92%, var(--tone-muted) 8%);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 16%, transparent), transparent 64%),
+      color-mix(in srgb, var(--tone-surface) 90%, transparent);
+    transition:
+      border-color 140ms ease,
+      transform 140ms ease,
+      color 140ms ease;
+  }
+
+  .home-start-card span {
+    font-family: var(--font-display);
+    font-size: 0.98rem;
+    line-height: 1.2;
+  }
+
+  .home-start-card small {
+    color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
+    font-size: 0.76rem;
+    line-height: 1.4;
+  }
+
+  .home-start-card:hover,
+  .home-start-card:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 58%, var(--line2));
+    color: var(--tone-accent-glow);
+    transform: translateY(-1px);
+  }
+
   .home-featured {
     display: grid;
     gap: 1rem;
@@ -380,6 +514,72 @@ const heroPulseItems = [
   .threadCard {
     min-width: 0;
     height: 100%;
+  }
+
+  .home-ai-callout__card {
+    display: grid;
+    gap: 0.75rem;
+    padding: clamp(1rem, 2vw, 1.35rem);
+    border: 1px solid color-mix(in srgb, #c57d66 36%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, #c57d66 14%, transparent), transparent 68%),
+      color-mix(in srgb, var(--tone-surface-strong) 90%, transparent);
+  }
+
+  .home-ai-callout__copy {
+    max-width: 42rem;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+  }
+
+  .home-ai-callout__link {
+    width: fit-content;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 0.5rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, #c57d66 46%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, #c57d66 18%, transparent), transparent 70%),
+      color-mix(in srgb, var(--tone-surface) 92%, transparent);
+    color: color-mix(in srgb, #f3d8cf 82%, white 18%);
+    text-decoration: none;
+    transition:
+      transform 140ms ease,
+      border-color 140ms ease,
+      color 140ms ease;
+  }
+
+  .home-ai-callout__link:hover,
+  .home-ai-callout__link:focus-visible {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, #c57d66 76%, var(--line2));
+    color: #f6e1da;
+  }
+
+  .home-now-signal {
+    padding: 0.9rem 1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 8%, transparent), transparent 72%),
+      color-mix(in srgb, var(--tone-surface) 90%, transparent);
+  }
+
+  .home-now-signal p {
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  }
+
+  .home-now-signal__label {
+    margin-right: 0.45rem;
+  }
+
+  .home-now-signal a {
+    color: var(--tone-accent-glow);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--tone-accent) 55%, transparent);
+    text-underline-offset: 0.14em;
   }
 
   @media (max-width: 1024px) {
