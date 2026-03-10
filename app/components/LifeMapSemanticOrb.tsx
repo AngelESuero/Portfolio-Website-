@@ -49,6 +49,11 @@ type Connection = {
 const clamp = (value: number, min: number, max: number) =>
   Math.max(min, Math.min(max, value));
 
+const roundForRender = (value: number, precision = 4) => {
+  const factor = 10 ** precision;
+  return Math.round(value * factor) / factor;
+};
+
 const PHASE_ORDER: RegionPhase[] = ["platform", "emergence", "offering"];
 
 const PHASE_META: Record<
@@ -366,9 +371,9 @@ function curvePath(
   const my = (a.y + b.y) / 2;
   const dx = b.x - a.x;
   const dy = b.y - a.y;
-  const cx = mx - dy * bend;
-  const cy = my + dx * bend;
-  return `M ${a.x} ${a.y} Q ${cx} ${cy} ${b.x} ${b.y}`;
+  const cx = roundForRender(mx - dy * bend);
+  const cy = roundForRender(my + dx * bend);
+  return `M ${roundForRender(a.x)} ${roundForRender(a.y)} Q ${cx} ${cy} ${roundForRender(b.x)} ${roundForRender(b.y)}`;
 }
 
 function projectPoint(
@@ -399,11 +404,11 @@ function projectPoint(
   const perspective = distance / (distance - z2);
 
   return {
-    x: x2 * perspective,
-    y: y2 * perspective,
-    z: z2,
-    scale: clamp(perspective, 0.72, 1.55),
-    opacity: clamp(0.26 + (z2 + radius) / (radius * 2), 0.2, 1),
+    x: roundForRender(x2 * perspective),
+    y: roundForRender(y2 * perspective),
+    z: roundForRender(z2),
+    scale: roundForRender(clamp(perspective, 0.72, 1.55)),
+    opacity: roundForRender(clamp(0.26 + (z2 + radius) / (radius * 2), 0.2, 1), 6),
     visible: z2 > -radius * 0.98
   };
 }
@@ -418,8 +423,8 @@ function shapeToShell(point: ProjectedPoint, zoom: number) {
 
   return {
     ...point,
-    x: point.x * pushOut,
-    y: point.y * pushOut
+    x: roundForRender(point.x * pushOut),
+    y: roundForRender(point.y * pushOut)
   };
 }
 
