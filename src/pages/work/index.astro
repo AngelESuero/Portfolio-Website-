@@ -1,11 +1,62 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
-import ProjectCard from '../../components/ProjectCard.astro';
+import featuredThreadsData from '../../data/featured_threads.json';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import { resolveProjectTimeline } from '../../data/linktree-timeline';
 
-const allProjects = (await getCollection('projects')).sort((a, b) => {
-  const yearDelta = resolveProjectTimeline(a.data).sortYear - resolveProjectTimeline(b.data).sortYear;
+type PreparedLink = {
+  key: string;
+  label: string;
+  url: string;
+  isExternal: boolean;
+};
+
+type RelatedProject = {
+  slug: string;
+  title: string;
+  yearLabel: string;
+};
+
+type RelatedThread = {
+  title: string;
+  href: string;
+};
+
+type PreparedProject = {
+  slug: string;
+  title: string;
+  yearLabel: string;
+  type: string;
+  status: string;
+  description: string;
+  coverImage: string;
+  tools: string[];
+  notes: string[];
+  focusCopy: string;
+  detailPath: string;
+  links: PreparedLink[];
+  relatedProjects: RelatedProject[];
+  relatedThread: RelatedThread | null;
+  isLead: boolean;
+};
+
+const linkLabels: Record<string, string> = {
+  untitled: 'Untitled',
+  youtube: 'YouTube',
+  instagram: 'Instagram',
+  linktree: 'Linktree',
+  github: 'GitHub'
+};
+
+const typeLabels: Record<string, string> = {
+  music: 'Music',
+  video: 'Video',
+  writing: 'Writing',
+  civic: 'Civic'
+};
+
+const compareProjectsByRecency = (a: CollectionEntry<'projects'>, b: CollectionEntry<'projects'>) => {
+  const yearDelta = resolveProjectTimeline(b.data).sortYear - resolveProjectTimeline(a.data).sortYear;
   if (yearDelta !== 0) return yearDelta;
 
   const timelineOrderA = a.data.timeline_order ?? Number.MAX_SAFE_INTEGER;
@@ -13,70 +64,804 @@ const allProjects = (await getCollection('projects')).sort((a, b) => {
   if (timelineOrderA !== timelineOrderB) return timelineOrderA - timelineOrderB;
 
   return a.data.title.localeCompare(b.data.title);
-});
-const types = ['all', 'music', 'video', 'writing', 'civic'];
-const isDraftDescription = (value: string): boolean => {
-  const normalized = String(value || '').trim();
-  if (!normalized) return true;
-  if (/^\[[^\]]+\]$/.test(normalized)) return true;
-  return /^(add description|tbd|coming soon|placeholder)$/i.test(normalized);
 };
-const projectCards = allProjects.map((project) => ({
-  project,
-  isDraft: isDraftDescription(project.data.description)
-}));
+
+const collapseMarkdown = (value: string): string =>
+  value
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/[*_`>#]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const extractNotes = (body: string): string[] =>
+  String(body || '')
+    .split(/\n{2,}/)
+    .map((part) => collapseMarkdown(part))
+    .filter(Boolean)
+    .slice(0, 2);
+
+const allProjects = (await getCollection('projects')).sort(compareProjectsByRecency);
+const scoreLeadProject = (project: CollectionEntry<'projects'>) => {
+  const timeline = resolveProjectTimeline(project.data);
+  const notes = extractNotes(project.body);
+  const noteWeight = Math.min(notes.join(' ').length, 160);
+  const featuredWeight = project.data.featured ? 360 : 0;
+  const statusWeight = /published/i.test(project.data.status) ? 90 : 0;
+  return featuredWeight + statusWeight + noteWeight + timeline.sortYear;
+};
+
+const leadProject =
+  [...allProjects].sort((a, b) => {
+    const scoreDelta = scoreLeadProject(b) - scoreLeadProject(a);
+    if (scoreDelta !== 0) return scoreDelta;
+    return compareProjectsByRecency(a, b);
+  })[0] ?? allProjects[0];
+const remainingProjects = allProjects
+  .filter((project) => project.slug !== leadProject.slug)
+  .sort((a, b) => {
+    const featuredDelta = Number(b.data.featured) - Number(a.data.featured);
+    if (featuredDelta !== 0) return featuredDelta;
+    return compareProjectsByRecency(a, b);
+  });
+const orderedProjects = [leadProject, ...remainingProjects];
+
+const threadsByType = new Map(
+  featuredThreadsData.featured_threads.map((thread) => [
+    thread.type,
+    { title: thread.title, href: thread.href }
+  ])
+);
+
+const preparedProjects: PreparedProject[] = orderedProjects.map((project) => {
+  const timeline = resolveProjectTimeline(project.data);
+  const notes = extractNotes(project.body);
+  const links = Object.entries(project.data.links)
+    .map(([key, value]) => {
+      const url = typeof value === 'string' ? value.trim() : '';
+      if (!url) return null;
+      return {
+        key,
+        label: linkLabels[key] || key,
+        url,
+        isExternal: /^https?:\/\//i.test(url)
+      };
+    })
+    .filter((entry): entry is PreparedLink => Boolean(entry));
+  const relatedProjects = allProjects
+    .filter((candidate) => candidate.slug !== project.slug && candidate.data.type === project.data.type)
+    .sort((a, b) => {
+      const featuredDelta = Number(b.data.featured) - Number(a.data.featured);
+      if (featuredDelta !== 0) return featuredDelta;
+      return compareProjectsByRecency(a, b);
+    })
+    .slice(0, 2)
+    .map((candidate) => ({
+      slug: candidate.slug,
+      title: candidate.data.title,
+      yearLabel: resolveProjectTimeline(candidate.data).yearLabel
+    }));
+  const relatedThread = threadsByType.get(project.data.type) ?? null;
+
+  return {
+    slug: project.slug,
+    title: project.data.title,
+    yearLabel: timeline.yearLabel,
+    type: typeLabels[project.data.type] ?? project.data.type,
+    status: project.data.status,
+    description: project.data.description,
+    coverImage: project.data.cover_image,
+    tools: project.data.tools,
+    notes: notes.length > 0 ? notes : [project.data.description],
+    focusCopy: notes[0] ?? project.data.description,
+    detailPath: `/work/${project.slug}`,
+    links,
+    relatedProjects,
+    relatedThread,
+    isLead: project.slug === leadProject.slug
+  };
+});
+
+const leadSignal = preparedProjects.find((project) => project.isLead) ?? preparedProjects[0];
+const defaultStatus =
+  'Stay with one piece to let process, context, and adjacent work gather around it without leaving the page.';
 ---
 <BaseLayout title="Work — a_e.s_" theme="work">
-  <h1 class="font-display text-4xl">Work / Projects</h1>
-  <p class="mt-3">Timeline order (oldest to newest). Filter by type and explore the archive.</p>
-  <div class="mt-4 flex flex-wrap gap-2" id="filters">
-    {types.map((type) => <button class="filter rounded border border-zinc-400 px-3 py-1 text-sm dark:border-zinc-600" data-filter={type}>{type}</button>)}
-  </div>
-  <div class="mt-6 flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:overflow-visible" id="project-grid">
-    {projectCards.map(({ project, isDraft }) => (
-      <div class="project-item" data-type={project.data.type} data-draft={isDraft ? 'true' : 'false'}>
-        <ProjectCard project={project} isDraft={isDraft} />
+  <section class="work-page">
+    <header class="work-intro" aria-labelledby="work-title">
+      <p class="work-intro__eyebrow">Work</p>
+      <h1 id="work-title" class="work-intro__title">A field that narrows with attention.</h1>
+      <p class="work-intro__lede">
+        Music, video, and archive work live here as a quiet field first. Nothing asks for everything at once.
+      </p>
+      <p class="work-intro__signal">
+        Leading signal:
+        <a href={`#${leadSignal.slug}`}>{leadSignal.title}</a>
+        sits nearest the surface right now. Follow that thread, or let another piece come forward in its own time.
+      </p>
+    </header>
+
+    <section class="work-field" data-work-field data-has-selection="false" aria-labelledby="work-field-heading">
+      <div class="work-field__header">
+        <h2 id="work-field-heading" class="work-field__heading">Current field</h2>
+        <p class="work-field__status" data-work-status aria-live="polite">{defaultStatus}</p>
       </div>
-    ))}
-  </div>
+
+      <ol class="work-field__list" role="list">
+        {preparedProjects.map((project, index) => (
+          <li
+            class:list={['work-field__entry', project.isLead && 'is-leading']}
+            data-work-entry
+            data-leading={project.isLead ? 'true' : 'false'}
+            data-selected="false"
+          >
+            <article
+              class:list={['work-chamber', project.isLead && 'is-leading']}
+              data-work-item
+              data-slug={project.slug}
+              data-title={project.title}
+              data-focus-copy={project.focusCopy}
+              data-selected="false"
+            >
+              <button
+                type="button"
+                class="work-chamber__summary"
+                data-work-toggle
+                aria-expanded="false"
+                aria-controls={`work-panel-${project.slug}`}
+              >
+                <div class="work-chamber__copy">
+                  <div class="work-chamber__meta">
+                    <span>{project.yearLabel}</span>
+                    <span>{project.type}</span>
+                    <span>{project.status}</span>
+                    {project.isLead && <span class="work-chamber__lead-badge">Leading signal</span>}
+                  </div>
+                  <h3 id={`work-heading-${project.slug}`} class="work-chamber__title">{project.title}</h3>
+                  <p class="work-chamber__description">{project.description}</p>
+                  <span class="work-chamber__prompt">
+                    {index === 0 ? 'Begin here if you want a first thread' : 'Let this one come forward'}
+                  </span>
+                </div>
+
+                <div class="work-chamber__media">
+                  <img
+                    src={project.coverImage}
+                    alt={project.title}
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                    decoding="async"
+                  />
+                </div>
+              </button>
+
+              <div
+                id={`work-panel-${project.slug}`}
+                class="work-chamber__detail"
+                data-work-panel
+                aria-labelledby={`work-heading-${project.slug}`}
+                hidden
+              >
+                <div class="work-chamber__detail-grid">
+                  <div class="work-chamber__detail-copy">
+                    <p class="work-chamber__detail-kicker">Resolution</p>
+                    {project.notes.map((note) => (
+                      <p>{note}</p>
+                    ))}
+
+                    <dl class="work-chamber__facts">
+                      <div>
+                        <dt>Year</dt>
+                        <dd>{project.yearLabel}</dd>
+                      </div>
+                      <div>
+                        <dt>Format</dt>
+                        <dd>{project.type}</dd>
+                      </div>
+                      <div>
+                        <dt>Status</dt>
+                        <dd>{project.status}</dd>
+                      </div>
+                    </dl>
+
+                    <div class="work-chamber__tools" aria-label="Process tools">
+                      {project.tools.map((tool) => (
+                        <span class="work-chamber__tool">{tool}</span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <aside class="work-chamber__detail-aside">
+                    {project.relatedProjects.length > 0 && (
+                      <section class="work-chamber__group" aria-labelledby={`work-related-${project.slug}`}>
+                        <h4 id={`work-related-${project.slug}`}>Related work</h4>
+                        <ul class="work-chamber__list">
+                          {project.relatedProjects.map((related) => (
+                            <li>
+                              <a href={`/work/${related.slug}`}>
+                                <span>{related.title}</span>
+                                <small>{related.yearLabel}</small>
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
+                    )}
+
+                    {project.relatedThread && (
+                      <section class="work-chamber__group" aria-labelledby={`work-thread-${project.slug}`}>
+                        <h4 id={`work-thread-${project.slug}`}>Related thread</h4>
+                        <a class="work-chamber__thread-link" href={project.relatedThread.href}>
+                          Read {project.relatedThread.title}
+                        </a>
+                      </section>
+                    )}
+
+                    <section class="work-chamber__group" aria-labelledby={`work-links-${project.slug}`}>
+                      <h4 id={`work-links-${project.slug}`}>Paths outward</h4>
+                      <div class="work-chamber__action-row">
+                        <a class="work-chamber__action" href={project.detailPath}>
+                          Continue with the project page
+                        </a>
+                        {project.links.map((link) => (
+                          <a
+                            class="work-chamber__action"
+                            href={link.url}
+                            {...(link.isExternal ? { target: '_blank', rel: 'noopener' } : {})}
+                          >
+                            Visit {link.label}
+                          </a>
+                        ))}
+                      </div>
+                    </section>
+                  </aside>
+                </div>
+              </div>
+            </article>
+          </li>
+        ))}
+      </ol>
+    </section>
+  </section>
 </BaseLayout>
 
 <script is:inline>
   (() => {
-    const buttons = Array.from(document.querySelectorAll('.filter'));
-    const items = Array.from(document.querySelectorAll('.project-item'));
-    if (!buttons.length || !items.length) return;
+    const field = document.querySelector('[data-work-field]');
+    if (!(field instanceof HTMLElement)) return;
 
-    let activeFilter = 'all';
-    const isLabMode = () => window.__modeSettings?.getState?.()?.surfaceMode === 'lab';
-    const applyFilters = () => {
-      const labMode = isLabMode();
+    const items = Array.from(field.querySelectorAll('[data-work-item]'));
+    const status = field.querySelector('[data-work-status]');
+    const defaultStatus = status instanceof HTMLElement ? status.textContent?.trim() || '' : '';
+
+    const sync = (slug, updateHash = true) => {
+      const hasSelection = Boolean(slug);
+      field.dataset.hasSelection = hasSelection ? 'true' : 'false';
+
       items.forEach((item) => {
-        const type = item.getAttribute('data-type');
-        const isDraft = item.getAttribute('data-draft') === 'true';
-        const typeMatch = activeFilter === 'all' || activeFilter === type;
-        const visible = typeMatch && (labMode || !isDraft);
-        item.style.display = visible ? 'block' : 'none';
+        const active = hasSelection && item.getAttribute('data-slug') === slug;
+        item.setAttribute('data-selected', active ? 'true' : 'false');
+        const entry = item.closest('[data-work-entry]');
+        if (entry instanceof HTMLElement) {
+          entry.dataset.selected = active ? 'true' : 'false';
+        }
+
+        const toggle = item.querySelector('[data-work-toggle]');
+        const panel = item.querySelector('[data-work-panel]');
+
+        if (toggle instanceof HTMLElement) {
+          toggle.setAttribute('aria-expanded', String(active));
+        }
+
+        if (panel instanceof HTMLElement) {
+          panel.hidden = !active;
+        }
       });
+
+      if (status instanceof HTMLElement) {
+        if (!hasSelection) {
+          status.textContent = defaultStatus;
+        } else {
+          const selected = items.find((item) => item.getAttribute('data-slug') === slug);
+          status.textContent =
+            selected?.getAttribute('data-focus-copy') || selected?.getAttribute('data-title') || defaultStatus;
+        }
+      }
+
+      if (!updateHash) return;
+
+      if (!hasSelection) {
+        const cleanUrl = `${window.location.pathname}${window.location.search}`;
+        window.history.replaceState({}, '', cleanUrl);
+        return;
+      }
+
+      window.history.replaceState({}, '', `#${slug}`);
     };
 
-    const syncButtonState = () => {
-      buttons.forEach((button) => {
-        const selected = button.getAttribute('data-filter') === activeFilter;
-        button.setAttribute('aria-pressed', String(selected));
-      });
-    };
+    items.forEach((item) => {
+      const toggle = item.querySelector('[data-work-toggle]');
+      if (!(toggle instanceof HTMLButtonElement)) return;
 
-    buttons.forEach((button) => {
-      button.addEventListener('click', () => {
-        activeFilter = button.getAttribute('data-filter') || 'all';
-        syncButtonState();
-        applyFilters();
+      toggle.addEventListener('click', () => {
+        const slug = item.getAttribute('data-slug') || '';
+        const isSelected = item.getAttribute('data-selected') === 'true';
+        sync(isSelected ? '' : slug);
       });
     });
 
-    window.addEventListener('modesettings:change', applyFilters);
-    syncButtonState();
-    applyFilters();
+    const initialSlug = window.location.hash.replace(/^#/, '');
+    const hasInitialMatch = items.some((item) => item.getAttribute('data-slug') === initialSlug);
+    sync(hasInitialMatch ? initialSlug : '', false);
+
+    window.addEventListener('hashchange', () => {
+      const hashSlug = window.location.hash.replace(/^#/, '');
+      const hasMatch = items.some((item) => item.getAttribute('data-slug') === hashSlug);
+      sync(hasMatch ? hashSlug : '', false);
+    });
   })();
 </script>
+
+<style>
+  .work-page {
+    display: grid;
+    gap: clamp(1.35rem, 2vw, 1.9rem);
+  }
+
+  .work-intro {
+    display: grid;
+    gap: 0.8rem;
+    max-width: 58rem;
+  }
+
+  .work-intro__eyebrow,
+  .work-intro__lede,
+  .work-intro__signal,
+  .work-field__heading,
+  .work-field__status,
+  .work-chamber__description,
+  .work-chamber__detail-kicker,
+  .work-chamber__detail-copy p,
+  .work-chamber__group h4,
+  .work-chamber__facts dt,
+  .work-chamber__facts dd {
+    margin: 0;
+  }
+
+  .work-intro__eyebrow {
+    font-size: 0.74rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  }
+
+  .work-intro__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 5vw, 4.35rem);
+    line-height: 0.96;
+    letter-spacing: -0.03em;
+    max-width: 12ch;
+  }
+
+  .work-intro__lede {
+    max-width: 40rem;
+    font-size: clamp(1rem, 1.5vw, 1.14rem);
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  }
+
+  .work-intro__signal {
+    max-width: 42rem;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  }
+
+  .work-intro__signal a {
+    color: var(--tone-accent-glow);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--tone-accent) 48%, transparent);
+    text-underline-offset: 0.14em;
+  }
+
+  .work-field {
+    display: grid;
+    gap: 0.95rem;
+  }
+
+  .work-field__header {
+    display: grid;
+    gap: 0.45rem;
+    max-width: 44rem;
+  }
+
+  .work-field__heading {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    letter-spacing: 0.01em;
+  }
+
+  .work-field__status {
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  }
+
+  .work-field__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.95rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .work-field__entry {
+    margin: 0;
+  }
+
+  .work-field__entry[data-leading='true'],
+  .work-field__entry[data-selected='true'] {
+    grid-column: 1 / -1;
+  }
+
+  .work-chamber {
+    opacity: 0.84;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
+    border-radius: 1.45rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 8%, transparent), transparent 58%),
+      color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
+    box-shadow:
+      0 18px 48px rgba(7, 9, 12, 0.12),
+      inset 0 1px 0 color-mix(in srgb, white 7%, transparent);
+    transition:
+      opacity 160ms ease,
+      border-color 160ms ease,
+      transform 160ms ease,
+      filter 160ms ease,
+      background-color 160ms ease;
+    overflow: clip;
+  }
+
+  .work-chamber.is-leading {
+    opacity: 1;
+    border-color: color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 12%, transparent), transparent 62%),
+      color-mix(in srgb, var(--tone-surface-strong) 92%, transparent);
+  }
+
+  .work-chamber__summary {
+    width: 100%;
+    padding: clamp(1rem, 2vw, 1.25rem);
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: 1fr;
+    align-items: start;
+    cursor: pointer;
+  }
+
+  .work-field__entry[data-leading='true'] .work-chamber__summary,
+  .work-field__entry[data-selected='true'] .work-chamber__summary {
+    gap: 1rem;
+    grid-template-columns: minmax(0, 1.18fr) minmax(15.5rem, 0.92fr);
+    align-items: center;
+  }
+
+  .work-chamber__copy {
+    display: grid;
+    gap: 0.7rem;
+    min-width: 0;
+  }
+
+  .work-chamber__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.6rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  }
+
+  .work-chamber__lead-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.18rem 0.48rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
+    color: color-mix(in srgb, var(--tone-accent-glow) 84%, white 16%);
+    letter-spacing: 0.1em;
+  }
+
+  .work-chamber__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.38rem, 2.1vw, 2rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    max-width: 15ch;
+  }
+
+  .work-field__entry[data-leading='true'] .work-chamber__title,
+  .work-field__entry[data-selected='true'] .work-chamber__title {
+    font-size: clamp(1.55rem, 2.8vw, 2.35rem);
+  }
+
+  .work-chamber__description {
+    max-width: 42rem;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+  }
+
+  .work-chamber__prompt {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+  }
+
+  .work-chamber__prompt::after {
+    content: '↗';
+    font-size: 0.9em;
+  }
+
+  .work-chamber__media {
+    position: relative;
+    border-radius: 1.1rem;
+    overflow: hidden;
+    aspect-ratio: 16 / 9.25;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
+    background: color-mix(in srgb, var(--tone-bg) 82%, black 18%);
+    max-height: 12rem;
+  }
+
+  .work-field__entry[data-leading='true'] .work-chamber__media,
+  .work-field__entry[data-selected='true'] .work-chamber__media {
+    aspect-ratio: 16 / 11;
+    max-height: none;
+  }
+
+  .work-chamber__media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.82) contrast(0.93) brightness(0.94);
+    transition:
+      transform 180ms ease,
+      filter 180ms ease;
+  }
+
+  .work-chamber:hover,
+  .work-chamber:focus-within {
+    opacity: 1;
+    border-color: color-mix(in srgb, var(--tone-accent) 32%, var(--line2));
+    transform: translateY(-1px);
+  }
+
+  .work-chamber:hover .work-chamber__media img,
+  .work-chamber:focus-within .work-chamber__media img {
+    transform: scale(1.018);
+    filter: saturate(0.92) contrast(0.97) brightness(0.98);
+  }
+
+  .work-field[data-has-selection='true'] .work-chamber[data-selected='false'] {
+    opacity: 0.64;
+    filter: saturate(0.9) grayscale(0.04);
+  }
+
+  .work-field[data-has-selection='true'] .work-chamber[data-selected='true'] {
+    opacity: 1;
+    border-color: color-mix(in srgb, var(--tone-accent) 42%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 14%, transparent), transparent 62%),
+      color-mix(in srgb, var(--tone-surface-strong) 94%, transparent);
+    box-shadow:
+      0 24px 62px rgba(7, 9, 12, 0.17),
+      inset 0 1px 0 color-mix(in srgb, white 8%, transparent);
+  }
+
+  .work-field[data-has-selection='true'] .work-chamber[data-selected='true'] .work-chamber__media img {
+    filter: saturate(0.98) contrast(0.99) brightness(1);
+  }
+
+  .work-chamber__detail {
+    padding: 0 clamp(1rem, 2vw, 1.25rem) clamp(1rem, 2vw, 1.25rem);
+    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 7%, transparent), transparent 58%),
+      transparent;
+  }
+
+  .work-chamber__detail-grid {
+    padding-top: 1.05rem;
+    display: grid;
+    gap: 1.1rem 1.45rem;
+    grid-template-columns: minmax(0, 1.28fr) minmax(16rem, 0.92fr);
+  }
+
+  .work-chamber__detail-copy {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .work-chamber__detail-kicker,
+  .work-chamber__group h4,
+  .work-chamber__facts dt {
+    font-size: 0.73rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  }
+
+  .work-chamber__detail-copy p {
+    max-width: 42rem;
+    color: color-mix(in srgb, var(--tone-text) 89%, var(--tone-muted) 11%);
+  }
+
+  .work-chamber__detail-copy p:nth-of-type(2) {
+    font-size: 1.02rem;
+    line-height: 1.72;
+    color: color-mix(in srgb, var(--tone-text) 94%, var(--tone-muted) 6%);
+  }
+
+  .work-chamber__facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.7rem;
+  }
+
+  .work-chamber__facts div {
+    padding: 0.8rem 0.85rem;
+    border-radius: 0.95rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 8%, transparent), transparent 72%),
+      color-mix(in srgb, var(--tone-surface) 92%, transparent);
+  }
+
+  .work-chamber__facts dd {
+    margin-top: 0.18rem;
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  }
+
+  .work-chamber__tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .work-chamber__tool {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    padding: 0.35rem 0.68rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
+    background: color-mix(in srgb, var(--tone-surface) 92%, transparent);
+    font-size: 0.82rem;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+  }
+
+  .work-chamber__detail-aside {
+    display: grid;
+    gap: 0.95rem;
+    align-content: start;
+  }
+
+  .work-chamber__group {
+    display: grid;
+    gap: 0.55rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 9%, transparent), transparent 72%),
+      color-mix(in srgb, var(--tone-surface) 92%, transparent);
+  }
+
+  .work-chamber__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .work-chamber__list li {
+    margin: 0;
+  }
+
+  .work-chamber__list a,
+  .work-chamber__thread-link {
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+    text-decoration: none;
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem;
+  }
+
+  .work-chamber__list a:hover,
+  .work-chamber__list a:focus-visible,
+  .work-chamber__thread-link:hover,
+  .work-chamber__thread-link:focus-visible {
+    color: var(--tone-accent-glow);
+  }
+
+  .work-chamber__list small {
+    font-size: 0.78rem;
+    color: color-mix(in srgb, var(--tone-text) 68%, var(--tone-muted) 32%);
+  }
+
+  .work-chamber__action-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .work-chamber__action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.2rem;
+    padding: 0.45rem 0.82rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 20%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 10%, transparent), transparent 72%),
+      color-mix(in srgb, var(--tone-surface) 90%, transparent);
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+    text-decoration: none;
+    transition:
+      border-color 160ms ease,
+      transform 160ms ease,
+      color 160ms ease;
+  }
+
+  .work-chamber__action:hover,
+  .work-chamber__action:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 44%, var(--line2));
+    color: var(--tone-accent-glow);
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 900px) {
+    .work-field__list {
+      grid-template-columns: 1fr;
+    }
+
+    .work-chamber__summary,
+    .work-chamber__detail-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .work-chamber__media {
+      order: -1;
+      aspect-ratio: 16 / 10;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .work-chamber__facts {
+      grid-template-columns: 1fr;
+    }
+
+    .work-chamber__summary {
+      padding: 0.95rem;
+    }
+
+    .work-chamber__detail {
+      padding: 0 0.95rem 0.95rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .work-chamber,
+    .work-chamber__media img,
+    .work-chamber__action {
+      transition: none;
+    }
+  }
+</style>
