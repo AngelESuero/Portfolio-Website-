@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-10T13:38:52.806Z",
+    "generatedAt": "2026-03-10T15:11:45.747Z",
     "sources": [
       {
         "id": "openai_news",
@@ -6376,6 +6376,29 @@
         {
           "label": "Feed",
           "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
+    {
+      "id": "567d1150f08c767011f48d2a2db2147099af578de2e615c118e4f9213de40dea",
+      "title": "From games to biology and beyond: 10 years of AlphaGo’s impact",
+      "url": "https://deepmind.google/blog/10-years-of-alphago/",
+      "sourceId": "deepmind_blog",
+      "sourceName": "Google DeepMind — Blog",
+      "publishedAt": "2026-03-09T13:52:36.000Z",
+      "summary": "Ten years since AlphaGo, we explore how it is catalyzing scientific discovery and paving a path to AGI.",
+      "tags": [
+        "primary",
+        "research"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://deepmind.google/blog/10-years-of-alphago/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://deepmind.google/blog/feed/basic"
         }
       ]
     },
@@ -15349,31 +15372,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2501.06986"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "a599dd390beecee3e99bd446ba4ce0c86a1fc2d84060def344db74110237497c",
-      "title": "Maximizing Asynchronicity in Event-based Neural Networks",
-      "url": "https://arxiv.org/abs/2505.11165",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-03-09T04:00:00.000Z",
-      "summary": "arXiv:2505.11165v2 Announce Type: replace-cross Abstract: Event cameras deliver visual data with high temporal resolution, low latency, and minimal redundancy, yet their asynchronous, sparse sequential nature challenges standard tensor-based machine learning (ML). While the recent asynchronous-to-synchronous (A2S) paradigm aims to bridge this gap by asynchronously encoding events into learned features for ML pipelines, existing A2S approaches often sacrifice expressivity and generalizability compared to dense, synchronous methods. This paper introduces EVA (EVent Asynchronous feature learning), a novel A2S framework to generate highly expressive and generalizable event-by-event features. Inspired by the analogy between events and language, EVA uniquely adapts advances from language modeling in linear attention and self-supervised learning for its construction. In demonstration, EVA outperforms prior A2S methods on recognition tasks (DVS128-Gesture and N-Cars), and represents the first A2S framework to successfully master demanding detection tasks, achieving a 0.477 mAP on the Gen1 dataset. These results underscore EVA's potential for advancing real-time event-based vision applications.",
-      "tags": [
-        "papers",
-        "language",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2505.11165"
         },
         {
           "label": "Feed",
