@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-10T19:09:55.058Z",
+    "generatedAt": "2026-03-10T19:53:13.439Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,28 @@
     ]
   },
   "items": [
+    {
+      "id": "2a7fdabf3999a917a1732090e01f81c8e5f602382ad6e4f34097441d86a2b89b",
+      "title": "How NVIDIA Builds Open Data for AI",
+      "url": "https://huggingface.co/blog/nvidia/open-data-for-ai",
+      "sourceId": "hf_blog",
+      "sourceName": "Hugging Face — Blog",
+      "publishedAt": "2026-03-10T19:49:28.000Z",
+      "summary": null,
+      "tags": [
+        "open-source"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://huggingface.co/blog/nvidia/open-data-for-ai"
+        },
+        {
+          "label": "Feed",
+          "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
     {
       "id": "11723c1dad2eea4f361ee356acbd33ee8b2d28b2eaf41099d73604c8cdfc88e7",
       "title": "From raw interaction to reusable knowledge: Rethinking memory for AI agents",
@@ -15201,29 +15223,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.08588"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "0d63a7fc49f26b6b65f07f027edbca1b2f92dbc887f2718e184727dc1bff3899",
-      "title": "Don't Look Back in Anger: MAGIC Net for Streaming Continual Learning with Temporal Dependence",
-      "url": "https://arxiv.org/abs/2603.08600",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-10T04:00:00.000Z",
-      "summary": "arXiv:2603.08600v1 Announce Type: cross Abstract: Concept drift, temporal dependence, and catastrophic forgetting represent major challenges when learning from data streams. While Streaming Machine Learning and Continual Learning (CL) address these issues separately, recent efforts in Streaming Continual Learning (SCL) aim to unify them. In this work, we introduce MAGIC Net, a novel SCL approach that integrates CL-inspired architectural strategies with recurrent neural networks to tame temporal dependence. MAGIC Net continuously learns, looks back at past knowledge by applying learnable masks over frozen weights, and expands its architecture when necessary. It performs all operations online, ensuring inference availability at all times. Experiments on synthetic and real-world streams show that it improves adaptation to new concepts, limits memory usage, and mitigates forgetting.",
-      "tags": [
-        "papers",
-        "inference"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.08600"
         },
         {
           "label": "Feed",
