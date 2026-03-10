@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-10T04:52:17.102Z",
+    "generatedAt": "2026-03-10T06:00:48.540Z",
     "sources": [
       {
         "id": "openai_news",
@@ -5984,6 +5984,260 @@
         {
           "label": "Feed",
           "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "b421b17d7a588f7a8f46d8e116c1c8ed39fe4424ef8aac256d8a243414cf1045",
+      "title": "MOOSEnger -- a Domain-Specific AI Agent for the MOOSE Ecosystem",
+      "url": "https://arxiv.org/abs/2603.04756",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-10T04:00:00.000Z",
+      "summary": "arXiv:2603.04756v2 Announce Type: replace Abstract: MOOSEnger is a tool-enabled AI agent tailored to the Multiphysics Object-Oriented Simulation Environment (MOOSE). MOOSE cases are specified in HIT \".i\" input files; the large object catalog and strict syntax make initial setup and debugging slow. MOOSEnger offers a conversational workflow that turns natural-language intent into runnable inputs by combining retrieval-augmented generation over curated docs/examples with deterministic, MOOSE-aware parsing, validation, and execution tools. A core-plus-domain architecture separates reusable agent infrastructure (configuration, registries, tool dispatch, retrieval services, persistence, and evaluation) from a MOOSE plugin that adds HIT-based parsing, syntax-preserving ingestion of input files, and domain-specific utilities for input repair and checking. An input precheck pipeline removes hidden formatting artifacts, fixes malformed HIT structure with a bounded grammar-constrained loop, and resolves invalid object types via similarity search over an application syntax registry. Inputs are then validated and optionally smoke-tested with the MOOSE runtime in the loop via an MCP-backed execution backend (with local fallback), translating solver diagnostics into iterative verify-and-correct updates. Built-in evaluation reports RAG metrics (faithfulness, relevancy, context precision/recall) and end-to-end success by actual execution. On a 125-prompt benchmark spanning diffusion, transient heat conduction, solid mechanics, porous flow, incompressible Navier--Stokes, phase field and plasticity, MOOSEnger achieves a 0.90 execution pass rate versus 0.06 for an LLM-only baseline.",
+      "tags": [
+        "papers",
+        "agents",
+        "eval"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.04756"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "6f4e62823fb62818476638f3bb36d968f89370ebc9262e01f8c3627838da2260",
+      "title": "SEA-TS: Self-Evolving Agent for Autonomous Code Generation of Time Series Forecasting Algorithms",
+      "url": "https://arxiv.org/abs/2603.04873",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-10T04:00:00.000Z",
+      "summary": "arXiv:2603.04873v2 Announce Type: replace Abstract: Accurate time series forecasting underpins decision-making across domains, yet conventional ML development suffers from data scarcity in new deployments, poor adaptability under distribution shift, and diminishing returns from manual iteration. We propose Self-Evolving Agent for Time Series Algorithms (SEA-TS), a framework that autonomously generates, validates, and optimizes forecasting code via an iterative self-evolution loop. Our framework introduces three key innovations: (1) Metric-Advantage Monte Carlo Tree Search (MA-MCTS), which replaces fixed rewards with a normalized advantage score for discriminative search guidance; (2) Code Review with running prompt refinement, where each executed solution undergoes automated review followed by prompt updates that encode corrective patterns, preventing recurrence of similar errors; and (3) Global Steerable Reasoning, which compares each node against global best and worst solutions, enabling cross-trajectory knowledge transfer. We adopt a MAP-Elites archive for architectural diversity. On the public Solar-Energy benchmark, SEA-TS generated code achieves a 40% MAE reduction relative to TimeMixer, surpassing state-of-the-art methods. On proprietary datasets, SEA-TS generated code reduces WAPE by 8.6% on solar PV forecasting and 7.7% on residential load forecasting compared to human-engineered baselines, and achieves 26.17% MAPE on load forecasting versus 29.34% by TimeMixer. Notably, the evolved models discover novel architectural patterns--including physics-informed monotonic decay heads encoding solar irradiance constraints, per-station learned diurnal cycle profiles, and learnable hourly bias correction--demonstrating that autonomous ML engineering can generate genuinely novel algorithmic ideas beyond manual design.",
+      "tags": [
+        "papers",
+        "agents",
+        "reasoning",
+        "eval",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.04873"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "0bd31acb0b80c4628bf5db3103efce22f73863e6b3b37a5e7c76e73746b14900",
+      "title": "MatRIS: Toward Reliable and Efficient Pretrained Machine Learning Interatomic Potentials",
+      "url": "https://arxiv.org/abs/2603.02002",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-10T04:00:00.000Z",
+      "summary": "arXiv:2603.02002v3 Announce Type: replace-cross Abstract: Foundation MLIPs demonstrate broad applicability across diverse material systems and have emerged as a powerful and transformative paradigm in chemical and computational materials science. Equivariant MLIPs achieve state-of-the-art accuracy in a wide range of benchmarks by incorporating equivariant inductive bias. However, the reliance on tensor products and high-degree representations makes them computationally costly. This raises a fundamental question: as quantum mechanical-based datasets continue to expand, can we develop a more compact model to thoroughly exploit high-dimensional atomic interactions? In this work, we present MatRIS (\\textbf{Mat}erials \\textbf{R}epresentation and \\textbf{I}nteraction \\textbf{S}imulation), an invariant MLIP that introduces attention-based modeling of three-body interactions. MatRIS leverages a novel separable attention mechanism with linear complexity $O(N)$, enabling both scalability and expressiveness. MatRIS delivers accuracy comparable to that of leading equivariant models on a wide range of popular benchmarks (Matbench-Discovery, MatPES, MDR phonon, Molecular dataset, etc). Taking Matbench-Discovery as an example, MatRIS achieves an F1 score of up to 0.847 and attains comparable accuracy at a lower training cost. The work indicates that our carefully designed invariant models can match or exceed the accuracy of equivariant models at a fraction of the cost, shedding light on the development of accurate and efficient MLIPs.",
+      "tags": [
+        "papers",
+        "eval",
+        "training",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.02002"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "747c98bb113d2ffc07bb6ca7729f1d80d6dd98dae941787ad882be1db56dafc7",
+      "title": "Kiwi-Edit: Versatile Video Editing via Instruction and Reference Guidance",
+      "url": "https://arxiv.org/abs/2603.02175",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-10T04:00:00.000Z",
+      "summary": "arXiv:2603.02175v3 Announce Type: replace-cross Abstract: Instruction-based video editing has witnessed rapid progress, yet current methods often struggle with precise visual control, as natural language is inherently limited in describing complex visual nuances. Although reference-guided editing offers a robust solution, its potential is currently bottlenecked by the scarcity of high-quality paired training data. To bridge this gap, we introduce a scalable data generation pipeline that transforms existing video editing pairs into high-fidelity training quadruplets, leveraging image generative models to create synthesized reference scaffolds. Using this pipeline, we construct RefVIE, a large-scale dataset tailored for instruction-reference-following tasks, and establish RefVIE-Bench for comprehensive evaluation. Furthermore, we propose a unified editing architecture, Kiwi-Edit, that synergizes learnable queries and latent visual features for reference semantic guidance. Our model achieves significant gains in instruction following and reference fidelity via a progressive multi-stage training curriculum. Extensive experiments demonstrate that our data and architecture establish a new state-of-the-art in controllable video editing. All datasets, models, and code is released at https://github.com/showlab/Kiwi-Edit.",
+      "tags": [
+        "papers",
+        "eval",
+        "training",
+        "model",
+        "release",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.02175"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "3b8f650022c2705f0d2de835779b9fe882ed9596beda4e1e27da913b93437806",
+      "title": "Fine-Tuning and Evaluating Conversational AI for Agricultural Advisory",
+      "url": "https://arxiv.org/abs/2603.03294",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-10T04:00:00.000Z",
+      "summary": "arXiv:2603.03294v2 Announce Type: replace-cross Abstract: Large Language Models show promise for agricultural advisory, yet vanilla models exhibit unsupported recommendations, generic advice lacking specific, actionable detail, and communication styles misaligned with smallholder farmer needs. In high stakes agricultural contexts, where recommendation accuracy has direct consequences for farmer outcomes, these limitations pose challenges for responsible deployment. We present a hybrid LLM architecture that decouples factual retrieval from conversational delivery: supervised fine-tuning with LoRA on expert-curated GOLDEN FACTS (atomic, verified units of agricultural knowledge) optimizes fact recall, while a separate stitching layer transforms retrieved facts into culturally appropriate, safety-aware responses. Our evaluation framework, DG-EVAL, performs atomic fact verification (measuring recall, precision, and contradiction detection) against expert-curated ground truth rather than Wikipedia or retrieved documents. Experiments across multiple model configurations on crops and queries from Bihar, India show that fine-tuning on curated data substantially improves fact recall and F1, while maintaining high relevance. Using a fine-tuned smaller model achieves comparable or better factual quality at a fraction of the cost of frontier models. A stitching layer further improves safety subscores while maintaining high conversational quality. We release the farmerchat-prompts library to enable reproducible development of domain-specific agricultural AI.",
+      "tags": [
+        "papers",
+        "eval",
+        "safety",
+        "model",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.03294"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "9171c9c5d6ae268766d7fa5b9c1bc2b5e8a8a0528475731bb0d5e5f756e6fa43",
+      "title": "Fragile Thoughts: How Large Language Models Handle Chain-of-Thought Perturbations",
+      "url": "https://arxiv.org/abs/2603.03332",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-10T04:00:00.000Z",
+      "summary": "arXiv:2603.03332v2 Announce Type: replace-cross Abstract: Chain-of-Thought (CoT) prompting has emerged as a foundational technique for eliciting reasoning from Large Language Models (LLMs), yet the robustness of this approach to corruptions in intermediate reasoning steps remains poorly understood. This paper presents a comprehensive empirical evaluation of LLM robustness to a structured taxonomy of 5 CoT perturbation types: \\textit{MathError, UnitConversion, Sycophancy, SkippedSteps,} and \\textit{ExtraSteps}. We evaluate 13 models spanning three orders of magnitude in parameter count (3B to 1.5T\\footnote{Assumed parameter count of closed models}), testing their ability to complete mathematical reasoning tasks despite perturbations injected at different points in the reasoning chain. Our key findings reveal heterogeneous vulnerability patterns: MathError perturbations produce the most severe degradation in small models (50-60\\% accuracy loss) but show strong scaling benefits; UnitConversion remains challenging across all scales (20-30\\% loss even for largest models); ExtraSteps incur minimal accuracy degradation (0-6\\%) regardless of scale; Sycophancy produces modest effects (7\\% loss for small models); and SkippedSteps cause intermediate damage (15\\% loss). Scaling relationships follow power-law patterns, with model size serving as a protective factor against some perturbations but offering limited defense against dimensional reasoning tasks. These findings have direct implications for deploying LLMs in multi-stage reasoning pipelines and underscore the necessity of task-specific robustness assessments and mitigation strategies. The code and results are available https://github.com/Mystic-Slice/CoTPerturbation.",
+      "tags": [
+        "papers",
+        "reasoning",
+        "eval",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.03332"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "7452ae70cf40ec992064ce80e9f2bab09c3cc4ca8bf9f0ff6795a509b1538ed1",
+      "title": "Measuring AI R&D Automation",
+      "url": "https://arxiv.org/abs/2603.03992",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-10T04:00:00.000Z",
+      "summary": "arXiv:2603.03992v3 Announce Type: replace-cross Abstract: The automation of AI R&D (AIRDA) could have significant implications, but its extent and ultimate effects remain uncertain. We need empirical data to resolve these uncertainties, but existing data (primarily capability benchmarks) may not reflect real-world automation or capture its broader consequences, such as whether AIRDA accelerates capabilities more than safety progress or whether our ability to oversee AI R&D can keep pace with its acceleration. To address these gaps, this work proposes metrics to track the extent of AIRDA and its effects on AI progress and oversight. The metrics span dimensions such as capital share of AI R&D spending, researcher time allocation, and AI subversion incidents, and could help decision makers understand the potential consequences of AIRDA, implement appropriate safety measures, and maintain awareness of the pace of AI development. We recommend that companies and third parties (e.g. non-profit research organisations) start to track these metrics, and that governments support these efforts.",
+      "tags": [
+        "papers",
+        "eval",
+        "safety"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.03992"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "dd43018f28b7df24a63c7ad9e18e9b3288ae848a4454c2a5bb1fc9aed1eb320d",
+      "title": "Simulating Meaning, Nevermore! Introducing ICR: A Semiotic-Hermeneutic Metric for Evaluating Meaning in LLM Text Summaries",
+      "url": "https://arxiv.org/abs/2603.04413",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-10T04:00:00.000Z",
+      "summary": "arXiv:2603.04413v2 Announce Type: replace-cross Abstract: Meaning in human language is relational, context dependent, and emergent, arising from dynamic systems of signs rather than fixed word-concept mappings. In computational settings, this semiotic and interpretive complexity complicates the generation and evaluation of meaning. This article proposes an interdisciplinary framework for studying meaning in large language model (LLM) generated language by integrating semiotics and hermeneutics with qualitative research methods. We review prior scholarship on meaning and machines, examining how linguistic signs are transformed into vectorized representations in static and contextualized embedding models, and identify gaps between statistical approximation and human interpretive meaning. We then introduce the Inductive Conceptual Rating (ICR) metric, a qualitative evaluation approach grounded in inductive content analysis and reflexive thematic analysis, designed to assess semantic accuracy and meaning alignment in LLM-outputs beyond lexical similarity metrics. We apply ICR in an empirical comparison of LLM generated and human generated thematic summaries across five datasets (N = 50 to 800). While LLMs achieve high linguistic similarity, they underperform on semantic accuracy, particularly in capturing contextually grounded meanings. Performance improves with larger datasets but remains variable across models, potentially reflecting differences in the frequency and coherence of recurring concepts and meanings. We conclude by arguing for evaluation frameworks that leverage systematic qualitative interpretation practices when assessing meaning in LLM-generated outputs from reference texts.",
+      "tags": [
+        "papers",
+        "eval",
+        "safety",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.04413"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "2b0d3c239506a0d9ce7f71805928191d7205189dc1155dd17e276c0458775541",
+      "title": "vLLM Semantic Router: Signal Driven Decision Routing for Mixture-of-Modality Models",
+      "url": "https://arxiv.org/abs/2603.04444",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-10T04:00:00.000Z",
+      "summary": "arXiv:2603.04444v2 Announce Type: replace-cross Abstract: As large language models (LLMs) diversify across modalities, capabilities, and cost profiles, the problem of intelligent request routing -- selecting the right model for each query at inference time -- has become a critical systems challenge. We present vLLM Semantic Router, a signal-driven decision routing framework for Mixture-of-Modality (MoM) model deployments. The central innovation is composable signal orchestration: the system extracts heterogeneous signal types from each request -- from sub-millisecond heuristic features (keyword patterns, language detection, context length, role-based authorization) to neural classifiers (domain, embedding similarity, factual grounding, modality) -- and composes them through configurable Boolean decision rules into deployment-specific routing policies. Different deployment scenarios -- multi-cloud enterprise, privacy-regulated, cost-optimized, latency-sensitive -- are expressed as different signal-decision configurations over the same architecture, without code changes. Matched decisions drive semantic model routing: over a dozen of selection algorithms analyze request characteristics to find the best model cost-effectively, while per-decision plugin chains enforce privacy and safety constraints (jailbreak detection, PII filtering, hallucination detection via the three-stage HaluGate pipeline). The system provides OpenAI API support for stateful multi-turn conversations, multi-endpoint and multi-provider routing across heterogeneous backends (vLLM, OpenAI, Anthropic, Azure, Bedrock, Gemini, Vertex AI), and a pluggable authorization factory supporting multiple auth providers. Deployed in production as an Envoy external processor, the architecture demonstrates that composable signal orchestration enables a single routing framework to serve diverse deployment scenarios with differentiated cost, privacy, and safety policies.",
+      "tags": [
+        "papers",
+        "safety",
+        "inference",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.04444"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "b2b61bb961ab26c85e36c92b8fde363c13e764416a3465a38a3fb8c0df902169",
+      "title": "RoboPocket: Improve Robot Policies Instantly with Your Phone",
+      "url": "https://arxiv.org/abs/2603.05504",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-10T04:00:00.000Z",
+      "summary": "arXiv:2603.05504v2 Announce Type: replace-cross Abstract: Scaling imitation learning is fundamentally constrained by the efficiency of data collection. While handheld interfaces have emerged as a scalable solution for in-the-wild data acquisition, they predominantly operate in an open-loop manner: operators blindly collect demonstrations without knowing the underlying policy's weaknesses, leading to inefficient coverage of critical state distributions. Conversely, interactive methods like DAgger effectively address covariate shift but rely on physical robot execution, which is costly and difficult to scale. To reconcile this trade-off, we introduce RoboPocket, a portable system that enables Robot-Free Instant Policy Iteration using single consumer smartphones. Its core innovation is a Remote Inference framework that visualizes the policy's predicted trajectory via Augmented Reality (AR) Visual Foresight. This immersive feedback allows collectors to proactively identify potential failures and focus data collection on the policy's weak regions without requiring a physical robot. Furthermore, we implement an asynchronous Online Finetuning pipeline that continuously updates the policy with incoming data, effectively closing the learning loop in minutes. Extensive experiments demonstrate that RoboPocket adheres to data scaling laws and doubles the data efficiency compared to offline scaling strategies, overcoming their long-standing efficiency bottleneck. Moreover, our instant iteration loop also boosts sample efficiency by up to 2$\\times$ in distributed environments a small number of interactive corrections per person. Project page and videos: https://robo-pocket.github.io.",
+      "tags": [
+        "papers",
+        "policy",
+        "inference"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.05504"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
         }
       ]
     },
@@ -15124,271 +15378,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2505.12189"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "857d79647ae8a9df6e7788dcc2a2a085323326574c03aff9918072747666abae",
-      "title": "AdAEM: An Adaptively and Automated Extensible Measurement of LLMs' Value Difference",
-      "url": "https://arxiv.org/abs/2505.13531",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-03-09T04:00:00.000Z",
-      "summary": "arXiv:2505.13531v2 Announce Type: replace-cross Abstract: Assessing Large Language Models'(LLMs) underlying value differences enables comprehensive comparison of their misalignment, cultural adaptability, and biases. Nevertheless, current value measurement methods face the informativeness challenge: with often outdated, contaminated, or generic test questions, they can only capture the orientations on comment safety values, e.g., HHH, shared among different LLMs, leading to indistinguishable and uninformative results. To address this problem, we introduce AdAEM, a novel, self-extensible evaluation algorithm for revealing LLMs' inclinations. Distinct from static benchmarks, AdAEM automatically and adaptively generates and extends its test questions. This is achieved by probing the internal value boundaries of a diverse set of LLMs developed across cultures and time periods in an in-context optimization manner. Such a process theoretically maximizes an information-theoretic objective to extract diverse controversial topics that can provide more distinguishable and informative insights about models' value differences. In this way, AdAEM is able to co-evolve with the development of LLMs, consistently tracking their value dynamics. We use AdAEM to generate novel questions and conduct an extensive analysis, demonstrating our method's validity and effectiveness, laying the groundwork for better interdisciplinary research on LLMs' values and alignment. Codes and the generated evaluation questions are released at https://github.com/ValueCompass/AdAEM.",
-      "tags": [
-        "papers",
-        "language",
-        "eval",
-        "safety",
-        "model",
-        "release"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2505.13531"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "e77cb8f032a7916cfe7a274bb29ef033ca4b76befd632c9f102a3e5fc4a228c7",
-      "title": "Sysformer: Safeguarding Frozen Large Language Models with Adaptive System Prompts",
-      "url": "https://arxiv.org/abs/2506.15751",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-03-09T04:00:00.000Z",
-      "summary": "arXiv:2506.15751v2 Announce Type: replace-cross Abstract: As large language models (LLMs) are deployed in safety-critical settings, it is essential to ensure that their responses comply with safety standards. Prior research has revealed that LLMs often fail to grasp the notion of safe behaviors, resulting in either unjustified refusals to harmless prompts or the generation of harmful content. While substantial efforts have been made to improve their robustness, existing defenses often rely on costly fine-tuning of model parameters or employ suboptimal heuristic techniques. In this work, we take a novel approach to safeguard LLMs by learning to adapt the system prompts in instruction-tuned LLMs. While LLMs are typically pre-trained to follow a fixed system prompt, we investigate the impact of tailoring the system prompt to each specific user input on the safety of the responses. To this end, we propose $\\textbf{Sysformer}$, a trans$\\textbf{former}$ model that updates an initial $\\textbf{sys}$tem prompt to a more robust system prompt in the LLM input embedding space while attending to the user prompt. While keeping the LLM parameters frozen, the Sysformer is trained to refuse to respond to a set of harmful prompts while responding ideally to a set of safe ones. Through extensive experiments on $5$ LLMs from different families and $2$ recent benchmarks, we demonstrate that Sysformer can significantly enhance the robustness of LLMs, leading to upto $80\\%$ gain in the refusal rate on harmful prompts while enhancing the compliance with the safe prompts by upto $90\\%$. Results also generalize well to sophisticated jailbreaking attacks, making LLMs upto $100\\%$ more robust against different attack strategies. We hope our findings lead to cheaper safeguarding of LLMs and motivate future investigations into designing variable system prompts.",
-      "tags": [
-        "papers",
-        "language",
-        "eval",
-        "safety",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2506.15751"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "90ed0ea50edd08bccdbbe5c92ae278fe55f0901b6329a41b1e8636964b949135",
-      "title": "VLMQ: Token Saliency-Driven Post-Training Quantization for Vision-language Models",
-      "url": "https://arxiv.org/abs/2508.03351",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-03-09T04:00:00.000Z",
-      "summary": "arXiv:2508.03351v2 Announce Type: replace-cross Abstract: Post-training quantization (PTQ) has emerged as an effective technique for compressing large models and accelerating inference without retraining. While PTQ has been extensively studied in large language models (LLMs), its application to vision-language models (VLMs) remains underexplored. In this work, we identify two intrinsic characteristics of VLM activations: 1) visual over-representation, where vision tokens are excessive and often redundant, and 2) modality gap, which refers to the clear distribution gap between text and vision tokens in the latent feature space. Together, these two factors significantly deteriorate quantization performance but have been overlooked by existing PTQ methods. To address these challenges, we propose VLMQ, A VLM-tailored PTQ framework that selectively prioritizes salient tokens while suppressing redundant ones during quantization. In particular, we introduce a gradient-driven importance factor to capture the token-wise importance variance, the effectiveness of which is substantiated through both empirical and theoretical analysis. To ensure efficiency, we propose to use lightweight block-wise backpropagation for factor acquisition. Finally, we reformulate the optimization objective into an importance-aware form to preserve important activation information. Extensive evaluations on 8 benchmarks across 0.5B$\\sim$32B VLMs demonstrate the state-of-the-art (SOTA) performance of our VLMQ, particularly under low-bit settings. For example, it achieves a substantial \\textbf{16.45\\%} improvement on MME-RealWorld under 2-bit quantization.",
-      "tags": [
-        "papers",
-        "language",
-        "eval",
-        "inference",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2508.03351"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "8c885d9417b4691b079a53bf91fa17ad102098b3e9bb2e532d81ed7c40fd6797",
-      "title": "Decoding Partial Differential Equations: Cross-Modal Adaptation of Decoder-only Models to PDEs",
-      "url": "https://arxiv.org/abs/2510.05278",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-03-09T04:00:00.000Z",
-      "summary": "arXiv:2510.05278v2 Announce Type: replace-cross Abstract: While large language models are primarily used on natural language tasks, they have also shown great promise when adapted to new modalities, e.g., for scientific machine learning tasks. Most proposed approaches for such cross-modal adaptation of language models focus on encoder-only transformer model architectures, despite decoder-only architectures being far more popular for language tasks in recent years, and being trained at much larger scales. This raises the question of how model architecture affects cross-modal adaptation approaches, and whether we can leverage the success of decoder-only models. In this paper, we systematically compare encoder-only and decoder-only language models on cross-modal adaptation for time-dependent simulation tasks based on partial differential equations (PDEs). We find that decoder-only models are far worse than encoder-only models, when existing approaches are applied unmodified. In contrast to several other domains, scaling decoder-only models also does not help. To enhance the performance of decoder-only models in this context, we introduce two novel approaches that mimic bidirectionality, Parallel Flipping and Sequence Doubling. Both our methods improve overall performance using decoder-only models for all tasks and all cross-modal adaptation methods, closing the gap to encoder-only model performance. We hope that our findings broaden the spectrum of models used on cross-modal adaptation tasks to further scientific machine learning.",
-      "tags": [
-        "papers",
-        "language",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2510.05278"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "67cb2ba9804fdb39b573d478f2b6a19187ce018c3f435b68249abdb3335e9522",
-      "title": "Just-In-Time Objectives: A General Approach for Specialized AI Interactions",
-      "url": "https://arxiv.org/abs/2510.14591",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-03-09T04:00:00.000Z",
-      "summary": "arXiv:2510.14591v2 Announce Type: replace-cross Abstract: Large language models promise a broad set of functions, but when not given a specific objective, they default to generic results. We demonstrate that inferring the user's in-the-moment objective, then rapidly optimizing for that singular objective, enables LLMs to produce specialized tools, interfaces, and responses. Our work introduces just-in-time objectives, which model a user's goals to specialize LLM systems on the fly. We contribute an architecture for automatically inducing such objectives by passively observing user behavior, then steering downstream AI systems through generation and evaluation against this objective. Inducing just-in-time objectives (e.g., \"Clarify the abstract's research contribution\") enables automatic generation of tools, e.g., those that critique a draft based on relevant HCI methodologies, anticipate related researchers' reactions, or surface ambiguous terminology. In a series of experiments on participants' own tasks, JIT objectives enable LLM outputs that achieve 66-86% win rates over typical LLMs. In-person use sessions confirm that JIT objectives produce specialized tools that are unique to each participant and are rated as significantly higher quality than a standard LLM chat tool.",
-      "tags": [
-        "papers",
-        "language",
-        "eval",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2510.14591"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "6013f68d23f412d147d3f67b0499935a2db6eb6fa917850bf186c40c27015134",
-      "title": "Co-Layout: LLM-driven Co-optimization for Interior Layout",
-      "url": "https://arxiv.org/abs/2511.12474",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-03-09T04:00:00.000Z",
-      "summary": "arXiv:2511.12474v2 Announce Type: replace-cross Abstract: We present a novel framework for automated interior design that combines large language models (LLMs) with grid-based integer programming to jointly optimize room layout and furniture placement. Given a textual prompt, the LLM-driven agent workflow extracts structured design constraints related to room configurations and furniture arrangements. These constraints are encoded into a unified grid-based representation inspired by ``Modulor\". Our formulation accounts for key design requirements, including corridor connectivity, room accessibility, spatial exclusivity, and user-specified preferences. To improve computational efficiency, we adopt a coarse-to-fine optimization strategy that begins with a low-resolution grid to solve a simplified problem and guides the solution at the full resolution. Experimental results across diverse scenarios demonstrate that our joint optimization approach significantly outperforms existing two-stage design pipelines in solution quality, and achieves notable computational efficiency through the coarse-to-fine strategy.",
-      "tags": [
-        "papers",
-        "language",
-        "agents",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2511.12474"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "afcae025748878ee1c8858ae7b91f0ff432e9c99d18c4ced561f7132f5b82861",
-      "title": "Agent Tools Orchestration Leaks More: Dataset, Benchmark, and Mitigation",
-      "url": "https://arxiv.org/abs/2512.16310",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-03-09T04:00:00.000Z",
-      "summary": "arXiv:2512.16310v2 Announce Type: replace-cross Abstract: Driven by Large Language Models, the single-agent, multi-tool architecture has become a popular paradigm for autonomous agents. However, this architecture introduces a severe privacy risk, which we term Tools Orchestration Privacy Risk (TOP-R): an agent, to achieve a benign user goal, autonomously aggregates non-sensitive fragments from multiple tools and synthesizes unexpected sensitive information. We provide the first systematic study of this risk. We establish a formal framework characterizing TOP-R through three necessary conditions -- conclusion sensitivity, single-source non-inferability, and compositional inferability. We construct TOP-Bench via a Reverse Inference Seed Expansion (RISE) pipeline, incorporating paired social-context scenarios for diagnostic analysis. We further introduce the H-Score, a harmonic mean of task completion and safety, to quantify the utility-safety trade-off. Evaluation of six state-of-the-art LLMs reveals pervasive risk: the average Overall Leakage Rate reaches 62.11% with an H-Score of only 52.90%. Our experiments identify three root causes: deficient spontaneous privacy awareness, reasoning overshoot, and inference inertia. Guided by these findings, we propose three complementary mitigation strategies targeting the output, reasoning, and review stages of the agent pipeline; the strongest configuration, Dual-Constraint Privacy Enhancement, achieves an H-Score of 79.20%. Our work reveals a new risk class in tool-using agents, analyzes leakage causes, and provides practical mitigation strategies.",
-      "tags": [
-        "papers",
-        "language",
-        "agents",
-        "reasoning",
-        "eval",
-        "safety",
-        "inference",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2512.16310"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "288cd060ffea4ba22e771d42bef59de619bedce426f4013512238d891fff7337",
-      "title": "Classroom AI: Large Language Models as Grade-Specific Teachers",
-      "url": "https://arxiv.org/abs/2601.06225",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-03-09T04:00:00.000Z",
-      "summary": "arXiv:2601.06225v2 Announce Type: replace-cross Abstract: Large Language Models (LLMs) offer a promising solution to complement traditional teaching and address global teacher shortages that affect hundreds of millions of children, but they fail to provide grade-appropriate responses for students at different educational levels. We introduce a framework for finetuning LLMs to generate age-appropriate educational content across six grade levels, from lower elementary to adult education. Our framework successfully adapts explanations to match students' comprehension capacities without sacrificing factual correctness. This approach integrates seven established readability metrics through a clustering method and builds a comprehensive dataset for grade-specific content generation. Evaluations across multiple datasets with 208 human participants demonstrate substantial improvements in grade-level alignment, achieving a 35.64 percentage point increase compared to prompt-based methods while maintaining response accuracy. AI-assisted learning tailored to different grade levels has the potential to advance educational engagement and equity.",
-      "tags": [
-        "papers",
-        "language",
-        "eval",
-        "safety",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2601.06225"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "c46ea978a3e171ec36abca1d26c332b042483459186217d3796e137c36920fe5",
-      "title": "Knowledge Graphs are Implicit Reward Models: Path-Derived Signals Enable Compositional Reasoning",
-      "url": "https://arxiv.org/abs/2601.15160",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-03-09T04:00:00.000Z",
-      "summary": "arXiv:2601.15160v3 Announce Type: replace-cross Abstract: Large language models have achieved near-expert performance in structured reasoning domains like mathematics and programming, yet their ability to perform compositional multi-hop reasoning in specialized scientific fields remains limited. We propose a bottom-up learning paradigm in which models are grounded in axiomatic domain facts and compose them to solve complex, unseen tasks. To this end, we present a post-training pipeline, based on a combination of supervised fine-tuning and reinforcement learning (RL), in which knowledge graphs act as implicit reward models. By deriving novel reward signals from knowledge graph paths, we provide verifiable, scalable, and grounded supervision that encourages models to compose intermediate axioms rather than optimize only final answers during RL. We validate this approach in the medical domain, training a 14B model on short-hop reasoning paths (1-3 hops) and evaluating its zero-shot generalization to complex multi-hop queries (4-5 hops). Our experiments show that path-derived rewards act as a \"compositional bridge\", enabling our model to significantly outperform much larger models and frontier systems like GPT-5.2 and Gemini 3 Pro, on the most difficult reasoning tasks. Furthermore, we demonstrate the robustness of our approach to adversarial perturbations against option-shuffling stress tests. This work suggests that grounding the reasoning process in structured knowledge is a scalable and efficient path toward intelligent reasoning. Our code is publicly available at: https://github.com/jha-lab/kg-implicit-reward-compositional-rl/.",
-      "tags": [
-        "papers",
-        "language",
-        "reasoning",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2601.15160"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "2d112c6ebb2e569de33651c4c66d5556488a3741ac7d57a4629f5c93d0b6cd78",
-      "title": "Towards Autonomous Mathematics Research",
-      "url": "https://arxiv.org/abs/2602.10177",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-03-09T04:00:00.000Z",
-      "summary": "arXiv:2602.10177v3 Announce Type: replace-cross Abstract: Recent advances in foundational models have yielded reasoning systems capable of achieving a gold-medal standard at the International Mathematical Olympiad. The transition from competition-level problem-solving to professional research, however, requires navigating vast literature and constructing long-horizon proofs. In this work, we introduce Aletheia, a math research agent that iteratively generates, verifies, and revises solutions end-to-end in natural language. Specifically, Aletheia is powered by an advanced version of Gemini Deep Think for challenging reasoning problems, a novel inference-time scaling law that extends beyond Olympiad-level problems, and intensive tool use to navigate the complexities of mathematical research. We demonstrate the capability of Aletheia from Olympiad problems to PhD-level exercises and most notably, through several distinct milestones in AI-assisted mathematics research: (a) a research paper (Feng26) generated by AI without any human intervention in calculating certain structure constants in arithmetic geometry called eigenweights; (b) a research paper (LeeSeo26) demonstrating human-AI collaboration in proving bounds on systems of interacting particles called independent sets; and (c) an extensive semi-autonomous evaluation (Feng et al., 2026a) of 700 open problems on Bloom's Erdos Conjectures database, including autonomous solutions to four open questions. In order to help the public better understand the developments pertaining to AI and mathematics, we suggest quantifying standard levels of autonomy and novelty of AI-assisted results, as well as propose a novel concept of human-AI interaction cards for transparency. We conclude with reflections on human-AI collaboration in mathematics and share all prompts as well as model outputs at https://github.com/google-deepmind/superhuman/tree/main/aletheia.",
-      "tags": [
-        "papers",
-        "language",
-        "agents",
-        "reasoning",
-        "eval",
-        "inference",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.10177"
         },
         {
           "label": "Feed",
