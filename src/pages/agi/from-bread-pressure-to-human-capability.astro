@@ -1,0 +1,453 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+type Score = 0 | 1 | 2 | 3;
+
+type Signal = {
+  label: string;
+  score: Score;
+  note: string;
+};
+
+type Band = {
+  id: string;
+  title: string;
+  question: string;
+  description: string;
+  evidenceWeight: string;
+  score: Score;
+  signals: Signal[];
+};
+
+const bands: Band[] = [
+  {
+    id: 'a',
+    title: 'Band A — Survival Floor Formation',
+    question: 'Is society actually building a floor under human life?',
+    description:
+      'This band tracks whether the outer mechanics of a post-bread-pressure transition are actually being built: real money, real delivery, real bridge policy, and real labor stress forcing the issue.',
+    evidenceWeight: 'Harder data',
+    score: 1,
+    signals: [
+      {
+        label: 'Private catalyst',
+        score: 1,
+        note: 'Local guaranteed-income experiments exist, but no decisive first-mover philanthropic surge has yet set a new national floor.'
+      },
+      {
+        label: 'Government movement',
+        score: 1,
+        note: 'There is periodic pilot and guaranteed-income activity, but national bridge formation remains weak relative to the scale of the transition question.'
+      },
+      {
+        label: 'Labor stress',
+        score: 1,
+        note: 'The white-collar squeeze is visible, but the social contract has not yet been openly reorganized around it.'
+      },
+      {
+        label: 'Delivery reality',
+        score: 2,
+        note: 'Cash delivery itself is not the hard part. The harder part is whether systems are deployed broadly enough to matter.'
+      }
+    ]
+  },
+  {
+    id: 'b',
+    title: 'Band B — What Relief Does to People',
+    question: 'When survival pressure loosens, does human capability rise?',
+    description:
+      'This is the hinge. It tracks what actually happens when pressure lifts: more steadiness, better work, healthier risk-taking, and deeper capability — or passivity, drift, and more noise.',
+    evidenceWeight: 'Mixed evidence',
+    score: 2,
+    signals: [
+      {
+        label: 'Pressure release effect',
+        score: 2,
+        note: 'The Stockton SEED pilot is the strongest live anchor here. It cut against the lazy assumption that cash relief mainly produces collapse.'
+      },
+      {
+        label: 'Hollowness test',
+        score: 1,
+        note: 'AI is exposing shallow information-status work, but society has not yet clearly sorted real sense-making from more algorithmic repetition.'
+      },
+      {
+        label: 'Meaningful post-work movement',
+        score: 1,
+        note: 'There are signs of people moving toward more direct and self-shaped work, but not yet at a scale that changes the overall cultural direction.'
+      },
+      {
+        label: 'Culture of health',
+        score: 1,
+        note: 'Relief does not automatically become maintenance, prevention, rhythm, or steadier life. That culture is still weak.'
+      }
+    ]
+  },
+  {
+    id: 'c',
+    title: 'Band C — Human Readiness',
+    question: 'Are people becoming able to use freedom well?',
+    description:
+      'This tertiary band tracks whether people and culture are becoming capable of using relief and freedom without collapsing into distraction, compulsion, or passivity.',
+    evidenceWeight: 'Directional / proxy-based',
+    score: 1,
+    signals: [
+      {
+        label: 'Compulsion vs self-direction',
+        score: 1,
+        note: 'Convenience systems are scaling faster than human steadiness. The question is whether self-direction catches up.'
+      },
+      {
+        label: 'Attention quality',
+        score: 1,
+        note: 'Attention remains fragmented. That weakens the human side of any transition, even if the material floor improves.'
+      },
+      {
+        label: 'Ordinary inner practice',
+        score: 1,
+        note: 'A true culture of non-coercive maintenance, rhythm, and inner stability is still emerging rather than established.'
+      },
+      {
+        label: 'Embodied life',
+        score: 1,
+        note: 'The future remains screen-heavy and convenience-heavy. Real-world grounding, human contact, and planet connection are still underbuilt.'
+      }
+    ]
+  }
+];
+
+const scoreLabel = (score: Score) => {
+  if (score === 0) return 'Moving the wrong way';
+  if (score === 1) return 'Weak or mixed signal';
+  if (score === 2) return 'Real signal';
+  return 'Strong signal';
+};
+
+const scoreWidth = (score: Score) => `${((score + 1) / 4) * 100}%`;
+---
+
+<BaseLayout
+  title="From Bread-Pressure to Human Capability - a_e.s_"
+  description="A UBI and civilizational direction tracker for whether a survival floor is forming and what relief actually does to human capability."
+  theme="archive"
+>
+  <main class="tracker-shell">
+    <section class="tracker-hero panel">
+      <p class="eyebrow">AGI / Society</p>
+      <h1>From Bread-Pressure to Human Capability</h1>
+      <p class="subtitle">The UBI &amp; Civilizational Direction Tracker</p>
+      <p>
+        This page tracks a specific question: are we moving toward a world where survival is no
+        longer the central pressure of human life, and where that released pressure opens into
+        greater human capability rather than deeper drift?
+      </p>
+      <p>
+        The first layer is the outer transition problem: whether a real survival floor forms under
+        AI pressure. The second layer is the civilizational question: what people and culture
+        actually do with that relief if it arrives.
+      </p>
+    </section>
+
+    <section class="panel tracker-readme">
+      <h2>How to read this tracker</h2>
+      <p>The three bands are sequential, not parallel.</p>
+      <ol>
+        <li><strong>Band A</strong> asks whether a survival floor is actually forming.</li>
+        <li><strong>Band B</strong> asks what relief actually does to people once pressure lifts.</li>
+        <li><strong>Band C</strong> asks whether people and culture are becoming capable of using that freedom well over time.</li>
+      </ol>
+      <div class="score-key">
+        <span><strong>0</strong> = moving the wrong way</span>
+        <span><strong>1</strong> = weak or mixed signal</span>
+        <span><strong>2</strong> = real signal</span>
+        <span><strong>3</strong> = strong signal</span>
+      </div>
+    </section>
+
+    <section class="tracker-bands">
+      {bands.map((band, index) => (
+        <article class="panel band-card">
+          <div class="band-header">
+            <div>
+              <p class="eyebrow">Step {index + 1}</p>
+              <h2>{band.title}</h2>
+              <p class="band-question">{band.question}</p>
+            </div>
+            <div class="score-chip" data-score={band.score}>
+              <span class="score-number">{band.score}</span>
+              <span class="score-text">{scoreLabel(band.score)}</span>
+            </div>
+          </div>
+
+          <p>{band.description}</p>
+          <p class="evidence-weight"><strong>Evidence weight:</strong> {band.evidenceWeight}</p>
+
+          <div class="score-bar" aria-hidden="true">
+            <div class="score-bar-fill" style={`width: ${scoreWidth(band.score)}`}></div>
+          </div>
+
+          <div class="signal-grid">
+            {band.signals.map((signal) => (
+              <div class="signal-card">
+                <div class="signal-topline">
+                  <h3>{signal.label}</h3>
+                  <span class="mini-score" data-score={signal.score}>{signal.score}</span>
+                </div>
+                <p>{signal.note}</p>
+              </div>
+            ))}
+          </div>
+        </article>
+      ))}
+    </section>
+
+    <section class="panel tracker-thesis">
+      <h2>What this tracker is really testing</h2>
+      <p>
+        This page is not just measuring whether UBI-style mechanisms appear. It is testing whether
+        a survival floor, if it forms, bends society toward a healthier destination: away from
+        labor as a pure survival mechanic, away from shallow information-status performance, and
+        toward a world where people have more room to build, care, think, make, relate, and live
+        more fully.
+      </p>
+      <ul>
+        <li>A floor can form and still land in the wrong civilization.</li>
+        <li>Pressure can ease and still produce drift.</li>
+        <li>Technology can advance and still meet a culture that is not ready for it.</li>
+      </ul>
+    </section>
+
+    <section class="panel closing-note">
+      <h2>Closing note</h2>
+      <p>
+        I want society to be free from labor as survival mechanics, and for people to be platformed
+        and valued for their inherent potential as life. I want people to have the room to do what
+        they would like to do and build what is actually theirs to build, with a new culture of
+        health and consciousness brewing alongside that freedom.
+      </p>
+    </section>
+
+    <section class="panel source-note">
+      <h2>Source note</h2>
+      <p>
+        This page is built from two source streams: Andrew Yang’s outer-transition argument about
+        the survival floor and political-economic path, and the Sadhguru panel discussion about the
+        inner and civilizational question of what people and society do with freedom once pressure
+        lifts. Stockton SEED is used here as a Band B anchor, not as proof of the whole thesis.
+      </p>
+      <p>
+        <a href="/agi">Return to the AGI monitor</a>
+      </p>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .tracker-shell {
+    width: min(1120px, calc(100vw - 2rem));
+    margin: 0 auto;
+    display: grid;
+    gap: 1.25rem;
+    padding: 2rem 0 4rem;
+  }
+
+  .panel {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, rgba(255, 255, 255, 0.08));
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--tone-accent) 8%, rgba(255, 255, 255, 0.02)),
+      rgba(8, 11, 17, 0.88)
+    );
+    border-radius: 24px;
+    padding: 1.25rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(10px);
+  }
+
+  .eyebrow {
+    margin: 0 0 0.35rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--tone-accent-glow);
+    opacity: 0.8;
+  }
+
+  .tracker-hero h1,
+  .panel h2,
+  .signal-card h3 {
+    margin: 0;
+  }
+
+  .tracker-hero h1 {
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    line-height: 1.02;
+    margin-bottom: 0.35rem;
+  }
+
+  .subtitle {
+    margin: 0 0 1rem;
+    font-size: 1rem;
+    color: color-mix(in srgb, var(--tone-accent-glow) 78%, white 22%);
+  }
+
+  .tracker-hero p,
+  .panel p,
+  .panel li {
+    font-size: 1rem;
+    line-height: 1.62;
+    color: rgba(235, 238, 242, 0.88);
+  }
+
+  .tracker-readme ol,
+  .tracker-thesis ul {
+    margin: 0.75rem 0 0;
+    padding-left: 1.2rem;
+  }
+
+  .score-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: rgba(235, 238, 242, 0.84);
+  }
+
+  .tracker-bands {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .band-card {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .band-header {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .band-question {
+    margin-top: 0.35rem;
+    color: color-mix(in srgb, var(--tone-accent-glow) 82%, white 18%);
+  }
+
+  .score-chip {
+    min-width: 172px;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.8rem 0.9rem;
+    display: grid;
+    gap: 0.25rem;
+    justify-items: end;
+    text-align: right;
+  }
+
+  .score-number {
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--tone-accent-glow);
+  }
+
+  .score-text {
+    font-size: 0.85rem;
+    color: rgba(235, 238, 242, 0.78);
+  }
+
+  .evidence-weight {
+    margin: 0;
+    font-size: 0.96rem;
+    color: rgba(235, 238, 242, 0.76);
+  }
+
+  .score-bar {
+    width: 100%;
+    height: 0.65rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.07);
+    overflow: hidden;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--tone-accent), var(--tone-accent-glow));
+  }
+
+  .signal-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+
+  .signal-card {
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.95rem;
+  }
+
+  .signal-topline {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: baseline;
+    margin-bottom: 0.35rem;
+  }
+
+  .signal-card h3 {
+    font-size: 1rem;
+  }
+
+  .signal-card p {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  .mini-score {
+    min-width: 1.8rem;
+    height: 1.8rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--tone-accent-glow);
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  .closing-note p {
+    font-size: 1.06rem;
+  }
+
+  .source-note a {
+    color: var(--tone-accent-glow);
+  }
+
+  @media (max-width: 860px) {
+    .tracker-shell {
+      width: min(100vw - 1rem, 1120px);
+      padding-top: 1.25rem;
+    }
+
+    .band-header {
+      flex-direction: column;
+    }
+
+    .score-chip {
+      width: 100%;
+      justify-items: start;
+      text-align: left;
+    }
+
+    .signal-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

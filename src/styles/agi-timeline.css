@@ -89,6 +89,25 @@
   margin: 0 auto;
 }
 
+.agi-subroute-link {
+  max-width: 1080px;
+  margin: 0 auto 1.2rem;
+  color: var(--tone-muted);
+  font-size: 0.94rem;
+}
+
+.agi-subroute-link a {
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--tone-accent) 34%, transparent);
+  text-underline-offset: 0.14em;
+}
+
+.agi-subroute-link a:hover,
+.agi-subroute-link a:focus-visible {
+  color: var(--tone-accent-glow);
+}
+
 .timeline-intro,
 .panel-header {
   margin-bottom: 2rem;
