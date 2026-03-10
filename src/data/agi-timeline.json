@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-10T16:15:44.758Z",
+    "generatedAt": "2026-03-10T17:11:16.721Z",
     "sources": [
       {
         "id": "openai_news",
@@ -114,6 +114,29 @@
         {
           "label": "Feed",
           "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
+    {
+      "id": "b37c4dabc7e4351cbe1e3511da4970a444666e4f0ddbe3b82c64c265049e8d78",
+      "title": "New ways to learn math and science in ChatGPT",
+      "url": "https://openai.com/index/new-ways-to-learn-math-and-science-in-chatgpt",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-03-10T10:00:00.000Z",
+      "summary": "ChatGPT introduces interactive visual explanations for math and science, helping students explore formulas, variables, and concepts in real time.",
+      "tags": [
+        "primary",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/new-ways-to-learn-math-and-science-in-chatgpt"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
         }
       ]
     },
@@ -6325,6 +6348,28 @@
         {
           "label": "Original",
           "url": "https://huggingface.co/blog/async-rl-training-landscape"
+        },
+        {
+          "label": "Feed",
+          "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
+    {
+      "id": "be006dbf1b8aa02beafc8519deef98007b5490d03187c5a2a17bbf5b70347a4f",
+      "title": "Introducing Storage Buckets on the Hugging Face Hub",
+      "url": "https://huggingface.co/blog/storage-buckets",
+      "sourceId": "hf_blog",
+      "sourceName": "Hugging Face — Blog",
+      "publishedAt": "2026-03-10T00:00:00.000Z",
+      "summary": null,
+      "tags": [
+        "open-source"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://huggingface.co/blog/storage-buckets"
         },
         {
           "label": "Feed",
@@ -15311,59 +15356,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2602.24142"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "e2808f384287fbf63ed14907021d9284c3eb9e24264a8311f8b7703c170a9ed0",
-      "title": "Fine-Tuning and Evaluating Conversational AI for Agricultural Advisory",
-      "url": "https://arxiv.org/abs/2603.03294",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-03-09T04:00:00.000Z",
-      "summary": "arXiv:2603.03294v2 Announce Type: replace Abstract: Large Language Models show promise for agricultural advisory, yet vanilla models exhibit unsupported recommendations, generic advice lacking specific, actionable detail, and communication styles misaligned with smallholder farmer needs. In high stakes agricultural contexts, where recommendation accuracy has direct consequences for farmer outcomes, these limitations pose challenges for responsible deployment. We present a hybrid LLM architecture that decouples factual retrieval from conversational delivery: supervised fine-tuning with LoRA on expert-curated GOLDEN FACTS (atomic, verified units of agricultural knowledge) optimizes fact recall, while a separate stitching layer transforms retrieved facts into culturally appropriate, safety-aware responses. Our evaluation framework, DG-EVAL, performs atomic fact verification (measuring recall, precision, and contradiction detection) against expert-curated ground truth rather than Wikipedia or retrieved documents. Experiments across multiple model configurations on crops and queries from Bihar, India show that fine-tuning on curated data substantially improves fact recall and F1, while maintaining high relevance. Using a fine-tuned smaller model achieves comparable or better factual quality at a fraction of the cost of frontier models. A stitching layer further improves safety subscores while maintaining high conversational quality. We release the farmerchat-prompts library to enable reproducible development of domain-specific agricultural AI.",
-      "tags": [
-        "papers",
-        "language",
-        "eval",
-        "safety",
-        "model",
-        "release"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.03294"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "2b9cdfee6191047059ce4977a1369dba6cb6a8bc548148afd98d30ca99143b4b",
-      "title": "Fragile Thoughts: How Large Language Models Handle Chain-of-Thought Perturbations",
-      "url": "https://arxiv.org/abs/2603.03332",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-03-09T04:00:00.000Z",
-      "summary": "arXiv:2603.03332v2 Announce Type: replace Abstract: Chain-of-Thought (CoT) prompting has emerged as a foundational technique for eliciting reasoning from Large Language Models (LLMs), yet the robustness of this approach to corruptions in intermediate reasoning steps remains poorly understood. This paper presents a comprehensive empirical evaluation of LLM robustness to a structured taxonomy of 5 CoT perturbation types: \\textit{MathError, UnitConversion, Sycophancy, SkippedSteps,} and \\textit{ExtraSteps}. We evaluate 13 models spanning three orders of magnitude in parameter count (3B to 1.5T\\footnote{Assumed parameter count of closed models}), testing their ability to complete mathematical reasoning tasks despite perturbations injected at different points in the reasoning chain. Our key findings reveal heterogeneous vulnerability patterns: MathError perturbations produce the most severe degradation in small models (50-60\\% accuracy loss) but show strong scaling benefits; UnitConversion remains challenging across all scales (20-30\\% loss even for largest models); ExtraSteps incur minimal accuracy degradation (0-6\\%) regardless of scale; Sycophancy produces modest effects (7\\% loss for small models); and SkippedSteps cause intermediate damage (15\\% loss). Scaling relationships follow power-law patterns, with model size serving as a protective factor against some perturbations but offering limited defense against dimensional reasoning tasks. These findings have direct implications for deploying LLMs in multi-stage reasoning pipelines and underscore the necessity of task-specific robustness assessments and mitigation strategies. The code and results are available https://github.com/Mystic-Slice/CoTPerturbation.",
-      "tags": [
-        "papers",
-        "language",
-        "reasoning",
-        "eval",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.03332"
         },
         {
           "label": "Feed",
