@@ -12,4 +12,48 @@ import LifeMapSemanticOrb from '../../app/components/LifeMapSemanticOrb';
   fullBleed={true}
 >
   <LifeMapSemanticOrb client:load />
+  <a href="/work" class="map-escape-link" data-color="ochre" data-tone="seva">Back to Portfolio</a>
 </BaseLayout>
+
+<style>
+  .map-escape-link {
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0px) + 5.25rem);
+    left: 1rem;
+    z-index: 60;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0.55rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 26%, rgba(255, 255, 255, 0.16));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 14%, transparent), transparent 70%),
+      rgba(7, 11, 18, 0.82);
+    color: color-mix(in srgb, var(--tone-accent-glow) 84%, white 16%);
+    text-decoration: none;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.24);
+    transition:
+      transform 140ms ease,
+      border-color 140ms ease,
+      color 140ms ease;
+  }
+
+  .map-escape-link:hover,
+  .map-escape-link:focus-visible {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--tone-accent) 58%, rgba(255, 255, 255, 0.18));
+    color: var(--tone-accent-glow);
+  }
+
+  @media (max-width: 860px) {
+    .map-escape-link {
+      top: calc(env(safe-area-inset-top, 0px) + 4.5rem);
+      left: 0.75rem;
+      padding-inline: 0.8rem;
+      font-size: 0.82rem;
+    }
+  }
+</style>
