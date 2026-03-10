@@ -17,6 +17,9 @@ const projects = defineCollection({
       untitled: z.string().optional()
     }),
     featured: z.boolean().default(false),
+    leadPriority: z.number().optional(),
+    role: z.string().optional(),
+    relatedProjects: z.array(z.string()).optional(),
     cover_image: z.string(),
     description: z.string()
   })

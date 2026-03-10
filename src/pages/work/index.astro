@@ -28,6 +28,7 @@ type PreparedProject = {
   yearLabel: string;
   type: string;
   status: string;
+  role: string | null;
   description: string;
   coverImage: string;
   tools: string[];
@@ -81,13 +82,15 @@ const extractNotes = (body: string): string[] =>
     .slice(0, 2);
 
 const allProjects = (await getCollection('projects')).sort(compareProjectsByRecency);
+const projectIndex = new Map(allProjects.map((project) => [project.slug, project]));
 const scoreLeadProject = (project: CollectionEntry<'projects'>) => {
   const timeline = resolveProjectTimeline(project.data);
   const notes = extractNotes(project.body);
   const noteWeight = Math.min(notes.join(' ').length, 160);
   const featuredWeight = project.data.featured ? 360 : 0;
   const statusWeight = /published/i.test(project.data.status) ? 90 : 0;
-  return featuredWeight + statusWeight + noteWeight + timeline.sortYear;
+  const leadPriorityWeight = (project.data.leadPriority ?? 0) * 1000;
+  return leadPriorityWeight + featuredWeight + statusWeight + noteWeight + timeline.sortYear;
 };
 
 const leadProject =
@@ -112,6 +115,52 @@ const threadsByType = new Map(
   ])
 );
 
+const inferRelatedProjects = (
+  project: CollectionEntry<'projects'>,
+  excludedSlugs: string[] = []
+): RelatedProject[] => {
+  const excluded = new Set([project.slug, ...excludedSlugs]);
+  return allProjects
+    .filter((candidate) => !excluded.has(candidate.slug) && candidate.data.type === project.data.type)
+    .sort((a, b) => {
+      const featuredDelta = Number(b.data.featured) - Number(a.data.featured);
+      if (featuredDelta !== 0) return featuredDelta;
+      return compareProjectsByRecency(a, b);
+    })
+    .slice(0, 2)
+    .map((candidate) => ({
+      slug: candidate.slug,
+      title: candidate.data.title,
+      yearLabel: resolveProjectTimeline(candidate.data).yearLabel
+    }));
+};
+
+const resolveRelatedProjects = (project: CollectionEntry<'projects'>): RelatedProject[] => {
+  const explicitSlugs = Array.isArray(project.data.relatedProjects) ? project.data.relatedProjects : [];
+  const seen = new Set<string>();
+  const explicitMatches = explicitSlugs
+    .map((slug) => projectIndex.get(slug))
+    .filter((candidate): candidate is CollectionEntry<'projects'> => {
+      if (!candidate || candidate.slug === project.slug || seen.has(candidate.slug)) return false;
+      seen.add(candidate.slug);
+      return true;
+    })
+    .map((candidate) => ({
+      slug: candidate.slug,
+      title: candidate.data.title,
+      yearLabel: resolveProjectTimeline(candidate.data).yearLabel
+    }));
+
+  if (explicitMatches.length >= 2) return explicitMatches.slice(0, 2);
+
+  const inferredMatches = inferRelatedProjects(
+    project,
+    explicitMatches.map((candidate) => candidate.slug)
+  );
+
+  return [...explicitMatches, ...inferredMatches].slice(0, 2);
+};
+
 const preparedProjects: PreparedProject[] = orderedProjects.map((project) => {
   const timeline = resolveProjectTimeline(project.data);
   const notes = extractNotes(project.body);
@@ -127,19 +176,7 @@ const preparedProjects: PreparedProject[] = orderedProjects.map((project) => {
       };
     })
     .filter((entry): entry is PreparedLink => Boolean(entry));
-  const relatedProjects = allProjects
-    .filter((candidate) => candidate.slug !== project.slug && candidate.data.type === project.data.type)
-    .sort((a, b) => {
-      const featuredDelta = Number(b.data.featured) - Number(a.data.featured);
-      if (featuredDelta !== 0) return featuredDelta;
-      return compareProjectsByRecency(a, b);
-    })
-    .slice(0, 2)
-    .map((candidate) => ({
-      slug: candidate.slug,
-      title: candidate.data.title,
-      yearLabel: resolveProjectTimeline(candidate.data).yearLabel
-    }));
+  const relatedProjects = resolveRelatedProjects(project);
   const relatedThread = threadsByType.get(project.data.type) ?? null;
 
   return {
@@ -148,6 +185,7 @@ const preparedProjects: PreparedProject[] = orderedProjects.map((project) => {
     yearLabel: timeline.yearLabel,
     type: typeLabels[project.data.type] ?? project.data.type,
     status: project.data.status,
+    role: typeof project.data.role === 'string' && project.data.role.trim() ? project.data.role.trim() : null,
     description: project.data.description,
     coverImage: project.data.cover_image,
     tools: project.data.tools,
@@ -256,6 +294,12 @@ const defaultStatus =
                         <dt>Format</dt>
                         <dd>{project.type}</dd>
                       </div>
+                      {project.role && (
+                        <div>
+                          <dt>Role</dt>
+                          <dd>{project.role}</dd>
+                        </div>
+                      )}
                       <div>
                         <dt>Status</dt>
                         <dd>{project.status}</dd>

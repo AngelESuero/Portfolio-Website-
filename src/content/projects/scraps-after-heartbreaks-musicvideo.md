@@ -9,6 +9,10 @@ links:
   youtube: "https://youtu.be/ErIkkP7lmEw?si=AiU5QA_um1BIWmpv"
   linktree: "https://linktr.ee/a_e.s_"
 featured: true
+role: "Director / Editor / Visual Translation"
+relatedProjects:
+  - "scraps-dark-days-symptoms-no-context-demos-2023-2024"
+  - "newark-night-video-notes"
 cover_image: "https://ugc.production.linktr.ee/337c1f63-8f9d-4143-8c8b-e39a0376fb0d_maxresdefault.jpeg"
 description: "A music video entry from the scraps period focused on emotional aftermath and visual compression."
 ---
