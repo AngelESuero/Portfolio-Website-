@@ -13,6 +13,7 @@ role: "Writer / Producer / Archive Curator"
 relatedProjects:
   - "scraps-after-heartbreaks-musicvideo"
   - "scraps-death-of-my-feminine-demos-2022"
+relatedThread: "/threads/scraps-archive"
 cover_image: "https://ugc.production.linktr.ee/9910fd9c-2cfe-4dfe-827c-151c7bf2204e_Scraps--Death-Of-My-Feminine-Dependence---Some-Repeated-Lessons--2022-2023--artwork.jpeg"
 description: "A multi-part scraps archive from 2023-2024 collecting dark-day notes, symptoms logs, and no-context demos."
 ---

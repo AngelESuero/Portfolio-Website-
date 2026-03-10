@@ -39,6 +39,7 @@ type PreparedProject = {
   relatedProjects: RelatedProject[];
   hasCuratedRelations: boolean;
   relatedThread: RelatedThread | null;
+  hasCuratedThread: boolean;
   isLead: boolean;
 };
 
@@ -143,6 +144,13 @@ const threadsByType = new Map(
   ])
 );
 
+const threadsByHref = new Map(
+  featuredThreadsData.featured_threads.map((thread) => [
+    thread.href,
+    { title: thread.title, href: thread.href }
+  ])
+);
+
 const inferRelatedProjects = (
   project: CollectionEntry<'projects'>,
   excludedSlugs: string[] = []
@@ -199,6 +207,25 @@ const resolveRelatedProjects = (
   };
 };
 
+const resolveRelatedThread = (
+  project: CollectionEntry<'projects'>
+): { item: RelatedThread | null; hasCuratedThread: boolean } => {
+  const explicitHref = typeof project.data.relatedThread === 'string' ? project.data.relatedThread.trim() : '';
+  const explicitThread = explicitHref ? threadsByHref.get(explicitHref) ?? null : null;
+
+  if (explicitThread) {
+    return {
+      item: explicitThread,
+      hasCuratedThread: true
+    };
+  }
+
+  return {
+    item: threadsByType.get(project.data.type) ?? null,
+    hasCuratedThread: false
+  };
+};
+
 const preparedProjects: PreparedProject[] = orderedProjects.map((project) => {
   const timeline = resolveProjectTimeline(project.data);
   const notes = extractNotes(project.body);
@@ -215,7 +242,7 @@ const preparedProjects: PreparedProject[] = orderedProjects.map((project) => {
     })
     .filter((entry): entry is PreparedLink => Boolean(entry));
   const relatedProjectData = resolveRelatedProjects(project);
-  const relatedThread = threadsByType.get(project.data.type) ?? null;
+  const relatedThreadData = resolveRelatedThread(project);
 
   return {
     slug: project.slug,
@@ -233,7 +260,8 @@ const preparedProjects: PreparedProject[] = orderedProjects.map((project) => {
     links,
     relatedProjects: relatedProjectData.items,
     hasCuratedRelations: relatedProjectData.hasCuratedRelations,
-    relatedThread,
+    relatedThread: relatedThreadData.item,
+    hasCuratedThread: relatedThreadData.hasCuratedThread,
     isLead: project.slug === leadProject.slug
   };
 });
@@ -376,7 +404,9 @@ const defaultStatus =
 
                     {project.relatedThread && (
                       <p class="work-chamber__thread-note">
-                        A nearby thread keeps the wider process open:
+                        {project.hasCuratedThread
+                          ? 'One thread stays deliberately in conversation with this piece:'
+                          : 'A nearby thread keeps the wider process open:'}
                         {' '}
                         <a class="work-chamber__thread-link" href={project.relatedThread.href}>
                           {project.relatedThread.title}

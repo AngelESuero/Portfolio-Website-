@@ -12,6 +12,7 @@ role: "Writer / Vocalist / Demo Archivist"
 relatedProjects:
   - "scraps-dark-days-symptoms-no-context-demos-2023-2024"
   - "queries-beat-tape-family-love"
+relatedThread: "/threads/scraps-archive"
 cover_image: "https://ugc.production.linktr.ee/db6af5d1-b1ea-4ded-9d24-0ea26cceef96_97555fcde56bef80d96cdb463b2e502ec53314ce.jpeg"
 description: "A scraps-era release documenting a turning point in tone, writing voice, and demo structure."
 ---

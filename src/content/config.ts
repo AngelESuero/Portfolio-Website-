@@ -20,6 +20,7 @@ const projects = defineCollection({
     leadPriority: z.number().optional(),
     role: z.string().optional(),
     relatedProjects: z.array(z.string()).optional(),
+    relatedThread: z.string().optional(),
     cover_image: z.string(),
     description: z.string()
   })
