@@ -37,6 +37,7 @@ type PreparedProject = {
   detailPath: string;
   links: PreparedLink[];
   relatedProjects: RelatedProject[];
+  hasCuratedRelations: boolean;
   relatedThread: RelatedThread | null;
   isLead: boolean;
 };
@@ -80,6 +81,33 @@ const extractNotes = (body: string): string[] =>
     .map((part) => collapseMarkdown(part))
     .filter(Boolean)
     .slice(0, 2);
+
+const formatRole = (value: string | null): string | null => {
+  if (!value) return null;
+  const normalized = value
+    .split('/')
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .join(' · ');
+  return normalized || null;
+};
+
+const outwardLabel = (link: PreparedLink): string => {
+  switch (link.key) {
+    case 'untitled':
+      return 'Listen on Untitled';
+    case 'youtube':
+      return 'Watch on YouTube';
+    case 'instagram':
+      return 'See it on Instagram';
+    case 'linktree':
+      return 'Open release links';
+    case 'github':
+      return 'Browse the code';
+    default:
+      return `Visit ${link.label}`;
+  }
+};
 
 const allProjects = (await getCollection('projects')).sort(compareProjectsByRecency);
 const projectIndex = new Map(allProjects.map((project) => [project.slug, project]));
@@ -135,7 +163,9 @@ const inferRelatedProjects = (
     }));
 };
 
-const resolveRelatedProjects = (project: CollectionEntry<'projects'>): RelatedProject[] => {
+const resolveRelatedProjects = (
+  project: CollectionEntry<'projects'>
+): { items: RelatedProject[]; hasCuratedRelations: boolean } => {
   const explicitSlugs = Array.isArray(project.data.relatedProjects) ? project.data.relatedProjects : [];
   const seen = new Set<string>();
   const explicitMatches = explicitSlugs
@@ -151,14 +181,22 @@ const resolveRelatedProjects = (project: CollectionEntry<'projects'>): RelatedPr
       yearLabel: resolveProjectTimeline(candidate.data).yearLabel
     }));
 
-  if (explicitMatches.length >= 2) return explicitMatches.slice(0, 2);
+  if (explicitMatches.length >= 2) {
+    return {
+      items: explicitMatches.slice(0, 2),
+      hasCuratedRelations: true
+    };
+  }
 
   const inferredMatches = inferRelatedProjects(
     project,
     explicitMatches.map((candidate) => candidate.slug)
   );
 
-  return [...explicitMatches, ...inferredMatches].slice(0, 2);
+  return {
+    items: [...explicitMatches, ...inferredMatches].slice(0, 2),
+    hasCuratedRelations: explicitMatches.length > 0
+  };
 };
 
 const preparedProjects: PreparedProject[] = orderedProjects.map((project) => {
@@ -176,7 +214,7 @@ const preparedProjects: PreparedProject[] = orderedProjects.map((project) => {
       };
     })
     .filter((entry): entry is PreparedLink => Boolean(entry));
-  const relatedProjects = resolveRelatedProjects(project);
+  const relatedProjectData = resolveRelatedProjects(project);
   const relatedThread = threadsByType.get(project.data.type) ?? null;
 
   return {
@@ -185,7 +223,7 @@ const preparedProjects: PreparedProject[] = orderedProjects.map((project) => {
     yearLabel: timeline.yearLabel,
     type: typeLabels[project.data.type] ?? project.data.type,
     status: project.data.status,
-    role: typeof project.data.role === 'string' && project.data.role.trim() ? project.data.role.trim() : null,
+    role: formatRole(typeof project.data.role === 'string' && project.data.role.trim() ? project.data.role.trim() : null),
     description: project.data.description,
     coverImage: project.data.cover_image,
     tools: project.data.tools,
@@ -193,7 +231,8 @@ const preparedProjects: PreparedProject[] = orderedProjects.map((project) => {
     focusCopy: notes[0] ?? project.data.description,
     detailPath: `/work/${project.slug}`,
     links,
-    relatedProjects,
+    relatedProjects: relatedProjectData.items,
+    hasCuratedRelations: relatedProjectData.hasCuratedRelations,
     relatedThread,
     isLead: project.slug === leadProject.slug
   };
@@ -291,12 +330,12 @@ const defaultStatus =
                         <dd>{project.yearLabel}</dd>
                       </div>
                       <div>
-                        <dt>Format</dt>
+                        <dt>Form</dt>
                         <dd>{project.type}</dd>
                       </div>
                       {project.role && (
                         <div>
-                          <dt>Role</dt>
+                          <dt>Made as</dt>
                           <dd>{project.role}</dd>
                         </div>
                       )}
@@ -315,8 +354,13 @@ const defaultStatus =
 
                   <aside class="work-chamber__detail-aside">
                     {project.relatedProjects.length > 0 && (
-                      <section class="work-chamber__group" aria-labelledby={`work-related-${project.slug}`}>
-                        <h4 id={`work-related-${project.slug}`}>Related work</h4>
+                      <section class="work-chamber__group work-chamber__group--adjacency" aria-labelledby={`work-related-${project.slug}`}>
+                        <h4 id={`work-related-${project.slug}`}>Stays close to this piece</h4>
+                        <p class="work-chamber__group-copy">
+                          {project.hasCuratedRelations
+                            ? 'Chosen adjacencies in the body of work.'
+                            : 'Nearby work in the same part of the archive.'}
+                        </p>
                         <ul class="work-chamber__list">
                           {project.relatedProjects.map((related) => (
                             <li>
@@ -331,29 +375,37 @@ const defaultStatus =
                     )}
 
                     {project.relatedThread && (
-                      <section class="work-chamber__group" aria-labelledby={`work-thread-${project.slug}`}>
-                        <h4 id={`work-thread-${project.slug}`}>Related thread</h4>
+                      <p class="work-chamber__thread-note">
+                        A nearby thread keeps the wider process open:
+                        {' '}
                         <a class="work-chamber__thread-link" href={project.relatedThread.href}>
-                          Read {project.relatedThread.title}
+                          {project.relatedThread.title}
                         </a>
-                      </section>
+                        .
+                      </p>
                     )}
 
-                    <section class="work-chamber__group" aria-labelledby={`work-links-${project.slug}`}>
-                      <h4 id={`work-links-${project.slug}`}>Paths outward</h4>
+                    <section class="work-chamber__continuation" aria-labelledby={`work-links-${project.slug}`}>
+                      <h4 id={`work-links-${project.slug}`}>Continue with this work</h4>
                       <div class="work-chamber__action-row">
-                        <a class="work-chamber__action" href={project.detailPath}>
-                          Continue with the project page
+                        <a class="work-chamber__action work-chamber__action--primary" href={project.detailPath}>
+                          Read the fuller project page
                         </a>
-                        {project.links.map((link) => (
-                          <a
-                            class="work-chamber__action"
-                            href={link.url}
-                            {...(link.isExternal ? { target: '_blank', rel: 'noopener' } : {})}
-                          >
-                            Visit {link.label}
-                          </a>
-                        ))}
+                        {project.links.length > 0 && (
+                          <ul class="work-chamber__quiet-links">
+                            {project.links.map((link) => (
+                              <li>
+                                <a
+                                  class="work-chamber__quiet-link"
+                                  href={link.url}
+                                  {...(link.isExternal ? { target: '_blank', rel: 'noopener' } : {})}
+                                >
+                                  {outwardLabel(link)}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                       </div>
                     </section>
                   </aside>
@@ -732,6 +784,7 @@ const defaultStatus =
 
   .work-chamber__detail-kicker,
   .work-chamber__group h4,
+  .work-chamber__continuation h4,
   .work-chamber__facts dt {
     font-size: 0.73rem;
     text-transform: uppercase;
@@ -751,22 +804,24 @@ const defaultStatus =
   }
 
   .work-chamber__facts {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.7rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 1rem;
+    padding: 0.75rem 0;
+    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
   }
 
   .work-chamber__facts div {
-    padding: 0.8rem 0.85rem;
-    border-radius: 0.95rem;
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
-    background:
-      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 8%, transparent), transparent 72%),
-      color-mix(in srgb, var(--tone-surface) 92%, transparent);
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.45rem;
+    padding: 0;
   }
 
   .work-chamber__facts dd {
-    margin-top: 0.18rem;
+    margin-top: 0;
     color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
   }
 
@@ -790,7 +845,7 @@ const defaultStatus =
 
   .work-chamber__detail-aside {
     display: grid;
-    gap: 0.95rem;
+    gap: 0.85rem;
     align-content: start;
   }
 
@@ -805,12 +860,24 @@ const defaultStatus =
       color-mix(in srgb, var(--tone-surface) 92%, transparent);
   }
 
+  .work-chamber__group-copy,
+  .work-chamber__thread-note {
+    margin: 0;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  }
+
+  .work-chamber__thread-note {
+    padding: 0.15rem 0 0.15rem 0.9rem;
+    border-left: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
+    line-height: 1.62;
+  }
+
   .work-chamber__list {
     list-style: none;
     padding: 0;
     margin: 0;
     display: grid;
-    gap: 0.5rem;
+    gap: 0.6rem;
   }
 
   .work-chamber__list li {
@@ -839,10 +906,16 @@ const defaultStatus =
     color: color-mix(in srgb, var(--tone-text) 68%, var(--tone-muted) 32%);
   }
 
+  .work-chamber__continuation {
+    display: grid;
+    gap: 0.55rem;
+    padding-top: 0.25rem;
+    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+  }
+
   .work-chamber__action-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    display: grid;
+    gap: 0.45rem;
   }
 
   .work-chamber__action {
@@ -864,11 +937,40 @@ const defaultStatus =
       color 160ms ease;
   }
 
+  .work-chamber__action--primary {
+    width: fit-content;
+  }
+
   .work-chamber__action:hover,
   .work-chamber__action:focus-visible {
     border-color: color-mix(in srgb, var(--tone-accent) 44%, var(--line2));
     color: var(--tone-accent-glow);
     transform: translateY(-1px);
+  }
+
+  .work-chamber__quiet-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.9rem;
+  }
+
+  .work-chamber__quiet-links li {
+    margin: 0;
+  }
+
+  .work-chamber__quiet-link {
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--tone-accent) 32%, transparent);
+    text-underline-offset: 0.14em;
+  }
+
+  .work-chamber__quiet-link:hover,
+  .work-chamber__quiet-link:focus-visible {
+    color: var(--tone-accent-glow);
   }
 
   @media (max-width: 900px) {
@@ -889,7 +991,7 @@ const defaultStatus =
 
   @media (max-width: 680px) {
     .work-chamber__facts {
-      grid-template-columns: 1fr;
+      gap: 0.45rem 0.8rem;
     }
 
     .work-chamber__summary {
