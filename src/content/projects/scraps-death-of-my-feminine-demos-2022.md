@@ -8,13 +8,13 @@ tools: ["Voice Memos", "Untitled", "Rough Mix Notes"]
 links:
   linktree: "https://linktr.ee/a_e.s_"
 featured: true
-role: "Writer / Vocalist / Demo Archivist"
+role: "Writer / Vocalist / Demo diarist"
 relatedProjects:
+  - "scraps-after-heartbreaks-musicvideo"
   - "scraps-dark-days-symptoms-no-context-demos-2023-2024"
-  - "queries-beat-tape-family-love"
 relatedThread: "/threads/scraps-archive"
 cover_image: "https://ugc.production.linktr.ee/db6af5d1-b1ea-4ded-9d24-0ea26cceef96_97555fcde56bef80d96cdb463b2e502ec53314ce.jpeg"
-description: "A scraps-era release documenting a turning point in tone, writing voice, and demo structure."
+description: "An early scraps-era release documenting heartbreak demos, freestyles, and the first turn in writing voice that the later experiment line grows from."
 ---
 
 This page tracks a transition period where I was retiring one style of demo writing and testing a new one.
