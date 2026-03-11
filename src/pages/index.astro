@@ -4,12 +4,14 @@ import HomeMapPreview from '../components/HomeMapPreview.astro';
 import HomeShowcaseCards from '../components/HomeShowcaseCards.astro';
 import profile from '../data/profile';
 import featuredThreads from '../data/featured_threads.json';
-import { getCollection } from 'astro:content';
 
-const allProjects = await getCollection('projects');
-const allPosts = (await getCollection('posts')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const threads = featuredThreads.featured_threads;
 const featuredThreadsPreview = threads.slice(0, 3);
+const heroPaths = [
+  { href: '/work', label: 'Start with work', emphasis: 'primary' },
+  { href: '/writing', label: 'Read the writing', emphasis: 'secondary' },
+  { href: '/agi', label: 'See the AGI monitor', emphasis: 'secondary' }
+];
 const startHereCards = [
   {
     href: '/work',
@@ -33,33 +35,6 @@ const startHereCards = [
   }
 ];
 
-const shortDateFormatter = new Intl.DateTimeFormat('en-US', {
-  month: 'short',
-  day: 'numeric',
-  year: 'numeric'
-});
-
-const pluralize = (count: number, singular: string, plural = `${singular}s`) => `${count} ${count === 1 ? singular : plural}`;
-
-const formatDateLabel = (value: unknown, fallback: string): string => {
-  let parsed: Date | null = null;
-
-  if (value instanceof Date) {
-    parsed = Number.isNaN(value.valueOf()) ? null : value;
-  } else if (typeof value === 'string' || typeof value === 'number') {
-    const candidate = new Date(value);
-    parsed = Number.isNaN(candidate.valueOf()) ? null : candidate;
-  }
-
-  return parsed ? shortDateFormatter.format(parsed) : fallback;
-};
-
-const heroPulseItems = [
-  { label: 'Projects', value: pluralize(allProjects.length, 'project') },
-  { label: 'Writing', value: pluralize(allPosts.length, 'entry', 'entries') },
-  { label: 'Threads', value: pluralize(threads.length, 'thread') },
-  { label: 'Latest note', value: formatDateLabel(allPosts[0]?.data?.date, 'Archive snapshot') }
-];
 ---
 
 <BaseLayout title="A Path Toward Life - Portfolio" description={profile.short_bio} theme="archive">
@@ -68,28 +43,32 @@ const heroPulseItems = [
       <div class="home-hero__content space-y-6 text-center">
         <span class="home-hero__ivy home-hero__ivy--left" aria-hidden="true"></span>
         <span class="home-hero__ivy home-hero__ivy--right" aria-hidden="true"></span>
-        <p class="text-xs uppercase tracking-[0.2em] text-zinc-500">Portfolio / Archive</p>
+        <p class="home-hero__eyebrow">Portfolio / Archive</p>
         <h1 class="mx-auto max-w-3xl font-display text-3xl font-bold sm:text-4xl md:text-6xl text-accent">A Path Toward Life</h1>
-        <p class="mx-auto max-w-4xl text-base sm:text-lg">{profile.long_bio}</p>
-        <div class="flex flex-wrap justify-center gap-2" aria-label="Identity chips">
-          {profile.roles.map((role) => <span class="chip rounded-full px-3 py-1 text-xs sm:text-sm">{role}</span>)}
-        </div>
-        <dl class="home-hero__pulse" aria-label="Portfolio pulse">
-          {heroPulseItems.map((item) => (
-            <div class="home-hero__pulse-item">
-              <dt class="home-hero__pulse-label">{item.label}</dt>
-              <dd class="home-hero__pulse-value">{item.value}</dd>
-            </div>
+        <p class="home-hero__lede">{profile.short_bio}</p>
+        <p class="home-hero__body">{profile.long_bio}</p>
+        <p class="home-hero__roles" aria-label="Roles">{profile.roles.join(' · ')}</p>
+        <p class="home-hero__lead-note">
+          Start with one thread and let the rest stay nearby. Work carries the clearest first signal; writing and the AGI monitor widen the frame without forcing the whole archive at once.
+        </p>
+        <div class="home-hero__paths" aria-label="Leading paths">
+          {heroPaths.map((path) => (
+            <a
+              href={path.href}
+              class:list={['home-hero__path', path.emphasis === 'primary' && 'is-primary']}
+            >
+              {path.label}
+            </a>
           ))}
-        </dl>
+        </div>
       </div>
     </section>
 
     <HomeMapPreview />
 
     <section class="home-start mt-12 md:mt-14" aria-labelledby="home-start-heading">
-      <p class="home-start-kicker">Start here</p>
-      <h2 id="home-start-heading" class="home-start-title">A few ways in</h2>
+      <p class="home-start-kicker">First paths</p>
+      <h2 id="home-start-heading" class="home-start-title">If you want a first page</h2>
       <div class="home-start-grid">
         {startHereCards.map((card) => (
           <a class="home-start-card" href={card.href}>
@@ -105,13 +84,13 @@ const heroPulseItems = [
     <section class="home-featured mt-12 md:mt-14" aria-labelledby="featured-threads-heading">
       <div class="home-featured__header">
         <div class="space-y-2">
-          <p class="home-featured__kicker">Portfolio</p>
+          <p class="home-featured__kicker">Threads</p>
           <h2 id="featured-threads-heading" class="font-display text-2xl">Featured Threads</h2>
           <p class="home-featured__copy">
             A few anchor pieces from the archive. Deeper browsing stays on the section pages.
           </p>
         </div>
-        <a href="/work" class="home-featured__link" data-color="ochre" data-tone="seva">Browse work</a>
+        <a href="/threads" class="home-featured__link" data-color="blue" data-tone="discernment">Visit threads</a>
       </div>
 
       <div class="home-featured__grid">
@@ -297,6 +276,95 @@ const heroPulseItems = [
     z-index: 3;
   }
 
+  .home-hero__eyebrow,
+  .home-hero__lede,
+  .home-hero__body,
+  .home-hero__roles,
+  .home-hero__lead-note {
+    margin: 0;
+  }
+
+  .home-hero__eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  }
+
+  .home-hero__lede {
+    max-width: 42rem;
+    margin-inline: auto;
+    font-size: clamp(1.03rem, 1.7vw, 1.18rem);
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--tone-text) 94%, var(--tone-muted) 6%);
+  }
+
+  .home-hero__body {
+    max-width: 38rem;
+    margin-inline: auto;
+    font-size: 0.98rem;
+    line-height: 1.68;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .home-hero__roles {
+    max-width: 34rem;
+    margin-inline: auto;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 68%, var(--tone-muted) 32%);
+  }
+
+  .home-hero__lead-note {
+    max-width: 36rem;
+    margin-inline: auto;
+    font-size: 0.98rem;
+    line-height: 1.72;
+    color: color-mix(in srgb, var(--tone-accent-glow) 82%, white 18%);
+  }
+
+  .home-hero__paths {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+  }
+
+  .home-hero__path {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+    padding: 0.6rem 0.95rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 22%, rgba(255, 255, 255, 0.08));
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015)),
+      color-mix(in srgb, var(--tone-bg) 82%, rgba(255, 255, 255, 0.02));
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+    text-decoration: none;
+    transition:
+      border-color 140ms ease,
+      color 140ms ease,
+      background-color 140ms ease;
+  }
+
+  .home-hero__path.is-primary {
+    color: color-mix(in srgb, var(--tone-accent-glow) 88%, white 12%);
+    border-color: color-mix(in srgb, var(--tone-accent) 34%, rgba(255, 255, 255, 0.08));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 16%, transparent), transparent 72%),
+      color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
+  }
+
+  .home-hero__path:hover,
+  .home-hero__path:focus-visible {
+    color: var(--tone-accent-glow);
+    border-color: color-mix(in srgb, var(--tone-accent) 54%, rgba(255, 255, 255, 0.08));
+  }
+
   .home-hero__ivy {
     position: absolute;
     top: clamp(0.2rem, 1vw, 0.9rem);
@@ -328,60 +396,9 @@ const heroPulseItems = [
     mask-image: linear-gradient(200deg, rgba(0, 0, 0, 0.96) 18%, rgba(0, 0, 0, 0.9) 54%, transparent 100%);
   }
 
-  .home-hero__pulse {
-    width: min(100%, 44rem);
-    margin: clamp(0.25rem, 1vw, 0.6rem) auto 0;
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: clamp(0.55rem, 1vw, 0.8rem);
-  }
-
-  .home-hero__pulse-item {
-    margin: 0;
-    padding: clamp(0.68rem, 1.2vw, 0.9rem) clamp(0.75rem, 1.4vw, 0.95rem);
-    border-radius: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    background:
-      linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.04),
-        rgba(255, 255, 255, 0.015)
-      ),
-      color-mix(in srgb, var(--tone-bg) 84%, rgba(255, 255, 255, 0.02));
-    box-shadow:
-      0 14px 28px rgba(0, 0, 0, 0.22),
-      0 1px 0 rgba(255, 255, 255, 0.03) inset;
-    backdrop-filter: blur(12px);
-  }
-
-  .home-hero__pulse-label,
-  .home-hero__pulse-value {
-    margin: 0;
-  }
-
-  .home-hero__pulse-label {
-    font-size: 0.74rem;
-    line-height: 1.2;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
-  }
-
-  .home-hero__pulse-value {
-    margin-top: 0.32rem;
-    font-family: var(--font-display);
-    font-size: clamp(0.94rem, 1.7vw, 1.08rem);
-    line-height: 1.22;
-    color: color-mix(in srgb, var(--tone-accent-glow) 92%, white 8%);
-  }
-
   .home-start {
-    padding: clamp(0.95rem, 1.8vw, 1.2rem);
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 22%, var(--line2));
-    border-radius: 1rem;
-    background:
-      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 11%, transparent), transparent 62%),
-      color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
+    display: grid;
+    gap: 0.55rem;
   }
 
   .home-start-kicker,
@@ -410,46 +427,46 @@ const heroPulseItems = [
   }
 
   .home-start-grid {
-    margin-top: 0.75rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    margin-top: 0.1rem;
+    display: flex;
+    flex-wrap: wrap;
     gap: 0.6rem;
   }
 
   .home-start-card {
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 24%, var(--line2));
-    border-radius: 0.82rem;
-    padding: 0.7rem 0.74rem;
-    display: grid;
-    gap: 0.28rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 16%, var(--line2));
+    border-radius: 999px;
+    padding: 0.58rem 0.85rem;
+    display: inline-flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.2rem 0.45rem;
     text-decoration: none;
-    color: color-mix(in srgb, var(--tone-text) 92%, var(--tone-muted) 8%);
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
     background:
-      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 16%, transparent), transparent 64%),
-      color-mix(in srgb, var(--tone-surface) 90%, transparent);
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 8%, transparent), transparent 70%),
+      color-mix(in srgb, var(--tone-surface) 88%, transparent);
     transition:
       border-color 140ms ease,
-      transform 140ms ease,
       color 140ms ease;
   }
 
   .home-start-card span {
     font-family: var(--font-display);
-    font-size: 0.98rem;
+    font-size: 0.94rem;
     line-height: 1.2;
   }
 
   .home-start-card small {
     color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
-    font-size: 0.76rem;
+    font-size: 0.74rem;
     line-height: 1.4;
   }
 
   .home-start-card:hover,
   .home-start-card:focus-visible {
-    border-color: color-mix(in srgb, var(--tone-accent) 58%, var(--line2));
+    border-color: color-mix(in srgb, var(--tone-accent) 40%, var(--line2));
     color: var(--tone-accent-glow);
-    transform: translateY(-1px);
   }
 
   .home-featured {
@@ -637,8 +654,12 @@ const heroPulseItems = [
       right: 0.5rem;
     }
 
-    .home-hero__pulse {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    .home-hero__paths {
+      gap: 0.55rem;
+    }
+
+    .home-hero__path {
+      width: 100%;
     }
 
     .home-featured__grid {

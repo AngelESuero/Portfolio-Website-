@@ -55,13 +55,13 @@ const showcaseCards = [
   <div class="home-showcase__header">
     <div class="space-y-2">
       <p class="home-showcase__kicker">Offerings</p>
-      <h2 id="home-showcase-heading" class="font-display text-2xl">A few invitations inward</h2>
+      <h2 id="home-showcase-heading" class="font-display text-2xl">What stays nearby</h2>
       <p class="home-showcase__copy">
-        These stay open by default. The map above can quietly bring a few of them forward when you want a little more focus.
+        These remain within reach while the next page comes into focus.
       </p>
     </div>
     <p class="home-showcase__status" data-showcase-status aria-live="polite">
-      All of these remain open until one region asks for closer attention.
+      Nothing is singled out yet. The room stays open.
     </p>
   </div>
 
@@ -84,7 +84,7 @@ const showcaseCards = [
 
     const cards = Array.from(root.querySelectorAll('[data-card-id]'));
     const status = root.querySelector('[data-showcase-status]');
-    const idleCopy = 'All of these remain open until one region asks for closer attention.';
+    const idleCopy = 'Nothing is singled out yet. The room stays open.';
 
     const applyFocus = (detail = {}) => {
       const relatedCards = Array.isArray(detail.relatedCards) ? detail.relatedCards : [];
@@ -169,19 +169,19 @@ const showcaseCards = [
 
   .home-showcase__grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.8rem;
   }
 
   .home-showcase__card {
     display: grid;
-    gap: 0.65rem;
-    padding: 0.95rem;
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 16%, var(--line2));
+    gap: 0.6rem;
+    padding: 0.9rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 13%, var(--line2));
     border-radius: 1rem;
     background:
-      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 7%, transparent), transparent 70%),
-      color-mix(in srgb, var(--tone-surface) 92%, transparent);
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 6%, transparent), transparent 72%),
+      color-mix(in srgb, var(--tone-surface) 90%, transparent);
     transition:
       opacity 160ms ease,
       border-color 160ms ease,
@@ -214,14 +214,14 @@ const showcaseCards = [
 
   .home-showcase[data-focus-state='active'] .home-showcase__card.is-related {
     opacity: 1;
-    border-color: color-mix(in srgb, var(--showcase-focus-accent, var(--tone-accent)) 48%, var(--line2));
+    border-color: color-mix(in srgb, var(--showcase-focus-accent, var(--tone-accent)) 40%, var(--line2));
     background:
-      linear-gradient(180deg, color-mix(in srgb, var(--showcase-focus-accent, var(--tone-accent)) 13%, transparent), transparent 70%),
-      color-mix(in srgb, var(--tone-surface) 95%, transparent);
-    box-shadow: 0 10px 26px color-mix(in srgb, var(--showcase-focus-accent, var(--tone-accent)) 10%, transparent);
+      linear-gradient(180deg, color-mix(in srgb, var(--showcase-focus-accent, var(--tone-accent)) 10%, transparent), transparent 72%),
+      color-mix(in srgb, var(--tone-surface) 94%, transparent);
+    box-shadow: 0 10px 22px color-mix(in srgb, var(--showcase-focus-accent, var(--tone-accent)) 8%, transparent);
   }
 
-  @media (max-width: 1100px) {
+  @media (max-width: 980px) {
     .home-showcase__grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }

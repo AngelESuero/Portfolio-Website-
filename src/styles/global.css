@@ -734,6 +734,10 @@ html[data-surface-mode='viewer'] .header-lab-only {
 }
 
 @media (min-width: 768px) {
+  #mobile-nav-toggle {
+    display: none;
+  }
+
   .site-header .header-row {
     flex-wrap: wrap;
     row-gap: 0.7rem;
