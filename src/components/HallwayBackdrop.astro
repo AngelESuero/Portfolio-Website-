@@ -127,7 +127,7 @@ const sparkSeeds = [
     background-size: cover;
     background-repeat: no-repeat;
     filter: saturate(1.06) contrast(1.04) brightness(0.54);
-    opacity: calc(0.36 + var(--ambient-focus) * 0.08);
+    opacity: calc(0.28 + var(--ambient-focus) * 0.06);
     transform:
       translate3d(
         calc((var(--hallway-x, 50vw) - 50vw) / 140),
@@ -163,7 +163,7 @@ const sparkSeeds = [
         transparent 1px 18px
       );
     filter: blur(calc(8px - var(--ambient-focus) * 2px));
-    opacity: calc(0.52 + var(--ambient-focus) * 0.22);
+    opacity: calc(0.38 + var(--ambient-focus) * 0.14);
     mix-blend-mode: screen;
     transform:
       translate3d(
@@ -376,7 +376,7 @@ const sparkSeeds = [
         rgba(255, 255, 255, 0.03),
         transparent 72%
       );
-    opacity: calc(0.1 + var(--ambient-focus) * 0.08);
+    opacity: calc(0.07 + var(--ambient-focus) * 0.06);
     filter: blur(calc(18px - var(--ambient-focus) * 3px)) saturate(calc(1.08 + var(--ambient-focus) * 0.12));
     transform:
       translate3d(
@@ -408,7 +408,7 @@ const sparkSeeds = [
         transparent 1px 28px
       );
     mix-blend-mode: soft-light;
-    opacity: calc(0.24 + var(--ambient-focus) * 0.18);
+    opacity: calc(0.16 + var(--ambient-focus) * 0.1);
     transform: translate3d(
       calc((var(--hallway-x, 50vw) - 50vw) / 58),
       calc((var(--hallway-y, 34vh) - 34vh) / 72),
@@ -465,7 +465,7 @@ const sparkSeeds = [
         color-mix(in oklab, var(--accent) 16%, transparent)
       );
     filter: blur(calc(1px + var(--ambient-focus) * 1.8px));
-    opacity: calc(0.28 + var(--ambient-focus) * 0.18);
+    opacity: calc(0.16 + var(--ambient-focus) * 0.1);
     transform:
       translate3d(
         calc((var(--hallway-x, 50vw) - 50vw) / 120),
@@ -581,10 +581,10 @@ const sparkSeeds = [
   @keyframes hallwayBreathe {
     0%,
     100% {
-      opacity: 0.18;
+      opacity: 0.06;
     }
     50% {
-      opacity: 0.3;
+      opacity: 0.11;
     }
   }
 
