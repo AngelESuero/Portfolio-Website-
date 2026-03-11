@@ -21,6 +21,15 @@ const projects = defineCollection({
     role: z.string().optional(),
     relatedProjects: z.array(z.string()).optional(),
     relatedThread: z.string().optional(),
+    media: z
+      .array(
+        z.object({
+          src: z.string(),
+          alt: z.string(),
+          caption: z.string().optional()
+        })
+      )
+      .optional(),
     cover_image: z.string(),
     description: z.string()
   })

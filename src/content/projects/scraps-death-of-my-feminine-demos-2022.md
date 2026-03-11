@@ -13,10 +13,20 @@ relatedProjects:
   - "scraps-after-heartbreaks-musicvideo"
   - "scraps-dark-days-symptoms-no-context-demos-2023-2024"
 relatedThread: "/threads/scraps-archive"
+media:
+  - src: "/images/work/scraps/death-of-my-feminine-demos-2022/8bIrQWzgIdB-poster.png"
+    alt: "Poster-frame still from the SCRAPS AFTER HEARTBREAKS demo reel."
+    caption: "SCRAPS AFTER HEARTBREAKS"
+  - src: "/images/work/scraps/death-of-my-feminine-demos-2022/5MYgthfeSOc-poster.png"
+    alt: "Poster-frame still from the LIVINGWATER reel."
+    caption: "LIVINGWATER"
+  - src: "/images/work/scraps/death-of-my-feminine-demos-2022/6sLwZJ5DmYh-poster.png"
+    alt: "Poster-frame still from the U - Love Freestyle reel."
+    caption: "U - Love Freestyle"
 cover_image: "https://ugc.production.linktr.ee/db6af5d1-b1ea-4ded-9d24-0ea26cceef96_97555fcde56bef80d96cdb463b2e502ec53314ce.jpeg"
-description: "An early scraps-era release documenting heartbreak demos, freestyles, and the first turn in writing voice that the later experiment line grows from."
+description: "An early Scraps EP built from rap demos, freestyles, and rough takes where the writing voice starts turning toward the later run."
 ---
 
-This page tracks a transition period where I was retiring one style of demo writing and testing a new one.
+This page documents an early Scraps EP: a body of rap demos, freestyles, and rough recordings made while my writing voice was breaking from one period and moving toward another.
 
-The work is intentionally raw and kept as archive evidence of the shift.
+The recordings are intentionally raw, but the center is still the music. These demos carry the first real turn in tone, cadence, and self-address that later becomes clearer in SCRAPS AFTER HEARTBREAKS MUSICVIDEO and the longer 2023–2024 Scraps release.
