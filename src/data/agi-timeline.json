@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-11T19:53:07.762Z",
+    "generatedAt": "2026-03-11T20:50:50.473Z",
     "sources": [
       {
         "id": "openai_news",
@@ -93,6 +93,30 @@
         {
           "label": "Feed",
           "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
+    {
+      "id": "33a9db921f82bfffc08c7189e24a3a8172884edaeb1d288af6673c4ac76bf015",
+      "title": "Rakuten fixes issues twice as fast with Codex",
+      "url": "https://openai.com/index/rakuten",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-03-11T13:00:00.000Z",
+      "summary": "Rakuten uses Codex, the coding agent from OpenAI, to ship software faster and safer, reducing MTTR 50%, automating CI/CD reviews, and delivering full-stack builds in weeks.",
+      "tags": [
+        "primary",
+        "release",
+        "agents"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/rakuten"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
         }
       ]
     },
@@ -15307,35 +15331,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.03054"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "439321110d42518bce4e369d785942a4263c771ddf4d1983dd654bf2b552072c",
-      "title": "AgentIR: Reasoning-Aware Retrieval for Deep Research Agents",
-      "url": "https://arxiv.org/abs/2603.04384",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-03-10T04:00:00.000Z",
-      "summary": "arXiv:2603.04384v3 Announce Type: replace Abstract: Deep Research agents are rapidly emerging as primary consumers of modern retrieval systems. Unlike human users who issue and refine queries without documenting their intermediate thought processes, Deep Research agents generate explicit natural language reasoning before each search call, revealing rich intent and contextual information that existing retrievers entirely ignore. To exploit this overlooked signal, we introduce: (1) Reasoning-Aware Retrieval, a retrieval paradigm that jointly embeds the agent's reasoning trace alongside its query; and (2) DR-Synth, a data synthesis method that generates Deep Research retriever training data from standard QA datasets. We demonstrate that both components are independently effective, and their combination yields a trained embedding model, AgentIR-4B, with substantial gains. On the challenging BrowseComp-Plus benchmark, AgentIR-4B achieves 68\\% accuracy with the open-weight agent Tongyi-DeepResearch, compared to 50\\% with conventional embedding models twice its size, and 37\\% with BM25. Code and data are available at: https://texttron.github.io/AgentIR/.",
-      "tags": [
-        "papers",
-        "language",
-        "agents",
-        "reasoning",
-        "eval",
-        "training",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.04384"
         },
         {
           "label": "Feed",
