@@ -67,6 +67,10 @@
   --tone-text: var(--text);
   --tone-muted: var(--muted);
   --tone-line: var(--line);
+  --reading-plane: rgba(24, 21, 18, 0.8);
+  --reading-plane-strong: rgba(24, 21, 18, 0.88);
+  --reading-plane-line: rgba(237, 227, 209, 0.08);
+  --reading-plane-shadow: 0 24px 72px rgba(0, 0, 0, 0.28);
   --tone-accent: #b97a2d;
   --tone-accent-bright: #d1913d;
   --tone-accent-glow: #e7b36d;
@@ -175,6 +179,10 @@ body {
   --tone-text: var(--text);
   --tone-muted: var(--muted);
   --tone-line: rgba(110, 89, 62, 0.14);
+  --reading-plane: rgba(250, 244, 236, 0.82);
+  --reading-plane-strong: rgba(245, 237, 226, 0.9);
+  --reading-plane-line: rgba(110, 89, 62, 0.1);
+  --reading-plane-shadow: 0 18px 52px rgba(92, 73, 43, 0.1);
   --tone-accent: #a56c28;
   --tone-accent-bright: #c18333;
   --tone-accent-glow: #e2b577;
@@ -934,9 +942,27 @@ html[data-focus-zoom-active='true'] .site-depth-stage {
 
 .site-content-stage {
   position: relative;
+  isolation: isolate;
+}
+
+.site-content-stage::before {
+  content: '';
+  position: absolute;
+  inset:
+    0
+    max(10px, calc(var(--size-gutter) * var(--space-scale) * 0.35))
+    0;
+  z-index: 0;
+  pointer-events: none;
+  border: 1px solid var(--reading-plane-line);
+  border-radius: clamp(1.15rem, 2vw, 1.75rem);
+  background: linear-gradient(180deg, var(--reading-plane), var(--reading-plane-strong));
+  box-shadow: var(--reading-plane-shadow);
 }
 
 main.page-shell {
+  position: relative;
+  z-index: 1;
   transition:
     opacity var(--motion-route) var(--ease-standard),
     transform var(--motion-route) var(--ease-emphasized),
@@ -1037,6 +1063,7 @@ body[data-nav-phase='exiting'] .site-overlay {
     transform: none !important;
   }
 
+  .site-content-stage::before,
   .site-header,
   main.page-shell,
   footer,

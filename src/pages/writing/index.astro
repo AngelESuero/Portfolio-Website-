@@ -230,7 +230,11 @@ const writingArc = [
   .writing-hero {
     border: 1px solid var(--line2);
     border-radius: calc(var(--radius) * var(--space-scale));
-    background: linear-gradient(120deg, rgba(9, 14, 24, 0.68), rgba(7, 13, 24, 0.5));
+    background: linear-gradient(
+      120deg,
+      color-mix(in srgb, var(--tone-surface-strong) 72%, transparent),
+      color-mix(in srgb, var(--tone-surface) 60%, transparent)
+    );
     padding: clamp(1.05rem, 2.4vw, 1.85rem);
   }
 
@@ -256,7 +260,7 @@ const writingArc = [
     font-size: 0.82rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--tone-muted);
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
   }
 
   .writing-meta p {
@@ -305,7 +309,11 @@ const writingArc = [
   .writing-vault-card {
     border: 1px solid var(--line2);
     border-radius: calc(var(--radius) * var(--space-scale));
-    background: linear-gradient(180deg, rgba(10, 14, 23, 0.72), rgba(7, 11, 18, 0.6));
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--tone-surface-strong) 76%, transparent),
+      color-mix(in srgb, var(--tone-surface) 66%, transparent)
+    );
     padding: clamp(0.9rem, 2.2vw, 1.15rem);
   }
 
@@ -364,7 +372,11 @@ const writingArc = [
   .writing-trajectory-card {
     border: 1px solid var(--line2);
     border-radius: calc(var(--radius) * var(--space-scale));
-    background: linear-gradient(180deg, rgba(10, 14, 23, 0.72), rgba(7, 11, 18, 0.6));
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--tone-surface-strong) 76%, transparent),
+      color-mix(in srgb, var(--tone-surface) 66%, transparent)
+    );
     padding: clamp(0.9rem, 2.2vw, 1.15rem);
   }
 
@@ -400,7 +412,7 @@ const writingArc = [
   .writing-filter {
     border: 1px solid var(--line2);
     border-radius: 999px;
-    background: rgba(9, 14, 23, 0.48);
+    background: color-mix(in srgb, var(--tone-surface) 52%, transparent);
     color: var(--tone-muted);
     padding: 0.33rem 0.72rem;
     font-size: 0.74rem;
@@ -417,7 +429,7 @@ const writingArc = [
   .writing-results {
     margin: 0;
     font-size: 0.82rem;
-    color: var(--tone-muted);
+    color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
   }
 
   .writing-list {
@@ -431,7 +443,11 @@ const writingArc = [
   .writing-card {
     border: 1px solid var(--line2);
     border-radius: calc(var(--radius) * var(--space-scale));
-    background: linear-gradient(180deg, rgba(8, 12, 20, 0.7), rgba(5, 10, 17, 0.58));
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--tone-surface-strong) 74%, transparent),
+      color-mix(in srgb, var(--tone-surface) 64%, transparent)
+    );
     padding: clamp(0.9rem, 2.2vw, 1.2rem);
     transition: border-color 160ms ease, transform 160ms ease;
   }
@@ -446,7 +462,7 @@ const writingArc = [
     font-size: 0.78rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--tone-muted);
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
   }
 
   .writing-card h3 {
@@ -467,7 +483,7 @@ const writingArc = [
   .writing-card-summary {
     margin: 0.6rem 0 0;
     max-width: 70ch;
-    color: color-mix(in srgb, var(--tone-text) 83%, var(--tone-muted) 17%);
+    color: color-mix(in srgb, var(--tone-text) 89%, var(--tone-muted) 11%);
   }
 
   .writing-card-footer {
@@ -490,8 +506,8 @@ const writingArc = [
     border-radius: 999px;
     font-size: 0.72rem;
     padding: 0.25rem 0.55rem;
-    color: var(--tone-muted);
-    background: rgba(8, 12, 20, 0.55);
+    color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
+    background: color-mix(in srgb, var(--tone-surface) 56%, transparent);
   }
 
   .writing-read-link {

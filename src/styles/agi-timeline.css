@@ -180,7 +180,7 @@
 
 .summary-label {
   margin-top: 0.25rem;
-  color: var(--tone-muted);
+  color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
   font-size: 0.82rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -329,7 +329,7 @@
 .analyst-card-topline,
 .analyst-footer {
   font-size: 0.8rem;
-  color: var(--tone-muted);
+  color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
 }
 
 .wave-beat h4,
@@ -372,7 +372,7 @@
 .panel-meta {
   margin-top: 0.9rem;
   font-size: 0.84rem;
-  color: var(--tone-muted);
+  color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
 }
 
 .section-header {
@@ -407,7 +407,8 @@
 }
 
 .freshness-badge {
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--tone-surface-strong) 78%, transparent);
+  color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
 }
 
 .chip-row,
