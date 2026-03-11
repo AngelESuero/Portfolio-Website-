@@ -61,6 +61,18 @@ const readingTime = Math.max(1, Math.round(wordCount / 200));
 <style>
   .writing-entry {
     max-width: 74ch;
+    position: relative;
+    isolation: isolate;
+  }
+
+  .writing-entry::before {
+    content: '';
+    position: absolute;
+    inset: -0.95rem -1rem -1rem;
+    z-index: -1;
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--tone-surface) 12%, transparent);
+    pointer-events: none;
   }
 
   .writing-entry-back {
@@ -83,7 +95,7 @@ const readingTime = Math.max(1, Math.round(wordCount / 200));
 
   .writing-entry-date {
     margin: 0;
-    color: var(--tone-muted);
+    color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     font-size: 0.78rem;
@@ -96,7 +108,7 @@ const readingTime = Math.max(1, Math.round(wordCount / 200));
 
   .writing-entry-summary {
     margin-top: 0.78rem;
-    color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
+    color: color-mix(in srgb, var(--tone-text) 91%, var(--tone-muted) 9%);
     max-width: 62ch;
   }
 
@@ -113,7 +125,7 @@ const readingTime = Math.max(1, Math.round(wordCount / 200));
     font-size: 0.77rem;
     text-transform: uppercase;
     letter-spacing: 0.09em;
-    color: var(--tone-muted);
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
   }
 
   .writing-entry-tags {
@@ -126,7 +138,7 @@ const readingTime = Math.max(1, Math.round(wordCount / 200));
     border: 1px solid var(--line2);
     border-radius: 999px;
     background: rgba(10, 14, 23, 0.52);
-    color: var(--tone-muted);
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
     font-size: 0.72rem;
     padding: 0.22rem 0.5rem;
   }

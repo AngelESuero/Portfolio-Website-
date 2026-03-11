@@ -29,26 +29,45 @@ const projectLinks = Object.entries(project.data.links)
   .filter((entry): entry is { key: string; label: string; url: string; isExternal: boolean } => Boolean(entry));
 ---
 <BaseLayout title={`${project.data.title} — Work`} theme="work">
-  <a href="/work" class="text-sm underline">← Back to Work</a>
-  <h1 class="mt-2 font-display text-4xl">{project.data.title}</h1>
-  <p class="mt-1 text-zinc-600 dark:text-zinc-300">{timeline.yearLabel} · {project.data.status}</p>
-  <img src={project.data.cover_image} alt={project.data.title} class="mt-6 h-72 w-full rounded object-cover"/>
-  <p class="mt-4">{project.data.description}</p>
-  <div class="mt-4 flex flex-wrap gap-2">
-    {project.data.tools.map((tool) => <span class="rounded border px-2 py-1 text-sm">{tool}</span>)}
-  </div>
-  {projectLinks.length > 0 && (
-    <div class="mt-5 flex flex-wrap gap-2">
-      {projectLinks.map((link) => (
-        <a
-          href={link.url}
-          class="rounded border px-3 py-1 text-sm underline"
-          {...(link.isExternal ? { target: '_blank', rel: 'noopener' } : {})}
-        >
-          Open {link.label}
-        </a>
-      ))}
+  <div class="work-entry">
+    <a href="/work" class="text-sm underline">← Back to Work</a>
+    <h1 class="mt-2 font-display text-4xl">{project.data.title}</h1>
+    <p class="mt-1 text-zinc-600 dark:text-zinc-300">{timeline.yearLabel} · {project.data.status}</p>
+    <img src={project.data.cover_image} alt={project.data.title} class="mt-6 h-72 w-full rounded object-cover"/>
+    <p class="mt-4">{project.data.description}</p>
+    <div class="mt-4 flex flex-wrap gap-2">
+      {project.data.tools.map((tool) => <span class="rounded border px-2 py-1 text-sm">{tool}</span>)}
     </div>
-  )}
-  <article class="reading-prose mt-8"><Content /></article>
+    {projectLinks.length > 0 && (
+      <div class="mt-5 flex flex-wrap gap-2">
+        {projectLinks.map((link) => (
+          <a
+            href={link.url}
+            class="rounded border px-3 py-1 text-sm underline"
+            {...(link.isExternal ? { target: '_blank', rel: 'noopener' } : {})}
+          >
+            Open {link.label}
+          </a>
+        ))}
+      </div>
+    )}
+    <article class="reading-prose mt-8"><Content /></article>
+  </div>
 </BaseLayout>
+
+<style>
+  .work-entry {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .work-entry::before {
+    content: '';
+    position: absolute;
+    inset: -0.95rem -1rem -1rem;
+    z-index: -1;
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--tone-surface) 12%, transparent);
+    pointer-events: none;
+  }
+</style>
