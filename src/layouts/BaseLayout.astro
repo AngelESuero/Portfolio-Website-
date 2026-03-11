@@ -14,6 +14,7 @@ interface Props {
   renderHeader?: boolean;
   renderFooter?: boolean;
   fullBleed?: boolean;
+  ambientEffects?: boolean;
 }
 
 const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
@@ -25,7 +26,8 @@ const {
   showHeader = currentPath === '/',
   renderHeader = true,
   renderFooter = true,
-  fullBleed = false
+  fullBleed = false,
+  ambientEffects = true
 } = Astro.props;
 const walkthroughSteps = [
   {
@@ -1760,10 +1762,13 @@ const exploreLinks = [
           initCircadianClock();
           initHeaderMetrics();
           initHeaderReveal();
-          initSiteActivity();
-          initScrollWind();
-          initCursorLight();
-          initFocusZoom();
+          const ambientEnabled = document.body?.dataset.ambientEffects !== 'off';
+          if (ambientEnabled) {
+            initSiteActivity();
+            initScrollWind();
+            initCursorLight();
+            initFocusZoom();
+          }
           document.addEventListener('click', handleColorClick, { capture: true });
         };
 
@@ -1787,13 +1792,18 @@ const exploreLinks = [
     data-header-mode={renderHeader ? (showHeader ? 'pinned' : 'peek') : 'hidden'}
     data-header-reveal={showHeader ? 'visible' : 'hidden'}
     data-nav-phase="idle"
+    data-ambient-effects={ambientEffects ? 'on' : 'off'}
   >
-    <div class="site-depth-stage" aria-hidden="true">
-      <div id="cursor-aura"></div>
-      <HallwayBackdrop accent="var(--accent)" />
-      <div class="site-overlay"></div>
-    </div>
-    <GarlandFrame />
+    {ambientEffects && (
+      <>
+        <div class="site-depth-stage" aria-hidden="true">
+          <div id="cursor-aura"></div>
+          <HallwayBackdrop accent="var(--accent)" />
+          <div class="site-overlay"></div>
+        </div>
+        <GarlandFrame />
+      </>
+    )}
     <div class="header-peek-sensor" aria-hidden="true"></div>
     {renderHeader && <Header />}
     <div class="site-content-stage">

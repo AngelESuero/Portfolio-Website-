@@ -686,6 +686,10 @@ export default function LifeMapSemanticOrb() {
   };
 
   const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+    if (!event.shiftKey) {
+      return;
+    }
+
     const bounds = containerRef.current?.getBoundingClientRect();
     if (!bounds) return;
 
@@ -766,7 +770,7 @@ export default function LifeMapSemanticOrb() {
 
   return (
     <div
-      className="min-h-screen w-full overflow-hidden bg-[#090d11] text-[#edf0f4]"
+      className="min-h-screen w-full overflow-x-hidden bg-[#090d11] text-[#edf0f4]"
       style={{ fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif" }}
     >
       <style>{`
@@ -860,11 +864,11 @@ export default function LifeMapSemanticOrb() {
           </div>
         </header>
 
-        <main className="relative z-10 mx-auto grid min-h-[calc(100vh-121px)] max-w-[1440px] gap-6 px-4 py-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:px-6">
-          <section className="relative overflow-hidden rounded-[32px] border border-white/8 bg-black/20 backdrop-blur-sm">
+        <main className="relative z-10 mx-auto grid min-h-[calc(100vh-121px)] max-w-[1440px] items-start gap-6 px-4 py-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:px-6">
+          <section className="relative self-start overflow-hidden rounded-[32px] border border-white/8 bg-black/20 backdrop-blur-sm">
             <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-between px-5 py-4 text-[11px] uppercase tracking-[0.26em] text-white/34">
               <span>Drag sphere</span>
-              <span>Wheel zoom</span>
+              <span>Shift + wheel zoom</span>
               <span>Esc reset</span>
             </div>
 
@@ -894,7 +898,7 @@ export default function LifeMapSemanticOrb() {
 
             <div
               ref={containerRef}
-              className="relative flex h-full min-h-[560px] items-center justify-center p-4 select-none md:min-h-[720px]"
+              className="relative flex min-h-[520px] items-center justify-center p-4 select-none md:min-h-[640px] lg:min-h-[680px]"
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
@@ -903,13 +907,13 @@ export default function LifeMapSemanticOrb() {
               onWheel={handleWheel}
               style={{
                 cursor: dragging ? "grabbing" : "grab",
-                touchAction: "none",
+                touchAction: "pan-y",
                 userSelect: "none"
               }}
             >
               <svg
                 viewBox={`0 0 ${frameSize} ${frameSize}`}
-                className="h-full w-full max-w-[720px]"
+                className="aspect-square h-auto w-full max-w-[720px]"
                 aria-label="Life Map semantic orb"
               >
                 <defs>
