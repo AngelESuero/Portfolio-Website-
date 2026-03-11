@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-11T18:04:53.504Z",
+    "generatedAt": "2026-03-11T19:11:28.868Z",
     "sources": [
       {
         "id": "openai_news",
@@ -93,6 +93,31 @@
         {
           "label": "Feed",
           "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
+    {
+      "id": "dd2656f72bb5e1e994711e84dc0b09921e98323e1d0726a770bd830e5f8e40f1",
+      "title": "Designing AI agents to resist prompt injection",
+      "url": "https://openai.com/index/designing-agents-to-resist-prompt-injection",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-03-11T11:30:00.000Z",
+      "summary": "How ChatGPT defends against prompt injection and social engineering by constraining risky actions and protecting sensitive data in agent workflows.",
+      "tags": [
+        "primary",
+        "release",
+        "agents",
+        "training"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/designing-agents-to-resist-prompt-injection"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
         }
       ]
     },
@@ -15311,31 +15336,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.04384"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.CL"
-        }
-      ]
-    },
-    {
-      "id": "158193b541bc6f64688a2fcf177cee9eac1a46515d482a01aef92bd826b936c8",
-      "title": "From Static Inference to Dynamic Interaction: A Survey of Streaming Large Language Models",
-      "url": "https://arxiv.org/abs/2603.04592",
-      "sourceId": "arxiv_cs_cl",
-      "sourceName": "arXiv — cs.CL",
-      "publishedAt": "2026-03-10T04:00:00.000Z",
-      "summary": "arXiv:2603.04592v2 Announce Type: replace Abstract: Standard Large Language Models (LLMs) are predominantly designed for static inference with pre-defined inputs, which limits their applicability in dynamic, real-time scenarios. To address this gap, the streaming LLM paradigm has emerged. However, existing definitions of streaming LLMs remain fragmented, conflating streaming generation, streaming inputs, and interactive streaming architectures, while a systematic taxonomy is still lacking. This paper provides a comprehensive overview and analysis of streaming LLMs. First, we establish a unified definition of streaming LLMs based on data flow and dynamic interaction to clarify existing ambiguities. Building on this definition, we propose a systematic taxonomy of current streaming LLMs and conduct an in-depth discussion on their underlying methodologies. Furthermore, we explore the applications of streaming LLMs in real-world scenarios and outline promising research directions to support ongoing advances in streaming intelligence. We maintain a continuously updated repository of relevant papers at https://github.com/EIT-NLP/Awesome-Streaming-LLMs.",
-      "tags": [
-        "papers",
-        "language",
-        "inference",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.04592"
         },
         {
           "label": "Feed",
