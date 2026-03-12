@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-12T16:16:45.256Z",
+    "generatedAt": "2026-03-12T17:14:03.984Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,51 @@
     ]
   },
   "items": [
+    {
+      "id": "0721fdd6a812eaefc18affdf5e721244b90963e209178078a29a50d093e4c883",
+      "title": "Systematic debugging for AI agents: Introducing the AgentRx framework",
+      "url": "https://www.microsoft.com/en-us/research/blog/systematic-debugging-for-ai-agents-introducing-the-agentrx-framework/",
+      "sourceId": "msr_blog",
+      "sourceName": "Microsoft Research — Blog",
+      "publishedAt": "2026-03-12T16:38:45.000Z",
+      "summary": "As AI agents transition from simple chatbots to autonomous systems capable of managing cloud incidents, navigating complex web interfaces, and executing multi-step API workflows, a new challenge has emerged: transparency. When a human makes a mistake, we can usually trace the logic. But when an AI agent fails, perhaps by hallucinating a tool output or […] The post Systematic debugging for AI agents: Introducing the AgentRx framework appeared first on Microsoft Research.",
+      "tags": [
+        "research",
+        "agents"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://www.microsoft.com/en-us/research/blog/systematic-debugging-for-ai-agents-introducing-the-agentrx-framework/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://www.microsoft.com/en-us/research/blog/feed/"
+        }
+      ]
+    },
+    {
+      "id": "5b3ad4da04d5c89493e2086b3334c1634ea92e0b6509fbf4d5d60d65439a2f83",
+      "title": "Validate Kubernetes for GPU Infrastructure with Layered, Reproducible Recipes",
+      "url": "https://developer.nvidia.com/blog/validate-kubernetes-for-gpu-infrastructure-with-layered-reproducible-recipes/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-03-12T16:30:00.000Z",
+      "summary": "Every AI cluster running on Kubernetes requires a full software stack that works together, from low-level driver and kernel settings to high-level operator and... Every AI cluster running on Kubernetes requires a full software stack that works together, from low-level driver and kernel settings to high-level operator and workload configurations. You get one cluster working, and spend days getting the next one to match. Upgrade a component, and something else breaks. Move to a new cloud and start over. AI Cluster Runtime is a new open-source project designed… Source",
+      "tags": [
+        "compute"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/validate-kubernetes-for-gpu-infrastructure-with-layered-reproducible-recipes/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
     {
       "id": "757347696c58986230211289b3e3a763df6768adee6f674824c53913a19b92ee",
       "title": "Build Next-Gen Physical AI with Edge‑First LLMs for Autonomous Vehicles and Robotics",
@@ -15079,55 +15124,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.09691"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "7b78d23af79f73622cb90d205ecae39c4f6b738e7a2f8d12a777aa17d6f52d2c",
-      "title": "ActiveUltraFeedback: Efficient Preference Data Generation using Active Learning",
-      "url": "https://arxiv.org/abs/2603.09692",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-11T04:00:00.000Z",
-      "summary": "arXiv:2603.09692v1 Announce Type: cross Abstract: Reinforcement Learning from Human Feedback (RLHF) has become the standard for aligning Large Language Models (LLMs), yet its efficacy is bottlenecked by the high cost of acquiring preference data, especially in low-resource and expert domains. To address this, we introduce ACTIVEULTRAFEEDBACK, a modular active learning pipeline that leverages uncertainty estimates to dynamically identify the most informative responses for annotation. Our pipeline facilitates the systematic evaluation of standard response selection methods alongside DOUBLE REVERSE THOMPSON SAMPLING (DRTS) and DELTAUCB, two novel methods prioritizing response pairs with large predicted quality gaps, leveraging recent results showing that such pairs provide good signals for fine-tuning. Our experiments demonstrate that ACTIVEULTRAFEEDBACK yields high-quality datasets that lead to significant improvements in downstream performance, notably achieving comparable or superior results with as little as one-sixth of the annotated data relative to static baselines. Our pipeline is available at https://github.com/lasgroup/ActiveUltraFeedback and our preference datasets at https://huggingface.co/ActiveUltraFeedback.",
-      "tags": [
-        "papers",
-        "eval",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.09692"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "40164b46011a4006a7a095911159961a6f6283cc98afe68b3a2a1b44b73aee05",
-      "title": "Mousse: Rectifying the Geometry of Muon with Curvature-Aware Preconditioning",
-      "url": "https://arxiv.org/abs/2603.09697",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-11T04:00:00.000Z",
-      "summary": "arXiv:2603.09697v1 Announce Type: cross Abstract: Recent advances in spectral optimization, notably Muon, have demonstrated that constraining update steps to the Stiefel manifold can significantly accelerate training and improve generalization. However, Muon implicitly assumes an isotropic optimization landscape, enforcing a uniform spectral update norm across all eigen-directions. We argue that this \"egalitarian\" constraint is suboptimal for Deep Neural Networks, where the curvature spectrum is known to be highly heavy-tailed and ill-conditioned. In such landscapes, Muon risks amplifying instabilities in high-curvature directions while limiting necessary progress in flat directions. In this work, we propose \\textbf{Mousse} (\\textbf{M}uon \\textbf{O}ptimization \\textbf{U}tilizing \\textbf{S}hampoo's \\textbf{S}tructural \\textbf{E}stimation), a novel optimizer that reconciles the structural stability of spectral methods with the geometric adaptivity of second-order preconditioning. Instead of applying Newton-Schulz orthogonalization directly to the momentum matrix, Mousse operates in a whitened coordinate system induced by Kronecker-factored statistics (derived from Shampoo). Mathematically, we formulate Mousse as the solution to a spectral steepest descent problem constrained by an anisotropic trust region, where the optimal update is derived via the polar decomposition of the whitened gradient. Empirical results across language models ranging from 160M to 800M parameters demonstrate that Mousse consistently outperforms Muon, achieving around $\\sim$12\\% reduction in training steps with negligible computational overhead.",
-      "tags": [
-        "papers",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.09697"
         },
         {
           "label": "Feed",
