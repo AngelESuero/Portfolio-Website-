@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-12T17:14:03.984Z",
+    "generatedAt": "2026-03-12T18:04:40.374Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,29 @@
     ]
   },
   "items": [
+    {
+      "id": "c4d18fe0b041b63b7210c3f9802cb04d6286ed177c6313de93d62e55dadba74b",
+      "title": "Build Accelerated, Differentiable Computational Physics Code for AI with NVIDIA Warp",
+      "url": "https://developer.nvidia.com/blog/build-accelerated-differentiable-computational-physics-code-for-ai-with-nvidia-warp/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-03-12T17:30:00.000Z",
+      "summary": "Computer-Aided Engineering (CAE) is shifting from human-driven workflows toward AI-driven ones, including physics foundation models that generalize across... Computer-Aided Engineering (CAE) is shifting from human-driven workflows toward AI-driven ones, including physics foundation models that generalize across geometries and operating conditions. Unlike LLMs, these models depend on large volumes of high-fidelity, physics-compliant data. Recent scaling-law work on computational fluid dynamics (CFD) surrogates indicates that simulation-generated… Source",
+      "tags": [
+        "compute",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/build-accelerated-differentiable-computational-physics-code-for-ai-with-nvidia-warp/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
     {
       "id": "0721fdd6a812eaefc18affdf5e721244b90963e209178078a29a50d093e4c883",
       "title": "Systematic debugging for AI agents: Introducing the AgentRx framework",
@@ -15098,32 +15121,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.09689"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "4cedcc7c6c0ede0fa0fef6e1f4b94a2eb050711ff2878e2441a5e1f611a4ee51",
-      "title": "ESAinsTOD: A Unified End-to-End Schema-Aware Instruction-Tuning Framework for Task-Oriented Dialog Modeling",
-      "url": "https://arxiv.org/abs/2603.09691",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-11T04:00:00.000Z",
-      "summary": "arXiv:2603.09691v1 Announce Type: cross Abstract: Existing end-to-end modeling methods for modular task-oriented dialog systems are typically tailored to specific datasets, making it challenging to adapt to new dialog scenarios. In this work, we propose ESAinsTOD, a unified End-to-end Schema-Aware Instruction-tuning framework for general Task-Oriented Dialog modeling. This framework introduces a structured methodology to go beyond simply fine-tuning Large Language Models (LLMs), enabling flexible adaptation to various dialogue task flows and schemas. Specifically, we leverage full-parameter fine-tuning of LLMs and introduce two alignment mechanisms to make the resulting system both instruction-aware and schema-aware: (i) instruction alignment, which ensures that the system faithfully follows task instructions to complete various task flows from heterogeneous TOD datasets; and (ii) schema alignment, which encourages the system to make predictions adhering to the specified schema. In addition, we employ session-level end-to-end modeling, which allows the system to access the results of previously executed task flows within the dialogue history, to bridge the gap between the instruction-tuning paradigm and the real-world application of TOD systems. Empirical results show that while a fine-tuned LLM serves as a strong baseline, our structured approach provides significant additional benefits. In particular, our findings indicate that: (i) ESAinsTOD outperforms state-of-the-art models by a significant margin on end-to-end task-oriented dialog modeling benchmarks: CamRest676, In-Car and MultiWOZ; (ii) more importantly, it exhibits superior generalization capabilities across various low-resource settings, with the proposed alignment mechanisms significantly enhancing zero-shot performance; and (iii) our instruction-tuning paradigm substantially improves the model's robustness against data noise and cascading errors.",
-      "tags": [
-        "papers",
-        "eval",
-        "safety",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.09691"
         },
         {
           "label": "Feed",
