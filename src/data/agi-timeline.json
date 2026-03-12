@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-12T06:06:54.852Z",
+    "generatedAt": "2026-03-12T07:13:47.223Z",
     "sources": [
       {
         "id": "openai_news",
@@ -10792,6 +10792,57 @@
       ]
     },
     {
+      "id": "f9ecc5543c3fad78070b7cc05ee28b4a9b0ee6df0f108831a1e20945251c49f4",
+      "title": "Ego: Embedding-Guided Personalization of Vision-Language Models",
+      "url": "https://arxiv.org/abs/2603.09771",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-12T04:00:00.000Z",
+      "summary": "arXiv:2603.09771v2 Announce Type: replace-cross Abstract: AI assistants that support humans in daily life are becoming increasingly feasible, driven by the rapid advancements in multimodal language models. A key challenge lies in overcoming the generic nature of these models to deliver personalized experiences. Existing approaches to personalizing large vision language models often rely on additional training stages, which limit generality and scalability, or on engineered pipelines with external pre-trained modules, which hinder deployment efficiency. In this work, we propose an efficient personalization method that leverages the model's inherent ability to capture personalized concepts. Specifically, we extract visual tokens that predominantly represent the target concept by utilizing the model's internal attention mechanisms. These tokens serve as a memory of that specific concept, enabling the model to recall and describe it when it appears in test images. We conduct a comprehensive and unified evaluation of our approach and SOTA methods across various personalization settings including single-concept, multi-concept, and video personalization, demonstrating strong performance gains with minimal personalization overhead.",
+      "tags": [
+        "papers",
+        "eval",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.09771"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "9e940b5089dba057517975ae056bc034b04ba3692b2b9bbff87fbaf1637c71f8",
+      "title": "MA-EgoQA: Question Answering over Egocentric Videos from Multiple Embodied Agents",
+      "url": "https://arxiv.org/abs/2603.09827",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-12T04:00:00.000Z",
+      "summary": "arXiv:2603.09827v2 Announce Type: replace-cross Abstract: As embodied models become powerful, humans will collaborate with multiple embodied AI agents at their workplace or home in the future. To ensure better communication between human users and the multi-agent system, it is crucial to interpret incoming information from agents in parallel and refer to the appropriate context for each query. Existing challenges include effectively compressing and communicating high volumes of individual sensory inputs in the form of video and correctly aggregating multiple egocentric videos to construct system-level memory. In this work, we first formally define a novel problem of understanding multiple long-horizon egocentric videos simultaneously collected from embodied agents. To facilitate research in this direction, we introduce MultiAgent-EgoQA (MA-EgoQA), a benchmark designed to systemically evaluate existing models in our scenario. MA-EgoQA provides 1.7k questions unique to multiple egocentric streams, spanning five categories: social interaction, task coordination, theory-of-mind, temporal reasoning, and environmental interaction. We further propose a simple baseline model for MA-EgoQA named EgoMAS, which leverages shared memory across embodied agents and agent-wise dynamic retrieval. Through comprehensive evaluation across diverse baselines and EgoMAS on MA-EgoQA, we find that current approaches are unable to effectively handle multiple egocentric streams, highlighting the need for future advances in system-level understanding across the agents. The code and benchmark are available at https://ma-egoqa.github.io.",
+      "tags": [
+        "papers",
+        "agents",
+        "reasoning",
+        "eval",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.09827"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
       "id": "13360d7734c5479fc1e1d9f862dd4c8a5c8d2040088617ff8dffff066b9d8d4b",
       "title": "How NVIDIA AI-Q Reached \\#1 on DeepResearch Bench I and II",
       "url": "https://huggingface.co/blog/nvidia/how-nvidia-won-deepresearch-bench",
@@ -15077,56 +15128,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.09714"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "c3bb1db34413fc9762a0702ad9714cd66f78f375db9210026132a4386d3af3ef",
-      "title": "RbtAct: Rebuttal as Supervision for Actionable Review Feedback Generation",
-      "url": "https://arxiv.org/abs/2603.09723",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-11T04:00:00.000Z",
-      "summary": "arXiv:2603.09723v1 Announce Type: cross Abstract: Large language models (LLMs) are increasingly used across the scientific workflow, including to draft peer-review reports. However, many AI-generated reviews are superficial and insufficiently actionable, leaving authors without concrete, implementable guidance and motivating the gap this work addresses. We propose RbtAct, which targets actionable review feedback generation and places existing peer review rebuttal at the center of learning. Rebuttals show which reviewer comments led to concrete revisions or specific plans, and which were only defended. Building on this insight, we leverage rebuttal as implicit supervision to directly optimize a feedback generator for actionability. To support this objective, we propose a new task called perspective-conditioned segment-level review feedback generation, in which the model is required to produce a single focused comment based on the complete paper and a specified perspective such as experiments and writing. We also build a large dataset named RMR-75K that maps review segments to the rebuttal segments that address them, with perspective labels and impact categories that order author uptake. We then train the Llama-3.1-8B-Instruct model with supervised fine-tuning on review segments followed by preference optimization using rebuttal derived pairs. Experiments with human experts and LLM-as-a-judge show consistent gains in actionability and specificity over strong baselines while maintaining grounding and relevance.",
-      "tags": [
-        "papers",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.09723"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "1f96724aec5b7d639a094cb89c764ad80d981169a2cc09efc2c056f15c5136ad",
-      "title": "EXPLORE-Bench: Egocentric Scene Prediction with Long-Horizon Reasoning",
-      "url": "https://arxiv.org/abs/2603.09731",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-11T04:00:00.000Z",
-      "summary": "arXiv:2603.09731v1 Announce Type: cross Abstract: Multimodal large language models (MLLMs) are increasingly considered as a foundation for embodied agents, yet it remains unclear whether they can reliably reason about the long-term physical consequences of actions from an egocentric viewpoint. We study this gap through a new task, Egocentric Scene Prediction with LOng-horizon REasoning: given an initial-scene image and a sequence of atomic action descriptions, a model is asked to predict the final scene after all actions are executed. To enable systematic evaluation, we introduce EXPLORE-Bench, a benchmark curated from real first-person videos spanning diverse scenarios. Each instance pairs long action sequences with structured final-scene annotations, including object categories, visual attributes, and inter-object relations, which supports fine-grained, quantitative assessment. Experiments on a range of proprietary and open-source MLLMs reveal a significant performance gap to humans, indicating that long-horizon egocentric reasoning remains a major challenge. We further analyze test-time scaling via stepwise reasoning and show that decomposing long action sequences can improve performance to some extent, while incurring non-trivial computational overhead. Overall, EXPLORE-Bench provides a principled testbed for measuring and advancing long-horizon reasoning for egocentric embodied perception.",
-      "tags": [
-        "papers",
-        "agents",
-        "reasoning",
-        "eval",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.09731"
         },
         {
           "label": "Feed",
