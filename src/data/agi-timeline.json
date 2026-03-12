@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-12T04:58:07.844Z",
+    "generatedAt": "2026-03-12T06:06:54.852Z",
     "sources": [
       {
         "id": "openai_news",
@@ -10512,6 +10512,286 @@
       ]
     },
     {
+      "id": "0d1a2a56cb7251ebb2191df9fa941854b29b2ba0804512cd66462284d5956357",
+      "title": "MediRound: Multi-Round Entity-Level Reasoning Segmentation in Medical Images",
+      "url": "https://arxiv.org/abs/2511.12110",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-12T04:00:00.000Z",
+      "summary": "arXiv:2511.12110v4 Announce Type: replace-cross Abstract: Despite recent progress in text-prompt-based medical image segmentation, these methods are limited to single-round dialogues and fail to support multi-round reasoning, which is important for medical education scenarios. In this work, we introduce Multi-Round Entity-Level Medical Reasoning Segmentation (MEMR-Seg), a new task that requires generating segmentation masks through multi-round queries with entity-level reasoning, helping learners progressively develop their understanding of medical knowledge. To support this task, we construct MR-MedSeg, a large-scale dataset of 177K multi-round medical segmentation dialogues, featuring entity-based reasoning across rounds. Furthermore, we propose MediRound, an effective baseline model designed for multi-round medical reasoning segmentation. To mitigate the inherent error propagation within the chain-like pipeline of multi-round segmentation, we introduce a lightweight yet effective Judgment & Correction Mechanism during model inference. Experimental results demonstrate that our method effectively addresses the MEMR-Seg task and outperforms conventional medical referring segmentation methods. The project is available at https://github.com/Edisonhimself/MediRound.",
+      "tags": [
+        "papers",
+        "reasoning",
+        "inference",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2511.12110"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "50483150d4c38111d8789c10f00df48bcf9660fca5981dc6f718fc2b35b3b506",
+      "title": "WebAccessVL: Violation-Aware VLM for Web Accessibility",
+      "url": "https://arxiv.org/abs/2602.03850",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-12T04:00:00.000Z",
+      "summary": "arXiv:2602.03850v3 Announce Type: replace-cross Abstract: We present a vision-language model (VLM) that automatically edits website HTML to address violations of the Web Content Accessibility Guidelines 2 (WCAG2) while preserving the original design. We formulate this as a supervised image-conditioned program synthesis task, where the model learns to correct HTML given both the code and its visual rendering. We create WebAccessVL, a website dataset with manually corrected accessibility violations. We then propose a violation-conditioned VLM that further takes the detected violations' descriptions from a checker as input. This conditioning enables an iterative checker-in-the-loop refinement strategy at test time. We conduct extensive evaluation on both open API and open-weight models. Empirically, our method achieves 0.211 violations per website, a 96.0\\% reduction from the 5.34 violations in raw data and 87\\% better than GPT-5. A perceptual study also confirms that our edited websites better maintain the original visual appearance and content.",
+      "tags": [
+        "papers",
+        "eval",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.03850"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "88b024566d56acb727262d01f0952348d57c126647aafab9632bb6772353fb8f",
+      "title": "LaTeX Compilation: Challenges in the Era of LLMs",
+      "url": "https://arxiv.org/abs/2603.02873",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-12T04:00:00.000Z",
+      "summary": "arXiv:2603.02873v4 Announce Type: replace Abstract: As large language models (LLMs) increasingly assist scientific writing, limitations and the significant token cost of TeX become more and more visible. This paper analyzes TeX's fundamental defects in compilation and user experience design to illustrate its limitations on compilation efficiency, generated semantics, error localization, and tool ecosystem in the era of LLMs. As an alternative, Mogan STEM, a WYSIWYG structured editor, is introduced. Mogan outperforms TeX in the above aspects by its efficient data structure, fast rendering, and on-demand plugin loading. Extensive experiments are conducted to verify the benefits on compilation/rendering time and performance in LLM tasks. Furthermore, we show that due to Mogan's lower information entropy, it is more efficient to use .tmu (the document format of Mogan) to fine-tune LLMs than TeX. Therefore, we launch an appeal for larger experiments on LLM training using the .tmu format.",
+      "tags": [
+        "papers",
+        "language",
+        "training",
+        "model",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.02873"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "1227cad3b83df8b7393da77498124410b0bb83c39eba84f41cba5afbf0598614",
+      "title": "Computational modeling of early language learning from acoustic speech and audiovisual input without linguistic priors",
+      "url": "https://arxiv.org/abs/2603.08359",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-12T04:00:00.000Z",
+      "summary": "arXiv:2603.08359v2 Announce Type: replace Abstract: Learning to understand speech appears almost effortless for typically developing infants, yet from an information-processing perspective, acquiring a language from acoustic speech is an enormous challenge. This chapter reviews recent developments in using computational models to understand early language acquisition from speech and audiovisual input. The focus is on self-supervised and visually grounded models of perceptual learning. We show how these models are becoming increasingly powerful in learning various aspects of speech without strong linguistic priors, and how many features of early language development can be explained through a shared set of learning principles-principles broadly compatible with multiple theories of language acquisition and human cognition. We also discuss how modern learning simulations are gradually becoming more realistic, both in terms of input data and in linking model behavior to empirical findings on infant language development.",
+      "tags": [
+        "papers",
+        "language",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.08359"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "0928d2a9908ed431b5eccf236f927d9f79f4f629f6b6a999420baaff8525b500",
+      "title": "Adaptive Loops and Memory in Transformers: Think Harder or Know More?",
+      "url": "https://arxiv.org/abs/2603.08391",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-12T04:00:00.000Z",
+      "summary": "arXiv:2603.08391v3 Announce Type: replace Abstract: Chain-of-thought (CoT) prompting enables reasoning in language models but requires explicit verbalization of intermediate steps. Looped transformers offer an alternative by iteratively refining representations within hidden states. This parameter efficiency comes at a cost, as looped models lack the storage capacity of deeper models which use unique weights per layer. In this work, we investigate transformer models that feature both adaptive per-layer looping, where each transformer block learns to iterate its hidden state via a learned halting mechanism, and gated memory banks, that provide additional learned storage. We find that looping primarily benefits mathematical reasoning, while memory banks help recover performance on commonsense tasks compared to parameter and FLOP matched models. Combining both mechanisms yields a model that outperforms an iso-FLOP baseline, with three times the number of layers, across math benchmarks. Analysis of model internals reveals layer specialization: early layers learn to loop minimally and access memory sparingly, while later layers do both more heavily.",
+      "tags": [
+        "papers",
+        "language",
+        "reasoning",
+        "eval",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.08391"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "71098e4dbea78202a2d80c156b2b65bfdd51098a49929cbef56d9377e22f9965",
+      "title": "MultiGraSCCo: A Multilingual Anonymization Benchmark with Annotations of Personal Identifiers",
+      "url": "https://arxiv.org/abs/2603.08879",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-12T04:00:00.000Z",
+      "summary": "arXiv:2603.08879v2 Announce Type: replace Abstract: Accessing sensitive patient data for machine learning is challenging due to privacy concerns. Datasets with annotations of personally identifiable information are crucial for developing and testing anonymization systems to enable safe data sharing that complies with privacy regulations. Since accessing real patient data is a bottleneck, synthetic data offers an efficient solution for data scarcity, bypassing privacy regulations that apply to real data. Moreover, neural machine translation can help to create high-quality data for low-resource languages by translating validated real or synthetic data from a high-resource language. In this work, we create a multilingual anonymization benchmark in ten languages, using a machine translation methodology that preserves the original annotations and renders names of cities and people in a culturally and contextually appropriate form in each target language. Our evaluation study with medical professionals confirms the quality of the translations, both in general and with respect to the translation and adaptation of personal information. Our benchmark with over 2,500 annotations of personal information can be used in many applications, including training annotators, validating annotations across institutions without legal complications, and helping improve the performance of automatic personal information detection. We make our benchmark and annotation guidelines available for further research.",
+      "tags": [
+        "papers",
+        "language",
+        "eval",
+        "policy",
+        "training",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.08879"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "acc4e3dc76fec8d8dc88c014947b6b2ea074a028d4ab592b329ee5558a7d2cf2",
+      "title": "Tracking Cancer Through Text: Longitudinal Extraction From Radiology Reports Using Open-Source Large Language Models",
+      "url": "https://arxiv.org/abs/2603.09638",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-12T04:00:00.000Z",
+      "summary": "arXiv:2603.09638v2 Announce Type: replace Abstract: Radiology reports capture crucial longitudinal information on tumor burden, treatment response, and disease progression, yet their unstructured narrative format complicates automated analysis. While large language models (LLMs) have advanced clinical text processing, most state-of-the-art systems remain proprietary, limiting their applicability in privacy-sensitive healthcare environments. We present a fully open-source, locally deployable pipeline for longitudinal information extraction from radiology reports, implemented using the llm_extractinator framework. The system applies the qwen2.5-72b model to extract and link target, non-target, and new lesion data across time points in accordance with RECIST criteria. Evaluation on 50 Dutch CT Thorax/Abdomen report pairs yielded high extraction performance, with attribute-level accuracies of 93.7% for target lesions, 94.9% for non-target lesions, and 94.0% for new lesions. The approach demonstrates that open-source LLMs can achieve clinically meaningful performance in multi-timepoint oncology tasks while ensuring data privacy and reproducibility. These results highlight the potential of locally deployable LLMs for scalable extraction of structured longitudinal data from routine clinical text.",
+      "tags": [
+        "papers",
+        "language",
+        "eval",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.09638"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "c3834e0a77783d711d4dc9d995b2adc277a639d38ccd9e8b332339ae88df6acd",
+      "title": "Fusing Semantic, Lexical, and Domain Perspectives for Recipe Similarity Estimation",
+      "url": "https://arxiv.org/abs/2603.09688",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-12T04:00:00.000Z",
+      "summary": "arXiv:2603.09688v2 Announce Type: replace Abstract: This research focuses on developing advanced methods for assessing similarity between recipes by combining different sources of information and analytical approaches. We explore the semantic, lexical, and domain similarity of food recipes, evaluated through the analysis of ingredients, preparation methods, and nutritional attributes. A web-based interface was developed to allow domain experts to validate the combined similarity results. After evaluating 318 recipe pairs, experts agreed on 255 (80%). The evaluation of expert assessments enables the estimation of which similarity aspects--lexical, semantic, or nutritional--are most influential in expert decision-making. The application of these methods has broad implications in the food industry and supports the development of personalized diets, nutrition recommendations, and automated recipe generation systems.",
+      "tags": [
+        "papers",
+        "language",
+        "eval"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.09688"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "d86ccc8b3371ddd5f231d1ac4fc7bd9810a529cf949adecebe02f829bb5a7806",
+      "title": "Evaluation of LLMs in retrieving food and nutritional context for RAG systems",
+      "url": "https://arxiv.org/abs/2603.09704",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-12T04:00:00.000Z",
+      "summary": "arXiv:2603.09704v2 Announce Type: replace Abstract: In this article, we evaluate four Large Language Models (LLMs) and their effectiveness at retrieving data within a specialized Retrieval-Augmented Generation (RAG) system, using a comprehensive food composition database. Our method is focused on the LLMs ability to translate natural language queries into structured metadata filters, enabling efficient retrieval via a Chroma vector database. By achieving high accuracy in this critical retrieval step, we demonstrate that LLMs can serve as an accessible, high-performance tool, drastically reducing the manual effort and technical expertise previously required for domain experts, such as food compilers and nutritionists, to leverage complex food and nutrition data. However, despite the high performance on easy and moderately complex queries, our analysis of difficult questions reveals that reliable retrieval remains challenging when queries involve non-expressible constraints. These findings demonstrate that LLM-driven metadata filtering excels when constraints can be explicitly expressed, but struggles when queries exceed the representational scope of the metadata format.",
+      "tags": [
+        "papers",
+        "language",
+        "eval",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.09704"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "01e691b74c3a662c564732b82de3c363ea78d2655cdf180d1b779c94ee116a46",
+      "title": "Fish Audio S2 Technical Report",
+      "url": "https://arxiv.org/abs/2603.08823",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-12T04:00:00.000Z",
+      "summary": "arXiv:2603.08823v2 Announce Type: replace-cross Abstract: We introduce Fish Audio S2, an open-sourced text-to-speech system featuring multi-speaker, multi-turn generation, and, most importantly, instruction-following control via natural-language descriptions. To scale training, we develop a multi-stage training recipe together with a staged data pipeline covering video captioning and speech captioning, voice-quality assessment, and reward modeling. To push the frontier of open-source TTS, we release our model weights, fine-tuning code, and an SGLang-based inference engine. The inference engine is production-ready for streaming, achieving an RTF of 0.195 and a time-to-first-audio below 100 ms.Our code and weights are available on GitHub (https://github.com/fishaudio/fish-speech) and Hugging Face (https://huggingface.co/fishaudio/s2-pro). We highly encourage readers to visit https://fish.audio to try custom voices.",
+      "tags": [
+        "papers",
+        "language",
+        "inference",
+        "training",
+        "model",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.08823"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "09462854cf526a6c56c105ef36a014319a5a129f946211f31f1b451867e54694",
+      "title": "PathoScribe: Transforming Pathology Data into a Living Library with a Unified LLM-Driven Framework for Semantic Retrieval and Clinical Integration",
+      "url": "https://arxiv.org/abs/2603.08935",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-12T04:00:00.000Z",
+      "summary": "arXiv:2603.08935v2 Announce Type: replace-cross Abstract: Pathology underpins modern diagnosis and cancer care, yet its most valuable asset, the accumulated experience encoded in millions of narrative reports, remains largely inaccessible. Although institutions are rapidly digitizing pathology workflows, storing data without effective mechanisms for retrieval and reasoning risks transforming archives into a passive data repository, where institutional knowledge exists but cannot meaningfully inform patient care. True progress requires not only digitization, but the ability for pathologists to interrogate prior similar cases in real time while evaluating a new diagnostic dilemma. We present PathoScribe, a unified retrieval-augmented large language model (LLM) framework designed to transform static pathology archives into a searchable, reasoning-enabled living library. PathoScribe enables natural language case exploration, automated cohort construction, clinical question answering, immunohistochemistry (IHC) panel recommendation, and prompt-controlled report transformation within a single architecture. Evaluated on 70,000 multi-institutional surgical pathology reports, PathoScribe achieved perfect Recall@10 for natural language case retrieval and demonstrated high-quality retrieval-grounded reasoning (mean reviewer score 4.56/5). Critically, the system operationalized automated cohort construction from free-text eligibility criteria, assembling research-ready cohorts in minutes (mean 9.2 minutes) with 91.3% agreement to human reviewers and no eligible cases incorrectly excluded, representing orders-of-magnitude reductions in time and cost compared to traditional manual chart review. This work establishes a scalable foundation for converting digital pathology archives from passive storage systems into active clinical intelligence platforms.",
+      "tags": [
+        "papers",
+        "language",
+        "reasoning",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.08935"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
       "id": "13360d7734c5479fc1e1d9f862dd4c8a5c8d2040088617ff8dffff066b9d8d4b",
       "title": "How NVIDIA AI-Q Reached \\#1 on DeepResearch Bench I and II",
       "url": "https://huggingface.co/blog/nvidia/how-nvidia-won-deepresearch-bench",
@@ -14847,277 +15127,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.09731"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "f9ecc5543c3fad78070b7cc05ee28b4a9b0ee6df0f108831a1e20945251c49f4",
-      "title": "Ego: Embedding-Guided Personalization of Vision-Language Models",
-      "url": "https://arxiv.org/abs/2603.09771",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-11T04:00:00.000Z",
-      "summary": "arXiv:2603.09771v1 Announce Type: cross Abstract: AI assistants that support humans in daily life are becoming increasingly feasible, driven by the rapid advancements in multimodal language models. A key challenge lies in overcoming the generic nature of these models to deliver personalized experiences. Existing approaches to personalizing large vision language models often rely on additional training stages, which limit generality and scalability, or on engineered pipelines with external pre-trained modules, which hinder deployment efficiency. In this work, we propose an efficient personalization method that leverages the model's inherent ability to capture personalized concepts. Specifically, we extract visual tokens that predominantly represent the target concept by utilizing the model's internal attention mechanisms. These tokens serve as a memory of that specific concept, enabling the model to recall and describe it when it appears in test images. We conduct a comprehensive and unified evaluation of our approach and SOTA methods across various personalization settings including single-concept, multi-concept, and video personalization, demonstrating strong performance gains with minimal personalization overhead.",
-      "tags": [
-        "papers",
-        "eval",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.09771"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "df6c072d04ced64ac5ce9959cc5fc3a89d8fb4bac5c507aef96b6ffaa5262399",
-      "title": "First Estimation of Model Parameters for Neutrino-Induced Nucleon Knockout Using Simulation-Based Inference",
-      "url": "https://arxiv.org/abs/2603.09778",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-11T04:00:00.000Z",
-      "summary": "arXiv:2603.09778v1 Announce Type: cross Abstract: To enable an accurate determination of oscillation parameters, accelerator-based neutrino experiments require detailed simulations of nuclear interaction physics in the GeV regime. While substantial effort from both theory and experiment is currently being invested to improve the fidelity of these simulations, their present deficiencies typically oblige experimental collaborations to resort to empirical tuning of simulation model parameters. As the precision requirements of the field continue to become more stringent, machine learning techniques may provide a powerful means of handling corresponding growth in the complexity of future neutrino interaction model tuning exercises. To study the suitability of simulation-based inference (SBI) for this physics application, in this paper we revisit a tuned configuration of the GENIE neutrino event generator that was originally developed by the MicroBooNE collaboration. Despite closely reproducing the adopted values of four physics parameters when confronted with the tuned cross-section predictions as input, we find that our trained SBI algorithm prefers modestly different values (within MicroBooNE's assigned uncertainties) and achieves slightly better goodness-of-fit when inference is run on the experimental data set originally used by MicroBooNE. We also find that our trained algorithm can create a fair approximation of an alternative neutrino scattering simulation, NuWro, that shares only a subset of its physics model parameters with GENIE.",
-      "tags": [
-        "papers",
-        "inference",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.09778"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "25b35a27a4b2ae7dfc9f3dbbb03a93b3dc91a9270ac242335aa666ab2ec9d23e",
-      "title": "A Hybrid Quantum-Classical Framework for Financial Volatility Forecasting Based on Quantum Circuit Born Machines",
-      "url": "https://arxiv.org/abs/2603.09789",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-11T04:00:00.000Z",
-      "summary": "arXiv:2603.09789v1 Announce Type: cross Abstract: Accurate forecasting of financial market volatility is crucial for risk management, option pricing, and portfolio optimization. Traditional econometric models and classical machine learning methods face challenges in handling the inherent non-linear and non-stationary characteristics of financial time series. In recent years, the rapid development of quantum computing has provided a new paradigm for solving complex optimization and sampling problems. This paper proposes a novel hybrid quantum-classical computing framework aimed at combining the powerful representation capabilities of classical neural networks with the unique advantages of quantum models. For the specific task of financial market volatility forecasting, we designed and implemented a hybrid model based on this framework, which combines a Long Short-Term Memory (LSTM) network with a Quantum Circuit Born Machine (QCBM). The LSTM is responsible for extracting complex dynamic features from historical time series data, while the QCBM serves as a learnable prior module, providing the model with a high-quality prior distribution to guide the forecasting process. We evaluated the model on two real financial datasets consisting of 5-minute high-frequency data from the Shanghai Stock Exchange (SSE) Composite Index and CSI 300 Index. Experimental results show that, compared to a purely classical LSTM baseline model, our hybrid quantum-classical model demonstrates significant advantages across multiple key metrics, including Mean Squared Error (MSE), Root Mean Squared Error (RMSE), and QLIKE loss, proving the great potential of quantum computing in enhancing the capabilities of financial forecasting models. More broadly, the proposed hybrid framework offers a flexible architecture that may be adapted to other machine learning tasks involving high-dimensional, complex, or non-linear data distributions.",
-      "tags": [
-        "papers",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.09789"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "a226253f9084abbe150030cfcc55359b4cb567287b507f8eebe5ea985b32baaa",
-      "title": "Exploiting Label-Aware Channel Scoring for Adaptive Channel Pruning in Split Learning",
-      "url": "https://arxiv.org/abs/2603.09792",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-11T04:00:00.000Z",
-      "summary": "arXiv:2603.09792v1 Announce Type: cross Abstract: Split learning (SL) transfers most of the training workload to the server, which alleviates computational burden on client devices. However, the transmission of intermediate feature representations, referred to as smashed data, incurs significant communication overhead, particularly when a large number of client devices are involved. To address this challenge, we propose an adaptive channel pruning-aided SL (ACP-SL) scheme. In ACP-SL, a label-aware channel importance scoring (LCIS) module is designed to generate channel importance scores, distinguishing important channels from less important ones. Based on these scores, an adaptive channel pruning (ACP) module is developed to prune less important channels, thereby compressing the corresponding smashed data and reducing the communication overhead. Experimental results show that ACP-SL consistently outperforms benchmark schemes in test accuracy. Furthermore, it reaches a target test accuracy in fewer training rounds, thereby reducing communication overhead.",
-      "tags": [
-        "papers",
-        "eval",
-        "training"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.09792"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "71647c1748f90e17dd341d836a69ef3ba11e0f1905f7c329d938ef13f66c6597",
-      "title": "MITRA: An AI Assistant for Knowledge Retrieval in Physics Collaborations",
-      "url": "https://arxiv.org/abs/2603.09800",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-11T04:00:00.000Z",
-      "summary": "arXiv:2603.09800v1 Announce Type: cross Abstract: Large-scale scientific collaborations, such as the Compact Muon Solenoid (CMS) at CERN, produce a vast and ever-growing corpus of internal documentation. Navigating this complex information landscape presents a significant challenge for both new and experienced researchers, hindering knowledge sharing and slowing down the pace of scientific discovery. To address this, we present a prototype of MITRA, a Retrieval-Augmented Generation (RAG) based system, designed to answer specific, context-aware questions about physics analyses. MITRA employs a novel, automated pipeline using Selenium for document retrieval from internal databases and Optical Character Recognition (OCR) with layout parsing for high-fidelity text extraction. Crucially, MITRA's entire framework, from the embedding model to the Large Language Model (LLM), is hosted on-premise, ensuring that sensitive collaboration data remains private. We introduce a two-tiered vector database architecture that first identifies the relevant analysis from abstracts before focusing on the full documentation, resolving potential ambiguities between different analyses. We demonstrate the prototype's superior retrieval performance against a standard keyword-based baseline on realistic queries and discuss future work towards developing a comprehensive research agent for large experimental collaborations.",
-      "tags": [
-        "papers",
-        "agents",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.09800"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "5976b6f074c16056e37265303187306f0a80f29031279315a6dc17e677ae212b",
-      "title": "Correction of Transformer-Based Models with Smoothing Pseudo-Projector",
-      "url": "https://arxiv.org/abs/2603.09815",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-11T04:00:00.000Z",
-      "summary": "arXiv:2603.09815v1 Announce Type: cross Abstract: The pseudo-projector is a lightweight modification that can be integrated into existing language models and other neural networks without altering their core architecture. It can be viewed as a hidden-representation corrector that reduces sensitivity to noise by suppressing directions induced by label-irrelevant input content. The design is inspired by the multigrid (MG) paradigm, originally developed to accelerate the convergence of iterative solvers for partial differential equations and boundary value problems, and later extended to more general linear systems through algebraic multigrid methods. We refer to the method as a pseudo-projector because its linear prototype corresponds to a strictly idempotent orthogonal projector, whereas the practical formulation employs learnable restriction and prolongation operators and therefore does not, in general, satisfy the properties of an exact orthogonal projection. We evaluate the proposed approach on transformer-based text classification tasks, as well as controlled synthetic benchmarks, demonstrating its effectiveness in improving training dynamics and robustness. Experimental results, together with supporting theoretical heuristics, indicate consistent improvements in training behavior across a range of settings, with no adverse effects observed otherwise. Our next step will be to extend this approach to language models.",
-      "tags": [
-        "papers",
-        "eval",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.09815"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "9e940b5089dba057517975ae056bc034b04ba3692b2b9bbff87fbaf1637c71f8",
-      "title": "MA-EgoQA: Question Answering over Egocentric Videos from Multiple Embodied Agents",
-      "url": "https://arxiv.org/abs/2603.09827",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-11T04:00:00.000Z",
-      "summary": "arXiv:2603.09827v1 Announce Type: cross Abstract: As embodied models become powerful, humans will collaborate with multiple embodied AI agents at their workplace or home in the future. To ensure better communication between human users and the multi-agent system, it is crucial to interpret incoming information from agents in parallel and refer to the appropriate context for each query. Existing challenges include effectively compressing and communicating high volumes of individual sensory inputs in the form of video and correctly aggregating multiple egocentric videos to construct system-level memory. In this work, we first formally define a novel problem of understanding multiple long-horizon egocentric videos simultaneously collected from embodied agents. To facilitate research in this direction, we introduce MultiAgent-EgoQA (MA-EgoQA), a benchmark designed to systemically evaluate existing models in our scenario. MA-EgoQA provides 1.7k questions unique to multiple egocentric streams, spanning five categories: social interaction, task coordination, theory-of-mind, temporal reasoning, and environmental interaction. We further propose a simple baseline model for MA-EgoQA named EgoMAS, which leverages shared memory across embodied agents and agent-wise dynamic retrieval. Through comprehensive evaluation across diverse baselines and EgoMAS on MA-EgoQA, we find that current approaches are unable to effectively handle multiple egocentric streams, highlighting the need for future advances in system-level understanding across the agents. The code and benchmark are available at https://ma-egoqa.github.io.",
-      "tags": [
-        "papers",
-        "agents",
-        "reasoning",
-        "eval",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.09827"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "8109f51e436e97ce8c5f6e7bbf2adebca4f3e5b5b45be6e10f0d2492af3e39d6",
-      "title": "SCENEBench: An Audio Understanding Benchmark Grounded in Assistive and Industrial Use Cases",
-      "url": "https://arxiv.org/abs/2603.09853",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-11T04:00:00.000Z",
-      "summary": "arXiv:2603.09853v1 Announce Type: cross Abstract: Advances in large language models (LLMs) have enabled significant capabilities in audio processing, resulting in state-of-the-art models now known as Large Audio Language Models (LALMs). However, minimal work has been done to measure audio understanding beyond automatic speech recognition (ASR). This paper closes that gap by proposing a benchmark suite, SCENEBench (Spatial, Cross-lingual, Environmental, Non-speech Evaluation), that targets a broad form of audio comprehension across four real-world categories: background sound understanding, noise localization, cross-linguistic speech understanding, and vocal characterizer recognition. These four categories are selected based on understudied needs from accessibility technology and industrial noise monitoring. In addition to performance, we also measure model latency. The purpose of this benchmark suite is to assess audio beyond just what words are said - rather, how they are said and the non-speech components of the audio. Because our audio samples are synthetically constructed (e.g., by overlaying two natural audio samples), we further validate our benchmark against 20 natural audio items per task, sub-sampled from existing datasets to match our task criteria, to assess ecological validity. We assess five state-of-the-art LALMs and find critical gaps: performance varies across tasks, with some tasks performing below random chance and others achieving high accuracy. These results provide direction for targeted improvements in model capabilities.",
-      "tags": [
-        "papers",
-        "eval",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.09853"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "0981eeaa11847b408c2ac7672af4d0f3be2619bc2a573239d10a669008d20916",
-      "title": "A Graph-Based Approach to Spectrum Demand Prediction Using Hierarchical Attention Networks",
-      "url": "https://arxiv.org/abs/2603.09859",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-11T04:00:00.000Z",
-      "summary": "arXiv:2603.09859v1 Announce Type: cross Abstract: The surge in wireless connectivity demand, coupled with the finite nature of spectrum resources, compels the development of efficient spectrum management approaches. Spectrum sharing presents a promising avenue, although it demands precise characterization of spectrum demand for informed policy-making. This paper introduces HR-GAT, a hierarchical resolution graph attention network model, designed to predict spectrum demand using geospatial data. HR-GAT adeptly handles complex spatial demand patterns and resolves issues of spatial autocorrelation that usually challenge standard machine learning models, often resulting in poor generalization. Tested across five major Canadian cities, HR-GAT improves predictive accuracy of spectrum demand by 21% over eight baseline models, underscoring its superior performance and reliability.",
-      "tags": [
-        "papers",
-        "policy",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.09859"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "f27ebc602217727ff2a451e9844b29a55617b33ff9cd25c8ab86861b3133d090",
-      "title": "Emerging Extrinsic Dexterity in Cluttered Scenes via Dynamics-aware Policy Learning",
-      "url": "https://arxiv.org/abs/2603.09882",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-11T04:00:00.000Z",
-      "summary": "arXiv:2603.09882v1 Announce Type: cross Abstract: Extrinsic dexterity leverages environmental contact to overcome the limitations of prehensile manipulation. However, achieving such dexterity in cluttered scenes remains challenging and underexplored, as it requires selectively exploiting contact among multiple interacting objects with inherently coupled dynamics. Existing approaches lack explicit modeling of such complex dynamics and therefore fall short in non-prehensile manipulation in cluttered environments, which in turn limits their practical applicability in real-world environments. In this paper, we introduce a Dynamics-Aware Policy Learning (DAPL) framework that can facilitate policy learning with a learned representation of contact-induced object dynamics in cluttered environments. This representation is learned through explicit world modeling and used to condition reinforcement learning, enabling extrinsic dexterity to emerge without hand-crafted contact heuristics or complex reward shaping. We evaluate our approach in both simulation and the real world. Our method outperforms prehensile manipulation, human teleoperation, and prior representation-based policies by over 25% in success rate on unseen simulated cluttered scenes with varying densities. The real-world success rate reaches around 50% across 10 cluttered scenes, while a practical grocery deployment further demonstrates robust sim-to-real transfer and applicability.",
-      "tags": [
-        "papers",
-        "policy",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.09882"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "bd93a39389eb9a3812c60487fca31a78ee1f17fc4a4e6c80fa8323529ee19c77",
-      "title": "MSSR: Memory-Aware Adaptive Replay for Continual LLM Fine-Tuning",
-      "url": "https://arxiv.org/abs/2603.09892",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-11T04:00:00.000Z",
-      "summary": "arXiv:2603.09892v1 Announce Type: cross Abstract: Continual fine-tuning of large language models (LLMs) is becoming increasingly crucial as these models are deployed in dynamic environments where tasks and data distributions evolve over time. While strong adaptability enables rapid acquisition of new knowledge, it also exposes LLMs to catastrophic forgetting, where previously learned skills degrade during sequential training. Existing replay-based strategies, such as fixed interleaved replay, accuracy-supervised, and loss-driven scheduling, remain limited: some depend on heuristic rules and provide only partial mitigation of forgetting, while others improve performance but incur substantial computational overhead. Motivated by retention dynamics under sequential fine-tuning, we propose Memory-Inspired Sampler and Scheduler Replay (MSSR), an experience replay framework that estimates sample-level memory strength and schedules rehearsal at adaptive intervals to mitigate catastrophic forgetting while maintaining fast adaptation. Extensive experiments across three backbone models and 11 sequential tasks show that MSSR consistently outperforms state-of-the-art replay baselines, with particularly strong gains on reasoning-intensive and multiple-choice benchmarks.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "eval",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.09892"
         },
         {
           "label": "Feed",
