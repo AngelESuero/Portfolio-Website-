@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-12T15:10:45.187Z",
+    "generatedAt": "2026-03-12T16:16:45.256Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,31 @@
     ]
   },
   "items": [
+    {
+      "id": "757347696c58986230211289b3e3a763df6768adee6f674824c53913a19b92ee",
+      "title": "Build Next-Gen Physical AI with Edge‑First LLMs for Autonomous Vehicles and Robotics",
+      "url": "https://developer.nvidia.com/blog/build-next-gen-physical-ai-with-edge%e2%80%91first-llms-for-autonomous-vehicles-and-robotics/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-03-12T16:00:00.000Z",
+      "summary": "Physical AI is rapidly evolving, from next-generation software-defined autonomous vehicles (AVs) to humanoid robots. The challenge is no longer how to run a... Physical AI is rapidly evolving, from next-generation software-defined autonomous vehicles (AVs) to humanoid robots. The challenge is no longer how to run a large language model (LLM), but how to enable high-fidelity reasoning, real-time multimodal interaction, and trajectory planning within strict power and latency envelopes. NVIDIA TensorRT Edge-LLM, a high-performance C++ inference runtime… Source",
+      "tags": [
+        "compute",
+        "reasoning",
+        "inference",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/build-next-gen-physical-ai-with-edge%e2%80%91first-llms-for-autonomous-vehicles-and-robotics/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
     {
       "id": "0d4c9d41321fb5ecb78747bfddc281757533cf9601babf5534527735cea4900f",
       "title": "Agentic Control Center for Data Product Optimization",
@@ -15103,31 +15128,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.09697"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "bf503c8aa5b185f54e66772c954f7b759037c54a9e40ba0e3916d75e82f631a4",
-      "title": "MUGEN: Evaluating and Improving Multi-audio Understanding of Large Audio-Language Models",
-      "url": "https://arxiv.org/abs/2603.09714",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-11T04:00:00.000Z",
-      "summary": "arXiv:2603.09714v1 Announce Type: cross Abstract: While multi-audio understanding is critical for large audio-language models (LALMs), it remains underexplored. We introduce MUGEN, a comprehensive benchmark evaluating this capability across speech, general audio, and music. Our experiments reveal consistent weaknesses in multi-audio settings, and performance degrades sharply as the number of concurrent audio inputs increases, identifying input scaling as a fundamental bottleneck. We further investigate training-free strategies and observe that Audio-Permutational Self-Consistency, which diversifies the order of audio candidates, helps models form more robust aggregated predictions, yielding up to 6.28% accuracy gains. Combining this permutation strategy with Chain-of-Thought further improves performance to 6.74%. These results expose blind spots in current LALMs and provide a foundation for evaluating complex auditory comprehension.",
-      "tags": [
-        "papers",
-        "eval",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.09714"
         },
         {
           "label": "Feed",
