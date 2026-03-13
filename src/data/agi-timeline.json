@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-13T19:48:36.539Z",
+    "generatedAt": "2026-03-13T20:54:09.916Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,29 @@
     ]
   },
   "items": [
+    {
+      "id": "e3eb8552ac8182d43e26563d56f9678bf90cea8ffa1927f2e40f1679e8684b13",
+      "title": "Beyond Semantic Similarity: Introducing NVIDIA NeMo Retriever’s Generalizable Agentic Retrieval Pipeline",
+      "url": "https://huggingface.co/blog/nvidia/nemo-retriever-agentic-retrieval",
+      "sourceId": "hf_blog",
+      "sourceName": "Hugging Face — Blog",
+      "publishedAt": "2026-03-13T20:00:00.000Z",
+      "summary": null,
+      "tags": [
+        "open-source",
+        "agents"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://huggingface.co/blog/nvidia/nemo-retriever-agentic-retrieval"
+        },
+        {
+          "label": "Feed",
+          "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
     {
       "id": "fb853b8149c4364369457ebee849495dcc21529cb7d5b36b70db69181202aa5b",
       "title": "Scale Synthetic Data and Physical AI Reasoning with NVIDIA Cosmos World Foundation Models",
@@ -15095,30 +15118,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.10876"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "d91420f85e305c02f0c8e6abd43c2f3532d7bdfcd68a1c5e93f5fa90d3cf32fd",
-      "title": "Continuous Diffusion Transformers for Designing Synthetic Regulatory Elements",
-      "url": "https://arxiv.org/abs/2603.10885",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-12T04:00:00.000Z",
-      "summary": "arXiv:2603.10885v1 Announce Type: cross Abstract: We present a parameter-efficient Diffusion Transformer (DiT) for generating 200bp cell-type-specific regulatory DNA sequences. By replacing the U-Net backbone of DNA-Diffusion with a transformer denoiser equipped with a 2D CNN input encoder, our model matches the U-Net's best validation loss in 13 epochs (60$\\times$ fewer) and converges 39% lower, while reducing memorization from 5.3% to 1.7% of generated sequences aligning to training data via BLAT. Ablations show the CNN encoder is essential: without it, validation loss increases 70% regardless of positional embedding choice. We further apply DDPO finetuning using Enformer as a reward model, achieving a 38$\\times$ improvement in predicted regulatory activity. Cross-validation against DRAKES on an independent prediction task confirms that improvements reflect genuine regulatory signal rather than reward model overfitting.",
-      "tags": [
-        "papers",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.10885"
         },
         {
           "label": "Feed",
