@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-13T04:56:03.644Z",
+    "generatedAt": "2026-03-13T06:05:00.817Z",
     "sources": [
       {
         "id": "openai_news",
@@ -10357,6 +10357,420 @@
       ]
     },
     {
+      "id": "74615b5b1db11f733f83bd0e43e8a32c517bf54f3e4bb3afddbff9f60818e9d5",
+      "title": "From Next Token Prediction to (STRIPS) World Models",
+      "url": "https://arxiv.org/abs/2509.13389",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-13T04:00:00.000Z",
+      "summary": "arXiv:2509.13389v5 Announce Type: replace Abstract: We study whether next-token prediction can yield world models that truly support planning, in a controlled symbolic setting where propositional STRIPS action models are learned from action traces alone and correctness can be evaluated exactly. We introduce two architectures. The first is the STRIPS Transformer, a symbolically aligned model grounded in theoretical results linking transformers and the formal language structure of STRIPS domains. The second is a standard transformer architecture without explicit symbolic structure built in, for which we study different positional encoding schemes and attention aggregation mechanisms. We evaluate both architectures on five classical planning domains, measuring training accuracy, generalization, and planning performance across domains and problem sizes. Interestingly, both approaches can be used to produce models that support planning with off-the-shelf STRIPS planners over exponentially many unseen initial states and goals. Although the STRIPS Transformer incorporates a strong symbolic inductive bias, it is harder to optimize and requires larger datasets to generalize reliably. In contrast, a standard transformer with stick-breaking attention achieves near-perfect training accuracy and strong generalization. Finally, standard transformers without stick-breaking attention do not generalize to long traces, whereas a symbolic STRIPS model extracted from a transformer trained on shorter traces does.",
+      "tags": [
+        "papers",
+        "training",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2509.13389"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "f732bb268860db2451c15e788e8d7479943a76859e7cffd60ca28a9fa832db3f",
+      "title": "RetroAgent: From Solving to Evolving via Retrospective Dual Intrinsic Feedback",
+      "url": "https://arxiv.org/abs/2603.08561",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-13T04:00:00.000Z",
+      "summary": "arXiv:2603.08561v3 Announce Type: replace Abstract: Standard reinforcement learning (RL) for large language model (LLM)-based agents typically optimizes extrinsic task-success rewards, prioritizing one-off task solving over continual adaptation. As a result, agents may converge to suboptimal policies due to limited exploration, and accumulated experience remains implicitly stored in model parameters, hindering efficient experiential learning. Inspired by humans' capacity for retrospective self-improvement, we introduce RetroAgent, an online RL framework that enables agents to master complex interactive environments not only by solving, but also by evolving under the joint guidance of extrinsic task-success rewards and retrospective dual intrinsic feedback. Concretely, RetroAgent features a hindsight self-reflection mechanism that produces: (1) intrinsic numerical feedback, which tracks incremental subtask completion relative to prior attempts to reward promising exploration; and (2) intrinsic language feedback, which distills reusable lessons into a memory buffer retrieved via our proposed Similarity & Utility-Aware Upper Confidence Bound (SimUtil-UCB) strategy, jointly balancing relevance, utility, and exploration. Extensive experiments across four challenging agentic tasks show that RetroAgent achieves state-of-the-art (SOTA) performance, substantially outperforming RL fine-tuning, memory-augmented RL, exploration-guided RL, and meta-RL methods -- e.g., exceeding Group Relative Policy Optimization (GRPO)-trained agents by +18.3% on ALFWorld, +15.4% on WebShop, +27.1% on Sokoban, and +8.9% on MineSweeper -- while maintaining strong test-time adaptation and out-of-distribution generalization.",
+      "tags": [
+        "papers",
+        "agents",
+        "policy",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.08561"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "cc8a3076f0267f8670502295c1e5f99d8962b40c345a69eebe92d479da93ae0d",
+      "title": "AgentOS: From Application Silos to a Natural Language-Driven Data Ecosystem",
+      "url": "https://arxiv.org/abs/2603.08938",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-13T04:00:00.000Z",
+      "summary": "arXiv:2603.08938v2 Announce Type: replace Abstract: The rapid emergence of open-source, locally hosted intelligent agents marks a critical inflection point in human-computer interaction. Systems such as OpenClaw demonstrate that Large Language Model (LLM)-based agents can autonomously operate local computing environments, orchestrate workflows, and integrate external tools. However, within the current paradigm, these agents remain conventional applications running on legacy operating systems originally designed for Graphical User Interfaces (GUIs) or Command Line Interfaces (CLIs). This architectural mismatch leads to fragmented interaction models, poorly structured permission management (often described as \"Shadow AI\"), and severe context fragmentation. This paper proposes a new paradigm: a Personal Agent Operating System (AgentOS). In AgentOS, traditional GUI desktops are replaced by a Natural User Interface (NUI) centered on a unified natural language or voice portal. The system core becomes an Agent Kernel that interprets user intent, decomposes tasks, and coordinates multiple agents, while traditional applications evolve into modular Skills-as-Modules enabling users to compose software through natural language rules. We argue that realizing AgentOS fundamentally becomes a Knowledge Discovery and Data Mining (KDD) problem. The Agent Kernel must operate as a real-time engine for intent mining and knowledge discovery. Viewed through this lens, the operating system becomes a continuous data mining pipeline involving sequential pattern mining for workflow automation, recommender systems for skill retrieval, and dynamically evolving personal knowledge graphs. These challenges define a new research agenda for the KDD community in building the next generation of intelligent computing systems.",
+      "tags": [
+        "papers",
+        "agents",
+        "compute",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.08938"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "9a50410ca68157092ef6c8c945b8d09c51b1c811d2584ef5307053609b6bedd5",
+      "title": "Deep Tabular Research via Continual Experience-Driven Execution",
+      "url": "https://arxiv.org/abs/2603.09151",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-13T04:00:00.000Z",
+      "summary": "arXiv:2603.09151v2 Announce Type: replace Abstract: Large language models often struggle with complex long-horizon analytical tasks over unstructured tables, which typically feature hierarchical and bidirectional headers and non-canonical layouts. We formalize this challenge as Deep Tabular Research (DTR), requiring multi-step reasoning over interdependent table regions. To address DTR, we propose a novel agentic framework that treats tabular reasoning as a closed-loop decision-making process. We carefully design a coupled query and table comprehension for path decision making and operational execution. Specifically, (i) DTR first constructs a hierarchical meta graph to capture bidirectional semantics, mapping natural language queries into an operation-level search space; (ii) To navigate this space, we introduce an expectation-aware selection policy that prioritizes high-utility execution paths; (iii) Crucially, historical execution outcomes are synthesized into a siamese structured memory, i.e., parameterized updates and abstracted texts, enabling continual refinement. Extensive experiments on challenging unstructured tabular benchmarks verify the effectiveness and highlight the necessity of separating strategic planning from low-level execution for long-horizon tabular reasoning.",
+      "tags": [
+        "papers",
+        "agents",
+        "reasoning",
+        "eval",
+        "policy",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.09151"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "1692f29b572f79fb7b0b169b663633714612f02c8b4cdd752c4f7e7033482e3d",
+      "title": "Evaluate-as-Action: Self-Evaluated Process Rewards for Retrieval-Augmented Agents",
+      "url": "https://arxiv.org/abs/2603.09203",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-13T04:00:00.000Z",
+      "summary": "arXiv:2603.09203v2 Announce Type: replace Abstract: Retrieval-augmented agents can query external evidence, yet their reliability in multi-step reasoning remains limited: noisy retrieval may derail multi-hop question answering, while outcome-only reinforcement learning provides credit signals that are too coarse to optimize intermediate steps. We propose \\textsc{EvalAct} (Evaluate-as-Action), which converts implicit retrieval quality assessment into an explicit action and enforces a coupled Search-to-Evaluate protocol so that each retrieval is immediately followed by a structured evaluation score, yielding process signals aligned with the interaction trajectory. To leverage these signals, we introduce Process-Calibrated Advantage Rescaling (PCAR), a GRPO-based optimization method that rescales advantages at the segment level according to evaluation scores, emphasizing reliable segments while updating uncertain ones conservatively. Experiments on seven open-domain QA benchmarks show that \\textsc{EvalAct} achieves the best average accuracy, with the largest gains on multi-hop tasks, and ablations verify that the explicit evaluation loop drives the primary improvements while PCAR provides consistent additional benefits.",
+      "tags": [
+        "papers",
+        "agents",
+        "reasoning",
+        "eval"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.09203"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "28d2ae50195693a6de34d658dc1fc8c0cea316e4ea6cfec9cf099dae1eb8d8f8",
+      "title": "Logics-Parsing-Omni Technical Report",
+      "url": "https://arxiv.org/abs/2603.09677",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-13T04:00:00.000Z",
+      "summary": "arXiv:2603.09677v2 Announce Type: replace Abstract: Addressing the challenges of fragmented task definitions and the heterogeneity of unstructured data in multimodal parsing, this paper proposes the Omni Parsing framework. This framework establishes a Unified Taxonomy covering documents, images, and audio-visual streams, introducing a progressive parsing paradigm that bridges perception and cognition. Specifically, the framework integrates three hierarchical levels: 1) Holistic Detection, which achieves precise spatial-temporal grounding of objects or events to establish a geometric baseline for perception; 2) Fine-grained Recognition, which performs symbolization (e.g., OCR/ASR) and attribute extraction on localized objects to complete structured entity parsing; and 3) Multi-level Interpreting, which constructs a reasoning chain from local semantics to global logic. A pivotal advantage of this framework is its evidence anchoring mechanism, which enforces a strict alignment between high-level semantic descriptions and low-level facts. This enables ``evidence-based'' logical induction, transforming unstructured signals into standardized knowledge that is locatable, enumerable, and traceable. Building on this foundation, we constructed a standardized dataset and released the Logics-Parsing-Omni model, which successfully converts complex audio-visual signals into machine-readable structured knowledge. Experiments demonstrate that fine-grained perception and high-level cognition are synergistic, effectively enhancing model reliability. Furthermore, to quantitatively evaluate these capabilities, we introduce OmniParsingBench. Code, models and the benchmark are released at https://github.com/alibaba/Logics-Parsing/tree/master/Logics-Parsing-Omni.",
+      "tags": [
+        "papers",
+        "reasoning",
+        "eval",
+        "safety",
+        "model",
+        "release",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.09677"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "a600a48897eefcdb4aeb11419b4aada4a4bd3d534fc54d1045d0bcd20741f312",
+      "title": "Let's Verify Math Questions Step by Step",
+      "url": "https://arxiv.org/abs/2505.13903",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-13T04:00:00.000Z",
+      "summary": "arXiv:2505.13903v2 Announce Type: replace-cross Abstract: Large Language Models (LLMs) have recently achieved remarkable progress in mathematical reasoning. To enable such capabilities, many existing works distill strong reasoning models into long chains of thought or design algorithms to construct high-quality math question-answer (QA) data for training. However, these efforts primarily focus on generating correct reasoning paths and answers, while largely overlooking the correctness of the questions themselves. In this work, we present ValiMath, a benchmark consisting of 2147 human-verified mathematical questions covering a wide range of domains such as arithmetic, algebra, and geometry, which are synthesized and curated from the NuminaMath dataset. Each question is annotated with its logical structure, domain coverage, and question correctness, enabling fine-grained evaluation of question quality. ValiMath serves as a high-quality gold-standard test set for validating mathematical questions in LLM training corpora. Building upon this benchmark, we further propose MathQ-Verify, a pipeline that performs fine-grained parsing of mathematical questions into atomic assumptions and conclusions, and evaluates their semantic soundness through consistency checks. This pipeline achieves high precision in detecting flawed questions and provides a reliable foundation for cleaning noisy mathematical datasets. Experiments show that MathQ-Verify achieves state-of-the-art performance across multiple benchmarks, improving the F1 score by up to 25 percentage points over the direct verification baseline. MathQ-Verify offers a scalable and accurate solution for curating reliable mathematical datasets, reducing label noise and avoiding unnecessary computation on invalid questions. Our code and data are available at the repository https://github.com/OpenDCAI/MathQ-Verify.",
+      "tags": [
+        "papers",
+        "reasoning",
+        "eval",
+        "training",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2505.13903"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "8edfdeff8a5b691d2fe4cee4d941ecef074ea5cb7c561cfba661083436295345",
+      "title": "LLLMs: A Data-Driven Survey of Evolving Research on Limitations of Large Language Models",
+      "url": "https://arxiv.org/abs/2505.19240",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-13T04:00:00.000Z",
+      "summary": "arXiv:2505.19240v4 Announce Type: replace-cross Abstract: Large language model (LLM) research has grown rapidly, along with increasing concern about their limitations. In this survey, we conduct a data-driven, semi-automated review of research on limitations of LLMs (LLLMs) from 2022 to early 2025 using a bottom-up approach. From a corpus of 250,000 ACL and arXiv papers, we identify 14,648 relevant papers using keyword filtering, LLM-based classification, validated against expert labels, and topic clustering (via two approaches, HDBSCAN+BERTopic and LlooM). We find that the share of LLM-related papers increases over fivefold in ACL and nearly eightfold in arXiv between 2022 and 2025. Since 2022, LLLMs research grows even faster, reaching over 30% of LLM papers by 2025. Reasoning remains the most studied limitation, followed by generalization, hallucination, bias, and security. The distribution of topics in the ACL dataset stays relatively stable over time, while arXiv shifts toward security risks, alignment, hallucinations, knowledge editing, and multimodality. We offer a quantitative view of trends in LLLMs research and release a dataset of annotated abstracts and a validated methodology, available at: https://github.com/a-kostikova/LLLMs-Survey.",
+      "tags": [
+        "papers",
+        "reasoning",
+        "safety",
+        "model",
+        "release",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2505.19240"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "f98b8ffad26d81d6a58faab756f54733b11823d565da94ea7788455638147df3",
+      "title": "GOT-JEPA: Generic Object Tracking with Model Adaptation and Occlusion Handling using Joint-Embedding Predictive Architecture",
+      "url": "https://arxiv.org/abs/2602.14771",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-13T04:00:00.000Z",
+      "summary": "arXiv:2602.14771v3 Announce Type: replace-cross Abstract: The human visual system tracks objects by integrating current observations with previously observed information, adapting to target and scene changes, and reasoning about occlusion at fine granularity. In contrast, recent generic object trackers are often optimized for training targets, which limits robustness and generalization in unseen scenarios, and their occlusion reasoning remains coarse, lacking detailed modeling of occlusion patterns. To address these limitations in generalization and occlusion perception, we propose GOT-JEPA, a model-predictive pretraining framework that extends JEPA from predicting image features to predicting tracking models. Given identical historical information, a teacher predictor generates pseudo-tracking models from a clean current frame, and a student predictor learns to predict the same pseudo-tracking models from a corrupted version of the current frame. This design provides stable pseudo supervision and explicitly trains the predictor to produce reliable tracking models under occlusions, distractors, and other adverse observations, improving generalization to dynamic environments. Building on GOT-JEPA, we further propose OccuSolver to enhance occlusion perception for object tracking. OccuSolver adapts a point-centric point tracker for object-aware visibility estimation and detailed occlusion-pattern capture. Conditioned on object priors iteratively generated by the tracker, OccuSolver incrementally refines visibility states, strengthens occlusion handling, and produces higher-quality reference labels that progressively improve subsequent model predictions. Extensive evaluations on seven benchmarks show that our method effectively enhances tracker generalization and robustness.",
+      "tags": [
+        "papers",
+        "reasoning",
+        "eval",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.14771"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "86a00760a158233069ed61a7573c04ad1c5498f1564e84439c647229fdd34438",
+      "title": "A Variational Latent Equilibrium for Learning in Neuronal Circuits",
+      "url": "https://arxiv.org/abs/2603.09600",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-13T04:00:00.000Z",
+      "summary": "arXiv:2603.09600v2 Announce Type: replace-cross Abstract: Brains remain unrivaled in their ability to recognize and generate complex spatiotemporal patterns. While AI is able to reproduce some of these capabilities, deep learning algorithms remain largely at odds with our current understanding of brain circuitry and dynamics. This is prominently the case for backpropagation through time (BPTT), the go-to algorithm for learning complex temporal dependencies. In this work we propose a general formalism to approximate BPTT in a controlled, biologically plausible manner. Our approach builds on, unifies and extends several previous approaches to local, time-continuous, phase-free spatiotemporal credit assignment based on principles of energy conservation and extremal action. Our starting point is a prospective energy function of neuronal states, from which we calculate real-time error dynamics for time-continuous neuronal networks. In the general case, this provides a simple and straightforward derivation of the adjoint method result for neuronal networks, the time-continuous equivalent to BPTT. With a few modifications, we can turn this into a fully local (in space and time) set of equations for neuron and synapse dynamics. Our theory provides a rigorous framework for spatiotemporal deep learning in the brain, while simultaneously suggesting a blueprint for physical circuits capable of carrying out these computations. These results reframe and extend the recently proposed Generalized Latent Equilibrium (GLE) model.",
+      "tags": [
+        "papers",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.09600"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "66d975b6b344296a4fbe837896b10debce8f59c44bf4e13c49f8d5234d51f018",
+      "title": "LLLMs: A Data-Driven Survey of Evolving Research on Limitations of Large Language Models",
+      "url": "https://arxiv.org/abs/2505.19240",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-13T04:00:00.000Z",
+      "summary": "arXiv:2505.19240v4 Announce Type: replace Abstract: Large language model (LLM) research has grown rapidly, along with increasing concern about their limitations. In this survey, we conduct a data-driven, semi-automated review of research on limitations of LLMs (LLLMs) from 2022 to early 2025 using a bottom-up approach. From a corpus of 250,000 ACL and arXiv papers, we identify 14,648 relevant papers using keyword filtering, LLM-based classification, validated against expert labels, and topic clustering (via two approaches, HDBSCAN+BERTopic and LlooM). We find that the share of LLM-related papers increases over fivefold in ACL and nearly eightfold in arXiv between 2022 and 2025. Since 2022, LLLMs research grows even faster, reaching over 30% of LLM papers by 2025. Reasoning remains the most studied limitation, followed by generalization, hallucination, bias, and security. The distribution of topics in the ACL dataset stays relatively stable over time, while arXiv shifts toward security risks, alignment, hallucinations, knowledge editing, and multimodality. We offer a quantitative view of trends in LLLMs research and release a dataset of annotated abstracts and a validated methodology, available at: https://github.com/a-kostikova/LLLMs-Survey.",
+      "tags": [
+        "papers",
+        "language",
+        "reasoning",
+        "safety",
+        "model",
+        "release",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2505.19240"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "da43fa766a4bda5fd30bc00ae6a5f20a503b9984485146bfd08b49cb2ac48ff8",
+      "title": "PsihoRo: Depression and Anxiety Romanian Text Corpus",
+      "url": "https://arxiv.org/abs/2602.18324",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-13T04:00:00.000Z",
+      "summary": "arXiv:2602.18324v4 Announce Type: replace Abstract: Psychological corpora in NLP are collections of texts used to analyze human psychology, emotions, and mental health. These texts allow researchers to study psychological constructs, identify patterns related to mental health problems and analyze emotional language. However, collecting accurate mental health data from social media can be challenging due to the assumptions made by data collectors. A more effective approach involves gathering data through open-ended questions and then assessing participants' mental health status using self-report screening surveys. This method was successfully employed for English, a language with a lot of psychological NLP resources. However, the same cannot be stated for Romanian, which currently has no open-source mental health corpus. To address this gap, we have collected the first open-source corpus focused on depression and anxiety in Romanian, by utilizing a form with 6 open-ended questions along with the standardized PHQ-9 and GAD-7 screening questionnaires. Although the PsihoRo corpus contains texts from only 205 respondents, it represents an important first step toward understanding and analyzing mental health issues within the Romanian population. We employ statistical analysis, text analysis using Romanian LIWC, emotion detection, and topic modeling to identify the most important features of this newly introduced resource for the NLP community. The data is publicly available at https://huggingface.co/datasets/Alegzandra/PsihoRo.",
+      "tags": [
+        "papers",
+        "language",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2602.18324"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "69b119d4d2535cb6e043c062cd715204296abce0ed0af077c9b0371037eb9b4e",
+      "title": "AraModernBERT: Transtokenized Initialization and Long-Context Encoder Modeling for Arabic",
+      "url": "https://arxiv.org/abs/2603.09982",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-13T04:00:00.000Z",
+      "summary": "arXiv:2603.09982v2 Announce Type: replace Abstract: Encoder-only transformer models remain widely used for discriminative NLP tasks, yet recent architectural advances have largely focused on English. In this work, we present AraModernBERT, an adaptation of the ModernBERT encoder architecture to Arabic, and study the impact of transtokenized embedding initialization and native long-context modeling up to 8,192 tokens. We show that transtokenization is essential for Arabic language modeling, yielding dramatic improvements in masked language modeling performance compared to non-transtokenized initialization. We further demonstrate that AraModernBERT supports stable and effective long-context modeling, achieving improved intrinsic language modeling performance at extended sequence lengths. Downstream evaluations on Arabic natural language understanding tasks, including inference, offensive language detection, question-question similarity, and named entity recognition, confirm strong transfer to discriminative and sequence labeling settings. Our results highlight practical considerations for adapting modern encoder architectures to Arabic and other languages written in Arabic-derived scripts.",
+      "tags": [
+        "papers",
+        "language",
+        "eval",
+        "inference",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.09982"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "f3cef5a6d1d4cd3ae47ec269be2e51208edddd97afb121b012486d938821dd45",
+      "title": "Beyond the Prompt in Large Language Models: Comprehension, In-Context Learning, and Chain-of-Thought",
+      "url": "https://arxiv.org/abs/2603.10000",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-13T04:00:00.000Z",
+      "summary": "arXiv:2603.10000v2 Announce Type: replace Abstract: Large Language Models (LLMs) have demonstrated remarkable proficiency across diverse tasks, exhibiting emergent properties such as semantic prompt comprehension, In-Context Learning (ICL), and Chain-of-Thought (CoT) reasoning. Despite their empirical success, the theoretical mechanisms driving these phenomena remain poorly understood. This study dives into the foundations of these observations by addressing three critical questions: (1) How do LLMs accurately decode prompt semantics despite being trained solely on a next-token prediction objective? (2) Through what mechanism does ICL facilitate performance gains without explicit parameter updates? and (3) Why do intermediate reasoning steps in CoT prompting effectively unlock capabilities for complex, multi-step problems? Our results demonstrate that, through the autoregressive process, LLMs are capable of exactly inferring the transition probabilities between tokens across distinct tasks using provided prompts. We show that ICL enhances performance by reducing prompt ambiguity and facilitating posterior concentration on the intended task. Furthermore, we find that CoT prompting activates the model's capacity for task decomposition, breaking complex problems into a sequence of simpler sub-tasks that the model has mastered during the pretraining phase. By comparing their individual error bounds, we provide novel theoretical insights into the statistical superiority of advanced prompt engineering techniques.",
+      "tags": [
+        "papers",
+        "language",
+        "reasoning",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.10000"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "863037ce2718ebb60c553fd919f6875bf537057d8888607d2e321939b6148579",
+      "title": "Leveraging Wikidata for Geographically Informed Sociocultural Bias Dataset Creation: Application to Latin America",
+      "url": "https://arxiv.org/abs/2603.10001",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-13T04:00:00.000Z",
+      "summary": "arXiv:2603.10001v2 Announce Type: replace Abstract: Large Language Models (LLMs) exhibit inequalities with respect to various cultural contexts. Most prominent open-weights models are trained on Global North data and show prejudicial behavior towards other cultures. Moreover, there is a notable lack of resources to detect biases in non-English languages, especially from Latin America (Latam), a continent containing various cultures, even though they share a common cultural ground. We propose to leverage the content of Wikipedia, the structure of the Wikidata knowledge graph, and expert knowledge from social science in order to create a dataset of question/answer (Q/As) pairs, based on the different popular and social cultures of various Latin American countries. We create the LatamQA database of over 26k questions and associated answers extracted from 26k Wikipedia articles, and transformed into multiple-choice questions (MCQ) in Spanish and Portuguese, in turn translated to English. We use this MCQ to quantify the degree of knowledge of various LLMs and find out (i) a discrepancy in performances between the Latam countries, ones being easier than others for the majority of the models, (ii) that the models perform better in their original language, and (iii) that Iberian Spanish culture is better known than Latam one.",
+      "tags": [
+        "papers",
+        "language",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.10001"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "8b45ff668c56984d8fbedc7a232797c228b20c62f21b4846e5f42a31c148e344",
+      "title": "SENS-ASR: Semantic Embedding injection in Neural-transducer for Streaming Automatic Speech Recognition",
+      "url": "https://arxiv.org/abs/2603.10005",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-13T04:00:00.000Z",
+      "summary": "arXiv:2603.10005v2 Announce Type: replace Abstract: Many Automatic Speech Recognition (ASR) applications require streaming processing of the audio data. In streaming mode, ASR systems need to start transcribing the input stream before it is complete, i.e., the systems have to process a stream of inputs with a limited (or no) future context. Compared to offline mode, this reduction of the future context degrades the performance of Streaming-ASR systems, especially while working with low-latency constraint. In this work, we present SENS-ASR, an approach to enhance the transcription quality of Streaming-ASR by reinforcing the acoustic information with semantic information. This semantic information is extracted from the available past frame-embeddings by a context module. This module is trained using knowledge distillation from a sentence embedding Language Model fine-tuned on the training dataset transcriptions. Experiments on standard datasets show that SENS-ASR significantly improves the Word Error Rate on small-chunk streaming scenarios.",
+      "tags": [
+        "papers",
+        "language",
+        "training",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.10005"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
       "id": "ebdb14413759d1c4e5c3b2e992beeb1d25bb0bf5e72efb33a46a7c425faa5767",
       "title": "Build an Agent That Thinks Like a Data Scientist: How We Hit #1 on DABStep with Reusable Tool Generation",
       "url": "https://huggingface.co/blog/nvidia/nemo-agent-toolkit-data-explorer-dabstep-1st-place",
@@ -14706,398 +15120,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.10899"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "841fdc3e8745491cc47e7181d81c36b2c53aa11c1417bb8a09b057922154fa84",
-      "title": "When Fine-Tuning Fails and when it Generalises: Role of Data Diversity and Mixed Training in LLM-based TTS",
-      "url": "https://arxiv.org/abs/2603.10904",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-12T04:00:00.000Z",
-      "summary": "arXiv:2603.10904v1 Announce Type: cross Abstract: Large language models are increasingly adopted as semantic backbones for neural text-to-speech systems. However, frozen LLM representations are insufficient for modeling speaker specific acoustic and perceptual characteristics. Our experiments involving fine tuning of the Language Model backbone of TTS show promise in improving the voice consistency and Signal to Noise ratio SNR in voice cloning task. Across multiple speakers LoRA finetuning consistently outperforms the non-finetuned base Qwen-0.5B model across three complementary dimensions of speech quality. First, perceptual quality improves significantly with DNS-MOS gains of up to 0.42 points for speakers whose training data exhibits sufficient acoustic variability. Second, speaker fidelity improves for all evaluated speakers with consistent increases in voice similarity indicating that LoRA effectively adapts speaker identity representations without degrading linguistic modeling. Third, signal level quality improves in most cases with signal to noise ratio increasing by as much as 34 percent. Crucially these improvements are strongly governed by the characteristics of the training data. Speakers with high variability in acoustic energy and perceptual quality achieve simultaneous gains in DNS-MOS voice similarity and SNR. Overall this work establishes that LoRA finetuning is not merely a parameter efficient optimization technique but an effective mechanism for better speaker level adaptation in compact LLM-based TTS systems. When supported by sufficiently diverse training data LoRA adapted Qwen-0.5B consistently surpasses its frozen base model in perceptual quality speaker similarity with low latency using GGUF model hosted in quantized form.",
-      "tags": [
-        "papers",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.10904"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "a362b1668cf992e6c1c3d9dc4e2162ec5224ef9a737521c4bdb9e7202b5051b5",
-      "title": "Historical Consensus: Preventing Posterior Collapse via Iterative Selection of Gaussian Mixture Priors",
-      "url": "https://arxiv.org/abs/2603.10935",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-12T04:00:00.000Z",
-      "summary": "arXiv:2603.10935v1 Announce Type: cross Abstract: Variational autoencoders (VAEs) frequently suffer from posterior collapse, where latent variables become uninformative and the approximate posterior degenerates to the prior. Recent work has characterized this phenomenon as a phase transition governed by the spectral properties of the data covariance matrix. In this paper, we propose a fundamentally different approach: instead of avoiding collapse through architectural constraints or hyperparameter tuning, we eliminate the possibility of collapse altogether by leveraging the multiplicity of Gaussian mixture model (GMM) clusterings. We introduce Historical Consensus Training, an iterative selection procedure that progressively refines a set of candidate GMM priors through alternating optimization and selection. The key insight is that models trained to satisfy multiple distinct clustering constraints develop a historical barrier -- a region in parameter space that remains stable even when subsequently trained with a single objective. We prove that this barrier excludes the collapsed solution, and demonstrate through extensive experiments on synthetic and real-world datasets that our method achieves non-collapsed representations regardless of decoder variance or regularization strength. Our approach requires no explicit stability conditions (e.g., $\\sigma^{\\prime 2} < \\lambda_{\\max}$) and works with arbitrary neural architectures. The code is available at https://github.com/tsegoochang/historical-consensus-vae.",
-      "tags": [
-        "papers",
-        "training",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.10935"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "535854bc3e23632a5ba31a0302ad98324b4e2699747df2df8e188f43dc498896",
-      "title": "Safe RLHF Beyond Expectation: Stochastic Dominance for Universal Spectral Risk Control",
-      "url": "https://arxiv.org/abs/2603.10938",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-12T04:00:00.000Z",
-      "summary": "arXiv:2603.10938v1 Announce Type: cross Abstract: Safe Reinforcement Learning from Human Feedback (RLHF) typically enforces safety through expected cost constraints, but the expectation captures only a single statistic of the cost distribution and fails to account for distributional uncertainty, particularly under heavy tails or rare catastrophic events. This limitation is problematic when robustness and risk sensitivity are critical. Stochastic dominance offers a principled alternative by comparing entire cost distributions rather than just their averages, enabling direct control over tail risks and potential out-of-distribution failures that expectation-based constraints may overlook. In this work, we propose Risk-sensitive Alignment via Dominance (RAD), a novel alignment framework that replaces scalar expected cost constraints with First-Order Stochastic Dominance (FSD) constraints. We operationalize this constraint by comparing the target policy's cost distribution to that of a reference policy within an Optimal Transport (OT) framework, using entropic regularization and Sinkhorn iterations to obtain a differentiable and computationally efficient objective for stable end-to-end optimization. Furthermore, we introduce quantile-weighted FSD constraints and show that weighted FSD universally controls a broad class of Spectral Risk Measures (SRMs), so that improvements under weighted dominance imply guaranteed improvements in the corresponding spectral risk. This provides a principled mechanism for tuning a model's risk profile via the quantile weighting function. Empirical results demonstrate that RAD improves harmlessness over baselines while remaining competitive in helpfulness, and exhibits greater robustness on out-of-distribution harmlessness evaluations.",
-      "tags": [
-        "papers",
-        "eval",
-        "safety",
-        "policy",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.10938"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "2f5afe7db1558d5d79b6337cfe098204ce6fcd24535b201cffc40e609a8301af",
-      "title": "Contact Coverage-Guided Exploration for General-Purpose Dexterous Manipulation",
-      "url": "https://arxiv.org/abs/2603.10971",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-12T04:00:00.000Z",
-      "summary": "arXiv:2603.10971v1 Announce Type: cross Abstract: Deep Reinforcement learning (DRL) has achieved remarkable success in domains with well-defined reward structures, such as Atari games and locomotion. In contrast, dexterous manipulation lacks general-purpose reward formulations and typically depends on task-specific, handcrafted priors to guide hand-object interactions. We propose Contact Coverage-Guided Exploration (CCGE), a general exploration method designed for general-purpose dexterous manipulation tasks. CCGE represents contact state as the intersection between object surface points and predefined hand keypoints, encouraging dexterous hands to discover diverse and novel contact patterns, namely which fingers contact which object regions. It maintains a contact counter conditioned on discretized object states obtained via learned hash codes, capturing how frequently each finger interacts with different object regions. This counter is leveraged in two complementary ways: (1) to assign a count-based contact coverage reward that promotes exploration of novel contact patterns, and (2) an energy-based reaching reward that guides the agent toward under-explored contact regions. We evaluate CCGE on a diverse set of dexterous manipulation tasks, including cluttered object singulation, constrained object retrieval, in-hand reorientation, and bimanual manipulation. Experimental results show that CCGE substantially improves training efficiency and success rates over existing exploration methods, and that the contact patterns learned with CCGE transfer robustly to real-world robotic systems. Project page is https://contact-coverage-guided-exploration.github.io.",
-      "tags": [
-        "papers",
-        "agents",
-        "training"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.10971"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "fea88749edc315e7e39b629dfd9654c1b5beeb71feee6e4395f57afe53a3e567",
-      "title": "GroundCount: Grounding Vision-Language Models with Object Detection for Mitigating Counting Hallucinations",
-      "url": "https://arxiv.org/abs/2603.10978",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-12T04:00:00.000Z",
-      "summary": "arXiv:2603.10978v1 Announce Type: cross Abstract: Vision Language Models (VLMs) exhibit persistent hallucinations in counting tasks, with accuracy substantially lower than other visual reasoning tasks (excluding sentiment). This phenomenon persists even in state-of-the-art reasoning-capable VLMs. Conversely, CNN-based object detection models (ODMs) such as YOLO excel at spatial localization and instance counting with minimal computational overhead. We propose GroundCount, a framework that augments VLMs with explicit spatial grounding from ODMs to mitigate counting hallucinations. In the best case, our prompt-based augmentation strategy achieves 81.3% counting accuracy on the best-performing model (Ovis2.5-2B) - a 6.6pp improvement - while reducing inference time by 22% through elimination of hallucination-driven reasoning loops for stronger models. We conduct comprehensive ablation studies demonstrating that positional encoding is a critical component, being beneficial for stronger models but detrimental for weaker ones. Confidence scores, by contrast, introduce noise for most architectures and their removal improves performance in four of five evaluated models. We further evaluate feature-level fusion architectures, finding that explicit symbolic grounding via structured prompts outperforms implicit feature fusion despite sophisticated cross-attention mechanisms. Our approach yields consistent improvements across four of five evaluated VLM architectures (6.2--7.5pp), with one architecture exhibiting degraded performance due to incompatibility between its iterative reflection mechanisms and structured prompts. These results suggest that counting failures stem from fundamental spatial-semantic integration limitations rather than architecture-specific deficiencies, while highlighting the importance of architectural compatibility in augmentation strategies.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "inference",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.10978"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "b73956fdef7ddd17aa1484490e58da2c367df26e2c9337d2b0b5f5df7be1afb8",
-      "title": "Artificial Intelligence as a Catalyst for Innovation in Software Engineering",
-      "url": "https://arxiv.org/abs/2603.10994",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-12T04:00:00.000Z",
-      "summary": "arXiv:2603.10994v1 Announce Type: cross Abstract: The rapid evolution and inherent complexity of modern software requirements demand highly flexible and responsive development methodologies. While Agile frameworks have become the industry standard for prioritizing iteration, collaboration, and adaptability, software development teams continue to face persistent challenges in managing constantly evolving requirements and maintaining product quality under tight deadlines. This article explores the intersection of Artificial Intelligence (AI) and Software Engineering (SE), to analyze how AI serves as a powerful catalyst for enhancing agility and fostering innovation. The research combines a comprehensive review of existing literature with an empirical study, utilizing a survey directed at Software Engineering professionals to assess the perception, adoption, and impact of AI-driven tools. Key findings reveal that the integration of AI (specifically through Machine Learning (ML) and Natural Language Processing (NLP) )facilitates the automation of tedious tasks, from requirement management to code generation and testing . This paper demonstrates that AI not only optimizes current Agile practices but also introduces new capabilities essential for sustaining quality, speed, and innovation in the future landscape of software development.",
-      "tags": [
-        "papers"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.10994"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "a1e497ad1c7615c0aa932f91fbf63e020deb47237e7d0ac5f004db186a31ba0c",
-      "title": "RCTs & Human Uplift Studies: Methodological Challenges and Practical Solutions for Frontier AI Evaluation",
-      "url": "https://arxiv.org/abs/2603.11001",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-12T04:00:00.000Z",
-      "summary": "arXiv:2603.11001v1 Announce Type: cross Abstract: Human uplift studies - or studies that measure AI effects on human performance relative to a status quo, typically using randomized controlled trial (RCT) methodology - are increasingly used to inform deployment, governance, and safety decisions for frontier AI systems. While the methods underlying these studies are well-established, their interaction with the distinctive properties of frontier AI systems remains underexamined, particularly when results are used to inform high-stakes decisions. We present findings from interviews with 16 expert practitioners with experience conducting human uplift studies in domains including biosecurity, cybersecurity, education, and labor. Across interviews, experts described a recurring tension between standard causal inference assumptions and the object of study itself. Rapidly evolving AI systems, shifting baselines, heterogeneous and changing user proficiency, and porous real-world settings strain assumptions underlying internal, external, and construct validity, complicating the interpretation and appropriate use of uplift evidence. We synthesize these challenges across key stages of the human uplift research lifecycle and map them to practitioner-reported solutions, clarifying both the limits and the appropriate uses of evidence from human uplift studies in high-stakes decision-making.",
-      "tags": [
-        "papers",
-        "eval",
-        "safety",
-        "policy",
-        "inference"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.11001"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "2b1933409f1f63eddd49acffcf2dcd211050f6a023bfe24edde2e87a8343b21b",
-      "title": "Does AI See like Art Historians? Interpreting How Vision Language Models Recognize Artistic Style",
-      "url": "https://arxiv.org/abs/2603.11024",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-12T04:00:00.000Z",
-      "summary": "arXiv:2603.11024v1 Announce Type: cross Abstract: VLMs have become increasingly proficient at a range of computer vision tasks, such as visual question answering and object detection. This includes increasingly strong capabilities in the domain of art, from analyzing artwork to generation of art. In an interdisciplinary collaboration between computer scientists and art historians, we characterize the mechanisms underlying VLMs' ability to predict artistic style and assess the extent to which they align with the criteria art historians use to reason about artistic style. We employ a latent-space decomposition approach to identify concepts that drive art style prediction and conduct quantitative evaluations, causal analysis and assessment by art historians. Our findings indicate that 73% of the extracted concepts are judged by art historians to exhibit a coherent and semantically meaningful visual feature and 90% of concepts used to predict style of a given artwork were judged relevant. In cases where an irrelevant concept was used to successfully predict style, art historians identified possible reasons for its success; for example, the model might \"understand\" a concept in more formal terms, such as dark/light contrasts.",
-      "tags": [
-        "papers",
-        "eval",
-        "compute",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.11024"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "01224e6ce397ea20dbe6540e2f3d9262d51195cb68e38b93760bbb04af97f22d",
-      "title": "Instruction set for the representation of graphs",
-      "url": "https://arxiv.org/abs/2603.11039",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-12T04:00:00.000Z",
-      "summary": "arXiv:2603.11039v1 Announce Type: cross Abstract: We present IsalGraph, a method for representing the structure of any finite, simple graph as a compact string over a nine-character instruction alphabet. The encoding is executed by a small virtual machine comprising a sparse graph, a circular doubly-linked list (CDLL) of graph-node references, and two traversal pointers. Instructions either move a pointer through the CDLL or insert a node or edge into the graph. A key design property is that every string over the alphabet decodes to a valid graph, with no invalid states reachable. A greedy \\emph{GraphToString} algorithm encodes any connected graph into a string in time polynomial in the number of nodes; an exhaustive-backtracking variant produces a canonical string by selecting the lexicographically smallest shortest string across all starting nodes and all valid traversal orders. We evaluate the representation on five real-world graph benchmark datasets (IAM Letter LOW/MED/HIGH, LINUX, and AIDS) and show that the Levenshtein distance between IsalGraph strings correlates strongly with graph edit distance (GED). Together, these properties make IsalGraph strings a compact, isomorphism-invariant, and language-model-compatible sequential encoding of graph structure, with direct applications in graph similarity search, graph generation, and graph-conditioned language modelling",
-      "tags": [
-        "papers",
-        "eval",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.11039"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "fd4a6b3cb9514e0dc83909b9afd6c5aaa326c3e1fb54507b2d323026e15946e4",
-      "title": "V2M-Zero: Zero-Pair Time-Aligned Video-to-Music Generation",
-      "url": "https://arxiv.org/abs/2603.11042",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-12T04:00:00.000Z",
-      "summary": "arXiv:2603.11042v1 Announce Type: cross Abstract: Generating music that temporally aligns with video events is challenging for existing text-to-music models, which lack fine-grained temporal control. We introduce V2M-Zero, a zero-pair video-to-music generation approach that outputs time-aligned music for video. Our method is motivated by a key observation: temporal synchronization requires matching when and how much change occurs, not what changes. While musical and visual events differ semantically, they exhibit shared temporal structure that can be captured independently within each modality. We capture this structure through event curves computed from intra-modal similarity using pretrained music and video encoders. By measuring temporal change within each modality independently, these curves provide comparable representations across modalities. This enables a simple training strategy: fine-tune a text-to-music model on music-event curves, then substitute video-event curves at inference without cross-modal training or paired data. Across OES-Pub, MovieGenBench-Music, and AIST++, V2M-Zero achieves substantial gains over paired-data baselines: 5-21% higher audio quality, 13-15% better semantic alignment, 21-52% improved temporal synchronization, and 28% higher beat alignment on dance videos. We find similar results via a large crowd-source subjective listening test. Overall, our results validate that temporal alignment through within-modality features, rather than paired cross-modal supervision, is effective for video-to-music generation. Results are available at https://genjib.github.io/v2m_zero/",
-      "tags": [
-        "papers",
-        "safety",
-        "compute",
-        "inference",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.11042"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "0bf880fdff6f5ed186321fe2ac9bd1167dfeeea34155c74c9525ea9475cd8193",
-      "title": "Neural Field Thermal Tomography: A Differentiable Physics Framework for Non-Destructive Evaluation",
-      "url": "https://arxiv.org/abs/2603.11045",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-12T04:00:00.000Z",
-      "summary": "arXiv:2603.11045v1 Announce Type: cross Abstract: We propose Neural Field Thermal Tomography (NeFTY), a differentiable physics framework for the quantitative 3D reconstruction of material properties from transient surface temperature measurements. While traditional thermography relies on pixel-wise 1D approximations that neglect lateral diffusion, and soft-constrained Physics-Informed Neural Networks (PINNs) often fail in transient diffusion scenarios due to gradient stiffness, NeFTY parameterizes the 3D diffusivity field as a continuous neural field optimized through a rigorous numerical solver. By leveraging a differentiable physics solver, our approach enforces thermodynamic laws as hard constraints while maintaining the memory efficiency required for high-resolution 3D tomography. Our discretize-then-optimize paradigm effectively mitigates the spectral bias and ill-posedness inherent in inverse heat conduction, enabling the recovery of subsurface defects at arbitrary scales. Experimental validation on synthetic data demonstrates that NeFTY significantly improves the accuracy of subsurface defect localization over baselines. Additional details at https://cab-lab-princeton.github.io/nefty/",
-      "tags": [
-        "papers",
-        "eval"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.11045"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "1ac99be45ea46586613365cb3713d5fe1971f1458010b2408d36f286bbf31640",
-      "title": "LiTo: Surface Light Field Tokenization",
-      "url": "https://arxiv.org/abs/2603.11047",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-12T04:00:00.000Z",
-      "summary": "arXiv:2603.11047v1 Announce Type: cross Abstract: We propose a 3D latent representation that jointly models object geometry and view-dependent appearance. Most prior works focus on either reconstructing 3D geometry or predicting view-independent diffuse appearance, and thus struggle to capture realistic view-dependent effects. Our approach leverages that RGB-depth images provide samples of a surface light field. By encoding random subsamples of this surface light field into a compact set of latent vectors, our model learns to represent both geometry and appearance within a unified 3D latent space. This representation reproduces view-dependent effects such as specular highlights and Fresnel reflections under complex lighting. We further train a latent flow matching model on this representation to learn its distribution conditioned on a single input image, enabling the generation of 3D objects with appearances consistent with the lighting and materials in the input. Experiments show that our approach achieves higher visual quality and better input fidelity than existing methods.",
-      "tags": [
-        "papers",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.11047"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "58300f39bac85336d1fd20a747130a094b30aa7f749be60770ede2febf74bcb3",
-      "title": "COMIC: Agentic Sketch Comedy Generation",
-      "url": "https://arxiv.org/abs/2603.11048",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-12T04:00:00.000Z",
-      "summary": "arXiv:2603.11048v1 Announce Type: cross Abstract: We propose a fully automated AI system that produces short comedic videos similar to sketch shows such as Saturday Night Live. Starting with character references, the system employs a population of agents loosely based on real production studio roles, structured to optimize the quality and diversity of ideas and outputs through iterative competition, evaluation, and improvement. A key contribution is the introduction of LLM critics aligned with real viewer preferences through the analysis of a corpus of comedy videos on YouTube to automatically evaluate humor. Our experiments show that our framework produces results approaching the quality of professionally produced sketches while demonstrating state-of-the-art performance in video generation.",
-      "tags": [
-        "papers",
-        "agents",
-        "eval"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.11048"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "6191057b5fca72b9c9624de24d5711964d3addb5aa1941dac353a43e74918c5f",
-      "title": "Mindstorms in Natural Language-Based Societies of Mind",
-      "url": "https://arxiv.org/abs/2305.17066",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-12T04:00:00.000Z",
-      "summary": "arXiv:2305.17066v2 Announce Type: replace Abstract: Both Minsky's \"society of mind\" and Schmidhuber's \"learning to think\" inspire diverse societies of large multimodal neural networks (NNs) that solve problems by interviewing each other in a \"mindstorm.\" Recent implementations of NN-based societies of minds consist of large language models (LLMs) and other NN-based experts communicating through a natural language interface. In doing so, they overcome the limitations of single LLMs, improving multimodal zero-shot reasoning. In these natural language-based societies of mind (NLSOMs), new agents -- all communicating through the same universal symbolic language -- are easily added in a modular fashion. To demonstrate the power of NLSOMs, we assemble and experiment with several of them (having up to 129 members), leveraging mindstorms in them to solve some practical AI tasks: visual question answering, image captioning, text-to-image synthesis, 3D generation, egocentric retrieval, embodied AI, and general language-based task solving. We view this as a starting point towards much larger NLSOMs with billions of agents-some of which may be humans. And with this emergence of great societies of heterogeneous minds, many new research questions have suddenly become paramount to the future of artificial intelligence. What should be the social structure of an NLSOM? What would be the (dis)advantages of having a monarchical rather than a democratic structure? How can principles of NN economies be used to maximize the total reward of a reinforcement learning NLSOM? In this work, we identify, discuss, and try to answer some of these questions.",
-      "tags": [
-        "papers",
-        "agents",
-        "reasoning",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2305.17066"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "9a490012bca476555f5df3945536458c7782822637aa7150e3309ea6dd177b6a",
-      "title": "Personalizing explanations of AI-driven hints to users' characteristics: an empirical evaluation",
-      "url": "https://arxiv.org/abs/2403.04035",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-12T04:00:00.000Z",
-      "summary": "arXiv:2403.04035v3 Announce Type: replace Abstract: The paper extends an existing Intelligent Tutoring System (ITS) that supports students' learning via AI-driven personalized hints and can generate explanations to justify why/how the hints were generated. In this work, we investigate personalizing these hint explanations to students with low levels of two traits, Need for Cognition and Conscientiousness in order to enhance their engagement with the explanations, based on prior findings that these students generally do not ask for the explanations although they would benefit from them. We evaluate the effectiveness of the personalized hint explanations with a formal user study. Our results show that the personalization increases our target users' interaction with the hint explanations, their understanding of the hints, and their learning. Hence, this work contributes to exiting initial evidence on the value of Personalized Explainable AI (PXAI) in education.",
-      "tags": [
-        "papers",
-        "eval"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2403.04035"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "7b6e6354ec9e385f5c93b52f08814249a6cef3e9828db89fd028c904da99c5dd",
-      "title": "Synthesizing Interpretable Control Policies through Large Language Model Guided Search",
-      "url": "https://arxiv.org/abs/2410.05406",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-12T04:00:00.000Z",
-      "summary": "arXiv:2410.05406v3 Announce Type: replace Abstract: The combination of Large Language Models (LLMs), systematic evaluation, and evolutionary algorithms has enabled breakthroughs in combinatorial optimization and scientific discovery. We propose to extend this powerful combination to the control of dynamical systems, generating interpretable control policies capable of complex behaviors. With our novel method, we represent control policies as programs in standard languages like Python. We evaluate candidate controllers in simulation and evolve them using a pre-trained LLM. Unlike conventional learning-based control techniques, which rely on black-box neural networks to encode control policies, our approach enhances transparency and interpretability. We still take advantage of the power of large AI models, but only at the policy design phase, ensuring that all system components remain interpretable and easily verifiable at runtime. Additionally, the use of standard programming languages makes it straightforward for humans to finetune or adapt the controllers based on their expertise and intuition. We illustrate our method through its application to the synthesis of an interpretable control policy for the \\textit{pendulum swing-up} and the \\textit{ball in cup} tasks. We make the code available at https://github.com/muellerlab/synthesizing_interpretable_control_policies.git.",
-      "tags": [
-        "papers",
-        "eval",
-        "policy",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2410.05406"
         },
         {
           "label": "Feed",
