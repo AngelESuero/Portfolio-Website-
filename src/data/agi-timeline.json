@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-12T23:44:18.662Z",
+    "generatedAt": "2026-03-13T03:09:29.531Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,29 @@
     ]
   },
   "items": [
+    {
+      "id": "ebdb14413759d1c4e5c3b2e992beeb1d25bb0bf5e72efb33a46a7c425faa5767",
+      "title": "Build an Agent That Thinks Like a Data Scientist: How We Hit #1 on DABStep with Reusable Tool Generation",
+      "url": "https://huggingface.co/blog/nvidia/nemo-agent-toolkit-data-explorer-dabstep-1st-place",
+      "sourceId": "hf_blog",
+      "sourceName": "Hugging Face — Blog",
+      "publishedAt": "2026-03-13T01:02:47.000Z",
+      "summary": null,
+      "tags": [
+        "open-source",
+        "agents"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://huggingface.co/blog/nvidia/nemo-agent-toolkit-data-explorer-dabstep-1st-place"
+        },
+        {
+          "label": "Feed",
+          "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
     {
       "id": "c4d18fe0b041b63b7210c3f9802cb04d6286ed177c6313de93d62e55dadba74b",
       "title": "Build Accelerated, Differentiable Computational Physics Code for AI with NVIDIA Warp",
@@ -15094,33 +15117,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.09685"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "4791420bec8ae187fb5b98f869b8eb70b824b48151d14b3c666c486a7aead629",
-      "title": "AutoViVQA: A Large-Scale Automatically Constructed Dataset for Vietnamese Visual Question Answering",
-      "url": "https://arxiv.org/abs/2603.09689",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-11T04:00:00.000Z",
-      "summary": "arXiv:2603.09689v1 Announce Type: cross Abstract: Visual Question Answering (VQA) is a fundamental multimodal task that requires models to jointly understand visual and textual information. Early VQA systems relied heavily on language biases, motivating subsequent work to emphasize visual grounding and balanced datasets. With the success of large-scale pre-trained transformers for both text and vision domains -- such as PhoBERT for Vietnamese language understanding and Vision Transformers (ViT) for image representation learning -- multimodal fusion has achieved remarkable progress. For Vietnamese VQA, several datasets have been introduced to promote research in low-resource multimodal learning, including ViVQA, OpenViVQA, and the recently proposed ViTextVQA. These resources enable benchmarking of models that integrate linguistic and visual features in the Vietnamese context. Evaluation of VQA systems often employs automatic metrics originally designed for image captioning or machine translation, such as BLEU, METEOR, CIDEr, Recall, Precision, and F1-score. However, recent research suggests that large language models can further improve the alignment between automatic evaluation and human judgment in VQA tasks. In this work, we explore Vietnamese Visual Question Answering using transformer-based architectures, leveraging both textual and visual pre-training while systematically comparing automatic evaluation metrics under multilingual settings.",
-      "tags": [
-        "papers",
-        "eval",
-        "safety",
-        "training",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.09689"
         },
         {
           "label": "Feed",
