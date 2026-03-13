@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-13T15:58:37.893Z",
+    "generatedAt": "2026-03-13T16:59:21.901Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,32 @@
     ]
   },
   "items": [
+    {
+      "id": "fb853b8149c4364369457ebee849495dcc21529cb7d5b36b70db69181202aa5b",
+      "title": "Scale Synthetic Data and Physical AI Reasoning with NVIDIA Cosmos World Foundation Models",
+      "url": "https://developer.nvidia.com/blog/scale-synthetic-data-and-physical-ai-reasoning-with-nvidia-cosmos-world-foundation-models/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-03-13T16:00:47.000Z",
+      "summary": "The next generation of AI-driven robots like humanoids and autonomous vehicles depends on high-fidelity, physics-aware training data. Without diverse and... The next generation of AI-driven robots like humanoids and autonomous vehicles depends on high-fidelity, physics-aware training data. Without diverse and representative datasets, these systems don’t get proper training and face testing risks due to poor generalization, limited exposure to real-world variations, and unpredictable behavior in edge cases. Collecting massive real-world datasets for… Source",
+      "tags": [
+        "compute",
+        "reasoning",
+        "training",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/scale-synthetic-data-and-physical-ai-reasoning-with-nvidia-cosmos-world-foundation-models/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
     {
       "id": "2907fd9c70c16482090db7db97fd19d063b2d469a9d40be445065af9ed4425ec",
       "title": "DIVE: Scaling Diversity in Agentic Task Synthesis for Generalizable Tool Use",
@@ -15093,33 +15119,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.10885"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "e260fabd5e4156c18a8b63f899a2694bc28965b357c97906cac17fa23ec12d64",
-      "title": "Dynamics-Predictive Sampling for Active RL Finetuning of Large Reasoning Models",
-      "url": "https://arxiv.org/abs/2603.10887",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-12T04:00:00.000Z",
-      "summary": "arXiv:2603.10887v1 Announce Type: cross Abstract: Reinforcement learning (RL) finetuning has become a key technique for enhancing the reasoning abilities of large language models (LLMs). However, its effectiveness critically depends on the selection of training data. Recent advances underscore the importance of online prompt selection methods, which typically concentrate training on partially solved or moderately challenging examples under the current policy, thereby yielding more effective model updates. While significantly accelerating RL finetuning in terms of training steps, they also incur substantial computational overhead by requiring extensive LLM rollouts over large candidate batches to identify informative samples, an expense that can outweigh the finetuning process itself. To address this challenge, this work proposes Dynamics-Predictive Sampling (DPS), which online predicts and selects informative prompts by inferring their learning dynamics prior to costly rollouts. Specifically, we introduce a new perspective by modeling each prompt's solving progress during RL finetuning as a dynamical system, where the extent of solving is represented as the state and the transition is characterized by a hidden Markov model. Using historical rollout reward signals, we perform online Bayesian inference to estimate evolving state distributions, and the inference outcome provides a predictive prior for efficient prompt selection without rollout-intensive filtering. Empirical results across diverse reasoning tasks, including mathematics, planning, and visual geometry, demonstrate that DPS substantially reduces redundant rollouts, accelerates the training process, and achieves superior reasoning performance.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "policy",
-        "inference",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.10887"
         },
         {
           "label": "Feed",
