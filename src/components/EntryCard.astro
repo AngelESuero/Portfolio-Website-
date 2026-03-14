@@ -1,0 +1,199 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import EntryMediaBlock from './EntryMediaBlock.astro';
+import {
+  entryHasBody,
+  getEntryDisplayMedium,
+  getEntryDisplaySource,
+  getEntryDisplayStatus,
+  getEntryFragment,
+  getEntryHref,
+  shouldShowEntryStatus
+} from '../lib/archive-entries';
+import { getLinkCtaLabel, providerFromUrl } from '../lib/embed-resolver';
+
+interface Props {
+  entry: CollectionEntry<'entries'>;
+}
+
+const { entry } = Astro.props as Props;
+
+const href = getEntryHref(entry);
+const mediumLabel = getEntryDisplayMedium(entry.data.medium);
+const sourceLabel = getEntryDisplaySource(entry.data.source);
+const statusLabel = getEntryDisplayStatus(entry.data.status);
+const showStatus = shouldShowEntryStatus(entry.data.status);
+const dateFormatter = new Intl.DateTimeFormat('en-US', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric'
+});
+const hasBody = entryHasBody(entry);
+const noteFragment = entry.data.medium === 'note' ? getEntryFragment(entry, 190) : '';
+const externalUrl = typeof entry.data.external_url === 'string' ? entry.data.external_url.trim() : '';
+const externalProvider = externalUrl ? providerFromUrl(externalUrl) : null;
+const externalLabel = externalUrl ? getLinkCtaLabel(externalUrl, externalProvider) : '';
+const externalIsAbsolute = /^https?:\/\//i.test(externalUrl);
+const internalLabel = entry.data.medium === 'writing' ? 'Read entry' : entry.data.medium === 'note' ? 'Open note' : 'Open entry';
+const showMediaBlock = entry.data.medium === 'music' || entry.data.medium === 'video' || entry.data.medium === 'image';
+---
+<article class="card entry-card" data-medium={entry.data.medium} data-status={entry.data.status}>
+  <div class="entry-card__topline">
+    <p class="entry-card__meta">
+      <span>{dateFormatter.format(entry.data.date)}</span>
+      <span>{mediumLabel}</span>
+      <span>{sourceLabel}</span>
+    </p>
+    {showStatus && <span class="entry-card__status">{statusLabel}</span>}
+  </div>
+
+  <h2 class="entry-card__title">
+    <a href={href}>{entry.data.title}</a>
+  </h2>
+
+  {showMediaBlock && <EntryMediaBlock entry={entry} compact={true} />}
+
+  {entry.data.medium === 'note' ? (
+    <p class="entry-card__fragment">{noteFragment || entry.data.summary}</p>
+  ) : (
+    <p class="entry-card__summary">{entry.data.summary}</p>
+  )}
+
+  <div class="entry-card__footer">
+    <div class="entry-card__tags" aria-label="Entry tags">
+      {entry.data.tags.map((tag) => <span>#{tag}</span>)}
+    </div>
+
+    <div class="entry-card__links">
+      {(hasBody || !externalUrl || entry.data.medium === 'writing' || entry.data.medium === 'note') && (
+        <a href={href} class="entry-card__link">
+          {internalLabel}
+        </a>
+      )}
+      {externalUrl && (
+        <a href={externalUrl} class="entry-card__link entry-card__link--secondary" {...(externalIsAbsolute ? { target: '_blank', rel: 'noopener' } : {})}>
+          {externalLabel}
+        </a>
+      )}
+    </div>
+  </div>
+</article>
+
+<style>
+  .entry-card {
+    padding: 1rem;
+    display: grid;
+    gap: 0.88rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.022), transparent 72%),
+      color-mix(in srgb, var(--tone-surface) 92%, transparent);
+  }
+
+  .entry-card__topline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 0.8rem;
+  }
+
+  .entry-card__meta {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+  }
+
+  .entry-card__meta span:not(:first-child)::before {
+    content: '·';
+    margin-right: 0.45rem;
+    color: color-mix(in srgb, var(--tone-text) 44%, var(--tone-muted) 56%);
+  }
+
+  .entry-card__status {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 16%, var(--line2));
+    border-radius: 999px;
+    padding: 0.16rem 0.48rem;
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 74%, var(--tone-muted) 26%);
+    background: color-mix(in srgb, var(--tone-surface-strong) 52%, transparent);
+  }
+
+  .entry-card__title {
+    margin: 0;
+    font-size: clamp(1.24rem, 2vw, 1.5rem);
+    line-height: 1.16;
+  }
+
+  .entry-card__title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .entry-card__title a:hover,
+  .entry-card__title a:focus-visible {
+    color: var(--tone-accent-glow);
+  }
+
+  .entry-card__summary,
+  .entry-card__fragment {
+    margin: 0;
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+    line-height: 1.62;
+  }
+
+  .entry-card__footer {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .entry-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.42rem;
+  }
+
+  .entry-card__tags span {
+    border: 1px solid var(--line2);
+    border-radius: 999px;
+    padding: 0.22rem 0.52rem;
+    font-size: 0.72rem;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+    background: rgba(8, 12, 20, 0.46);
+  }
+
+  .entry-card__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+  }
+
+  .entry-card__link {
+    width: fit-content;
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 42%, transparent);
+  }
+
+  .entry-card__link:hover,
+  .entry-card__link:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 74%, transparent);
+  }
+
+  .entry-card__link--secondary {
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+    border-color: color-mix(in srgb, var(--tone-text) 16%, transparent);
+  }
+
+  .entry-card__link--secondary:hover,
+  .entry-card__link--secondary:focus-visible {
+    color: var(--tone-text);
+    border-color: color-mix(in srgb, var(--tone-text) 32%, transparent);
+  }
+</style>

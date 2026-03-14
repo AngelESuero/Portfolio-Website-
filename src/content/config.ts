@@ -1,5 +1,9 @@
 import { defineCollection, z } from 'astro:content';
 
+const entryMediums = ['writing', 'music', 'video', 'image', 'note'] as const;
+const entrySources = ['substack', 'youtube', 'untitled', 'local-media', 'private-notes', 'manual'] as const;
+const entryStatuses = ['raw', 'withheld', 'in-progress', 'published', 'featured'] as const;
+
 const projects = defineCollection({
   type: 'content',
   schema: z.object({
@@ -47,4 +51,34 @@ const posts = defineCollection({
   })
 });
 
-export const collections = { projects, posts };
+const entries = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date(),
+    medium: z.enum(entryMediums),
+    source: z.enum(entrySources),
+    status: z.enum(entryStatuses),
+    tags: z.array(z.string()),
+    summary: z.string(),
+    external_url: z.string().url().optional(),
+    related_entries: z.array(z.string()).optional(),
+    asset: z
+      .object({
+        src: z.string(),
+        alt: z.string().optional(),
+        poster: z.string().optional(),
+        caption: z.string().optional()
+      })
+      .optional(),
+    ingest: z
+      .object({
+        mode: z.enum(['manual', 'rss', 'local']).optional(),
+        rss_url: z.string().url().optional(),
+        source_id: z.string().optional()
+      })
+      .optional()
+  })
+});
+
+export const collections = { projects, posts, entries };

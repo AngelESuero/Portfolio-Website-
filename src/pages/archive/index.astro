@@ -1,0 +1,243 @@
+---
+import { getCollection } from 'astro:content';
+import EntryCard from '../../components/EntryCard.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { collectEntryTags, getEntryDisplayMedium, normalizeEntryTag, sortEntriesByDate } from '../../lib/archive-entries';
+
+const entries = sortEntriesByDate(await getCollection('entries'));
+const allTags = collectEntryTags(entries);
+const mediums = ['writing', 'music', 'video', 'image', 'note'] as const;
+const fullDateFormatter = new Intl.DateTimeFormat('en-US', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric'
+});
+---
+<BaseLayout title="Archive — a_e.s_" theme="archive">
+  <section class="view-surface archive-page">
+    <header class="view-surface-header archive-page__header">
+      <p class="view-surface-kicker">Living archive</p>
+      <h1>Archive</h1>
+      <p class="archive-page__description">
+        Writing, music, moving image, image documentation, and notes gathered into one chronology so the work can live
+        as neighboring entries instead of separate platform rooms.
+      </p>
+      <div class="archive-page__meta">
+        <p>{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
+        <p>{mediums.length} mediums</p>
+        {entries[0] && <p>Latest: {fullDateFormatter.format(entries[0].data.date)}</p>}
+      </div>
+    </header>
+
+    <section class="archive-controls" aria-label="Archive filters">
+      <div class="archive-controls__group">
+        <p class="archive-controls__label">Medium</p>
+        <div class="archive-controls__buttons" role="group" aria-label="Filter by medium">
+          <button type="button" class="archive-filter is-active" data-filter-group="medium" data-filter-value="all" aria-pressed="true">
+            All
+          </button>
+          {mediums.map((medium) => (
+            <button type="button" class="archive-filter" data-filter-group="medium" data-filter-value={medium} aria-pressed="false">
+              {getEntryDisplayMedium(medium)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {allTags.length > 0 && (
+        <div class="archive-controls__group">
+          <p class="archive-controls__label">Tags</p>
+          <div class="archive-controls__buttons" role="group" aria-label="Filter by tag">
+            <button type="button" class="archive-filter is-active" data-filter-group="tag" data-filter-value="all" aria-pressed="true">
+              All
+            </button>
+            {allTags.map((tag) => (
+              <button type="button" class="archive-filter" data-filter-group="tag" data-filter-value={tag} aria-pressed="false">
+                #{tag}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
+
+    <div class="archive-results">
+      <p id="archive-results-count">{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
+    </div>
+
+    {entries.length === 0 ? (
+      <p class="archive-empty">No archive entries yet.</p>
+    ) : (
+      <>
+        <ul class="archive-list" id="archive-list">
+          {entries.map((entry) => (
+            <li
+              class="archive-item"
+              data-medium={entry.data.medium}
+              data-tags={entry.data.tags.map((tag) => normalizeEntryTag(tag)).join(' ')}
+            >
+              <EntryCard entry={entry} />
+            </li>
+          ))}
+        </ul>
+        <p class="archive-empty" id="archive-empty-state" hidden>Nothing matches this filter yet.</p>
+      </>
+    )}
+  </section>
+
+  <script is:inline>
+    (() => {
+      const buttons = Array.from(document.querySelectorAll('.archive-filter'));
+      const items = Array.from(document.querySelectorAll('.archive-item'));
+      const resultsCount = document.getElementById('archive-results-count');
+      const emptyState = document.getElementById('archive-empty-state');
+      let activeMedium = 'all';
+      let activeTag = 'all';
+
+      const updateGroupState = (group, value) => {
+        buttons
+          .filter((button) => button instanceof HTMLButtonElement && button.dataset.filterGroup === group)
+          .forEach((button) => {
+            const isActive = button.dataset.filterValue === value;
+            button.classList.toggle('is-active', isActive);
+            button.setAttribute('aria-pressed', String(isActive));
+          });
+      };
+
+      const render = () => {
+        let visibleCount = 0;
+
+        items.forEach((item) => {
+          if (!(item instanceof HTMLElement)) return;
+
+          const itemMedium = item.dataset.medium || '';
+          const itemTags = (item.dataset.tags || '').split(/\s+/).filter(Boolean);
+          const mediumMatch = activeMedium === 'all' || itemMedium === activeMedium;
+          const tagMatch = activeTag === 'all' || itemTags.includes(activeTag);
+          const visible = mediumMatch && tagMatch;
+
+          item.hidden = !visible;
+          if (visible) visibleCount += 1;
+        });
+
+        if (resultsCount) {
+          resultsCount.textContent = `${visibleCount} ${visibleCount === 1 ? 'entry' : 'entries'}`;
+        }
+
+        if (emptyState instanceof HTMLElement) {
+          emptyState.hidden = visibleCount !== 0;
+        }
+      };
+
+      buttons.forEach((button) => {
+        if (!(button instanceof HTMLButtonElement)) return;
+
+        button.addEventListener('click', () => {
+          const group = button.dataset.filterGroup;
+          const value = button.dataset.filterValue || 'all';
+          if (group === 'medium') activeMedium = value;
+          if (group === 'tag') activeTag = value;
+          if (group) updateGroupState(group, value);
+          render();
+        });
+      });
+
+      render();
+    })();
+  </script>
+</BaseLayout>
+
+<style>
+  .archive-page {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .archive-page__description {
+    max-width: 68ch;
+  }
+
+  .archive-page__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem 1rem;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .archive-page__meta p,
+  .archive-results p {
+    margin: 0;
+  }
+
+  .archive-controls {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem 1.05rem;
+    border: 1px solid var(--line2);
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.022), transparent 72%),
+      color-mix(in srgb, var(--tone-surface) 88%, transparent);
+  }
+
+  .archive-controls__group {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .archive-controls__label {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--tone-muted);
+  }
+
+  .archive-controls__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.48rem;
+  }
+
+  .archive-filter {
+    border-radius: 999px;
+    padding: 0.36rem 0.74rem;
+    font-size: 0.82rem;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  }
+
+  .archive-filter.is-active,
+  .archive-filter:hover,
+  .archive-filter:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
+    color: var(--tone-text);
+  }
+
+  .archive-results {
+    color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .archive-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .archive-item {
+    min-width: 0;
+  }
+
+  .archive-empty {
+    margin: 0;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  }
+</style>
