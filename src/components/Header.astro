@@ -11,19 +11,19 @@ const ACCENT_SWATCHES: Record<string, string> = {
 };
 const getAccentSwatch = (value?: string) => ACCENT_SWATCHES[String(value || '').trim().toLowerCase()] || ACCENT_SWATCHES.blue;
 
-const nav = [
+const primaryNav = [
   { label: 'Home', href: '/', color: 'ochre', tone: 'presence' },
-  { label: 'About', href: '/about', color: 'blue', tone: 'clarity' },
   { label: 'Work', href: '/work', color: 'ochre', tone: 'seva' },
   { label: 'Writing', href: '/writing', color: 'white', tone: 'contemplation' },
-  { label: 'Social', href: '/social', color: 'blue', tone: 'harmony' },
+  { label: 'About', href: '/about', color: 'blue', tone: 'clarity' },
+  { label: 'Contact', href: '/contact', color: 'white', tone: 'harmony' }
+];
+
+const secondaryNav = [
   { label: 'AGI Timeline', href: '/agi', color: 'blue', tone: 'discernment' },
   { label: 'AI x Survival', href: '/survival-os', color: 'red', tone: 'grounding' },
   { label: 'Survival Support', href: '/survival-support', color: 'ochre', tone: 'grounding' },
-  { label: 'Map', href: '/map', color: 'blue', tone: 'presence' },
-  { label: 'Now', href: '/now', color: 'white', tone: 'presence' },
-  { label: 'Contact', href: '/contact', color: 'white', tone: 'harmony' },
-  { label: 'Link Hub', href: '/link-hub', color: 'blue', tone: 'harmony' }
+  { label: 'Map', href: '/map', color: 'blue', tone: 'presence' }
 ];
 
 const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
@@ -38,7 +38,7 @@ const isActive = (href: string) => {
   <div class="site-shell-row header-row flex w-full items-center justify-between py-3 md:py-4">
     <a href="/" class="header-brand font-display text-lg font-bold tracking-tight text-accent">A Path Toward Life</a>
     <nav aria-label="Main navigation" class="header-nav hidden md:flex md:items-center">
-      {nav.map((item) => (
+      {primaryNav.map((item) => (
         <a
           href={item.href}
           class="header-link text-sm no-underline"
@@ -61,7 +61,7 @@ const isActive = (href: string) => {
       >
         Menu
       </button>
-      <div class="header-mode-toggle lab-only-inline-flex" role="group" aria-label="Site mode">
+      <div class="header-mode-toggle lab-access-only-inline-flex" role="group" aria-label="Site mode">
         <button type="button" class="header-mode-btn is-active" data-surface-mode-btn="viewer" aria-pressed="true">Viewer</button>
         <button type="button" class="header-mode-btn" data-surface-mode-btn="lab" aria-pressed="false">Lab</button>
       </div>
@@ -82,13 +82,30 @@ const isActive = (href: string) => {
       </div>
     </div>
   </div>
+  <div class="site-shell-row header-secondary hidden md:block">
+    <nav aria-label="Secondary navigation" class="header-secondary-nav">
+      <p class="header-secondary-label">Elsewhere</p>
+      {secondaryNav.map((item) => (
+        <a
+          href={item.href}
+          class="header-link header-link--secondary text-sm no-underline"
+          style={`--link-accent:${getAccentSwatch(item.color)}`}
+          {...(item.color ? { 'data-color': item.color } : {})}
+          {...(item.tone ? { 'data-tone': item.tone } : {})}
+          {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+  </div>
   <nav id="mobile-nav" aria-label="Mobile navigation" class="mobile-nav md:hidden" hidden>
     <div class="site-shell-row mobile-nav-inner">
-      <div class="header-mode-toggle lab-only-inline-flex" role="group" aria-label="Site mode">
+      <div class="header-mode-toggle lab-access-only-inline-flex" role="group" aria-label="Site mode">
         <button type="button" class="header-mode-btn is-active" data-surface-mode-btn="viewer" aria-pressed="true">Viewer</button>
         <button type="button" class="header-mode-btn" data-surface-mode-btn="lab" aria-pressed="false">Lab</button>
       </div>
-      {nav.map((item) => (
+      {primaryNav.map((item) => (
         <a
           href={item.href}
           class="header-link mobile-nav-link no-underline"
@@ -100,6 +117,21 @@ const isActive = (href: string) => {
           {item.label}
         </a>
       ))}
+      <div class="mobile-nav-section">
+        <p class="mobile-nav-label">Elsewhere</p>
+        {secondaryNav.map((item) => (
+          <a
+            href={item.href}
+            class="header-link mobile-nav-link header-link--secondary no-underline"
+            style={`--link-accent:${getAccentSwatch(item.color)}`}
+            {...(item.color ? { 'data-color': item.color } : {})}
+            {...(item.tone ? { 'data-tone': item.tone } : {})}
+            {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
+          >
+            {item.label}
+          </a>
+        ))}
+      </div>
       <a href={profile.site_url} class="lab-only-inline-flex pill rounded px-3 py-1 text-sm w-fit mt-2" aria-label="Open live site">
         Live
       </a>

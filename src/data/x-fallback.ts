@@ -7,8 +7,8 @@ export interface XFallbackItem {
 
 const xFallbackItems: XFallbackItem[] = [
   {
-    title: "Now: what I am building and tracking this week",
-    url: "/now",
+    title: "Current focus: what I am building and tracking this week",
+    url: "/about#current-focus",
     publishedAt: "2026-02-19T12:00:00.000Z",
     summary: "Current focus areas across archive updates, experiments, and live process."
   },

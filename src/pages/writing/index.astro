@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import SubstackPanel from '../../components/SubstackPanel.astro';
+import { isPostReady } from '../../lib/post-readiness';
 
 const posts = (await getCollection('posts')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
@@ -17,6 +18,11 @@ const fullDateFormatter = new Intl.DateTimeFormat('en-US', {
 const allTags = [...new Set(posts.flatMap((post) => post.data.tags.map((tag) => tag.trim().toLowerCase())))]
   .filter(Boolean)
   .sort((a, b) => a.localeCompare(b));
+const readyPosts = posts.filter(isPostReady);
+const featuredPosts = posts.filter((post) => post.data.featured);
+const readyFeaturedPosts = featuredPosts.filter(isPostReady);
+const featuredPost = readyFeaturedPosts[0] ?? featuredPosts[0] ?? readyPosts[0] ?? posts[0] ?? null;
+const supportingPosts = featuredPost ? posts.filter((post) => post.id !== featuredPost.id) : [];
 const corpusConstellations = [
   {
     title: 'Philosophical Inquiry',
@@ -82,11 +88,11 @@ const writingArc = [
 ---
 <BaseLayout title="Writing — a_e.s_" theme="writing">
   <section class="writing-hero">
-    <p class="writing-kicker">Systemic Humanist Archive / Essays / Reports</p>
+    <p class="writing-kicker">Essays / Reports / Field Notes</p>
     <h1 class="font-display text-4xl md:text-5xl">Writing</h1>
     <p class="writing-description">
-      This section now frames the writing as a connected corpus: philosophy, labor critique, Newark fieldwork, identity,
-      creative recovery, and AI futures all feed the same long argument about how people survive systems.
+      Essays and field notes on systems, Newark, identity, creative recovery, and AI futures, held as an archive that
+      still wants to be read piece by piece.
     </p>
     <div class="writing-meta">
       <p>{posts.length} {posts.length === 1 ? 'entry' : 'entries'}</p>
@@ -95,13 +101,123 @@ const writingArc = [
     </div>
     <a class="writing-rss-link" href="/rss.xml">RSS feed</a>
   </section>
+  {/* TODO: This featured slot assumes a post with enough interior to justify the prominence. */}
+  {featuredPost && (
+    <section class="writing-proof" aria-labelledby="writing-proof-heading">
+      <div class="writing-proof-header">
+        <h2 id="writing-proof-heading" class="font-display text-2xl">Start with one entry</h2>
+        <p>A direct entry point before the larger archive logic underneath it.</p>
+      </div>
+
+      <div class="writing-proof-grid">
+        {(() => {
+          const featuredPostReady = isPostReady(featuredPost);
+          return (
+        <article class="writing-card writing-card--featured">
+          <p class="writing-card-date">Featured entry · {fullDateFormatter.format(featuredPost.data.date)}</p>
+          <h2 class="writing-proof-title">
+            <a href={`/writing/${featuredPost.slug}`} class="writing-card-title">{featuredPost.data.title}</a>
+          </h2>
+          <p class="writing-card-summary">{featuredPostReady ? featuredPost.data.summary : '—'}</p>
+          <div class="writing-card-footer">
+            <div class="writing-tags">
+              {featuredPost.data.tags.map((tag) => <span class="writing-tag">#{tag}</span>)}
+            </div>
+            {featuredPostReady && (
+              <a href={`/writing/${featuredPost.slug}`} class="writing-read-link" aria-label={`Read ${featuredPost.data.title}`}>
+                Read note
+              </a>
+            )}
+          </div>
+        </article>
+          );
+        })()}
+
+        {supportingPosts.length > 0 && (
+          <div class="writing-proof-stack">
+            <p class="writing-proof-stack-label">From nearby in the archive</p>
+            {supportingPosts.slice(0, 2).map((post) => (
+              (() => {
+                const postReady = isPostReady(post);
+                return (
+                  <article class="writing-proof-mini">
+                    <p class="writing-card-date">{dateFormatter.format(post.data.date)}</p>
+                    <h3>
+                      <a href={`/writing/${post.slug}`} class="writing-card-title">{post.data.title}</a>
+                    </h3>
+                    <p>{postReady ? post.data.summary : '—'}</p>
+                    {!postReady && (
+                      <div class="writing-tags">
+                        {post.data.tags.map((tag) => <span class="writing-tag">#{tag}</span>)}
+                      </div>
+                    )}
+                  </article>
+                );
+              })()
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )}
 
   <SubstackPanel secondaryHref="#writing-list" secondaryLabel="Jump to site archive" />
 
+  <section class="writing-archive" id="writing-list" aria-labelledby="writing-archive-heading">
+    <div class="writing-archive-header">
+      <h2 id="writing-archive-heading" class="font-display text-2xl">Site Archive</h2>
+      {allTags.length > 0 && (
+        <div class="writing-filters" role="group" aria-label="Filter posts by tag">
+          <button type="button" class="writing-filter is-active" data-filter="all" aria-pressed="true">All</button>
+          {allTags.map((tag) => (
+            <button type="button" class="writing-filter" data-filter={tag} aria-pressed="false">#{tag}</button>
+          ))}
+        </div>
+      )}
+      <p class="writing-results" id="writing-results-count">{posts.length} {posts.length === 1 ? 'entry' : 'entries'}</p>
+    </div>
+
+    {posts.length === 0 ? (
+      <p class="writing-empty">No entries published yet.</p>
+    ) : (
+      <>
+        <ul class="writing-list" id="writing-list-items">
+          {posts.map((post) => (
+            (() => {
+              const postReady = isPostReady(post);
+              return (
+                <li class="writing-item" data-tags={post.data.tags.map((tag) => tag.trim().toLowerCase()).join(' ')}>
+                  <article class="writing-card">
+                    <p class="writing-card-date">{dateFormatter.format(post.data.date)}</p>
+                    <h3 class="font-display text-2xl">
+                      <a href={`/writing/${post.slug}`} class="writing-card-title">{post.data.title}</a>
+                    </h3>
+                    <p class="writing-card-summary">{postReady ? post.data.summary : '—'}</p>
+                    <div class="writing-card-footer">
+                      <div class="writing-tags">
+                        {post.data.tags.map((tag) => <span class="writing-tag">#{tag}</span>)}
+                      </div>
+                      {postReady && (
+                        <a href={`/writing/${post.slug}`} class="writing-read-link" aria-label={`Read ${post.data.title}`}>
+                          Read note
+                        </a>
+                      )}
+                    </div>
+                  </article>
+                </li>
+              );
+            })()
+          ))}
+        </ul>
+        <p class="writing-empty" id="writing-empty-state" hidden>No posts match this tag yet.</p>
+      </>
+    )}
+  </section>
+
   <section class="writing-vault" aria-labelledby="writing-vault-heading">
     <div class="writing-vault-header">
-      <h2 id="writing-vault-heading" class="font-display text-2xl">Corpus Constellations</h2>
-      <p>The strongest recurring lanes in the archive, distilled from the larger essay history you provided.</p>
+      <h2 id="writing-vault-heading" class="font-display text-2xl">Archive Threads</h2>
+      <p>Recurring lanes in the archive once you want the wider argument and not just a single note.</p>
     </div>
     <ul class="writing-vault-list">
       {corpusConstellations.map((cluster) => (
@@ -136,50 +252,6 @@ const writingArc = [
         </article>
       ))}
     </div>
-  </section>
-
-  <section class="writing-archive" id="writing-list" aria-labelledby="writing-archive-heading">
-    <div class="writing-archive-header">
-      <h2 id="writing-archive-heading" class="font-display text-2xl">Site Archive</h2>
-      {allTags.length > 0 && (
-        <div class="writing-filters" role="group" aria-label="Filter posts by tag">
-          <button type="button" class="writing-filter is-active" data-filter="all" aria-pressed="true">All</button>
-          {allTags.map((tag) => (
-            <button type="button" class="writing-filter" data-filter={tag} aria-pressed="false">#{tag}</button>
-          ))}
-        </div>
-      )}
-      <p class="writing-results" id="writing-results-count">{posts.length} {posts.length === 1 ? 'entry' : 'entries'}</p>
-    </div>
-
-    {posts.length === 0 ? (
-      <p class="writing-empty">No entries published yet.</p>
-    ) : (
-      <>
-        <ul class="writing-list" id="writing-list-items">
-          {posts.map((post) => (
-            <li class="writing-item" data-tags={post.data.tags.map((tag) => tag.trim().toLowerCase()).join(' ')}>
-              <article class="writing-card">
-                <p class="writing-card-date">{dateFormatter.format(post.data.date)}</p>
-                <h3 class="font-display text-2xl">
-                  <a href={`/writing/${post.slug}`} class="writing-card-title">{post.data.title}</a>
-                </h3>
-                <p class="writing-card-summary">{post.data.summary}</p>
-                <div class="writing-card-footer">
-                  <div class="writing-tags">
-                    {post.data.tags.map((tag) => <span class="writing-tag">#{tag}</span>)}
-                  </div>
-                  <a href={`/writing/${post.slug}`} class="writing-read-link" aria-label={`Read ${post.data.title}`}>
-                    Read note
-                  </a>
-                </div>
-              </article>
-            </li>
-          ))}
-        </ul>
-        <p class="writing-empty" id="writing-empty-state" hidden>No posts match this tag yet.</p>
-      </>
-    )}
   </section>
 
   <script is:inline>
@@ -285,6 +357,10 @@ const writingArc = [
     margin-top: clamp(1.3rem, 3vw, 2.4rem);
   }
 
+  .writing-proof {
+    margin-top: clamp(1.3rem, 3vw, 2.4rem);
+  }
+
   .writing-vault {
     margin-top: clamp(1.3rem, 3vw, 2.4rem);
   }
@@ -296,6 +372,68 @@ const writingArc = [
   .writing-vault-header p {
     margin: 0.55rem 0 0;
     color: var(--tone-muted);
+  }
+
+  .writing-proof-header p {
+    margin: 0.55rem 0 0;
+    color: var(--tone-muted);
+    max-width: 62ch;
+  }
+
+  .writing-proof-grid {
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.85rem;
+    grid-template-columns: minmax(0, 1.3fr) minmax(17rem, 0.9fr);
+    align-items: start;
+  }
+
+  .writing-card--featured {
+    background: linear-gradient(180deg, rgba(11, 16, 27, 0.78), rgba(7, 12, 20, 0.66));
+  }
+
+  .writing-proof-title {
+    margin: 0.5rem 0 0;
+    line-height: 1.14;
+    font-size: clamp(1.55rem, 2.7vw, 2.15rem);
+  }
+
+  .writing-proof-stack {
+    border: 1px solid var(--line2);
+    border-radius: calc(var(--radius) * var(--space-scale));
+    background: linear-gradient(180deg, rgba(10, 14, 23, 0.68), rgba(7, 11, 18, 0.56));
+    padding: clamp(0.9rem, 2.2vw, 1.15rem);
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .writing-proof-stack-label {
+    margin: 0;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--tone-accent-glow);
+  }
+
+  .writing-proof-mini {
+    display: grid;
+    gap: 0.4rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line2);
+  }
+
+  .writing-proof-mini:first-of-type {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .writing-proof-mini h3,
+  .writing-proof-mini p:last-child {
+    margin: 0;
+  }
+
+  .writing-proof-mini p:last-child {
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
   }
 
   .writing-vault-list {
@@ -529,6 +667,7 @@ const writingArc = [
   }
 
   @media (max-width: 700px) {
+    .writing-proof-grid,
     .writing-trajectory-grid {
       grid-template-columns: 1fr;
     }

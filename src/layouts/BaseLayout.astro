@@ -69,14 +69,17 @@ const walkthroughSteps = [
 ];
 
 const exploreLinks = [
-  { label: 'About', href: '/about' },
+  { label: 'Home', href: '/' },
   { label: 'Work', href: '/work' },
   { label: 'Writing', href: '/writing' },
+  { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' },
   { label: 'AGI Timeline', href: '/agi' },
   { label: 'Survival OS', href: '/survival-os' },
   { label: 'Survival Support', href: '/survival-support' },
+  { label: 'Map', href: '/map' },
   { label: 'Social hub', href: '/social' },
-  { label: 'Contact', href: '/contact' }
+  { label: 'Link hub', href: '/link-hub' }
 ];
 
 const resolvePublicAsset = (candidates: string[]) => {
@@ -103,7 +106,7 @@ const shellGarlandStyle = [
 ---
 
 <!doctype html>
-<html lang="en" class="dark" data-surface-mode="viewer" data-mode="normal">
+<html lang="en" class="dark" data-surface-mode="viewer" data-mode="normal" data-lab-access="disabled">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -115,6 +118,7 @@ const shellGarlandStyle = [
         const KEY_WALK = 'walkStep';
         const KEY_SIZE = 'siteSize';
         const KEY_TAB_SWIPE = 'homeTabSwipe';
+        const KEY_LAB_ACCESS = 'siteLabAccess';
         const DEFAULTS = {
           surfaceMode: 'viewer',
           mode: 'normal',
@@ -127,6 +131,13 @@ const shellGarlandStyle = [
         const localStorageRef = (() => {
           try {
             return window.localStorage;
+          } catch {
+            return null;
+          }
+        })();
+        const sessionStorageRef = (() => {
+          try {
+            return window.sessionStorage;
           } catch {
             return null;
           }
@@ -186,19 +197,39 @@ const shellGarlandStyle = [
 
         const query = new URLSearchParams(window.location.search);
         const queryLab = query.get('lab');
+        const queryLabAccess = queryLab === '1' ? 'enabled' : queryLab === '0' ? 'disabled' : null;
         const querySurfaceMode = queryLab === '1' ? 'lab' : queryLab === '0' ? 'viewer' : null;
         const queryView = query.get('view');
         const queryMode = queryView ? normalizeMode(queryView) : null;
+        const queryNeedsLab = queryMode === 'walk' || queryMode === 'explore';
 
-        const storedSurfaceMode = safeGet(localStorageRef, KEY_SURFACE_MODE);
-        const storedMode = safeGet(localStorageRef, KEY_MODE);
-        const storedWalkStep = safeGet(localStorageRef, KEY_WALK);
+        safeRemove(localStorageRef, KEY_SURFACE_MODE);
+        safeRemove(localStorageRef, KEY_MODE);
+        safeRemove(localStorageRef, KEY_WALK);
+
+        if (queryLabAccess === 'disabled') {
+          safeRemove(sessionStorageRef, KEY_LAB_ACCESS);
+          safeRemove(sessionStorageRef, KEY_SURFACE_MODE);
+          safeRemove(sessionStorageRef, KEY_MODE);
+          safeRemove(sessionStorageRef, KEY_WALK);
+        }
+
+        const storedLabAccess = safeGet(sessionStorageRef, KEY_LAB_ACCESS);
+        const initialLabAccess =
+          queryLabAccess ?? (queryNeedsLab ? 'enabled' : storedLabAccess === 'enabled' ? 'enabled' : 'disabled');
+        const storedSurfaceMode = safeGet(sessionStorageRef, KEY_SURFACE_MODE);
+        const storedMode = safeGet(sessionStorageRef, KEY_MODE);
+        const storedWalkStep = safeGet(sessionStorageRef, KEY_WALK);
         const storedSize = safeGet(localStorageRef, KEY_SIZE);
         const storedTabSwipe = safeGet(localStorageRef, KEY_TAB_SWIPE);
-        const isExplicitLabVisit = querySurfaceMode === 'lab';
-        const initialSurfaceMode = isExplicitLabVisit ? 'lab' : DEFAULTS.surfaceMode;
-        const initialMode = isExplicitLabVisit ? normalizeMode(queryMode ?? storedMode) : DEFAULTS.mode;
-        const initialWalkStep = normalizeWalkStep(storedWalkStep);
+        const initialSurfaceMode =
+          initialLabAccess === 'enabled'
+            ? normalizeSurfaceMode(querySurfaceMode ?? (queryNeedsLab ? 'lab' : storedSurfaceMode))
+            : DEFAULTS.surfaceMode;
+        const initialMode =
+          initialLabAccess === 'enabled' ? normalizeMode(queryMode ?? storedMode) : DEFAULTS.mode;
+        const initialWalkStep =
+          initialLabAccess === 'enabled' ? normalizeWalkStep(storedWalkStep) : DEFAULTS.walkStep;
         const initialSize = normalizeSize(storedSize);
         const initialTabSwipe = normalizeTabSwipe(storedTabSwipe);
         const state = {
@@ -208,25 +239,29 @@ const shellGarlandStyle = [
           size: initialSize,
           tabSwipe: initialTabSwipe
         };
+        let labAccessEnabled = initialLabAccess === 'enabled';
         const root = document.documentElement;
         const persisted = {
-          surfaceMode: isExplicitLabVisit ? initialSurfaceMode : DEFAULTS.surfaceMode,
-          mode: isExplicitLabVisit ? initialMode : DEFAULTS.mode,
-          walkStep: String(normalizeWalkStep(storedWalkStep)),
+          surfaceMode:
+            initialLabAccess === 'enabled' ? normalizeSurfaceMode(storedSurfaceMode) : DEFAULTS.surfaceMode,
+          mode: initialLabAccess === 'enabled' ? normalizeMode(storedMode) : DEFAULTS.mode,
+          walkStep:
+            initialLabAccess === 'enabled'
+              ? String(normalizeWalkStep(storedWalkStep))
+              : String(DEFAULTS.walkStep),
           size: normalizeSize(storedSize),
           tabSwipe: normalizeTabSwipe(storedTabSwipe)
         };
 
-        if (isExplicitLabVisit && queryMode) {
-          state.mode = queryMode;
+        if (queryLabAccess === 'enabled' || queryNeedsLab) {
+          safeSet(sessionStorageRef, KEY_LAB_ACCESS, 'enabled');
         }
 
-        if (isExplicitLabVisit) {
-          safeSet(localStorageRef, KEY_SURFACE_MODE, initialSurfaceMode);
-          safeSet(localStorageRef, KEY_MODE, state.mode);
-        } else {
-          safeSet(localStorageRef, KEY_SURFACE_MODE, DEFAULTS.surfaceMode);
-          safeSet(localStorageRef, KEY_MODE, DEFAULTS.mode);
+        if (querySurfaceMode) {
+          safeSet(sessionStorageRef, KEY_SURFACE_MODE, querySurfaceMode);
+        }
+        if (queryMode) {
+          safeSet(sessionStorageRef, KEY_MODE, queryMode);
         }
 
         const setDataAttr = (key, value) => {
@@ -243,6 +278,7 @@ const shellGarlandStyle = [
 
         const applyToDom = () => {
           const activeMode = state.surfaceMode === 'lab' ? state.mode : 'normal';
+          setDataAttr('labAccess', labAccessEnabled ? 'enabled' : 'disabled');
           setDataAttr('surfaceMode', state.surfaceMode);
           setDataAttr('mode', activeMode);
           setDataAttr('size', state.size);
@@ -256,17 +292,28 @@ const shellGarlandStyle = [
 
         const persist = () => {
           const walkStep = String(state.walkStep);
-          if (persisted.surfaceMode !== state.surfaceMode) {
-            safeSet(localStorageRef, KEY_SURFACE_MODE, state.surfaceMode);
-            persisted.surfaceMode = state.surfaceMode;
-          }
-          if (persisted.mode !== state.mode) {
-            safeSet(localStorageRef, KEY_MODE, state.mode);
-            persisted.mode = state.mode;
-          }
-          if (persisted.walkStep !== walkStep) {
-            safeSet(localStorageRef, KEY_WALK, walkStep);
-            persisted.walkStep = walkStep;
+          if (labAccessEnabled) {
+            safeSet(sessionStorageRef, KEY_LAB_ACCESS, 'enabled');
+            if (persisted.surfaceMode !== state.surfaceMode) {
+              safeSet(sessionStorageRef, KEY_SURFACE_MODE, state.surfaceMode);
+              persisted.surfaceMode = state.surfaceMode;
+            }
+            if (persisted.mode !== state.mode) {
+              safeSet(sessionStorageRef, KEY_MODE, state.mode);
+              persisted.mode = state.mode;
+            }
+            if (persisted.walkStep !== walkStep) {
+              safeSet(sessionStorageRef, KEY_WALK, walkStep);
+              persisted.walkStep = walkStep;
+            }
+          } else {
+            safeRemove(sessionStorageRef, KEY_LAB_ACCESS);
+            safeRemove(sessionStorageRef, KEY_SURFACE_MODE);
+            safeRemove(sessionStorageRef, KEY_MODE);
+            safeRemove(sessionStorageRef, KEY_WALK);
+            persisted.surfaceMode = DEFAULTS.surfaceMode;
+            persisted.mode = DEFAULTS.mode;
+            persisted.walkStep = String(DEFAULTS.walkStep);
           }
           if (persisted.size !== state.size) {
             safeSet(localStorageRef, KEY_SIZE, state.size);
@@ -282,7 +329,7 @@ const shellGarlandStyle = [
           const activeMode = state.surfaceMode === 'lab' ? state.mode : 'normal';
           window.dispatchEvent(
             new CustomEvent('modesettings:change', {
-              detail: { ...state, activeMode }
+              detail: { ...state, activeMode, labAccessEnabled }
             })
           );
         };
@@ -294,12 +341,18 @@ const shellGarlandStyle = [
           setSurfaceMode(nextSurfaceMode) {
             const normalized = normalizeSurfaceMode(nextSurfaceMode);
             if (state.surfaceMode === normalized) return;
+            if (normalized === 'lab') {
+              labAccessEnabled = true;
+            }
             state.surfaceMode = normalized;
             applyToDom();
             persist();
             emit();
           },
           toggleSurfaceMode() {
+            if (state.surfaceMode !== 'lab') {
+              labAccessEnabled = true;
+            }
             state.surfaceMode = state.surfaceMode === 'lab' ? 'viewer' : 'lab';
             applyToDom();
             persist();
@@ -311,6 +364,9 @@ const shellGarlandStyle = [
             if (state.mode === normalized && state.surfaceMode === nextSurfaceMode) return;
             state.mode = normalized;
             if (nextSurfaceMode !== state.surfaceMode) {
+              if (nextSurfaceMode === 'lab') {
+                labAccessEnabled = true;
+              }
               state.surfaceMode = nextSurfaceMode;
             }
             applyToDom();
@@ -342,13 +398,16 @@ const shellGarlandStyle = [
             emit();
           },
           reset() {
+            const preservedLabAccess = labAccessEnabled;
             const preservedSurfaceMode = state.surfaceMode;
-            safeRemove(localStorageRef, KEY_SURFACE_MODE);
-            safeRemove(localStorageRef, KEY_MODE);
-            safeRemove(localStorageRef, KEY_WALK);
+            safeRemove(sessionStorageRef, KEY_LAB_ACCESS);
+            safeRemove(sessionStorageRef, KEY_SURFACE_MODE);
+            safeRemove(sessionStorageRef, KEY_MODE);
+            safeRemove(sessionStorageRef, KEY_WALK);
             safeRemove(localStorageRef, KEY_SIZE);
             safeRemove(localStorageRef, KEY_TAB_SWIPE);
-            state.surfaceMode = preservedSurfaceMode;
+            labAccessEnabled = preservedLabAccess || preservedSurfaceMode === 'lab';
+            state.surfaceMode = labAccessEnabled ? preservedSurfaceMode : DEFAULTS.surfaceMode;
             state.mode = DEFAULTS.mode;
             state.walkStep = DEFAULTS.walkStep;
             state.size = DEFAULTS.size;
@@ -359,6 +418,7 @@ const shellGarlandStyle = [
             persisted.size = state.size;
             persisted.tabSwipe = state.tabSwipe;
             applyToDom();
+            persist();
             emit();
           }
         };

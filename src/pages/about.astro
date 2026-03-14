@@ -4,23 +4,120 @@ import profile from '../data/profile';
 ---
 
 <BaseLayout title="About - a_e.s_" theme="archive">
-  <section class="view-surface">
-    <header class="view-surface-header">
+  <section class="view-surface about-page">
+    <header class="view-surface-header about-page__header">
       <p class="view-surface-kicker">Profile</p>
       <h1>About</h1>
-      <p>{profile.long_bio}</p>
+      <p class="about-page__identity">
+        Angel Suero is a Newark-based music producer, visual storyteller, and community builder using sound, writing,
+        and civic collaboration to turn lived process into public memory.
+      </p>
+      <p class="about-page__context">
+        This site holds selected work, writing, and active threads as a living archive: quieter than a dashboard, more
+        open than a finished portfolio shell.
+      </p>
+      <div class="about-page__roles" aria-label="Practice areas">
+        {profile.roles.map((role) => <span class="chip rounded-full px-3 py-1 text-xs sm:text-sm">{role}</span>)}
+      </div>
     </header>
 
-    <section class="mt-8">
-      <h2 class="font-display text-2xl">Principles</h2>
-      <ul class="mt-4 list-disc space-y-2 pl-6">
+    <div class="about-page__grid">
+      <section class="about-page__panel">
+        <p class="about-page__label">What kind of work</p>
+        <p>{profile.long_bio}</p>
+      </section>
+
+      <section class="about-page__panel" id="current-focus">
+        <p class="about-page__label">Active now</p>
+        <p>
+          Refining the archive into a calmer public encounter, releasing music studies, and documenting Newark
+          collaborations with enough structure to stay useful over time.
+        </p>
+      </section>
+    </div>
+
+    <section class="about-page__principles">
+      <p class="about-page__label">Working principles</p>
+      <ul class="about-page__principles-list">
         {profile.mottos.map((motto) => <li>{motto}</li>)}
       </ul>
     </section>
-
-    <section class="mt-8">
-      <h2 class="font-display text-2xl">Current Focus</h2>
-      <p class="mt-3">Building a timeline-forward home for sound, visuals, essays, and civic collaborations.</p>
-    </section>
   </section>
 </BaseLayout>
+
+<style>
+  .about-page {
+    display: grid;
+    gap: clamp(1rem, 2vw, 1.35rem);
+  }
+
+  .about-page__header {
+    max-width: 68ch;
+  }
+
+  .about-page__identity,
+  .about-page__context,
+  .about-page__label,
+  .about-page__panel p,
+  .about-page__principles-list {
+    margin: 0;
+  }
+
+  .about-page__identity {
+    margin-top: 0.6rem;
+    font-size: clamp(1.05rem, 2vw, 1.2rem);
+    color: color-mix(in srgb, var(--tone-text) 94%, var(--tone-muted) 6%);
+  }
+
+  .about-page__context {
+    margin-top: 0.7rem;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .about-page__roles {
+    margin-top: 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .about-page__grid {
+    display: grid;
+    gap: 0.85rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about-page__panel,
+  .about-page__principles {
+    border: 1px solid var(--line2);
+    border-radius: calc(var(--radius) * var(--space-scale));
+    background: linear-gradient(180deg, rgba(9, 13, 22, 0.68), rgba(6, 10, 17, 0.58));
+    padding: clamp(0.95rem, 2.2vw, 1.2rem);
+  }
+
+  .about-page__label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--tone-accent-glow);
+  }
+
+  .about-page__panel p:last-child {
+    margin-top: 0.6rem;
+    color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
+  }
+
+  .about-page__principles-list {
+    margin-top: 0.75rem;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.45rem;
+    color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
+  }
+
+  @media (max-width: 760px) {
+    .about-page__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

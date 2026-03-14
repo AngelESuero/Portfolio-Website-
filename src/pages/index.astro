@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import HomeMapPreview from '../components/HomeMapPreview.astro';
 import HomeShowcaseCards from '../components/HomeShowcaseCards.astro';
 import profile from '../data/profile';
 import featuredThreads from '../data/featured_threads.json';
@@ -24,14 +23,37 @@ const startHereCards = [
     description: 'Essays and field notes'
   },
   {
-    href: '/map',
-    label: 'Map',
-    description: 'Concept and route atlas'
+    href: '/about',
+    label: 'About',
+    description: 'Who this is and what is active now'
   },
   {
-    href: '/now',
-    label: 'Now',
-    description: 'Current focus and direction'
+    href: '/contact',
+    label: 'Contact',
+    description: 'Collaborations and direct outreach'
+  }
+];
+
+const elsewhereCards = [
+  {
+    href: '/agi',
+    label: 'AGI Timeline',
+    description: 'Ongoing research and public tracking'
+  },
+  {
+    href: '/survival-os',
+    label: 'AI x Survival',
+    description: 'Longer-range systems and survivability work'
+  },
+  {
+    href: '/survival-support',
+    label: 'Survival Support',
+    description: 'Practical support planning and triage'
+  },
+  {
+    href: '/map',
+    label: 'Map',
+    description: 'The wider atlas once you want the deeper structure'
   }
 ];
 
@@ -63,8 +85,6 @@ const startHereCards = [
         </div>
       </div>
     </section>
-
-    <HomeMapPreview />
 
     <section class="home-start mt-12 md:mt-14" aria-labelledby="home-start-heading">
       <p class="home-start-kicker">First paths</p>
@@ -120,11 +140,17 @@ const startHereCards = [
       </div>
     </section>
 
-    <section class="home-now-signal mt-6" aria-label="Now signal">
-      <p>
-        <span class="home-now-signal__label">Now signal</span>
-        Current focus, active edits, and the next move live on <a href="/now">/now</a>.
-      </p>
+    <section class="home-elsewhere mt-6" aria-labelledby="home-elsewhere-heading">
+      <p class="home-start-kicker">Elsewhere</p>
+      <h2 id="home-elsewhere-heading" class="home-start-title">Systems, timelines, and deeper routes</h2>
+      <div class="home-start-grid">
+        {elsewhereCards.map((card) => (
+          <a class="home-start-card home-start-card--secondary" href={card.href}>
+            <span>{card.label}</span>
+            <small>{card.description}</small>
+          </a>
+        ))}
+      </div>
     </section>
   </div>
 </BaseLayout>
@@ -405,14 +431,12 @@ const startHereCards = [
   .home-start-title,
   .home-ai-callout__kicker,
   .home-ai-callout__title,
-  .home-ai-callout__copy,
-  .home-now-signal p {
+  .home-ai-callout__copy {
     margin: 0;
   }
 
   .home-start-kicker,
-  .home-ai-callout__kicker,
-  .home-now-signal__label {
+  .home-ai-callout__kicker {
     font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.12em;
@@ -467,6 +491,28 @@ const startHereCards = [
   .home-start-card:focus-visible {
     border-color: color-mix(in srgb, var(--tone-accent) 40%, var(--line2));
     color: var(--tone-accent-glow);
+  }
+
+  .home-elsewhere {
+    padding: 0.95rem 1rem 1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-sky) 18%, var(--line2));
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-sky) 10%, transparent), transparent 66%),
+      color-mix(in srgb, var(--tone-surface) 88%, transparent);
+  }
+
+  .home-start-card--secondary {
+    border-color: color-mix(in srgb, var(--tone-sky) 22%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-sky) 14%, transparent), transparent 68%),
+      color-mix(in srgb, var(--tone-surface) 90%, transparent);
+  }
+
+  .home-start-card--secondary:hover,
+  .home-start-card--secondary:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-sky) 48%, var(--line2));
+    color: color-mix(in srgb, var(--tone-sky-bright) 82%, white 18%);
   }
 
   .home-featured {
@@ -576,30 +622,6 @@ const startHereCards = [
     transform: translateY(-1px);
     border-color: color-mix(in srgb, #c57d66 76%, var(--line2));
     color: #f6e1da;
-  }
-
-  .home-now-signal {
-    padding: 0.9rem 1rem;
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
-    border-radius: 1rem;
-    background:
-      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 8%, transparent), transparent 72%),
-      color-mix(in srgb, var(--tone-surface) 90%, transparent);
-  }
-
-  .home-now-signal p {
-    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
-  }
-
-  .home-now-signal__label {
-    margin-right: 0.45rem;
-  }
-
-  .home-now-signal a {
-    color: var(--tone-accent-glow);
-    text-decoration: underline;
-    text-decoration-color: color-mix(in srgb, var(--tone-accent) 55%, transparent);
-    text-underline-offset: 0.14em;
   }
 
   @media (max-width: 1024px) {

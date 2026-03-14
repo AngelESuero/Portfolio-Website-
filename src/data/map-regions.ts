@@ -42,10 +42,10 @@ const mapRegions: MapRegion[] = [
   },
   {
     id: 'now',
-    label: 'Now',
+    label: 'Current Focus',
     color: '#c3b395',
-    route: '/now',
-    summary: 'Current focus, active edits, and the direction of this season.',
+    route: '/about#current-focus',
+    summary: 'What is active now, where the archive is heading, and what is being refined this season.',
     relatedCards: ['music-production', 'scraps']
   },
   {
