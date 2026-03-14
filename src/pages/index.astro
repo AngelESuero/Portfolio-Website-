@@ -167,15 +167,21 @@ const elsewhereCards = [
     margin-bottom: clamp(1rem, 2vw, 2rem);
     border: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
     background:
-      linear-gradient(180deg, rgba(5, 9, 17, 0.26), rgba(4, 8, 15, 0.74)),
+      linear-gradient(180deg, rgba(5, 9, 17, 0.52), rgba(4, 8, 15, 0.88)),
+      radial-gradient(
+        120% 110% at 50% 28%,
+        rgba(7, 12, 20, 0.12),
+        rgba(4, 8, 15, 0.44) 54%,
+        rgba(4, 8, 15, 0.74) 100%
+      ),
       radial-gradient(
         78% 58% at 50% 4%,
-        color-mix(in srgb, var(--tone-accent) 7%, transparent),
+        color-mix(in srgb, var(--tone-accent) 4%, transparent),
         transparent 72%
       ),
-      linear-gradient(135deg, rgba(8, 13, 22, 0.26), rgba(4, 8, 15, 0.6)),
+      linear-gradient(135deg, rgba(8, 13, 22, 0.44), rgba(4, 8, 15, 0.72)),
       url('/images/bg-station.jpg');
-    background-position: center;
+    background-position: center 34%;
     background-size: cover;
     box-shadow:
       0 30px 80px rgba(0, 0, 0, 0.42),
@@ -195,21 +201,21 @@ const elsewhereCards = [
     background:
       radial-gradient(
         34% 20% at 50% 22%,
-        color-mix(in srgb, var(--tone-accent-bright) 14%, transparent),
+        color-mix(in srgb, var(--tone-accent-bright) 8%, transparent),
         transparent 72%
       ),
       radial-gradient(
         26% 16% at 26% 26%,
-        color-mix(in srgb, var(--tone-sky-bright) 10%, transparent),
+        color-mix(in srgb, var(--tone-sky-bright) 6%, transparent),
         transparent 74%
       ),
       radial-gradient(
         26% 16% at 74% 24%,
-        color-mix(in srgb, var(--tone-sky-bright) 8%, transparent),
+        color-mix(in srgb, var(--tone-sky-bright) 5%, transparent),
         transparent 74%
       );
-    filter: blur(32px);
-    opacity: 0.8;
+    filter: blur(42px);
+    opacity: 0.44;
   }
 
   .home-hero::after {
@@ -220,17 +226,17 @@ const elsewhereCards = [
         115deg,
         transparent 0%,
         transparent 24%,
-        rgba(255, 255, 255, 0.04) 34%,
+        rgba(255, 255, 255, 0.025) 34%,
         transparent 46%,
         transparent 100%
       ),
       repeating-linear-gradient(
         90deg,
-        rgba(255, 255, 255, 0.022) 0 1px,
+        rgba(255, 255, 255, 0.014) 0 1px,
         transparent 1px 40px
       );
     mix-blend-mode: screen;
-    opacity: 0.18;
+    opacity: 0.1;
   }
 
   .home-hero__content {
@@ -242,7 +248,7 @@ const elsewhereCards = [
       clamp(4.25rem, 8vw, 6.75rem)
       clamp(1.25rem, 5vw, 4rem)
       clamp(3.25rem, 7vw, 5.5rem);
-    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+    text-shadow: 0 10px 24px rgba(0, 0, 0, 0.44);
   }
 
   .home-hero__content::before,
@@ -261,22 +267,23 @@ const elsewhereCards = [
     border-radius: clamp(1.35rem, 3vw, 2.2rem);
     background:
       radial-gradient(
-        52% 50% at 50% 34%,
-        rgba(8, 13, 22, 0.08),
-        rgba(8, 13, 22, 0.28) 68%,
-        rgba(8, 13, 22, 0.54)
+        68% 54% at 50% 28%,
+        rgba(21, 31, 46, 0.16),
+        rgba(9, 14, 23, 0.36) 54%,
+        rgba(6, 10, 18, 0.64) 100%
       ),
       linear-gradient(
         180deg,
-        rgba(8, 13, 22, 0.03),
-        rgba(8, 13, 22, 0.14) 42%,
-        rgba(8, 13, 22, 0.3)
+        rgba(9, 14, 23, 0.76),
+        rgba(7, 11, 19, 0.82) 44%,
+        rgba(4, 8, 15, 0.9)
       );
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    backdrop-filter: blur(14px) saturate(1.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px) saturate(0.88);
     box-shadow:
-      0 28px 56px rgba(0, 0, 0, 0.24),
-      0 1px 0 rgba(255, 255, 255, 0.05) inset;
+      0 28px 56px rgba(0, 0, 0, 0.34),
+      0 1px 0 rgba(255, 255, 255, 0.05) inset,
+      0 0 0 1px rgba(4, 8, 15, 0.16);
   }
 
   .home-hero__content::after {
@@ -290,10 +297,10 @@ const elsewhereCards = [
     background:
       linear-gradient(
         135deg,
-        rgba(255, 255, 255, 0.03),
+        rgba(255, 255, 255, 0.02),
         transparent 22%,
         transparent 74%,
-        rgba(242, 184, 75, 0.03)
+        rgba(242, 184, 75, 0.02)
       );
   }
 
@@ -314,7 +321,14 @@ const elsewhereCards = [
     font-size: 0.72rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+    color: rgba(229, 216, 197, 0.72);
+  }
+
+  .home-hero h1 {
+    color: color-mix(in srgb, var(--tone-accent-glow) 70%, white 30%);
+    text-shadow:
+      0 14px 34px rgba(0, 0, 0, 0.34),
+      0 0 18px rgba(231, 179, 109, 0.1);
   }
 
   .home-hero__lede {
@@ -322,7 +336,7 @@ const elsewhereCards = [
     margin-inline: auto;
     font-size: clamp(1.03rem, 1.7vw, 1.18rem);
     line-height: 1.6;
-    color: color-mix(in srgb, var(--tone-text) 94%, var(--tone-muted) 6%);
+    color: rgba(245, 238, 227, 0.92);
   }
 
   .home-hero__body {
@@ -330,7 +344,7 @@ const elsewhereCards = [
     margin-inline: auto;
     font-size: 0.98rem;
     line-height: 1.68;
-    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+    color: rgba(231, 221, 207, 0.82);
   }
 
   .home-hero__roles {
@@ -339,7 +353,7 @@ const elsewhereCards = [
     font-size: 0.82rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--tone-text) 68%, var(--tone-muted) 32%);
+    color: rgba(218, 201, 177, 0.62);
   }
 
   .home-hero__lead-note {
@@ -347,7 +361,7 @@ const elsewhereCards = [
     margin-inline: auto;
     font-size: 0.98rem;
     line-height: 1.72;
-    color: color-mix(in srgb, var(--tone-accent-glow) 82%, white 18%);
+    color: rgba(241, 213, 164, 0.92);
   }
 
   .home-hero__paths {
@@ -365,11 +379,11 @@ const elsewhereCards = [
     min-height: 2.5rem;
     padding: 0.6rem 0.95rem;
     border-radius: 999px;
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 22%, rgba(255, 255, 255, 0.08));
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 28%, rgba(255, 255, 255, 0.08));
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015)),
-      color-mix(in srgb, var(--tone-bg) 82%, rgba(255, 255, 255, 0.02));
-    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+      linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012)),
+      rgba(9, 14, 22, 0.78);
+    color: rgba(243, 236, 226, 0.9);
     text-decoration: none;
     transition:
       border-color 140ms ease,
@@ -378,11 +392,11 @@ const elsewhereCards = [
   }
 
   .home-hero__path.is-primary {
-    color: color-mix(in srgb, var(--tone-accent-glow) 88%, white 12%);
-    border-color: color-mix(in srgb, var(--tone-accent) 34%, rgba(255, 255, 255, 0.08));
+    color: rgba(247, 227, 190, 0.96);
+    border-color: color-mix(in srgb, var(--tone-accent) 42%, rgba(255, 255, 255, 0.08));
     background:
-      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 16%, transparent), transparent 72%),
-      color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 18%, transparent), transparent 72%),
+      rgba(10, 15, 24, 0.92);
   }
 
   .home-hero__path:hover,
@@ -400,8 +414,8 @@ const elsewhereCards = [
     pointer-events: none;
     background-repeat: no-repeat;
     background-size: contain;
-    opacity: 0.7;
-    filter: saturate(0.7) brightness(0.78) contrast(0.94) drop-shadow(0 10px 14px rgba(0, 0, 0, 0.16));
+    opacity: 0.52;
+    filter: saturate(0.6) brightness(0.66) contrast(0.9) drop-shadow(0 10px 14px rgba(0, 0, 0, 0.16));
   }
 
   .home-hero__ivy--left {
@@ -635,6 +649,7 @@ const elsewhereCards = [
       min-height: 20rem;
       border-radius: 1.35rem;
       margin-bottom: 0.8rem;
+      background-position: center 26%;
     }
 
     .home-hero__content {
@@ -647,10 +662,27 @@ const elsewhereCards = [
 
     .home-hero__content::before {
       inset:
-        1rem
-        0.5rem
-        0.75rem;
+        0.8rem
+        0.4rem
+        0.55rem;
       border-radius: 1.1rem;
+      background:
+        radial-gradient(
+          86% 62% at 50% 24%,
+          rgba(20, 31, 46, 0.14),
+          rgba(8, 13, 22, 0.34) 48%,
+          rgba(5, 9, 17, 0.62) 100%
+        ),
+        linear-gradient(
+          180deg,
+          rgba(8, 13, 22, 0.86),
+          rgba(6, 10, 18, 0.9) 42%,
+          rgba(4, 8, 15, 0.95)
+        );
+      backdrop-filter: blur(20px) saturate(0.82);
+      box-shadow:
+        0 22px 42px rgba(0, 0, 0, 0.36),
+        0 1px 0 rgba(255, 255, 255, 0.05) inset;
     }
 
     .home-hero__content::after {
@@ -659,13 +691,21 @@ const elsewhereCards = [
         0.8rem
         1rem;
       border-radius: 0.95rem;
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.012),
+          transparent 24%,
+          transparent 74%,
+          rgba(242, 184, 75, 0.014)
+        );
     }
 
     .home-hero__ivy {
       top: 0.3rem;
       width: clamp(72px, 18vw, 104px);
       height: clamp(94px, 24vw, 136px);
-      opacity: 0.66;
+      opacity: 0.28;
     }
 
     .home-hero__ivy--left {
@@ -682,6 +722,27 @@ const elsewhereCards = [
 
     .home-hero__path {
       width: 100%;
+      min-height: 2.75rem;
+    }
+
+    .home-hero__lede {
+      font-size: 1.04rem;
+      line-height: 1.58;
+    }
+
+    .home-hero__body,
+    .home-hero__lead-note {
+      font-size: 1rem;
+      line-height: 1.64;
+    }
+
+    .home-hero__roles {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+    }
+
+    .home-hero::after {
+      opacity: 0.04;
     }
 
     .home-featured__grid {
