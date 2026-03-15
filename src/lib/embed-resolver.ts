@@ -318,12 +318,23 @@ export const resolveEmbed = (urlValue: string, preferredProvider?: LinkHubProvid
   }
 
   if (provider === 'untitled') {
+    const normalizedPath = parsed.pathname.replace(/\/+$/, '');
+
     if (parsed.pathname.includes('/invite/')) {
       return { provider, embedUrl: null, embeddable: false, reason: 'invite_link' };
     }
 
     if (parsed.pathname.startsWith('/embed/') || parsed.pathname.endsWith('/embed')) {
       return { provider, embedUrl: urlValue, embeddable: true, reason: 'ok' };
+    }
+
+    if (/^\/library\/(track|project)\/[^/]+$/i.test(normalizedPath)) {
+      return {
+        provider,
+        embedUrl: `${parsed.origin}${normalizedPath}/embed`,
+        embeddable: true,
+        reason: 'ok'
+      };
     }
 
     return { provider, embedUrl: null, embeddable: false, reason: 'unsupported_url_shape' };

@@ -3,6 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import { getEntryDisplaySource, isAudioAsset, isLocalImageAsset, isLocalVideoAsset } from '../lib/archive-entries';
 import {
   getEmbedAspectRatio,
+  getEmbedFallbackMessage,
   getEmbedViewMode,
   getLinkCtaLabel,
   getProviderBadgeLabel,
@@ -31,13 +32,16 @@ const provider = externalUrl ? providerFromUrl(externalUrl) : null;
 const resolution = externalUrl ? resolveEmbed(externalUrl, provider) : null;
 const embedUrl = resolution?.embedUrl ?? null;
 const hasEmbed = Boolean(externalUrl && resolution?.embeddable && embedUrl);
+const fallbackMessage = !compact && resolution && provider && !resolution.embeddable
+  ? getEmbedFallbackMessage(resolution)
+  : '';
 const aspectRatio = getEmbedAspectRatio(provider, externalUrl || undefined);
 const viewMode = getEmbedViewMode(provider, externalUrl || undefined);
 const frameStyle = aspectRatio ? `--entry-media-aspect:${aspectRatio}` : undefined;
 const linkLabel = externalUrl ? getLinkCtaLabel(externalUrl, provider) : '';
 const providerLabel = externalUrl ? getProviderBadgeLabel(provider, externalUrl) : getEntryDisplaySource(entry.data.source);
-const isImageAsset = isLocalImageAsset(assetSrc);
-const isVideoAsset = isLocalVideoAsset(assetSrc);
+const isImageAsset = declaredAssetType === 'image' || /^image\//i.test(assetMimeType) || isLocalImageAsset(assetSrc);
+const isVideoAsset = declaredAssetType === 'video' || /^video\//i.test(assetMimeType) || isLocalVideoAsset(assetSrc);
 const isAudioFileAsset = declaredAssetType === 'audio' || isAudioAsset(assetSrc, assetMimeType);
 const isExternal = /^https?:\/\//i.test(externalUrl);
 ---
@@ -80,6 +84,7 @@ const isExternal = /^https?:\/\//i.test(externalUrl);
 ) : externalUrl ? (
   <div class:list={['entry-media-block', 'entry-media-block--fallback', compact && 'entry-media-block--compact']}>
     <p class="entry-media-block__badge">{providerLabel}</p>
+    {fallbackMessage && <p class="entry-media-block__fallback-note">{fallbackMessage}</p>}
     <a href={externalUrl} class="entry-media-block__link" {...(isExternal ? { target: '_blank', rel: 'noopener' } : {})}>
       {linkLabel}
     </a>
@@ -169,5 +174,12 @@ const isExternal = /^https?:\/\//i.test(externalUrl);
   .entry-media-block__link:hover,
   .entry-media-block__link:focus-visible {
     border-color: color-mix(in srgb, var(--tone-accent) 72%, transparent);
+  }
+
+  .entry-media-block__fallback-note {
+    margin: 0;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
   }
 </style>
