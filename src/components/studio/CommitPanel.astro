@@ -1,22 +1,35 @@
 ---
 interface Props {
   lane: string;
+  title?: string;
+  description?: string;
   submitLabel?: string;
+  showPathPreview?: boolean;
+  disabledInitially?: boolean;
 }
 
-const { lane, submitLabel = 'Commit entry' } = Astro.props as Props;
+const {
+  lane,
+  title = 'Commit',
+  description = 'Password is still the only gate here. This is a private personal authoring tool, not a public submission surface.',
+  submitLabel = 'Commit entry',
+  showPathPreview = true,
+  disabledInitially = false
+} = Astro.props as Props;
 ---
 
 <section class="studio-section">
   <div class="studio-section__header">
-    <h2>Commit</h2>
-    <p>Password is still the only gate here. This is a private personal authoring tool, not a public submission surface.</p>
+    <h2>{title}</h2>
+    <p>{description}</p>
   </div>
 
-  <p class="studio-path-preview studio-notation font-archive">
-    <span>Path preview</span>
-    <code data-path-preview>{`src/content/entries/${lane}/untitled-entry.mdx`}</code>
-  </p>
+  {showPathPreview && (
+    <p class="studio-path-preview studio-notation font-archive">
+      <span>Path preview</span>
+      <code data-path-preview>{`src/content/entries/${lane}/untitled-entry.mdx`}</code>
+    </p>
+  )}
 
   <div class="studio-commit-meta font-archive">
     <span data-autosave-state>Local autosave enabled on this device.</span>
@@ -29,7 +42,7 @@ const { lane, submitLabel = 'Commit entry' } = Astro.props as Props;
   </label>
 
   <div class="studio-submit">
-    <button class="studio-button" type="submit" data-submit-button>{submitLabel}</button>
+    <button class="studio-button" type="submit" data-submit-button disabled={disabledInitially}>{submitLabel}</button>
     <p class="studio-submit__status" data-studio-status aria-live="polite"></p>
   </div>
 </section>

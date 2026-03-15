@@ -28,7 +28,6 @@ const { lane, media = false } = Astro.props as Props;
     if (!(dateInput instanceof HTMLInputElement)) return;
     if (!(sourceSelect instanceof HTMLSelectElement)) return;
     if (!(passwordInput instanceof HTMLInputElement)) return;
-    if (!(pathPreview instanceof HTMLElement)) return;
     if (!(autosaveState instanceof HTMLElement)) return;
     if (!(clearDraftButton instanceof HTMLButtonElement)) return;
     if (!(statusNode instanceof HTMLElement)) return;
@@ -38,6 +37,8 @@ const { lane, media = false } = Astro.props as Props;
     let saveTimer = 0;
     let sourceTouched = false;
     let objectUrl = '';
+    let autoFilledTitle = '';
+    let uploadInFlight = false;
 
     const slugify = (value) =>
       String(value || '')
@@ -48,6 +49,13 @@ const { lane, media = false } = Astro.props as Props;
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '')
         .replace(/-{2,}/g, '-') || 'untitled-entry';
+
+    const humanizeFileName = (value) =>
+      String(value || '')
+        .replace(/\.[^.]+$/, '')
+        .replace(/[_-]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
 
     const inferFromUrl = (value) => {
       if (!value) return null;
@@ -78,6 +86,7 @@ const { lane, media = false } = Astro.props as Props;
     };
 
     const syncPathPreview = () => {
+      if (!(pathPreview instanceof HTMLElement)) return;
       pathPreview.textContent = `src/content/entries/${lane}/${slugify(titleInput.value)}.mdx`;
     };
 
@@ -159,75 +168,19 @@ const { lane, media = false } = Astro.props as Props;
       updateAutosaveState('Local draft cleared.');
     };
 
-    seedDate();
-    restoreDraft();
-    seedDate();
-    syncPathPreview();
-
-    titleInput.addEventListener('input', () => {
-      syncPathPreview();
-      saveDraftSoon();
-    });
-
-    dateInput.addEventListener('input', saveDraftSoon);
-
-    sourceSelect.addEventListener('change', () => {
-      sourceTouched = true;
-      saveDraftSoon();
-    });
-
-    if (externalUrlInput instanceof HTMLInputElement) {
-      externalUrlInput.addEventListener('input', () => {
-        const inferred = inferFromUrl(externalUrlInput.value.trim());
-
-        if (inferred && (!sourceTouched || sourceSelect.value === 'manual' || sourceSelect.value === 'local-media')) {
-          sourceSelect.value = inferred;
-        }
-
-        saveDraftSoon();
-      });
-    }
-
-    form.addEventListener('input', (event) => {
-      const target = event.target;
-      if (target instanceof HTMLInputElement && target.type === 'password') return;
-      saveDraftSoon();
-    });
-
-    form.addEventListener('change', (event) => {
-      const target = event.target;
-      if (target instanceof HTMLInputElement && target.type === 'password') return;
-      saveDraftSoon();
-    });
-
-    clearDraftButton.addEventListener('click', () => {
-      clearDraft();
-      form.reset();
-      sourceTouched = false;
-      sourceSelect.value = defaultSource;
-      seedDate();
-      syncPathPreview();
-      setStatus('', 'idle');
-      if (externalUrlInput instanceof HTMLInputElement) externalUrlInput.value = '';
-      if (media) {
-        clearUploadedAsset();
-        syncMediaMode();
-        syncUploadPreview();
-      }
-    });
-
-    const mediaModeInputs = media
-      ? Array.from(form.querySelectorAll('[data-media-mode]')).filter((node) => node instanceof HTMLInputElement)
-      : [];
+    const mediaModeInput = media ? form.querySelector('[data-media-mode-input]') : null;
     const uploadPane = media ? form.querySelector('[data-media-pane="upload"]') : null;
     const externalPane = media ? form.querySelector('[data-media-pane="external"]') : null;
+    const externalDetails = media ? form.querySelector('[data-external-details]') : null;
     const uploadFileInput = media ? form.querySelector('[data-upload-file]') : null;
-    const uploadButton = media ? form.querySelector('[data-upload-button]') : null;
+    const uploadRetry = media ? form.querySelector('[data-upload-retry]') : null;
     const uploadReset = media ? form.querySelector('[data-upload-reset]') : null;
     const uploadProgress = media ? form.querySelector('[data-upload-progress]') : null;
     const uploadStatus = media ? form.querySelector('[data-upload-status]') : null;
     const uploadPreview = media ? form.querySelector('[data-upload-preview]') : null;
     const uploadPreviewImage = media ? form.querySelector('[data-upload-preview-image]') : null;
+    const uploadPreviewVideo = media ? form.querySelector('[data-upload-preview-video]') : null;
+    const uploadPreviewAudio = media ? form.querySelector('[data-upload-preview-audio]') : null;
     const uploadPreviewName = media ? form.querySelector('[data-upload-preview-name]') : null;
     const uploadPreviewCopy = media ? form.querySelector('[data-upload-preview-copy]') : null;
     const assetFieldNodes = media ? Array.from(form.querySelectorAll('[data-asset-field]')) : [];
@@ -244,19 +197,39 @@ const { lane, media = false } = Astro.props as Props;
     };
 
     const getMediaMode = () => {
-      const active = mediaModeInputs.find((node) => node.checked);
-      return active instanceof HTMLInputElement ? active.value : 'upload';
+      if (!(mediaModeInput instanceof HTMLInputElement)) return 'upload';
+      return mediaModeInput.value === 'external' ? 'external' : 'upload';
     };
 
-    const syncMediaMode = () => {
+    const setMediaMode = (mode) => {
       if (!media) return;
-      const mode = getMediaMode();
-      if (uploadPane instanceof HTMLElement) uploadPane.hidden = mode !== 'upload';
+
+      if (mediaModeInput instanceof HTMLInputElement) {
+        mediaModeInput.value = mode;
+      }
+
+      if (externalDetails instanceof HTMLDetailsElement && externalDetails.open !== (mode === 'external')) {
+        externalDetails.open = mode === 'external';
+      }
+
+      if (uploadPane instanceof HTMLElement) uploadPane.hidden = mode === 'external';
       if (externalPane instanceof HTMLElement) externalPane.hidden = mode !== 'external';
       if (externalUrlInput instanceof HTMLInputElement) externalUrlInput.disabled = mode !== 'external';
+      if (uploadFileInput instanceof HTMLInputElement) uploadFileInput.disabled = mode === 'external';
+
+      assetFieldNodes.forEach((field) => {
+        if (field instanceof HTMLInputElement) field.disabled = mode !== 'upload';
+      });
 
       if (mode === 'upload' && (!sourceTouched || sourceSelect.value === 'manual')) {
         sourceSelect.value = 'local-media';
+      }
+
+      if (mode === 'external') {
+        const inferred = externalUrlInput instanceof HTMLInputElement ? inferFromUrl(externalUrlInput.value.trim()) : null;
+        if (inferred && (!sourceTouched || sourceSelect.value === 'manual' || sourceSelect.value === 'local-media')) {
+          sourceSelect.value = inferred;
+        }
       }
     };
 
@@ -266,10 +239,124 @@ const { lane, media = false } = Astro.props as Props;
       objectUrl = '';
     };
 
-    const clearUploadedAsset = ({ clearFile = true } = {}) => {
-      Object.values(assetFields).forEach((field) => {
-        if (field instanceof HTMLInputElement) field.value = '';
+    const clearPreviewMedia = () => {
+      if (uploadPreviewImage instanceof HTMLImageElement) {
+        uploadPreviewImage.hidden = true;
+        uploadPreviewImage.removeAttribute('src');
+      }
+
+      if (uploadPreviewVideo instanceof HTMLVideoElement) {
+        uploadPreviewVideo.hidden = true;
+        uploadPreviewVideo.pause();
+        uploadPreviewVideo.removeAttribute('src');
+        uploadPreviewVideo.load();
+      }
+
+      if (uploadPreviewAudio instanceof HTMLAudioElement) {
+        uploadPreviewAudio.hidden = true;
+        uploadPreviewAudio.pause();
+        uploadPreviewAudio.removeAttribute('src');
+        uploadPreviewAudio.load();
+      }
+    };
+
+    const setRetryVisible = (visible) => {
+      if (!(uploadRetry instanceof HTMLButtonElement)) return;
+      uploadRetry.hidden = !visible;
+    };
+
+    const getAssetValue = (name) => {
+      const field = assetFields[name];
+      return field instanceof HTMLInputElement ? field.value.trim() : '';
+    };
+
+    const setAssetValue = (name, value) => {
+      const field = assetFields[name];
+      if (field instanceof HTMLInputElement) field.value = value;
+    };
+
+    const resetAssetFields = () => {
+      Object.keys(assetFields).forEach((name) => {
+        setAssetValue(name, '');
       });
+    };
+
+    const applyPreviewMedia = (source, mimeType) => {
+      clearPreviewMedia();
+      if (!source) return;
+
+      if (mimeType.startsWith('image/') && uploadPreviewImage instanceof HTMLImageElement) {
+        uploadPreviewImage.hidden = false;
+        uploadPreviewImage.src = source;
+        return;
+      }
+
+      if (mimeType.startsWith('video/') && uploadPreviewVideo instanceof HTMLVideoElement) {
+        uploadPreviewVideo.hidden = false;
+        uploadPreviewVideo.src = source;
+        uploadPreviewVideo.load();
+        return;
+      }
+
+      if (mimeType.startsWith('audio/') && uploadPreviewAudio instanceof HTMLAudioElement) {
+        uploadPreviewAudio.hidden = false;
+        uploadPreviewAudio.src = source;
+        uploadPreviewAudio.load();
+      }
+    };
+
+    const syncUploadPreview = () => {
+      if (!media) return;
+      if (!(uploadPreview instanceof HTMLElement)) return;
+      if (!(uploadPreviewName instanceof HTMLElement)) return;
+      if (!(uploadPreviewCopy instanceof HTMLElement)) return;
+      if (!(uploadFileInput instanceof HTMLInputElement)) return;
+
+      const uploadedAssetUrl = getAssetValue('asset_src');
+      const uploadedMimeType = getAssetValue('mime_type');
+      const file = uploadFileInput.files?.[0] || null;
+
+      if (!file && !uploadedAssetUrl) {
+        uploadPreview.hidden = true;
+        clearObjectUrl();
+        clearPreviewMedia();
+        uploadPreviewName.textContent = 'No file selected yet.';
+        uploadPreviewCopy.textContent = 'Select a file to prepare the upload.';
+        return;
+      }
+
+      uploadPreview.hidden = false;
+
+      if (file) {
+        uploadPreviewName.textContent = file.name;
+        uploadPreviewCopy.textContent = uploadedAssetUrl
+          ? 'Uploaded to R2 and ready to publish.'
+          : `${file.type || 'Unknown type'} · ${file.size.toLocaleString()} bytes`;
+
+        clearObjectUrl();
+        objectUrl = URL.createObjectURL(file);
+        applyPreviewMedia(objectUrl, file.type || uploadedMimeType || '');
+        return;
+      }
+
+      uploadPreviewName.textContent = getAssetValue('original_filename') || uploadedAssetUrl;
+      uploadPreviewCopy.textContent = 'Uploaded to R2 and ready to publish.';
+      applyPreviewMedia(uploadedAssetUrl, uploadedMimeType);
+    };
+
+    const updateSubmitAvailability = () => {
+      if (!media) return;
+
+      const mode = getMediaMode();
+      const assetReady = Boolean(getAssetValue('asset_src'));
+      const externalReady = externalUrlInput instanceof HTMLInputElement && Boolean(externalUrlInput.value.trim());
+
+      submitButton.disabled = uploadInFlight || (mode === 'upload' ? !assetReady : !externalReady);
+    };
+
+    const clearUploadedAsset = ({ clearFile = true } = {}) => {
+      resetAssetFields();
+      uploadInFlight = false;
 
       if (clearFile && uploadFileInput instanceof HTMLInputElement) {
         uploadFileInput.value = '';
@@ -280,84 +367,21 @@ const { lane, media = false } = Astro.props as Props;
         uploadProgress.value = 0;
       }
 
-      if (uploadPreview instanceof HTMLElement) {
-        uploadPreview.hidden = true;
-      }
-
-      if (uploadPreviewName instanceof HTMLElement) {
-        uploadPreviewName.textContent = 'No file selected yet.';
-      }
-
-      if (uploadPreviewCopy instanceof HTMLElement) {
-        uploadPreviewCopy.textContent = 'Select a file to prepare the upload.';
-      }
-
-      if (uploadPreviewImage instanceof HTMLImageElement) {
-        clearObjectUrl();
-        uploadPreviewImage.hidden = true;
-        uploadPreviewImage.removeAttribute('src');
-      }
-
+      setRetryVisible(false);
       setUploadStatus('', 'idle');
+      syncUploadPreview();
+      updateSubmitAvailability();
     };
 
-    const syncUploadPreview = () => {
-      if (!media) return;
+    const maybeAutofillTitleFromFile = (fileName) => {
+      const suggestion = humanizeFileName(fileName);
+      if (!suggestion) return;
 
-      if (!(uploadPreview instanceof HTMLElement)) return;
-      if (!(uploadPreviewName instanceof HTMLElement)) return;
-      if (!(uploadPreviewCopy instanceof HTMLElement)) return;
-      if (!(uploadFileInput instanceof HTMLInputElement)) return;
-
-      const uploadedAssetUrl = assetFields.asset_src instanceof HTMLInputElement ? assetFields.asset_src.value.trim() : '';
-      const file = uploadFileInput.files?.[0] || null;
-
-      if (uploadedAssetUrl) {
-        uploadPreview.hidden = false;
-        uploadPreviewName.textContent = assetFields.original_filename instanceof HTMLInputElement
-          ? assetFields.original_filename.value || uploadedAssetUrl
-          : uploadedAssetUrl;
-        uploadPreviewCopy.textContent = 'Uploaded to R2 and ready to commit.';
-
-        if (uploadPreviewImage instanceof HTMLImageElement) {
-          clearObjectUrl();
-          const mimeType = assetFields.mime_type instanceof HTMLInputElement ? assetFields.mime_type.value : '';
-          if (mimeType.startsWith('image/')) {
-            uploadPreviewImage.hidden = false;
-            uploadPreviewImage.src = uploadedAssetUrl;
-          } else {
-            uploadPreviewImage.hidden = true;
-            uploadPreviewImage.removeAttribute('src');
-          }
-        }
-
-        return;
-      }
-
-      if (!file) {
-        uploadPreview.hidden = true;
-        if (uploadPreviewImage instanceof HTMLImageElement) {
-          clearObjectUrl();
-          uploadPreviewImage.hidden = true;
-          uploadPreviewImage.removeAttribute('src');
-        }
-        return;
-      }
-
-      uploadPreview.hidden = false;
-      uploadPreviewName.textContent = file.name;
-      uploadPreviewCopy.textContent = `${file.type || 'Unknown type'} · ${file.size.toLocaleString()} bytes`;
-
-      if (uploadPreviewImage instanceof HTMLImageElement) {
-        clearObjectUrl();
-        if (file.type.startsWith('image/')) {
-          objectUrl = URL.createObjectURL(file);
-          uploadPreviewImage.hidden = false;
-          uploadPreviewImage.src = objectUrl;
-        } else {
-          uploadPreviewImage.hidden = true;
-          uploadPreviewImage.removeAttribute('src');
-        }
+      const current = titleInput.value.trim();
+      if (!current || current === autoFilledTitle) {
+        titleInput.value = suggestion;
+        autoFilledTitle = suggestion;
+        syncPathPreview();
       }
     };
 
@@ -393,107 +417,212 @@ const { lane, media = false } = Astro.props as Props;
         xhr.send(file);
       });
 
-    if (media) {
-      syncMediaMode();
+    const startUpload = async () => {
+      if (!media) return;
+      if (!(uploadFileInput instanceof HTMLInputElement)) return;
+
+      const file = uploadFileInput.files?.[0];
+      if (!file) {
+        setUploadStatus('Choose a file before uploading.', 'error');
+        setRetryVisible(false);
+        updateSubmitAvailability();
+        return;
+      }
+
+      setMediaMode('upload');
+      resetAssetFields();
       syncUploadPreview();
 
-      mediaModeInputs.forEach((node) => {
-        node.addEventListener('change', () => {
-          syncMediaMode();
+      if (!passwordInput.value.trim()) {
+        setUploadStatus('Enter the studio password below, then retry the upload.', 'error');
+        setRetryVisible(true);
+        updateSubmitAvailability();
+        return;
+      }
+
+      uploadInFlight = true;
+      setRetryVisible(false);
+      setUploadStatus('Preparing upload target…', 'pending');
+      updateSubmitAvailability();
+
+      if (uploadProgress instanceof HTMLProgressElement) {
+        uploadProgress.hidden = false;
+        uploadProgress.value = 0;
+      }
+
+      try {
+        const response = await fetch('/api/create-upload-url', {
+          method: 'POST',
+          headers: {
+            accept: 'application/json',
+            'content-type': 'application/json; charset=utf-8'
+          },
+          body: JSON.stringify({
+            password: passwordInput.value,
+            medium: lane,
+            title: titleInput.value.trim(),
+            date: dateInput.value.trim(),
+            fileName: file.name,
+            mimeType: file.type,
+            fileSize: file.size
+          })
+        });
+
+        const payload = await response.json().catch(() => ({
+          ok: false,
+          message: 'The upload route did not return a readable response.'
+        }));
+
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.message || 'Could not prepare the upload target.');
+        }
+
+        setUploadStatus('Uploading file to R2…', 'pending');
+        await uploadViaXhr(payload.uploadUrl, file, payload.headers || {});
+
+        setAssetValue('asset_src', payload.assetUrl || '');
+        setAssetValue('asset_type', payload.assetType || '');
+        setAssetValue('original_filename', file.name);
+        setAssetValue('mime_type', file.type || payload.mimeType || '');
+        setAssetValue('file_size', String(file.size));
+        setAssetValue('upload_source', 'r2');
+
+        if (!sourceTouched || sourceSelect.value === 'manual' || sourceSelect.value === 'local-media') {
+          sourceSelect.value = 'local-media';
+        }
+
+        if (uploadProgress instanceof HTMLProgressElement) {
+          uploadProgress.hidden = false;
+          uploadProgress.value = 100;
+        }
+
+        syncUploadPreview();
+        setUploadStatus('Upload complete. Ready to publish.', 'success');
+        saveDraftSoon();
+      } catch (error) {
+        resetAssetFields();
+
+        if (uploadProgress instanceof HTMLProgressElement) {
+          uploadProgress.hidden = true;
+          uploadProgress.value = 0;
+        }
+
+        setRetryVisible(true);
+        setUploadStatus(error instanceof Error ? error.message : 'The upload could not be completed.', 'error');
+      } finally {
+        uploadInFlight = false;
+        updateSubmitAvailability();
+      }
+    };
+
+    seedDate();
+    restoreDraft();
+    seedDate();
+    syncPathPreview();
+
+    titleInput.addEventListener('input', () => {
+      syncPathPreview();
+      saveDraftSoon();
+    });
+
+    dateInput.addEventListener('input', () => {
+      saveDraftSoon();
+    });
+
+    sourceSelect.addEventListener('change', () => {
+      sourceTouched = true;
+      saveDraftSoon();
+    });
+
+    if (externalUrlInput instanceof HTMLInputElement) {
+      externalUrlInput.addEventListener('input', () => {
+        const inferred = inferFromUrl(externalUrlInput.value.trim());
+
+        if (inferred && (!sourceTouched || sourceSelect.value === 'manual' || sourceSelect.value === 'local-media')) {
+          sourceSelect.value = inferred;
+        }
+
+        updateSubmitAvailability();
+        saveDraftSoon();
+      });
+    }
+
+    form.addEventListener('input', (event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement && target.type === 'password') return;
+      saveDraftSoon();
+    });
+
+    form.addEventListener('change', (event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement && target.type === 'password') return;
+      saveDraftSoon();
+    });
+
+    clearDraftButton.addEventListener('click', () => {
+      clearDraft();
+      form.reset();
+      sourceTouched = false;
+      sourceSelect.value = defaultSource;
+      seedDate();
+      syncPathPreview();
+      setStatus('', 'idle');
+
+      if (externalUrlInput instanceof HTMLInputElement) {
+        externalUrlInput.value = '';
+      }
+
+      if (media) {
+        setMediaMode('upload');
+        clearUploadedAsset();
+      }
+    });
+
+    if (media) {
+      setMediaMode(getMediaMode());
+      syncUploadPreview();
+      updateSubmitAvailability();
+
+      if (externalDetails instanceof HTMLDetailsElement) {
+        if (getMediaMode() === 'external') {
+          externalDetails.open = true;
+        }
+
+        externalDetails.addEventListener('toggle', () => {
+          setMediaMode(externalDetails.open ? 'external' : 'upload');
+          updateSubmitAvailability();
           saveDraftSoon();
         });
-      });
+      }
 
       if (uploadFileInput instanceof HTMLInputElement) {
         uploadFileInput.addEventListener('change', () => {
-          if (assetFields.asset_src instanceof HTMLInputElement && assetFields.asset_src.value) {
+          const file = uploadFileInput.files?.[0] || null;
+          resetAssetFields();
+
+          if (!file) {
             clearUploadedAsset({ clearFile: false });
+            return;
           }
 
+          maybeAutofillTitleFromFile(file.name);
           syncUploadPreview();
+          setUploadStatus('Starting upload…', 'pending');
           saveDraftSoon();
+          void startUpload();
+        });
+      }
+
+      if (uploadRetry instanceof HTMLButtonElement) {
+        uploadRetry.addEventListener('click', () => {
+          void startUpload();
         });
       }
 
       if (uploadReset instanceof HTMLButtonElement) {
         uploadReset.addEventListener('click', () => {
           clearUploadedAsset();
-          syncUploadPreview();
           saveDraftSoon();
-        });
-      }
-
-      if (uploadButton instanceof HTMLButtonElement && uploadFileInput instanceof HTMLInputElement) {
-        uploadButton.addEventListener('click', async () => {
-          const file = uploadFileInput.files?.[0];
-
-          if (!file) {
-            setUploadStatus('Choose a file before uploading.', 'error');
-            return;
-          }
-
-          if (!passwordInput.value.trim()) {
-            setUploadStatus('Enter the studio password in the commit section before requesting an upload URL.', 'error');
-            return;
-          }
-
-          uploadButton.disabled = true;
-          setUploadStatus('Preparing upload target…', 'pending');
-
-          try {
-            const response = await fetch('/api/create-upload-url', {
-              method: 'POST',
-              headers: {
-                accept: 'application/json',
-                'content-type': 'application/json; charset=utf-8'
-              },
-              body: JSON.stringify({
-                password: passwordInput.value,
-                medium: lane,
-                title: titleInput.value.trim(),
-                date: dateInput.value.trim(),
-                fileName: file.name,
-                mimeType: file.type,
-                fileSize: file.size
-              })
-            });
-
-            const payload = await response.json().catch(() => ({
-              ok: false,
-              message: 'The upload route did not return a readable response.'
-            }));
-
-            if (!response.ok || !payload.ok) {
-              throw new Error(payload.message || 'Could not prepare the upload target.');
-            }
-
-            setUploadStatus('Uploading file to R2…', 'pending');
-            await uploadViaXhr(payload.uploadUrl, file, payload.headers || {});
-
-            if (assetFields.asset_src instanceof HTMLInputElement) assetFields.asset_src.value = payload.assetUrl || '';
-            if (assetFields.asset_type instanceof HTMLInputElement) assetFields.asset_type.value = payload.assetType || '';
-            if (assetFields.original_filename instanceof HTMLInputElement) assetFields.original_filename.value = file.name;
-            if (assetFields.mime_type instanceof HTMLInputElement) assetFields.mime_type.value = file.type || payload.mimeType || '';
-            if (assetFields.file_size instanceof HTMLInputElement) assetFields.file_size.value = String(file.size);
-            if (assetFields.upload_source instanceof HTMLInputElement) assetFields.upload_source.value = 'r2';
-
-            if (!sourceTouched || sourceSelect.value === 'manual') {
-              sourceSelect.value = 'local-media';
-            }
-
-            if (uploadProgress instanceof HTMLProgressElement) {
-              uploadProgress.hidden = false;
-              uploadProgress.value = 100;
-            }
-
-            syncUploadPreview();
-            setUploadStatus('Upload complete. Commit the entry when you are ready.', 'success');
-            saveDraftSoon();
-          } catch (error) {
-            setUploadStatus(error instanceof Error ? error.message : 'The upload could not be completed.', 'error');
-          } finally {
-            uploadButton.disabled = false;
-          }
         });
       }
     }
@@ -503,16 +632,18 @@ const { lane, media = false } = Astro.props as Props;
 
       if (media) {
         const mode = getMediaMode();
-        const assetSrc = assetFields.asset_src instanceof HTMLInputElement ? assetFields.asset_src.value.trim() : '';
+        const assetSrc = getAssetValue('asset_src');
         const externalUrl = externalUrlInput instanceof HTMLInputElement ? externalUrlInput.value.trim() : '';
 
         if (mode === 'upload' && !assetSrc) {
-          setStatus('Upload a file to R2 before committing this media entry.', 'error');
+          setStatus('Upload a file to R2 before publishing this media entry.', 'error');
+          updateSubmitAvailability();
           return;
         }
 
         if (mode === 'external' && !externalUrl) {
-          setStatus('Paste an external URL before committing this media entry.', 'error');
+          setStatus('Paste an external URL before publishing this media entry.', 'error');
+          updateSubmitAvailability();
           return;
         }
       }
@@ -520,7 +651,7 @@ const { lane, media = false } = Astro.props as Props;
       if (!form.reportValidity()) return;
 
       submitButton.disabled = true;
-      setStatus('Committing entry…', 'pending');
+      setStatus(media ? 'Publishing entry…' : 'Committing entry…', 'pending');
 
       try {
         const response = await fetch(form.action, {
@@ -546,18 +677,22 @@ const { lane, media = false } = Astro.props as Props;
         form.reset();
         sourceTouched = false;
         sourceSelect.value = defaultSource;
+        autoFilledTitle = '';
         seedDate();
         syncPathPreview();
 
         if (media) {
+          setMediaMode('upload');
           clearUploadedAsset();
-          syncMediaMode();
-          syncUploadPreview();
         }
       } catch (error) {
         setStatus(error instanceof Error ? error.message : 'The entry could not be committed.', 'error');
       } finally {
-        submitButton.disabled = false;
+        if (media) {
+          updateSubmitAvailability();
+        } else {
+          submitButton.disabled = false;
+        }
       }
     });
   })();
