@@ -13,8 +13,23 @@ import {
 import { formatLongUtcDate } from '../../lib/date-formatting';
 
 const entries = sortEntriesByDate(await getCollection('entries'));
-const allTags = collectEntryTags(entries);
 const mediums = ARCHIVE_MEDIUMS;
+const allTags = collectEntryTags(entries);
+const DEFAULT_VISIBLE_TAGS = 6;
+const mediumTagSet = new Set(mediums);
+const tagCounts = [...entries.reduce((counts, entry) => {
+  entry.data.tags
+    .map(normalizeEntryTag)
+    .filter(Boolean)
+    .forEach((tag) => counts.set(tag, (counts.get(tag) || 0) + 1));
+  return counts;
+}, new Map<string, number>()).entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+const rankedTags = [
+  ...tagCounts.filter(([tag]) => !mediumTagSet.has(tag as typeof mediums[number])),
+  ...tagCounts.filter(([tag]) => mediumTagSet.has(tag as typeof mediums[number]))
+].map(([tag]) => tag);
+const featuredTags = rankedTags.slice(0, DEFAULT_VISIBLE_TAGS);
+const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
 ---
 <BaseLayout title="Archive — a_e.s_" theme="archive">
   <section class="view-surface archive-page">
@@ -58,18 +73,37 @@ const mediums = ARCHIVE_MEDIUMS;
       </div>
 
       {allTags.length > 0 && (
-        <div class="archive-controls__group">
-          <p class="archive-controls__label font-archive">Tags</p>
+        <div class="archive-controls__group archive-controls__group--secondary">
+          <div class="archive-controls__heading">
+            <p class="archive-controls__label font-archive">Tags</p>
+            <p class="archive-controls__note">A small set stays forward; the rest stay folded nearby.</p>
+          </div>
+
           <div class="archive-controls__buttons" role="group" aria-label="Filter by tag">
             <button type="button" class="archive-filter font-archive is-active" data-filter-group="tag" data-filter-value="all" aria-pressed="true">
               All
             </button>
-            {allTags.map((tag) => (
+            {featuredTags.map((tag) => (
               <button type="button" class="archive-filter font-archive" data-filter-group="tag" data-filter-value={tag} aria-pressed="false">
                 #{tag}
               </button>
             ))}
           </div>
+
+          {secondaryTags.length > 0 && (
+            <details class="archive-controls__more">
+              <summary class="archive-controls__more-toggle font-archive">
+                More tags <span aria-hidden="true">({secondaryTags.length})</span>
+              </summary>
+              <div class="archive-controls__buttons archive-controls__buttons--secondary" role="group" aria-label="More archive tags">
+                {secondaryTags.map((tag) => (
+                  <button type="button" class="archive-filter font-archive" data-filter-group="tag" data-filter-value={tag} aria-pressed="false">
+                    #{tag}
+                  </button>
+                ))}
+              </div>
+            </details>
+          )}
         </div>
       )}
     </section>
@@ -227,6 +261,15 @@ const mediums = ARCHIVE_MEDIUMS;
     gap: 0.55rem;
   }
 
+  .archive-controls__group--secondary {
+    gap: 0.7rem;
+  }
+
+  .archive-controls__heading {
+    display: grid;
+    gap: 0.22rem;
+  }
+
   .archive-controls__label {
     margin: 0;
     font-size: 0.72rem;
@@ -235,10 +278,49 @@ const mediums = ARCHIVE_MEDIUMS;
     color: var(--tone-muted);
   }
 
+  .archive-controls__note {
+    margin: 0;
+    font-size: 0.86rem;
+    line-height: 1.42;
+    color: color-mix(in srgb, var(--tone-text) 74%, var(--tone-muted) 26%);
+  }
+
   .archive-controls__buttons {
     display: flex;
     flex-wrap: wrap;
     gap: 0.48rem;
+  }
+
+  .archive-controls__buttons--secondary {
+    padding-top: 0.62rem;
+  }
+
+  .archive-controls__more {
+    border-top: 1px solid var(--line2);
+    padding-top: 0.68rem;
+  }
+
+  .archive-controls__more[open] {
+    padding-bottom: 0.08rem;
+  }
+
+  .archive-controls__more-toggle {
+    width: fit-content;
+    cursor: pointer;
+    list-style: none;
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .archive-controls__more-toggle::-webkit-details-marker {
+    display: none;
+  }
+
+  .archive-controls__more-toggle:hover,
+  .archive-controls__more-toggle:focus-visible {
+    color: var(--tone-text);
   }
 
   .archive-filter {
