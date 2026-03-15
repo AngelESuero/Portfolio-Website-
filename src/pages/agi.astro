@@ -126,18 +126,16 @@ const supplementaryFeedCount = Array.isArray((agiFeedData as { items?: unknown[]
   ? ((agiFeedData as { items?: unknown[] }).items ?? []).length
   : 0;
 const supplementaryFeedLabel = formatFreshnessLabel((agiFeedData as { meta?: { generatedAt?: string } })?.meta?.generatedAt);
-const laborReferences = [
+const liveReferences = [
   {
     title: 'AI Exposure of the US Job Market',
     url: 'https://karpathy.ai/jobs/',
-    sublabel: 'Interactive labor map by occupation',
-    note: 'Useful for seeing where occupation-level exposure sits before broader labor pressure gets flattened into one abstract headline.'
+    note: 'Interactive labor map by occupation, useful for seeing where exposure concentrates before broader labor narratives flatten it.'
   },
   {
     title: 'Jobloss.ai',
     url: 'https://jobloss.ai/',
-    sublabel: 'AI-related labor shift tracker',
-    note: 'A small external tracker worth keeping nearby when the timeline moves from software shock into employment and displacement signals.'
+    note: 'AI-related labor shift tracker for keeping an eye on displacement, adoption, and labor-pressure signals.'
   }
 ] as const;
 ---
@@ -257,27 +255,26 @@ const laborReferences = [
           </p>
         </header>
 
-        <section class="supplementary-feed" aria-labelledby="labor-reference-heading">
+        <section class="supplementary-feed" aria-labelledby="live-reference-heading">
           <header class="section-header">
             <div>
-              <p class="wave-kicker">External labor references</p>
-              <h3 id="labor-reference-heading">Outside tools worth keeping nearby</h3>
+              <p class="wave-kicker">Live References</p>
+              <h3 id="live-reference-heading">A few changing sources worth keeping nearby</h3>
             </div>
-            <p>Two quiet companion references for the wave-two labor picture.</p>
+            <p>A small labor-context panel for the wave-two reading, kept close without turning the page into a dashboard.</p>
           </header>
 
           <div class="supplementary-list">
-            {laborReferences.map((reference) => (
+            {liveReferences.map((reference) => (
               <article class="supplementary-item">
                 <div class="analyst-card-topline">
-                  <span>Labor reference</span>
-                  <span class="freshness-badge">External</span>
+                  <span>Live reference</span>
+                  <span class="freshness-badge">Labor</span>
                 </div>
                 <h4>{reference.title}</h4>
-                <p class="analyst-context">{reference.sublabel}</p>
                 <p class="analyst-note">{reference.note}</p>
                 <div class="analyst-footer">
-                  <span>Wave-two context</span>
+                  <span>Open externally</span>
                   <a href={reference.url} target="_blank" rel="noreferrer">
                     Open reference
                   </a>
