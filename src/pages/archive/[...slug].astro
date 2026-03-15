@@ -45,7 +45,7 @@ const externalIsAbsolute = /^https?:\/\//i.test(externalUrl);
     <a href="/archive" class="archive-entry__back">← Back to Archive</a>
 
     <header class="archive-entry__header">
-      <p class="archive-entry__meta">
+      <p class="archive-entry__meta font-archive">
         <span>{dateFormatter.format(entry.data.date)}</span>
         <span>{mediumLabel}</span>
         <span>{sourceLabel}</span>
@@ -54,10 +54,10 @@ const externalIsAbsolute = /^https?:\/\//i.test(externalUrl);
       <p class="archive-entry__summary">{entry.data.summary}</p>
 
       <div class="archive-entry__details">
-        <div class="archive-entry__tags" aria-label="Entry tags">
+        <div class="archive-entry__tags font-archive" aria-label="Entry tags">
           {entry.data.tags.map((tag) => <span>#{tag}</span>)}
         </div>
-        {showStatus && <span class="archive-entry__status">{statusLabel}</span>}
+        {showStatus && <span class="archive-entry__status font-archive">{statusLabel}</span>}
       </div>
     </header>
 
@@ -83,7 +83,7 @@ const externalIsAbsolute = /^https?:\/\//i.test(externalUrl);
 
         {relatedEntries.length > 0 && (
           <div class="archive-entry__related">
-            <p>Related entries</p>
+            <p class="font-archive">Related entries</p>
             <div class="archive-entry__related-links">
               {relatedEntries.map((relatedEntry) => (
                 <a href={getEntryHref(relatedEntry)}>{relatedEntry.data.title}</a>

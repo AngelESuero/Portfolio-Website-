@@ -34,17 +34,23 @@ const externalUrl = typeof entry.data.external_url === 'string' ? entry.data.ext
 const externalProvider = externalUrl ? providerFromUrl(externalUrl) : null;
 const externalLabel = externalUrl ? getLinkCtaLabel(externalUrl, externalProvider) : '';
 const externalIsAbsolute = /^https?:\/\//i.test(externalUrl);
-const internalLabel = entry.data.medium === 'writing' ? 'Read entry' : entry.data.medium === 'note' ? 'Open note' : 'Open entry';
+const internalLabel = entry.data.medium === 'writing'
+  ? 'Read entry'
+  : entry.data.medium === 'proposal'
+    ? 'Read proposal'
+    : entry.data.medium === 'note'
+      ? 'Open note'
+      : 'Open entry';
 const showMediaBlock = entry.data.medium === 'music' || entry.data.medium === 'video' || entry.data.medium === 'image';
 ---
 <article class="card entry-card" data-medium={entry.data.medium} data-status={entry.data.status}>
   <div class="entry-card__topline">
-    <p class="entry-card__meta">
+    <p class="entry-card__meta font-archive">
       <span>{dateFormatter.format(entry.data.date)}</span>
       <span>{mediumLabel}</span>
       <span>{sourceLabel}</span>
     </p>
-    {showStatus && <span class="entry-card__status">{statusLabel}</span>}
+    {showStatus && <span class="entry-card__status font-archive">{statusLabel}</span>}
   </div>
 
   <h2 class="entry-card__title">
@@ -60,7 +66,7 @@ const showMediaBlock = entry.data.medium === 'music' || entry.data.medium === 'v
   )}
 
   <div class="entry-card__footer">
-    <div class="entry-card__tags" aria-label="Entry tags">
+    <div class="entry-card__tags font-archive" aria-label="Entry tags">
       {entry.data.tags.map((tag) => <span>#{tag}</span>)}
     </div>
 

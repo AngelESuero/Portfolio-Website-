@@ -1,0 +1,78 @@
+---
+import CommitPanel from './CommitPanel.astro';
+import SharedMetadataFields from './SharedMetadataFields.astro';
+import StudioFormEnhancer from './StudioFormEnhancer.astro';
+import { getStudioLane } from '../../lib/studio';
+
+const lane = getStudioLane('proposal');
+---
+
+<form class="studio-form" method="post" action="/api/create-entry" data-studio-form data-lane={lane.slug}>
+  <input type="hidden" name="medium" value={lane.slug} />
+
+  <SharedMetadataFields
+    lane={lane.slug}
+    defaultSource={lane.defaultSource}
+    sourceOptions={lane.sourceOptions}
+    showExternalUrl={true}
+    summaryPlaceholder="Optional summary for the proposal record."
+    summaryHint="Optional. Keep it short if the body already carries the full proposal context."
+  />
+
+  <section class="studio-section">
+    <div class="studio-section__header">
+      <h2>Proposal details</h2>
+      <p>This lane behaves like an intake sheet. Capture the proposal-specific fields without carrying media upload controls.</p>
+    </div>
+
+    <div class="studio-fields studio-fields--two">
+      <label class="studio-field">
+        <span>Institution</span>
+        <input type="text" name="institution" maxlength="260" />
+      </label>
+
+      <label class="studio-field">
+        <span>Audience</span>
+        <input type="text" name="audience" maxlength="260" />
+      </label>
+    </div>
+
+    <div class="studio-fields studio-fields--three">
+      <label class="studio-field">
+        <span>Place</span>
+        <input type="text" name="place" maxlength="160" />
+      </label>
+
+      <label class="studio-field">
+        <span>Proposal status</span>
+        <input type="text" name="proposal_status" maxlength="160" />
+      </label>
+
+      <label class="studio-field">
+        <span>Ask</span>
+        <textarea name="ask" rows="3" maxlength="600"></textarea>
+      </label>
+    </div>
+  </section>
+
+  <section class="studio-section">
+    <div class="studio-section__header">
+      <h2>Body</h2>
+      <p>Use the body for the proposal narrative, notes, pasted draft text, or a memo of what changed.</p>
+    </div>
+
+    <label class="studio-field">
+      <span>Body</span>
+      <textarea
+        name="body"
+        rows="14"
+        maxlength="30000"
+        placeholder="Proposal notes, memo text, or the body of the draft."
+      ></textarea>
+    </label>
+  </section>
+
+  <CommitPanel lane={lane.slug} submitLabel="Commit proposal" />
+</form>
+
+<StudioFormEnhancer lane={lane.slug} />

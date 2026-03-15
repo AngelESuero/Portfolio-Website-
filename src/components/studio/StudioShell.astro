@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/studio.css';
+import { STUDIO_LANES, type StudioLane } from '../../lib/studio';
+
+interface Props {
+  title: string;
+  intro: string;
+  activeLane?: StudioLane | 'overview';
+}
+
+const { title, intro, activeLane = 'overview' } = Astro.props as Props;
+---
+
+<BaseLayout title={`${title} — a_e.s_`} theme="archive" renderHeader={false} renderFooter={false}>
+  <section class="studio-shell">
+    <div class="studio-panel">
+      <header class="studio-header">
+        <a href="/archive" class="studio-backlink">← Back to Archive</a>
+        <p class="studio-kicker font-archive">Private authoring surface</p>
+        <h1 class="font-display text-4xl md:text-5xl">{title}</h1>
+        <p class="studio-copy">{intro}</p>
+        <p class="studio-note">
+          This writes MDX entries through the GitHub API. Cloudflare Pages publishes them after the rebuild completes.
+        </p>
+      </header>
+
+      <nav class="studio-lane-nav font-archive" aria-label="Studio lanes">
+        <a href="/studio" aria-current={activeLane === 'overview' ? 'page' : undefined}>Overview</a>
+        {STUDIO_LANES.map((lane) => (
+          <a href={`/studio/${lane.slug}`} aria-current={activeLane === lane.slug ? 'page' : undefined}>
+            {lane.label}
+          </a>
+        ))}
+      </nav>
+
+      <div class="studio-grid">
+        <div class="studio-main">
+          <slot />
+        </div>
+        <aside class="studio-sidebar">
+          <slot name="aside" />
+        </aside>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

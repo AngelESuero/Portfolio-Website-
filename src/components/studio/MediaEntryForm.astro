@@ -1,0 +1,49 @@
+---
+import CommitPanel from './CommitPanel.astro';
+import SharedMetadataFields from './SharedMetadataFields.astro';
+import StudioFormEnhancer from './StudioFormEnhancer.astro';
+import UploadPanel from './UploadPanel.astro';
+import { getStudioLane, type StudioLane } from '../../lib/studio';
+
+interface Props {
+  lane: Extract<StudioLane, 'music' | 'video' | 'image'>;
+}
+
+const { lane: laneSlug } = Astro.props as Props;
+const lane = getStudioLane(laneSlug);
+---
+
+<form class="studio-form" method="post" action="/api/create-entry" data-studio-form data-lane={lane.slug}>
+  <input type="hidden" name="medium" value={lane.slug} />
+
+  <UploadPanel lane={lane.slug} />
+
+  <SharedMetadataFields
+    lane={lane.slug}
+    defaultSource={lane.defaultSource}
+    sourceOptions={lane.sourceOptions}
+    summaryPlaceholder="Optional summary for the archive card and entry header."
+    summaryHint="Optional. Useful for demos, uploads, and embeds that need a quick archive-facing frame."
+  />
+
+  <section class="studio-section">
+    <div class="studio-section__header">
+      <h2>Notes</h2>
+      <p>Optional context for the entry: process notes, credits, mix status, cut notes, or any compact archival annotation.</p>
+    </div>
+
+    <label class="studio-field">
+      <span>Body</span>
+      <textarea
+        name="body"
+        rows="8"
+        maxlength="30000"
+        placeholder="Optional notes that should live in the MDX body."
+      ></textarea>
+    </label>
+  </section>
+
+  <CommitPanel lane={lane.slug} submitLabel={`Commit ${lane.label.toLowerCase()} entry`} />
+</form>
+
+<StudioFormEnhancer lane={lane.slug} media={true} />

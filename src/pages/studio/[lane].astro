@@ -1,0 +1,68 @@
+---
+import { getCollection } from 'astro:content';
+import MediaEntryForm from '../../components/studio/MediaEntryForm.astro';
+import NoteEntryForm from '../../components/studio/NoteEntryForm.astro';
+import ProposalEntryForm from '../../components/studio/ProposalEntryForm.astro';
+import RelatedEntriesHelper from '../../components/studio/RelatedEntriesHelper.astro';
+import StudioShell from '../../components/studio/StudioShell.astro';
+import WritingEntryForm from '../../components/studio/WritingEntryForm.astro';
+import { sortEntriesByDate } from '../../lib/archive-entries';
+import { STUDIO_LANES, type StudioLane } from '../../lib/studio';
+
+export async function getStaticPaths() {
+  return STUDIO_LANES.map((lane) => ({
+    params: { lane: lane.slug },
+    props: { lane: lane.slug }
+  }));
+}
+
+const { lane } = Astro.props as { lane: StudioLane };
+
+const laneConfig = STUDIO_LANES.find((item) => item.slug === lane) ?? STUDIO_LANES[0];
+const relatedEntryOptions = sortEntriesByDate(await getCollection('entries')).map((entry) => ({
+  slug: entry.slug,
+  title: entry.data.title
+}));
+---
+
+<StudioShell title={`${laneConfig.label} Studio`} intro={laneConfig.intro} activeLane={laneConfig.slug}>
+  {lane === 'writing' ? (
+    <WritingEntryForm />
+  ) : lane === 'note' ? (
+    <NoteEntryForm />
+  ) : lane === 'proposal' ? (
+    <ProposalEntryForm />
+  ) : (
+    <MediaEntryForm lane={lane} />
+  )}
+
+  <Fragment slot="aside">
+    <section class="studio-sidebar__panel">
+      <p class="studio-sidebar__kicker font-archive">Lane shape</p>
+      <h2>{laneConfig.label}</h2>
+      <p>{laneConfig.chooserDescription}</p>
+    </section>
+
+    <section class="studio-sidebar__panel">
+      <p class="studio-sidebar__kicker font-archive">Submit flow</p>
+      <h2>What happens next</h2>
+      <ol class="studio-flow-list">
+        {laneConfig.mode === 'media' ? (
+          <>
+            <li>Choose upload or external URL and finish the media step first.</li>
+            <li>Fill the metadata fields that belong to this lane.</li>
+            <li>Commit the MDX entry and wait for the Cloudflare rebuild.</li>
+          </>
+        ) : (
+          <>
+            <li>Fill the text fields that belong to this lane.</li>
+            <li>Add the password in the commit panel.</li>
+            <li>Commit the MDX entry and wait for the Cloudflare rebuild.</li>
+          </>
+        )}
+      </ol>
+    </section>
+
+    <RelatedEntriesHelper entries={relatedEntryOptions} />
+  </Fragment>
+</StudioShell>

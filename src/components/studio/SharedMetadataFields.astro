@@ -1,0 +1,109 @@
+---
+import { STUDIO_SOURCE_LABELS, STUDIO_STATUS_OPTIONS } from '../../lib/studio';
+
+interface Props {
+  lane: string;
+  defaultSource: string;
+  sourceOptions: readonly string[];
+  summaryRequired?: boolean;
+  summaryPlaceholder?: string;
+  summaryHint?: string;
+  showExternalUrl?: boolean;
+}
+
+const {
+  lane,
+  defaultSource,
+  sourceOptions,
+  summaryRequired = false,
+  summaryPlaceholder = 'Archive-facing summary. Leave it blank and the studio will derive one from the body if needed.',
+  summaryHint = 'Optional, but still useful for archive cards and overview views.',
+  showExternalUrl = false
+} = Astro.props as Props;
+
+const defaultStatus = 'in-progress';
+const isTextLane = lane === 'writing' || lane === 'note' || lane === 'proposal';
+---
+
+<section class="studio-section">
+  <div class="studio-section__header">
+    <h2>Metadata</h2>
+    <p>{isTextLane ? 'Keep the archive frame light, readable, and focused on the entry itself.' : 'After the asset or external link is in place, add the metadata that makes it land cleanly in the archive.'}</p>
+  </div>
+
+  <div class="studio-fields studio-fields--two">
+    <label class="studio-field">
+      <span>Title</span>
+      <input type="text" name="title" maxlength="180" placeholder="Archive title" required data-title-input />
+    </label>
+
+    <label class="studio-field">
+      <span>Date</span>
+      <input type="date" name="date" required data-date-input />
+    </label>
+  </div>
+
+  <div class="studio-fields studio-fields--two">
+    <label class="studio-field">
+      <span>Source</span>
+      <select name="source" required data-source-select>
+        {sourceOptions.map((value) => (
+          <option value={value} selected={value === defaultSource}>{STUDIO_SOURCE_LABELS[value] ?? value}</option>
+        ))}
+      </select>
+    </label>
+
+    <label class="studio-field">
+      <span>Status</span>
+      <select name="status" required>
+        {STUDIO_STATUS_OPTIONS.map((option) => (
+          <option value={option.value} selected={option.value === defaultStatus}>{option.label}</option>
+        ))}
+      </select>
+    </label>
+  </div>
+
+  <label class="studio-field">
+    <span>Summary</span>
+    <textarea
+      name="summary"
+      rows="3"
+      maxlength="420"
+      placeholder={summaryPlaceholder}
+      required={summaryRequired}
+    ></textarea>
+    <small>{summaryHint}</small>
+  </label>
+
+  {showExternalUrl && (
+    <label class="studio-field">
+      <span>External URL</span>
+      <input
+        type="url"
+        name="external_url"
+        inputmode="url"
+        placeholder="https://www.youtube.com/... or https://untitled.stream/..."
+        data-external-url
+      />
+      <small>Useful for Substack, untitled.stream, PDFs, or any link-first archive item.</small>
+    </label>
+  )}
+
+  <div class="studio-fields studio-fields--two">
+    <label class="studio-field">
+      <span>Tags</span>
+      <input type="text" name="tags" placeholder="archive, draft, example" />
+      <small>Comma or line-break separated. Spaces become hyphens.</small>
+    </label>
+
+    <label class="studio-field">
+      <span>Related entries</span>
+      <textarea
+        name="related_entries"
+        rows="3"
+        placeholder="writing/archive-pass-after-midnight&#10;video/everyday-life"
+      ></textarea>
+      <small>Use archive slugs separated by commas or line breaks.</small>
+    </label>
+  </div>
+</section>

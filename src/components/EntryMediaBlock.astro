@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { getEntryDisplaySource, isLocalImageAsset, isLocalVideoAsset } from '../lib/archive-entries';
+import { getEntryDisplaySource, isAudioAsset, isLocalImageAsset, isLocalVideoAsset } from '../lib/archive-entries';
 import {
   getEmbedAspectRatio,
   getEmbedViewMode,
@@ -24,6 +24,8 @@ const assetAlt = typeof entry.data.asset?.alt === 'string' && entry.data.asset.a
   : entry.data.title;
 const assetPoster = typeof entry.data.asset?.poster === 'string' ? entry.data.asset.poster.trim() : '';
 const assetCaption = typeof entry.data.asset?.caption === 'string' ? entry.data.asset.caption.trim() : '';
+const assetMimeType = typeof entry.data.mime_type === 'string' ? entry.data.mime_type.trim() : '';
+const declaredAssetType = typeof entry.data.asset_type === 'string' ? entry.data.asset_type.trim() : '';
 
 const provider = externalUrl ? providerFromUrl(externalUrl) : null;
 const resolution = externalUrl ? resolveEmbed(externalUrl, provider) : null;
@@ -36,6 +38,7 @@ const linkLabel = externalUrl ? getLinkCtaLabel(externalUrl, provider) : '';
 const providerLabel = externalUrl ? getProviderBadgeLabel(provider, externalUrl) : getEntryDisplaySource(entry.data.source);
 const isImageAsset = isLocalImageAsset(assetSrc);
 const isVideoAsset = isLocalVideoAsset(assetSrc);
+const isAudioFileAsset = declaredAssetType === 'audio' || isAudioAsset(assetSrc, assetMimeType);
 const isExternal = /^https?:\/\//i.test(externalUrl);
 ---
 {entry.data.medium === 'image' && assetSrc && isImageAsset ? (
@@ -48,6 +51,16 @@ const isExternal = /^https?:\/\//i.test(externalUrl);
     <video controls preload="metadata" poster={assetPoster || undefined} class="entry-media-block__video">
       <source src={assetSrc} />
     </video>
+    {assetCaption && <figcaption>{assetCaption}</figcaption>}
+  </figure>
+) : entry.data.medium === 'music' && assetSrc && isAudioFileAsset ? (
+  <figure class:list={['entry-media-block', compact && 'entry-media-block--compact']}>
+    <div class="entry-media-block__audio-shell">
+      <p class="entry-media-block__badge">{providerLabel}</p>
+      <audio controls preload="metadata" class="entry-media-block__audio">
+        <source src={assetSrc} type={assetMimeType || undefined} />
+      </audio>
+    </div>
     {assetCaption && <figcaption>{assetCaption}</figcaption>}
   </figure>
 ) : hasEmbed && embedUrl ? (
@@ -112,6 +125,16 @@ const isExternal = /^https?:\/\//i.test(externalUrl);
   .entry-media-block__video {
     object-fit: cover;
     max-height: 32rem;
+  }
+
+  .entry-media-block__audio-shell {
+    display: grid;
+    gap: 0.7rem;
+    padding: 0.88rem;
+  }
+
+  .entry-media-block__audio {
+    width: 100%;
   }
 
   .entry-media-block figcaption {

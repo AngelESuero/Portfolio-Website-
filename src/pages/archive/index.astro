@@ -6,7 +6,7 @@ import { collectEntryTags, getEntryDisplayMedium, normalizeEntryTag, sortEntries
 
 const entries = sortEntriesByDate(await getCollection('entries'));
 const allTags = collectEntryTags(entries);
-const mediums = ['writing', 'music', 'video', 'image', 'note'] as const;
+const mediums = ['writing', 'music', 'video', 'image', 'note', 'proposal'] as const;
 const fullDateFormatter = new Intl.DateTimeFormat('en-US', {
   month: 'long',
   day: 'numeric',
@@ -19,10 +19,10 @@ const fullDateFormatter = new Intl.DateTimeFormat('en-US', {
       <p class="view-surface-kicker">Living archive</p>
       <h1>Archive</h1>
       <p class="archive-page__description">
-        Writing, music, moving image, image documentation, and notes gathered into one chronology so the work can live
-        as neighboring entries instead of separate platform rooms.
+        Writing, music, moving image, image documentation, notes, and proposals gathered into one chronology so the
+        work can live as neighboring entries instead of separate platform rooms.
       </p>
-      <div class="archive-page__meta">
+      <div class="archive-page__meta font-archive">
         <p>{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
         <p>{mediums.length} mediums</p>
         {entries[0] && <p>Latest: {fullDateFormatter.format(entries[0].data.date)}</p>}
@@ -31,13 +31,13 @@ const fullDateFormatter = new Intl.DateTimeFormat('en-US', {
 
     <section class="archive-controls" aria-label="Archive filters">
       <div class="archive-controls__group">
-        <p class="archive-controls__label">Medium</p>
+        <p class="archive-controls__label font-archive">Medium</p>
         <div class="archive-controls__buttons" role="group" aria-label="Filter by medium">
-          <button type="button" class="archive-filter is-active" data-filter-group="medium" data-filter-value="all" aria-pressed="true">
+          <button type="button" class="archive-filter font-archive is-active" data-filter-group="medium" data-filter-value="all" aria-pressed="true">
             All
           </button>
           {mediums.map((medium) => (
-            <button type="button" class="archive-filter" data-filter-group="medium" data-filter-value={medium} aria-pressed="false">
+            <button type="button" class="archive-filter font-archive" data-filter-group="medium" data-filter-value={medium} aria-pressed="false">
               {getEntryDisplayMedium(medium)}
             </button>
           ))}
@@ -46,13 +46,13 @@ const fullDateFormatter = new Intl.DateTimeFormat('en-US', {
 
       {allTags.length > 0 && (
         <div class="archive-controls__group">
-          <p class="archive-controls__label">Tags</p>
+          <p class="archive-controls__label font-archive">Tags</p>
           <div class="archive-controls__buttons" role="group" aria-label="Filter by tag">
-            <button type="button" class="archive-filter is-active" data-filter-group="tag" data-filter-value="all" aria-pressed="true">
+            <button type="button" class="archive-filter font-archive is-active" data-filter-group="tag" data-filter-value="all" aria-pressed="true">
               All
             </button>
             {allTags.map((tag) => (
-              <button type="button" class="archive-filter" data-filter-group="tag" data-filter-value={tag} aria-pressed="false">
+              <button type="button" class="archive-filter font-archive" data-filter-group="tag" data-filter-value={tag} aria-pressed="false">
                 #{tag}
               </button>
             ))}
@@ -61,7 +61,7 @@ const fullDateFormatter = new Intl.DateTimeFormat('en-US', {
       )}
     </section>
 
-    <div class="archive-results">
+    <div class="archive-results font-archive">
       <p id="archive-results-count">{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
     </div>
 
@@ -206,6 +206,7 @@ const fullDateFormatter = new Intl.DateTimeFormat('en-US', {
     border-radius: 999px;
     padding: 0.36rem 0.74rem;
     font-size: 0.82rem;
+    letter-spacing: 0.04em;
     color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
   }
 

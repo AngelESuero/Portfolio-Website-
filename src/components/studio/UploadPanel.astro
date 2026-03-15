@@ -1,0 +1,74 @@
+---
+interface Props {
+  lane: 'music' | 'video' | 'image';
+}
+
+const { lane } = Astro.props as Props;
+
+const accept = lane === 'music'
+  ? '.mp3,.wav,.m4a,.aac,.flac,.ogg,audio/*'
+  : lane === 'video'
+    ? '.mp4,.mov,.m4v,.webm,.ogg,video/*'
+    : '.jpg,.jpeg,.png,.webp,.gif,.avif,.svg,image/*';
+---
+
+<section class="studio-section">
+  <div class="studio-section__header">
+    <h2>Media source</h2>
+    <p>Start with the asset. Choose a direct upload to R2 or point to an external media URL first.</p>
+  </div>
+
+  <div class="studio-choice-row" role="radiogroup" aria-label="Media source mode">
+    <label class="studio-choice">
+      <input type="radio" name="media_mode" value="upload" checked data-media-mode />
+      <span>Upload file</span>
+    </label>
+    <label class="studio-choice">
+      <input type="radio" name="media_mode" value="external" data-media-mode />
+      <span>External URL</span>
+    </label>
+  </div>
+
+  <div class="studio-media-pane studio-upload-box" data-media-pane="upload">
+    <label class="studio-field">
+      <span>Choose file</span>
+      <input type="file" accept={accept} data-upload-file />
+      <small>Uploads go to Cloudflare R2. Only the MDX entry is committed to Git.</small>
+    </label>
+
+    <div class="studio-upload-preview" data-upload-preview hidden>
+      <img alt="" data-upload-preview-image hidden />
+      <code data-upload-preview-name>No file selected yet.</code>
+      <p class="studio-helper-copy" data-upload-preview-copy>Select a file to prepare the upload.</p>
+    </div>
+
+    <div class="studio-upload-actions">
+      <button class="studio-button" type="button" data-upload-button>Upload to R2</button>
+      <button class="studio-button--ghost" type="button" data-upload-reset>Clear upload</button>
+      <progress class="studio-upload-progress" max="100" value="0" data-upload-progress hidden></progress>
+    </div>
+
+    <p class="studio-submit__status" data-upload-status aria-live="polite"></p>
+  </div>
+
+  <div class="studio-media-pane" data-media-pane="external" hidden>
+    <label class="studio-field">
+      <span>External URL</span>
+      <input
+        type="url"
+        name="external_url"
+        inputmode="url"
+        placeholder={lane === 'music' ? 'https://untitled.stream/...' : lane === 'video' ? 'https://www.youtube.com/...' : 'https://example.com/image.jpg'}
+        data-external-url
+      />
+      <small>Use this when the media already lives on YouTube, untitled.stream, or another public URL.</small>
+    </label>
+  </div>
+
+  <input type="hidden" name="asset_src" value="" data-asset-field="asset_src" />
+  <input type="hidden" name="asset_type" value="" data-asset-field="asset_type" />
+  <input type="hidden" name="original_filename" value="" data-asset-field="original_filename" />
+  <input type="hidden" name="mime_type" value="" data-asset-field="mime_type" />
+  <input type="hidden" name="file_size" value="" data-asset-field="file_size" />
+  <input type="hidden" name="upload_source" value="" data-asset-field="upload_source" />
+</section>

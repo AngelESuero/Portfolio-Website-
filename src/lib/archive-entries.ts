@@ -7,7 +7,8 @@ export const ENTRY_MEDIUM_LABELS: Record<ArchiveEntry['data']['medium'], string>
   music: 'Music',
   video: 'Video',
   image: 'Image',
-  note: 'Note'
+  note: 'Note',
+  proposal: 'Proposal'
 };
 
 export const ENTRY_SOURCE_LABELS: Record<ArchiveEntry['data']['source'], string> = {
@@ -16,7 +17,8 @@ export const ENTRY_SOURCE_LABELS: Record<ArchiveEntry['data']['source'], string>
   untitled: 'Untitled',
   'local-media': 'Local media',
   'private-notes': 'Private notes',
-  manual: 'Manual'
+  manual: 'Manual',
+  linktree: 'Linktree'
 };
 
 export const ENTRY_STATUS_LABELS: Record<ArchiveEntry['data']['status'], string> = {
@@ -72,6 +74,9 @@ export const getEntryFragment = (entry: Pick<ArchiveEntry, 'body'>, maxChars = 1
   if (text.length <= maxChars) return text;
   return `${text.slice(0, maxChars).trimEnd()}...`;
 };
+
+export const isAudioAsset = (src?: string, mimeType?: string) =>
+  Boolean((mimeType && /^audio\//i.test(mimeType)) || (src && /\.(aac|flac|m4a|mp3|ogg|wav)$/i.test(src)));
 
 export const isLocalVideoAsset = (src?: string) => Boolean(src && /\.(mov|mp4|m4v|webm|ogg)$/i.test(src));
 

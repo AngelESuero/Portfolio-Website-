@@ -1,7 +1,7 @@
 import { defineCollection, z } from 'astro:content';
 
-const entryMediums = ['writing', 'music', 'video', 'image', 'note'] as const;
-const entrySources = ['substack', 'youtube', 'untitled', 'local-media', 'private-notes', 'manual'] as const;
+const entryMediums = ['writing', 'music', 'video', 'image', 'note', 'proposal'] as const;
+const entrySources = ['substack', 'youtube', 'untitled', 'local-media', 'private-notes', 'manual', 'linktree'] as const;
 const entryStatuses = ['raw', 'withheld', 'in-progress', 'published', 'featured'] as const;
 
 const projects = defineCollection({
@@ -63,6 +63,11 @@ const entries = defineCollection({
     summary: z.string(),
     external_url: z.string().url().optional(),
     related_entries: z.array(z.string()).optional(),
+    audience: z.string().optional(),
+    institution: z.string().optional(),
+    proposal_status: z.string().optional(),
+    place: z.string().optional(),
+    ask: z.string().optional(),
     asset: z
       .object({
         src: z.string(),
@@ -71,6 +76,13 @@ const entries = defineCollection({
         caption: z.string().optional()
       })
       .optional(),
+    asset_type: z.enum(['audio', 'video', 'image']).optional(),
+    original_filename: z.string().optional(),
+    mime_type: z.string().optional(),
+    file_size: z.number().int().nonnegative().optional(),
+    upload_source: z.enum(['r2', 'external']).optional(),
+    thumbnail: z.string().optional(),
+    duration: z.string().optional(),
     ingest: z
       .object({
         mode: z.enum(['manual', 'rss', 'local']).optional(),
