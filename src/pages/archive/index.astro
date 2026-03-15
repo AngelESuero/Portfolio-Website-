@@ -73,38 +73,45 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
       </div>
 
       {allTags.length > 0 && (
-        <div class="archive-controls__group archive-controls__group--secondary">
-          <div class="archive-controls__heading">
-            <p class="archive-controls__label font-archive">Tags</p>
-            <p class="archive-controls__note">A small set stays forward; the rest stay folded nearby.</p>
-          </div>
+        <details class="archive-controls__toggle" id="archive-tag-toggle">
+          <summary class="archive-controls__toggle-summary font-archive">
+            <span class="archive-controls__toggle-label archive-controls__toggle-label--show">Show tags</span>
+            <span class="archive-controls__toggle-label archive-controls__toggle-label--hide">Hide tags</span>
+          </summary>
 
-          <div class="archive-controls__buttons" role="group" aria-label="Filter by tag">
-            <button type="button" class="archive-filter font-archive is-active" data-filter-group="tag" data-filter-value="all" aria-pressed="true">
-              All
-            </button>
-            {featuredTags.map((tag) => (
-              <button type="button" class="archive-filter font-archive" data-filter-group="tag" data-filter-value={tag} aria-pressed="false">
-                #{tag}
+          <div class="archive-controls__group archive-controls__group--secondary archive-controls__group--tags">
+            <div class="archive-controls__heading">
+              <p class="archive-controls__label font-archive">Tags</p>
+              <p class="archive-controls__note">A small set stays forward; the rest stay folded nearby.</p>
+            </div>
+
+            <div class="archive-controls__buttons" role="group" aria-label="Filter by tag">
+              <button type="button" class="archive-filter font-archive is-active" data-filter-group="tag" data-filter-value="all" aria-pressed="true">
+                All
               </button>
-            ))}
-          </div>
+              {featuredTags.map((tag) => (
+                <button type="button" class="archive-filter font-archive" data-filter-group="tag" data-filter-value={tag} aria-pressed="false">
+                  #{tag}
+                </button>
+              ))}
+            </div>
 
-          {secondaryTags.length > 0 && (
-            <details class="archive-controls__more">
-              <summary class="archive-controls__more-toggle font-archive">
-                More tags <span aria-hidden="true">({secondaryTags.length})</span>
-              </summary>
-              <div class="archive-controls__buttons archive-controls__buttons--secondary" role="group" aria-label="More archive tags">
-                {secondaryTags.map((tag) => (
-                  <button type="button" class="archive-filter font-archive" data-filter-group="tag" data-filter-value={tag} aria-pressed="false">
-                    #{tag}
-                  </button>
-                ))}
-              </div>
-            </details>
-          )}
-        </div>
+            {secondaryTags.length > 0 && (
+              <details class="archive-controls__more">
+                <summary class="archive-controls__more-toggle font-archive">
+                  More tags <span aria-hidden="true">({secondaryTags.length})</span>
+                </summary>
+                <div class="archive-controls__buttons archive-controls__buttons--secondary" role="group" aria-label="More archive tags">
+                  {secondaryTags.map((tag) => (
+                    <button type="button" class="archive-filter font-archive" data-filter-group="tag" data-filter-value={tag} aria-pressed="false">
+                      #{tag}
+                    </button>
+                  ))}
+                </div>
+              </details>
+            )}
+          </div>
+        </details>
       )}
     </section>
 
@@ -138,6 +145,7 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
       const items = Array.from(document.querySelectorAll('.archive-item'));
       const resultsCount = document.getElementById('archive-results-count');
       const emptyState = document.getElementById('archive-empty-state');
+      const tagToggle = document.getElementById('archive-tag-toggle');
       let activeMedium = 'all';
       let activeTag = 'all';
 
@@ -188,6 +196,16 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
           render();
         });
       });
+
+      if (tagToggle instanceof HTMLDetailsElement) {
+        tagToggle.addEventListener('toggle', () => {
+          if (!tagToggle.open && activeTag !== 'all') {
+            activeTag = 'all';
+            updateGroupState('tag', 'all');
+            render();
+          }
+        });
+      }
 
       render();
     })();
@@ -263,6 +281,47 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
 
   .archive-controls__group--secondary {
     gap: 0.7rem;
+  }
+
+  .archive-controls__group--tags {
+    margin-top: 0.72rem;
+  }
+
+  .archive-controls__toggle {
+    border-top: 1px solid var(--line2);
+    padding-top: 0.72rem;
+  }
+
+  .archive-controls__toggle[open] {
+    padding-bottom: 0.04rem;
+  }
+
+  .archive-controls__toggle-summary {
+    width: fit-content;
+    cursor: pointer;
+    list-style: none;
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  }
+
+  .archive-controls__toggle-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .archive-controls__toggle-summary:hover,
+  .archive-controls__toggle-summary:focus-visible {
+    color: var(--tone-text);
+  }
+
+  .archive-controls__toggle-label--hide,
+  .archive-controls__toggle[open] .archive-controls__toggle-label--show {
+    display: none;
+  }
+
+  .archive-controls__toggle[open] .archive-controls__toggle-label--hide {
+    display: inline;
   }
 
   .archive-controls__heading {
