@@ -126,6 +126,20 @@ const supplementaryFeedCount = Array.isArray((agiFeedData as { items?: unknown[]
   ? ((agiFeedData as { items?: unknown[] }).items ?? []).length
   : 0;
 const supplementaryFeedLabel = formatFreshnessLabel((agiFeedData as { meta?: { generatedAt?: string } })?.meta?.generatedAt);
+const laborReferences = [
+  {
+    title: 'AI Exposure of the US Job Market',
+    url: 'https://karpathy.ai/jobs/',
+    sublabel: 'Interactive labor map by occupation',
+    note: 'Useful for seeing where occupation-level exposure sits before broader labor pressure gets flattened into one abstract headline.'
+  },
+  {
+    title: 'Jobloss.ai',
+    url: 'https://jobloss.ai/',
+    sublabel: 'AI-related labor shift tracker',
+    note: 'A small external tracker worth keeping nearby when the timeline moves from software shock into employment and displacement signals.'
+  }
+] as const;
 ---
 
 <BaseLayout
@@ -242,6 +256,36 @@ const supplementaryFeedLabel = formatFreshnessLabel((agiFeedData as { meta?: { g
             {formatFreshnessLabel(timeline.meta.updatedAt)} · {items.length} curated entries · {signalCount} signals · {thesisCount} theses
           </p>
         </header>
+
+        <section class="supplementary-feed" aria-labelledby="labor-reference-heading">
+          <header class="section-header">
+            <div>
+              <p class="wave-kicker">External labor references</p>
+              <h3 id="labor-reference-heading">Outside tools worth keeping nearby</h3>
+            </div>
+            <p>Two quiet companion references for the wave-two labor picture.</p>
+          </header>
+
+          <div class="supplementary-list">
+            {laborReferences.map((reference) => (
+              <article class="supplementary-item">
+                <div class="analyst-card-topline">
+                  <span>Labor reference</span>
+                  <span class="freshness-badge">External</span>
+                </div>
+                <h4>{reference.title}</h4>
+                <p class="analyst-context">{reference.sublabel}</p>
+                <p class="analyst-note">{reference.note}</p>
+                <div class="analyst-footer">
+                  <span>Wave-two context</span>
+                  <a href={reference.url} target="_blank" rel="noreferrer">
+                    Open reference
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
 
         {waveEntries.map(({ wave, items: waveItems }) => {
           return (
