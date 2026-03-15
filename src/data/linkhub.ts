@@ -62,6 +62,7 @@ export const LINK_HUB_ICONS: LinkHubIconLink[] = [
   { title: 'Twitch', url: SOCIAL_URLS.twitch, icon: 'TW' },
   { title: 'Substack', url: SUBSTACK_PROFILE_URL, icon: 'SB' },
   { title: 'Linktree', url: SOCIAL_URLS.linktree, icon: 'LT' },
+  { title: 'Archive', url: '/archive', icon: 'AR' },
   { title: 'Discord', url: SOCIAL_URLS.discordHub, icon: 'DC' },
   { title: 'Spotify', url: spotifyNowListeningUrl, icon: 'SP' },
   { title: 'Email', url: '/contact', icon: '@' }

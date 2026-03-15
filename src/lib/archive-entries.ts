@@ -1,8 +1,11 @@
 import type { CollectionEntry } from 'astro:content';
 
 export type ArchiveEntry = CollectionEntry<'entries'>;
+export type ArchiveMedium = ArchiveEntry['data']['medium'];
 
-export const ENTRY_MEDIUM_LABELS: Record<ArchiveEntry['data']['medium'], string> = {
+export const ARCHIVE_MEDIUMS: ArchiveMedium[] = ['writing', 'music', 'video', 'image', 'note', 'proposal'];
+
+export const ENTRY_MEDIUM_LABELS: Record<ArchiveMedium, string> = {
   writing: 'Writing',
   music: 'Music',
   video: 'Video',
@@ -40,8 +43,11 @@ export const collectEntryTags = (entries: ArchiveEntry[]) =>
     .sort((a, b) => a.localeCompare(b));
 
 export const getEntryHref = (entry: Pick<ArchiveEntry, 'slug'>) => `/archive/${entry.slug}`;
+export const getArchiveMediumHref = (medium: ArchiveMedium) => `/archive/${medium}`;
+export const filterEntriesByMedium = (entries: ArchiveEntry[], medium: ArchiveMedium) =>
+  entries.filter((entry) => entry.data.medium === medium);
 
-export const getEntryDisplayMedium = (medium: ArchiveEntry['data']['medium']) => ENTRY_MEDIUM_LABELS[medium];
+export const getEntryDisplayMedium = (medium: ArchiveMedium) => ENTRY_MEDIUM_LABELS[medium];
 
 export const getEntryDisplaySource = (source: ArchiveEntry['data']['source']) => ENTRY_SOURCE_LABELS[source];
 

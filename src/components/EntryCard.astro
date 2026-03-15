@@ -10,6 +10,7 @@ import {
   getEntryHref,
   shouldShowEntryStatus
 } from '../lib/archive-entries';
+import { formatShortUtcDate } from '../lib/date-formatting';
 import { getLinkCtaLabel, providerFromUrl } from '../lib/embed-resolver';
 
 interface Props {
@@ -23,11 +24,6 @@ const mediumLabel = getEntryDisplayMedium(entry.data.medium);
 const sourceLabel = getEntryDisplaySource(entry.data.source);
 const statusLabel = getEntryDisplayStatus(entry.data.status);
 const showStatus = shouldShowEntryStatus(entry.data.status);
-const dateFormatter = new Intl.DateTimeFormat('en-US', {
-  month: 'short',
-  day: 'numeric',
-  year: 'numeric'
-});
 const hasBody = entryHasBody(entry);
 const noteFragment = entry.data.medium === 'note' ? getEntryFragment(entry, 190) : '';
 const externalUrl = typeof entry.data.external_url === 'string' ? entry.data.external_url.trim() : '';
@@ -46,7 +42,7 @@ const showMediaBlock = entry.data.medium === 'music' || entry.data.medium === 'v
 <article class="card entry-card" data-medium={entry.data.medium} data-status={entry.data.status}>
   <div class="entry-card__topline">
     <p class="entry-card__meta font-archive">
-      <span>{dateFormatter.format(entry.data.date)}</span>
+      <span>{formatShortUtcDate(entry.data.date)}</span>
       <span>{mediumLabel}</span>
       <span>{sourceLabel}</span>
     </p>

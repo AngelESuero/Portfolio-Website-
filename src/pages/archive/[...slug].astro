@@ -5,6 +5,7 @@ import EntryMediaBlock from '../../components/EntryMediaBlock.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import {
   entryHasBody,
+  getArchiveMediumHref,
   getEntryDisplayMedium,
   getEntryDisplaySource,
   getEntryDisplayStatus,
@@ -12,6 +13,7 @@ import {
   shouldShowEntryStatus,
   sortEntriesByDate
 } from '../../lib/archive-entries';
+import { formatLongUtcDate } from '../../lib/date-formatting';
 import { getLinkCtaLabel, providerFromUrl } from '../../lib/embed-resolver';
 
 export async function getStaticPaths() {
@@ -26,11 +28,6 @@ const relatedEntries = (entry.data.related_entries || [])
   .map((slug) => allEntries.find((item) => item.slug === slug))
   .filter(Boolean) as CollectionEntry<'entries'>[];
 const hasBody = entryHasBody(entry);
-const dateFormatter = new Intl.DateTimeFormat('en-US', {
-  month: 'long',
-  day: 'numeric',
-  year: 'numeric'
-});
 const mediumLabel = getEntryDisplayMedium(entry.data.medium);
 const sourceLabel = getEntryDisplaySource(entry.data.source);
 const showStatus = shouldShowEntryStatus(entry.data.status);
@@ -39,14 +36,21 @@ const externalUrl = typeof entry.data.external_url === 'string' ? entry.data.ext
 const externalProvider = externalUrl ? providerFromUrl(externalUrl) : null;
 const externalLabel = externalUrl ? getLinkCtaLabel(externalUrl, externalProvider) : '';
 const externalIsAbsolute = /^https?:\/\//i.test(externalUrl);
+const mediumHref = getArchiveMediumHref(entry.data.medium);
+const sameMediumEntries = allEntries
+  .filter((item) => item.slug !== entry.slug && item.data.medium === entry.data.medium)
+  .slice(0, 3);
 ---
 <BaseLayout title={`${entry.data.title} — Archive`} theme="archive">
   <article class="archive-entry">
-    <a href="/archive" class="archive-entry__back">← Back to Archive</a>
+    <nav class="archive-entry__backtrail font-archive" aria-label="Archive breadcrumbs">
+      <a href="/archive" class="archive-entry__back">← All archive</a>
+      <a href={mediumHref} class="archive-entry__back">Browse {mediumLabel}</a>
+    </nav>
 
     <header class="archive-entry__header">
       <p class="archive-entry__meta font-archive">
-        <span>{dateFormatter.format(entry.data.date)}</span>
+        <span>{formatLongUtcDate(entry.data.date)}</span>
         <span>{mediumLabel}</span>
         <span>{sourceLabel}</span>
       </p>
@@ -73,7 +77,7 @@ const externalIsAbsolute = /^https?:\/\//i.test(externalUrl);
       </section>
     )}
 
-    {(externalUrl || relatedEntries.length > 0) && (
+    {(externalUrl || relatedEntries.length > 0 || sameMediumEntries.length > 0) && (
       <footer class="archive-entry__footer">
         {externalUrl && (
           <a href={externalUrl} class="archive-entry__source-link" {...(externalIsAbsolute ? { target: '_blank', rel: 'noopener' } : {})}>
@@ -87,6 +91,18 @@ const externalIsAbsolute = /^https?:\/\//i.test(externalUrl);
             <div class="archive-entry__related-links">
               {relatedEntries.map((relatedEntry) => (
                 <a href={getEntryHref(relatedEntry)}>{relatedEntry.data.title}</a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {sameMediumEntries.length > 0 && (
+          <div class="archive-entry__related">
+            <p class="font-archive">More in {mediumLabel}</p>
+            <div class="archive-entry__related-links">
+              <a href={mediumHref}>Browse all {mediumLabel.toLowerCase()}</a>
+              {sameMediumEntries.map((sameMediumEntry) => (
+                <a href={getEntryHref(sameMediumEntry)}>{sameMediumEntry.data.title}</a>
               ))}
             </div>
           </div>
@@ -113,6 +129,12 @@ const externalIsAbsolute = /^https?:\/\//i.test(externalUrl);
     border-radius: 1rem;
     background: color-mix(in srgb, var(--tone-surface) 12%, transparent);
     pointer-events: none;
+  }
+
+  .archive-entry__backtrail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
   }
 
   .archive-entry__back {

@@ -13,15 +13,25 @@ import LifeMapSemanticOrb from '../../app/components/LifeMapSemanticOrb';
   ambientEffects={false}
 >
   <LifeMapSemanticOrb client:load />
-  <a href="/work" class="map-escape-link" data-color="ochre" data-tone="seva">Back to Portfolio</a>
+  <div class="map-escape-links">
+    <a href="/work" class="map-escape-link" data-color="ochre" data-tone="seva">Back to Portfolio</a>
+    <a href="/archive" class="map-escape-link" data-color="blue" data-tone="clarity">Open Archive</a>
+  </div>
 </BaseLayout>
 
 <style>
-  .map-escape-link {
+  .map-escape-links {
     position: fixed;
     top: calc(env(safe-area-inset-top, 0px) + 5.25rem);
     left: 1rem;
     z-index: 60;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    max-width: min(28rem, calc(100vw - 2rem));
+  }
+
+  .map-escape-link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -50,9 +60,14 @@ import LifeMapSemanticOrb from '../../app/components/LifeMapSemanticOrb';
   }
 
   @media (max-width: 860px) {
-    .map-escape-link {
+    .map-escape-links {
       top: calc(env(safe-area-inset-top, 0px) + 4.5rem);
       left: 0.75rem;
+      right: 0.75rem;
+      max-width: none;
+    }
+
+    .map-escape-link {
       padding-inline: 0.8rem;
       font-size: 0.82rem;
     }

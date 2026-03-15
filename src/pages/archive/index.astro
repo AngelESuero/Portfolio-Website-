@@ -2,16 +2,19 @@
 import { getCollection } from 'astro:content';
 import EntryCard from '../../components/EntryCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { collectEntryTags, getEntryDisplayMedium, normalizeEntryTag, sortEntriesByDate } from '../../lib/archive-entries';
+import {
+  ARCHIVE_MEDIUMS,
+  collectEntryTags,
+  getArchiveMediumHref,
+  getEntryDisplayMedium,
+  normalizeEntryTag,
+  sortEntriesByDate
+} from '../../lib/archive-entries';
+import { formatLongUtcDate } from '../../lib/date-formatting';
 
 const entries = sortEntriesByDate(await getCollection('entries'));
 const allTags = collectEntryTags(entries);
-const mediums = ['writing', 'music', 'video', 'image', 'note', 'proposal'] as const;
-const fullDateFormatter = new Intl.DateTimeFormat('en-US', {
-  month: 'long',
-  day: 'numeric',
-  year: 'numeric'
-});
+const mediums = ARCHIVE_MEDIUMS;
 ---
 <BaseLayout title="Archive — a_e.s_" theme="archive">
   <section class="view-surface archive-page">
@@ -25,9 +28,18 @@ const fullDateFormatter = new Intl.DateTimeFormat('en-US', {
       <div class="archive-page__meta font-archive">
         <p>{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
         <p>{mediums.length} mediums</p>
-        {entries[0] && <p>Latest: {fullDateFormatter.format(entries[0].data.date)}</p>}
+        {entries[0] && <p>Latest: {formatLongUtcDate(entries[0].data.date)}</p>}
       </div>
     </header>
+
+    <nav class="archive-page__browse font-archive" aria-label="Archive lane pages">
+      <a href="/archive" class="archive-page__browse-link is-current" aria-current="page">All archive</a>
+      {mediums.map((medium) => (
+        <a href={getArchiveMediumHref(medium)} class="archive-page__browse-link">
+          {getEntryDisplayMedium(medium)}
+        </a>
+      ))}
+    </nav>
 
     <section class="archive-controls" aria-label="Archive filters">
       <div class="archive-controls__group">
@@ -170,6 +182,32 @@ const fullDateFormatter = new Intl.DateTimeFormat('en-US', {
   .archive-page__meta p,
   .archive-results p {
     margin: 0;
+  }
+
+  .archive-page__browse {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .archive-page__browse-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.15rem;
+    padding: 0.4rem 0.74rem;
+    border-radius: 999px;
+    border: 1px solid var(--line2);
+    color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
+    text-decoration: none;
+    background: color-mix(in srgb, var(--tone-surface) 88%, transparent);
+  }
+
+  .archive-page__browse-link.is-current,
+  .archive-page__browse-link:hover,
+  .archive-page__browse-link:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
+    color: var(--tone-text);
   }
 
   .archive-controls {

@@ -1,0 +1,143 @@
+---
+import { getCollection } from 'astro:content';
+import EntryCard from '../../components/EntryCard.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  ARCHIVE_MEDIUMS,
+  filterEntriesByMedium,
+  getArchiveMediumHref,
+  getEntryDisplayMedium,
+  type ArchiveMedium,
+  sortEntriesByDate
+} from '../../lib/archive-entries';
+import { formatLongUtcDate } from '../../lib/date-formatting';
+
+const mediumDescriptions: Record<ArchiveMedium, string> = {
+  writing: 'Essays, fragments, and archive-native text entries held in one running lane.',
+  music: 'Tracks, demos, rough studies, and release-adjacent music entries gathered into one chronology.',
+  video: 'Moving-image work, edits, and linked video releases filed into the archive as a continuous lane.',
+  image: 'Stills, documentation, and visual fragments kept visible without needing a larger project wrapper.',
+  note: 'Process notes, fragments, and smaller signals that still belong in the public record of the archive.',
+  proposal: 'Proposal drafts, asks, and institutional-facing materials kept inside the same archive logic.'
+};
+
+export async function getStaticPaths() {
+  return ARCHIVE_MEDIUMS.map((medium) => ({
+    params: { medium },
+    props: { medium }
+  }));
+}
+
+const { medium } = Astro.props as { medium: ArchiveMedium };
+const allEntries = sortEntriesByDate(await getCollection('entries'));
+const entries = filterEntriesByMedium(allEntries, medium);
+const mediumLabel = getEntryDisplayMedium(medium);
+---
+<BaseLayout title={`${mediumLabel} Archive — a_e.s_`} theme="archive">
+  <section class="view-surface archive-medium">
+    <header class="view-surface-header archive-medium__header">
+      <p class="view-surface-kicker">Archive lane</p>
+      <h1>{mediumLabel}</h1>
+      <p class="archive-medium__description">{mediumDescriptions[medium]}</p>
+      <div class="archive-medium__meta font-archive">
+        <p>{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
+        {entries[0] && <p>Latest: {formatLongUtcDate(entries[0].data.date)}</p>}
+      </div>
+    </header>
+
+    <nav class="archive-medium__browse font-archive" aria-label="Archive lane pages">
+      <a href="/archive" class="archive-medium__browse-link">All archive</a>
+      {ARCHIVE_MEDIUMS.map((lane) => (
+        <a
+          href={getArchiveMediumHref(lane)}
+          class:list={['archive-medium__browse-link', lane === medium && 'is-current']}
+          {...(lane === medium ? { 'aria-current': 'page' } : {})}
+        >
+          {getEntryDisplayMedium(lane)}
+        </a>
+      ))}
+    </nav>
+
+    {entries.length === 0 ? (
+      <p class="archive-medium__empty">No {mediumLabel.toLowerCase()} entries yet.</p>
+    ) : (
+      <ul class="archive-medium__list">
+        {entries.map((entry) => (
+          <li>
+            <EntryCard entry={entry} />
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .archive-medium {
+    display: grid;
+    gap: 1.4rem;
+  }
+
+  .archive-medium__description {
+    max-width: 64ch;
+    margin: 0;
+  }
+
+  .archive-medium__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem 1rem;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .archive-medium__meta p,
+  .archive-medium__empty {
+    margin: 0;
+  }
+
+  .archive-medium__browse {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .archive-medium__browse-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.15rem;
+    padding: 0.4rem 0.74rem;
+    border-radius: 999px;
+    border: 1px solid var(--line2);
+    color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
+    text-decoration: none;
+    background: color-mix(in srgb, var(--tone-surface) 88%, transparent);
+  }
+
+  .archive-medium__browse-link.is-current,
+  .archive-medium__browse-link:hover,
+  .archive-medium__browse-link:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
+    color: var(--tone-text);
+  }
+
+  .archive-medium__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .archive-medium__list li {
+    min-width: 0;
+  }
+
+  .archive-medium__empty {
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  }
+</style>

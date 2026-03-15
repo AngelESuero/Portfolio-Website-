@@ -2,19 +2,10 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import SubstackPanel from '../../components/SubstackPanel.astro';
+import { formatLongUtcDate, formatShortUtcDate } from '../../lib/date-formatting';
 import { isPostReady } from '../../lib/post-readiness';
 
 const posts = (await getCollection('posts')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const dateFormatter = new Intl.DateTimeFormat('en-US', {
-  month: 'short',
-  day: 'numeric',
-  year: 'numeric'
-});
-const fullDateFormatter = new Intl.DateTimeFormat('en-US', {
-  month: 'long',
-  day: 'numeric',
-  year: 'numeric'
-});
 const allTags = [...new Set(posts.flatMap((post) => post.data.tags.map((tag) => tag.trim().toLowerCase())))]
   .filter(Boolean)
   .sort((a, b) => a.localeCompare(b));
@@ -97,7 +88,7 @@ const writingArc = [
     <div class="writing-meta">
       <p>{posts.length} {posts.length === 1 ? 'entry' : 'entries'}</p>
       <p>Archive frame: 2015-2025</p>
-      {posts[0] && <p>Latest: {fullDateFormatter.format(posts[0].data.date)}</p>}
+      {posts[0] && <p>Latest: {formatLongUtcDate(posts[0].data.date)}</p>}
     </div>
     <a class="writing-rss-link" href="/rss.xml">RSS feed</a>
   </section>
@@ -114,7 +105,7 @@ const writingArc = [
           const featuredPostReady = isPostReady(featuredPost);
           return (
         <article class="writing-card writing-card--featured">
-          <p class="writing-card-date">Featured entry · {fullDateFormatter.format(featuredPost.data.date)}</p>
+          <p class="writing-card-date">Featured entry · {formatLongUtcDate(featuredPost.data.date)}</p>
           <h2 class="writing-proof-title">
             <a href={`/writing/${featuredPost.slug}`} class="writing-card-title">{featuredPost.data.title}</a>
           </h2>
@@ -141,7 +132,7 @@ const writingArc = [
                 const postReady = isPostReady(post);
                 return (
                   <article class="writing-proof-mini">
-                    <p class="writing-card-date">{dateFormatter.format(post.data.date)}</p>
+                    <p class="writing-card-date">{formatShortUtcDate(post.data.date)}</p>
                     <h3>
                       <a href={`/writing/${post.slug}`} class="writing-card-title">{post.data.title}</a>
                     </h3>
@@ -188,7 +179,7 @@ const writingArc = [
               return (
                 <li class="writing-item" data-tags={post.data.tags.map((tag) => tag.trim().toLowerCase()).join(' ')}>
                   <article class="writing-card">
-                    <p class="writing-card-date">{dateFormatter.format(post.data.date)}</p>
+                    <p class="writing-card-date">{formatShortUtcDate(post.data.date)}</p>
                     <h3 class="font-display text-2xl">
                       <a href={`/writing/${post.slug}`} class="writing-card-title">{post.data.title}</a>
                     </h3>
