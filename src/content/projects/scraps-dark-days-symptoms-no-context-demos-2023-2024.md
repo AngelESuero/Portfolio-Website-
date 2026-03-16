@@ -15,7 +15,7 @@ relatedProjects:
   - "scraps-death-of-my-feminine-demos-2022"
 relatedThread: "/threads/scraps-archive"
 media:
-  - src: "/media/work/scraps/scraps-dark-days-symptoms-no-context-demos-2023-2024/2Tl9lUSvOQq.mp4"
+  - src: "https://raw.githubusercontent.com/AngelESuero/Portfolio-Website-/ffee4a486577ae102c5768d11eef4061c20442ed/public/media/work/scraps/scraps-dark-days-symptoms-no-context-demos-2023-2024/2Tl9lUSvOQq.mp4"
     alt: "Feminine: experiment 15: swamp demo reel."
     caption: "swamp demo · Sep 2023"
   - src: "/media/work/scraps/scraps-dark-days-symptoms-no-context-demos-2023-2024/6hiIXLicTTm.mp4"
