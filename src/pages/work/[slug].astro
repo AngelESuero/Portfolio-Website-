@@ -28,6 +28,7 @@ const projectLinks = Object.entries(project.data.links)
   })
   .filter((entry): entry is { key: string; label: string; url: string; isExternal: boolean } => Boolean(entry));
 const projectMedia = Array.isArray(project.data.media) ? project.data.media : [];
+const isVideoMedia = (src: string) => /\.(mp4|mov|webm)$/i.test(src);
 ---
 <BaseLayout title={`${project.data.title} — Work`} theme="work">
   <div class="work-entry">
@@ -54,12 +55,16 @@ const projectMedia = Array.isArray(project.data.media) ? project.data.media : []
     )}
     <article class="reading-prose mt-8"><Content /></article>
     {projectMedia.length > 0 && (
-      <section class="project-media" aria-label="Selected frames">
-        <p class="project-media__eyebrow">Selected frames</p>
+      <section class="project-media" aria-label="Selected media">
+        <p class="project-media__eyebrow">Selected media</p>
         <div class="project-media__grid">
           {projectMedia.map((item) => (
             <figure class="project-media__item">
-              <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
+              {isVideoMedia(item.src) ? (
+                <video src={item.src} aria-label={item.alt} controls preload="metadata" playsinline />
+              ) : (
+                <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
+              )}
               {item.caption && <figcaption>{item.caption}</figcaption>}
             </figure>
           ))}
@@ -107,12 +112,17 @@ const projectMedia = Array.isArray(project.data.media) ? project.data.media : []
     margin: 0;
   }
 
-  .project-media__item img {
+  .project-media__item img,
+  .project-media__item video {
     display: block;
     width: 100%;
     aspect-ratio: 4 / 5;
     object-fit: cover;
     border-radius: 14px;
+  }
+
+  .project-media__item video {
+    background: color-mix(in srgb, var(--tone-surface) 82%, black 18%);
   }
 
   .project-media__item figcaption {
