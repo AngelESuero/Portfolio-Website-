@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-20T22:49:09.084Z",
+    "generatedAt": "2026-03-20T23:45:11.323Z",
     "sources": [
       {
         "id": "openai_news",
@@ -12676,6 +12676,31 @@
       ]
     },
     {
+      "id": "475a33176059ce68f1c8964177d16c86115293ea796fbcaa4a2eb3c15009270b",
+      "title": "Spectral Edge Dynamics of Training Trajectories: Signal--Noise Geometry Across Scales",
+      "url": "https://arxiv.org/abs/2603.15678",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-20T04:00:00.000Z",
+      "summary": "arXiv:2603.15678v2 Announce Type: replace-cross Abstract: Despite hundreds of millions of parameters, transformer training trajectories evolve within only a few coherent directions. We introduce Spectral Edge Dynamics (SED) to quantify this structure: a rolling-window SVD of parameter updates reveals a sharp boundary -- the spectral edge -- between coherent optimization directions and stochastic noise, identified via the maximum consecutive singular value ratio $\\sigma_k / \\sigma_{k+1}$. Across a 51M-parameter TinyStories model (4 seeds) and GPT-2 124M under distribution shift, the spectral edge exhibits a universal three-phase pattern (rise, plateau, collapse). The effective signal rank adapts to task complexity ($k^* = 2$ at 51M, $k^* = 3$ at 124M), and the directional coupling between spectral geometry and validation loss reverses with window size -- a lag flip reflecting the timescale of trajectory integration. Johnson--Lindenstrauss projection to $d = 10W$ dimensions (e.g., $d = 100$ for $W = 10$) preserves the spectral gap within $5.7\\%$, making the framework applicable to models of arbitrary scale. In companion work, the same spectral geometry provides early-warning signals of grokking -- predicting generalization $600$--$1{,}700$ steps before it occurs across modular arithmetic, Dyck languages, and the SCAN benchmark.",
+      "tags": [
+        "papers",
+        "eval",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.15678"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
       "id": "9b485c2bb0c90ae9e9c070f148ccb1c2cdbd30559a2dbc2402d127919db3f3e5",
       "title": "How we monitor internal coding agents for misalignment",
       "url": "https://openai.com/index/how-we-monitor-internal-coding-agents-misalignment",
@@ -15131,31 +15156,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.15664"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "ca653eef362f4f8b6e51e7d9ffd9cbdcb2082215ba152d0110fa8b9d161f408e",
-      "title": "DRCY: Agentic Hardware Design Reviews",
-      "url": "https://arxiv.org/abs/2603.15672",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-18T04:00:00.000Z",
-      "summary": "arXiv:2603.15672v1 Announce Type: cross Abstract: Hardware design errors discovered after fabrication require costly physical respins that can delay products by months. Existing electronic design automation (EDA) tools enforce structural connectivity rules. However, they cannot verify that connections are \\emph{semantically} correct with respect to component datasheets. For example, that a symbol's pinout matches the manufacturer's specification, or that a voltage regulator's feedback resistors produce the intended output. We present DRCY, the first production-ready multi-agent LLM system that automates first-pass schematic connection review by autonomously fetching component datasheets, performing pin-by-pin analysis against extracted specifications, and posting findings as inline comments on design reviews. DRCY is deployed in production on AllSpice Hub, a collaborative hardware design platform, where it runs as a CI/CD action triggered on design review submissions. DRCY is used regularly by major hardware companies for use-cases ranging from multi-agent vehicle design to space exploration. We describe DRCY's five-agent pipeline architecture, its agentic datasheet retrieval system with self-evaluation, and its multi-run consensus mechanism for improving reliability on safety-critical analyses",
-      "tags": [
-        "papers",
-        "agents",
-        "eval",
-        "safety"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.15672"
         },
         {
           "label": "Feed",
