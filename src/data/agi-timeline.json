@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-20T21:46:03.751Z",
+    "generatedAt": "2026-03-20T22:49:09.084Z",
     "sources": [
       {
         "id": "openai_news",
@@ -12385,6 +12385,297 @@
       ]
     },
     {
+      "id": "17e059d4ce1331eb981477b1e3fde5b703ec6ebe304c66564b01eee88e3a6dce",
+      "title": "AdaSwitch: Balancing Exploration and Guidance in Knowledge Distillation via Adaptive Switching",
+      "url": "https://arxiv.org/abs/2510.07842",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-20T04:00:00.000Z",
+      "summary": "arXiv:2510.07842v3 Announce Type: replace-cross Abstract: Small language models (SLMs) are crucial for applications with strict latency and computational constraints, yet achieving high performance remains challenging. Knowledge distillation (KD) can transfer capabilities from large teacher models, but existing methods face a dilemma: off-policy distillation provides high-quality supervision but suffers from exposure bias (training inference mismatch), while on-policy approaches ensure consistency but are limited by the low quality of student-generated outputs. To address these issues, we propose AdaSwitch, a novel approach that dynamically combines on-policy and off-policy generation via an adaptive switching mechanism. AdaSwitch allows the student to explore its predictions within its capability and selectively integrates teacher guidance only when divergence exceeds a context-aware threshold. This paradigm preserves generation consistency while ensuring high-quality supervision. Experiments on three datasets demonstrate that AdaSwitch consistently improves accuracy and reasoning capability with moderate overhead.",
+      "tags": [
+        "papers",
+        "reasoning",
+        "policy",
+        "inference",
+        "training",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2510.07842"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "b7547db7bd1ce4103b655d782188d8e41c8301b3994b08d67e18184464c907d6",
+      "title": "To See is Not to Master: Teaching LLMs to Use Private Libraries for Code Generation",
+      "url": "https://arxiv.org/abs/2603.15159",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-20T04:00:00.000Z",
+      "summary": "arXiv:2603.15159v3 Announce Type: replace-cross Abstract: Large Language Models (LLMs) have shown strong potential for code generation, yet they remain limited in private-library-oriented code generation, where the goal is to generate code using APIs from private libraries. Existing approaches mainly rely on retrieving private-library API documentation and injecting relevant knowledge into the context at inference time. However, our study shows that this is insufficient: even given accurate required knowledge, LLMs still struggle to invoke private-library APIs effectively. To address this limitation, we propose PriCoder, an approach that teaches LLMs to invoke private-library APIs through automatically synthesized data. Specifically, PriCoder models private-library data synthesis as the construction of a graph, and alternates between two graph operators: (1) Progressive Graph Evolution, which improves data diversity by progressively synthesizing more diverse training samples from basic ones, and (2) Multidimensional Graph Pruning, which improves data quality through a rigorous filtering pipeline. To support rigorous evaluation, we construct two new benchmarks based on recently released libraries that are unfamiliar to the tested models. Experiments on three mainstream LLMs show that PriCoder substantially improves private-library-oriented code generation, yielding gains of over 20% in pass@1 in many settings, while causing negligible impact on general code generation capability. Our code and benchmarks are publicly available at https://github.com/eniacode/PriCoder.",
+      "tags": [
+        "papers",
+        "eval",
+        "inference",
+        "training",
+        "model",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.15159"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "adb641e67da7376915ef6cd19d6da793c1cf688e9c34f1eb00b209c731930e4b",
+      "title": "LICA: Layered Image Composition Annotations for Graphic Design Research",
+      "url": "https://arxiv.org/abs/2603.16098",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-20T04:00:00.000Z",
+      "summary": "arXiv:2603.16098v2 Announce Type: replace-cross Abstract: We introduce LICA (Layered Image Composition Annotations), a large scale dataset of 1,550,244 multi-layer graphic design compositions designed to advance structured understanding and generation of graphic layouts. In addition to rendered PNG images, LICA represents each design as a hierarchical composition of typed components including text, image, vector, and group elements, each paired with rich per-element metadata such as spatial geometry, typographic attributes, opacity, and visibility. The dataset spans 20 design categories and 971,850 unique templates, providing broad coverage of real-world design structures. We further introduce graphic design video as a new and largely unexplored challenge for current vision-language models through 27,261 animated layouts annotated with per-component keyframes and motion parameters. Beyond scale, LICA establishes a new paradigm of research tasks for graphic design, enabling structured investigations into problems such as layer-aware inpainting, structured layout generation, controlled design editing, and temporally-aware generative modeling. By representing design as a system of compositional layers and relationships, the dataset supports research on models that operate directly on design structure rather than pixels alone.",
+      "tags": [
+        "papers",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.16098"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "56ad4a4a42be5abdc3cdda090ad890193008a9d7efc36777bcf90e64ee564d31",
+      "title": "MLLM-based Textual Explanations for Face Comparison",
+      "url": "https://arxiv.org/abs/2603.16629",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-20T04:00:00.000Z",
+      "summary": "arXiv:2603.16629v2 Announce Type: replace-cross Abstract: Multimodal Large Language Models (MLLMs) have recently been proposed as a means to generate natural-language explanations for face recognition decisions. While such explanations facilitate human interpretability, their reliability on unconstrained face images remains underexplored. In this work, we systematically analyze MLLM-generated explanations for the unconstrained face verification task on the challenging IJB-S dataset, with a particular focus on extreme pose variation and surveillance imagery. Our results show that even when MLLMs produce correct verification decisions, the accompanying explanations frequently rely on non-verifiable or hallucinated facial attributes that are not supported by visual evidence. We further study the effect of incorporating information from traditional face recognition systems, viz., scores and decisions, alongside the input images. Although such information improves categorical verification performance, it does not consistently lead to faithful explanations. To evaluate the explanations beyond decision accuracy, we introduce a likelihood-ratio-based framework that measures the evidential strength of textual explanations. Our findings highlight fundamental limitations of current MLLMs for explainable face recognition and underscore the need for a principled evaluation of reliable and trustworthy explanations in biometric applications. Code is available at https://github.com/redwankarimsony/LR-MLLMFR-Explainability.",
+      "tags": [
+        "papers",
+        "eval",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.16629"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.AI"
+        }
+      ]
+    },
+    {
+      "id": "1250508510df6bde16ef6ceb6da82d9c4a981c84b0f25b3e6a3885f27d163b9c",
+      "title": "AdaSwitch: Balancing Exploration and Guidance in Knowledge Distillation via Adaptive Switching",
+      "url": "https://arxiv.org/abs/2510.07842",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-20T04:00:00.000Z",
+      "summary": "arXiv:2510.07842v3 Announce Type: replace Abstract: Small language models (SLMs) are crucial for applications with strict latency and computational constraints, yet achieving high performance remains challenging. Knowledge distillation (KD) can transfer capabilities from large teacher models, but existing methods face a dilemma: off-policy distillation provides high-quality supervision but suffers from exposure bias (training inference mismatch), while on-policy approaches ensure consistency but are limited by the low quality of student-generated outputs. To address these issues, we propose AdaSwitch, a novel approach that dynamically combines on-policy and off-policy generation via an adaptive switching mechanism. AdaSwitch allows the student to explore its predictions within its capability and selectively integrates teacher guidance only when divergence exceeds a context-aware threshold. This paradigm preserves generation consistency while ensuring high-quality supervision. Experiments on three datasets demonstrate that AdaSwitch consistently improves accuracy and reasoning capability with moderate overhead.",
+      "tags": [
+        "papers",
+        "language",
+        "reasoning",
+        "policy",
+        "inference",
+        "training",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2510.07842"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "4255cd6c4481438879f8715d72e5e09910c270d3c79d1b433dd6a9490f7577bf",
+      "title": "LLM-Augmented Changepoint Detection: A Framework for Ensemble Detection and Automated Explanation",
+      "url": "https://arxiv.org/abs/2601.02957",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-20T04:00:00.000Z",
+      "summary": "arXiv:2601.02957v3 Announce Type: replace Abstract: This paper introduces a novel changepoint detection framework that combines ensemble statistical methods with Large Language Models (LLMs) to enhance both detection accuracy and the interpretability of regime changes in time series data. Two critical limitations in the field are addressed. First, individual detection methods exhibit complementary strengths and weaknesses depending on data characteristics, making method selection non-trivial and prone to suboptimal results. Second, automated, contextual explanations for detected changes are largely absent. The proposed ensemble method aggregates results from ten distinct changepoint detection algorithms, achieving superior performance and robustness compared to individual methods. Additionally, an LLM-powered explanation pipeline automatically generates contextual narratives, linking detected changepoints to potential real-world historical events. For private or domain-specific data, a Retrieval-Augmented Generation (RAG) solution enables explanations grounded in user-provided documents. The open source Python framework demonstrates practical utility in diverse domains, including finance, political science, and environmental science, transforming raw statistical output into actionable insights for analysts and decision-makers.",
+      "tags": [
+        "papers",
+        "language",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2601.02957"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "922b76aad99c19c5fc8992c54ae4422d32224da3a041f118a0655b650371434b",
+      "title": "Social Simulacra in the Wild: AI Agent Communities on Moltbook",
+      "url": "https://arxiv.org/abs/2603.16128",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-20T04:00:00.000Z",
+      "summary": "arXiv:2603.16128v2 Announce Type: replace Abstract: As autonomous LLM-based agents increasingly populate social platforms, understanding the dynamics of AI-agent communities becomes essential for both communication research and platform governance. We present the first large-scale empirical comparison of AI-agent and human online communities, analyzing 73,899 Moltbook and 189,838 Reddit posts across five matched communities. Structurally, we find that Moltbook exhibits extreme participation inequality (Gini = 0.84 vs. 0.47) and high cross-community author overlap (33.8\\% vs. 0.5\\%). In terms of linguistic attributes, content generated by AI-agents is emotionally flattened, cognitively shifted toward assertion over exploration, and socially detached. These differences give rise to apparent community-level homogenization, but we show this is primarily a structural artifact of shared authorship. At the author level, individual agents are more identifiable than human users, driven by outlier stylistic profiles amplified by their extreme posting volume. As AI-mediated communication reshapes online discourse, our work offers an empirical foundation for understanding how multi-agent interaction gives rise to collective communication dynamics distinct from those of human communities.",
+      "tags": [
+        "papers",
+        "language",
+        "agents",
+        "policy"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.16128"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "22906ad29a7f148d97e2ee93c1836be47ae3a2ea5d0de0a627ffd8f723bed6a0",
+      "title": "SIA: A Synthesize-Inject-Align Framework for Knowledge-Grounded and Secure E-commerce Search LLMs with Industrial Deployment",
+      "url": "https://arxiv.org/abs/2603.16137",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-20T04:00:00.000Z",
+      "summary": "arXiv:2603.16137v2 Announce Type: replace Abstract: Large language models offer transformative potential for e-commerce search by enabling intent-aware recommendations. However, their industrial deployment is hindered by two critical challenges: (1) knowledge hallucination due to insufficient encoding of dynamic, fine-grained product knowledge, and (2) security vulnerabilities under jailbreak attacks that threaten compliance. To address these issues, we propose SIA--a Synthesize-Inject-Align framework for building knowledgeable and secure e-commerce search LLMs. Our approach first synthesizes high-quality natural language corpus by combining structured knowledge graphs with unstructured behavioral logs, augmented with reasoning chains and safety-aware data. We then introduce a parameter-efficient pre-training strategy based on Depth Up-Scaling to inject domain knowledge while preserving general capabilities. Finally, a dual-path alignment method via multi-task instruction tuning and adversarial training strengthens both task performance and safety robustness. The framework has been deployed at JD.com, China's largest self-operated e-commerce platform, where A/B tests across five core search scenarios demonstrate significant improvements in key business metrics, validating its industrial effectiveness and scalability.",
+      "tags": [
+        "papers",
+        "language",
+        "reasoning",
+        "safety",
+        "training",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.16137"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "68ee99eb8ae627f5de47bc191869f4c2c9d0ea0dc1a6970f850be17794d64e07",
+      "title": "Omnilingual SONAR: Cross-Lingual and Cross-Modal Sentence Embeddings Bridging Massively Multilingual Text and Speech",
+      "url": "https://arxiv.org/abs/2603.16606",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-20T04:00:00.000Z",
+      "summary": "arXiv:2603.16606v2 Announce Type: replace Abstract: Cross-lingual sentence encoders typically cover only a few hundred languages and often trade downstream quality for stronger alignment, limiting their adoption. We introduce OmniSONAR, a new family of omnilingual, cross-lingual and cross-modal sentence embedding models that natively embed text, speech, code, and mathematical expressions in a single semantic space, while delivering state-of-the-art downstream performance at the scale of thousands of languages, from high-resource to extremely low-resource varieties. To reach this scale without representation collapse, we use progressive training. We first learn a strong foundational space for 200 languages with an LLM-initialized encoder-decoder, combining token-level decoding with a novel split-softmax contrastive loss and synthetic hard negatives. Building on this foundation, we expand to several thousands language varieties via a two-stage teacher-student encoder distillation framework. Finally, we demonstrate the cross-modal extensibility of this space by seamlessly mapping 177 spoken languages into it. OmniSONAR halves cross-lingual similarity search error on the 200-language FLORES dataset and reduces error by a factor of 15 on the 1,560-language BIBLE benchmark. It also enables strong translation, outperforming NLLB-3B on multilingual benchmarks and exceeding prior models (including much larger LLMs) by 15 chrF++ points on 1,560 languages into English BIBLE translation. OmniSONAR also performs strongly on MTEB and XLCoST. For speech, OmniSONAR achieves a 43% lower similarity-search error and reaches 97% of SeamlessM4T speech-to-text quality, despite being zero-shot for translation (trained only on ASR data). Finally, by training an encoder-decoder LM, Spectrum, exclusively on English text processing OmniSONAR embedding sequences, we unlock high-performance transfer to thousands of languages and speech for complex downstream tasks.",
+      "tags": [
+        "papers",
+        "language",
+        "eval",
+        "safety",
+        "training",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.16606"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "3cf24673de26bbabdc51ecbe4ef092855c131eddc68561afe8abb5d3b4ae7ee4",
+      "title": "Probing Cultural Signals in Large Language Models through Author Profiling",
+      "url": "https://arxiv.org/abs/2603.16749",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-20T04:00:00.000Z",
+      "summary": "arXiv:2603.16749v2 Announce Type: replace Abstract: Large language models (LLMs) are increasingly deployed in applications with societal impact, raising concerns about the cultural biases they encode. We probe these representations by evaluating whether LLMs can perform author profiling from song lyrics in a zero-shot setting, inferring singers' gender and ethnicity without task-specific fine-tuning. Across several open-source models evaluated on more than 10,000 lyrics, we find that LLMs achieve non-trivial profiling performance but demonstrate systematic cultural alignment: most models default toward North American ethnicity, while DeepSeek-1.5B aligns more strongly with Asian ethnicity. This finding emerges from both the models' prediction distributions and an analysis of their generated rationales. To quantify these disparities, we introduce two fairness metrics, Modality Accuracy Divergence (MAD) and Recall Divergence (RD), and show that Ministral-8B displays the strongest ethnicity bias among the evaluated models, whereas Gemma-12B shows the most balanced behavior. Our code is available on [GitHub](https://github.com/ValentinLafargue/CulturalProbingLLM) and results on [HuggingFace](https://huggingface.co/datasets/ValentinLAFARGUE/AuthorProfilingResults).",
+      "tags": [
+        "papers",
+        "language",
+        "safety",
+        "model",
+        "data"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.16749"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
+      "id": "e402763c780374da7cee735b3436f0f46ceea89220d9e231c7ef09830c6f9d3f",
+      "title": "To See is Not to Master: Teaching LLMs to Use Private Libraries for Code Generation",
+      "url": "https://arxiv.org/abs/2603.15159",
+      "sourceId": "arxiv_cs_cl",
+      "sourceName": "arXiv — cs.CL",
+      "publishedAt": "2026-03-20T04:00:00.000Z",
+      "summary": "arXiv:2603.15159v3 Announce Type: replace-cross Abstract: Large Language Models (LLMs) have shown strong potential for code generation, yet they remain limited in private-library-oriented code generation, where the goal is to generate code using APIs from private libraries. Existing approaches mainly rely on retrieving private-library API documentation and injecting relevant knowledge into the context at inference time. However, our study shows that this is insufficient: even given accurate required knowledge, LLMs still struggle to invoke private-library APIs effectively. To address this limitation, we propose PriCoder, an approach that teaches LLMs to invoke private-library APIs through automatically synthesized data. Specifically, PriCoder models private-library data synthesis as the construction of a graph, and alternates between two graph operators: (1) Progressive Graph Evolution, which improves data diversity by progressively synthesizing more diverse training samples from basic ones, and (2) Multidimensional Graph Pruning, which improves data quality through a rigorous filtering pipeline. To support rigorous evaluation, we construct two new benchmarks based on recently released libraries that are unfamiliar to the tested models. Experiments on three mainstream LLMs show that PriCoder substantially improves private-library-oriented code generation, yielding gains of over 20% in pass@1 in many settings, while causing negligible impact on general code generation capability. Our code and benchmarks are publicly available at https://github.com/eniacode/PriCoder.",
+      "tags": [
+        "papers",
+        "language",
+        "eval",
+        "inference",
+        "training",
+        "model",
+        "release"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://arxiv.org/abs/2603.15159"
+        },
+        {
+          "label": "Feed",
+          "url": "https://rss.arxiv.org/rss/cs.CL"
+        }
+      ]
+    },
+    {
       "id": "9b485c2bb0c90ae9e9c070f148ccb1c2cdbd30559a2dbc2402d127919db3f3e5",
       "title": "How we monitor internal coding agents for misalignment",
       "url": "https://openai.com/index/how-we-monitor-internal-coding-agents-misalignment",
@@ -14865,278 +15156,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2603.15672"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "17fe4909fee467f42168caa0c53e7c5cd38340d913ab1782e9c51e127bd061a5",
-      "title": "Automated Self-Testing as a Quality Gate: Evidence-Driven Release Management for LLM Applications",
-      "url": "https://arxiv.org/abs/2603.15676",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-18T04:00:00.000Z",
-      "summary": "arXiv:2603.15676v1 Announce Type: cross Abstract: LLM applications are AI systems whose non-deterministic outputs and evolving model behavior make traditional testing insufficient for release governance. We present an automated self-testing framework that introduces quality gates with evidence-based release decisions (PROMOTE/HOLD/ROLLBACK) across five empirically grounded dimensions: task success rate, research context preservation, P95 latency, safety pass rate, and evidence coverage. We evaluate the framework through a longitudinal case study of an internally deployed multi-agent conversational AI system with specific marketing capabilities in active development, covering 38 evaluation runs across 20+ internal releases. The gate identified two ROLLBACK-grade builds in early runs and supported stable quality evolution over a four-week staging lifecycle while exercising persona-grounded, multi-turn, adversarial, and evidence-required scenarios. Statistical analysis (Mann-Kendall trends, Spearman correlations, bootstrap confidence intervals), gate ablation, and overhead scaling indicate that evidence coverage is the primary severe-regression discriminator and that runtime scales predictably with suite size. A human calibration study (n=60 stratified cases, two independent evaluators, LLM-as-judge cross-validation) reveals complementary multi-modal coverage: LLM-judge disagreements with the system gate (kappa=0.13) are attributable to structural failure modes such as latency violations and routing errors that are invisible in response text alone, while the judge independently surfaces content quality failures missed by structural checks, validating the multi-dimensional gate design. The framework, supplementary pseudocode, and calibration artifacts are provided to support AI-system quality assurance and independent replication.",
-      "tags": [
-        "papers",
-        "agents",
-        "eval",
-        "safety",
-        "policy",
-        "model",
-        "release"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.15676"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "475a33176059ce68f1c8964177d16c86115293ea796fbcaa4a2eb3c15009270b",
-      "title": "Spectral Edge Dynamics of Training Trajectories: Signal--Noise Geometry Across Scales",
-      "url": "https://arxiv.org/abs/2603.15678",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-18T04:00:00.000Z",
-      "summary": "arXiv:2603.15678v1 Announce Type: cross Abstract: Despite hundreds of millions of parameters, transformer training trajectories evolve within only a few coherent directions. We introduce \\emph{Spectral Edge Dynamics} (SED) to measure this structure: rolling-window SVD of parameter updates reveals a sharp boundary -- the \\emph{spectral edge} -- between coherent optimization directions and stochastic noise, identified by the maximum consecutive singular value ratio $\\sigma_k/\\sigma_{k+1}$. Across a 51M-parameter TinyStories model (4~seeds) and GPT-2 124M under a distribution shift, the spectral edge exhibits a universal three-phase pattern (rise, plateau, collapse), signal rank adjusts with task complexity ($k^* = 2$ at 51M, $k^* = 3$ at 124M), and the directional coupling between spectral geometry and validation loss reverses with window size -- a \\emph{lag flip} reflecting the timescale of trajectory integration. Johnson--Lindenstrauss projection to $d = 10W$ dimensions (e.g., $d = 100$ for $W = 10$) preserves the spectral gap within 5.7\\%, making the framework applicable to models of arbitrary size. In companion work, the same spectral geometry provides early-warning signals of grokking -- predicting generalization 600--1{,}700 steps before it occurs across modular arithmetic, Dyck languages, and the SCAN benchmark.",
-      "tags": [
-        "papers",
-        "eval",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.15678"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "e853391e79a9cc736dcab6ab7ab88ea19b76f6a05d0d1dc4cab9d78d5d62dbf8",
-      "title": "IdentityGuard: Context-Aware Restriction and Provenance for Personalized Synthesis",
-      "url": "https://arxiv.org/abs/2603.15679",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-18T04:00:00.000Z",
-      "summary": "arXiv:2603.15679v1 Announce Type: cross Abstract: The nature of personalized text-to-image models poses a unique safety challenge that generic context-blind methods are ill-equipped to handle. Such global filters create a dilemma: to prevent misuse, they are forced to damage the model's broader utility by erasing concepts entirely, causing unacceptable collateral damage.Our work presents a more precisely targeted approach, built on the principle that security should be as context-aware as the threat itself, intrinsically bound to the personalized concept. We present IDENTITYGUARD, which realizes this principle through a conditional restriction that blocks harmful content only when combined with the personalized identity, and a concept-specific watermark for precise traceability. Experiments show our approach prevents misuse while preserving the model's utility and enabling robust traceability. By moving beyond blunt, global filters, our work demonstrates a more effective and responsible path toward AI safety.",
-      "tags": [
-        "papers",
-        "safety",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.15679"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "5ac9abca64c03c22ea8f4252760576cfcf6e34c88d669a77b47eafa55f703862",
-      "title": "State-Dependent Safety Failures in Multi-Turn Language Model Interaction",
-      "url": "https://arxiv.org/abs/2603.15684",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-18T04:00:00.000Z",
-      "summary": "arXiv:2603.15684v1 Announce Type: cross Abstract: Safety alignment in large language models is typically evaluated under isolated queries, yet real-world use is inherently multi-turn. Although multi-turn jailbreaks are empirically effective, the structure of conversational safety failure remains insufficiently understood. In this work, we study safety failures from a state-space perspective and show that many multi-turn failures arise from structured contextual state evolution rather than isolated prompt vulnerabilities. We introduce STAR, a state-oriented diagnostic framework that treats dialogue history as a state transition operator and enables controlled analysis of safety behavior along interaction trajectories. Rather than optimizing attack strength, STAR provides a principled probe of how aligned models traverse the safety boundary under autoregressive conditioning. Across multiple frontier language models, we find that systems that appear robust under static evaluation can undergo rapid and reproducible safety collapse under structured multi-turn interaction. Mechanistic analysis reveals monotonic drift away from refusal-related representations and abrupt phase transitions induced by role-conditioned context. Together, these findings motivate viewing language model safety as a dynamic, state-dependent process defined over conversational trajectories.",
-      "tags": [
-        "papers",
-        "eval",
-        "safety",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.15684"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "7f079dab5d7f31d27ffb27cb7129ac94d8423d6221746434dcbce7c6c1876a7c",
-      "title": "DASH: Dynamic Audio-Driven Semantic Chunking for Efficient Omnimodal Token Compression",
-      "url": "https://arxiv.org/abs/2603.15685",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-18T04:00:00.000Z",
-      "summary": "arXiv:2603.15685v1 Announce Type: cross Abstract: Omnimodal large language models (OmniLLMs) jointly process audio and visual streams, but the resulting long multimodal token sequences make inference prohibitively expensive. Existing compression methods typically rely on fixed window partitioning and attention-based pruning, which overlook the piecewise semantic structure of audio-visual signals and become fragile under aggressive token reduction. We propose Dynamic Audio-driven Semantic cHunking (DASH), a training-free framework that aligns token compression with semantic structure. DASH treats audio embeddings as a semantic anchor and detects boundary candidates via cosine-similarity discontinuities, inducing dynamic, variable-length segments that approximate the underlying piecewise-coherent organization of the sequence. These boundaries are projected onto video tokens to establish explicit cross-modal segmentation. Within each segment, token retention is determined by a tri-signal importance estimator that fuses structural boundary cues, representational distinctiveness, and attention-based salience, mitigating the sparsity bias of attention-only selection. This structure-aware allocation preserves transition-critical tokens while reducing redundant regions. Extensive experiments on AVUT, VideoMME, and WorldSense demonstrate that DASH maintains superior accuracy while achieving higher compression ratios compared to prior methods. Code is available at: https://github.com/laychou666/DASH.",
-      "tags": [
-        "papers",
-        "inference",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.15685"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "a51e90cffd06e2ab88e60885707474728accdc3bce1ebc6cb40fc9eb3cb6053f",
-      "title": "Evidential Domain Adaptation for Remaining Useful Life Prediction with Incomplete Degradation",
-      "url": "https://arxiv.org/abs/2603.15687",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-18T04:00:00.000Z",
-      "summary": "arXiv:2603.15687v1 Announce Type: cross Abstract: Accurate Remaining Useful Life (RUL) prediction without labeled target domain data is a critical challenge, and domain adaptation (DA) has been widely adopted to address it by transferring knowledge from a labeled source domain to an unlabeled target domain. Despite its success, existing DA methods struggle significantly when faced with incomplete degradation trajectories in the target domain, particularly due to the absence of late degradation stages. This missing data introduces a key extrapolation challenge. When applied to such incomplete RUL prediction tasks, current DA methods encounter two primary limitations. First, most DA approaches primarily focus on global alignment, which can misaligns late degradation stage in the source domain with early degradation stage in the target domain. Second, due to varying operating conditions in RUL prediction, degradation patterns may differ even within the same degradation stage, resulting in different learned features. As a result, even if degradation stages are partially aligned, simple feature matching cannot fully align two domains. To overcome these limitations, we propose a novel evidential adaptation approach called EviAdapt, which leverages evidential learning to enhance domain adaptation. The method first segments the source and target domain data into distinct degradation stages based on degradation rate, enabling stage-wise alignment that ensures samples from corresponding stages are accurately matched. To address the second limitation, we introduce an evidential uncertainty alignment technique that estimates uncertainty using evidential learning and aligns the uncertainty across matched stages.",
-      "tags": [
-        "papers",
-        "safety"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.15687"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "4148d65c215926bd680ac72ce1d4ba4ca369577a1e178755834caa94c2c72c41",
-      "title": "Transition Flow Matching",
-      "url": "https://arxiv.org/abs/2603.15689",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-18T04:00:00.000Z",
-      "summary": "arXiv:2603.15689v1 Announce Type: cross Abstract: Mainstream flow matching methods typically focus on learning the local velocity field, which inherently requires multiple integration steps during generation. In contrast, Mean Velocity Flow models establish a relationship between the local velocity field and the global mean velocity, enabling the latter to be learned through a mathematically grounded formulation and allowing generation to be transferred to arbitrary future time points. In this work, we propose a new paradigm that directly learns the transition flow. As a global quantity, the transition flow naturally supports generation in a single step or at arbitrary time points. Furthermore, we demonstrate the connection between our approach and Mean Velocity Flow, establishing a unified theoretical perspective. Extensive experiments validate the effectiveness of our method and support our theoretical claims.",
-      "tags": [
-        "papers",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.15689"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "96c7fdb40f8678e92a7f8a8da00a21f14da64e4a05441158d843c47cf83ac8e8",
-      "title": "Loosely-Structured Software: Engineering Context, Structure, and Evolution Entropy in Runtime-Rewired Multi-Agent Systems",
-      "url": "https://arxiv.org/abs/2603.15690",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-18T04:00:00.000Z",
-      "summary": "arXiv:2603.15690v1 Announce Type: cross Abstract: As LLM-based multi-agent systems (MAS) become more autonomous, their free-form interactions increasingly dominate system behavior. However, scaling the number of agents often amplifies context pressure, coordination errors, and system drift. It is well known that building robust MAS requires more than prompt tuning or increased model intelligence. It necessitates engineering discipline focused on architecture to manage complexity under uncertainty. We characterize agentic software by a core property: \\emph{runtime generation and evolution under uncertainty}. Drawing upon and extending software engineering experience, especially object-oriented programming, this paper introduces \\emph{Loosely-Structured Software (LSS)}, a new class of software systems that shifts the engineering focus from constructing deterministic logic to managing the runtime entropy generated by View-constructed programming, semantic-driven self-organization, and endogenous evolution. To make this entropy governable, we introduce design principles under a three-layer engineering framework: \\emph{View/Context Engineering} to manage the execution environment and maintain task-relevant Views, \\emph{Structure Engineering} to organize dynamic binding over artifacts and agents, and \\emph{Evolution Engineering} to govern the lifecycle of self-rewriting artifacts. Building on this framework, we develop LSS design patterns as semantic control blocks that stabilize fluid, inference-mediated interactions while preserving agent adaptability. Together, these abstractions improve the \\emph{designability}, \\emph{scalability}, and \\emph{evolvability} of agentic infrastructure. We provide basic experimental validation of key mechanisms, demonstrating the effectiveness of LSS.",
-      "tags": [
-        "papers",
-        "agents",
-        "inference",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.15690"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "b422b7c6bb866e38c4fe75e716ca32ffd29325f2aa25e55c39bc397aa8872673",
-      "title": "BadLLM-TG: A Backdoor Defender powered by LLM Trigger Generator",
-      "url": "https://arxiv.org/abs/2603.15692",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-18T04:00:00.000Z",
-      "summary": "arXiv:2603.15692v1 Announce Type: cross Abstract: Backdoor attacks compromise model reliability by using triggers to manipulate outputs. Trigger inversion can accurately locate these triggers via a generator and is therefore critical for backdoor defense. However, the discrete nature of text prevents existing noise-based trigger generator from being applied to nature language processing (NLP). To overcome the limitations, we employ the rich knowledge embedded in large language models (LLMs) and propose a Backdoor defender powered by LLM Trigger Generator, termed BadLLM-TG. It is optimized through prompt-driven reinforcement learning, using the victim model's feedback loss as the reward signal. The generated triggers are then employed to mitigate the backdoor via adversarial training. Experiments show that our method reduces the attack success rate by 76.2\\% on average, outperforming the second-best defender by 13.7.",
-      "tags": [
-        "papers",
-        "training",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.15692"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "d13695cfe71b3c68ba02c64ba6caf3e423893ec8f82104cd5eb9e2a9e276e3fc",
-      "title": "Tackling Over-smoothing on Hypergraphs: A Ricci Flow-guided Neural Diffusion Approach",
-      "url": "https://arxiv.org/abs/2603.15696",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-18T04:00:00.000Z",
-      "summary": "arXiv:2603.15696v1 Announce Type: cross Abstract: Hypergraph neural networks (HGNNs) have demonstrated strong capabilities in modeling complex higher-order relationships. However, existing HGNNs often suffer from over-smoothing as the number of layers increases and lack effective control over message passing among nodes. Inspired by the theory of Ricci flow in differential geometry, we theoretically establish that introducing discrete Ricci flow into hypergraph structures can effectively regulate node feature evolution and thereby alleviate over-smoothing. Building on this insight, we propose Ricci Flow-guided Hypergraph Neural Diffusion(RFHND), a novel message passing paradigm for hypergraphs guided by discrete Ricci flow. Specifically, RFHND is based on a PDE system that describes the continuous evolution of node features on hypergraphs and adaptively regulates the rate of information diffusion at the geometric level, preventing feature homogenization and producing high-quality node representations. Experimental results show that RFHND significantly outperforms existing methods across multiple benchmark datasets and demonstrates strong robustness, while also effectively mitigating over-smoothing.",
-      "tags": [
-        "papers",
-        "eval",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.15696"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "23220fd68ac9d38453b85f6bd1a9bd4459214df691a5ec01ac77005daac765ec",
-      "title": "This Is Taking Too Long -- Investigating Time as a Proxy for Energy Consumption of LLMs",
-      "url": "https://arxiv.org/abs/2603.15699",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-18T04:00:00.000Z",
-      "summary": "arXiv:2603.15699v1 Announce Type: cross Abstract: The energy consumption of Large Language Models (LLMs) is raising growing concerns due to their adverse effects on environmental stability and resource use. Yet, these energy costs remain largely opaque to users, especially when models are accessed through an API -- a black box in which all information depends on what providers choose to disclose. In this work, we investigate inference time measurements as a proxy to approximate the associated energy costs of API-based LLMs. We ground our approach by comparing our estimations with actual energy measurements from locally hosted equivalents. Our results show that time measurements allow us to infer GPU models for API-based LLMs, grounding our energy cost estimations. Our work aims to create means for understanding the associated energy costs of API-based LLMs, especially for end users.",
-      "tags": [
-        "papers",
-        "compute",
-        "inference",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2603.15699"
         },
         {
           "label": "Feed",
