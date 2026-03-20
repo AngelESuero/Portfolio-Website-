@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SocialFeedPage from '../../components/SocialFeedPage.astro';
+import socialConfig from '../../data/social';
+import igManifest from '../../data/ig.json';
+import xFallbackItems from '../../data/x-fallback';
+import type { SocialConfigItem } from '../../data/social';
+
+export function getStaticPaths() {
+  return (socialConfig as SocialConfigItem[]).map((config) => ({
+    params: { slug: config.slug },
+    props: { config }
+  }));
+}
+
+const { config } = Astro.props as { config: SocialConfigItem };
+const igPreview =
+  config.local_preview === 'instagram' && Array.isArray(igManifest)
+    ? igManifest.slice(0, 8).filter((item) => typeof item?.src === 'string' && item.src)
+    : [];
+const xPublishedAtToTimestamp = (value: string): number => {
+  const parsed = Date.parse(value);
+  return Number.isNaN(parsed) ? 0 : parsed;
+};
+const formatDate = (value: string): string => {
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.valueOf())) return value;
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  }).format(parsed);
+};
+const xManualItems =
+  config.slug === 'x'
+    ? xFallbackItems
+        .map((item) => ({
+          title: String(item?.title || '').trim(),
+          url: String(item?.url || '').trim(),
+          dateRaw: String(item?.publishedAt || '').trim(),
+          summary: String(item?.summary || '').trim()
+        }))
+        .filter((item) => item.title && item.url)
+        .sort((a, b) => xPublishedAtToTimestamp(b.dateRaw) - xPublishedAtToTimestamp(a.dateRaw))
+        .map((item) => ({
+          title: item.title,
+          url: item.url,
+          date: item.dateRaw ? formatDate(item.dateRaw) : '',
+          summary: item.summary
+        }))
+        .slice(0, 12)
+    : undefined;
+---
+
+<BaseLayout
+  title={`${config.title} — Social`}
+  description={config.description || `Updates from ${config.title}.`}
+  theme="social"
+>
+  <SocialFeedPage config={config} igPreview={igPreview} manualItems={xManualItems} />
+</BaseLayout>

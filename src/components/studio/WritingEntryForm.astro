@@ -1,0 +1,43 @@
+---
+import CommitPanel from './CommitPanel.astro';
+import SharedMetadataFields from './SharedMetadataFields.astro';
+import StudioFormEnhancer from './StudioFormEnhancer.astro';
+import { getStudioLane } from '../../lib/studio';
+
+const lane = getStudioLane('writing');
+---
+
+<form class="studio-form" method="post" action="/api/create-entry" data-studio-form data-lane={lane.slug}>
+  <input type="hidden" name="medium" value={lane.slug} />
+
+  <SharedMetadataFields
+    lane={lane.slug}
+    defaultSource={lane.defaultSource}
+    sourceOptions={lane.sourceOptions}
+    showExternalUrl={true}
+    summaryPlaceholder="Optional archive summary for cards and list views."
+    summaryHint="Optional. If you leave this blank, the studio will derive a short summary from the body."
+  />
+
+  <section class="studio-section">
+    <div class="studio-section__header">
+      <h2>Body</h2>
+      <p>Use this like a clean editor. Reading copy lives here, not in the summary field.</p>
+    </div>
+
+    <label class="studio-field">
+      <span>Body</span>
+      <textarea
+        name="body"
+        rows="16"
+        maxlength="30000"
+        placeholder="Write the archive body here."
+      ></textarea>
+      <small>Recommended for writing entries.</small>
+    </label>
+  </section>
+
+  <CommitPanel lane={lane.slug} submitLabel="Commit writing entry" />
+</form>
+
+<StudioFormEnhancer lane={lane.slug} />

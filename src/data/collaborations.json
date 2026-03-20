@@ -1,0 +1,49 @@
+{
+  "collaborations": [
+    {
+      "id": "newark-water-coalition",
+      "name": "Newark Water Coalition",
+      "role": "Community Organizer & Volunteer",
+      "period": "2022–Present",
+      "location": "Newark, NJ",
+      "description": "Two years volunteering with a grassroots organization focused on water access, infrastructure equity, and environmental justice. Work includes: field surveys, community education, policy briefs, and supporting residents through structural failure points.",
+      "focus": [
+        "Water access equity and infrastructure",
+        "Community organizing and education",
+        "Policy research and documentation",
+        "Crisis support and mutual aid"
+      ],
+      "impact": [
+        "Documented 100+ households facing water-related infrastructure failures",
+        "Facilitated 15+ community meetings on water rights and access",
+        "Co-authored reports on Newark's water system vulnerabilities",
+        "Supported emergency response during service disruptions"
+      ],
+      "links": {
+        "organization": "https://www.newarkwatercoalition.org"
+      },
+      "keyLearning": "Structural failures aren't abstract — they're in my backyard. Healing requires individuals to first heal themselves."
+    },
+    {
+      "id": "newark-community-media",
+      "name": "Newark Community Media Projects",
+      "role": "Audio/Visual Documentarian",
+      "period": "2021–Present",
+      "location": "Newark, NJ",
+      "description": "Creating audio and visual documentation of Newark communities, focusing on lived experience, resistance, and the work of local organizing. Projects include street photography, ambient sound studies, and community archiving.",
+      "focus": [
+        "Community portraiture and documentation",
+        "Ambient sound studies",
+        "Visual archive building",
+        "Public memory and oral history"
+      ],
+      "impact": [
+        "Created 50+ hours of field documentation",
+        "Published audio/visual essays on Newark street life",
+        "Hosted community listening sessions",
+        "Built archive of local organizing voices"
+      ],
+      "keyLearning": "The work of communities to sustain themselves is its own form of evidence."
+    }
+  ]
+}

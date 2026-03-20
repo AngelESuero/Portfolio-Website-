@@ -1,0 +1,678 @@
+---
+import type { ResolvedMusicPlayerItem } from '../lib/music-player';
+
+interface Props {
+  items: ResolvedMusicPlayerItem[];
+}
+
+const { items } = Astro.props as Props;
+const initialItem = items[0] ?? null;
+const getPublicKindLabel = (item: Pick<ResolvedMusicPlayerItem, 'kind'>) => {
+  if (item.kind === 'track') return 'Track';
+  if (item.kind === 'demo') return 'Demo';
+  if (item.kind === 'scrap') return 'Scrap';
+  return '';
+};
+const initialPublicKindLabel = initialItem ? getPublicKindLabel(initialItem) : '';
+---
+{items.length > 0 && initialItem && (
+  <section class="music-shelf-player" aria-labelledby="music-shelf-player-heading">
+    <header class="music-shelf-player__header">
+      <p class="music-shelf-player__kicker font-archive">Listening shelf</p>
+      <h2 id="music-shelf-player-heading">Music records you can press into</h2>
+      <p class="music-shelf-player__copy">
+        The archive stays canonical. This shelf only adds playback behavior, ordered neighbors, and clean source
+        handoffs where they already exist.
+      </p>
+    </header>
+
+    <div class="music-shelf-player__stage">
+      <div class="music-shelf-player__stage-copy">
+        <p id="music-player-meta" class="music-shelf-player__meta font-archive" hidden={!initialPublicKindLabel}>
+          <span id="music-player-kind" class="music-shelf-player__chip">{initialPublicKindLabel}</span>
+        </p>
+
+        <h3 class="music-shelf-player__title">
+          <a id="music-player-entry-link" href={initialItem.entryHref}>{initialItem.title}</a>
+        </h3>
+
+        <p id="music-player-summary" class="music-shelf-player__summary">{initialItem.summary}</p>
+        <p id="music-player-note" class="music-shelf-player__note">{initialItem.playbackNote}</p>
+
+        <div class="music-shelf-player__controls">
+          <button type="button" id="music-player-prev" class="music-shelf-player__control pill rounded">
+            Previous
+          </button>
+          <button type="button" id="music-player-play" class="music-shelf-player__control music-shelf-player__control--primary pill rounded">
+            Play
+          </button>
+          <button type="button" id="music-player-next" class="music-shelf-player__control pill rounded">
+            Next
+          </button>
+        </div>
+
+        <div class="music-shelf-player__links">
+          <a id="music-player-entry-link-secondary" class="music-shelf-player__link" href={initialItem.entryHref}>
+            Open archive entry
+          </a>
+          <a
+            id="music-player-source-link"
+            class="music-shelf-player__link music-shelf-player__link--secondary"
+            href={initialItem.externalUrl || initialItem.entryHref}
+            target="_blank"
+            rel="noopener"
+            hidden={!initialItem.externalUrl}
+          >
+            {initialItem.sourceLinkLabel}
+          </a>
+        </div>
+      </div>
+
+      <div class="music-shelf-player__surface">
+        <div id="music-player-surface-note" class="music-shelf-player__surface-note">
+          Press play to open this record inline.
+        </div>
+        <audio id="music-player-audio" class="music-shelf-player__audio" controls preload="metadata" hidden></audio>
+        <div id="music-player-embed" class="music-shelf-player__embed" hidden></div>
+      </div>
+    </div>
+
+    <ol class="music-shelf-player__list">
+      {items.map((item) => {
+        const isPlayable = item.effectivePlaybackMode === 'native' || item.effectivePlaybackMode === 'embed';
+        const hasSequence = Boolean(item.sequenceGroup && item.sequenceOrder && item.sequenceSize);
+        const publicKindLabel = getPublicKindLabel(item);
+        return (
+          <li>
+            <article class="music-shelf-player__item" data-music-player-item={item.id}>
+              {(publicKindLabel || hasSequence) && (
+                <div class="music-shelf-player__item-topline font-archive">
+                  {publicKindLabel && <span class="music-shelf-player__chip">{publicKindLabel}</span>}
+                  {hasSequence && (
+                    <span class="music-shelf-player__chip music-shelf-player__chip--sequence">
+                      Sequence {item.sequenceOrder} / {item.sequenceSize}
+                    </span>
+                  )}
+                </div>
+              )}
+
+              <h3 class="music-shelf-player__item-title">
+                <button type="button" class="music-shelf-player__item-select" data-music-player-select={item.id}>
+                  {item.title}
+                </button>
+              </h3>
+
+              <p class="music-shelf-player__item-summary">{item.summary}</p>
+
+              <div class="music-shelf-player__item-actions">
+                {isPlayable ? (
+                  <button type="button" class="music-shelf-player__item-action pill rounded" data-music-player-play-item={item.id}>
+                    Play
+                  </button>
+                ) : item.effectivePlaybackMode === 'outbound' && item.externalUrl ? (
+                  <a
+                    href={item.externalUrl}
+                    class="music-shelf-player__item-link"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    {item.sourceLinkLabel}
+                  </a>
+                ) : (
+                  <span class="music-shelf-player__item-state font-archive">Record only</span>
+                )}
+
+                <a href={item.entryHref} class="music-shelf-player__item-link music-shelf-player__item-link--secondary">
+                  Open archive entry
+                </a>
+              </div>
+            </article>
+          </li>
+        );
+      })}
+    </ol>
+  </section>
+)}
+
+<script
+  is:inline
+  define:vars={{
+    musicPlayerItems: items,
+    musicPlayerInitialItemId: initialItem?.id ?? ''
+  }}
+>
+  (() => {
+    const items = Array.isArray(musicPlayerItems) ? musicPlayerItems : [];
+    if (!items.length) return;
+    const getPublicKindLabel = (item) => {
+      if (!item || typeof item.kind !== 'string') return '';
+      if (item.kind === 'track') return 'Track';
+      if (item.kind === 'demo') return 'Demo';
+      if (item.kind === 'scrap') return 'Scrap';
+      return '';
+    };
+
+    const itemMap = new Map(items.map((item) => [item.id, item]));
+    const stageMeta = document.getElementById('music-player-meta');
+    const stageTitle = document.getElementById('music-player-entry-link');
+    const stageEntryLink = document.getElementById('music-player-entry-link-secondary');
+    const stageSummary = document.getElementById('music-player-summary');
+    const stageNote = document.getElementById('music-player-note');
+    const stageKind = document.getElementById('music-player-kind');
+    const sourceLink = document.getElementById('music-player-source-link');
+    const prevButton = document.getElementById('music-player-prev');
+    const playButton = document.getElementById('music-player-play');
+    const nextButton = document.getElementById('music-player-next');
+    const audioEl = document.getElementById('music-player-audio');
+    const embedEl = document.getElementById('music-player-embed');
+    const surfaceNote = document.getElementById('music-player-surface-note');
+    const shelfItems = Array.from(document.querySelectorAll('[data-music-player-item]'));
+    const selectButtons = Array.from(document.querySelectorAll('[data-music-player-select]'));
+    const playItemButtons = Array.from(document.querySelectorAll('[data-music-player-play-item]'));
+
+    if (
+      !(stageMeta instanceof HTMLElement) ||
+      !(stageTitle instanceof HTMLAnchorElement) ||
+      !(stageEntryLink instanceof HTMLAnchorElement) ||
+      !(stageSummary instanceof HTMLElement) ||
+      !(stageNote instanceof HTMLElement) ||
+      !(stageKind instanceof HTMLElement) ||
+      !(prevButton instanceof HTMLButtonElement) ||
+      !(playButton instanceof HTMLButtonElement) ||
+      !(nextButton instanceof HTMLButtonElement) ||
+      !(audioEl instanceof HTMLAudioElement) ||
+      !(embedEl instanceof HTMLElement) ||
+      !(surfaceNote instanceof HTMLElement)
+    ) {
+      return;
+    }
+
+    let currentId = musicPlayerInitialItemId || items[0].id;
+    let isPlaying = false;
+
+    const getItem = (id) => itemMap.get(id) || null;
+    const currentItem = () => getItem(currentId);
+    const isInlinePlayable = (item) => item && (item.effectivePlaybackMode === 'native' || item.effectivePlaybackMode === 'embed');
+
+    const clearEmbed = () => {
+      embedEl.innerHTML = '';
+      embedEl.hidden = true;
+    };
+
+    const stopInlinePlayback = () => {
+      audioEl.pause();
+      audioEl.removeAttribute('src');
+      audioEl.load();
+      audioEl.hidden = true;
+      clearEmbed();
+      isPlaying = false;
+    };
+
+    const renderInlineSurface = (item) => {
+      audioEl.hidden = true;
+      clearEmbed();
+
+      if (item.effectivePlaybackMode === 'native' && item.assetSrc) {
+        audioEl.src = item.assetSrc;
+        audioEl.hidden = false;
+        surfaceNote.textContent = 'Playing inline from the attached audio asset.';
+        return;
+      }
+
+      if (item.effectivePlaybackMode === 'embed' && item.embedUrl) {
+        const iframe = document.createElement('iframe');
+        iframe.src = item.embedUrl;
+        iframe.title = `${item.title} embed`;
+        iframe.loading = 'lazy';
+        iframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+        iframe.allowFullscreen = true;
+        iframe.setAttribute('frameborder', '0');
+        embedEl.style.setProperty('--music-player-embed-aspect', item.embedAspectRatio || '16 / 9');
+        embedEl.dataset.viewMode = item.embedViewMode || 'landscape';
+        embedEl.appendChild(iframe);
+        embedEl.hidden = false;
+        surfaceNote.textContent = 'Playing inline through the source embed. Pause unloads the embed for now.';
+        return;
+      }
+
+      surfaceNote.textContent = item.playbackNote;
+    };
+
+    const renderSelection = () => {
+      const item = currentItem();
+      if (!item) return;
+
+      stageTitle.textContent = item.title;
+      stageTitle.href = item.entryHref;
+      stageEntryLink.href = item.entryHref;
+      stageSummary.textContent = item.summary;
+      stageNote.textContent = item.playbackNote;
+      const publicKindLabel = getPublicKindLabel(item);
+      stageKind.textContent = publicKindLabel;
+      stageMeta.hidden = !publicKindLabel;
+
+      if (sourceLink instanceof HTMLAnchorElement) {
+        if (item.externalUrl) {
+          sourceLink.hidden = false;
+          sourceLink.href = item.externalUrl;
+          sourceLink.textContent = item.sourceLinkLabel;
+        } else {
+          sourceLink.hidden = true;
+        }
+      }
+
+      prevButton.disabled = !item.previousId;
+      nextButton.disabled = !item.nextId;
+
+      if (item.effectivePlaybackMode === 'outbound') {
+        playButton.disabled = true;
+        playButton.textContent = 'Open on source';
+      } else if (item.effectivePlaybackMode === 'unavailable') {
+        playButton.disabled = true;
+        playButton.textContent = 'Unavailable';
+      } else {
+        playButton.disabled = false;
+        playButton.textContent = isPlaying ? 'Pause' : 'Play';
+      }
+
+      shelfItems.forEach((node) => {
+        if (!(node instanceof HTMLElement)) return;
+        node.classList.toggle('is-current', node.dataset.musicPlayerItem === item.id);
+      });
+
+      selectButtons.forEach((node) => {
+        if (!(node instanceof HTMLButtonElement)) return;
+        node.setAttribute('aria-pressed', String(node.dataset.musicPlayerSelect === item.id));
+      });
+
+      if (isPlaying && isInlinePlayable(item)) {
+        renderInlineSurface(item);
+      } else {
+        stopInlinePlayback();
+        surfaceNote.textContent =
+          item.effectivePlaybackMode === 'embed'
+            ? 'Press play to open this record inline.'
+            : item.effectivePlaybackMode === 'native'
+              ? 'Press play to hear this record inline.'
+              : item.playbackNote;
+      }
+    };
+
+    const selectItem = (id, options = { autoplay: false }) => {
+      const item = getItem(id);
+      if (!item) return;
+
+      const shouldAutoplay = Boolean(options.autoplay && isInlinePlayable(item));
+      currentId = id;
+      isPlaying = shouldAutoplay;
+      renderSelection();
+
+      if (shouldAutoplay && item.effectivePlaybackMode === 'native') {
+        audioEl.play().catch(() => {
+          isPlaying = false;
+          renderSelection();
+        });
+      }
+    };
+
+    playButton.addEventListener('click', () => {
+      const item = currentItem();
+      if (!item || !isInlinePlayable(item)) return;
+
+      if (item.effectivePlaybackMode === 'native') {
+        if (isPlaying) {
+          audioEl.pause();
+          isPlaying = false;
+          renderSelection();
+          return;
+        }
+
+        isPlaying = true;
+        renderSelection();
+        audioEl.play().catch(() => {
+          isPlaying = false;
+          renderSelection();
+        });
+        return;
+      }
+
+      isPlaying = !isPlaying;
+      renderSelection();
+    });
+
+    prevButton.addEventListener('click', () => {
+      const item = currentItem();
+      if (!item?.previousId) return;
+      selectItem(item.previousId, { autoplay: isPlaying });
+    });
+
+    nextButton.addEventListener('click', () => {
+      const item = currentItem();
+      if (!item?.nextId) return;
+      selectItem(item.nextId, { autoplay: isPlaying });
+    });
+
+    selectButtons.forEach((node) => {
+      if (!(node instanceof HTMLButtonElement)) return;
+      node.addEventListener('click', () => {
+        const id = node.dataset.musicPlayerSelect;
+        if (!id) return;
+        selectItem(id, { autoplay: false });
+      });
+    });
+
+    playItemButtons.forEach((node) => {
+      if (!(node instanceof HTMLButtonElement)) return;
+      node.addEventListener('click', () => {
+        const id = node.dataset.musicPlayerPlayItem;
+        if (!id) return;
+        selectItem(id, { autoplay: true });
+      });
+    });
+
+    audioEl.addEventListener('pause', () => {
+      if (isPlaying) {
+        isPlaying = false;
+        renderSelection();
+      }
+    });
+
+    audioEl.addEventListener('play', () => {
+      if (!isPlaying) {
+        isPlaying = true;
+        renderSelection();
+      }
+    });
+
+    renderSelection();
+  })();
+</script>
+
+<style>
+  .music-shelf-player {
+    display: grid;
+    gap: 1.2rem;
+    padding: 1.05rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+    border-radius: 1.2rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 7%, transparent), transparent 68%),
+      color-mix(in srgb, var(--tone-surface) 92%, transparent);
+  }
+
+  .music-shelf-player__header,
+  .music-shelf-player__stage-copy {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .music-shelf-player__kicker,
+  .music-shelf-player__copy,
+  .music-shelf-player__meta,
+  .music-shelf-player__summary,
+  .music-shelf-player__note,
+  .music-shelf-player__surface-note,
+  .music-shelf-player__item-summary,
+  .music-shelf-player__item-topline {
+    margin: 0;
+  }
+
+  .music-shelf-player__kicker,
+  .music-shelf-player__meta,
+  .music-shelf-player__item-topline,
+  .music-shelf-player__item-state {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+  }
+
+  .music-shelf-player__copy {
+    max-width: 62ch;
+    color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
+  }
+
+  .music-shelf-player__stage {
+    display: grid;
+    gap: 1rem 1.15rem;
+    padding: 1.1rem;
+    border: 1px solid var(--line2);
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 72%),
+      color-mix(in srgb, var(--tone-surface-strong) 90%, transparent);
+  }
+
+  .music-shelf-player__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.42rem;
+  }
+
+  .music-shelf-player__chip {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+    border-radius: 999px;
+    padding: 0.22rem 0.54rem;
+    line-height: 1;
+    background: rgba(8, 12, 20, 0.32);
+  }
+
+  .music-shelf-player__chip--source,
+  .music-shelf-player__chip--status,
+  .music-shelf-player__chip--sequence {
+    border-color: color-mix(in srgb, var(--tone-accent) 22%, var(--line2));
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .music-shelf-player__title {
+    margin: 0;
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    line-height: 1.08;
+  }
+
+  .music-shelf-player__title a,
+  .music-shelf-player__link,
+  .music-shelf-player__item-link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .music-shelf-player__title a:hover,
+  .music-shelf-player__title a:focus-visible {
+    color: var(--tone-accent-glow);
+  }
+
+  .music-shelf-player__summary,
+  .music-shelf-player__note,
+  .music-shelf-player__surface-note,
+  .music-shelf-player__item-summary {
+    line-height: 1.54;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+  }
+
+  .music-shelf-player__summary {
+    max-width: 54ch;
+  }
+
+  .music-shelf-player__note {
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .music-shelf-player__controls,
+  .music-shelf-player__links,
+  .music-shelf-player__item-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    align-items: center;
+  }
+
+  .music-shelf-player__control {
+    min-height: 2.45rem;
+    padding: 0.5rem 0.9rem;
+  }
+
+  .music-shelf-player__control--primary:not(:disabled) {
+    border-color: color-mix(in srgb, var(--tone-accent) 40%, var(--line2));
+    color: color-mix(in srgb, var(--tone-accent-glow) 84%, white 16%);
+  }
+
+  .music-shelf-player__control:disabled {
+    opacity: 0.56;
+    cursor: not-allowed;
+  }
+
+  .music-shelf-player__link,
+  .music-shelf-player__item-link {
+    width: fit-content;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 36%, transparent);
+    color: var(--tone-accent-glow);
+  }
+
+  .music-shelf-player__link--secondary,
+  .music-shelf-player__item-link--secondary {
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+    border-color: color-mix(in srgb, var(--tone-text) 18%, transparent);
+  }
+
+  .music-shelf-player__surface {
+    display: grid;
+    gap: 0.7rem;
+    align-content: start;
+    width: 100%;
+    max-width: 32rem;
+  }
+
+  .music-shelf-player__audio,
+  .music-shelf-player__embed {
+    width: 100%;
+  }
+
+  .music-shelf-player__surface-note {
+    font-size: 0.92rem;
+    color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
+  }
+
+  .music-shelf-player__embed {
+    min-height: 12rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
+    border-radius: 0.95rem;
+    overflow: hidden;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.015), transparent 72%),
+      rgba(4, 7, 12, 0.68);
+    aspect-ratio: var(--music-player-embed-aspect, 16 / 9);
+  }
+
+  .music-shelf-player__embed iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .music-shelf-player__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.95rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  .music-shelf-player__item {
+    display: grid;
+    gap: 0.62rem;
+    height: 100%;
+    padding: 0.95rem;
+    border: 1px solid var(--line2);
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 72%),
+      color-mix(in srgb, var(--tone-surface) 88%, transparent);
+    transition:
+      border-color 140ms ease,
+      background-color 140ms ease,
+      transform 140ms ease;
+  }
+
+  .music-shelf-player__item.is-current,
+  .music-shelf-player__item:hover {
+    border-color: color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 72%),
+      color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
+  }
+
+  .music-shelf-player__item-title {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.24;
+  }
+
+  .music-shelf-player__item-select {
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    text-align: left;
+    color: inherit;
+    min-height: 0;
+  }
+
+  .music-shelf-player__item-select:hover,
+  .music-shelf-player__item-select:focus-visible {
+    color: var(--tone-accent-glow);
+    transform: none;
+  }
+
+  .music-shelf-player__item-summary {
+    font-size: 0.98rem;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .music-shelf-player__item-actions {
+    margin-top: auto;
+    padding-top: 0.05rem;
+    align-items: flex-end;
+  }
+
+  .music-shelf-player__item-action {
+    min-height: 2.25rem;
+    padding: 0.42rem 0.8rem;
+  }
+
+  @media (min-width: 880px) {
+    .music-shelf-player__stage {
+      grid-template-columns: minmax(0, 1.08fr) minmax(18rem, 0.9fr);
+      align-items: start;
+    }
+
+    .music-shelf-player__surface {
+      justify-self: end;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .music-shelf-player {
+      padding: 0.85rem;
+    }
+
+    .music-shelf-player__stage,
+    .music-shelf-player__item {
+      padding: 0.82rem;
+    }
+
+    .music-shelf-player__surface {
+      max-width: none;
+    }
+
+    .music-shelf-player__list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

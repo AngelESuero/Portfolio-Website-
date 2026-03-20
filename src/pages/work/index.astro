@@ -1,0 +1,1459 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import featuredThreadsData from '../../data/featured_threads.json';
+import youtubeData from '../../data/youtube.json';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import {
+  getArchiveMediumHref,
+  getEntryDisplayMedium,
+  getEntryHref,
+  sortEntriesByDate
+} from '../../lib/archive-entries';
+import { formatShortUtcDate } from '../../lib/date-formatting';
+import { resolveProjectTimeline } from '../../data/linktree-timeline';
+
+type PreparedLink = {
+  key: string;
+  label: string;
+  url: string;
+  isExternal: boolean;
+};
+
+type RelatedProject = {
+  slug: string;
+  title: string;
+  yearLabel: string;
+};
+
+type RelatedThread = {
+  title: string;
+  href: string;
+};
+
+type PreparedProject = {
+  slug: string;
+  title: string;
+  yearLabel: string;
+  type: string;
+  status: string;
+  role: string | null;
+  description: string;
+  coverImage: string;
+  coverFit: 'cover' | 'contain';
+  tools: string[];
+  notes: string[];
+  focusCopy: string;
+  detailPath: string;
+  links: PreparedLink[];
+  relatedProjects: RelatedProject[];
+  hasCuratedRelations: boolean;
+  relatedThread: RelatedThread | null;
+  hasCuratedThread: boolean;
+  isLead: boolean;
+  youtubeEmbedId: string | null;
+};
+
+const linkLabels: Record<string, string> = {
+  untitled: 'Untitled',
+  youtube: 'YouTube',
+  instagram: 'Instagram',
+  linktree: 'Linktree',
+  github: 'GitHub'
+};
+
+const typeLabels: Record<string, string> = {
+  music: 'Music',
+  video: 'Video',
+  writing: 'Writing',
+  civic: 'Civic'
+};
+
+const compareProjectsByRecency = (a: CollectionEntry<'projects'>, b: CollectionEntry<'projects'>) => {
+  const yearDelta = resolveProjectTimeline(b.data).sortYear - resolveProjectTimeline(a.data).sortYear;
+  if (yearDelta !== 0) return yearDelta;
+
+  const timelineOrderA = a.data.timeline_order ?? Number.MAX_SAFE_INTEGER;
+  const timelineOrderB = b.data.timeline_order ?? Number.MAX_SAFE_INTEGER;
+  if (timelineOrderA !== timelineOrderB) return timelineOrderA - timelineOrderB;
+
+  return a.data.title.localeCompare(b.data.title);
+};
+
+const selectArchiveBridgeEntries = (entries: CollectionEntry<'entries'>[]) => {
+  const laneSet = new Set<string>(featuredArchiveLanes);
+  const selected: CollectionEntry<'entries'>[] = [];
+  const selectedIds = new Set<string>();
+  const coveredLanes = new Set<string>();
+
+  for (const entry of entries) {
+    if (!laneSet.has(entry.data.medium)) continue;
+    if (coveredLanes.has(entry.data.medium)) continue;
+    selected.push(entry);
+    selectedIds.add(entry.id);
+    coveredLanes.add(entry.data.medium);
+    if (selected.length === 4) return selected;
+  }
+
+  for (const entry of entries) {
+    if (!laneSet.has(entry.data.medium)) continue;
+    if (selectedIds.has(entry.id)) continue;
+    selected.push(entry);
+    selectedIds.add(entry.id);
+    if (selected.length === 4) break;
+  }
+
+  return selected;
+};
+
+const collapseMarkdown = (value: string): string =>
+  value
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/[*_`>#]/g, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const extractNotes = (body: string): string[] =>
+  String(body || '')
+    .split(/\n{2,}/)
+    .map((part) => collapseMarkdown(part))
+    .filter(Boolean)
+    .slice(0, 2);
+
+const formatRole = (value: string | null): string | null => {
+  if (!value) return null;
+  const normalized = value
+    .split('/')
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .join(' · ');
+  return normalized || null;
+};
+
+const outwardLabel = (link: PreparedLink): string => {
+  switch (link.key) {
+    case 'untitled':
+      return 'Listen on Untitled';
+    case 'youtube':
+      return 'Watch on YouTube';
+    case 'instagram':
+      return 'See it on Instagram';
+    case 'linktree':
+      return 'Open release links';
+    case 'github':
+      return 'Browse the code';
+    default:
+      return `Visit ${link.label}`;
+  }
+};
+
+const allProjects = (await getCollection('projects')).sort(compareProjectsByRecency);
+const projectIndex = new Map(allProjects.map((project) => [project.slug, project]));
+const scoreLeadProject = (project: CollectionEntry<'projects'>) => {
+  const timeline = resolveProjectTimeline(project.data);
+  const notes = extractNotes(project.body);
+  const noteWeight = Math.min(notes.join(' ').length, 160);
+  const featuredWeight = project.data.featured ? 360 : 0;
+  const statusWeight = /published/i.test(project.data.status) ? 90 : 0;
+  const leadPriorityWeight = (project.data.leadPriority ?? 0) * 1000;
+  return leadPriorityWeight + featuredWeight + statusWeight + noteWeight + timeline.sortYear;
+};
+
+const leadProject =
+  [...allProjects].sort((a, b) => {
+    const scoreDelta = scoreLeadProject(b) - scoreLeadProject(a);
+    if (scoreDelta !== 0) return scoreDelta;
+    return compareProjectsByRecency(a, b);
+  })[0] ?? allProjects[0];
+const remainingProjects = allProjects
+  .filter((project) => project.slug !== leadProject.slug)
+  .sort((a, b) => {
+    const featuredDelta = Number(b.data.featured) - Number(a.data.featured);
+    if (featuredDelta !== 0) return featuredDelta;
+    return compareProjectsByRecency(a, b);
+  });
+const orderedProjects = [leadProject, ...remainingProjects];
+
+const threadsByType = new Map(
+  featuredThreadsData.featured_threads.map((thread) => [
+    thread.type,
+    { title: thread.title, href: thread.href }
+  ])
+);
+
+const threadsByHref = new Map(
+  featuredThreadsData.featured_threads.map((thread) => [
+    thread.href,
+    { title: thread.title, href: thread.href }
+  ])
+);
+
+const inferRelatedProjects = (
+  project: CollectionEntry<'projects'>,
+  excludedSlugs: string[] = []
+): RelatedProject[] => {
+  const excluded = new Set([project.slug, ...excludedSlugs]);
+  return allProjects
+    .filter((candidate) => !excluded.has(candidate.slug) && candidate.data.type === project.data.type)
+    .sort((a, b) => {
+      const featuredDelta = Number(b.data.featured) - Number(a.data.featured);
+      if (featuredDelta !== 0) return featuredDelta;
+      return compareProjectsByRecency(a, b);
+    })
+    .slice(0, 2)
+    .map((candidate) => ({
+      slug: candidate.slug,
+      title: candidate.data.title,
+      yearLabel: resolveProjectTimeline(candidate.data).yearLabel
+    }));
+};
+
+const resolveRelatedProjects = (
+  project: CollectionEntry<'projects'>
+): { items: RelatedProject[]; hasCuratedRelations: boolean } => {
+  const explicitSlugs = Array.isArray(project.data.relatedProjects) ? project.data.relatedProjects : [];
+  const seen = new Set<string>();
+  const explicitMatches = explicitSlugs
+    .map((slug) => projectIndex.get(slug))
+    .filter((candidate): candidate is CollectionEntry<'projects'> => {
+      if (!candidate || candidate.slug === project.slug || seen.has(candidate.slug)) return false;
+      seen.add(candidate.slug);
+      return true;
+    })
+    .map((candidate) => ({
+      slug: candidate.slug,
+      title: candidate.data.title,
+      yearLabel: resolveProjectTimeline(candidate.data).yearLabel
+    }));
+
+  if (explicitMatches.length >= 2) {
+    return {
+      items: explicitMatches.slice(0, 2),
+      hasCuratedRelations: true
+    };
+  }
+
+  const inferredMatches = inferRelatedProjects(
+    project,
+    explicitMatches.map((candidate) => candidate.slug)
+  );
+
+  return {
+    items: [...explicitMatches, ...inferredMatches].slice(0, 2),
+    hasCuratedRelations: explicitMatches.length > 0
+  };
+};
+
+const resolveRelatedThread = (
+  project: CollectionEntry<'projects'>
+): { item: RelatedThread | null; hasCuratedThread: boolean } => {
+  const explicitHref = typeof project.data.relatedThread === 'string' ? project.data.relatedThread.trim() : '';
+  const explicitThread = explicitHref ? threadsByHref.get(explicitHref) ?? null : null;
+
+  if (explicitThread) {
+    return {
+      item: explicitThread,
+      hasCuratedThread: true
+    };
+  }
+
+  const implicitThreadTypes = new Set<string>(['music', 'video']);
+
+  return {
+    item: implicitThreadTypes.has(project.data.type) ? threadsByType.get(project.data.type) ?? null : null,
+    hasCuratedThread: false
+  };
+};
+
+const preparedProjects: PreparedProject[] = orderedProjects.map((project) => {
+  const timeline = resolveProjectTimeline(project.data);
+  const notes = extractNotes(project.body);
+  const links = Object.entries(project.data.links)
+    .map(([key, value]) => {
+      const url = typeof value === 'string' ? value.trim() : '';
+      if (!url) return null;
+      return {
+        key,
+        label: linkLabels[key] || key,
+        url,
+        isExternal: /^https?:\/\//i.test(url)
+      };
+    })
+    .filter((entry): entry is PreparedLink => Boolean(entry));
+  const relatedProjectData = resolveRelatedProjects(project);
+  const relatedThreadData = resolveRelatedThread(project);
+
+  return {
+    slug: project.slug,
+    title: project.data.title,
+    yearLabel: timeline.yearLabel,
+    type: typeLabels[project.data.type] ?? project.data.type,
+    status: project.data.status,
+    role: formatRole(typeof project.data.role === 'string' && project.data.role.trim() ? project.data.role.trim() : null),
+    description: project.data.description,
+    coverImage: project.data.cover_image,
+    coverFit: project.data.cover_fit ?? 'cover',
+    tools: project.data.tools,
+    notes: notes.length > 0 ? notes : [project.data.description],
+    focusCopy: notes[0] ?? project.data.description,
+    detailPath: `/work/${project.slug}`,
+    links,
+    relatedProjects: relatedProjectData.items,
+    hasCuratedRelations: relatedProjectData.hasCuratedRelations,
+    relatedThread: relatedThreadData.item,
+    hasCuratedThread: relatedThreadData.hasCuratedThread,
+    isLead: project.slug === leadProject.slug,
+    youtubeEmbedId: project.data.youtube_embed ?? null
+  };
+});
+
+const leadSignal = preparedProjects.find((project) => project.isLead) ?? preparedProjects[0];
+const defaultStatus =
+  'Stay with one piece to let process, context, and adjacent work gather around it without leaving the page.';
+const featuredArchiveLanes = ['writing', 'image', 'music', 'video'] as const;
+const recentArchiveEntries = selectArchiveBridgeEntries(sortEntriesByDate(await getCollection('entries')));
+---
+<BaseLayout title="Work — a_e.s_" theme="work">
+  <section class="work-page">
+    <header class="work-intro" aria-labelledby="work-title">
+      <p class="work-intro__eyebrow">Work</p>
+      <h1 id="work-title" class="work-intro__title">The Work Toward Life.</h1>
+      <p class="work-intro__lede">
+        Beat tapes, music videos, street footage, and essays.
+      </p>
+      <p class="work-intro__signal">
+        <a href={`#${leadSignal.slug}`}>{leadSignal.title}</a>
+        {' '}is the most active project right now.
+      </p>
+    </header>
+
+    <aside class="work-archive-bridge" aria-labelledby="work-archive-heading">
+      <div class="work-archive-bridge__intro">
+        <p class="work-archive-bridge__kicker font-archive">Archive nearby</p>
+        <h2 id="work-archive-heading" class="work-archive-bridge__title">The living record stays nearby.</h2>
+        <p class="work-archive-bridge__copy">
+          New things tend to land in the archive first.
+        </p>
+      </div>
+
+      <div class="work-archive-bridge__links font-archive">
+        <a href="/archive">All archive</a>
+        {featuredArchiveLanes.map((medium) => (
+          <a href={getArchiveMediumHref(medium)}>{getEntryDisplayMedium(medium)}</a>
+        ))}
+      </div>
+
+      {recentArchiveEntries.length > 0 && (
+        <ul class="work-archive-bridge__recent" aria-label="Recent archive additions">
+          {recentArchiveEntries.map((entry) => (
+            <li>
+              <a href={getEntryHref(entry)}>
+                <span>{entry.data.title}</span>
+                <small>{formatShortUtcDate(entry.data.date)} · {getEntryDisplayMedium(entry.data.medium)}</small>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </aside>
+
+    <section class="work-field" data-work-field data-has-selection="false" aria-labelledby="work-field-heading">
+      <div class="work-field__header">
+        <h2 id="work-field-heading" class="work-field__heading">Current field</h2>
+        <p class="work-field__status" data-work-status aria-live="polite">{defaultStatus}</p>
+      </div>
+
+      <ol class="work-field__list" role="list">
+        {preparedProjects.map((project, index) => (
+          <li
+            class:list={['work-field__entry', project.isLead && 'is-leading']}
+            data-work-entry
+            data-leading={project.isLead ? 'true' : 'false'}
+            data-selected="false"
+          >
+            <article
+              class:list={['work-chamber', project.isLead && 'is-leading']}
+              data-work-item
+              data-slug={project.slug}
+              data-title={project.title}
+              data-focus-copy={project.focusCopy}
+              data-selected="false"
+            >
+              <button
+                type="button"
+                class="work-chamber__summary"
+                data-work-toggle
+                aria-expanded="false"
+                aria-controls={`work-panel-${project.slug}`}
+              >
+                <div class="work-chamber__copy">
+                  <div class="work-chamber__meta">
+                    <span>{project.yearLabel}</span>
+                    <span>{project.type}</span>
+                    <span>{project.status}</span>
+                    {project.isLead && <span class="work-chamber__lead-badge">Leading signal</span>}
+                  </div>
+                  <h3 id={`work-heading-${project.slug}`} class="work-chamber__title">{project.title}</h3>
+                  <p class="work-chamber__description">{project.description}</p>
+                  <span class="work-chamber__prompt">
+                    {index === 0 ? 'Begin here if you want a first thread' : 'Let this one come forward'}
+                  </span>
+                </div>
+
+                <div class="work-chamber__media">
+                  <img
+                    src={project.coverImage}
+                    alt={project.title}
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                    decoding="async"
+                    style={project.coverFit === 'contain' ? 'object-fit:contain; padding: 1rem; background: #f0e9de;' : ''}
+                  />
+                </div>
+              </button>
+
+              <div
+                id={`work-panel-${project.slug}`}
+                class="work-chamber__detail"
+                data-work-panel
+                aria-labelledby={`work-heading-${project.slug}`}
+                hidden
+              >
+                {project.youtubeEmbedId && (
+                  <div class="floating-youtube" data-youtube-player={project.slug} data-dragging="false">
+                    <div class="floating-youtube__handle">
+                      <button class="floating-youtube__close" aria-label="Close video">×</button>
+                    </div>
+                    <div class="floating-youtube__content">
+                      <iframe
+                        src={`https://www.youtube.com/embed/${project.youtubeEmbedId}`}
+                        title={project.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen
+                        loading="lazy"
+                      ></iframe>
+                    </div>
+                  </div>
+                )}
+                <div class="work-chamber__detail-grid">
+                  <div class="work-chamber__detail-copy">
+                    <p class="work-chamber__detail-kicker">Resolution</p>
+                    {project.notes.map((note) => (
+                      <p>{note}</p>
+                    ))}
+
+                    <dl class="work-chamber__facts">
+                      <div>
+                        <dt>Year</dt>
+                        <dd>{project.yearLabel}</dd>
+                      </div>
+                      <div>
+                        <dt>Form</dt>
+                        <dd>{project.type}</dd>
+                      </div>
+                      {project.role && (
+                        <div>
+                          <dt>Made as</dt>
+                          <dd>{project.role}</dd>
+                        </div>
+                      )}
+                      <div>
+                        <dt>Status</dt>
+                        <dd>{project.status}</dd>
+                      </div>
+                    </dl>
+                  </div>
+
+                  <aside class="work-chamber__detail-aside">
+                    {project.relatedProjects.length > 0 && (
+                      <section class="work-chamber__group work-chamber__group--adjacency" aria-labelledby={`work-related-${project.slug}`}>
+                        <h4 id={`work-related-${project.slug}`}>Stays close to this piece</h4>
+                        <p class="work-chamber__group-copy">
+                          {project.hasCuratedRelations
+                            ? 'Chosen adjacencies in the body of work.'
+                            : 'Nearby work in the same part of the archive.'}
+                        </p>
+                        <ul class="work-chamber__list">
+                          {project.relatedProjects.map((related) => (
+                            <li>
+                              <a href={`/work/${related.slug}`}>
+                                <span>{related.title}</span>
+                                <small>{related.yearLabel}</small>
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
+                    )}
+
+                    {project.relatedThread && (
+                      <p class="work-chamber__thread-note">
+                        {project.hasCuratedThread
+                          ? 'One thread stays deliberately in conversation with this piece:'
+                          : 'A nearby thread keeps the wider process open:'}
+                        {' '}
+                        <a class="work-chamber__thread-link" href={project.relatedThread.href}>
+                          {project.relatedThread.title}
+                        </a>
+                        .
+                      </p>
+                    )}
+
+                    <section class="work-chamber__continuation" aria-labelledby={`work-links-${project.slug}`}>
+                      <h4 id={`work-links-${project.slug}`}>Continue with this work</h4>
+                      <div class="work-chamber__action-row">
+                        <a class="work-chamber__action work-chamber__action--primary" href={project.detailPath}>
+                          Read the fuller project page
+                        </a>
+                        {project.links.length > 0 && (
+                          <ul class="work-chamber__quiet-links">
+                            {project.links.map((link) => (
+                              <li>
+                                <a
+                                  class="work-chamber__quiet-link"
+                                  href={link.url}
+                                  {...(link.isExternal ? { target: '_blank', rel: 'noopener' } : {})}
+                                >
+                                  {outwardLabel(link)}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    </section>
+                  </aside>
+                </div>
+              </div>
+            </article>
+          </li>
+        ))}
+      </ol>
+    </section>
+    <section class="work-yt-recent" aria-labelledby="work-yt-heading">
+      <header class="work-yt-recent__header">
+        <p class="work-yt-recent__kicker">From YouTube</p>
+        <h2 id="work-yt-heading" class="work-yt-recent__title">Recent uploads</h2>
+        <a href={youtubeData.meta.channelUrl} target="_blank" rel="noopener" class="work-yt-recent__all">Full channel →</a>
+      </header>
+      <ol class="work-yt-recent__grid" role="list">
+        {youtubeData.items.slice(0, 8).map((video) => (
+          <li>
+            <a href={video.url} target="_blank" rel="noopener" class="work-yt-card">
+              <div class="work-yt-card__thumb">
+                <img src={video.thumbnailUrl} alt={video.title} loading="lazy" decoding="async" />
+              </div>
+              <p class="work-yt-card__title">{video.title}</p>
+              <time class="work-yt-card__date" datetime={video.publishedAt}>
+                {new Date(video.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+              </time>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+  (() => {
+    const field = document.querySelector('[data-work-field]');
+    if (!(field instanceof HTMLElement)) return;
+
+    const items = Array.from(field.querySelectorAll('[data-work-item]'));
+    const status = field.querySelector('[data-work-status]');
+    const defaultStatus = status instanceof HTMLElement ? status.textContent?.trim() || '' : '';
+
+    const sync = (slug, updateHash = true) => {
+      const hasSelection = Boolean(slug);
+      field.dataset.hasSelection = hasSelection ? 'true' : 'false';
+
+      items.forEach((item) => {
+        const active = hasSelection && item.getAttribute('data-slug') === slug;
+        item.setAttribute('data-selected', active ? 'true' : 'false');
+        const entry = item.closest('[data-work-entry]');
+        if (entry instanceof HTMLElement) {
+          entry.dataset.selected = active ? 'true' : 'false';
+        }
+
+        const toggle = item.querySelector('[data-work-toggle]');
+        const panel = item.querySelector('[data-work-panel]');
+
+        if (toggle instanceof HTMLElement) {
+          toggle.setAttribute('aria-expanded', String(active));
+        }
+
+        if (panel instanceof HTMLElement) {
+          panel.hidden = !active;
+        }
+      });
+
+      if (status instanceof HTMLElement) {
+        if (!hasSelection) {
+          status.textContent = defaultStatus;
+        } else {
+          const selected = items.find((item) => item.getAttribute('data-slug') === slug);
+          status.textContent =
+            selected?.getAttribute('data-focus-copy') || selected?.getAttribute('data-title') || defaultStatus;
+        }
+      }
+
+      if (!updateHash) return;
+
+      if (!hasSelection) {
+        const cleanUrl = `${window.location.pathname}${window.location.search}`;
+        window.history.replaceState({}, '', cleanUrl);
+        return;
+      }
+
+      window.history.replaceState({}, '', `#${slug}`);
+    };
+
+    items.forEach((item) => {
+      const toggle = item.querySelector('[data-work-toggle]');
+      if (!(toggle instanceof HTMLButtonElement)) return;
+
+      toggle.addEventListener('click', () => {
+        const slug = item.getAttribute('data-slug') || '';
+        const isSelected = item.getAttribute('data-selected') === 'true';
+        sync(isSelected ? '' : slug);
+      });
+    });
+
+    const initialSlug = window.location.hash.replace(/^#/, '');
+    const hasInitialMatch = items.some((item) => item.getAttribute('data-slug') === initialSlug);
+    sync(hasInitialMatch ? initialSlug : '', false);
+
+    window.addEventListener('hashchange', () => {
+      const hashSlug = window.location.hash.replace(/^#/, '');
+      const hasMatch = items.some((item) => item.getAttribute('data-slug') === hashSlug);
+      sync(hasMatch ? hashSlug : '', false);
+    });
+  })();
+
+  // YouTube player drag functionality
+  (() => {
+    const players = Array.from(document.querySelectorAll('[data-youtube-player]'));
+
+    players.forEach((player) => {
+      const handle = player.querySelector('.floating-youtube__handle');
+      const closeBtn = player.querySelector('.floating-youtube__close');
+
+      if (!handle || !closeBtn) return;
+
+      let isDragging = false;
+      let offsetX = 0;
+      let offsetY = 0;
+
+      const startDrag = (e) => {
+        isDragging = true;
+        player.dataset.dragging = 'true';
+        const rect = player.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+      };
+
+      const moveDrag = (e) => {
+        if (!isDragging) return;
+        const x = e.clientX - offsetX;
+        const y = e.clientY - offsetY;
+        player.style.left = `${x}px`;
+        player.style.top = `${y}px`;
+        player.style.right = 'auto';
+      };
+
+      const endDrag = () => {
+        isDragging = false;
+        player.dataset.dragging = 'false';
+      };
+
+      const closePlayer = () => {
+        player.style.display = 'none';
+      };
+
+      handle.addEventListener('mousedown', startDrag);
+      document.addEventListener('mousemove', moveDrag);
+      document.addEventListener('mouseup', endDrag);
+      closeBtn.addEventListener('click', closePlayer);
+    });
+  })();
+</script>
+
+<style>
+  .work-page {
+    display: grid;
+    gap: clamp(1.35rem, 2vw, 1.9rem);
+  }
+
+  .work-intro {
+    display: grid;
+    gap: 0.8rem;
+    max-width: 58rem;
+  }
+
+  .work-intro__eyebrow,
+  .work-intro__lede,
+  .work-intro__signal,
+  .work-field__heading,
+  .work-field__status,
+  .work-chamber__description,
+  .work-chamber__detail-kicker,
+  .work-chamber__detail-copy p,
+  .work-chamber__group h4,
+  .work-chamber__facts dt,
+  .work-chamber__facts dd {
+    margin: 0;
+  }
+
+  .work-intro__eyebrow {
+    font-size: 0.74rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  }
+
+  .work-intro__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 5vw, 4.35rem);
+    line-height: 0.96;
+    letter-spacing: -0.03em;
+    max-width: 12ch;
+  }
+
+  .work-intro__lede {
+    max-width: 40rem;
+    font-size: clamp(1rem, 1.5vw, 1.14rem);
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  }
+
+  .work-intro__signal {
+    max-width: 42rem;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  }
+
+  .work-intro__signal a {
+    color: var(--tone-accent-glow);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--tone-accent) 48%, transparent);
+    text-underline-offset: 0.14em;
+  }
+
+  .work-archive-bridge {
+    display: grid;
+    gap: 1rem;
+    padding: 1.05rem 1.1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 16%, var(--line2));
+    border-radius: 1.3rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 7%, transparent), transparent 68%),
+      color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
+    box-shadow:
+      0 18px 40px rgba(7, 9, 12, 0.1),
+      inset 0 1px 0 color-mix(in srgb, white 7%, transparent);
+  }
+
+  .work-archive-bridge__intro,
+  .work-archive-bridge__title,
+  .work-archive-bridge__copy {
+    margin: 0;
+  }
+
+  .work-archive-bridge__intro {
+    display: grid;
+    gap: 0.45rem;
+    max-width: 46rem;
+  }
+
+  .work-archive-bridge__kicker {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 74%, var(--tone-muted) 26%);
+  }
+
+  .work-archive-bridge__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2.3vw, 1.7rem);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+  }
+
+  .work-archive-bridge__copy {
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+    max-width: 42rem;
+  }
+
+  .work-archive-bridge__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .work-archive-bridge__links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.05rem;
+    padding: 0.34rem 0.72rem;
+    border-radius: 999px;
+    border: 1px solid var(--line2);
+    background: color-mix(in srgb, var(--tone-surface) 86%, transparent);
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+    text-decoration: none;
+  }
+
+  .work-archive-bridge__links a:hover,
+  .work-archive-bridge__links a:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
+    color: var(--tone-text);
+  }
+
+  .work-archive-bridge__recent {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.65rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  .work-archive-bridge__recent li {
+    margin: 0;
+  }
+
+  .work-archive-bridge__recent a {
+    display: grid;
+    gap: 0.28rem;
+    padding: 0.82rem 0.88rem;
+    min-height: 100%;
+    border-radius: 1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+    background: color-mix(in srgb, var(--tone-surface) 82%, transparent);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .work-archive-bridge__recent a:hover,
+  .work-archive-bridge__recent a:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 26%, var(--line2));
+    transform: translateY(-1px);
+  }
+
+  .work-archive-bridge__recent span {
+    font-size: 0.96rem;
+    color: color-mix(in srgb, var(--tone-text) 92%, var(--tone-muted) 8%);
+  }
+
+  .work-archive-bridge__recent small {
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  }
+
+  .work-field {
+    display: grid;
+    gap: 0.95rem;
+  }
+
+  .work-field__header {
+    display: grid;
+    gap: 0.45rem;
+    max-width: 44rem;
+  }
+
+  .work-field__heading {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    letter-spacing: 0.01em;
+  }
+
+  .work-field__status {
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  }
+
+  .work-field__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.95rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .work-field__entry {
+    margin: 0;
+  }
+
+  .work-field__entry[data-leading='true'],
+  .work-field__entry[data-selected='true'] {
+    grid-column: 1 / -1;
+  }
+
+  .work-chamber {
+    opacity: 0.84;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
+    border-radius: 1.45rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 8%, transparent), transparent 58%),
+      color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
+    box-shadow:
+      0 18px 48px rgba(7, 9, 12, 0.12),
+      inset 0 1px 0 color-mix(in srgb, white 7%, transparent);
+    transition:
+      opacity 160ms ease,
+      border-color 160ms ease,
+      transform 160ms ease,
+      filter 160ms ease,
+      background-color 160ms ease;
+    overflow: clip;
+  }
+
+  .work-chamber.is-leading {
+    opacity: 1;
+    border-color: color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 12%, transparent), transparent 62%),
+      color-mix(in srgb, var(--tone-surface-strong) 92%, transparent);
+  }
+
+  .work-chamber__summary {
+    width: 100%;
+    padding: clamp(1rem, 2vw, 1.25rem);
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: 1fr;
+    align-items: start;
+    cursor: pointer;
+  }
+
+  .work-field__entry[data-leading='true'] .work-chamber__summary,
+  .work-field__entry[data-selected='true'] .work-chamber__summary {
+    gap: 1rem;
+    grid-template-columns: minmax(0, 1.18fr) minmax(15.5rem, 0.92fr);
+    align-items: center;
+  }
+
+  .work-chamber__copy {
+    display: grid;
+    gap: 0.7rem;
+    min-width: 0;
+  }
+
+  .work-chamber__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.6rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  }
+
+  .work-chamber__lead-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.18rem 0.48rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
+    color: color-mix(in srgb, var(--tone-accent-glow) 84%, white 16%);
+    letter-spacing: 0.1em;
+  }
+
+  .work-chamber__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.38rem, 2.1vw, 2rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    max-width: 15ch;
+  }
+
+  .work-field__entry[data-leading='true'] .work-chamber__title,
+  .work-field__entry[data-selected='true'] .work-chamber__title {
+    font-size: clamp(1.55rem, 2.8vw, 2.35rem);
+  }
+
+  .work-chamber__description {
+    max-width: 42rem;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+  }
+
+  .work-chamber__prompt {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+  }
+
+  .work-chamber__prompt::after {
+    content: '↗';
+    font-size: 0.9em;
+  }
+
+  .work-chamber__media {
+    position: relative;
+    border-radius: 1.1rem;
+    overflow: hidden;
+    aspect-ratio: 16 / 9.25;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
+    background: color-mix(in srgb, var(--tone-bg) 82%, black 18%);
+    max-height: 12rem;
+  }
+
+  .work-field__entry[data-leading='true'] .work-chamber__media,
+  .work-field__entry[data-selected='true'] .work-chamber__media {
+    aspect-ratio: 16 / 11;
+    max-height: none;
+  }
+
+  .work-chamber__media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.82) contrast(0.93) brightness(0.94);
+    transition:
+      transform 180ms ease,
+      filter 180ms ease;
+  }
+
+  .work-chamber:hover,
+  .work-chamber:focus-within {
+    opacity: 1;
+    border-color: color-mix(in srgb, var(--tone-accent) 32%, var(--line2));
+    transform: translateY(-1px);
+  }
+
+  .work-chamber:hover .work-chamber__media img,
+  .work-chamber:focus-within .work-chamber__media img {
+    transform: scale(1.018);
+    filter: saturate(0.92) contrast(0.97) brightness(0.98);
+  }
+
+  .work-field[data-has-selection='true'] .work-chamber[data-selected='false'] {
+    opacity: 0.64;
+    filter: saturate(0.9) grayscale(0.04);
+  }
+
+  .work-field[data-has-selection='true'] .work-chamber[data-selected='true'] {
+    opacity: 1;
+    border-color: color-mix(in srgb, var(--tone-accent) 42%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 14%, transparent), transparent 62%),
+      color-mix(in srgb, var(--tone-surface-strong) 94%, transparent);
+    box-shadow:
+      0 24px 62px rgba(7, 9, 12, 0.17),
+      inset 0 1px 0 color-mix(in srgb, white 8%, transparent);
+  }
+
+  .work-field[data-has-selection='true'] .work-chamber[data-selected='true'] .work-chamber__media img {
+    filter: saturate(0.98) contrast(0.99) brightness(1);
+  }
+
+  .work-chamber__detail {
+    padding: 0 clamp(1rem, 2vw, 1.25rem) clamp(1rem, 2vw, 1.25rem);
+    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 7%, transparent), transparent 58%),
+      transparent;
+  }
+
+  .work-chamber__detail-grid {
+    padding-top: 1.05rem;
+    display: grid;
+    gap: 1.1rem 1.45rem;
+    grid-template-columns: minmax(0, 1.28fr) minmax(16rem, 0.92fr);
+  }
+
+  .work-chamber__detail-copy {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .work-chamber__detail-kicker,
+  .work-chamber__group h4,
+  .work-chamber__continuation h4,
+  .work-chamber__facts dt {
+    font-size: 0.73rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  }
+
+  .work-chamber__detail-copy p {
+    max-width: 42rem;
+    color: color-mix(in srgb, var(--tone-text) 89%, var(--tone-muted) 11%);
+  }
+
+  .work-chamber__detail-copy p:nth-of-type(2) {
+    font-size: 1.02rem;
+    line-height: 1.72;
+    color: color-mix(in srgb, var(--tone-text) 94%, var(--tone-muted) 6%);
+  }
+
+  .work-chamber__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 1rem;
+    padding: 0.75rem 0;
+    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+  }
+
+  .work-chamber__facts div {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.45rem;
+    padding: 0;
+  }
+
+  .work-chamber__facts dd {
+    margin-top: 0;
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  }
+
+
+  .work-chamber__detail-aside {
+    display: grid;
+    gap: 0.85rem;
+    align-content: start;
+  }
+
+  .work-chamber__group {
+    display: grid;
+    gap: 0.55rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 9%, transparent), transparent 72%),
+      color-mix(in srgb, var(--tone-surface) 92%, transparent);
+  }
+
+  .work-chamber__group-copy,
+  .work-chamber__thread-note {
+    margin: 0;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  }
+
+  .work-chamber__thread-note {
+    padding: 0.15rem 0 0.15rem 0.9rem;
+    border-left: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
+    line-height: 1.62;
+  }
+
+  .work-chamber__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .work-chamber__list li {
+    margin: 0;
+  }
+
+  .work-chamber__list a,
+  .work-chamber__thread-link {
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+    text-decoration: none;
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem;
+  }
+
+  .work-chamber__list a:hover,
+  .work-chamber__list a:focus-visible,
+  .work-chamber__thread-link:hover,
+  .work-chamber__thread-link:focus-visible {
+    color: var(--tone-accent-glow);
+  }
+
+  .work-chamber__list small {
+    font-size: 0.78rem;
+    color: color-mix(in srgb, var(--tone-text) 68%, var(--tone-muted) 32%);
+  }
+
+  .work-chamber__continuation {
+    display: grid;
+    gap: 0.55rem;
+    padding-top: 0.25rem;
+    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+  }
+
+  .work-chamber__action-row {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .work-chamber__action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.2rem;
+    padding: 0.45rem 0.82rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 20%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 10%, transparent), transparent 72%),
+      color-mix(in srgb, var(--tone-surface) 90%, transparent);
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+    text-decoration: none;
+    transition:
+      border-color 160ms ease,
+      transform 160ms ease,
+      color 160ms ease;
+  }
+
+  .work-chamber__action--primary {
+    width: fit-content;
+  }
+
+  .work-chamber__action:hover,
+  .work-chamber__action:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 44%, var(--line2));
+    color: var(--tone-accent-glow);
+    transform: translateY(-1px);
+  }
+
+  .work-chamber__quiet-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.9rem;
+  }
+
+  .work-chamber__quiet-links li {
+    margin: 0;
+  }
+
+  .work-chamber__quiet-link {
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--tone-accent) 32%, transparent);
+    text-underline-offset: 0.14em;
+  }
+
+  .work-chamber__quiet-link:hover,
+  .work-chamber__quiet-link:focus-visible {
+    color: var(--tone-accent-glow);
+  }
+
+  @media (max-width: 900px) {
+    .work-field__list {
+      grid-template-columns: 1fr;
+    }
+
+    .work-chamber__summary,
+    .work-chamber__detail-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .work-chamber__media {
+      order: -1;
+      aspect-ratio: 16 / 10;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .work-chamber__facts {
+      gap: 0.45rem 0.8rem;
+    }
+
+    .work-chamber__summary {
+      padding: 0.95rem;
+    }
+
+    .work-chamber__detail {
+      padding: 0 0.95rem 0.95rem;
+    }
+  }
+
+  /* ── YouTube embed (floating PiP) ─────────────────── */
+  .floating-youtube {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 360px;
+    background: rgba(0, 0, 0, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    z-index: 9998;
+    cursor: grab;
+  }
+
+  .floating-youtube[data-dragging='true'] {
+    cursor: grabbing;
+  }
+
+  .floating-youtube__handle {
+    padding: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: flex-end;
+    cursor: grab;
+  }
+
+  .floating-youtube[data-dragging='true'] .floating-youtube__handle {
+    cursor: grabbing;
+  }
+
+  .floating-youtube__close {
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.7);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .floating-youtube__close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .floating-youtube__content {
+    overflow: hidden;
+  }
+
+  .floating-youtube__content iframe {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 0;
+    background: #000;
+  }
+
+  /* ── Recent YouTube strip ───────────────────── */
+  .work-yt-recent {
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .work-yt-recent__header {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+  }
+
+  .work-yt-recent__kicker {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  }
+
+  .work-yt-recent__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 2vw, 1.55rem);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .work-yt-recent__all {
+    margin-left: auto;
+    font-size: 0.85rem;
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--tone-accent) 36%, transparent);
+    text-underline-offset: 0.14em;
+  }
+
+  .work-yt-recent__grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+
+  .work-yt-recent__grid li { margin: 0; }
+
+  .work-yt-card {
+    display: grid;
+    gap: 0.55rem;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+    background: color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
+    overflow: hidden;
+    transition: transform 160ms ease, border-color 160ms ease;
+  }
+
+  .work-yt-card:hover,
+  .work-yt-card:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
+    transform: translateY(-2px);
+  }
+
+  .work-yt-card__thumb {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
+
+  .work-yt-card__thumb img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.82);
+    transition: filter 160ms ease, transform 160ms ease;
+  }
+
+  .work-yt-card:hover .work-yt-card__thumb img {
+    filter: saturate(1);
+    transform: scale(1.03);
+  }
+
+  .work-yt-card__title {
+    margin: 0;
+    padding: 0 0.75rem;
+    font-size: 0.88rem;
+    line-height: 1.4;
+    color: color-mix(in srgb, var(--tone-text) 92%, var(--tone-muted) 8%);
+  }
+
+  .work-yt-card__date {
+    display: block;
+    padding: 0 0.75rem 0.75rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 62%, var(--tone-muted) 38%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .work-chamber,
+    .work-chamber__media img,
+    .work-chamber__action,
+    .work-yt-card {
+      transition: none;
+    }
+  }
+</style>

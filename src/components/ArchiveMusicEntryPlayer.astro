@@ -1,0 +1,265 @@
+---
+import type { ResolvedMusicPlayerItem } from '../lib/music-player';
+
+interface Props {
+  item: ResolvedMusicPlayerItem;
+  previousHref?: string | null;
+  previousTitle?: string | null;
+  nextHref?: string | null;
+  nextTitle?: string | null;
+}
+
+const {
+  item,
+  previousHref = null,
+  previousTitle = null,
+  nextHref = null,
+  nextTitle = null
+} = Astro.props as Props;
+
+const isAbsoluteSource = /^https?:\/\//i.test(item.externalUrl);
+const hasNeighborLinks = Boolean(previousHref || nextHref);
+---
+<section class="archive-music-entry-player" aria-labelledby="archive-music-entry-player-heading">
+  <header class="archive-music-entry-player__header">
+    <p class="archive-music-entry-player__kicker font-archive">Listening surface</p>
+    <h2 id="archive-music-entry-player-heading">Archive playback</h2>
+
+    <p class="archive-music-entry-player__meta font-archive">
+      <span>{item.providerLabel}</span>
+      <span>{item.kindLabel}</span>
+      <span>{item.recordCompletenessLabel}</span>
+      <span>{item.statusLabel}</span>
+    </p>
+
+    <p class="archive-music-entry-player__note">{item.playbackNote}</p>
+  </header>
+
+  {item.effectivePlaybackMode === 'native' && item.assetSrc ? (
+    <div class="archive-music-entry-player__surface archive-music-entry-player__surface--native">
+      <audio controls preload="metadata" class="archive-music-entry-player__audio">
+        <source src={item.assetSrc} type={item.assetMimeType || undefined} />
+      </audio>
+    </div>
+  ) : item.effectivePlaybackMode === 'embed' && item.embedUrl ? (
+    <div
+      class="archive-music-entry-player__surface archive-music-entry-player__surface--embed"
+      data-view-mode={item.embedViewMode}
+    >
+      <div
+        class:list={['archive-music-entry-player__frame', item.embedAspectRatio && 'has-aspect-ratio']}
+        style={item.embedAspectRatio ? `--archive-music-entry-aspect:${item.embedAspectRatio}` : undefined}
+      >
+        <iframe
+          src={item.embedUrl}
+          width="100%"
+          loading="lazy"
+          frameborder="0"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          allowFullScreen
+          title={`${item.title} embed`}
+        ></iframe>
+      </div>
+    </div>
+  ) : item.effectivePlaybackMode === 'outbound' && item.externalUrl ? (
+    <div class="archive-music-entry-player__surface archive-music-entry-player__surface--fallback">
+      <a
+        href={item.externalUrl}
+        class="archive-music-entry-player__source-link"
+        {...(isAbsoluteSource ? { target: '_blank', rel: 'noopener' } : {})}
+      >
+        {item.sourceLinkLabel}
+      </a>
+    </div>
+  ) : (
+    <div class="archive-music-entry-player__surface archive-music-entry-player__surface--placeholder">
+      <p class="archive-music-entry-player__state font-archive">Record only</p>
+      <p class="archive-music-entry-player__placeholder-copy">
+        This record remains in the archive as part of the listening run even without a playable source attached yet.
+      </p>
+    </div>
+  )}
+
+  {(hasNeighborLinks || (item.externalUrl && item.effectivePlaybackMode !== 'outbound')) && (
+    <footer class="archive-music-entry-player__footer">
+      {item.externalUrl && item.effectivePlaybackMode !== 'outbound' && (
+        <a
+          href={item.externalUrl}
+          class="archive-music-entry-player__footer-link"
+          {...(isAbsoluteSource ? { target: '_blank', rel: 'noopener' } : {})}
+        >
+          {item.sourceLinkLabel}
+        </a>
+      )}
+
+      {hasNeighborLinks && (
+        <nav class="archive-music-entry-player__neighbors font-archive" aria-label="Sequence neighbors">
+          {previousHref ? (
+            <a href={previousHref} class="archive-music-entry-player__neighbor">
+              <span>Previous</span>
+              {previousTitle && <strong>{previousTitle}</strong>}
+            </a>
+          ) : null}
+
+          {nextHref ? (
+            <a href={nextHref} class="archive-music-entry-player__neighbor">
+              <span>Next</span>
+              {nextTitle && <strong>{nextTitle}</strong>}
+            </a>
+          ) : null}
+        </nav>
+      )}
+    </footer>
+  )}
+</section>
+
+<style>
+  .archive-music-entry-player {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 7%, transparent), transparent 70%),
+      color-mix(in srgb, var(--tone-surface-strong) 90%, transparent);
+  }
+
+  .archive-music-entry-player__header {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .archive-music-entry-player__kicker,
+  .archive-music-entry-player__meta,
+  .archive-music-entry-player__note,
+  .archive-music-entry-player__state,
+  .archive-music-entry-player__placeholder-copy {
+    margin: 0;
+  }
+
+  .archive-music-entry-player__kicker,
+  .archive-music-entry-player__meta,
+  .archive-music-entry-player__state,
+  .archive-music-entry-player__neighbors {
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+  }
+
+  .archive-music-entry-player__header h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+  }
+
+  .archive-music-entry-player__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .archive-music-entry-player__meta span,
+  .archive-music-entry-player__state {
+    width: fit-content;
+    padding: 0.22rem 0.52rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+    background: rgba(8, 12, 20, 0.38);
+  }
+
+  .archive-music-entry-player__note,
+  .archive-music-entry-player__placeholder-copy {
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+  }
+
+  .archive-music-entry-player__surface {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .archive-music-entry-player__audio,
+  .archive-music-entry-player__frame {
+    width: 100%;
+  }
+
+  .archive-music-entry-player__frame {
+    min-height: 14rem;
+    border: 1px solid var(--line2);
+    border-radius: 0.9rem;
+    overflow: hidden;
+    background: rgba(4, 7, 12, 0.72);
+  }
+
+  .archive-music-entry-player__frame.has-aspect-ratio {
+    min-height: 0;
+    aspect-ratio: var(--archive-music-entry-aspect, 16 / 9);
+  }
+
+  .archive-music-entry-player__frame iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .archive-music-entry-player__surface--fallback,
+  .archive-music-entry-player__surface--placeholder {
+    padding: 0.95rem;
+    border: 1px solid var(--line2);
+    border-radius: 0.9rem;
+    background: color-mix(in srgb, var(--tone-surface) 92%, transparent);
+  }
+
+  .archive-music-entry-player__footer {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .archive-music-entry-player__source-link,
+  .archive-music-entry-player__footer-link,
+  .archive-music-entry-player__neighbor {
+    width: fit-content;
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 40%, transparent);
+  }
+
+  .archive-music-entry-player__source-link:hover,
+  .archive-music-entry-player__source-link:focus-visible,
+  .archive-music-entry-player__footer-link:hover,
+  .archive-music-entry-player__footer-link:focus-visible,
+  .archive-music-entry-player__neighbor:hover,
+  .archive-music-entry-player__neighbor:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 74%, transparent);
+  }
+
+  .archive-music-entry-player__neighbors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+  }
+
+  .archive-music-entry-player__neighbor {
+    display: grid;
+    gap: 0.18rem;
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  .archive-music-entry-player__neighbor span {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.72rem;
+    color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+  }
+
+  .archive-music-entry-player__neighbor strong {
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  }
+</style>

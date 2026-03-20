@@ -1,0 +1,2070 @@
+---
+import { MAP_CONCEPT_BRIDGES, MAP_CONCEPT_YEARS, MAP_REGIONS, MAP_ROUTES, MAP_TIME_RANGE, MAP_WORLD } from '../data/map-topology';
+
+type StageMode = 'overview' | 'inspect' | 'immersive';
+
+type FlatRegion = {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rx: number;
+  innerInset: number;
+  innerRx: number;
+  outlinePath: string;
+  innerPath: string;
+  branchPaths: string[];
+  nucleusX: number;
+  nucleusY: number;
+  fill: string;
+  glow: string;
+  summary: string;
+};
+
+type FlatDistrict = {
+  id: string;
+  regionId: string;
+  regionLabel: string;
+  label: string;
+  x: number;
+  y: number;
+  radius: number;
+  shellRadius: number;
+  auraRadius: number;
+  coreRadius: number;
+  branchPaths: string[];
+  labelX: number;
+  labelY: number;
+  labelAnchor: 'start' | 'middle' | 'end';
+  description: string;
+};
+
+type FlatConcept = {
+  id: string;
+  regionId: string;
+  regionLabel: string;
+  districtId: string;
+  districtLabel: string;
+  label: string;
+  year: number;
+  ageWeight: number;
+  depthOpacity: number;
+  x: number;
+  y: number;
+  auraRadius: number;
+  coreRadius: number;
+  stemPath: string;
+  labelX: number;
+  labelY: number;
+  labelAnchor: 'start' | 'middle' | 'end';
+  yearX: number;
+  yearY: number;
+  detail: string;
+  links: string[];
+};
+
+type FlatPath = {
+  id: string;
+  d: string;
+  tone: string;
+  source: string;
+  target: string;
+  sourceRegion: string;
+  targetRegion: string;
+  sourceDistrict: string;
+  targetDistrict: string;
+  weight?: number;
+  depthOpacity?: number;
+};
+
+type FlatDistrictSpine = {
+  id: string;
+  d: string;
+  regionId: string;
+};
+
+const CORE_DETAIL =
+  'Nine organizational categories form a survival-weighted triangle around the center: society, resources, relationships, work, and activity sit lower, while well-being, growth, creativity, and order rise higher.';
+
+const STAGE_MODE_THRESHOLDS: Record<Exclude<StageMode, 'overview'>, number> = {
+  inspect: 1.25,
+  immersive: 2.1
+};
+
+const WORLD_WIDTH = MAP_WORLD.width;
+const WORLD_HEIGHT = MAP_WORLD.height;
+const CORE_X = WORLD_WIDTH / 2;
+const CORE_Y = WORLD_HEIGHT / 2;
+const TIME_SPAN = Math.max(1, MAP_TIME_RANGE.end - MAP_TIME_RANGE.start);
+const DEPTH_VANISH_X = WORLD_WIDTH / 2;
+const DEPTH_VANISH_Y = 210;
+
+const curvePath = (x1: number, y1: number, x2: number, y2: number, bend = 0.16) => {
+  const mx = (x1 + x2) / 2;
+  const my = (y1 + y2) / 2;
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const length = Math.max(1, Math.hypot(dx, dy));
+  const nx = -dy / length;
+  const ny = dx / length;
+  const direction = x1 <= x2 ? 1 : -1;
+  const curve = length * bend * direction;
+  const cx = mx + nx * curve;
+  const cy = my + ny * curve;
+
+  return `M ${x1.toFixed(2)} ${y1.toFixed(2)} Q ${cx.toFixed(2)} ${cy.toFixed(2)} ${x2.toFixed(2)} ${y2.toFixed(2)}`;
+};
+
+const rounded = (value: number) => value.toFixed(2);
+
+const neuronHullPath = (cx: number, cy: number, width: number, height: number) => {
+  const hw = width / 2;
+  const hh = height / 2;
+  const topY = cy - hh * 0.94;
+  const bottomY = cy + hh * 0.92;
+  const leftX = cx - hw * 0.96;
+  const rightX = cx + hw * 0.96;
+  const leftInnerX = cx - hw * 0.58;
+  const rightInnerX = cx + hw * 0.58;
+  const upperY = cy - hh * 0.62;
+  const lowerY = cy + hh * 0.58;
+
+  return [
+    `M ${rounded(cx)} ${rounded(topY)}`,
+    `C ${rounded(rightInnerX)} ${rounded(cy - hh)}, ${rounded(rightX)} ${rounded(upperY)}, ${rounded(rightX)} ${rounded(cy)}`,
+    `C ${rounded(rightX)} ${rounded(lowerY)}, ${rounded(rightInnerX * 0.985 + cx * 0.015)} ${rounded(bottomY)}, ${rounded(cx)} ${rounded(bottomY)}`,
+    `C ${rounded(leftInnerX * 0.985 + cx * 0.015)} ${rounded(bottomY)}, ${rounded(leftX)} ${rounded(lowerY * 0.995 + cy * 0.005)}, ${rounded(leftX)} ${rounded(cy)}`,
+    `C ${rounded(leftX)} ${rounded(upperY)}, ${rounded(leftInnerX)} ${rounded(cy - hh)}, ${rounded(cx)} ${rounded(topY)}`,
+    'Z'
+  ].join(' ');
+};
+
+const neuronBranch = (x1: number, y1: number, cx: number, cy: number, x2: number, y2: number) =>
+  `M ${rounded(x1)} ${rounded(y1)} Q ${rounded(cx)} ${rounded(cy)} ${rounded(x2)} ${rounded(y2)}`;
+
+const flatRegions: FlatRegion[] = MAP_REGIONS.map((region) => {
+  const rx = Math.round(Math.min(region.width, region.height) * 0.24);
+  const innerInset = 20;
+  const outlinePath = neuronHullPath(region.x, region.y, region.width, region.height);
+  const innerPath = neuronHullPath(region.x, region.y + 4, region.width - innerInset * 2, region.height - innerInset * 2);
+  const branchPaths = [
+    neuronBranch(
+      region.x - region.width * 0.43,
+      region.y - region.height * 0.08,
+      region.x - region.width * 0.62,
+      region.y - region.height * 0.24,
+      region.x - region.width * 0.74,
+      region.y - region.height * 0.34
+    ),
+    neuronBranch(
+      region.x + region.width * 0.42,
+      region.y - region.height * 0.06,
+      region.x + region.width * 0.64,
+      region.y - region.height * 0.18,
+      region.x + region.width * 0.77,
+      region.y - region.height * 0.28
+    ),
+    neuronBranch(
+      region.x + region.width * 0.18,
+      region.y + region.height * 0.34,
+      region.x + region.width * 0.34,
+      region.y + region.height * 0.58,
+      region.x + region.width * 0.22,
+      region.y + region.height * 0.76
+    )
+  ];
+
+  return {
+    id: region.id,
+    label: region.label,
+    x: region.x,
+    y: region.y,
+    width: region.width,
+    height: region.height,
+    rx,
+    innerInset,
+    innerRx: Math.max(24, rx - 12),
+    outlinePath,
+    innerPath,
+    branchPaths,
+    nucleusX: region.x - region.width * 0.22,
+    nucleusY: region.y - region.height * 0.14,
+    fill: region.fill,
+    glow: region.glow,
+    summary: region.summary
+  };
+});
+
+const regionLookup = new Map(flatRegions.map((region) => [region.id, region]));
+
+const flatDistricts: FlatDistrict[] = [];
+const flatConcepts: FlatConcept[] = [];
+const districtSpines: FlatDistrictSpine[] = [];
+const conceptLookup = new Map<string, FlatConcept>();
+
+MAP_REGIONS.forEach((region) => {
+  const districtCenters: Array<{ id: string; x: number; y: number }> = [];
+
+  region.districts.forEach((district) => {
+    const districtX = region.x + district.x;
+    const districtY = region.y + district.y;
+    const shellRadius = Math.max(34, Math.round(district.radius * 0.4));
+    const auraRadius = shellRadius + 18;
+    let labelX = districtX;
+    let labelY = districtY - shellRadius - 16;
+    let labelAnchor: FlatDistrict['labelAnchor'] = 'middle';
+
+    if (district.x <= -22) {
+      labelX = districtX - shellRadius - 18;
+      labelY = districtY - 4;
+      labelAnchor = 'end';
+    } else if (district.x >= 22) {
+      labelX = districtX + shellRadius + 18;
+      labelY = districtY - 4;
+      labelAnchor = 'start';
+    }
+
+    const branchPaths = [
+      neuronBranch(
+        districtX - shellRadius * 0.46,
+        districtY - shellRadius * 0.14,
+        districtX - shellRadius * 1.04,
+        districtY - shellRadius * 0.46,
+        districtX - shellRadius * 1.22,
+        districtY - shellRadius * 0.18
+      ),
+      neuronBranch(
+        districtX + shellRadius * 0.42,
+        districtY - shellRadius * 0.06,
+        districtX + shellRadius * 0.98,
+        districtY - shellRadius * 0.34,
+        districtX + shellRadius * 1.2,
+        districtY - shellRadius * 0.02
+      ),
+      neuronBranch(
+        districtX + shellRadius * 0.08,
+        districtY + shellRadius * 0.46,
+        districtX + shellRadius * 0.22,
+        districtY + shellRadius * 1.02,
+        districtX - shellRadius * 0.08,
+        districtY + shellRadius * 1.26
+      )
+    ];
+
+    flatDistricts.push({
+      id: district.id,
+      regionId: region.id,
+      regionLabel: region.label,
+      label: district.label,
+      x: districtX,
+      y: districtY,
+      radius: district.radius,
+      shellRadius,
+      auraRadius,
+      coreRadius: Math.max(18, Math.round(district.radius * 0.24)),
+      branchPaths,
+      labelX,
+      labelY,
+      labelAnchor,
+      description: district.description
+    });
+
+    districtCenters.push({ id: district.id, x: districtX, y: districtY });
+
+    district.concepts.forEach((concept) => {
+      const baseConceptX = districtX + concept.x;
+      const baseConceptY = districtY + concept.y;
+      const year = MAP_CONCEPT_YEARS[concept.id] ?? MAP_TIME_RANGE.end;
+      const ageWeight = Math.max(0, Math.min(1, (MAP_TIME_RANGE.end - year) / TIME_SPAN));
+      const projectedX = baseConceptX + (DEPTH_VANISH_X - baseConceptX) * 0.16 * ageWeight;
+      const projectedY = baseConceptY + (DEPTH_VANISH_Y - baseConceptY) * 0.2 * ageWeight;
+      const depthScale = 1 - ageWeight * 0.24;
+      const auraRadius = Math.max(12, 18 * depthScale);
+      const coreRadius = Math.max(5.8, 8.5 * depthScale);
+      const depthOpacity = 0.94 - ageWeight * 0.34;
+      const labelOffset = 22 + ageWeight * 6;
+      let labelX = projectedX + labelOffset;
+      let labelY = projectedY - 7 - ageWeight * 2;
+      let labelAnchor: FlatConcept['labelAnchor'] = 'start';
+
+      if (concept.x <= -10) {
+        labelX = projectedX - labelOffset;
+        labelAnchor = 'end';
+      } else if (Math.abs(concept.x) < 10) {
+        labelX = projectedX;
+        labelY = projectedY + 28 + ageWeight * 4;
+        labelAnchor = 'middle';
+      }
+
+      if (concept.y > 18) labelY += 2;
+      if (concept.y < -18) labelY -= 2;
+
+      const stemTargetX = labelAnchor === 'start' ? labelX - 8 : labelAnchor === 'end' ? labelX + 8 : labelX;
+      const stemTargetY = labelAnchor === 'middle' ? labelY - 10 : labelY - 3;
+      const yearX = labelX;
+      const yearY = labelY + (labelAnchor === 'middle' ? 11 : 12);
+
+      const flatConcept: FlatConcept = {
+        id: concept.id,
+        regionId: region.id,
+        regionLabel: region.label,
+        districtId: district.id,
+        districtLabel: district.label,
+        label: concept.label,
+        year,
+        ageWeight,
+        depthOpacity,
+        x: projectedX,
+        y: projectedY,
+        auraRadius,
+        coreRadius,
+        stemPath: neuronBranch(projectedX, projectedY, (projectedX + stemTargetX) / 2, (projectedY + stemTargetY) / 2, stemTargetX, stemTargetY),
+        labelX,
+        labelY,
+        labelAnchor,
+        yearX,
+        yearY,
+        detail: concept.detail,
+        links: concept.links
+      };
+
+      flatConcepts.push(flatConcept);
+      conceptLookup.set(concept.id, flatConcept);
+    });
+  });
+
+  for (let index = 1; index < districtCenters.length; index += 1) {
+    const previous = districtCenters[index - 1];
+    const current = districtCenters[index];
+
+    if (!previous || !current) continue;
+
+    districtSpines.push({
+      id: `${region.id}__${previous.id}__${current.id}`,
+      d: curvePath(previous.x, previous.y, current.x, current.y, 0.12),
+      regionId: region.id
+    });
+  }
+});
+
+const conceptLinks: FlatPath[] = [];
+const conceptLinkKeys = new Set<string>();
+
+flatConcepts.forEach((concept) => {
+  concept.links.forEach((targetId) => {
+    const target = conceptLookup.get(targetId);
+    if (!target) return;
+
+    const key = [concept.id, targetId].sort().join('__');
+    if (conceptLinkKeys.has(key)) return;
+
+    conceptLinkKeys.add(key);
+    const depthOpacity = ((concept.depthOpacity ?? 1) + (target.depthOpacity ?? 1)) / 2;
+    conceptLinks.push({
+      id: key,
+      d: curvePath(concept.x, concept.y, target.x, target.y, 0.14),
+      tone: 'local',
+      source: concept.id,
+      target: target.id,
+      sourceRegion: concept.regionId,
+      targetRegion: target.regionId,
+      sourceDistrict: concept.districtId,
+      targetDistrict: target.districtId,
+      depthOpacity
+    });
+  });
+});
+
+const routePaths = MAP_ROUTES.flatMap((route) => {
+  const source = regionLookup.get(route.source);
+  const target = regionLookup.get(route.target);
+  if (!source || !target) return [];
+
+  return [
+    {
+      id: `${route.source}__${route.target}`,
+      d: curvePath(source.x, source.y, target.x, target.y, 0.2),
+      tone: route.tone,
+      source: route.source,
+      target: route.target,
+      sourceRegion: route.source,
+      targetRegion: route.target,
+      sourceDistrict: '',
+      targetDistrict: '',
+      weight: route.weight ?? 0.5
+    } satisfies FlatPath
+  ];
+});
+
+const conceptBridgePaths = MAP_CONCEPT_BRIDGES.flatMap((bridge) => {
+  const source = conceptLookup.get(bridge.source);
+  const target = conceptLookup.get(bridge.target);
+  if (!source || !target) return [];
+
+  return [
+    {
+      id: `${bridge.source}__${bridge.target}`,
+      d: curvePath(source.x, source.y, target.x, target.y, 0.22),
+      tone: bridge.tone,
+      source: bridge.source,
+      target: bridge.target,
+      sourceRegion: source.regionId,
+      targetRegion: target.regionId,
+      sourceDistrict: source.districtId,
+      targetDistrict: target.districtId,
+      depthOpacity: ((source.depthOpacity ?? 1) + (target.depthOpacity ?? 1)) / 2
+    } satisfies FlatPath
+  ];
+});
+---
+<section
+  data-neural-atlas
+  data-stage-mode="overview"
+  data-zoom-tier="world"
+  data-chrome-state="full"
+  class="atlas-shell"
+>
+  <div class="atlas-stage map-wrap" tabindex="0">
+    <svg
+      id="atlas-svg"
+      viewBox={`0 0 ${WORLD_WIDTH} ${WORLD_HEIGHT}`}
+      class="atlas-canvas h-full w-full"
+      aria-label="Interactive organizational atlas"
+    >
+      <defs>
+        <pattern id="atlas-grid" width="140" height="140" patternUnits="userSpaceOnUse">
+          <path d="M 140 0 L 0 0 0 140" class="atlas-grid__line"></path>
+          <circle cx="0" cy="0" r="2.5" class="atlas-grid__dot"></circle>
+          <circle cx="70" cy="70" r="1.8" class="atlas-grid__dot atlas-grid__dot--soft"></circle>
+        </pattern>
+        <radialGradient id="atlas-vignette" cx="50%" cy="45%" r="68%">
+          <stop offset="0%" stop-color="#0b1627" stop-opacity="0"></stop>
+          <stop offset="72%" stop-color="#0b1627" stop-opacity="0.08"></stop>
+          <stop offset="100%" stop-color="#0b1627" stop-opacity="0.36"></stop>
+        </radialGradient>
+        <filter id="atlas-soft-blur">
+          <feGaussianBlur stdDeviation="14"></feGaussianBlur>
+        </filter>
+      </defs>
+
+      <g id="viewport">
+        <rect x="0" y="0" width={WORLD_WIDTH} height={WORLD_HEIGHT} class="atlas-ocean"></rect>
+        <rect x="0" y="0" width={WORLD_WIDTH} height={WORLD_HEIGHT} fill="url(#atlas-grid)" class="atlas-grid"></rect>
+        <rect x="0" y="0" width={WORLD_WIDTH} height={WORLD_HEIGHT} fill="url(#atlas-vignette)"></rect>
+
+        <g id="route-layer">
+          {routePaths.map((route) => (
+            <path
+              d={route.d}
+              data-route={route.id}
+              class={`atlas-route atlas-route--${route.tone}`}
+            ></path>
+          ))}
+        </g>
+
+        <g id="core-layer">
+          <g id="atlas-core" class="atlas-core" tabindex="0" role="button" aria-label="Return to center overview">
+            <circle class="atlas-core__halo" cx={CORE_X} cy={CORE_Y} r="238"></circle>
+            <circle class="atlas-core__ring" cx={CORE_X} cy={CORE_Y} r="208"></circle>
+            <text class="atlas-core__label" x={CORE_X} y={CORE_Y + 10} text-anchor="middle">You</text>
+            <text class="atlas-core__sub" x={CORE_X} y={CORE_Y + 62} text-anchor="middle">authorial core</text>
+          </g>
+        </g>
+
+        <g id="region-layer">
+          {flatRegions.map((region) => (
+            <g
+              data-region={region.id}
+              class="atlas-region"
+              style={`--atlas-region-fill:${region.fill}; --atlas-region-glow:${region.glow};`}
+              tabindex="0"
+              role="button"
+              aria-label={`Zoom to ${region.label}`}
+            >
+              {region.branchPaths.map((branchPath) => (
+                <path class="atlas-region__branch" d={branchPath}></path>
+              ))}
+              <path
+                class="atlas-region__shadow"
+                d={region.outlinePath}
+                filter="url(#atlas-soft-blur)"
+              ></path>
+              <path
+                class="atlas-region__plate"
+                d={region.outlinePath}
+              ></path>
+              <path
+                class="atlas-region__inner"
+                d={region.innerPath}
+              ></path>
+              <circle class="atlas-region__beacon" cx={region.nucleusX} cy={region.nucleusY} r="18"></circle>
+              <circle class="atlas-region__nucleus" cx={region.nucleusX} cy={region.nucleusY} r="8"></circle>
+              <text class="atlas-region__label" x={region.x} y={region.y - region.height / 2 + 48} text-anchor="middle">
+                {region.label}
+              </text>
+            </g>
+          ))}
+        </g>
+
+        <g id="district-spine-layer">
+          {districtSpines.map((spine) => (
+            <path d={spine.d} data-district-spine={spine.id} class="atlas-district-spine"></path>
+          ))}
+        </g>
+
+        <g id="district-layer">
+          {flatDistricts.map((district) => (
+            <g
+              data-district={district.id}
+              class="atlas-district"
+              tabindex="0"
+              role="button"
+              aria-label={`Zoom to ${district.label}`}
+            >
+              {district.branchPaths.map((branchPath) => (
+                <path class="atlas-district__branch" d={branchPath}></path>
+              ))}
+              <circle class="atlas-district__halo" cx={district.x} cy={district.y} r={district.auraRadius}></circle>
+              <circle class="atlas-district__ring" cx={district.x} cy={district.y} r={district.shellRadius}></circle>
+              <circle class="atlas-district__core" cx={district.x} cy={district.y} r={district.coreRadius}></circle>
+              <text class="atlas-district__label" x={district.labelX} y={district.labelY} text-anchor={district.labelAnchor}>
+                {district.label}
+              </text>
+            </g>
+          ))}
+        </g>
+
+        <g id="concept-link-layer">
+          {conceptLinks.map((link) => (
+            <path d={link.d} data-concept-link={link.id} class="atlas-concept-link"></path>
+          ))}
+        </g>
+
+        <g id="concept-bridge-layer">
+          {conceptBridgePaths.map((link) => (
+            <path
+              d={link.d}
+              data-concept-bridge={link.id}
+              class={`atlas-concept-bridge atlas-concept-bridge--${link.tone}`}
+            ></path>
+          ))}
+        </g>
+
+        <g id="concept-layer">
+          {flatConcepts.map((concept) => (
+            <g
+              data-concept={concept.id}
+              data-concept-year={concept.year}
+              class="atlas-concept"
+              tabindex="0"
+              role="button"
+              aria-label={`Zoom to ${concept.label}`}
+            >
+              <path class="atlas-concept__stem" d={concept.stemPath}></path>
+              <circle class="atlas-concept__halo" cx={concept.x} cy={concept.y} r={concept.auraRadius}></circle>
+              <circle class="atlas-concept__core" cx={concept.x} cy={concept.y} r={concept.coreRadius}></circle>
+              <text class="atlas-concept__label" x={concept.labelX} y={concept.labelY} text-anchor={concept.labelAnchor}>
+                {concept.label}
+              </text>
+              <text class="atlas-concept__year" x={concept.yearX} y={concept.yearY} text-anchor={concept.labelAnchor}>
+                {concept.year}
+              </text>
+            </g>
+          ))}
+        </g>
+      </g>
+    </svg>
+
+    <div class="map-controls">
+      <div class="map-readout">
+        <span class="map-readout__label" data-map-tier>World view</span>
+        <span class="map-readout__value" data-map-zoom>90%</span>
+      </div>
+      <button id="map-overview" class="map-overview-button" type="button">Overview</button>
+    </div>
+
+    <div class="map-hud">
+      <p class="map-hud__eyebrow" data-map-focus>Authorial core</p>
+      <p class="map-hud__title" data-map-title>You</p>
+      <p class="map-hud__detail" data-map-detail>{CORE_DETAIL}</p>
+    </div>
+
+    <div class="map-key" aria-label="Map guide">
+      <p class="map-key__title">Zoom guide</p>
+      <p class="map-key__line">Time: older work recedes inward</p>
+      <p class="map-key__line">Overview: regional routes</p>
+      <p class="map-key__line">Closer: district lanes</p>
+      <p class="map-key__line">Deep: concept bridges</p>
+    </div>
+  </div>
+</section>
+
+<script
+  is:inline
+  define:vars={{
+    worldData: MAP_WORLD,
+    regionsData: flatRegions,
+    districtsData: flatDistricts,
+    conceptsData: flatConcepts,
+    routesData: routePaths,
+    districtSpinesData: districtSpines,
+    conceptLinksData: conceptLinks,
+    conceptBridgeData: conceptBridgePaths,
+    stageThresholds: STAGE_MODE_THRESHOLDS,
+    coreDetail: CORE_DETAIL
+  }}
+>
+  (() => {
+    const root = document.querySelector('[data-neural-atlas]');
+    const page = root?.closest('.atlas-page');
+    const wrap = root?.querySelector('.map-wrap');
+    const svg = root?.querySelector('#atlas-svg');
+    const viewport = root?.querySelector('#viewport');
+    const coreEl = root?.querySelector('#atlas-core');
+    const overviewBtn = root?.querySelector('#map-overview');
+    const tierEl = root?.querySelector('[data-map-tier]');
+    const zoomEl = root?.querySelector('[data-map-zoom]');
+    const focusEl = root?.querySelector('[data-map-focus]');
+    const titleEl = root?.querySelector('[data-map-title]');
+    const detailEl = root?.querySelector('[data-map-detail]');
+
+    if (!root || !wrap || !svg || !viewport || !tierEl || !zoomEl || !focusEl || !titleEl || !detailEl) return;
+
+    const chromeEls = Array.from(root.querySelectorAll('.map-controls, .map-hud, .map-key'));
+    const regionEls = Array.from(root.querySelectorAll('[data-region]'));
+    const districtEls = Array.from(root.querySelectorAll('[data-district]'));
+    const conceptEls = Array.from(root.querySelectorAll('[data-concept]'));
+    const routeEls = Array.from(root.querySelectorAll('[data-route]'));
+    const districtSpineEls = Array.from(root.querySelectorAll('[data-district-spine]'));
+    const conceptLinkEls = Array.from(root.querySelectorAll('[data-concept-link]'));
+    const conceptBridgeEls = Array.from(root.querySelectorAll('[data-concept-bridge]'));
+
+    const regionById = new Map(regionsData.map((region) => [region.id, region]));
+    const districtById = new Map(districtsData.map((district) => [district.id, district]));
+    const conceptById = new Map(conceptsData.map((concept) => [concept.id, concept]));
+    const routeById = new Map(routesData.map((route) => [route.id, route]));
+    const districtSpineById = new Map(districtSpinesData.map((spine) => [spine.id, spine]));
+    const conceptLinkById = new Map(conceptLinksData.map((link) => [link.id, link]));
+    const conceptBridgeById = new Map(conceptBridgeData.map((bridge) => [bridge.id, bridge]));
+
+    const MIN_SCALE = 0.9;
+    const MAX_SCALE = 3.4;
+    const stageVarsByMode = {
+      overview: {
+        '--atlas-stage-width': 'min(94vw, 1720px)',
+        '--atlas-stage-height': '70vh',
+        '--atlas-stage-radius': '32px',
+        '--atlas-stage-shadow': '0 26px 90px rgba(4, 10, 24, 0.34)',
+        '--atlas-chrome-opacity': '1',
+        '--atlas-copy-offset': '0px'
+      },
+      inspect: {
+        '--atlas-stage-width': 'min(96vw, 1840px)',
+        '--atlas-stage-height': '82vh',
+        '--atlas-stage-radius': '24px',
+        '--atlas-stage-shadow': '0 34px 112px rgba(3, 8, 22, 0.42)',
+        '--atlas-chrome-opacity': '0.9',
+        '--atlas-copy-offset': '-2px'
+      },
+      immersive: {
+        '--atlas-stage-width': 'min(98vw, 1920px)',
+        '--atlas-stage-height': '92vh',
+        '--atlas-stage-radius': '18px',
+        '--atlas-stage-shadow': '0 42px 128px rgba(3, 8, 22, 0.52)',
+        '--atlas-chrome-opacity': '0.76',
+        '--atlas-copy-offset': '-4px'
+      }
+    };
+
+    const conceptNeighbors = new Map();
+    const connectConcepts = (a, b) => {
+      if (!conceptNeighbors.has(a)) conceptNeighbors.set(a, new Set());
+      if (!conceptNeighbors.has(b)) conceptNeighbors.set(b, new Set());
+      conceptNeighbors.get(a).add(b);
+      conceptNeighbors.get(b).add(a);
+    };
+
+    conceptLinksData.forEach((link) => connectConcepts(link.source, link.target));
+    conceptBridgeData.forEach((link) => connectConcepts(link.source, link.target));
+
+    const state = {
+      scale: MIN_SCALE,
+      tx: 0,
+      ty: 0,
+      dragging: false,
+      pointerId: null,
+      startX: 0,
+      startY: 0,
+      activeRegionId: null,
+      activeDistrictId: null,
+      activeConceptId: null,
+      hoverType: null,
+      hoverId: null,
+      animationFrame: null,
+      stageTransitioning: false,
+      lockedCenter: null,
+      stageTransitionTimer: null,
+      stageMode: 'overview',
+      zoomTier: 'world',
+      chromeState: 'full'
+    };
+
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+    const normalizeTransform = (tx, ty, scale) => {
+      if (scale <= 1) {
+        return {
+          tx: (worldData.width - worldData.width * scale) / 2,
+          ty: (worldData.height - worldData.height * scale) / 2
+        };
+      }
+
+      return {
+        tx: clamp(tx, worldData.width - worldData.width * scale, 0),
+        ty: clamp(ty, worldData.height - worldData.height * scale, 0)
+      };
+    };
+
+    const stopAnimation = () => {
+      if (state.animationFrame) {
+        cancelAnimationFrame(state.animationFrame);
+        state.animationFrame = null;
+      }
+    };
+
+    const scheduleStageSettle = () => {
+      if (state.stageTransitionTimer) {
+        clearTimeout(state.stageTransitionTimer);
+      }
+
+      state.stageTransitionTimer = window.setTimeout(() => {
+        state.stageTransitionTimer = null;
+        if (!state.stageTransitioning) return;
+
+        recenterToCurrentFocus(state.lockedCenter);
+        state.lockedCenter = null;
+        state.stageTransitioning = false;
+        lastStageRect = wrap.getBoundingClientRect();
+      }, 240);
+    };
+
+    const tierMetaForScale = (scale) => {
+      if (scale < 1.08) return { key: 'world', label: 'World view' };
+      if (scale < 1.72) return { key: 'region', label: 'Region view' };
+      if (scale < 2.38) return { key: 'district', label: 'District view' };
+      return { key: 'concept', label: 'Concept view' };
+    };
+
+    const stageModeForScale = (scale) => {
+      if (scale > stageThresholds.immersive) return 'immersive';
+      if (scale > stageThresholds.inspect) return 'inspect';
+      return 'overview';
+    };
+
+    const chromeStateForMode = (mode) => {
+      if (mode === 'immersive') return 'minimal';
+      if (mode === 'inspect') return 'compact';
+      return 'full';
+    };
+
+    const descriptorFor = (type, id) => {
+      if (type === 'core') {
+        return {
+          focus: 'Authorial core',
+          title: 'You',
+          detail: coreDetail
+        };
+      }
+
+      if (type === 'concept') {
+        const concept = conceptById.get(id);
+        if (!concept) return null;
+        return {
+          focus: `${concept.regionLabel} / ${concept.districtLabel}`,
+          title: concept.label,
+          detail: `${concept.year} · ${concept.detail}`
+        };
+      }
+
+      if (type === 'district') {
+        const district = districtById.get(id);
+        if (!district) return null;
+        return {
+          focus: `${district.regionLabel} / district`,
+          title: district.label,
+          detail: district.description
+        };
+      }
+
+      if (type === 'region') {
+        const region = regionById.get(id);
+        if (!region) return null;
+        return {
+          focus: 'Region focus',
+          title: region.label,
+          detail: region.summary
+        };
+      }
+
+      return {
+        focus: 'Authorial core',
+        title: 'You',
+        detail: coreDetail
+      };
+    };
+
+    const currentDescriptor = () => {
+      if (state.hoverType && state.hoverId) {
+        const hovered = descriptorFor(state.hoverType, state.hoverId);
+        if (hovered) return hovered;
+      }
+
+      if (state.activeConceptId) {
+        const activeConcept = descriptorFor('concept', state.activeConceptId);
+        if (activeConcept) return activeConcept;
+      }
+
+      if (state.activeDistrictId) {
+        const activeDistrict = descriptorFor('district', state.activeDistrictId);
+        if (activeDistrict) return activeDistrict;
+      }
+
+      if (state.activeRegionId) {
+        const activeRegion = descriptorFor('region', state.activeRegionId);
+        if (activeRegion) return activeRegion;
+      }
+
+      return descriptorFor(null, null);
+    };
+
+    const currentCenter = () => ({
+      x: (worldData.width / 2 - state.tx) / state.scale,
+      y: (worldData.height / 2 - state.ty) / state.scale
+    });
+
+    const applyStageVars = (mode) => {
+      const vars = stageVarsByMode[mode];
+      if (!vars) return;
+      Object.entries(vars).forEach(([name, value]) => {
+        root.style.setProperty(name, value);
+      });
+    };
+
+    const syncStageState = () => {
+      const nextMode = stageModeForScale(state.scale);
+      const nextTier = tierMetaForScale(state.scale);
+      const nextChromeState = chromeStateForMode(nextMode);
+      const hasSelection = Boolean(state.activeRegionId || state.activeDistrictId || state.activeConceptId);
+
+      if (state.stageMode !== nextMode) {
+        state.lockedCenter = currentCenter();
+        state.stageTransitioning = true;
+        state.stageMode = nextMode;
+        root.dataset.stageMode = nextMode;
+        page?.setAttribute('data-stage-mode', nextMode);
+        applyStageVars(nextMode);
+        scheduleStageSettle();
+      }
+
+      if (state.zoomTier !== nextTier.key) {
+        state.zoomTier = nextTier.key;
+        root.dataset.zoomTier = nextTier.key;
+      }
+
+      if (state.chromeState !== nextChromeState) {
+        state.chromeState = nextChromeState;
+        root.dataset.chromeState = nextChromeState;
+        page?.setAttribute('data-chrome-state', nextChromeState);
+      }
+
+      root.classList.toggle('has-selection', hasSelection);
+    };
+
+    const updateHud = () => {
+      const descriptor = currentDescriptor();
+      if (!descriptor) return;
+
+      tierEl.textContent = tierMetaForScale(state.scale).label;
+      zoomEl.textContent = `${Math.round(state.scale * 100)}%`;
+      focusEl.textContent = descriptor.focus;
+      titleEl.textContent = descriptor.title;
+      detailEl.textContent = descriptor.detail;
+    };
+
+    const regionIsRelevant = (regionId) => !state.activeRegionId || regionId === state.activeRegionId;
+
+    const districtIsRelevant = (district) => {
+      if (state.activeDistrictId) return district.id === state.activeDistrictId;
+      if (state.activeRegionId) return district.regionId === state.activeRegionId;
+      return true;
+    };
+
+    const conceptIsRelevant = (concept) => {
+      if (state.activeConceptId) {
+        return concept.id === state.activeConceptId || conceptNeighbors.get(state.activeConceptId)?.has(concept.id);
+      }
+
+      if (state.activeDistrictId) return concept.districtId === state.activeDistrictId;
+      if (state.activeRegionId) return concept.regionId === state.activeRegionId;
+      return true;
+    };
+
+    const conceptPathIsRelevant = (path) => {
+      if (state.activeConceptId) {
+        return path.source === state.activeConceptId || path.target === state.activeConceptId;
+      }
+
+      if (state.activeDistrictId) {
+        return path.sourceDistrict === state.activeDistrictId || path.targetDistrict === state.activeDistrictId;
+      }
+
+      if (state.activeRegionId) {
+        return path.sourceRegion === state.activeRegionId || path.targetRegion === state.activeRegionId;
+      }
+
+      return true;
+    };
+
+    const applyTransform = () => {
+      viewport.setAttribute('transform', `translate(${state.tx.toFixed(2)} ${state.ty.toFixed(2)}) scale(${state.scale.toFixed(3)})`);
+    };
+
+    const updateScene = () => {
+      const showDistricts = state.scale >= 1.04 || Boolean(state.activeRegionId);
+      const showConcepts = state.scale >= 1.42 || Boolean(state.activeDistrictId) || Boolean(state.activeConceptId);
+      const showDistrictLabels = state.scale >= 1.92 || Boolean(state.activeDistrictId);
+      const showConceptLabels = state.scale >= 2.24 || Boolean(state.activeConceptId);
+      const showBridges = state.scale >= 1.7 || Boolean(state.activeRegionId);
+
+      routeEls.forEach((el) => {
+        const route = routeById.get(el.getAttribute('data-route') || '');
+        if (!route) return;
+
+        const touchesActive =
+          !state.activeRegionId || route.sourceRegion === state.activeRegionId || route.targetRegion === state.activeRegionId;
+        const opacity = !state.activeRegionId ? 0.34 : touchesActive ? 0.68 : 0.08;
+        const width = 1.3 + (route.weight || 0.5) * 1.9;
+
+        el.style.opacity = String(opacity);
+        el.style.strokeWidth = String(width);
+      });
+
+      regionEls.forEach((el) => {
+        const regionId = el.getAttribute('data-region') || '';
+        const active = regionId === state.activeRegionId;
+        const relevant = regionIsRelevant(regionId);
+        el.classList.toggle('is-active', active);
+        el.style.opacity = relevant ? '1' : showConcepts ? '0.12' : '0.24';
+      });
+
+      districtSpineEls.forEach((el) => {
+        const spine = districtSpineById.get(el.getAttribute('data-district-spine') || '');
+        if (!spine) return;
+
+        const relevant = regionIsRelevant(spine.regionId);
+        let opacity = 0;
+        if (showDistricts && relevant) opacity = state.activeDistrictId ? 0.5 : 0.34;
+        if (showDistricts && !relevant) opacity = 0.05;
+        el.style.opacity = String(opacity);
+      });
+
+      districtEls.forEach((el) => {
+        const district = districtById.get(el.getAttribute('data-district') || '');
+        if (!district) return;
+
+        const active = district.id === state.activeDistrictId;
+        const relevant = districtIsRelevant(district);
+
+        let opacity = 0;
+        if (showDistricts && relevant) opacity = active ? 1 : state.activeRegionId ? 0.86 : 0.74;
+        if (showDistricts && !relevant) opacity = 0.05;
+
+        el.classList.toggle('is-active', active);
+        el.style.opacity = String(opacity);
+
+        const label = el.querySelector('.atlas-district__label');
+        if (!label) return;
+
+        const labelVisible =
+          active ||
+          (state.hoverType === 'district' && state.hoverId === district.id) ||
+          (relevant && showDistrictLabels);
+        label.setAttribute('opacity', labelVisible ? (active ? '0.96' : '0.82') : '0');
+      });
+
+      conceptLinkEls.forEach((el) => {
+        const link = conceptLinkById.get(el.getAttribute('data-concept-link') || '');
+        if (!link) return;
+
+        let opacity = 0;
+        const depthOpacity = link.depthOpacity ?? 1;
+        if (showConcepts && conceptPathIsRelevant(link)) opacity = (state.activeConceptId ? 0.72 : 0.36) * depthOpacity;
+        if (showConcepts && !conceptPathIsRelevant(link)) opacity = 0.04 * depthOpacity;
+        el.style.opacity = String(opacity);
+      });
+
+      conceptBridgeEls.forEach((el) => {
+        const link = conceptBridgeById.get(el.getAttribute('data-concept-bridge') || '');
+        if (!link) return;
+
+        let opacity = 0;
+        const depthOpacity = link.depthOpacity ?? 1;
+        if (showBridges && conceptPathIsRelevant(link)) {
+          opacity = (state.activeConceptId ? 0.62 : state.activeRegionId ? 0.3 : 0.14) * depthOpacity;
+        }
+        if (showBridges && !conceptPathIsRelevant(link)) opacity = 0.03 * depthOpacity;
+        el.style.opacity = String(opacity);
+      });
+
+      conceptEls.forEach((el) => {
+        const concept = conceptById.get(el.getAttribute('data-concept') || '');
+        if (!concept) return;
+
+        const active = concept.id === state.activeConceptId;
+        const relevant = conceptIsRelevant(concept);
+        let opacity = 0;
+        const depthOpacity = concept.depthOpacity;
+
+        if (showConcepts && relevant) {
+          opacity = (active ? 1 : state.activeConceptId ? 0.78 : state.activeDistrictId ? 0.88 : 0.72) * depthOpacity;
+        }
+        if (showConcepts && !relevant) opacity = (state.activeRegionId ? 0.04 : 0.16) * depthOpacity;
+
+        el.classList.toggle('is-active', active);
+        el.style.opacity = String(opacity);
+
+        const label = el.querySelector('.atlas-concept__label');
+        if (!label) return;
+        const yearLabel = el.querySelector('.atlas-concept__year');
+
+        const labelVisible =
+          active ||
+          (state.hoverType === 'concept' && state.hoverId === concept.id) ||
+          (relevant && showConceptLabels);
+        label.setAttribute('opacity', labelVisible ? String((active ? 0.96 : 0.76) * depthOpacity) : '0');
+
+        if (!yearLabel) return;
+
+        const yearVisible =
+          active ||
+          (state.hoverType === 'concept' && state.hoverId === concept.id) ||
+          (relevant && state.scale >= 2.7 && showConceptLabels);
+        yearLabel.setAttribute('opacity', yearVisible ? String((active ? 0.84 : 0.62) * depthOpacity) : '0');
+      });
+
+      syncStageState();
+      updateHud();
+    };
+
+    const setTransform = (tx, ty, scale) => {
+      state.scale = clamp(scale, MIN_SCALE, MAX_SCALE);
+      const normalized = normalizeTransform(tx, ty, state.scale);
+      state.tx = normalized.tx;
+      state.ty = normalized.ty;
+      applyTransform();
+      updateScene();
+    };
+
+    const animateTo = (tx, ty, scale) => {
+      stopAnimation();
+
+      const targetScale = clamp(scale, MIN_SCALE, MAX_SCALE);
+      const normalizedTarget = normalizeTransform(tx, ty, targetScale);
+      const startTx = state.tx;
+      const startTy = state.ty;
+      const startScale = state.scale;
+      const deltaTx = normalizedTarget.tx - startTx;
+      const deltaTy = normalizedTarget.ty - startTy;
+      const deltaScale = targetScale - startScale;
+      const startTime = performance.now();
+      const duration = 320;
+
+      const step = (now) => {
+        const progress = clamp((now - startTime) / duration, 0, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+
+        setTransform(startTx + deltaTx * eased, startTy + deltaTy * eased, startScale + deltaScale * eased);
+
+        if (progress < 1) {
+          state.animationFrame = requestAnimationFrame(step);
+        } else {
+          state.animationFrame = null;
+        }
+      };
+
+      state.animationFrame = requestAnimationFrame(step);
+    };
+
+    const centerOn = (x, y, scale) => {
+      animateTo(worldData.width / 2 - x * scale, worldData.height / 2 - y * scale, scale);
+    };
+
+    const resetOverview = () => {
+      state.activeRegionId = null;
+      state.activeDistrictId = null;
+      state.activeConceptId = null;
+      animateTo(0, 0, MIN_SCALE);
+    };
+
+    const focusRegion = (regionId) => {
+      const region = regionById.get(regionId);
+      if (!region) return;
+
+      state.activeRegionId = region.id;
+      state.activeDistrictId = null;
+      state.activeConceptId = null;
+
+      const targetScale = clamp(
+        Math.min(worldData.width / (region.width * 2.15), worldData.height / (region.height * 2.35)),
+        1.18,
+        1.72
+      );
+
+      centerOn(region.x, region.y, targetScale);
+      updateScene();
+    };
+
+    const focusDistrict = (districtId) => {
+      const district = districtById.get(districtId);
+      if (!district) return;
+
+      state.activeRegionId = district.regionId;
+      state.activeDistrictId = district.id;
+      state.activeConceptId = null;
+
+      const targetScale = clamp(
+        Math.min(worldData.width / (district.radius * 7.2), worldData.height / (district.radius * 6.1)),
+        1.72,
+        2.36
+      );
+
+      centerOn(district.x, district.y, targetScale);
+      updateScene();
+    };
+
+    const focusConcept = (conceptId) => {
+      const concept = conceptById.get(conceptId);
+      if (!concept) return;
+
+      state.activeRegionId = concept.regionId;
+      state.activeDistrictId = concept.districtId;
+      state.activeConceptId = concept.id;
+
+      centerOn(concept.x, concept.y, 2.86);
+      updateScene();
+    };
+
+    const setHover = (type, id) => {
+      state.hoverType = type;
+      state.hoverId = id;
+      updateHud();
+    };
+
+    const clearHover = (type, id) => {
+      if (state.hoverType === type && state.hoverId === id) {
+        state.hoverType = null;
+        state.hoverId = null;
+        updateHud();
+      }
+    };
+
+    const zoomAtPoint = (clientX, clientY, deltaY, deltaMode = 0) => {
+      stopAnimation();
+
+      const rect = svg.getBoundingClientRect();
+      const viewportX = ((clientX - rect.left) / rect.width) * worldData.width;
+      const viewportY = ((clientY - rect.top) / rect.height) * worldData.height;
+      const anchorX = (viewportX - state.tx) / state.scale;
+      const anchorY = (viewportY - state.ty) / state.scale;
+      const deltaUnit = deltaMode === 1 ? 16 : deltaMode === 2 ? rect.height : 1;
+      const normalizedDelta = clamp(deltaY * deltaUnit, -42, 42);
+      const factor = Math.exp(-normalizedDelta * 0.0022);
+      const nextScale = clamp(state.scale * factor, MIN_SCALE, MAX_SCALE);
+      const nextTx = viewportX - anchorX * nextScale;
+      const nextTy = viewportY - anchorY * nextScale;
+
+      setTransform(nextTx, nextTy, nextScale);
+    };
+
+    const recenterToCurrentFocus = (centerOverride = null) => {
+      const center = centerOverride || currentCenter();
+      const centered = normalizeTransform(
+        worldData.width / 2 - center.x * state.scale,
+        worldData.height / 2 - center.y * state.scale,
+        state.scale
+      );
+
+      state.tx = centered.tx;
+      state.ty = centered.ty;
+      applyTransform();
+    };
+
+    const onPointerDown = (event) => {
+      if (event.target.closest('.map-controls, .map-hud, .map-key')) return;
+      if (event.target.closest('[data-region], [data-district], [data-concept], #atlas-core')) return;
+
+      stopAnimation();
+      state.dragging = true;
+      state.pointerId = event.pointerId;
+      state.startX = event.clientX - state.tx;
+      state.startY = event.clientY - state.ty;
+      wrap.classList.add('is-dragging');
+      wrap.setPointerCapture(event.pointerId);
+    };
+
+    const onPointerMove = (event) => {
+      if (!state.dragging) return;
+
+      setTransform(event.clientX - state.startX, event.clientY - state.startY, state.scale);
+    };
+
+    const onPointerUp = (event) => {
+      if (state.pointerId !== null && event.pointerId === state.pointerId) {
+        state.dragging = false;
+        state.pointerId = null;
+        wrap.classList.remove('is-dragging');
+      }
+    };
+
+    const bindInteractive = (elements, type, handler) => {
+      elements.forEach((el) => {
+        const id =
+          el.getAttribute(`data-${type}`) ||
+          (type === 'district-spine' ? el.getAttribute('data-district-spine') : null) ||
+          (type === 'concept-link' ? el.getAttribute('data-concept-link') : null) ||
+          (type === 'concept-bridge' ? el.getAttribute('data-concept-bridge') : null);
+
+        if (!id) return;
+
+        if (type === 'region' || type === 'district' || type === 'concept') {
+          el.addEventListener('click', (event) => {
+            event.stopPropagation();
+            handler(id);
+          });
+
+          el.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              handler(id);
+            }
+          });
+
+          el.addEventListener('mouseenter', () => setHover(type, id));
+          el.addEventListener('mouseleave', () => clearHover(type, id));
+          el.addEventListener('focus', () => setHover(type, id));
+          el.addEventListener('blur', () => clearHover(type, id));
+        }
+      });
+    };
+
+    bindInteractive(regionEls, 'region', focusRegion);
+    bindInteractive(districtEls, 'district', focusDistrict);
+    bindInteractive(conceptEls, 'concept', focusConcept);
+
+    coreEl?.addEventListener('click', (event) => {
+      event.stopPropagation();
+      resetOverview();
+      setHover('core', 'atlas-core');
+    });
+
+    coreEl?.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        resetOverview();
+        setHover('core', 'atlas-core');
+      }
+    });
+
+    coreEl?.addEventListener('mouseenter', () => setHover('core', 'atlas-core'));
+    coreEl?.addEventListener('mouseleave', () => clearHover('core', 'atlas-core'));
+    coreEl?.addEventListener('focus', () => setHover('core', 'atlas-core'));
+    coreEl?.addEventListener('blur', () => clearHover('core', 'atlas-core'));
+
+    chromeEls.forEach((el) => {
+      el.addEventListener('pointerdown', (event) => {
+        event.stopPropagation();
+      });
+    });
+
+    overviewBtn?.addEventListener('click', () => {
+      resetOverview();
+      updateScene();
+    });
+
+    wrap.addEventListener('pointerdown', onPointerDown);
+    wrap.addEventListener('pointermove', onPointerMove);
+    wrap.addEventListener('pointerup', onPointerUp);
+    wrap.addEventListener('pointercancel', onPointerUp);
+    wrap.addEventListener('pointerleave', () => {
+      if (state.dragging) return;
+      state.hoverType = null;
+      state.hoverId = null;
+      updateHud();
+    });
+
+    wrap.addEventListener(
+      'wheel',
+      (event) => {
+        event.preventDefault();
+        zoomAtPoint(event.clientX, event.clientY, event.deltaY, event.deltaMode);
+      },
+      { passive: false }
+    );
+
+    wrap.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        resetOverview();
+        updateScene();
+      }
+
+      if (event.key === '+' || event.key === '=') {
+        const rect = svg.getBoundingClientRect();
+        zoomAtPoint(rect.left + rect.width / 2, rect.top + rect.height / 2, -36);
+      }
+
+      if (event.key === '-' || event.key === '_') {
+        const rect = svg.getBoundingClientRect();
+        zoomAtPoint(rect.left + rect.width / 2, rect.top + rect.height / 2, 36);
+      }
+    });
+
+    let resizeFrame = null;
+    let lastStageRect = wrap.getBoundingClientRect();
+    const handleStageResize = () => {
+      const nextRect = wrap.getBoundingClientRect();
+      const changed =
+        Math.abs(nextRect.width - lastStageRect.width) > 0.5 || Math.abs(nextRect.height - lastStageRect.height) > 0.5;
+
+      if (!changed) return;
+
+      if (state.stageTransitioning) {
+        lastStageRect = nextRect;
+        return;
+      }
+
+      lastStageRect = nextRect;
+      recenterToCurrentFocus();
+    };
+
+    const resizeObserver = typeof ResizeObserver === 'function'
+      ? new ResizeObserver(() => {
+          if (resizeFrame) cancelAnimationFrame(resizeFrame);
+          resizeFrame = requestAnimationFrame(() => {
+            resizeFrame = null;
+            handleStageResize();
+          });
+        })
+      : null;
+
+    resizeObserver?.observe(wrap);
+
+    wrap.addEventListener('transitionend', (event) => {
+      if (event.propertyName !== 'width' && event.propertyName !== 'height') return;
+      if (!state.stageTransitioning) return;
+
+      if (state.stageTransitionTimer) {
+        clearTimeout(state.stageTransitionTimer);
+        state.stageTransitionTimer = null;
+      }
+
+      recenterToCurrentFocus(state.lockedCenter);
+      state.lockedCenter = null;
+      state.stageTransitioning = false;
+      lastStageRect = wrap.getBoundingClientRect();
+    });
+
+    window.addEventListener('resize', handleStageResize, { passive: true });
+
+    applyStageVars('overview');
+    setTransform(0, 0, MIN_SCALE);
+  })();
+</script>
+
+<style>
+  .atlas-shell {
+    --atlas-stage-width: min(94vw, 1720px);
+    --atlas-stage-height: 70vh;
+    --atlas-stage-radius: 32px;
+    --atlas-stage-shadow: 0 26px 90px rgba(4, 10, 24, 0.34);
+    --atlas-chrome-opacity: 1;
+    --atlas-copy-offset: 0px;
+    width: 100%;
+    display: grid;
+    justify-items: center;
+    padding-block-end: clamp(0.75rem, 2vh, 1.5rem);
+  }
+
+  .atlas-stage {
+    position: sticky;
+    top: clamp(0.85rem, 2vh, 1.4rem);
+    width: min(100%, var(--atlas-stage-width));
+    height: min(var(--atlas-stage-height), calc(100vh - clamp(1rem, 2vh, 1.6rem)));
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+    overflow: hidden;
+    isolation: isolate;
+    border: 1px solid rgba(153, 179, 226, 0.22);
+    border-radius: var(--atlas-stage-radius);
+    background:
+      radial-gradient(circle at 50% 22%, rgba(44, 98, 190, 0.14), transparent 38%),
+      radial-gradient(circle at 50% 78%, rgba(240, 167, 54, 0.08), transparent 34%),
+      #040913;
+    box-shadow: var(--atlas-stage-shadow);
+    transition:
+      width 220ms ease-out,
+      height 220ms ease-out,
+      border-radius 220ms ease-out,
+      box-shadow 220ms ease-out,
+      border-color 220ms ease-out;
+  }
+
+  .atlas-shell[data-stage-mode='inspect'] .atlas-stage {
+    border-color: rgba(153, 179, 226, 0.18);
+  }
+
+  .atlas-shell[data-stage-mode='immersive'] .atlas-stage {
+    border-color: rgba(153, 179, 226, 0.12);
+  }
+
+  .map-wrap.is-dragging {
+    cursor: grabbing;
+  }
+
+  .atlas-canvas {
+    display: block;
+  }
+
+  .map-controls,
+  .map-hud,
+  .map-key {
+    position: absolute;
+    z-index: 6;
+    opacity: var(--atlas-chrome-opacity);
+    transform: translateY(var(--atlas-copy-offset));
+    transition:
+      opacity 220ms ease-out,
+      transform 220ms ease-out,
+      padding 220ms ease-out,
+      width 220ms ease-out,
+      max-width 220ms ease-out,
+      border-radius 220ms ease-out,
+      background-color 220ms ease-out,
+      border-color 220ms ease-out;
+  }
+
+  .map-controls {
+    top: 0.9rem;
+    right: 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .map-readout {
+    border: 1px solid rgba(153, 179, 226, 0.18);
+    border-radius: 999px;
+    background: rgba(8, 12, 20, 0.66);
+    backdrop-filter: blur(8px);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.34rem 0.78rem;
+  }
+
+  .map-readout__label {
+    color: var(--tone-muted);
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .map-readout__value {
+    color: var(--tone-text);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .map-overview-button {
+    border: 1px solid rgba(153, 179, 226, 0.18);
+    border-radius: 999px;
+    background: rgba(8, 12, 20, 0.66);
+    color: var(--tone-text);
+    backdrop-filter: blur(8px);
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1;
+    padding: 0.44rem 0.86rem;
+    transition:
+      border-color 160ms ease,
+      background-color 160ms ease,
+      color 160ms ease;
+  }
+
+  .map-overview-button:hover,
+  .map-overview-button:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 56%, rgba(153, 179, 226, 0.22));
+    background: rgba(8, 12, 20, 0.82);
+    outline: none;
+  }
+
+  .map-hud,
+  .map-key {
+    border: 1px solid rgba(153, 179, 226, 0.16);
+    border-radius: 16px;
+    background: rgba(8, 12, 20, 0.72);
+    backdrop-filter: blur(10px);
+  }
+
+  .map-hud {
+    top: 0.9rem;
+    left: 0.9rem;
+    width: min(22rem, calc(100% - 8rem));
+    padding: 0.72rem 0.82rem;
+    display: grid;
+    gap: 0.26rem;
+  }
+
+  .map-hud__eyebrow,
+  .map-hud__title,
+  .map-hud__detail,
+  .map-key__title,
+  .map-key__line {
+    margin: 0;
+  }
+
+  .map-hud__eyebrow {
+    color: var(--tone-accent-glow);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .map-hud__title {
+    color: var(--tone-text);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .map-hud__detail {
+    color: var(--tone-muted);
+    font-size: 0.76rem;
+    line-height: 1.5;
+  }
+
+  .map-key {
+    right: 0.9rem;
+    bottom: 0.9rem;
+    padding: 0.62rem 0.74rem;
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .map-key__title {
+    color: var(--tone-text);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .map-key__line {
+    color: var(--tone-muted);
+    font-size: 0.73rem;
+    line-height: 1.45;
+  }
+
+  .atlas-shell[data-stage-mode='inspect'] .map-controls {
+    top: 0.72rem;
+    right: 0.72rem;
+    gap: 0.45rem;
+  }
+
+  .atlas-shell[data-stage-mode='inspect'] .map-readout {
+    padding: 0.28rem 0.66rem;
+  }
+
+  .atlas-shell[data-stage-mode='inspect'] .map-overview-button {
+    padding: 0.38rem 0.74rem;
+  }
+
+  .atlas-shell[data-stage-mode='inspect'] .map-hud {
+    top: 0.72rem;
+    left: 0.72rem;
+    width: min(18rem, calc(100% - 7rem));
+    padding: 0.58rem 0.66rem;
+    gap: 0.18rem;
+  }
+
+  .atlas-shell[data-stage-mode='inspect'] .map-hud__detail {
+    font-size: 0.71rem;
+    line-height: 1.42;
+    max-height: 3.2em;
+    overflow: hidden;
+  }
+
+  .atlas-shell[data-stage-mode='inspect'] .map-key {
+    right: 0.72rem;
+    bottom: 0.72rem;
+    padding: 0.52rem 0.64rem;
+  }
+
+  .atlas-shell[data-stage-mode='immersive'] .map-controls {
+    top: 0.64rem;
+    right: 0.64rem;
+    gap: 0.38rem;
+  }
+
+  .atlas-shell[data-stage-mode='immersive'] .map-readout {
+    gap: 0.42rem;
+    padding: 0.26rem 0.58rem;
+  }
+
+  .atlas-shell[data-stage-mode='immersive'] .map-readout__label {
+    display: none;
+  }
+
+  .atlas-shell[data-stage-mode='immersive'] .map-overview-button {
+    padding: 0.34rem 0.64rem;
+  }
+
+  .atlas-shell[data-stage-mode='immersive'] .map-hud {
+    top: 0.64rem;
+    left: 0.64rem;
+    width: fit-content;
+    max-width: min(13rem, calc(100% - 7.2rem));
+    padding: 0.46rem 0.56rem;
+    gap: 0.12rem;
+  }
+
+  .atlas-shell[data-stage-mode='immersive'] .map-hud__eyebrow {
+    font-size: 0.64rem;
+  }
+
+  .atlas-shell[data-stage-mode='immersive'] .map-hud__title {
+    font-size: 0.9rem;
+  }
+
+  .atlas-shell[data-stage-mode='immersive'] .map-hud__detail {
+    display: none;
+  }
+
+  .atlas-shell[data-stage-mode='immersive'].has-selection .map-hud {
+    width: min(15rem, calc(100% - 7rem));
+    max-width: min(15rem, calc(100% - 7rem));
+  }
+
+  .atlas-shell[data-stage-mode='immersive'].has-selection .map-hud__detail {
+    display: block;
+    font-size: 0.68rem;
+    line-height: 1.36;
+    max-height: 4.1em;
+    overflow: hidden;
+  }
+
+  .atlas-shell[data-stage-mode='immersive'] .map-key {
+    right: 0.64rem;
+    bottom: 0.64rem;
+    padding: 0.42rem 0.54rem;
+    gap: 0.14rem;
+  }
+
+  .atlas-shell[data-stage-mode='immersive'] .map-key__line:nth-of-type(n + 3) {
+    display: none;
+  }
+
+  .atlas-ocean {
+    fill: #040913;
+  }
+
+  .atlas-grid {
+    opacity: 0.32;
+  }
+
+  .atlas-grid__line {
+    fill: none;
+    stroke: rgba(121, 149, 190, 0.08);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .atlas-grid__dot {
+    fill: rgba(121, 149, 190, 0.14);
+    vector-effect: non-scaling-stroke;
+  }
+
+  .atlas-grid__dot--soft {
+    fill: rgba(121, 149, 190, 0.08);
+  }
+
+  .atlas-route,
+  .atlas-core__halo,
+  .atlas-core__ring,
+  .atlas-district-spine,
+  .atlas-concept-link,
+  .atlas-concept-bridge,
+  .atlas-region__branch,
+  .atlas-region__plate,
+  .atlas-region__inner,
+  .atlas-region__beacon,
+  .atlas-region__nucleus,
+  .atlas-district__branch,
+  .atlas-district__halo,
+  .atlas-district__ring,
+  .atlas-district__core,
+  .atlas-concept__stem,
+  .atlas-concept__halo,
+  .atlas-concept__core {
+    vector-effect: non-scaling-stroke;
+  }
+
+  .atlas-route {
+    fill: none;
+    stroke-linecap: round;
+    stroke-opacity: 1;
+    transition: opacity 160ms ease, stroke-width 160ms ease;
+  }
+
+  .atlas-route--bridge {
+    stroke: color-mix(in srgb, var(--tone-accent) 72%, var(--tone-line) 28%);
+  }
+
+  .atlas-route--signal {
+    stroke: color-mix(in srgb, var(--tone-sky) 76%, var(--tone-line) 24%);
+    stroke-dasharray: 14 10;
+  }
+
+  .atlas-route--root {
+    stroke: color-mix(in srgb, var(--tone-accent-bright) 60%, var(--tone-line) 40%);
+    stroke-dasharray: 4 11;
+  }
+
+  .atlas-core {
+    cursor: pointer;
+  }
+
+  .atlas-core__halo {
+    fill: rgba(226, 231, 241, 0.06);
+    stroke: rgba(226, 231, 241, 0.12);
+    stroke-width: 1.4;
+  }
+
+  .atlas-core__ring {
+    fill: rgba(230, 234, 242, 0.92);
+    stroke: rgba(13, 20, 35, 0.92);
+    stroke-width: 4;
+  }
+
+  .atlas-core__label {
+    fill: rgba(13, 20, 35, 0.98);
+    font-size: 112px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+  }
+
+  .atlas-core__sub {
+    fill: rgba(50, 60, 83, 0.9);
+    font-size: 28px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .atlas-region {
+    cursor: pointer;
+    transition: opacity 160ms ease;
+  }
+
+  .atlas-region__shadow {
+    fill: var(--atlas-region-glow);
+    opacity: 0.26;
+  }
+
+  .atlas-region__branch {
+    fill: none;
+    stroke: color-mix(in srgb, var(--atlas-region-glow) 54%, rgba(206, 226, 255, 0.16));
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    opacity: 0.44;
+  }
+
+  .atlas-region__plate {
+    fill: var(--atlas-region-fill);
+    stroke: color-mix(in srgb, var(--atlas-region-glow) 72%, rgba(220, 232, 248, 0.22));
+    stroke-width: 2.1;
+  }
+
+  .atlas-region__inner {
+    fill: rgba(7, 14, 24, 0.14);
+    stroke: color-mix(in srgb, var(--atlas-region-glow) 42%, rgba(212, 224, 245, 0.1));
+    stroke-width: 1;
+    stroke-dasharray: 10 12;
+  }
+
+  .atlas-region__beacon {
+    fill: color-mix(in srgb, var(--atlas-region-glow) 28%, rgba(255, 255, 255, 0.06));
+    stroke: rgba(255, 255, 255, 0.18);
+    stroke-width: 1.4;
+  }
+
+  .atlas-region__nucleus {
+    fill: color-mix(in srgb, white 62%, var(--atlas-region-glow) 38%);
+    stroke: rgba(8, 13, 22, 0.5);
+    stroke-width: 1.2;
+  }
+
+  .atlas-region__label {
+    fill: var(--tone-text);
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    paint-order: stroke fill;
+    stroke: rgba(5, 9, 15, 0.72);
+    stroke-width: 4px;
+  }
+
+  .atlas-region.is-active .atlas-region__plate {
+    stroke-width: 2.8;
+  }
+
+  .atlas-district {
+    cursor: pointer;
+    transition: opacity 160ms ease;
+  }
+
+  .atlas-district-spine {
+    fill: none;
+    stroke: rgba(179, 203, 241, 0.26);
+    stroke-width: 1.2;
+    stroke-dasharray: 6 12;
+    transition: opacity 160ms ease;
+  }
+
+  .atlas-district__branch {
+    fill: none;
+    stroke: rgba(185, 208, 245, 0.2);
+    stroke-width: 1.3;
+    stroke-linecap: round;
+    transition: opacity 160ms ease, stroke-width 160ms ease;
+  }
+
+  .atlas-district__halo {
+    fill: rgba(70, 118, 198, 0.04);
+    stroke: rgba(180, 205, 243, 0.08);
+    stroke-width: 0.9;
+    transition: opacity 160ms ease, stroke-width 160ms ease;
+  }
+
+  .atlas-district__ring {
+    fill: rgba(8, 14, 24, 0.32);
+    stroke: rgba(198, 220, 248, 0.28);
+    stroke-width: 1.5;
+    transition: opacity 160ms ease, stroke-width 160ms ease;
+  }
+
+  .atlas-district__core {
+    fill: rgba(222, 234, 250, 0.18);
+    stroke: rgba(214, 228, 248, 0.34);
+    stroke-width: 1.1;
+  }
+
+  .atlas-district__label {
+    fill: rgba(228, 236, 250, 0.88);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    paint-order: stroke fill;
+    stroke: rgba(5, 9, 15, 0.68);
+    stroke-width: 3.5px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 160ms ease;
+  }
+
+  .atlas-district.is-active .atlas-district__ring,
+  .atlas-district.is-active .atlas-district__halo {
+    stroke-width: 2.1;
+  }
+
+  .atlas-district.is-active .atlas-district__branch {
+    stroke-width: 1.7;
+    stroke: color-mix(in srgb, var(--tone-accent) 34%, rgba(185, 208, 245, 0.34));
+  }
+
+  .atlas-concept-link,
+  .atlas-concept-bridge {
+    fill: none;
+    stroke-linecap: round;
+    stroke-width: 1.25;
+    transition: opacity 160ms ease;
+  }
+
+  .atlas-concept-link {
+    stroke: rgba(191, 210, 243, 0.42);
+  }
+
+  .atlas-concept-bridge--bridge {
+    stroke: color-mix(in srgb, var(--tone-accent) 72%, var(--tone-line) 28%);
+  }
+
+  .atlas-concept-bridge--signal {
+    stroke: color-mix(in srgb, var(--tone-sky-bright) 70%, var(--tone-line) 30%);
+    stroke-dasharray: 5 9;
+  }
+
+  .atlas-concept-bridge--root {
+    stroke: color-mix(in srgb, var(--tone-accent-bright) 60%, var(--tone-line) 40%);
+    stroke-dasharray: 2 8;
+  }
+
+  .atlas-concept {
+    cursor: pointer;
+    transition: opacity 160ms ease;
+  }
+
+  .atlas-concept__stem {
+    fill: none;
+    stroke: rgba(204, 222, 248, 0.22);
+    stroke-width: 1;
+    stroke-linecap: round;
+    transition: opacity 160ms ease, stroke-width 160ms ease;
+    pointer-events: none;
+  }
+
+  .atlas-concept__halo {
+    fill: none;
+    stroke: rgba(201, 219, 247, 0.12);
+    stroke-width: 1;
+    transition: opacity 160ms ease, stroke-width 160ms ease;
+  }
+
+  .atlas-concept__core {
+    fill: rgba(225, 235, 250, 0.9);
+    stroke: rgba(8, 13, 22, 0.86);
+    stroke-width: 1.8;
+    transition: opacity 160ms ease, stroke-width 160ms ease;
+  }
+
+  .atlas-concept__label {
+    fill: rgba(233, 240, 251, 0.84);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    paint-order: stroke fill;
+    stroke: rgba(5, 9, 15, 0.72);
+    stroke-width: 3px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 160ms ease;
+  }
+
+  .atlas-concept__year {
+    fill: rgba(173, 191, 219, 0.8);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    paint-order: stroke fill;
+    stroke: rgba(5, 9, 15, 0.68);
+    stroke-width: 2.2px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 160ms ease;
+  }
+
+  .atlas-concept.is-active .atlas-concept__halo {
+    stroke-width: 1.8;
+    stroke: color-mix(in srgb, var(--tone-accent) 52%, rgba(201, 219, 247, 0.24));
+  }
+
+  .atlas-concept.is-active .atlas-concept__core {
+    stroke-width: 2.3;
+    fill: color-mix(in srgb, white 88%, var(--tone-accent) 12%);
+  }
+
+  .atlas-concept.is-active .atlas-concept__stem {
+    stroke-width: 1.35;
+    stroke: color-mix(in srgb, var(--tone-accent) 36%, rgba(204, 222, 248, 0.3));
+  }
+
+  @media (max-width: 1100px) {
+    .atlas-shell {
+      padding-block-end: 0;
+    }
+
+    .atlas-stage {
+      position: relative;
+      top: auto;
+      width: 100%;
+      height: 72vh;
+      min-height: 560px;
+      border-radius: 24px;
+      box-shadow: 0 18px 56px rgba(4, 10, 24, 0.26);
+      transition: border-radius 180ms ease-out, box-shadow 180ms ease-out;
+    }
+
+    .map-controls,
+    .map-hud,
+    .map-key {
+      opacity: 1;
+      transform: none;
+    }
+
+    .map-hud {
+      width: min(18rem, calc(100% - 7rem));
+    }
+  }
+
+  @media (max-width: 800px) {
+    .atlas-stage {
+      min-height: 500px;
+      border-radius: 18px;
+    }
+
+    .map-controls {
+      top: 0.6rem;
+      right: 0.6rem;
+      gap: 0.35rem;
+    }
+
+    .map-readout {
+      padding: 0.24rem 0.55rem;
+    }
+
+    .map-readout__label {
+      display: none;
+    }
+
+    .map-overview-button {
+      padding: 0.3rem 0.54rem;
+      font-size: 0.74rem;
+    }
+
+    .map-hud {
+      top: 0.6rem;
+      left: 0.6rem;
+      width: min(15rem, calc(100% - 6.6rem));
+      padding: 0.52rem 0.58rem;
+    }
+
+    .map-key {
+      left: 0.6rem;
+      right: 0.6rem;
+      bottom: 0.6rem;
+    }
+
+    .atlas-region__label {
+      font-size: 24px;
+    }
+
+    .atlas-district__label {
+      font-size: 16px;
+    }
+
+    .atlas-concept__label {
+      font-size: 13px;
+    }
+  }
+</style>

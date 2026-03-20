@@ -1,0 +1,27 @@
+---
+interface RelatedEntryOption {
+  slug: string;
+  title: string;
+}
+
+interface Props {
+  entries: RelatedEntryOption[];
+  limit?: number;
+}
+
+const { entries, limit = 10 } = Astro.props as Props;
+---
+
+<section class="studio-sidebar__panel">
+  <p class="studio-sidebar__kicker font-archive">Recent entry slugs</p>
+  <h2>Related entry helper</h2>
+  <p class="studio-helper-copy">Use archive slugs separated by commas or line breaks in the related entries field.</p>
+  <ul class="studio-related-list">
+    {entries.slice(0, limit).map((entry) => (
+      <li>
+        <code>{entry.slug}</code>
+        <span>{entry.title}</span>
+      </li>
+    ))}
+  </ul>
+</section>

@@ -1,0 +1,43 @@
+---
+import CommitPanel from './CommitPanel.astro';
+import SharedMetadataFields from './SharedMetadataFields.astro';
+import StudioFormEnhancer from './StudioFormEnhancer.astro';
+import { getStudioLane } from '../../lib/studio';
+
+const lane = getStudioLane('note');
+---
+
+<form class="studio-form" method="post" action="/api/create-entry" data-studio-form data-lane={lane.slug}>
+  <input type="hidden" name="medium" value={lane.slug} />
+
+  <SharedMetadataFields
+    lane={lane.slug}
+    defaultSource={lane.defaultSource}
+    sourceOptions={lane.sourceOptions}
+    showExternalUrl={true}
+    summaryPlaceholder="Optional note summary."
+    summaryHint="Optional. Use this when you want the archive card to read differently from the note body."
+  />
+
+  <section class="studio-section">
+    <div class="studio-section__header">
+      <h2>Body</h2>
+      <p>Notes stay text-first here too, but the frame is lighter than the writing lane.</p>
+    </div>
+
+    <label class="studio-field">
+      <span>Body</span>
+      <textarea
+        name="body"
+        rows="12"
+        maxlength="30000"
+        placeholder="Short note, fragment, caption, or memo."
+      ></textarea>
+      <small>Recommended for notes, even when the summary is enough for the card view.</small>
+    </label>
+  </section>
+
+  <CommitPanel lane={lane.slug} submitLabel="Commit note" />
+</form>
+
+<StudioFormEnhancer lane={lane.slug} />

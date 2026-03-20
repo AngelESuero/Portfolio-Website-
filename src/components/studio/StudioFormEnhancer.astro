@@ -1,0 +1,699 @@
+---
+interface Props {
+  lane: string;
+  media?: boolean;
+}
+
+const { lane, media = false } = Astro.props as Props;
+---
+
+<script is:inline define:vars={{ lane, media }}>
+  (() => {
+    const form = document.querySelector(`[data-studio-form][data-lane="${lane}"]`);
+    if (!(form instanceof HTMLFormElement)) return;
+
+    const storageKey = `studio-draft:${lane}`;
+    const titleInput = form.querySelector('[data-title-input]');
+    const dateInput = form.querySelector('[data-date-input]');
+    const sourceSelect = form.querySelector('[data-source-select]');
+    const externalUrlInput = form.querySelector('[data-external-url]');
+    const passwordInput = form.querySelector('[data-password-input]');
+    const pathPreview = form.querySelector('[data-path-preview]');
+    const autosaveState = form.querySelector('[data-autosave-state]');
+    const clearDraftButton = form.querySelector('[data-clear-draft]');
+    const statusNode = form.querySelector('[data-studio-status]');
+    const submitButton = form.querySelector('[data-submit-button]');
+
+    if (!(titleInput instanceof HTMLInputElement)) return;
+    if (!(dateInput instanceof HTMLInputElement)) return;
+    if (!(sourceSelect instanceof HTMLSelectElement)) return;
+    if (!(passwordInput instanceof HTMLInputElement)) return;
+    if (!(autosaveState instanceof HTMLElement)) return;
+    if (!(clearDraftButton instanceof HTMLButtonElement)) return;
+    if (!(statusNode instanceof HTMLElement)) return;
+    if (!(submitButton instanceof HTMLButtonElement)) return;
+
+    const defaultSource = Array.from(sourceSelect.options).find((option) => option.defaultSelected)?.value || sourceSelect.value;
+    let saveTimer = 0;
+    let sourceTouched = false;
+    let objectUrl = '';
+    let autoFilledTitle = '';
+    let uploadInFlight = false;
+
+    const slugify = (value) =>
+      String(value || '')
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/['’]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .replace(/-{2,}/g, '-') || 'untitled-entry';
+
+    const humanizeFileName = (value) =>
+      String(value || '')
+        .replace(/\.[^.]+$/, '')
+        .replace(/[_-]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    const inferFromUrl = (value) => {
+      if (!value) return null;
+
+      try {
+        const url = new URL(value);
+        const host = url.hostname.toLowerCase();
+
+        if (host === 'youtu.be' || host.includes('youtube.com')) return 'youtube';
+        if (host.includes('substack.com')) return 'substack';
+        if (host.includes('untitled.stream')) return 'untitled';
+        if (host.includes('linktr.ee') || host.includes('linktree')) return 'linktree';
+      } catch {}
+
+      return null;
+    };
+
+    const setStatus = (message, state = 'idle') => {
+      statusNode.textContent = message;
+      statusNode.dataset.state = state;
+    };
+
+    const seedDate = () => {
+      if (dateInput.value) return;
+      const today = new Date();
+      const offsetDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000);
+      dateInput.value = offsetDate.toISOString().slice(0, 10);
+    };
+
+    const syncPathPreview = () => {
+      if (!(pathPreview instanceof HTMLElement)) return;
+      pathPreview.textContent = `src/content/entries/${lane}/${slugify(titleInput.value)}.mdx`;
+    };
+
+    const updateAutosaveState = (message) => {
+      autosaveState.textContent = message;
+    };
+
+    const getDraftState = () => {
+      const data = new FormData(form);
+      const state = {};
+
+      for (const [key, value] of data.entries()) {
+        if (key === 'password') continue;
+        if (value instanceof File) continue;
+        state[key] = value;
+      }
+
+      return state;
+    };
+
+    const saveDraftSoon = () => {
+      window.clearTimeout(saveTimer);
+      saveTimer = window.setTimeout(() => {
+        try {
+          window.localStorage.setItem(storageKey, JSON.stringify(getDraftState()));
+          updateAutosaveState(`Local autosave updated ${new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}.`);
+        } catch {
+          updateAutosaveState('Local autosave is unavailable in this browser.');
+        }
+      }, 180);
+    };
+
+    const restoreDraft = () => {
+      try {
+        const raw = window.localStorage.getItem(storageKey);
+        if (!raw) return;
+        const state = JSON.parse(raw);
+
+        if (!state || typeof state !== 'object') return;
+
+        Object.entries(state).forEach(([key, value]) => {
+          if (typeof value !== 'string') return;
+
+          const radio = form.querySelector(`input[type="radio"][name="${CSS.escape(key)}"][value="${CSS.escape(value)}"]`);
+          if (radio instanceof HTMLInputElement) {
+            radio.checked = true;
+            return;
+          }
+
+          const field = form.elements.namedItem(key);
+
+          if (field instanceof RadioNodeList) {
+            field.value = value;
+            return;
+          }
+
+          if (
+            field instanceof HTMLInputElement ||
+            field instanceof HTMLSelectElement ||
+            field instanceof HTMLTextAreaElement
+          ) {
+            if (field.type === 'password' || field.type === 'file') return;
+            field.value = value;
+          }
+        });
+
+        if (typeof state.source === 'string' && state.source !== defaultSource) {
+          sourceTouched = true;
+        }
+
+        updateAutosaveState('Local draft restored on this device.');
+      } catch {
+        updateAutosaveState('Could not restore the local draft.');
+      }
+    };
+
+    const clearDraft = () => {
+      window.localStorage.removeItem(storageKey);
+      updateAutosaveState('Local draft cleared.');
+    };
+
+    const mediaModeInput = media ? form.querySelector('[data-media-mode-input]') : null;
+    const uploadPane = media ? form.querySelector('[data-media-pane="upload"]') : null;
+    const externalPane = media ? form.querySelector('[data-media-pane="external"]') : null;
+    const externalDetails = media ? form.querySelector('[data-external-details]') : null;
+    const uploadFileInput = media ? form.querySelector('[data-upload-file]') : null;
+    const uploadRetry = media ? form.querySelector('[data-upload-retry]') : null;
+    const uploadReset = media ? form.querySelector('[data-upload-reset]') : null;
+    const uploadProgress = media ? form.querySelector('[data-upload-progress]') : null;
+    const uploadStatus = media ? form.querySelector('[data-upload-status]') : null;
+    const uploadPreview = media ? form.querySelector('[data-upload-preview]') : null;
+    const uploadPreviewImage = media ? form.querySelector('[data-upload-preview-image]') : null;
+    const uploadPreviewVideo = media ? form.querySelector('[data-upload-preview-video]') : null;
+    const uploadPreviewAudio = media ? form.querySelector('[data-upload-preview-audio]') : null;
+    const uploadPreviewName = media ? form.querySelector('[data-upload-preview-name]') : null;
+    const uploadPreviewCopy = media ? form.querySelector('[data-upload-preview-copy]') : null;
+    const assetFieldNodes = media ? Array.from(form.querySelectorAll('[data-asset-field]')) : [];
+    const assetFields = Object.fromEntries(
+      assetFieldNodes
+        .filter((node) => node instanceof HTMLInputElement)
+        .map((node) => [node.name, node])
+    );
+
+    const setUploadStatus = (message, state = 'idle') => {
+      if (!(uploadStatus instanceof HTMLElement)) return;
+      uploadStatus.textContent = message;
+      uploadStatus.dataset.state = state;
+    };
+
+    const getMediaMode = () => {
+      if (!(mediaModeInput instanceof HTMLInputElement)) return 'upload';
+      return mediaModeInput.value === 'external' ? 'external' : 'upload';
+    };
+
+    const setMediaMode = (mode) => {
+      if (!media) return;
+
+      if (mediaModeInput instanceof HTMLInputElement) {
+        mediaModeInput.value = mode;
+      }
+
+      if (externalDetails instanceof HTMLDetailsElement && externalDetails.open !== (mode === 'external')) {
+        externalDetails.open = mode === 'external';
+      }
+
+      if (uploadPane instanceof HTMLElement) uploadPane.hidden = mode === 'external';
+      if (externalPane instanceof HTMLElement) externalPane.hidden = mode !== 'external';
+      if (externalUrlInput instanceof HTMLInputElement) externalUrlInput.disabled = mode !== 'external';
+      if (uploadFileInput instanceof HTMLInputElement) uploadFileInput.disabled = mode === 'external';
+
+      assetFieldNodes.forEach((field) => {
+        if (field instanceof HTMLInputElement) field.disabled = mode !== 'upload';
+      });
+
+      if (mode === 'upload' && (!sourceTouched || sourceSelect.value === 'manual')) {
+        sourceSelect.value = 'local-media';
+      }
+
+      if (mode === 'external') {
+        const inferred = externalUrlInput instanceof HTMLInputElement ? inferFromUrl(externalUrlInput.value.trim()) : null;
+        if (inferred && (!sourceTouched || sourceSelect.value === 'manual' || sourceSelect.value === 'local-media')) {
+          sourceSelect.value = inferred;
+        }
+      }
+    };
+
+    const clearObjectUrl = () => {
+      if (!objectUrl) return;
+      URL.revokeObjectURL(objectUrl);
+      objectUrl = '';
+    };
+
+    const clearPreviewMedia = () => {
+      if (uploadPreviewImage instanceof HTMLImageElement) {
+        uploadPreviewImage.hidden = true;
+        uploadPreviewImage.removeAttribute('src');
+      }
+
+      if (uploadPreviewVideo instanceof HTMLVideoElement) {
+        uploadPreviewVideo.hidden = true;
+        uploadPreviewVideo.pause();
+        uploadPreviewVideo.removeAttribute('src');
+        uploadPreviewVideo.load();
+      }
+
+      if (uploadPreviewAudio instanceof HTMLAudioElement) {
+        uploadPreviewAudio.hidden = true;
+        uploadPreviewAudio.pause();
+        uploadPreviewAudio.removeAttribute('src');
+        uploadPreviewAudio.load();
+      }
+    };
+
+    const setRetryVisible = (visible) => {
+      if (!(uploadRetry instanceof HTMLButtonElement)) return;
+      uploadRetry.hidden = !visible;
+    };
+
+    const getAssetValue = (name) => {
+      const field = assetFields[name];
+      return field instanceof HTMLInputElement ? field.value.trim() : '';
+    };
+
+    const setAssetValue = (name, value) => {
+      const field = assetFields[name];
+      if (field instanceof HTMLInputElement) field.value = value;
+    };
+
+    const resetAssetFields = () => {
+      Object.keys(assetFields).forEach((name) => {
+        setAssetValue(name, '');
+      });
+    };
+
+    const applyPreviewMedia = (source, mimeType) => {
+      clearPreviewMedia();
+      if (!source) return;
+
+      if (mimeType.startsWith('image/') && uploadPreviewImage instanceof HTMLImageElement) {
+        uploadPreviewImage.hidden = false;
+        uploadPreviewImage.src = source;
+        return;
+      }
+
+      if (mimeType.startsWith('video/') && uploadPreviewVideo instanceof HTMLVideoElement) {
+        uploadPreviewVideo.hidden = false;
+        uploadPreviewVideo.src = source;
+        uploadPreviewVideo.load();
+        return;
+      }
+
+      if (mimeType.startsWith('audio/') && uploadPreviewAudio instanceof HTMLAudioElement) {
+        uploadPreviewAudio.hidden = false;
+        uploadPreviewAudio.src = source;
+        uploadPreviewAudio.load();
+      }
+    };
+
+    const syncUploadPreview = () => {
+      if (!media) return;
+      if (!(uploadPreview instanceof HTMLElement)) return;
+      if (!(uploadPreviewName instanceof HTMLElement)) return;
+      if (!(uploadPreviewCopy instanceof HTMLElement)) return;
+      if (!(uploadFileInput instanceof HTMLInputElement)) return;
+
+      const uploadedAssetUrl = getAssetValue('asset_src');
+      const uploadedMimeType = getAssetValue('mime_type');
+      const file = uploadFileInput.files?.[0] || null;
+
+      if (!file && !uploadedAssetUrl) {
+        uploadPreview.hidden = true;
+        clearObjectUrl();
+        clearPreviewMedia();
+        uploadPreviewName.textContent = 'No file selected yet.';
+        uploadPreviewCopy.textContent = 'Select a file to prepare the upload.';
+        return;
+      }
+
+      uploadPreview.hidden = false;
+
+      if (file) {
+        uploadPreviewName.textContent = file.name;
+        uploadPreviewCopy.textContent = uploadedAssetUrl
+          ? 'Uploaded to R2 and ready to publish.'
+          : `${file.type || 'Unknown type'} · ${file.size.toLocaleString()} bytes`;
+
+        clearObjectUrl();
+        objectUrl = URL.createObjectURL(file);
+        applyPreviewMedia(objectUrl, file.type || uploadedMimeType || '');
+        return;
+      }
+
+      uploadPreviewName.textContent = getAssetValue('original_filename') || uploadedAssetUrl;
+      uploadPreviewCopy.textContent = 'Uploaded to R2 and ready to publish.';
+      applyPreviewMedia(uploadedAssetUrl, uploadedMimeType);
+    };
+
+    const updateSubmitAvailability = () => {
+      if (!media) return;
+
+      const mode = getMediaMode();
+      const assetReady = Boolean(getAssetValue('asset_src'));
+      const externalReady = externalUrlInput instanceof HTMLInputElement && Boolean(externalUrlInput.value.trim());
+
+      submitButton.disabled = uploadInFlight || (mode === 'upload' ? !assetReady : !externalReady);
+    };
+
+    const clearUploadedAsset = ({ clearFile = true } = {}) => {
+      resetAssetFields();
+      uploadInFlight = false;
+
+      if (clearFile && uploadFileInput instanceof HTMLInputElement) {
+        uploadFileInput.value = '';
+      }
+
+      if (uploadProgress instanceof HTMLProgressElement) {
+        uploadProgress.hidden = true;
+        uploadProgress.value = 0;
+      }
+
+      setRetryVisible(false);
+      setUploadStatus('', 'idle');
+      syncUploadPreview();
+      updateSubmitAvailability();
+    };
+
+    const maybeAutofillTitleFromFile = (fileName) => {
+      const suggestion = humanizeFileName(fileName);
+      if (!suggestion) return;
+
+      const current = titleInput.value.trim();
+      if (!current || current === autoFilledTitle) {
+        titleInput.value = suggestion;
+        autoFilledTitle = suggestion;
+        syncPathPreview();
+      }
+    };
+
+    const uploadViaXhr = (url, file, headers) =>
+      new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', url, true);
+
+        Object.entries(headers || {}).forEach(([key, value]) => {
+          if (typeof value === 'string' && value) xhr.setRequestHeader(key, value);
+        });
+
+        xhr.upload.addEventListener('progress', (event) => {
+          if (!(uploadProgress instanceof HTMLProgressElement)) return;
+          if (!event.lengthComputable) return;
+          uploadProgress.hidden = false;
+          uploadProgress.value = Math.round((event.loaded / event.total) * 100);
+        });
+
+        xhr.addEventListener('load', () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve(null);
+            return;
+          }
+
+          reject(new Error(`Upload failed with status ${xhr.status}.`));
+        });
+
+        xhr.addEventListener('error', () => {
+          reject(new Error('Upload failed before the file could reach R2.'));
+        });
+
+        xhr.send(file);
+      });
+
+    const startUpload = async () => {
+      if (!media) return;
+      if (!(uploadFileInput instanceof HTMLInputElement)) return;
+
+      const file = uploadFileInput.files?.[0];
+      if (!file) {
+        setUploadStatus('Choose a file before uploading.', 'error');
+        setRetryVisible(false);
+        updateSubmitAvailability();
+        return;
+      }
+
+      setMediaMode('upload');
+      resetAssetFields();
+      syncUploadPreview();
+
+      if (!passwordInput.value.trim()) {
+        setUploadStatus('Enter the studio password below, then retry the upload.', 'error');
+        setRetryVisible(true);
+        updateSubmitAvailability();
+        return;
+      }
+
+      uploadInFlight = true;
+      setRetryVisible(false);
+      setUploadStatus('Preparing upload target…', 'pending');
+      updateSubmitAvailability();
+
+      if (uploadProgress instanceof HTMLProgressElement) {
+        uploadProgress.hidden = false;
+        uploadProgress.value = 0;
+      }
+
+      try {
+        const response = await fetch('/api/create-upload-url', {
+          method: 'POST',
+          headers: {
+            accept: 'application/json',
+            'content-type': 'application/json; charset=utf-8'
+          },
+          body: JSON.stringify({
+            password: passwordInput.value,
+            medium: lane,
+            title: titleInput.value.trim(),
+            date: dateInput.value.trim(),
+            fileName: file.name,
+            mimeType: file.type,
+            fileSize: file.size
+          })
+        });
+
+        const payload = await response.json().catch(() => ({
+          ok: false,
+          message: 'The upload route did not return a readable response.'
+        }));
+
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.message || 'Could not prepare the upload target.');
+        }
+
+        setUploadStatus('Uploading file to R2…', 'pending');
+        await uploadViaXhr(payload.uploadUrl, file, payload.headers || {});
+
+        setAssetValue('asset_src', payload.assetUrl || '');
+        setAssetValue('asset_type', payload.assetType || '');
+        setAssetValue('original_filename', file.name);
+        setAssetValue('mime_type', file.type || payload.mimeType || '');
+        setAssetValue('file_size', String(file.size));
+        setAssetValue('upload_source', 'r2');
+
+        if (!sourceTouched || sourceSelect.value === 'manual' || sourceSelect.value === 'local-media') {
+          sourceSelect.value = 'local-media';
+        }
+
+        if (uploadProgress instanceof HTMLProgressElement) {
+          uploadProgress.hidden = false;
+          uploadProgress.value = 100;
+        }
+
+        syncUploadPreview();
+        setUploadStatus('Upload complete. Ready to publish.', 'success');
+        saveDraftSoon();
+      } catch (error) {
+        resetAssetFields();
+
+        if (uploadProgress instanceof HTMLProgressElement) {
+          uploadProgress.hidden = true;
+          uploadProgress.value = 0;
+        }
+
+        setRetryVisible(true);
+        setUploadStatus(error instanceof Error ? error.message : 'The upload could not be completed.', 'error');
+      } finally {
+        uploadInFlight = false;
+        updateSubmitAvailability();
+      }
+    };
+
+    seedDate();
+    restoreDraft();
+    seedDate();
+    syncPathPreview();
+
+    titleInput.addEventListener('input', () => {
+      syncPathPreview();
+      saveDraftSoon();
+    });
+
+    dateInput.addEventListener('input', () => {
+      saveDraftSoon();
+    });
+
+    sourceSelect.addEventListener('change', () => {
+      sourceTouched = true;
+      saveDraftSoon();
+    });
+
+    if (externalUrlInput instanceof HTMLInputElement) {
+      externalUrlInput.addEventListener('input', () => {
+        const inferred = inferFromUrl(externalUrlInput.value.trim());
+
+        if (inferred && (!sourceTouched || sourceSelect.value === 'manual' || sourceSelect.value === 'local-media')) {
+          sourceSelect.value = inferred;
+        }
+
+        updateSubmitAvailability();
+        saveDraftSoon();
+      });
+    }
+
+    form.addEventListener('input', (event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement && target.type === 'password') return;
+      saveDraftSoon();
+    });
+
+    form.addEventListener('change', (event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement && target.type === 'password') return;
+      saveDraftSoon();
+    });
+
+    clearDraftButton.addEventListener('click', () => {
+      clearDraft();
+      form.reset();
+      sourceTouched = false;
+      sourceSelect.value = defaultSource;
+      seedDate();
+      syncPathPreview();
+      setStatus('', 'idle');
+
+      if (externalUrlInput instanceof HTMLInputElement) {
+        externalUrlInput.value = '';
+      }
+
+      if (media) {
+        setMediaMode('upload');
+        clearUploadedAsset();
+      }
+    });
+
+    if (media) {
+      setMediaMode(getMediaMode());
+      syncUploadPreview();
+      updateSubmitAvailability();
+
+      if (externalDetails instanceof HTMLDetailsElement) {
+        if (getMediaMode() === 'external') {
+          externalDetails.open = true;
+        }
+
+        externalDetails.addEventListener('toggle', () => {
+          setMediaMode(externalDetails.open ? 'external' : 'upload');
+          updateSubmitAvailability();
+          saveDraftSoon();
+        });
+      }
+
+      if (uploadFileInput instanceof HTMLInputElement) {
+        uploadFileInput.addEventListener('change', () => {
+          const file = uploadFileInput.files?.[0] || null;
+          resetAssetFields();
+
+          if (!file) {
+            clearUploadedAsset({ clearFile: false });
+            return;
+          }
+
+          maybeAutofillTitleFromFile(file.name);
+          syncUploadPreview();
+          setUploadStatus('Starting upload…', 'pending');
+          saveDraftSoon();
+          void startUpload();
+        });
+      }
+
+      if (uploadRetry instanceof HTMLButtonElement) {
+        uploadRetry.addEventListener('click', () => {
+          void startUpload();
+        });
+      }
+
+      if (uploadReset instanceof HTMLButtonElement) {
+        uploadReset.addEventListener('click', () => {
+          clearUploadedAsset();
+          saveDraftSoon();
+        });
+      }
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      if (media) {
+        const mode = getMediaMode();
+        const assetSrc = getAssetValue('asset_src');
+        const externalUrl = externalUrlInput instanceof HTMLInputElement ? externalUrlInput.value.trim() : '';
+
+        if (mode === 'upload' && !assetSrc) {
+          setStatus('Upload a file to R2 before publishing this media entry.', 'error');
+          updateSubmitAvailability();
+          return;
+        }
+
+        if (mode === 'external' && !externalUrl) {
+          setStatus('Paste an external URL before publishing this media entry.', 'error');
+          updateSubmitAvailability();
+          return;
+        }
+      }
+
+      if (!form.reportValidity()) return;
+
+      submitButton.disabled = true;
+      setStatus(media ? 'Publishing entry…' : 'Committing entry…', 'pending');
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: {
+            accept: 'application/json'
+          }
+        });
+
+        const payload = await response.json().catch(() => ({
+          ok: false,
+          message: 'The studio request failed before it could return a readable response.'
+        }));
+
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.message || 'The entry could not be committed.');
+        }
+
+        const details = [payload.filePath, payload.commitSha].filter(Boolean).join(' · ');
+        setStatus(`${payload.message}${details ? ` ${details}` : ''}`, 'success');
+        clearDraft();
+        form.reset();
+        sourceTouched = false;
+        sourceSelect.value = defaultSource;
+        autoFilledTitle = '';
+        seedDate();
+        syncPathPreview();
+
+        if (media) {
+          setMediaMode('upload');
+          clearUploadedAsset();
+        }
+      } catch (error) {
+        setStatus(error instanceof Error ? error.message : 'The entry could not be committed.', 'error');
+      } finally {
+        if (media) {
+          updateSubmitAvailability();
+        } else {
+          submitButton.disabled = false;
+        }
+      }
+    });
+  })();
+</script>

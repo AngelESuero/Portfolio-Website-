@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MarketModel from '../components/MarketModel';
+---
+
+<BaseLayout
+  title="Market Model - a_e.s_"
+  description="A framework mapping all NAICS sectors into survival necessities versus personal desire."
+  theme="archive"
+>
+  <main style="width: min(1120px, calc(100vw - 2rem)); margin: 0 auto; padding: 3rem 0;">
+    <section style="margin-bottom: 3rem;">
+      <p style="font-size: 0.875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--tone-accent-glow); margin: 0 0 0.5rem;">Elsewhere</p>
+      <h1 style="font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1; margin: 0 0 1rem; color: var(--tone-text);">Market Model</h1>
+      <p style="font-size: 1.125rem; line-height: 1.6; color: var(--tone-text); max-width: 40rem; margin: 0;">
+        A survival floor requires a clear model of which markets are survival necessities and which are personal desire. This framework maps all 20 NAICS sectors into that distinction.
+      </p>
+    </section>
+
+    <section style="background: color-mix(in srgb, var(--tone-accent) 4%, rgba(255, 255, 255, 0.02)); border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, rgba(255, 255, 255, 0.08)); border-radius: 12px; padding: 2rem; margin-bottom: 3rem;">
+      <MarketModel client:load />
+    </section>
+
+    <section style="max-width: 40rem; line-height: 1.8; color: var(--tone-text);">
+      <h2 style="font-size: 1.25rem; margin: 0 0 1rem; color: var(--tone-accent-glow);">Context</h2>
+      <p>
+        This model distinguishes three categories across the full economy:
+      </p>
+      <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+        <li style="margin-bottom: 0.75rem;">
+          <strong>Survival + directly subsidized:</strong> Markets for goods and services a person must access to live, and which are subsidized by government or collective action (housing, food, utilities, healthcare, transportation).
+        </li>
+        <li style="margin-bottom: 0.75rem;">
+          <strong>Survival + not directly subsidized:</strong> Markets that sustain life but operate at market rates or are regulated rather than directly provided (finance and payment access).
+        </li>
+        <li style="margin-bottom: 0.75rem;">
+          <strong>Personal desire:</strong> All other economic activity — markets for things people want, not markets for things they need to survive.
+        </li>
+      </ul>
+      <p>
+        Understanding this distinction is foundational to any conversation about a survival floor, UBI, or post-scarcity economic design.
+      </p>
+    </section>
+  </main>
+</BaseLayout>

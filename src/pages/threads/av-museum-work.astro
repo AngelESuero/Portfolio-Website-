@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="AV/Museum Work — Threads" description="Installation notes and AV production process." theme="threads">
+  <article class="thread-doc">
+    <a href="/threads" class="thread-back">← Back to threads</a>
+    <h1>AV / Museum Work</h1>
+    <p class="thread-lede">Installation thread tracking projection setups, playback reliability, and site-specific constraints.</p>
+
+    <h2>Environment constraints</h2>
+    <p>Room geometry, ambient noise, and visitor flow define the final AV layout more than the software stack does.</p>
+
+    <h2>Playback strategy</h2>
+    <p>Deliverables stay lightweight, loop-safe, and resilient to display restarts so the exhibition can run unattended.</p>
+
+    <h2>Related pages</h2>
+    <ul>
+      <li><a href="/work">Work index</a></li>
+      <li><a href="/map">Map</a></li>
+      <li><a href="/contact">Contact</a></li>
+    </ul>
+  </article>
+</BaseLayout>
+
+<style>
+  .thread-doc { max-width: 62ch; margin: 0 auto; }
+  .thread-back { color: var(--tone-accent-glow); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 32%, transparent); }
+  .thread-doc h1 { margin: 0.75rem 0 0.7rem; font-size: clamp(2rem, 4vw, 2.7rem); line-height: 1.1; }
+  .thread-lede { margin: 0; font-size: 1.08rem; color: var(--tone-muted); }
+  .thread-doc h2 { margin-top: 1.3rem; font-size: 1.2rem; }
+  .thread-doc p { line-height: 1.7; }
+</style>

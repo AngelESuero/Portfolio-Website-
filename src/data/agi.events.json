@@ -1,0 +1,50 @@
+[
+  {
+    "date": "2026-02-10",
+    "type": "policy",
+    "title": "US agency updates AI procurement guidance",
+    "summary": "Federal procurement guidance added clearer language for safety and evaluation requirements in AI-enabled systems.",
+    "tags": ["policy", "governance", "evaluation"],
+    "source_url": "https://www.nist.gov/artificial-intelligence"
+  },
+  {
+    "date": "2026-02-04",
+    "type": "research",
+    "title": "New benchmark report highlights agent reliability gaps",
+    "summary": "A benchmark summary compared multi-step agent reliability and found substantial regressions under long-horizon tasks.",
+    "tags": ["agents", "benchmark", "research"],
+    "source_url": "https://arxiv.org/"
+  },
+  {
+    "date": "2026-01-29",
+    "type": "models",
+    "title": "Open model release notes emphasize reproducibility",
+    "summary": "Release notes focused on transparent training metadata and reproducibility checklists for downstream teams.",
+    "tags": ["open-source", "models", "reproducibility"],
+    "source_url": "https://huggingface.co/blog"
+  },
+  {
+    "date": "2026-01-18",
+    "type": "safety",
+    "title": "Alignment workshop consolidates red-team learnings",
+    "summary": "Workshop findings collected common prompt-injection and tool misuse failure modes with practical mitigations.",
+    "tags": ["alignment", "safety", "red-team"],
+    "source_url": "https://www.anthropic.com/news"
+  },
+  {
+    "date": "2026-01-08",
+    "type": "product",
+    "title": "Enterprise rollout expands model usage controls",
+    "summary": "A major enterprise AI rollout introduced stricter usage controls, audit logs, and default policy templates.",
+    "tags": ["enterprise", "policy", "deployment"],
+    "source_url": "https://openai.com/index/"
+  },
+  {
+    "date": "2025-12-19",
+    "type": "infrastructure",
+    "title": "Inference optimization update lowers serving cost",
+    "summary": "A cloud vendor published improvements in inference efficiency that reduce latency and compute cost at scale.",
+    "tags": ["inference", "infrastructure", "efficiency"],
+    "source_url": "https://cloud.google.com/blog/topics/ai-machine-learning"
+  }
+]

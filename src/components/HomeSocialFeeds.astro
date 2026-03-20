@@ -1,0 +1,888 @@
+---
+import { getEmbedAspectRatio, getEmbedViewMode, resolveEmbed } from '../lib/embed-resolver';
+
+interface InstagramPreviewItem {
+  id?: string;
+  src: string;
+  caption?: string;
+  date?: string;
+}
+
+interface XFeedItem {
+  title: string;
+  url: string;
+  publishedAt?: string;
+  summary?: string;
+}
+
+interface HomeSocialFeedsProps {
+  xHandle: string;
+  xFeedItems: XFeedItem[];
+  xFeedMode?: 'x' | 'fallback';
+  youtubeUploadsEmbedUrl: string;
+  youtubePrimaryUrl?: string;
+  youtubeChannelUrl: string;
+  instagramProfileUrl: string;
+  instagramArchiveUrl: string;
+  instagramPreview: InstagramPreviewItem[];
+}
+
+const {
+  xHandle,
+  xFeedItems,
+  xFeedMode = 'x',
+  youtubeUploadsEmbedUrl,
+  youtubePrimaryUrl = '',
+  youtubeChannelUrl,
+  instagramProfileUrl,
+  instagramArchiveUrl,
+  instagramPreview
+} = Astro.props as HomeSocialFeedsProps;
+
+const normalizedXHandle = String(xHandle || '').trim().replace(/^@/, '');
+const xProfileUrl = normalizedXHandle ? `https://x.com/${normalizedXHandle}` : 'https://x.com';
+const xWidgetRootId = 'home-social-x-widget';
+const xTimelineHref = normalizedXHandle ? `https://x.com/${normalizedXHandle}` : '';
+const isExternal = (url: string): boolean => /^https?:\/\//i.test(String(url || ''));
+const displayMode = xFeedMode === 'fallback' ? 'fallback' : 'x';
+const xCardTitle = displayMode === 'x' ? 'X' : 'Archive Updates';
+const xCardKicker = displayMode === 'x' ? 'Latest posts' : 'Local fallback';
+const xCardDek =
+  displayMode === 'x'
+    ? `Latest short-form notes and commentary from @${normalizedXHandle}.`
+    : 'Recent archive updates shown while X feed sync is unavailable.';
+const homeSocialRootId = 'home-social-feeds-root';
+const xSecondaryHref = displayMode === 'x' ? xProfileUrl : '/social';
+const xSecondaryLabel = displayMode === 'x' ? 'Open profile' : 'Open social hub';
+const toTimestamp = (value?: string): number => {
+  if (!value) return 0;
+  const parsed = Date.parse(value);
+  return Number.isNaN(parsed) ? 0 : parsed;
+};
+const formatXDate = (value?: string): string => {
+  const timestamp = toTimestamp(value);
+  if (!timestamp) return '';
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  }).format(new Date(timestamp));
+};
+const normalizedXItems = (Array.isArray(xFeedItems) ? xFeedItems : [])
+  .map((item) => ({
+    title: String(item?.title || '').trim(),
+    url: String(item?.url || '').trim(),
+    publishedAt: String(item?.publishedAt || '').trim(),
+    summary: String(item?.summary || '').trim()
+  }))
+  .filter((item) => item.title && item.url)
+  .sort((a, b) => toTimestamp(b.publishedAt) - toTimestamp(a.publishedAt))
+  .slice(0, 6);
+const hasXItems = normalizedXItems.length > 0;
+const previewItems = (Array.isArray(instagramPreview) ? instagramPreview : [])
+  .filter((item) => typeof item?.src === 'string' && item.src)
+  .slice(0, 4);
+const hasPreview = previewItems.length > 0;
+const previewSlots = hasPreview ? Array.from({ length: 4 }, (_, index) => previewItems[index] || null) : [];
+const parsePreviewDate = (value?: string): Date | null => {
+  const raw = String(value || '').trim();
+  const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (match) {
+    const [, year, month, day] = match;
+    return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+  }
+
+  const parsed = new Date(raw);
+  return Number.isNaN(parsed.valueOf()) ? null : parsed;
+};
+const formatPreviewDate = (value?: string): string => {
+  const parsed = parsePreviewDate(value);
+  if (!parsed) return String(value || '');
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC'
+  }).format(parsed);
+};
+const humanizePreviewId = (value?: string): string => {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+
+  const stripped = raw.replace(/^(\d{4}-\d{2}-\d{2})[_-]?/, '').trim();
+  const cleaned = stripped.replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!cleaned) return '';
+
+  return cleaned
+    .split(' ')
+    .map((part) => (part ? part.charAt(0).toUpperCase() + part.slice(1) : part))
+    .join(' ');
+};
+const previewItemLabel = (item: InstagramPreviewItem): string =>
+  String(item.caption || humanizePreviewId(item.id) || formatPreviewDate(item.date) || 'Open archive').trim() || 'Open archive';
+const youtubeFrameId = 'home-social-youtube-frame';
+const youtubeEmbedId = 'home-social-youtube-embed';
+const youtubeStatusId = 'home-social-youtube-status';
+const defaultYoutubeSourceUrl = typeof youtubePrimaryUrl === 'string' && youtubePrimaryUrl.trim() ? youtubePrimaryUrl.trim() : youtubeUploadsEmbedUrl;
+const defaultYoutubeResolution = resolveEmbed(defaultYoutubeSourceUrl, 'youtube');
+const fallbackYoutubeAspectRatio = getEmbedAspectRatio('youtube', youtubeUploadsEmbedUrl) || '10 / 11';
+const fallbackYoutubeViewMode = getEmbedViewMode('youtube', youtubeUploadsEmbedUrl);
+const hasDefaultYoutubeEmbed = defaultYoutubeResolution.embeddable && Boolean(defaultYoutubeResolution.embedUrl);
+const defaultYoutubeEmbedUrl = defaultYoutubeResolution.embedUrl || youtubeUploadsEmbedUrl;
+const defaultYoutubeAspectRatio = hasDefaultYoutubeEmbed
+  ? getEmbedAspectRatio(defaultYoutubeResolution.provider, defaultYoutubeSourceUrl) || fallbackYoutubeAspectRatio
+  : fallbackYoutubeAspectRatio;
+const defaultYoutubeViewMode = hasDefaultYoutubeEmbed
+  ? getEmbedViewMode(defaultYoutubeResolution.provider, defaultYoutubeSourceUrl)
+  : fallbackYoutubeViewMode;
+const defaultYoutubeStatus =
+  hasDefaultYoutubeEmbed && defaultYoutubeSourceUrl !== youtubeUploadsEmbedUrl
+    ? 'Showing latest upload preview.'
+    : 'Showing uploads playlist.';
+---
+
+<section id={homeSocialRootId} class="home-social-feeds" aria-label="Social feeds">
+  <header class="home-social-feeds-header">
+    <p class="home-social-feeds-kicker">Social feeds</p>
+    <h2 class="font-display text-2xl">Social Feeds</h2>
+    <p class="home-social-feeds-dek">Live updates from X, YouTube uploads, and local Instagram archive previews.</p>
+  </header>
+
+  <div class="home-social-feeds-grid">
+    <article class="home-social-card" data-provider="x">
+      <p class="home-social-card-kicker">{xCardKicker}</p>
+      <h3>{xCardTitle}</h3>
+      <p class="home-social-card-dek">{xCardDek}</p>
+      <div class="home-social-frame home-social-frame-x" aria-live="polite">
+        {hasXItems ? (
+          <ul class="home-social-x-list">
+            {normalizedXItems.map((item) => (
+              <li>
+                <a href={item.url} {...(isExternal(item.url) ? { target: '_blank', rel: 'noopener' } : {})}>{item.title}</a>
+                {item.publishedAt && <p class="home-social-x-meta">{formatXDate(item.publishedAt)}</p>}
+                {item.summary && <p class="home-social-x-summary">{item.summary}</p>}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div id={xWidgetRootId} class="home-social-x-widget">
+            {xTimelineHref ? (
+              <a
+                class="twitter-timeline"
+                href={xTimelineHref}
+                data-dnt="true"
+                data-chrome="noheader nofooter transparent"
+                data-tweet-limit="4"
+              >
+                Posts by @{normalizedXHandle}
+              </a>
+            ) : (
+              <p class="home-social-x-empty">Add an X handle to enable timeline preview.</p>
+            )}
+          </div>
+        )}
+      </div>
+      <p class="home-social-links">
+        <a href="/social/x">Open full feed</a>
+        <a href={xSecondaryHref} {...(isExternal(xSecondaryHref) ? { target: '_blank', rel: 'noopener' } : {})}>{xSecondaryLabel}</a>
+      </p>
+    </article>
+
+    <article class="home-social-card" data-provider="youtube">
+      <p class="home-social-card-kicker">Uploads</p>
+      <h3>YouTube</h3>
+      <p class="home-social-card-dek">Latest upload adapts to playlists, standard videos, and Shorts.</p>
+      <div
+        id={youtubeFrameId}
+        class="home-social-frame home-social-frame-youtube"
+        data-view-mode={defaultYoutubeViewMode}
+        style={`--youtube-frame-aspect-ratio:${defaultYoutubeAspectRatio}`}
+      >
+        <iframe
+          id={youtubeEmbedId}
+          src={defaultYoutubeEmbedUrl}
+          title="YouTube uploads"
+          loading="lazy"
+          allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
+      <p id={youtubeStatusId} class="home-social-youtube-status" aria-live="polite">{defaultYoutubeStatus}</p>
+      <p class="home-social-links">
+        <a href="/social/youtube">Open full feed</a>
+        <a href={youtubeChannelUrl} target="_blank" rel="noopener">Open channel</a>
+      </p>
+    </article>
+
+    <article class="home-social-card" data-provider="instagram">
+      <p class="home-social-card-kicker">Local archive</p>
+      <h3>Instagram</h3>
+      <p class="home-social-card-dek">Local-first archive preview linked to your Instagram hub.</p>
+      {hasPreview ? (
+        <div class="home-social-ig-grid">
+          {previewSlots.map((item) => (
+            item ? (
+              <a href={instagramArchiveUrl} class="home-social-ig-card" aria-label={previewItemLabel(item)}>
+                <img src={item.src} alt={previewItemLabel(item)} loading="lazy" decoding="async" />
+                <div class="home-social-ig-card__body">
+                  <p class="home-social-ig-card__meta">Archive preview</p>
+                  <p class="home-social-ig-card__title">{previewItemLabel(item)}</p>
+                  {item.date && <p class="home-social-ig-card__date">{formatPreviewDate(item.date)}</p>}
+                </div>
+              </a>
+            ) : (
+              <div class="home-social-ig-card is-placeholder" aria-hidden="true">
+                <div class="home-social-ig-card__body">
+                  <p class="home-social-ig-card__meta">Archive preview</p>
+                  <p class="home-social-ig-card__title">Waiting for more exports</p>
+                  <p class="home-social-ig-card__date">Local only</p>
+                </div>
+              </div>
+            )
+          ))}
+        </div>
+      ) : (
+        <div class="home-social-ig-fallback">
+          <p>Archive previews will appear here once local Instagram media is available.</p>
+        </div>
+      )}
+      <p class="home-social-links">
+        <a href="/social/instagram">Open social page</a>
+        <a href={instagramProfileUrl} target="_blank" rel="noopener">Open profile</a>
+      </p>
+    </article>
+  </div>
+</section>
+
+<script
+  is:inline
+  define:vars={{
+    homeSocialRootId,
+    youtubeEmbedId,
+    youtubeFrameId,
+    youtubeStatusId,
+    youtubeUploadsEmbedUrl,
+    fallbackYoutubeAspectRatio,
+    fallbackYoutubeViewMode
+  }}
+>
+  (() => {
+    const root = document.getElementById(homeSocialRootId);
+    const frame = document.getElementById(youtubeFrameId);
+    const iframe = document.getElementById(youtubeEmbedId);
+    const status = document.getElementById(youtubeStatusId);
+    if (!root || !frame || !iframe || !status) return;
+
+    const setStatus = (message) => {
+      status.textContent = message;
+    };
+
+    const applyEmbedState = (state) => {
+      if (!(iframe instanceof HTMLIFrameElement)) return;
+      frame.dataset.viewMode = state.viewMode;
+      frame.style.setProperty('--youtube-frame-aspect-ratio', state.aspectRatio);
+      if (iframe.src !== state.src) {
+        iframe.src = state.src;
+      }
+    };
+
+    const buildEmbedState = (value) => {
+      if (!value) {
+        return {
+          src: youtubeUploadsEmbedUrl,
+          aspectRatio: fallbackYoutubeAspectRatio,
+          viewMode: fallbackYoutubeViewMode
+        };
+      }
+
+      try {
+        const parsed = new URL(value);
+        const host = parsed.hostname.toLowerCase();
+        const playlistId = parsed.searchParams.get('list');
+
+        if (playlistId && (parsed.pathname === '/playlist' || parsed.pathname === '/watch' || parsed.pathname === '/embed/videoseries')) {
+          return {
+            src: `https://www.youtube-nocookie.com/embed/videoseries?list=${encodeURIComponent(playlistId)}`,
+            aspectRatio: '10 / 11',
+            viewMode: 'stack'
+          };
+        }
+
+        if (host.includes('youtu.be')) {
+          const id = parsed.pathname.split('/').filter(Boolean)[0];
+          if (id) {
+            return {
+              src: `https://www.youtube-nocookie.com/embed/${id}`,
+              aspectRatio: '16 / 9',
+              viewMode: 'landscape'
+            };
+          }
+        }
+
+        const shortsMatch = parsed.pathname.match(/^\/shorts\/([^/]+)/);
+        if (shortsMatch?.[1]) {
+          return {
+            src: `https://www.youtube-nocookie.com/embed/${shortsMatch[1]}`,
+            aspectRatio: '9 / 16',
+            viewMode: 'portrait'
+          };
+        }
+
+        const videoId = parsed.searchParams.get('v');
+        if (videoId) {
+          return {
+            src: `https://www.youtube-nocookie.com/embed/${videoId}`,
+            aspectRatio: '16 / 9',
+            viewMode: 'landscape'
+          };
+        }
+
+        if (parsed.pathname.startsWith('/embed/')) {
+          return {
+            src: value,
+            aspectRatio: parsed.pathname === '/embed/videoseries' && playlistId ? '10 / 11' : '16 / 9',
+            viewMode: parsed.pathname === '/embed/videoseries' && playlistId ? 'stack' : 'landscape'
+          };
+        }
+      } catch {
+        return {
+          src: youtubeUploadsEmbedUrl,
+          aspectRatio: fallbackYoutubeAspectRatio,
+          viewMode: fallbackYoutubeViewMode
+        };
+      }
+
+      return {
+        src: youtubeUploadsEmbedUrl,
+        aspectRatio: fallbackYoutubeAspectRatio,
+        viewMode: fallbackYoutubeViewMode
+      };
+    };
+
+    const formatDate = (value) => {
+      const date = new Date(value);
+      if (Number.isNaN(date.valueOf())) return '';
+      return new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      }).format(date);
+    };
+
+    const hydrateYoutube = () => {
+      fetch('/api/social-rss?slug=youtube')
+        .then((response) => {
+          if (!response.ok) throw new Error(`RSS endpoint returned ${response.status}`);
+          return response.json();
+        })
+        .then((payload) => {
+          const items = Array.isArray(payload?.items) ? payload.items : [];
+          const latest = items[0];
+          if (!latest) {
+            applyEmbedState(buildEmbedState(''));
+            setStatus('Showing uploads playlist.');
+            return;
+          }
+
+          applyEmbedState(buildEmbedState(String(latest.url || '').trim()));
+
+          const title = String(latest.title || '').trim();
+          const formattedDate = formatDate(latest.date || '');
+          if (title && formattedDate) {
+            setStatus(`Latest upload: ${title} (${formattedDate}).`);
+            return;
+          }
+
+          if (title) {
+            setStatus(`Latest upload: ${title}.`);
+            return;
+          }
+
+          setStatus(formattedDate ? `Latest upload updated ${formattedDate}.` : 'Showing uploads playlist.');
+        })
+        .catch(() => {
+          applyEmbedState(buildEmbedState(''));
+          setStatus('Showing uploads playlist.');
+        });
+    };
+
+    if (typeof window.IntersectionObserver !== 'function') {
+      hydrateYoutube();
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        hydrateYoutube();
+      },
+      { rootMargin: '280px 0px' }
+    );
+
+    observer.observe(root);
+  })();
+</script>
+
+{!hasXItems && xTimelineHref && (
+  <script is:inline define:vars={{ homeSocialRootId, xWidgetRootId }}>
+    (() => {
+      const section = document.getElementById(homeSocialRootId);
+      const root = document.getElementById(xWidgetRootId);
+      if (!section || !root) return;
+
+      const hydrateX = () => {
+        const timelineLink = root.querySelector('a.twitter-timeline');
+        if (!timelineLink) return;
+
+        const twttr = window.twttr;
+        if (twttr?.widgets?.load) {
+          twttr.widgets.load(root);
+          return;
+        }
+
+        const scriptId = 'x-timeline-widgets-script';
+        if (document.getElementById(scriptId)) return;
+
+        const script = document.createElement('script');
+        script.id = scriptId;
+        script.async = true;
+        script.src = 'https://platform.twitter.com/widgets.js';
+        script.charset = 'utf-8';
+        document.head.appendChild(script);
+      };
+
+      if (typeof window.IntersectionObserver !== 'function') {
+        hydrateX();
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return;
+          observer.disconnect();
+          hydrateX();
+        },
+        { rootMargin: '280px 0px' }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+)}
+
+<style>
+  .home-social-feeds {
+    margin-top: 2.25rem;
+  }
+
+  .home-social-feeds-header {
+    margin: 0 0 1.05rem;
+  }
+
+  .home-social-feeds-kicker {
+    margin: 0 0 0.4rem;
+    font-size: 0.76rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  }
+
+  .home-social-feeds-header h2 {
+    margin: 0;
+  }
+
+  .home-social-feeds-dek {
+    margin: 0.5rem 0 0;
+    color: var(--tone-muted);
+    max-width: 66ch;
+    line-height: 1.58;
+  }
+
+  .home-social-feeds-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: 1fr;
+    gap: 0.95rem;
+    align-items: stretch;
+  }
+
+  .home-social-card {
+    --social-accent: color-mix(in srgb, var(--tone-accent) 52%, #ffffff 48%);
+    border: 1px solid var(--line2);
+    border-radius: 0.92rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--social-accent) 5%, transparent) 0%, transparent 40%),
+      var(--tone-surface-strong);
+    padding: 0.88rem;
+    display: grid;
+    gap: 0.72rem;
+    min-height: 100%;
+    transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .home-social-card[data-provider='x'] {
+    --social-accent: #95e2ff;
+  }
+
+  .home-social-card[data-provider='youtube'] {
+    --social-accent: #ff8f8f;
+  }
+
+  .home-social-card[data-provider='instagram'] {
+    --social-accent: #ffd074;
+  }
+
+  .home-social-card:hover,
+  .home-social-card:focus-within {
+    border-color: color-mix(in srgb, var(--social-accent) 62%, var(--line2));
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12);
+  }
+
+  .home-social-card-kicker {
+    margin: 0;
+    font-size: 0.76rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--social-accent) 68%, var(--tone-text) 32%);
+  }
+
+  .home-social-card h3 {
+    margin: 0;
+    font-size: 1.04rem;
+    letter-spacing: -0.01em;
+  }
+
+  .home-social-card-dek {
+    margin: 0;
+    color: var(--tone-muted);
+    font-size: 0.85rem;
+    line-height: 1.52;
+  }
+
+  .home-social-frame {
+    border: 1px solid var(--line2);
+    border-radius: 0.78rem;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--tone-surface-strong) 78%, transparent);
+  }
+
+  .home-social-frame-x {
+    min-height: 24.5rem;
+    padding: 0.58rem;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .home-social-frame-x iframe {
+    min-height: calc(24.5rem - 1.16rem);
+  }
+
+  .home-social-x-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.58rem;
+    width: 100%;
+    align-content: start;
+  }
+
+  .home-social-x-list li {
+    border: 1px solid var(--line2);
+    border-radius: 0.66rem;
+    padding: 0.58rem 0.62rem;
+    background: color-mix(in srgb, var(--tone-surface) 72%, transparent);
+  }
+
+  .home-social-x-list li a {
+    color: var(--tone-text);
+    text-decoration: none;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .home-social-x-list li a:hover,
+  .home-social-x-list li a:focus-visible {
+    color: var(--tone-accent-glow);
+  }
+
+  .home-social-x-meta {
+    margin: 0.28rem 0 0;
+    font-size: 0.74rem;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  }
+
+  .home-social-x-summary {
+    margin: 0.24rem 0 0;
+    font-size: 0.8rem;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+    line-height: 1.45;
+  }
+
+  .home-social-x-empty {
+    margin: 0;
+    font-size: 0.84rem;
+    line-height: 1.5;
+    color: var(--tone-muted);
+    display: flex;
+    min-height: calc(24.5rem - 1.16rem);
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    padding: 0 0.62rem;
+  }
+
+  .home-social-x-empty code {
+    background: color-mix(in srgb, var(--tone-surface-strong) 78%, transparent);
+    border: 1px solid var(--line2);
+    border-radius: 0.4rem;
+    padding: 0.06rem 0.28rem;
+  }
+
+  .home-social-frame-youtube {
+    min-height: clamp(18rem, 42vw, 26rem);
+    height: auto;
+    aspect-ratio: var(--youtube-frame-aspect-ratio, 10 / 11);
+  }
+
+  .home-social-frame-youtube[data-view-mode='portrait'] {
+    min-height: clamp(22rem, 54vw, 30rem);
+  }
+
+  .home-social-frame-youtube[data-view-mode='stack'] {
+    min-height: clamp(20rem, 48vw, 28rem);
+  }
+
+  .home-social-frame iframe {
+    width: 100%;
+    display: block;
+    border: 0;
+    background: var(--tone-bg);
+  }
+
+  .home-social-frame-youtube iframe {
+    height: 100%;
+    min-height: 100%;
+  }
+
+  .home-social-frame-youtube iframe {
+    height: 100%;
+    min-height: 100%;
+  }
+
+  .home-social-youtube-status {
+    margin: 0;
+    font-size: 0.8rem;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .home-social-ig-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: 0.72rem;
+  }
+
+  .home-social-ig-card {
+    display: block;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
+    border-radius: 0.98rem;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 4%, transparent), transparent 56%),
+      color-mix(in srgb, var(--tone-surface) 90%, transparent);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    transition:
+      transform 160ms ease,
+      border-color 160ms ease,
+      box-shadow 160ms ease;
+  }
+
+  .home-social-ig-card:hover,
+  .home-social-ig-card:focus-visible {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--tone-accent) 42%, var(--line2));
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+  }
+
+  .home-social-ig-card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    background: #e8dfd2;
+  }
+
+  .home-social-ig-card__body {
+    display: grid;
+    gap: 0.16rem;
+    padding: 0.72rem 0.78rem 0.84rem;
+  }
+
+  .home-social-ig-card__meta {
+    margin: 0;
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: color-mix(in srgb, var(--tone-text) 66%, var(--tone-muted) 34%);
+  }
+
+  .home-social-ig-card__title {
+    margin: 0;
+    font-size: 0.94rem;
+    line-height: 1.38;
+    color: var(--tone-text);
+  }
+
+  .home-social-ig-card__date {
+    margin: 0;
+    font-size: 0.71rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 58%, var(--tone-muted) 42%);
+  }
+
+  .home-social-ig-card.is-placeholder {
+    border-style: dashed;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 4%, transparent), transparent 56%),
+      color-mix(in srgb, var(--tone-surface-strong) 84%, transparent);
+  }
+
+  .home-social-ig-fallback {
+    border: 1px dashed var(--line2);
+    border-radius: 0.72rem;
+    padding: 0.86rem;
+    color: var(--tone-muted);
+    background: color-mix(in srgb, var(--tone-surface) 62%, transparent);
+    min-height: 8rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .home-social-ig-fallback p {
+    margin: 0;
+    font-size: 0.84rem;
+    line-height: 1.5;
+  }
+
+  .home-social-links {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.48rem 0.95rem;
+    font-size: 0.82rem;
+  }
+
+  .home-social-links a {
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 38%, transparent);
+    transition: color 140ms ease, border-color 140ms ease;
+  }
+
+  .home-social-links a:hover,
+  .home-social-links a:focus-visible {
+    color: color-mix(in srgb, var(--social-accent) 80%, #fff 20%);
+    border-color: color-mix(in srgb, var(--social-accent) 70%, transparent);
+  }
+
+  @media (min-width: 861px) and (max-width: 1200px) {
+    .home-social-feeds {
+      margin-top: 2rem;
+    }
+
+    .home-social-feeds-header {
+      margin-bottom: 0.8rem;
+    }
+
+    .home-social-feeds-grid {
+      gap: 0.72rem;
+    }
+
+    .home-social-card {
+      padding: 0.74rem;
+      gap: 0.58rem;
+      border-radius: 0.82rem;
+    }
+
+    .home-social-card h3 {
+      font-size: 1rem;
+    }
+
+    .home-social-card-dek {
+      font-size: 0.8rem;
+      line-height: 1.45;
+    }
+
+    .home-social-frame {
+      border-radius: 0.7rem;
+    }
+
+    .home-social-frame-x {
+      min-height: 21.5rem;
+    }
+
+    .home-social-frame-x {
+      padding: 0.5rem;
+    }
+
+    .home-social-frame-x iframe {
+      min-height: calc(21.5rem - 1rem);
+    }
+
+    .home-social-frame-youtube {
+      min-height: clamp(17rem, 38vw, 24rem);
+    }
+
+    .home-social-frame-youtube[data-view-mode='portrait'] {
+      min-height: clamp(20rem, 48vw, 28rem);
+    }
+
+    .home-social-frame-youtube[data-view-mode='stack'] {
+      min-height: clamp(19rem, 44vw, 26rem);
+    }
+
+    .home-social-x-empty {
+      min-height: calc(21.5rem - 1rem);
+    }
+
+    .home-social-ig-grid {
+      gap: 0.58rem;
+    }
+
+    .home-social-links {
+      gap: 0.38rem 0.76rem;
+      font-size: 0.78rem;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .home-social-feeds-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1420px) {
+    .home-social-feeds-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-social-card,
+    .home-social-links a {
+      transition: none;
+    }
+
+    .home-social-card:hover,
+    .home-social-card:focus-within {
+      transform: none;
+    }
+  }
+</style>

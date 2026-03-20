@@ -1,0 +1,51 @@
+export const SITE = {
+  name: 'Angel Suero',
+  baseUrl: 'https://portfolio-website-9c9.pages.dev',
+  linkHubUrl: 'https://linktr.ee/a_e.s_'
+} as const;
+
+export const SOCIAL_URLS = {
+  instagram: 'https://www.instagram.com/a_e.s_',
+  youtube: 'https://www.youtube.com/@a_e.s_4',
+  x: 'https://x.com/a_e_s_4',
+  tiktok: 'https://tiktok.com/@a_e.s',
+  soundcloud: 'https://soundcloud.com/aesuero',
+  threads: '/social/threads',
+  twitch: 'https://www.twitch.tv/thatoneyonder',
+  substackProfile: 'https://substack.com/@aesu?r=2ejeld&shareImageVariant=blur&utm_medium=ios&utm_source=profile',
+  substackPublication: 'https://aesu.substack.com',
+  substackFeed: 'https://aesu.substack.com/feed',
+  linktree: 'https://linktr.ee/a_e.s_',
+  discordHub: '/discord',
+  discordCreators: 'https://discord.gg/bB6uFZSH',
+  discordNews: 'https://discord.gg/sN5qnk4R',
+  discordCommunity: '/community-corner'
+} as const;
+
+export const MUSIC_URLS = {
+  spotifyVol1: 'https://open.spotify.com/playlist/3J99oKrZvILt0zrGa5XUW8',
+  spotifyVol2: 'https://open.spotify.com/playlist/2hhUhKocUVUIVG7aWmjvH9',
+  spotifyVol3: 'https://open.spotify.com/playlist/5ZZLhPOVAzr7QufXPiD5dQ',
+  spotifyVol4: 'https://open.spotify.com/playlist/1aeafuJB347VmKXu4jvaTO',
+  untitledMyFirstBeatTape: 'https://untitled.stream/embed/m8IEX655GwMH',
+  untitledEveryDaySoundscape: 'https://untitled.stream/library/track/tbolNlQAX1cXSZr3bLWeh',
+  untitledQueriesBeatTape: 'https://untitled.stream/library/project/yJu7cTKC0F3qvrRqs2EzA',
+  untitledScrapsInvite: '/work/scraps-dark-days-symptoms-no-context-demos-2023-2024',
+  // Scraps series — verified library/project URLs (embed via /library/project/{id}/embed)
+  untitledScraps2122: 'https://untitled.stream/library/project/vm452CTQetloHuapu75lg',
+  untitledScraps2223: 'https://untitled.stream/library/project/y3ivHmB9tBdkblUKm8PTA',
+  untitledScraps2324: 'https://untitled.stream/library/project/VUqbzxccJL3BPGrQAK2uM'
+} as const;
+
+export const VIDEO_URLS = {
+  everydayLifeVideo: 'https://youtu.be/KWDgWpSDlrM?si=-3TuP0xU0t5egiZA'
+} as const;
+
+export const RESOURCE_URLS = {
+  mitLivingWage: 'https://livingwage.mit.edu/'
+} as const;
+
+export const DEFAULT_SPOTIFY_PLAYLIST_ID = '1aeafuJB347VmKXu4jvaTO';
+
+export const getSpotifyPlaylistUrl = (value: string): string =>
+  value.startsWith('https://') ? value : `https://open.spotify.com/playlist/${value}`;

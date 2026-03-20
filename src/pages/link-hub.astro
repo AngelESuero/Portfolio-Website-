@@ -1,0 +1,481 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EmbedCard from '../components/EmbedCard.astro';
+import { LINK_HUB_CATEGORIES, LINK_HUB_ICONS } from '../data/linkhub';
+
+const ACCENT_SWATCHES: Record<string, string> = {
+  yellow: '#dcc56e',
+  blue: '#7cb8c0',
+  orange: '#d6a06b',
+  red: '#c77b73',
+  white: '#eadfc0',
+  black: '#6b6158',
+  violet: '#a28ed0',
+  indigo: '#7392c1'
+};
+const getAccentSwatch = (value?: string) => ACCENT_SWATCHES[String(value || '').trim().toLowerCase()] || ACCENT_SWATCHES.blue;
+
+const categoryIds = LINK_HUB_CATEGORIES.map((category) => category.id);
+const defaultItems = Object.fromEntries(
+  LINK_HUB_CATEGORIES.map((category) => [category.id, category.items[0]?.id || ''])
+);
+const categoryColors = Object.fromEntries(LINK_HUB_CATEGORIES.map((category) => [category.id, category.color]));
+---
+
+<BaseLayout
+  title="Link Hub — a_e.s_"
+  description="Timeline-style link hub with category tabs and embeddable links."
+  theme="hub"
+>
+  <section class="hub-page">
+    <header class="hub-header">
+      <p class="hub-kicker">Timeline hub</p>
+      <h1>Link Hub</h1>
+      <p class="hub-dek">Curated routes by lane. Open what you need, then return to the native archive pages.</p>
+    </header>
+
+    <nav class="hub-icons lab-only" aria-label="Primary links">
+      {LINK_HUB_ICONS.map((item) => (
+        <a href={item.url} {...(/^https?:\/\//i.test(item.url) ? { target: '_blank', rel: 'noopener' } : {})} aria-label={`Open ${item.title}`}>
+          <span>{item.icon}</span>
+          <small>{item.title}</small>
+        </a>
+      ))}
+    </nav>
+
+    <div class="hub-tabs" role="tablist" aria-label="Link categories">
+      {LINK_HUB_CATEGORIES.map((category, index) => (
+        <button
+          type="button"
+          role="tab"
+          style={`--hub-accent:${getAccentSwatch(category.color)}`}
+          data-hub-tab={category.id}
+          data-color={category.color}
+          aria-selected={index === 0 ? 'true' : 'false'}
+          class:list={[index === 0 && 'is-active']}
+        >
+          {category.label}
+        </button>
+      ))}
+    </div>
+
+    {LINK_HUB_CATEGORIES.map((category, index) => (
+      <section
+        class:list={['hub-panel', index === 0 && 'is-active']}
+        style={`--hub-accent:${getAccentSwatch(category.color)}`}
+        data-hub-panel={category.id}
+        aria-label={`${category.label} links`}
+      >
+        <div class="hub-subtabs" role="tablist" aria-label={`${category.label} links`}>
+          {category.items.map((item, itemIndex) => (
+            <button
+              type="button"
+              role="tab"
+              style={`--hub-accent:${getAccentSwatch(category.color)}`}
+              data-hub-link-tab={item.id}
+              data-hub-link-category={category.id}
+              data-color={category.color}
+              aria-selected={itemIndex === 0 ? 'true' : 'false'}
+              class:list={[itemIndex === 0 && 'is-active']}
+            >
+              {item.title}
+            </button>
+          ))}
+        </div>
+
+        {category.items.map((item, itemIndex) => (
+          <div
+            class:list={['hub-link-panel', itemIndex === 0 && 'is-active']}
+            data-hub-link-panel={item.id}
+            data-hub-link-category={category.id}
+            aria-label={`${item.title} panel`}
+          >
+            <EmbedCard item={item} />
+
+            {category.id === 'writing' && item.id === 'substack' && (
+              <aside class="hub-latest" data-substack-latest>
+                <h3>Latest Substack posts</h3>
+                <p class="hub-latest-status" data-substack-status>Loading latest entries…</p>
+                <ul data-substack-list></ul>
+              </aside>
+            )}
+          </div>
+        ))}
+      </section>
+    ))}
+  </section>
+
+  <script is:inline define:vars={{ categoryIds, defaultItems, categoryColors }}>
+    (() => {
+      const tabs = Array.from(document.querySelectorAll('[data-hub-tab]'));
+      const panels = Array.from(document.querySelectorAll('[data-hub-panel]'));
+      if (!tabs.length || !panels.length) return;
+
+      const categoryState = { ...(defaultItems || {}) };
+      const resolveCategoryColor = (categoryId) => categoryColors?.[categoryId] || 'blue';
+
+      const setActiveLink = (categoryId, itemId, syncAccent = true) => {
+        const linkTabs = Array.from(document.querySelectorAll(`[data-hub-link-category="${categoryId}"][data-hub-link-tab]`));
+        const linkPanels = Array.from(document.querySelectorAll(`[data-hub-link-category="${categoryId}"][data-hub-link-panel]`));
+        let activeColor = resolveCategoryColor(categoryId);
+
+        linkTabs.forEach((tab) => {
+          const active = tab.getAttribute('data-hub-link-tab') === itemId;
+          tab.classList.toggle('is-active', active);
+          tab.setAttribute('aria-selected', String(active));
+          if (active) activeColor = tab.getAttribute('data-color') || activeColor;
+        });
+
+        linkPanels.forEach((panel) => {
+          const active = panel.getAttribute('data-hub-link-panel') === itemId;
+          panel.classList.toggle('is-active', active);
+        });
+
+        categoryState[categoryId] = itemId;
+        if (syncAccent) window.__setSiteAccent?.(activeColor, { animate: true, duration: 250 });
+      };
+
+      const setActiveCategory = (categoryId, syncAccent = true) => {
+        if (!Array.isArray(categoryIds) || !categoryIds.includes(categoryId)) return;
+
+        tabs.forEach((tab) => {
+          const active = tab.getAttribute('data-hub-tab') === categoryId;
+          tab.classList.toggle('is-active', active);
+          tab.setAttribute('aria-selected', String(active));
+        });
+
+        panels.forEach((panel) => {
+          const active = panel.getAttribute('data-hub-panel') === categoryId;
+          panel.classList.toggle('is-active', active);
+        });
+
+        if (syncAccent) window.__setSiteAccent?.(resolveCategoryColor(categoryId), { animate: true, duration: 250 });
+
+        const itemId = categoryState[categoryId];
+        if (itemId) setActiveLink(categoryId, itemId, false);
+      };
+
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const categoryId = tab.getAttribute('data-hub-tab');
+          if (categoryId) setActiveCategory(categoryId);
+        });
+      });
+
+      const allLinkTabs = Array.from(document.querySelectorAll('[data-hub-link-tab]'));
+      allLinkTabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const categoryId = tab.getAttribute('data-hub-link-category');
+          const itemId = tab.getAttribute('data-hub-link-tab');
+          if (!categoryId || !itemId) return;
+          setActiveLink(categoryId, itemId);
+        });
+      });
+
+      const latestBlocks = Array.from(document.querySelectorAll('[data-substack-latest]'));
+      const loadSubstack = async () => {
+        if (!latestBlocks.length) return;
+
+        const setStatus = (message) => {
+          latestBlocks.forEach((block) => {
+            const status = block.querySelector('[data-substack-status]');
+            if (status) status.textContent = message;
+          });
+        };
+
+        try {
+          const response = await fetch('/api/social-rss?slug=substack');
+          if (!response.ok) throw new Error(`RSS endpoint returned ${response.status}`);
+          const payload = await response.json();
+          const items = Array.isArray(payload?.items) ? payload.items.slice(0, 5) : [];
+
+          latestBlocks.forEach((block) => {
+            const list = block.querySelector('[data-substack-list]');
+            if (!(list instanceof HTMLElement)) return;
+            list.innerHTML = '';
+
+            if (!items.length) {
+              const status = block.querySelector('[data-substack-status]');
+              if (status) status.textContent = payload?.message || 'No recent entries available.';
+              return;
+            }
+
+            items.forEach((item) => {
+              const li = document.createElement('li');
+              const link = document.createElement('a');
+              link.href = item.url || '#';
+              link.target = '_blank';
+              link.rel = 'noopener';
+              link.textContent = item.title || item.url || 'Untitled post';
+
+              const meta = document.createElement('span');
+              if (item.date) {
+                const date = new Date(item.date);
+                meta.textContent = Number.isNaN(date.valueOf())
+                  ? item.date
+                  : new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(date);
+              }
+
+              li.appendChild(link);
+              if (meta.textContent) li.appendChild(meta);
+              list.appendChild(li);
+            });
+
+            const status = block.querySelector('[data-substack-status]');
+            if (status) status.textContent = `Showing ${items.length} latest item${items.length === 1 ? '' : 's'}.`;
+          });
+        } catch {
+          setStatus('Could not load Substack latest posts right now.');
+        }
+      };
+
+      setActiveCategory(Array.isArray(categoryIds) && categoryIds[0] ? categoryIds[0] : 'music', false);
+      loadSubstack();
+    })();
+  </script>
+</BaseLayout>
+
+<style>
+  .hub-page {
+    max-width: 72rem;
+    margin: 0 auto;
+  }
+
+  .hub-header h1 {
+    margin: 0.4rem 0 0.75rem;
+    font-size: clamp(2rem, 4.6vw, 3.1rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .hub-kicker {
+    margin: 0;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    color: var(--tone-muted);
+  }
+
+  .hub-dek {
+    margin: 0;
+    color: var(--tone-muted);
+    max-width: 70ch;
+  }
+
+  .hub-icons {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.52rem;
+  }
+
+  .hub-icons a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    text-decoration: none;
+    color: var(--tone-text);
+    background: rgba(10, 14, 22, 0.54);
+    padding: 0.36rem 0.6rem;
+  }
+
+  .hub-icons span {
+    width: 1.26rem;
+    height: 1.26rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.64rem;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .hub-icons small {
+    font-size: 0.76rem;
+    letter-spacing: 0.01em;
+  }
+
+  .hub-tabs,
+  .hub-subtabs {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .hub-tabs button,
+  .hub-subtabs button {
+    border: 1px solid color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 48%, var(--line));
+    border-radius: 999px;
+    padding: 0.44rem 0.8rem;
+    font-size: 0.8rem;
+    color: color-mix(in srgb, var(--tone-text) 44%, var(--hub-accent, var(--tone-accent)) 56%);
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 18%, transparent),
+        color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 10%, transparent)
+      );
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, white 7%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 12%, transparent);
+    transition:
+      color var(--motion-fast) var(--ease-standard),
+      border-color var(--motion-fast) var(--ease-standard),
+      background-color var(--motion-base) var(--ease-standard),
+      transform var(--motion-fast) var(--ease-emphasized);
+  }
+
+  .hub-tabs button:hover,
+  .hub-tabs button:focus-visible,
+  .hub-subtabs button:hover,
+  .hub-subtabs button:focus-visible {
+    border-color: color-mix(in srgb, var(--hub-accent, var(--tone-accent-bright)) 82%, var(--line2));
+    color: color-mix(in srgb, var(--hub-accent, var(--tone-accent-glow)) 82%, white 18%);
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 30%, transparent),
+        color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 18%, transparent)
+      );
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, white 9%, transparent),
+      0 8px 22px color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 12%, transparent);
+    transform: translateY(-1px);
+  }
+
+  .hub-tabs button.is-active,
+  .hub-subtabs button.is-active {
+    border-color: color-mix(in srgb, var(--hub-accent, var(--tone-accent-bright)) 88%, var(--line2));
+    color: color-mix(in srgb, var(--hub-accent, var(--tone-accent-glow)) 84%, white 16%);
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 34%, transparent),
+        color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 22%, transparent)
+      );
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, white 9%, transparent),
+      0 10px 24px color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 13%, transparent);
+  }
+
+  .hub-panel,
+  .hub-link-panel {
+    margin-top: 1rem;
+    display: none;
+  }
+
+  .hub-panel.is-active,
+  .hub-link-panel.is-active {
+    display: block;
+  }
+
+  .hub-panel.is-active {
+    padding: 0.7rem 0.8rem 0.1rem;
+    border: 1px solid color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 34%, transparent);
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 14%, transparent),
+        color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 7%, transparent) 24%,
+        transparent 20%
+      );
+    border-radius: 1rem;
+    box-shadow:
+      inset 4px 0 0 color-mix(in srgb, var(--hub-accent, var(--tone-accent)) 72%, transparent),
+      inset 0 1px 0 color-mix(in srgb, white 5%, transparent);
+  }
+
+  .hub-latest {
+    margin-top: 0.9rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 0.85rem;
+  }
+
+  .hub-latest h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .hub-latest-status {
+    margin: 0.6rem 0 0;
+    color: var(--tone-muted);
+    font-size: 0.8rem;
+  }
+
+  .hub-latest ul {
+    margin: 0.7rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.52rem;
+  }
+
+  .hub-latest li {
+    display: grid;
+    gap: 0.16rem;
+    border-bottom: 1px solid var(--line2);
+    padding-bottom: 0.46rem;
+  }
+
+  .hub-latest li:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .hub-latest a {
+    color: var(--tone-text);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .hub-latest a:hover,
+  .hub-latest a:focus-visible {
+    color: var(--tone-accent-glow);
+  }
+
+  .hub-latest span {
+    color: var(--tone-muted);
+    font-size: 0.75rem;
+  }
+
+  @media (max-width: 860px) {
+    .hub-page {
+      margin: -2rem calc(50% - 50vw) 0;
+      padding: 2.2rem 1.1rem 3.2rem;
+      background:
+        linear-gradient(180deg, #080d16 0%, #0a101a 44%, #080d16 100%),
+        radial-gradient(circle at 12% 8%, rgba(47, 102, 179, 0.18), transparent 42%);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .hub-tabs,
+    .hub-subtabs,
+    .hub-icons {
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      scroll-snap-type: x proximity;
+      padding-bottom: 0.25rem;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .hub-tabs::-webkit-scrollbar,
+    .hub-subtabs::-webkit-scrollbar,
+    .hub-icons::-webkit-scrollbar {
+      display: none;
+    }
+
+    .hub-tabs button,
+    .hub-subtabs button,
+    .hub-icons a {
+      scroll-snap-align: start;
+      white-space: nowrap;
+    }
+  }
+</style>

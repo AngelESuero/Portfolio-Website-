@@ -1,0 +1,95 @@
+---
+import { STUDIO_SOURCE_LABELS, STUDIO_STATUS_OPTIONS } from '../../lib/studio';
+
+interface Props {
+  defaultSource: string;
+  sourceOptions: readonly string[];
+}
+
+const { defaultSource, sourceOptions } = Astro.props as Props;
+const defaultStatus = 'in-progress';
+---
+
+<section class="studio-section studio-section--media-details">
+  <div class="studio-section__header">
+    <h2>Details</h2>
+    <p>Keep this light. A title, date, and short caption are enough for a clean publish.</p>
+  </div>
+
+  <div class="studio-fields studio-fields--two">
+    <label class="studio-field">
+      <span>Title</span>
+      <input type="text" name="title" maxlength="180" placeholder="Title" required data-title-input />
+    </label>
+
+    <label class="studio-field">
+      <span>Date</span>
+      <input type="date" name="date" required data-date-input />
+    </label>
+  </div>
+
+  <label class="studio-field">
+    <span>Caption / summary</span>
+    <textarea
+      name="summary"
+      rows="3"
+      maxlength="420"
+      placeholder="Optional caption, note, or archive-facing summary."
+    ></textarea>
+    <small>Optional. Leave it blank if the title is enough.</small>
+  </label>
+
+  <details class="studio-disclosure studio-disclosure--advanced">
+    <summary>Advanced options</summary>
+
+    <div class="studio-disclosure__body">
+      <div class="studio-fields studio-fields--two">
+        <label class="studio-field">
+          <span>Source</span>
+          <select name="source" required data-source-select>
+            {sourceOptions.map((value) => (
+              <option value={value} selected={value === defaultSource}>{STUDIO_SOURCE_LABELS[value] ?? value}</option>
+            ))}
+          </select>
+        </label>
+
+        <label class="studio-field">
+          <span>Status</span>
+          <select name="status" required>
+            {STUDIO_STATUS_OPTIONS.map((option) => (
+              <option value={option.value} selected={option.value === defaultStatus}>{option.label}</option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      <div class="studio-fields studio-fields--two">
+        <label class="studio-field">
+          <span>Tags</span>
+          <input type="text" name="tags" placeholder="demo, archive, rough-cut" />
+          <small>Comma or line-break separated. Spaces become hyphens.</small>
+        </label>
+
+        <label class="studio-field">
+          <span>Related entries</span>
+          <textarea
+            name="related_entries"
+            rows="3"
+            placeholder="writing/archive-pass-after-midnight&#10;video/everyday-life"
+          ></textarea>
+          <small>Use archive slugs separated by commas or line breaks.</small>
+        </label>
+      </div>
+
+      <label class="studio-field">
+        <span>Notes</span>
+        <textarea
+          name="body"
+          rows="8"
+          maxlength="30000"
+          placeholder="Optional process notes, credits, mix notes, cut notes, or archive context."
+        ></textarea>
+      </label>
+    </div>
+  </details>
+</section>

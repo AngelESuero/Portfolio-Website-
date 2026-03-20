@@ -1,0 +1,278 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Environmental Weight of AI — a_e.s_" description="The carbon footprint, water consumption, and energy cost of artificial intelligence." theme="archive">
+
+  <style>
+    .eco-hero {
+      border: 1px solid var(--tone-line);
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(67,56,202,0.12), rgba(219,39,119,0.08));
+      padding: clamp(1.2rem, 3vw, 2rem);
+      margin-bottom: 2rem;
+    }
+    .eco-kicker {
+      font-size: 0.75rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--tone-accent);
+      font-weight: 700;
+      margin: 0 0 0.6rem;
+    }
+    .eco-hero h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+    .eco-hero p {
+      margin: 0.9rem 0 0;
+      max-width: 68ch;
+      color: var(--tone-muted);
+      line-height: 1.6;
+    }
+    .eco-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1.4rem;
+    }
+    .eco-stat {
+      border: 1px solid var(--tone-line);
+      border-radius: 14px;
+      padding: 1.1rem;
+      background: var(--tone-surface);
+    }
+    .eco-stat-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin: 0 0 0.4rem;
+    }
+    .eco-stat-label.indigo { color: #818cf8; }
+    .eco-stat-label.pink   { color: #f472b6; }
+    .eco-stat-label.cyan   { color: #22d3ee; }
+    .eco-stat-value {
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin: 0;
+      line-height: 1;
+    }
+    .eco-stat-value.indigo { color: #a5b4fc; }
+    .eco-stat-value.pink   { color: #f9a8d4; }
+    .eco-stat-value.cyan   { color: #67e8f9; }
+    .eco-stat p { margin: 0.5rem 0 0; font-size: 0.82rem; color: var(--tone-muted); line-height: 1.4; }
+
+    .eco-section { margin-bottom: 2.2rem; }
+    .eco-section-header { margin-bottom: 1.2rem; }
+    .eco-section-header h2 { font-size: clamp(1.3rem, 2.5vw, 1.9rem); letter-spacing: -0.02em; margin: 0 0 0.4rem; }
+    .eco-section-header p { color: var(--tone-muted); max-width: 70ch; margin: 0; line-height: 1.55; }
+
+    .eco-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; align-items: start; }
+    .eco-grid-3 { display: grid; grid-template-columns: 1fr 2fr; gap: 1.4rem; align-items: start; }
+
+    .eco-card {
+      border: 1px solid var(--tone-line);
+      border-radius: 14px;
+      background: var(--tone-surface);
+      padding: 1.2rem;
+    }
+    .eco-card h3 { font-size: 1rem; font-weight: 700; margin: 0 0 0.35rem; }
+    .eco-card p { margin: 0; color: var(--tone-muted); font-size: 0.88rem; line-height: 1.55; }
+    .eco-card-note { margin-top: 0.85rem !important; font-size: 0.78rem !important; padding-left: 0.75rem; border-left: 3px solid #818cf8; }
+    .eco-accent-card { border-left-width: 4px; border-left-style: solid; }
+    .eco-accent-card.pink { border-left-color: #f472b6; }
+    .eco-accent-card.cyan { border-left-color: #22d3ee; }
+
+    .chart-wrap { position: relative; width: 100%; height: 320px; }
+
+    .eco-dark-band {
+      border: 1px solid var(--tone-line);
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(30,27,75,0.6), rgba(49,46,129,0.4));
+      padding: clamp(1.2rem, 3vw, 2rem);
+      margin-bottom: 2.2rem;
+    }
+    .eco-dark-band h2 { font-size: clamp(1.3rem, 2.5vw, 1.9rem); letter-spacing: -0.02em; margin: 0 0 0.5rem; text-align: center; }
+    .eco-dark-band > p { text-align: center; color: #c7d2fe; max-width: 60ch; margin: 0 auto 1.4rem; line-height: 1.55; }
+    .eco-dark-insight { border: 1px solid rgba(99,102,241,0.3); border-radius: 12px; background: rgba(67,56,202,0.25); padding: 1rem 1.1rem; }
+    .eco-dark-insight h4 { font-weight: 700; font-size: 1rem; margin: 0 0 0.45rem; color: #f472b6; }
+    .eco-dark-insight p { margin: 0; font-size: 0.86rem; line-height: 1.55; color: #e0e7ff; }
+
+    .eco-water-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+    .eco-water-list li { display: flex; gap: 0.75rem; align-items: flex-start; }
+    .eco-water-list li span:first-child { font-size: 1.4rem; line-height: 1; flex-shrink: 0; }
+
+    .eco-benefit-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; align-items: center; }
+    .eco-benefit-card { border-radius: 12px; padding: 0.9rem 1rem; border-left: 4px solid; }
+    .eco-benefit-card.green  { background: rgba(16,185,129,0.1); border-color: #10b981; }
+    .eco-benefit-card.blue   { background: rgba(59,130,246,0.1); border-color: #3b82f6; }
+    .eco-benefit-card.orange { background: rgba(245,158,11,0.1); border-color: #f59e0b; }
+    .eco-benefit-card h5 { margin: 0 0 0.3rem; font-weight: 700; font-size: 0.95rem; }
+    .eco-benefit-card.green h5  { color: #6ee7b7; }
+    .eco-benefit-card.blue h5   { color: #93c5fd; }
+    .eco-benefit-card.orange h5 { color: #fcd34d; }
+    .eco-benefit-card p { margin: 0; font-size: 0.82rem; color: var(--tone-muted); line-height: 1.45; }
+
+    .eco-footer-note { border-top: 1px solid var(--tone-line); padding-top: 1.2rem; margin-top: 2rem; color: var(--tone-muted); font-size: 0.78rem; line-height: 1.6; }
+
+    @media (max-width: 720px) {
+      .eco-grid-2, .eco-grid-3, .eco-benefit-row { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <section class="eco-hero">
+    <p class="eco-kicker">AI & Environment</p>
+    <h1>The Environmental<br>Weight of AI</h1>
+    <p>While AI reshapes industries, it demands massive physical resources. From training giant models to the daily energy cost of inference, the cloud has a heavy earthly weight.</p>
+    <div class="eco-stats">
+      <div class="eco-stat">
+        <p class="eco-stat-label indigo">Training Emission</p>
+        <p class="eco-stat-value indigo">500+</p>
+        <p>Metric tons of CO₂e for one large legacy model (GPT-3 era).</p>
+      </div>
+      <div class="eco-stat">
+        <p class="eco-stat-label pink">Water Consumption</p>
+        <p class="eco-stat-value pink">700k</p>
+        <p>Liters of freshwater to cool data centers during training.</p>
+      </div>
+      <div class="eco-stat">
+        <p class="eco-stat-label cyan">Energy Spike</p>
+        <p class="eco-stat-value cyan">10×</p>
+        <p>Energy cost of an AI query vs. a standard search.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="eco-section">
+    <div class="eco-section-header">
+      <h2>Training Day: The Carbon Cost</h2>
+      <p>Training a Large Language Model involves running thousands of GPUs for weeks. The energy consumed translates directly into carbon emissions, often comparable to the lifetime emissions of multiple cars or transcontinental flights.</p>
+    </div>
+    <div class="eco-grid-2">
+      <div class="eco-card">
+        <h3>Emissions Comparison (Tonnes CO₂e)</h3>
+        <p style="font-size:0.78rem;color:var(--tone-muted);margin-bottom:0.8rem;">Comparing LLM training against real-world benchmarks.</p>
+        <div class="chart-wrap"><canvas id="co2Chart"></canvas></div>
+        <p class="eco-card-note">*BLOOM was trained on a nuclear-powered French grid, significantly lowering its impact vs GPT-3. Location matters.</p>
+      </div>
+      <div style="display:grid;gap:0.9rem;align-content:start;">
+        <div class="eco-card eco-accent-card pink">
+          <h3>The "Dirty" Grid Problem</h3>
+          <p>The carbon intensity of AI depends heavily on <em>where</em> it is trained. A model trained on a coal-heavy grid can have 40× the carbon footprint of one trained with hydro or nuclear power.</p>
+        </div>
+        <div class="eco-card eco-accent-card cyan">
+          <h3>Hardware Turnover</h3>
+          <p>Beyond electricity, rapid GPU obsolescence contributes to e-waste. The frantic race for newer chips accelerates hardware disposal cycles with real material consequences.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="eco-section">
+    <div class="eco-section-header"><h2>Thirsty Data Centers</h2></div>
+    <div class="eco-grid-3">
+      <div>
+        <p style="color:var(--tone-muted);line-height:1.6;margin:0 0 1rem;">Data centers generate immense heat. To prevent servers from melting, operators use evaporative cooling towers, consuming billions of gallons of potable water.</p>
+        <ul class="eco-water-list">
+          <li><span>💧</span><div><strong style="display:block;margin-bottom:0.2rem;">Direct Consumption</strong><span style="font-size:0.84rem;color:var(--tone-muted);">Water used on-site for cooling towers.</span></div></li>
+          <li><span>⚡</span><div><strong style="display:block;margin-bottom:0.2rem;">Indirect Consumption</strong><span style="font-size:0.84rem;color:var(--tone-muted);">Water used by power plants to generate the electricity AI consumes.</span></div></li>
+          <li><span>🥤</span><div><strong style="display:block;margin-bottom:0.2rem;">The "Bottle" Metric</strong><span style="font-size:0.84rem;color:var(--tone-muted);">A conversation of 20–50 questions with an AI chatbot consumes ~500ml of water.</span></div></li>
+        </ul>
+      </div>
+      <div class="eco-card">
+        <h3>Corporate Water Consumption Trends (Billions of Gallons)</h3>
+        <p style="font-size:0.78rem;color:var(--tone-muted);margin-bottom:0.8rem;">Correlation between AI scale-up and water usage spikes.</p>
+        <div class="chart-wrap"><canvas id="waterChart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="eco-dark-band">
+    <h2>The Daily Grind: Inference vs. Search</h2>
+    <p>Training gets the headlines, but "inference" — actually using the model — happens millions of times a minute. Generating text is computationally heavier than retrieving an indexed link.</p>
+    <div class="eco-grid-2">
+      <div class="chart-wrap"><canvas id="inferenceChart"></canvas></div>
+      <div style="display:grid;gap:0.9rem;align-content:start;">
+        <div class="eco-dark-insight">
+          <h4>Energy Density</h4>
+          <p>A traditional search retrieves existing data from an index. A generative AI query calculates probabilities to generate new tokens word-by-word — an estimated <strong>10× to 15× higher energy cost</strong> per interaction.</p>
+        </div>
+        <div class="eco-dark-insight">
+          <h4 style="color:#67e8f9;">The Scale Problem</h4>
+          <p>With billions of daily searches globally, shifting even a fraction of standard search traffic to generative AI implies a massive stepwise increase in global data center energy demand.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="eco-section">
+    <div class="eco-section-header">
+      <h2>The Silver Lining: AI Reducing Emissions</h2>
+      <p>AI is a double-edged sword. While it consumes resources, it also optimizes them.</p>
+    </div>
+    <div class="eco-benefit-row">
+      <div class="chart-wrap"><canvas id="benefitChart"></canvas></div>
+      <div style="display:grid;gap:0.75rem;">
+        <div class="eco-benefit-card green"><h5>Grid Optimization</h5><p>AI balances electricity grids in real-time, integrating volatile renewable sources more efficiently than humans can.</p></div>
+        <div class="eco-benefit-card blue"><h5>Material Science</h5><p>DeepMind's GNoME discovered 2.2 million new crystals, potentially accelerating battery and solar panel technology by decades.</p></div>
+        <div class="eco-benefit-card orange"><h5>Agricultural Efficiency</h5><p>Precision agriculture uses AI to reduce fertilizer and water usage, lowering the massive carbon footprint of farming.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="eco-footer-note">
+    <p>Data sources: Stanford HAI Report 2023, Google Environmental Report 2023, Hugging Face (BLOOM), academic estimates on inference costs (Joule, 2023). Visualizations for educational purposes.</p>
+  </footer>
+
+  <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script is:inline>
+    (() => {
+      function wrapLabels(labels) {
+        return labels.map(label => {
+          if (label.length <= 16) return label;
+          const words = label.split(' ');
+          const lines = [];
+          let line = words[0];
+          for (let i = 1; i < words.length; i++) {
+            if (line.length + 1 + words[i].length <= 16) line += ' ' + words[i];
+            else { lines.push(line); line = words[i]; }
+          }
+          lines.push(line);
+          return lines;
+        });
+      }
+      const tooltipTitle = { callbacks: { title(items) { const lbl = items[0].chart.data.labels[items[0].dataIndex]; return Array.isArray(lbl) ? lbl.join(' ') : lbl; } } };
+      const darkGrid = 'rgba(255,255,255,0.06)';
+      const textColor = 'rgba(255,255,255,0.7)';
+
+      new Chart(document.getElementById('co2Chart').getContext('2d'), {
+        type: 'bar',
+        data: { labels: wrapLabels(['Roundtrip Flight (NY-Lon)', 'Human Life (1 Year)', 'GPT-3 Training', 'Car Lifetime (Fuel)', 'BLOOM Training']), datasets: [{ label: 'Tonnes CO₂e', data: [0.98, 5, 502, 24, 25], backgroundColor: ['#94a3b8','#64748b','#db2777','#475569','#4338ca'], borderRadius: 5 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: tooltipTitle }, scales: { y: { beginAtZero: true, ticks: { color: textColor }, grid: { color: darkGrid } }, x: { ticks: { color: textColor }, grid: { display: false } } } }
+      });
+
+      new Chart(document.getElementById('waterChart').getContext('2d'), {
+        type: 'line',
+        data: { labels: ['2018','2019','2020','2021','2022'], datasets: [ { label: 'Google', data: [3.5,4.1,4.5,5.2,6.4], borderColor: '#22d3ee', backgroundColor: '#22d3ee', tension: 0.3, pointRadius: 4 }, { label: 'Microsoft', data: [2.8,3.0,3.5,4.0,5.3], borderColor: '#818cf8', backgroundColor: '#818cf8', tension: 0.3, pointRadius: 4 } ] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { tooltip: tooltipTitle, legend: { position: 'bottom', labels: { color: textColor } } }, scales: { y: { beginAtZero: false, ticks: { color: textColor }, grid: { color: darkGrid } }, x: { ticks: { color: textColor }, grid: { display: false } } } }
+      });
+
+      new Chart(document.getElementById('inferenceChart').getContext('2d'), {
+        type: 'bar',
+        data: { labels: ['Standard Search', 'Generative AI Query'], datasets: [{ label: 'Watt-hours per query', data: [0.3, 4.0], backgroundColor: ['#64748b','#f43f5e'], borderRadius: 5 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: tooltipTitle }, scales: { y: { beginAtZero: true, ticks: { color: textColor }, grid: { color: darkGrid } }, x: { ticks: { color: 'rgba(255,255,255,0.75)' }, grid: { display: false } } } }
+      });
+
+      new Chart(document.getElementById('benefitChart').getContext('2d'), {
+        type: 'bar',
+        data: { labels: wrapLabels(['Grid Optimization','Transport Routing','Agri Precision','Material Discovery','Building HVAC']), datasets: [{ label: 'Potential Emission Reduction (%)', data: [15,12,10,20,8], backgroundColor: ['#10b981','#3b82f6','#f59e0b','#6366f1','#8b5cf6'], borderRadius: 4 }] },
+        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: tooltipTitle }, scales: { x: { beginAtZero: true, ticks: { color: textColor }, grid: { color: darkGrid } }, y: { ticks: { color: textColor }, grid: { display: false } } } }
+      });
+    })();
+  </script>
+
+</BaseLayout>

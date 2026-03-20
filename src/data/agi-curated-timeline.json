@@ -1,0 +1,679 @@
+{
+  "meta": {
+    "schemaVersion": 2,
+    "thesisVersion": "sober-four-wave-1",
+    "updatedAt": "2026-03-06T00:00:00.000Z"
+  },
+  "waves": [
+    {
+      "id": "software_disruption_now",
+      "title": "Software Disruption Now",
+      "timebox": "Now through 2027",
+      "publicThesis": "Software disruption is already underway across writing, coding, support, research, and operations.",
+      "narrative": "The practical question is not whether a clean AGI day arrives, but how much useful work shifts before the label catches up.",
+      "overlap": "This wave starts first, but labor and physical-economy effects begin before it is finished.",
+      "analystFocus": "Track real workflow replacement, utility, and labor effects instead of headline capability alone.",
+      "engineerFocus": "Reliability, eval quality, tool orchestration, and inference cost determine how much software work actually moves.",
+      "gates": [
+        "Reliable multi-step task completion",
+        "Workflow-level evaluation instead of benchmark theater",
+        "Low-cost inference at production volume"
+      ],
+      "laneStart": 0,
+      "laneEnd": 42
+    },
+    {
+      "id": "broad_labor_stress",
+      "title": "Broad Labor Stress",
+      "timebox": "2027 through 2031",
+      "publicThesis": "Labor-market stress becomes broad enough that it is hard to dismiss as isolated sector churn.",
+      "narrative": "This is a transition period, not automatic collapse: painful reallocation, tighter management, and messy bargaining over where automation actually sticks.",
+      "overlap": "Software disruption keeps spreading while labor stress rises unevenly across occupations, firms, and regions.",
+      "analystFocus": "Watch hiring freezes, role compression, wage pressure, and the gap between output growth and headcount.",
+      "engineerFocus": "Deployment quality matters because partial autonomy changes org charts before it delivers full replacement.",
+      "gates": [
+        "Sustained software deployment in business workflows",
+        "Managerial willingness to redesign jobs around AI systems",
+        "Institutional responses in training, benefits, and regulation"
+      ],
+      "laneStart": 24,
+      "laneEnd": 68
+    },
+    {
+      "id": "physical_economy_disruption",
+      "title": "Physical-Economy Disruption",
+      "timebox": "2030 through 2035",
+      "publicThesis": "The first plausible window for broad physical-economy disruption is early in the 2030s, through robots, autonomous logistics, and tightly managed deployment.",
+      "narrative": "Industrial robot momentum is real, but it does not prove that general-purpose humanoids flood the economy tomorrow.",
+      "overlap": "Physical deployment stacks on top of software and labor shocks rather than waiting for them to conclude.",
+      "analystFocus": "Separate narrow, high-ROI deployment from general-purpose robotics hype.",
+      "engineerFocus": "Safety cases, fleet economics, maintenance, energy, and real-world reliability dominate the pace.",
+      "gates": [
+        "High-uptime robotic systems in constrained environments",
+        "Autonomous logistics with acceptable incident rates",
+        "Energy, parts, and maintenance capacity for fleet rollouts"
+      ],
+      "laneStart": 46,
+      "laneEnd": 84
+    },
+    {
+      "id": "scenario_territory",
+      "title": "Scenario Territory",
+      "timebox": "After 2035",
+      "publicThesis": "Beyond 2035 the right frame is scenarios, not forecasts.",
+      "narrative": "Energy, supply chains, regulation, and real-world reliability dominate the outer boundary more than abstract capability curves.",
+      "overlap": "Long-run outcomes remain path-dependent on how the first three waves interact with power, politics, and industrial capacity.",
+      "analystFocus": "Treat long-run claims as branching scenarios shaped by infrastructure, governance, and social response.",
+      "engineerFocus": "The bottleneck shifts from model novelty to system integration across energy, hardware, policy, and safety.",
+      "gates": [
+        "Power and chip supply at civilization scale",
+        "Governance that can survive uneven deployment",
+        "Reliability in open-ended real-world systems"
+      ],
+      "laneStart": 72,
+      "laneEnd": 100
+    }
+  ],
+  "items": [
+    {
+      "id": "software-benchmarks-outpace-reliability",
+      "wave": "software_disruption_now",
+      "kind": "signal",
+      "domain": "software",
+      "confidence": "high",
+      "timeHorizon": "near",
+      "evidenceType": "benchmark",
+      "year": 2026,
+      "timingLabel": "2026 signal",
+      "headline": "Agent benchmarks are improving faster than reliability in adversarial or long-horizon work.",
+      "url": "https://arxiv.org/abs/2603.00285",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-03T05:00:00.000Z",
+      "summary": "Recent agent work expands what software systems can do, but brittle adaptation and execution drift remain visible when environments become dynamic.",
+      "tags": ["signal", "software", "benchmark", "agents"],
+      "citations": [
+        {
+          "label": "TraderBench",
+          "url": "https://arxiv.org/abs/2603.00285"
+        },
+        {
+          "label": "SWE-Hub",
+          "url": "https://arxiv.org/abs/2603.00575"
+        }
+      ],
+      "whyIncluded": "It supports the claim that software disruption can spread before anyone can defend a clean AGI threshold story.",
+      "public": {
+        "summary": "Software systems are already taking on more writing, coding, and support tasks, but they still fail in operationally important ways.",
+        "implication": "Expect partial automation and labor reshaping before dependable autonomy.",
+        "caution": "Benchmark gains are not the same thing as trustworthy end-to-end job replacement."
+      },
+      "analyst": {
+        "thesisRole": "Observed signal for the first wave.",
+        "context": "Capability gains are real, yet benchmark-to-work translation remains uneven and should be measured directly in output, staffing, and exception rates.",
+        "watchFor": "Sustained gains on messy repository-level work and customer-facing exception handling."
+      },
+      "engineer": {
+        "technicalDetail": "Long-horizon planning, environment shifts, and evaluator gaming remain active failure modes even as agent stacks improve.",
+        "architectureNote": "Evaluation loops need adversarial conditions, state drift, and human handoff points.",
+        "bottleneck": "Reliable execution under ambiguity.",
+        "dependencies": ["High-quality evals", "Tool-use stability", "Human fallback paths"],
+        "unlocks": ["Wider deployment in coding and operations"],
+        "references": [
+          {
+            "title": "TraderBench: How Robust Are AI Agents in Adversarial Capital Markets?",
+            "conference": "arXiv",
+            "link": "https://arxiv.org/abs/2603.00285"
+          },
+          {
+            "title": "SWE-Hub: A Unified Production System for Scalable, Executable Software Engineering Tasks",
+            "conference": "arXiv",
+            "link": "https://arxiv.org/abs/2603.00575"
+          }
+        ]
+      }
+    },
+    {
+      "id": "software-cheaper-models-widen-adoption",
+      "wave": "software_disruption_now",
+      "kind": "signal",
+      "domain": "software",
+      "confidence": "medium",
+      "timeHorizon": "near",
+      "evidenceType": "deployment",
+      "year": 2026,
+      "timingLabel": "2026 deployment signal",
+      "headline": "Cheaper frontier-style models widen the set of routine software tasks firms can automate.",
+      "url": "https://deepmind.google/blog/gemini-3-1-flash-lite-built-for-intelligence-at-scale/",
+      "sourceId": "deepmind_blog",
+      "sourceName": "Google DeepMind — Blog",
+      "publishedAt": "2026-03-03T16:35:55.000Z",
+      "summary": "Model releases that emphasize speed and cost efficiency matter because they lower the threshold for broad workflow deployment.",
+      "tags": ["signal", "software", "deployment", "economics"],
+      "citations": [
+        {
+          "label": "Gemini 3.1 Flash-Lite",
+          "url": "https://deepmind.google/blog/gemini-3-1-flash-lite-built-for-intelligence-at-scale/"
+        }
+      ],
+      "whyIncluded": "Software disruption spreads when cost and latency improve enough for ordinary business use, not only when headline benchmarks jump.",
+      "public": {
+        "summary": "Faster, cheaper models matter because they make automation practical in everyday workflows, not just demos.",
+        "implication": "The near-term spread of AI will be driven by deployment economics as much as by raw capability.",
+        "caution": "Cheap inference expands usage, but it does not erase supervision, quality control, or integration costs."
+      },
+      "analyst": {
+        "thesisRole": "Observed deployment signal for the software wave.",
+        "context": "Cost-efficient releases make it easier for firms to experiment with AI across support, research, and operations, increasing real utility before any consensus on AGI.",
+        "watchFor": "Falling per-task cost in coding, support, and document workflows."
+      },
+      "engineer": {
+        "technicalDetail": "The operational threshold for adoption is often latency, reliability, and price per useful task rather than absolute benchmark standing.",
+        "architectureNote": "System design shifts toward orchestration, retrieval, and workflow guardrails when model cost falls.",
+        "bottleneck": "Integration quality and exception handling.",
+        "dependencies": ["Low-latency inference", "Production monitoring", "Workflow-specific prompts and tools"],
+        "unlocks": ["Routine deployment in internal ops and customer support"],
+        "references": [
+          {
+            "title": "Gemini 3.1 Flash-Lite: Built for intelligence at scale",
+            "conference": "Google DeepMind Blog",
+            "link": "https://deepmind.google/blog/gemini-3-1-flash-lite-built-for-intelligence-at-scale/"
+          }
+        ]
+      }
+    },
+    {
+      "id": "software-utility-before-agi-day",
+      "wave": "software_disruption_now",
+      "kind": "thesis",
+      "domain": "software",
+      "confidence": "high",
+      "timeHorizon": "near",
+      "evidenceType": "interpretation",
+      "year": 2027,
+      "timingLabel": "2026-2027 framing",
+      "headline": "The right frame for the current moment is utility and labor effect, not waiting for a ceremonial AGI day.",
+      "url": "https://arxiv.org/abs/2603.00285",
+      "sourceId": "curated",
+      "sourceName": "Curated thesis",
+      "publishedAt": "2026-03-06T00:00:00.000Z",
+      "summary": "The first wave is already visible in software, so the measure that matters is useful work moved and what that does to jobs and organizations.",
+      "tags": ["thesis", "software", "labor", "timeline"],
+      "citations": [
+        {
+          "label": "TraderBench",
+          "url": "https://arxiv.org/abs/2603.00285"
+        },
+        {
+          "label": "Gemini 3.1 Flash-Lite",
+          "url": "https://deepmind.google/blog/gemini-3-1-flash-lite-built-for-intelligence-at-scale/"
+        }
+      ],
+      "whyIncluded": "It is the core interpretive move behind the four-wave refactor.",
+      "public": {
+        "summary": "Software shock is the part moving fastest right now.",
+        "implication": "The timeline should foreground work displacement and productivity shifts instead of theatrical AGI countdowns.",
+        "caution": "Real utility can be economically disruptive even when systems are still uneven."
+      },
+      "analyst": {
+        "thesisRole": "Core thesis for the first wave.",
+        "context": "A single AGI threshold is less informative than evidence of widening deployment, rising task completion rates, and changing labor demand.",
+        "watchFor": "Role redesign before formal headcount reduction."
+      },
+      "engineer": {
+        "technicalDetail": "Teams can absorb brittle systems if they still deliver enough net output in bounded workflows.",
+        "bottleneck": "Measuring useful task completion instead of demo success.",
+        "dependencies": ["Production telemetry", "Clear human escalation paths"],
+        "unlocks": ["A credible read on when software disruption becomes macro-relevant"],
+        "references": [
+          {
+            "title": "TraderBench: How Robust Are AI Agents in Adversarial Capital Markets?",
+            "conference": "arXiv",
+            "link": "https://arxiv.org/abs/2603.00285"
+          }
+        ]
+      }
+    },
+    {
+      "id": "labor-stress-from-cumulative-software-automation",
+      "wave": "broad_labor_stress",
+      "kind": "thesis",
+      "domain": "labor",
+      "confidence": "medium",
+      "timeHorizon": "mid",
+      "evidenceType": "interpretation",
+      "year": 2027,
+      "timingLabel": "Late 2020s transition",
+      "headline": "The late 2020s are the first plausible window for broad labor stress from cumulative software automation.",
+      "url": "https://arxiv.org/abs/2603.01203",
+      "sourceId": "curated",
+      "sourceName": "Curated thesis",
+      "publishedAt": "2026-03-06T00:00:00.000Z",
+      "summary": "Once software automation hits enough adjacent roles at once, labor-market stress becomes harder to write off as isolated churn.",
+      "tags": ["thesis", "labor", "transition"],
+      "citations": [
+        {
+          "label": "How Well Does Agent Development Reflect Real-World Work?",
+          "url": "https://arxiv.org/abs/2603.01203"
+        }
+      ],
+      "whyIncluded": "This is the second wave in the sober timeline: transition pressure rather than automatic collapse.",
+      "public": {
+        "summary": "Broad labor stress can arrive without a net economic collapse.",
+        "implication": "The transition may feel painful because firms can reallocate labor faster than workers can retrain or move.",
+        "caution": "A turbulent reallocation period is not the same as instant permanent unemployment."
+      },
+      "analyst": {
+        "thesisRole": "Core thesis for the labor wave.",
+        "context": "The relevant threshold is not one model becoming magical. It is enough deployment across related occupations to alter wages, hiring, and bargaining power at once.",
+        "watchFor": "Hiring freezes in white-collar support functions paired with stable or rising output."
+      },
+      "engineer": {
+        "technicalDetail": "Partial autonomy can compress teams even when full automation is unavailable.",
+        "bottleneck": "Deployment quality across varied workflows.",
+        "dependencies": ["Low-cost AI operations", "Managerial process redesign", "Compliance acceptance"],
+        "unlocks": ["Broader labor substitution pressure"],
+        "references": [
+          {
+            "title": "How Well Does Agent Development Reflect Real-World Work?",
+            "conference": "arXiv",
+            "link": "https://arxiv.org/abs/2603.01203"
+          }
+        ]
+      }
+    },
+    {
+      "id": "labor-signal-real-work-translation",
+      "wave": "broad_labor_stress",
+      "kind": "signal",
+      "domain": "labor",
+      "confidence": "medium",
+      "timeHorizon": "mid",
+      "evidenceType": "labor",
+      "year": 2028,
+      "timingLabel": "2026 warning signal",
+      "headline": "Research attention is shifting toward whether agent performance maps to real work rather than benchmark abstractions alone.",
+      "url": "https://arxiv.org/abs/2603.01203",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-03T05:00:00.000Z",
+      "summary": "The transition from benchmark discussion to work-mapping is itself a signal that labor exposure is becoming the operational question.",
+      "tags": ["signal", "labor", "research", "translation"],
+      "citations": [
+        {
+          "label": "How Well Does Agent Development Reflect Real-World Work?",
+          "url": "https://arxiv.org/abs/2603.01203"
+        }
+      ],
+      "whyIncluded": "The labor wave should be tied to work exposure and organizational adoption, not only to claims about raw intelligence.",
+      "public": {
+        "summary": "The important question is increasingly whether AI systems can do real work that organizations will trust.",
+        "implication": "Labor stress becomes more plausible once the conversation moves from demos to workflow fit.",
+        "caution": "Real-work evidence still has to survive integration, compliance, and management friction."
+      },
+      "analyst": {
+        "thesisRole": "Early warning signal for the second wave.",
+        "context": "A shift in evaluation focus often precedes a shift in deployment and management decisions.",
+        "watchFor": "Published comparisons between benchmark wins and real business task completion."
+      },
+      "engineer": {
+        "technicalDetail": "Work-mapping requires evaluators that capture exceptions, interruptions, policy constraints, and collaboration overhead.",
+        "bottleneck": "Good task models for real organizations.",
+        "dependencies": ["Representative workflow datasets", "Human review loops"],
+        "unlocks": ["More credible forecasts of labor exposure"],
+        "references": [
+          {
+            "title": "How Well Does Agent Development Reflect Real-World Work?",
+            "conference": "arXiv",
+            "link": "https://arxiv.org/abs/2603.01203"
+          }
+        ]
+      }
+    },
+    {
+      "id": "labor-management-and-policy-response",
+      "wave": "broad_labor_stress",
+      "kind": "thesis",
+      "domain": "policy",
+      "confidence": "medium",
+      "timeHorizon": "mid",
+      "evidenceType": "interpretation",
+      "year": 2030,
+      "timingLabel": "Policy response window",
+      "headline": "Management tightening, retraining efforts, and policy fights arrive before any clean long-run equilibrium.",
+      "url": "https://arxiv.org/abs/2603.00068",
+      "sourceId": "curated",
+      "sourceName": "Curated thesis",
+      "publishedAt": "2026-03-06T00:00:00.000Z",
+      "summary": "Institutions respond to labor stress while the software wave is still unfolding, which makes the transition politically and organizationally messy.",
+      "tags": ["thesis", "policy", "labor", "transition"],
+      "citations": [
+        {
+          "label": "Environmental AI Regulation",
+          "url": "https://arxiv.org/abs/2603.00068"
+        }
+      ],
+      "whyIncluded": "The timeline should present labor stress as a contested transition period rather than a one-step collapse story.",
+      "public": {
+        "summary": "Firms and governments will likely improvise through the labor shock rather than meet it with one coherent plan.",
+        "implication": "Expect a stretch of uneven rules, retraining pushes, and disputes over where automation is allowed to land.",
+        "caution": "Policy can slow deployment in some sectors while accelerating it elsewhere."
+      },
+      "analyst": {
+        "thesisRole": "Institutional response thesis for the second wave.",
+        "context": "Labor-market stress becomes socially salient when organizations redesign roles faster than benefits, training, and bargaining systems adapt.",
+        "watchFor": "Sector-specific rules on AI use in education, health, law, and public administration."
+      },
+      "engineer": {
+        "technicalDetail": "Compliance, auditability, and fallback design become deployment requirements once AI systems start touching regulated work.",
+        "bottleneck": "Operational trust in regulated settings.",
+        "dependencies": ["Traceability", "Policy clarity", "Escalation design"],
+        "unlocks": ["Broader but more tightly managed deployment"],
+        "references": [
+          {
+            "title": "The Global Landscape of Environmental AI Regulation",
+            "conference": "arXiv",
+            "link": "https://arxiv.org/abs/2603.00068"
+          }
+        ]
+      }
+    },
+    {
+      "id": "robotics-progress-real-but-narrow",
+      "wave": "physical_economy_disruption",
+      "kind": "signal",
+      "domain": "robotics",
+      "confidence": "medium",
+      "timeHorizon": "mid",
+      "evidenceType": "benchmark",
+      "year": 2030,
+      "timingLabel": "2026 robotics signal",
+      "headline": "Embodied and humanoid benchmarks are improving, but mostly inside constrained tasks and controlled environments.",
+      "url": "https://arxiv.org/abs/2603.01452",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-03T05:00:00.000Z",
+      "summary": "Industrial and embodied progress is real, but the evidence still points to narrow deployment first rather than instant general-purpose coverage.",
+      "tags": ["signal", "robotics", "benchmark", "embodied"],
+      "citations": [
+        {
+          "label": "Scaling Tasks, Not Samples",
+          "url": "https://arxiv.org/abs/2603.01452"
+        },
+        {
+          "label": "RMBench",
+          "url": "https://arxiv.org/abs/2603.01229"
+        }
+      ],
+      "whyIncluded": "It anchors the robotics wave in actual momentum while pushing back on humanoid flood assumptions.",
+      "public": {
+        "summary": "Robot progress is worth taking seriously, but today it looks more like narrow industrial momentum than universal physical autonomy.",
+        "implication": "The physical-economy shock should be modeled as staged deployment in high-ROI settings first.",
+        "caution": "A better benchmark or demo is not proof of cheap, safe, mass deployment."
+      },
+      "analyst": {
+        "thesisRole": "Observed signal for the third wave.",
+        "context": "The strongest evidence points toward constrained environments with repeatable tasks, not open-world humanoid substitution at scale.",
+        "watchFor": "Warehouse, factory, and logistics deployments with uptime and safety data."
+      },
+      "engineer": {
+        "technicalDetail": "Embodied systems face compounding error from sensing, actuation, maintenance, and safety constraints that software-only systems can often bypass.",
+        "bottleneck": "Real-world reliability at fleet scale.",
+        "dependencies": ["Safety validation", "Maintenance loops", "High-quality teleoperation fallback"],
+        "unlocks": ["Constrained physical deployment in logistics and industry"],
+        "references": [
+          {
+            "title": "Scaling Tasks, Not Samples: Mastering Humanoid Control through Multi-Task Model-Based Reinforcement Learning",
+            "conference": "arXiv",
+            "link": "https://arxiv.org/abs/2603.01452"
+          },
+          {
+            "title": "RMBench: Memory-Dependent Robotic Manipulation Benchmark with Insights into Policy Design",
+            "conference": "arXiv",
+            "link": "https://arxiv.org/abs/2603.01229"
+          }
+        ]
+      }
+    },
+    {
+      "id": "robotics-physical-deployment-window",
+      "wave": "physical_economy_disruption",
+      "kind": "thesis",
+      "domain": "robotics",
+      "confidence": "medium",
+      "timeHorizon": "mid",
+      "evidenceType": "interpretation",
+      "year": 2031,
+      "timingLabel": "Early 2030s window",
+      "headline": "The first plausible broad physical-economy disruption window opens in the early 2030s, after software disruption is already established.",
+      "url": "https://arxiv.org/abs/2603.01452",
+      "sourceId": "curated",
+      "sourceName": "Curated thesis",
+      "publishedAt": "2026-03-06T00:00:00.000Z",
+      "summary": "Robots and autonomous logistics can matter economically in the early 2030s without implying instant general-purpose humanoid saturation.",
+      "tags": ["thesis", "robotics", "deployment"],
+      "citations": [
+        {
+          "label": "Scaling Tasks, Not Samples",
+          "url": "https://arxiv.org/abs/2603.01452"
+        }
+      ],
+      "whyIncluded": "It places the physical-economy shock later than the software shock while still acknowledging real robotics momentum.",
+      "public": {
+        "summary": "Physical disruption likely comes later than software disruption.",
+        "implication": "The early 2030s are the first plausible period for broad logistics and industrial effects.",
+        "caution": "Industrial robot progress should not be overstated into a claim that humanoids will flood the whole economy tomorrow."
+      },
+      "analyst": {
+        "thesisRole": "Core thesis for the third wave.",
+        "context": "The relevant shift is cumulative deployment in constrained physical settings, not a single dramatic robotics reveal.",
+        "watchFor": "Real fleet deployment metrics instead of staged demo videos."
+      },
+      "engineer": {
+        "technicalDetail": "Physical systems compound software risk with uptime, maintenance, liability, and hardware replacement cycles.",
+        "bottleneck": "Economically viable deployment outside lab conditions.",
+        "dependencies": ["Constrained-environment success", "Fleet monitoring", "Replacement-part logistics"],
+        "unlocks": ["Warehouse and industrial transformation"],
+        "references": [
+          {
+            "title": "Scaling Tasks, Not Samples: Mastering Humanoid Control through Multi-Task Model-Based Reinforcement Learning",
+            "conference": "arXiv",
+            "link": "https://arxiv.org/abs/2603.01452"
+          }
+        ]
+      }
+    },
+    {
+      "id": "energy-and-fleet-constraints-dominate",
+      "wave": "physical_economy_disruption",
+      "kind": "thesis",
+      "domain": "energy",
+      "confidence": "high",
+      "timeHorizon": "mid",
+      "evidenceType": "interpretation",
+      "year": 2033,
+      "timingLabel": "Infrastructure gating",
+      "headline": "Energy, maintenance, supply chains, and safety cases dominate the pace of physical deployment.",
+      "url": "https://arxiv.org/abs/2603.00068",
+      "sourceId": "curated",
+      "sourceName": "Curated thesis",
+      "publishedAt": "2026-03-06T00:00:00.000Z",
+      "summary": "The limiting factor for the robotics wave is not just model quality. It is the real-world stack required to keep fleets running safely and cheaply.",
+      "tags": ["thesis", "energy", "supply-chain", "deployment"],
+      "citations": [
+        {
+          "label": "Environmental AI Regulation",
+          "url": "https://arxiv.org/abs/2603.00068"
+        }
+      ],
+      "whyIncluded": "It keeps the physical-economy wave anchored in infrastructure instead of science-fiction timelines.",
+      "public": {
+        "summary": "The physical-economy wave will be paced by energy, parts, maintenance, and regulation.",
+        "implication": "Even strong robot capability does not translate into instant economy-wide saturation.",
+        "caution": "The bottleneck is industrial capacity and operational reliability, not only smarter models."
+      },
+      "analyst": {
+        "thesisRole": "Infrastructure thesis for the third wave.",
+        "context": "The gap between a functioning demo and a scaled fleet is where many overconfident physical-economy forecasts fail.",
+        "watchFor": "Power availability, unit economics, and service network buildout."
+      },
+      "engineer": {
+        "technicalDetail": "Physical AI inherits all the constraints of industrial systems: maintenance windows, safety audits, spare parts, grid power, and local site integration.",
+        "bottleneck": "Fleet economics under real service conditions.",
+        "dependencies": ["Reliable power", "Parts supply", "Field service capacity"],
+        "unlocks": ["Scaled deployment beyond pilots"],
+        "references": [
+          {
+            "title": "The Global Landscape of Environmental AI Regulation",
+            "conference": "arXiv",
+            "link": "https://arxiv.org/abs/2603.00068"
+          }
+        ]
+      }
+    },
+    {
+      "id": "policy-and-energy-boundaries-emerge",
+      "wave": "scenario_territory",
+      "kind": "signal",
+      "domain": "policy",
+      "confidence": "medium",
+      "timeHorizon": "long",
+      "evidenceType": "policy",
+      "year": 2036,
+      "timingLabel": "2026 policy signal",
+      "headline": "Policy discussion is already expanding toward energy, environmental cost, and governance constraints around advanced AI.",
+      "url": "https://arxiv.org/abs/2603.00068",
+      "sourceId": "arxiv_cs_ai",
+      "sourceName": "arXiv — cs.AI",
+      "publishedAt": "2026-03-03T05:00:00.000Z",
+      "summary": "Long-run AI outcomes are likely to be shaped by infrastructure and governance debates at least as much as by capability curves.",
+      "tags": ["signal", "policy", "energy", "regulation"],
+      "citations": [
+        {
+          "label": "Environmental AI Regulation",
+          "url": "https://arxiv.org/abs/2603.00068"
+        }
+      ],
+      "whyIncluded": "It is an early signal that the outer boundary after 2035 is constrained by governance and energy, not only by model ambition.",
+      "public": {
+        "summary": "Long-run AI outcomes will be constrained by power, regulation, and environmental cost.",
+        "implication": "Past a certain point, governance and infrastructure matter as much as capability progress.",
+        "caution": "Long-run scenarios can diverge widely because these constraints are political and industrial, not only technical."
+      },
+      "analyst": {
+        "thesisRole": "Early signal for the scenario territory wave.",
+        "context": "The farther out the forecast goes, the more the credible question becomes system integration under policy and infrastructure limits.",
+        "watchFor": "Energy use caps, reporting rules, and cross-border compute policy."
+      },
+      "engineer": {
+        "technicalDetail": "Outer-boundary deployment depends on whether energy, land, cooling, and regulatory approval can scale with ambition.",
+        "bottleneck": "Infrastructure and governance coordination.",
+        "dependencies": ["Grid buildout", "Reporting standards", "Cross-border supply resilience"],
+        "unlocks": ["A wider range of plausible long-run deployment paths"],
+        "references": [
+          {
+            "title": "The Global Landscape of Environmental AI Regulation",
+            "conference": "arXiv",
+            "link": "https://arxiv.org/abs/2603.00068"
+          }
+        ]
+      }
+    },
+    {
+      "id": "after-2035-is-scenario-territory",
+      "wave": "scenario_territory",
+      "kind": "thesis",
+      "domain": "policy",
+      "confidence": "low",
+      "timeHorizon": "long",
+      "evidenceType": "interpretation",
+      "year": 2038,
+      "timingLabel": "Post-2035 scenarios",
+      "headline": "After 2035 the right framing is branching scenarios, not a single forecast line.",
+      "url": "https://arxiv.org/abs/2603.00068",
+      "sourceId": "curated",
+      "sourceName": "Curated thesis",
+      "publishedAt": "2026-03-06T00:00:00.000Z",
+      "summary": "Beyond the mid-2030s, small differences in infrastructure, policy, and reliability assumptions produce very different social outcomes.",
+      "tags": ["thesis", "policy", "scenario"],
+      "citations": [
+        {
+          "label": "Environmental AI Regulation",
+          "url": "https://arxiv.org/abs/2603.00068"
+        }
+      ],
+      "whyIncluded": "It is the final wave's core instruction: stop pretending precision is forecast quality.",
+      "public": {
+        "summary": "The farther out the timeline goes, the more humility matters.",
+        "implication": "Beyond 2035 the honest move is to compare scenarios, not to promise a single date.",
+        "caution": "False precision is especially misleading once energy, supply chains, and regulation start to dominate the path."
+      },
+      "analyst": {
+        "thesisRole": "Core thesis for the fourth wave.",
+        "context": "Scenario analysis is more credible than point forecasting once the dominant constraints become political, industrial, and path-dependent.",
+        "watchFor": "Divergence between regions with different grid, chip, and regulatory capacity."
+      },
+      "engineer": {
+        "technicalDetail": "Long-run technical trajectories are tightly coupled to non-model variables that cannot be extrapolated from benchmark trends alone.",
+        "bottleneck": "Forecast instability under changing assumptions.",
+        "dependencies": ["Scenario planning", "Cross-domain systems modeling"],
+        "unlocks": ["A more defensible long-run planning frame"],
+        "references": [
+          {
+            "title": "The Global Landscape of Environmental AI Regulation",
+            "conference": "arXiv",
+            "link": "https://arxiv.org/abs/2603.00068"
+          }
+        ]
+      }
+    },
+    {
+      "id": "long-run-divergence-depends-on-infrastructure",
+      "wave": "scenario_territory",
+      "kind": "thesis",
+      "domain": "energy",
+      "confidence": "low",
+      "timeHorizon": "long",
+      "evidenceType": "interpretation",
+      "year": 2040,
+      "timingLabel": "Long-run branch point",
+      "headline": "Long-run divergence depends on the interaction of grid power, chip supply, regulation, and real-world reliability.",
+      "url": "https://arxiv.org/abs/2603.00068",
+      "sourceId": "curated",
+      "sourceName": "Curated thesis",
+      "publishedAt": "2026-03-06T00:00:00.000Z",
+      "summary": "The outer boundary is set by infrastructure coordination problems that are slower and more political than pure model iteration.",
+      "tags": ["thesis", "energy", "policy", "reliability"],
+      "citations": [
+        {
+          "label": "Environmental AI Regulation",
+          "url": "https://arxiv.org/abs/2603.00068"
+        }
+      ],
+      "whyIncluded": "It captures the main caveat behind the final wave: the problem becomes systems integration at civilization scale.",
+      "public": {
+        "summary": "Very long-run outcomes hinge on industrial and political capacity, not just capability curves.",
+        "implication": "The same technical frontier can yield very different futures under different energy and governance conditions.",
+        "caution": "Reliability failures or infrastructure scarcity can cap deployment long before abstract capability ceilings are reached."
+      },
+      "analyst": {
+        "thesisRole": "Long-run systems thesis for the fourth wave.",
+        "context": "Once the timeline moves beyond the mid-2030s, infrastructure variables dominate enough that narrow AI forecasting becomes incomplete.",
+        "watchFor": "Power, cooling, and chip availability as macro constraints."
+      },
+      "engineer": {
+        "technicalDetail": "The limiting resource becomes the full stack of power, cooling, hardware throughput, maintenance, safety, and regulatory permission.",
+        "bottleneck": "Civilization-scale systems integration.",
+        "dependencies": ["Grid growth", "Chip supply resilience", "Robust safety governance"],
+        "unlocks": ["Any credible long-run deployment path"],
+        "references": [
+          {
+            "title": "The Global Landscape of Environmental AI Regulation",
+            "conference": "arXiv",
+            "link": "https://arxiv.org/abs/2603.00068"
+          }
+        ]
+      }
+    }
+  ]
+}

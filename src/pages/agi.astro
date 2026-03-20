@@ -1,0 +1,533 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import curatedTimelineData from '../data/agi-curated-timeline.json';
+import agiFeedData from '../data/agi-timeline.json';
+import '../styles/agi-timeline.css';
+import { getLinkCtaLabel, providerFromUrl } from '../lib/embed-resolver';
+import { formatFreshnessLabel } from '../lib/freshness';
+
+interface SupplementaryFeedItem {
+  title: string;
+  url: string;
+  sourceName: string;
+  publishedAt: string | null;
+}
+
+const timeline = curatedTimelineData as {
+  meta?: { updatedAt?: string };
+  waves?: Array<Record<string, any>>;
+  items?: Array<Record<string, any>>;
+};
+const waves = Array.isArray(timeline.waves) ? timeline.waves : [];
+const waveOrder = new Map(waves.map((wave, index) => [String(wave.id || index), index]));
+const rawTimelineItems = Array.isArray(timeline.items) ? timeline.items : [];
+const items = [...rawTimelineItems].sort((left, right) => {
+  const waveDelta = (waveOrder.get(String(left.wave || '')) ?? 0) - (waveOrder.get(String(right.wave || '')) ?? 0);
+  if (waveDelta !== 0) return waveDelta;
+  if (Number(left.year) !== Number(right.year)) return Number(left.year) - Number(right.year);
+  return String(left.headline || '').localeCompare(String(right.headline || ''));
+});
+const waveEntries = waves.map((wave) => ({
+  wave,
+  items: items.filter((item) => item.wave === wave.id)
+}));
+
+const kindLabels: Record<string, string> = {
+  signal: 'Signal',
+  thesis: 'Thesis'
+};
+
+const domainLabels: Record<string, string> = {
+  software: 'Software',
+  labor: 'Labor',
+  robotics: 'Robotics',
+  energy: 'Energy',
+  policy: 'Policy'
+};
+
+const confidenceLabels: Record<string, string> = {
+  low: 'Low confidence',
+  medium: 'Medium confidence',
+  high: 'High confidence'
+};
+
+const horizonLabels: Record<string, string> = {
+  near: 'Near-term',
+  mid: 'Mid-term',
+  long: 'Long-term'
+};
+
+const evidenceLabels: Record<string, string> = {
+  paper: 'Paper',
+  benchmark: 'Benchmark',
+  deployment: 'Deployment',
+  labor: 'Labor signal',
+  policy: 'Policy signal',
+  interpretation: 'Interpretation'
+};
+
+const signalCount = items.filter((item) => item.kind === 'signal').length;
+const thesisCount = items.length - signalCount;
+const dateFormatter = new Intl.DateTimeFormat('en-US', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric'
+});
+const today = new Date();
+
+const formatDate = (value: string | null | undefined): string => {
+  if (!value) return 'Undated';
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.valueOf()) ? 'Undated' : dateFormatter.format(parsed);
+};
+
+const getFreshnessLabel = (value: string | null | undefined): string => {
+  if (!value) return 'Undated';
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.valueOf())) return 'Undated';
+
+  const diffDays = Math.floor((today.valueOf() - parsed.valueOf()) / 86400000);
+  if (diffDays < 0) return 'Future-dated';
+  if (diffDays <= 7) return 'Fresh';
+  if (diffDays <= 30) return 'Recent';
+  if (diffDays <= 180) return 'Aging';
+  return 'Archive';
+};
+
+const buildWaveRangeStyle = (wave: Record<string, any>) =>
+  `--wave-start:${Number(wave.laneStart || 0)}%; --wave-width:${Math.max(Number(wave.laneEnd || 0) - Number(wave.laneStart || 0), 10)}%;`;
+
+const summaryStats = [
+  { label: 'Waves', value: String(waves.length) },
+  { label: 'Signals', value: String(signalCount) },
+  { label: 'Theses', value: String(thesisCount) },
+  { label: 'Curated update', value: formatFreshnessLabel(timeline.meta?.updatedAt).replace('Last updated: ', '') }
+];
+
+const rawFeedItems = Array.isArray((agiFeedData as { items?: unknown[] })?.items)
+  ? ((agiFeedData as { items?: unknown[] }).items ?? []).slice(0, 3)
+  : [];
+const supplementaryFeedItems: SupplementaryFeedItem[] = rawFeedItems
+  .map((entry) => {
+    const item = (entry ?? {}) as Record<string, unknown>;
+    const title = String(item.title || '').trim();
+    const url = String(item.url || '').trim();
+    if (!title || !/^https?:\/\//i.test(url)) return null;
+
+    return {
+      title,
+      url,
+      sourceName: String(item.sourceName || 'Synced feed'),
+      publishedAt: item.publishedAt ? String(item.publishedAt) : null
+    };
+  })
+  .filter((item): item is SupplementaryFeedItem => Boolean(item));
+const supplementaryFeedCount = Array.isArray((agiFeedData as { items?: unknown[] })?.items)
+  ? ((agiFeedData as { items?: unknown[] }).items ?? []).length
+  : 0;
+const supplementaryFeedLabel = formatFreshnessLabel((agiFeedData as { meta?: { generatedAt?: string } })?.meta?.generatedAt);
+const liveReferences = [
+  {
+    title: 'AI Exposure of the US Job Market',
+    url: 'https://karpathy.ai/jobs/',
+    note: 'Interactive labor map by occupation, useful for seeing where exposure concentrates before broader labor narratives flatten it.',
+    tag: 'Labor'
+  },
+  {
+    title: 'Jobloss.ai',
+    url: 'https://jobloss.ai/',
+    note: 'AI-related labor shift tracker for keeping an eye on displacement, adoption, and labor-pressure signals.',
+    tag: 'Labor'
+  },
+  {
+    title: 'Theoretical Trajectories: AGI & the Post-Scarcity Question',
+    url: 'https://www.youtube.com/watch?v=QvFoRk4JsPc',
+    note: 'A conceptual frame for how advanced AI systems could restructure the foundations of work, value, and collective well-being — moving from disruption to a post-scarcity society.',
+    tag: 'Theory'
+  },
+  {
+    title: 'OpenAI and the Farming Analogy',
+    url: 'https://www.youtube.com/watch?v=4rzeW4dbvlQ',
+    note: 'On scaling, resource concentration, and what "farming intelligence" means for who benefits from AGI — relevant to UHI (universal human income/capacity) society models.',
+    tag: 'Theory'
+  }
+] as const;
+---
+
+<BaseLayout
+  title="AGI Timeline // Sober Four-Wave Assessment"
+  description="A sober four-wave AGI timeline with public, analyst, and engineer views."
+  theme="agi"
+>
+  <section class="agi-monitor" id="agi-monitor">
+    <nav class="agi-nav sticky top-0 z-20 py-3">
+      <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 md:flex-row">
+        <div class="flex items-center gap-3">
+          <div class="h-2.5 w-2.5 animate-pulse rounded-full bg-[var(--tone-accent)] shadow-[0_0_12px_var(--tone-accent)]"></div>
+          <div>
+            <h1 class="text-base font-bold uppercase tracking-tight md:text-lg">AGI Timeline</h1>
+            <p class="text-xs uppercase tracking-[0.2em] text-[var(--tone-muted)]">Sober four-wave assessment</p>
+          </div>
+        </div>
+
+        <div class="level-switcher" role="tablist" aria-label="Timeline view mode">
+          <button type="button" id="btn-public" class="level-btn active" data-mode="public" role="tab" aria-selected="true" aria-controls="view-public">
+            Public
+          </button>
+          <button type="button" id="btn-analyst" class="level-btn" data-mode="analyst" role="tab" aria-selected="false" aria-controls="view-analyst">
+            Analyst
+          </button>
+          <button type="button" id="btn-engineer" class="level-btn" data-mode="engineer" role="tab" aria-selected="false" aria-controls="view-engineer">
+            Engineer
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="mx-auto max-w-7xl px-4 py-8 md:py-12">
+      <p class="agi-subroute-link">
+        <a href="/agi/from-bread-pressure-to-human-capability">Open Bread-Pressure tracker</a>
+      </p>
+
+      <div id="view-public" class="agi-view-panel agi-public-view" role="tabpanel" aria-labelledby="btn-public">
+        <header class="timeline-intro">
+          <p class="eyebrow">Short version</p>
+          <h2>Software shock now. Labor stress next. Physical disruption later. Beyond that is scenario territory.</h2>
+          <p class="dek">
+            AGI as overlapping waves, not a single threshold. Wave one is already visible in software. Wave two is a late-2020s labor transition. Wave three is early physical-economy disruption. After that: scenarios.
+          </p>
+          <p class="overlap-note">
+            Waves overlap and amplify. They don't wait for the previous one to finish.
+          </p>
+        </header>
+
+        <section class="summary-strip" aria-label="Timeline summary">
+          {summaryStats.map((stat) => (
+            <article class="summary-stat">
+              <div class="summary-value">{stat.value}</div>
+              <div class="summary-label">{stat.label}</div>
+            </article>
+          ))}
+        </section>
+
+        <div class="wave-stack">
+          {waveEntries.map(({ wave, items: waveItems }) => {
+            return (
+              <article class="wave-card" data-wave={wave.id}>
+                <div class="wave-range">
+                  <div class="wave-range-track"></div>
+                  <div class="wave-range-fill" style={buildWaveRangeStyle(wave)}></div>
+                </div>
+
+                <header class="wave-header">
+                  <p class="wave-kicker">{wave.timebox}</p>
+                  <h3>{wave.title}</h3>
+                  <p class="wave-thesis">{wave.publicThesis}</p>
+                  <p class="wave-narrative">{wave.narrative}</p>
+                  <p class="wave-overlap-text">{wave.overlap}</p>
+                </header>
+
+                <div class="wave-beats">
+                  {waveItems.map((item) => (
+                    <article class="wave-beat" data-kind={item.kind}>
+                      <div class="wave-beat-meta">
+                        <span>{item.timingLabel ?? String(item.year)}</span>
+                        <span>{kindLabels[item.kind]}</span>
+                      </div>
+                      <h4>{item.headline}</h4>
+                      <p class="wave-beat-summary">{item.public.summary}</p>
+                      <p class="wave-beat-implication">
+                        <strong>Why it matters:</strong> {item.public.implication}
+                      </p>
+                      {item.public.caution && (
+                        <p class="wave-beat-caution">
+                          <strong>Caveat:</strong> {item.public.caution}
+                        </p>
+                      )}
+                      <a class="wave-link" href={item.url} target={item.url.startsWith('/') ? undefined : '_blank'} rel={item.url.startsWith('/') ? undefined : 'noreferrer'}>
+                        {getLinkCtaLabel(item.url, providerFromUrl(item.url))}
+                      </a>
+                    </article>
+                  ))}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+
+      <div id="view-analyst" class="agi-view-panel agi-analyst-view is-hidden" role="tabpanel" aria-labelledby="btn-analyst">
+        <header class="panel-header">
+          <p class="eyebrow">Analyst view</p>
+          <h2>Signals and theses, separated and inspectable</h2>
+          <p>
+            Curated dataset is the primary source. Synced feed is supplementary and doesn't set the timeline.
+          </p>
+          <p class="panel-meta">
+            {formatFreshnessLabel(timeline.meta?.updatedAt)} · {items.length} curated entries · {signalCount} signals · {thesisCount} theses
+          </p>
+        </header>
+
+        <section class="supplementary-feed" aria-labelledby="live-reference-heading">
+          <header class="section-header">
+            <div>
+              <p class="wave-kicker">Live References</p>
+              <h3 id="live-reference-heading">Sources worth keeping nearby</h3>
+            </div>
+            <p>Labor-context panel for the wave-two reading.</p>
+          </header>
+
+          <div class="supplementary-list">
+            {liveReferences.map((reference) => (
+              <article class="supplementary-item">
+                <div class="analyst-card-topline">
+                  <span>Live reference</span>
+                  <span class="freshness-badge">{reference.tag}</span>
+                </div>
+                <h4>{reference.title}</h4>
+                <p class="analyst-note">{reference.note}</p>
+                <div class="analyst-footer">
+                  <a href={reference.url} target="_blank" rel="noreferrer">
+                    Open reference
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {waveEntries.map(({ wave, items: waveItems }) => {
+          return (
+            <section class="analyst-section" data-wave={wave.id}>
+              <header class="section-header">
+                <div>
+                  <p class="wave-kicker">{wave.timebox}</p>
+                  <h3>{wave.title}</h3>
+                </div>
+                <p>{wave.analystFocus}</p>
+              </header>
+
+              <div class="analyst-grid">
+                {waveItems.map((item) => (
+                  <article class="analyst-card" data-kind={item.kind} data-confidence={item.confidence}>
+                    <div class="analyst-card-topline">
+                      <span>{item.timingLabel ?? String(item.year)}</span>
+                      <span class="freshness-badge">{getFreshnessLabel(item.publishedAt)}</span>
+                    </div>
+                    <h4>{item.headline}</h4>
+                    <div class="chip-row">
+                      <span class="chip" data-kind={item.kind}>{kindLabels[item.kind]}</span>
+                      <span class="chip" data-domain={item.domain}>{domainLabels[item.domain]}</span>
+                      <span class="chip" data-confidence={item.confidence}>{confidenceLabels[item.confidence]}</span>
+                      <span class="chip">{horizonLabels[item.timeHorizon]}</span>
+                      <span class="chip">{evidenceLabels[item.evidenceType]}</span>
+                    </div>
+                    <p class="analyst-context">{item.analyst.context}</p>
+                    <p class="analyst-note">
+                      <strong>Why it is present:</strong> {item.whyIncluded ?? item.summary}
+                    </p>
+                    <p class="analyst-note">
+                      <strong>Role:</strong> {item.analyst.thesisRole}
+                    </p>
+                    {item.analyst.watchFor && (
+                      <p class="analyst-note">
+                        <strong>Watch for:</strong> {item.analyst.watchFor}
+                      </p>
+                    )}
+                    <div class="analyst-footer">
+                      <span>{item.sourceName}</span>
+                      <span>{formatDate(item.publishedAt)}</span>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          );
+        })}
+
+        {supplementaryFeedItems.length > 0 && (
+          <section class="supplementary-feed">
+            <header class="section-header">
+              <div>
+                <p class="wave-kicker">Supplementary synced feed</p>
+                <h3>Recent feed items</h3>
+              </div>
+              <p>{supplementaryFeedLabel} · {supplementaryFeedCount} cached items</p>
+            </header>
+
+            <div class="supplementary-list">
+              {supplementaryFeedItems.map((item) => (
+                <article class="supplementary-item">
+                  <div class="analyst-card-topline">
+                    <span>{item.sourceName}</span>
+                    <span class="freshness-badge">{getFreshnessLabel(item.publishedAt)}</span>
+                  </div>
+                  <h4>{item.title}</h4>
+                  <div class="analyst-footer">
+                    <span>{formatDate(item.publishedAt)}</span>
+                    <a href={item.url} target="_blank" rel="noreferrer">
+                      {getLinkCtaLabel(item.url, providerFromUrl(item.url))}
+                    </a>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+
+      <div id="view-engineer" class="agi-view-panel agi-engineer-view is-hidden" role="tabpanel" aria-labelledby="btn-engineer">
+        <header class="panel-header">
+          <p class="eyebrow">Engineer view</p>
+          <h2>Bottlenecks, dependencies, and constraints</h2>
+          <p>
+            A dependency chain view — not just what gets smarter, but what can be deployed under cost, safety, infrastructure, and governance constraints.
+          </p>
+        </header>
+
+        <div class="engineer-chain">
+          {waveEntries.map(({ wave, items: waveItems }, index) => {
+            return (
+              <section class="chain-step" data-wave={wave.id}>
+                <article class="chain-summary">
+                  <div class="wave-range compact">
+                    <div class="wave-range-track"></div>
+                    <div class="wave-range-fill" style={buildWaveRangeStyle(wave)}></div>
+                  </div>
+                  <p class="wave-kicker">{wave.timebox}</p>
+                  <h3>{wave.title}</h3>
+                  <p>{wave.engineerFocus}</p>
+                  <div class="gate-list">
+                    {wave.gates.map((gate) => (
+                      <span class="gate-chip">{gate}</span>
+                    ))}
+                  </div>
+                </article>
+
+                <div class="engineer-grid">
+                  {waveItems.map((item) => (
+                    <article class="tech-card" data-domain={item.domain}>
+                      <div class="chip-row">
+                        <span class="chip" data-kind={item.kind}>{kindLabels[item.kind]}</span>
+                        <span class="chip" data-domain={item.domain}>{domainLabels[item.domain]}</span>
+                        <span class="chip" data-confidence={item.confidence}>{confidenceLabels[item.confidence]}</span>
+                      </div>
+                      <h4>{item.headline}</h4>
+                      <p class="tech-copy">{item.engineer.technicalDetail}</p>
+                      {item.engineer.architectureNote && (
+                        <p class="tech-block">
+                          <strong>Architecture note:</strong> {item.engineer.architectureNote}
+                        </p>
+                      )}
+                      {item.engineer.bottleneck && (
+                        <p class="tech-block bottleneck">
+                          <strong>Bottleneck:</strong> {item.engineer.bottleneck}
+                        </p>
+                      )}
+                      {item.engineer.dependencies && item.engineer.dependencies.length > 0 && (
+                        <div class="tech-list-block">
+                          <h5>Dependencies</h5>
+                          <ul>
+                            {item.engineer.dependencies.map((dependency) => (
+                              <li>{dependency}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {item.engineer.unlocks && item.engineer.unlocks.length > 0 && (
+                        <div class="tech-list-block">
+                          <h5>Unlocks</h5>
+                          <ul>
+                            {item.engineer.unlocks.map((unlock) => (
+                              <li>{unlock}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {item.engineer.references && item.engineer.references.length > 0 && (
+                        <div class="tech-list-block">
+                          <h5>References</h5>
+                          <ul class="reference-list">
+                            {item.engineer.references.map((reference) => (
+                              <li>
+                                <span>{reference.title}</span>
+                                {reference.link && (
+                                  <a href={reference.link} target="_blank" rel="noreferrer">
+                                    open
+                                  </a>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </article>
+                  ))}
+                </div>
+
+                {index < waves.length - 1 && <div class="chain-arrow">Carries into next wave.</div>}
+              </section>
+            );
+          })}
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <script is:inline>
+    (() => {
+      const MODE_KEY = 'agi-view-mode';
+      const root = document.getElementById('agi-monitor');
+      if (!root) return;
+
+      const validModes = ['public', 'analyst', 'engineer'];
+
+      const setMode = (nextMode) => {
+        const mode = validModes.includes(nextMode) ? nextMode : 'public';
+
+        document.querySelectorAll('.agi-view-panel').forEach((panel) => {
+          panel.classList.toggle('is-hidden', panel.id !== `view-${mode}`);
+        });
+
+        document.querySelectorAll('.level-btn').forEach((button) => {
+          const active = button.getAttribute('data-mode') === mode;
+          button.classList.toggle('active', active);
+          button.setAttribute('aria-selected', String(active));
+        });
+
+        try {
+          localStorage.setItem(MODE_KEY, mode);
+        } catch {}
+      };
+
+      document.querySelectorAll('.level-btn').forEach((button) => {
+        button.addEventListener('click', () => {
+          const mode = button.getAttribute('data-mode') || 'public';
+          setMode(mode);
+        });
+      });
+
+      document.addEventListener('keydown', (event) => {
+        const target = event.target;
+        if (
+          target instanceof HTMLElement &&
+          (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName))
+        ) {
+          return;
+        }
+
+        if (event.key === 'p' || event.key === 'P') setMode('public');
+        if (event.key === 'a' || event.key === 'A') setMode('analyst');
+        if (event.key === 'e' || event.key === 'E') setMode('engineer');
+      });
+
+      let initialMode = 'public';
+      try {
+        const saved = localStorage.getItem(MODE_KEY);
+        if (saved && validModes.includes(saved)) initialMode = saved;
+      } catch {}
+
+      setMode(initialMode);
+    })();
+  </script>
+</BaseLayout>

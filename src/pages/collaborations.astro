@@ -1,0 +1,281 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import collaborationsData from '../data/collaborations.json';
+
+const collaborations = collaborationsData.collaborations;
+---
+
+<BaseLayout title="Collaborations — a_e.s_" theme="archive">
+  <section class="view-surface collaborations-page">
+    <header class="view-surface-header collaborations-header">
+      <p class="view-surface-kicker">Active Practice</p>
+      <h1>Collaborations</h1>
+      <p class="collaborations-intro">
+        Work with Newark communities and grassroots organizations. These are living practices, not past tense.
+      </p>
+    </header>
+
+    <div class="collaborations-list">
+      {collaborations.map((collab) => (
+        <article class="collaboration-card">
+          <header class="collaboration-header">
+            <div class="collaboration-title-row">
+              <h2 class="collaboration-name">{collab.name}</h2>
+              <p class="collaboration-period">{collab.period}</p>
+            </div>
+            <div class="collaboration-meta">
+              <p class="collaboration-role">{collab.role}</p>
+              {collab.location && <p class="collaboration-location">{collab.location}</p>}
+            </div>
+          </header>
+
+          <p class="collaboration-description">{collab.description}</p>
+
+          {collab.keyLearning && (
+            <div class="collaboration-learning">
+              <p class="collaboration-learning-label">Key learning</p>
+              <p class="collaboration-learning-text">"{collab.keyLearning}"</p>
+            </div>
+          )}
+
+          <div class="collaboration-sections">
+            {collab.focus && (
+              <div class="collaboration-section">
+                <p class="collaboration-section-label">Focus areas</p>
+                <ul class="collaboration-list">
+                  {collab.focus.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {collab.impact && (
+              <div class="collaboration-section">
+                <p class="collaboration-section-label">Impact & contributions</p>
+                <ul class="collaboration-list">
+                  {collab.impact.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {collab.links && (
+            <div class="collaboration-links">
+              {collab.links.organization && (
+                <a href={collab.links.organization} target="_blank" rel="noopener noreferrer" class="collaboration-link">
+                  Organization website →
+                </a>
+              )}
+            </div>
+          )}
+        </article>
+      ))}
+    </div>
+
+    <section class="collaborations-note">
+      <p class="note-label">Note</p>
+      <p>
+        This work is ongoing and evolving. These collaborations are rooted in mutual aid, not extractive documentation. All work respects community ownership and decision-making authority.
+      </p>
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  .collaborations-page {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .collaborations-header {
+    max-width: 68ch;
+  }
+
+  .collaborations-intro {
+    margin: 0.6rem 0 0;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .collaborations-list {
+    display: grid;
+    gap: 1.2rem;
+  }
+
+  .collaboration-card {
+    border: 1px solid var(--line2);
+    border-radius: calc(var(--radius) * var(--space-scale));
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--tone-surface-strong) 56%, transparent),
+      color-mix(in srgb, var(--tone-surface) 46%, transparent)
+    );
+    padding: clamp(1.1rem, 2.2vw, 1.4rem);
+    display: grid;
+    gap: 0.85rem;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .collaboration-card:hover {
+    border-color: color-mix(in srgb, var(--line2) 140%, transparent);
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--tone-surface-strong) 66%, transparent),
+      color-mix(in srgb, var(--tone-surface) 56%, transparent)
+    );
+  }
+
+  .collaboration-header {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .collaboration-title-row {
+    display: flex;
+    items-align: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .collaboration-name {
+    margin: 0;
+    font-size: clamp(1.1rem, 2vw, 1.3rem);
+    line-height: 1.2;
+  }
+
+  .collaboration-period {
+    margin: 0;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--tone-accent-glow);
+    white-space: nowrap;
+  }
+
+  .collaboration-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.88rem;
+  }
+
+  .collaboration-role {
+    margin: 0;
+    color: color-mix(in srgb, var(--tone-text) 92%, var(--tone-muted) 8%);
+    font-weight: 500;
+  }
+
+  .collaboration-location {
+    margin: 0;
+    color: var(--tone-muted);
+  }
+
+  .collaboration-description {
+    margin: 0;
+    color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+
+  .collaboration-learning {
+    padding: 0.75rem 0.9rem;
+    background: color-mix(in srgb, var(--tone-accent) 8%, transparent);
+    border-radius: 0.4rem;
+    border-left: 3px solid var(--tone-accent-glow);
+  }
+
+  .collaboration-learning-label {
+    margin: 0 0 0.35rem;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--tone-accent-glow);
+    font-weight: 600;
+  }
+
+  .collaboration-learning-text {
+    margin: 0;
+    color: color-mix(in srgb, var(--tone-text) 92%, var(--tone-muted) 8%);
+    font-size: 0.9rem;
+    font-style: italic;
+    line-height: 1.55;
+  }
+
+  .collaboration-sections {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .collaboration-section {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .collaboration-section-label {
+    margin: 0;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--tone-accent-glow);
+    font-weight: 600;
+  }
+
+  .collaboration-list {
+    margin: 0;
+    padding-left: 1.2rem;
+    list-style: disc;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .collaboration-list li {
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  .collaboration-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 0.3rem;
+  }
+
+  .collaboration-link {
+    font-size: 0.85rem;
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 32%, transparent);
+    transition: border-color 0.2s ease;
+  }
+
+  .collaboration-link:hover {
+    border-color: var(--tone-accent-glow);
+  }
+
+  .collaborations-note {
+    margin-top: 1rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--line2);
+    border-radius: 0.5rem;
+    background: color-mix(in srgb, var(--tone-surface) 30%, transparent);
+  }
+
+  .note-label {
+    margin: 0 0 0.5rem;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--tone-accent-glow);
+    font-weight: 600;
+  }
+
+  .collaborations-note p {
+    margin: 0;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+</style>

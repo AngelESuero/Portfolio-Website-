@@ -1,0 +1,291 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+import ArchiveMusicEntryPlayer from '../../components/ArchiveMusicEntryPlayer.astro';
+import EntryMediaBlock from '../../components/EntryMediaBlock.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  getMusicManifestItemByEntryRef,
+  getMusicSequenceNeighbors,
+  type MusicEntryRef
+} from '../../data/music-manifest';
+import {
+  entryHasBody,
+  getArchiveMediumHref,
+  getEntryDisplayMedium,
+  getEntryDisplaySource,
+  getEntryDisplayStatus,
+  getEntryHref,
+  shouldShowEntryStatus,
+  sortEntriesByDate
+} from '../../lib/archive-entries';
+import { formatLongUtcDate } from '../../lib/date-formatting';
+import { getMusicEntryRef, resolveMusicManifestItems } from '../../lib/music-player';
+import { getLinkCtaLabel, providerFromUrl } from '../../lib/embed-resolver';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('entries');
+  return entries.map((entry) => ({ params: { slug: entry.slug }, props: { entry } }));
+}
+
+const { entry } = Astro.props as { entry: CollectionEntry<'entries'> };
+const { Content } = await entry.render();
+const allEntries = sortEntriesByDate(await getCollection('entries'));
+const relatedEntries = (entry.data.related_entries || [])
+  .map((slug) => allEntries.find((item) => item.slug === slug))
+  .filter(Boolean) as CollectionEntry<'entries'>[];
+const hasBody = entryHasBody(entry);
+const mediumLabel = getEntryDisplayMedium(entry.data.medium);
+const sourceLabel = getEntryDisplaySource(entry.data.source);
+const showStatus = shouldShowEntryStatus(entry.data.status);
+const statusLabel = getEntryDisplayStatus(entry.data.status);
+const externalUrl = typeof entry.data.external_url === 'string' ? entry.data.external_url.trim() : '';
+const externalProvider = externalUrl ? providerFromUrl(externalUrl) : null;
+const externalLabel = externalUrl ? getLinkCtaLabel(externalUrl, externalProvider) : '';
+const externalIsAbsolute = /^https?:\/\//i.test(externalUrl);
+const mediumHref = getArchiveMediumHref(entry.data.medium);
+const sameMediumEntries = allEntries
+  .filter((item) => item.slug !== entry.slug && item.data.medium === entry.data.medium)
+  .slice(0, 3);
+const musicEntryRef = entry.data.medium === 'music' ? (getMusicEntryRef(entry) as MusicEntryRef) : null;
+const manifestItem = musicEntryRef ? getMusicManifestItemByEntryRef(musicEntryRef) : null;
+const neighbors = manifestItem ? getMusicSequenceNeighbors(manifestItem) : null;
+const resolvedMusicItems = manifestItem ? resolveMusicManifestItems(allEntries) : [];
+const resolvedMusicItemById = new Map(resolvedMusicItems.map((item) => [item.id, item] as const));
+const musicPlayerItem = manifestItem ? resolvedMusicItemById.get(manifestItem.id) ?? null : null;
+const previousMusicItem = neighbors?.previous ? resolvedMusicItemById.get(neighbors.previous.id) ?? null : null;
+const nextMusicItem = neighbors?.next ? resolvedMusicItemById.get(neighbors.next.id) ?? null : null;
+const showManifestMusicPlayer = Boolean(musicPlayerItem);
+const showLegacyMediaBlock = !showManifestMusicPlayer
+  && (entry.data.medium === 'music' || entry.data.medium === 'video' || entry.data.medium === 'image' || externalUrl || entry.data.asset);
+const showFooterSourceLink = Boolean(externalUrl) && !showManifestMusicPlayer;
+---
+<BaseLayout title={`${entry.data.title} — Archive`} theme="archive">
+  <article class="archive-entry">
+    <nav class="archive-entry__backtrail font-archive" aria-label="Archive breadcrumbs">
+      <a href="/archive" class="archive-entry__back">← All archive</a>
+      <a href={mediumHref} class="archive-entry__back">Browse {mediumLabel}</a>
+    </nav>
+
+    <header class="archive-entry__header">
+      <p class="archive-entry__meta font-archive">
+        <span>{formatLongUtcDate(entry.data.date)}</span>
+        <span>{mediumLabel}</span>
+        <span>{sourceLabel}</span>
+      </p>
+      <h1 class="font-display text-4xl md:text-5xl">{entry.data.title}</h1>
+      <p class="archive-entry__summary">{entry.data.summary}</p>
+
+      <div class="archive-entry__details">
+        <div class="archive-entry__tags font-archive" aria-label="Entry tags">
+          {entry.data.tags.map((tag) => <span>#{tag}</span>)}
+        </div>
+        {showStatus && <span class="archive-entry__status font-archive">{statusLabel}</span>}
+      </div>
+    </header>
+
+    {showManifestMusicPlayer && musicPlayerItem && (
+      <section class="archive-entry__media">
+        <ArchiveMusicEntryPlayer
+          item={musicPlayerItem}
+          previousHref={previousMusicItem?.entryHref ?? null}
+          previousTitle={previousMusicItem?.title ?? null}
+          nextHref={nextMusicItem?.entryHref ?? null}
+          nextTitle={nextMusicItem?.title ?? null}
+        />
+      </section>
+    )}
+
+    {showLegacyMediaBlock && (
+      <section class="archive-entry__media">
+        <EntryMediaBlock entry={entry} />
+      </section>
+    )}
+
+    {hasBody && (
+      <section class="reading-prose archive-entry__body">
+        <Content />
+      </section>
+    )}
+
+    {(showFooterSourceLink || relatedEntries.length > 0 || sameMediumEntries.length > 0) && (
+      <footer class="archive-entry__footer">
+        {showFooterSourceLink && (
+          <a href={externalUrl} class="archive-entry__source-link" {...(externalIsAbsolute ? { target: '_blank', rel: 'noopener' } : {})}>
+            {externalLabel}
+          </a>
+        )}
+
+        {relatedEntries.length > 0 && (
+          <div class="archive-entry__related">
+            <p class="font-archive">Related entries</p>
+            <div class="archive-entry__related-links">
+              {relatedEntries.map((relatedEntry) => (
+                <a href={getEntryHref(relatedEntry)}>{relatedEntry.data.title}</a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {sameMediumEntries.length > 0 && (
+          <div class="archive-entry__related">
+            <p class="font-archive">More in {mediumLabel}</p>
+            <div class="archive-entry__related-links">
+              <a href={mediumHref}>Browse all {mediumLabel.toLowerCase()}</a>
+              {sameMediumEntries.map((sameMediumEntry) => (
+                <a href={getEntryHref(sameMediumEntry)}>{sameMediumEntry.data.title}</a>
+              ))}
+            </div>
+          </div>
+        )}
+      </footer>
+    )}
+  </article>
+</BaseLayout>
+
+<style>
+  .archive-entry {
+    max-width: 76ch;
+    display: grid;
+    gap: 1.3rem;
+    position: relative;
+    isolation: isolate;
+  }
+
+  .archive-entry::before {
+    content: '';
+    position: absolute;
+    inset: -0.95rem -1rem -1rem;
+    z-index: -1;
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--tone-surface) 12%, transparent);
+    pointer-events: none;
+  }
+
+  .archive-entry__backtrail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+  }
+
+  .archive-entry__back {
+    width: fit-content;
+    font-size: 0.88rem;
+    color: var(--tone-muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line2);
+  }
+
+  .archive-entry__back:hover,
+  .archive-entry__back:focus-visible {
+    color: var(--tone-accent-glow);
+    border-color: color-mix(in srgb, var(--tone-accent) 58%, transparent);
+  }
+
+  .archive-entry__header {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .archive-entry__meta {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.76rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  }
+
+  .archive-entry__meta span:not(:first-child)::before {
+    content: '·';
+    margin-right: 0.5rem;
+    color: color-mix(in srgb, var(--tone-text) 44%, var(--tone-muted) 56%);
+  }
+
+  .archive-entry__header h1 {
+    line-height: 1.08;
+  }
+
+  .archive-entry__summary {
+    margin: 0;
+    max-width: 62ch;
+    color: color-mix(in srgb, var(--tone-text) 92%, var(--tone-muted) 8%);
+  }
+
+  .archive-entry__details {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.7rem 1rem;
+  }
+
+  .archive-entry__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.38rem;
+  }
+
+  .archive-entry__tags span,
+  .archive-entry__status {
+    border: 1px solid var(--line2);
+    border-radius: 999px;
+    background: rgba(10, 14, 23, 0.52);
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+    font-size: 0.72rem;
+    padding: 0.22rem 0.5rem;
+  }
+
+  .archive-entry__media,
+  .archive-entry__body {
+    margin-top: 0.2rem;
+  }
+
+  .archive-entry__media:empty {
+    display: none;
+  }
+
+  .archive-entry__footer {
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line2);
+    display: grid;
+    gap: 1rem;
+  }
+
+  .archive-entry__source-link,
+  .archive-entry__related-links a {
+    width: fit-content;
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 42%, transparent);
+  }
+
+  .archive-entry__source-link:hover,
+  .archive-entry__source-link:focus-visible,
+  .archive-entry__related-links a:hover,
+  .archive-entry__related-links a:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 72%, transparent);
+  }
+
+  .archive-entry__related {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .archive-entry__related p {
+    margin: 0;
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  }
+
+  .archive-entry__related-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem 1rem;
+  }
+</style>

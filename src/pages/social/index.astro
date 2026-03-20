@@ -1,0 +1,156 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import rooms from '../../data/rooms';
+import type { Room } from '../../data/rooms';
+
+const ACCENT_SWATCHES: Record<string, string> = {
+  yellow: '#dcc56e',
+  blue: '#7cb8c0',
+  orange: '#d6a06b',
+  red: '#c77b73',
+  white: '#eadfc0',
+  black: '#6b6158',
+  violet: '#a28ed0',
+  indigo: '#7392c1'
+};
+const getAccentSwatch = (value?: string) => ACCENT_SWATCHES[String(value || '').trim().toLowerCase()] || ACCENT_SWATCHES.blue;
+
+const roomList = rooms as Room[];
+const isExternal = (url: string) => /^https?:\/\//i.test(url);
+---
+
+<BaseLayout title="Social Arcade — a_e.s_" description="Digital arcade rooms powered by a single data source." theme="social">
+  <section class="social-arcade">
+    <header class="social-hero">
+      <p class="social-kicker">Arcade index</p>
+      <h1>Social Rooms</h1>
+      <p class="social-dek">Rooms are modules that route you to platforms, feeds, and archive context. Open a room to activate its links and tools.</p>
+    </header>
+
+    <div class="room-grid">
+      {roomList.map((room) => (
+        <article
+          class="room-card"
+          style={`--room-accent:${getAccentSwatch(room.color || 'blue')}`}
+          data-color={room.color || 'blue'}
+        >
+          <p class="room-type">{room.room_type}</p>
+          <h2>{room.title}</h2>
+          <p>{room.description || 'Open room'}</p>
+
+          <ul class="room-machines">
+            {room.machines.slice(0, 3).map((machine) => (
+              <li>
+                <a href={machine.url} {...(isExternal(machine.url) ? { target: '_blank', rel: 'noopener' } : {})}>
+                  {machine.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <a class="room-link" href={`/room/${room.slug}`}>Open room</a>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .social-arcade {
+    max-width: 68rem;
+    margin: 0 auto;
+  }
+
+  .social-kicker {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.72rem;
+    color: var(--tone-muted);
+  }
+
+  .social-hero h1 {
+    margin: 0.35rem 0 0.72rem;
+    font-size: clamp(2rem, 4.2vw, 3rem);
+    line-height: 1.08;
+  }
+
+  .social-dek {
+    margin: 0;
+    max-width: 70ch;
+    color: var(--tone-muted);
+  }
+
+  .room-grid {
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0.72rem;
+  }
+
+  .room-card {
+    border: 1px solid color-mix(in srgb, var(--room-accent, var(--tone-accent)) 48%, var(--line));
+    border-radius: var(--radius);
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--room-accent, var(--tone-accent)) 20%, transparent),
+        color-mix(in srgb, var(--room-accent, var(--tone-accent)) 10%, var(--panel)) 34%,
+        var(--panel)
+      );
+    padding: 0.85rem;
+    box-shadow:
+      inset 0 3px 0 color-mix(in srgb, var(--room-accent, var(--tone-accent)) 76%, transparent),
+      inset 0 1px 0 color-mix(in srgb, white 7%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--room-accent, var(--tone-accent)) 14%, transparent);
+  }
+
+  .room-type {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    font-size: 0.72rem;
+    color: color-mix(in srgb, var(--room-accent, var(--tone-accent)) 78%, var(--tone-muted) 22%);
+  }
+
+  .room-card h2 {
+    margin: 0.45rem 0 0;
+    font-size: 1.05rem;
+    color: color-mix(in srgb, var(--room-accent, var(--tone-accent)) 82%, var(--tone-text) 18%);
+  }
+
+  .room-card > p {
+    margin: 0.48rem 0 0;
+  }
+
+  .room-machines {
+    margin: 0.72rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.34rem;
+  }
+
+  .room-machines a {
+    color: var(--tone-text);
+    text-decoration: none;
+  }
+
+  .room-machines a:hover,
+  .room-machines a:focus-visible {
+    color: color-mix(in srgb, var(--room-accent, var(--tone-accent-glow)) 82%, white 18%);
+  }
+
+  .room-link {
+    display: inline-flex;
+    margin-top: 0.85rem;
+    border-bottom: 2px solid color-mix(in srgb, var(--room-accent, var(--tone-accent)) 62%, transparent);
+    color: color-mix(in srgb, var(--room-accent, var(--tone-accent-glow)) 82%, white 18%);
+    text-decoration: none;
+  }
+
+  .room-link:hover,
+  .room-link:focus-visible {
+    border-color: color-mix(in srgb, var(--room-accent, var(--tone-accent-bright)) 72%, transparent);
+  }
+</style>

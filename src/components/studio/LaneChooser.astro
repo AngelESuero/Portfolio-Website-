@@ -1,0 +1,23 @@
+---
+import { STUDIO_LANES } from '../../lib/studio';
+---
+
+<section class="studio-section">
+  <div class="studio-section__header">
+    <h2>Choose a lane</h2>
+    <p>Each frame only carries the fields that belong to that content type, so the page no longer behaves like one giant generic form.</p>
+  </div>
+
+  <div class="studio-chooser">
+    {STUDIO_LANES.map((lane) => (
+      <a href={`/studio/${lane.slug}`} class="studio-lane-card">
+        <div class="studio-lane-card__topline">
+          <p class="studio-notation font-archive">{lane.mode === 'media' ? 'Media-first' : lane.mode === 'proposal' ? 'Intake sheet' : 'Text-first'}</p>
+          <span class="studio-lane-card__label font-archive">{lane.chooserLabel}</span>
+        </div>
+        <h2 class="font-display text-2xl">{lane.label}</h2>
+        <p>{lane.chooserDescription}</p>
+      </a>
+    ))}
+  </div>
+</section>

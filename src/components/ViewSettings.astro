@@ -1,0 +1,405 @@
+<div class="view-settings" data-lab-controls>
+  <button id="view-settings-open" class="view-settings-open" type="button" aria-haspopup="dialog" aria-label="Lab controls">
+    <span class="view-settings-open__full">Lab Controls</span>
+    <span class="view-settings-open__short" aria-hidden="true">Lab</span>
+  </button>
+</div>
+
+<div id="view-settings-modal" class="view-settings-modal" hidden>
+  <button type="button" class="view-settings-backdrop" data-close-view-settings aria-label="Close lab controls"></button>
+  <section class="view-settings-panel" role="dialog" aria-modal="true" aria-labelledby="view-settings-title">
+    <header class="view-settings-header">
+      <h2 id="view-settings-title">Lab Controls</h2>
+      <button type="button" class="view-settings-close" data-close-view-settings aria-label="Close">×</button>
+    </header>
+    <p class="view-settings-note">Builder tools are only visible in Lab Mode.</p>
+
+    <div class="view-settings-surface" role="group" aria-label="Surface mode">
+      <p>Surface</p>
+      <div class="view-settings-surface-options">
+        <button type="button" class="view-surface-btn" data-surface-mode="viewer">Viewer</button>
+        <button type="button" class="view-surface-btn" data-surface-mode="lab">Lab</button>
+      </div>
+    </div>
+
+    <div class="view-settings-modes" role="group" aria-label="Lab view mode">
+      <button type="button" class="view-mode-btn" data-mode="normal">Page</button>
+      <button type="button" class="view-mode-btn" data-mode="walk">Walkthrough</button>
+      <button type="button" class="view-mode-btn" data-mode="explore">Explore</button>
+    </div>
+
+    <div class="view-settings-size" role="group" aria-label="Interface size">
+      <p>Size</p>
+      <div class="view-settings-size-options">
+        <button type="button" class="view-size-btn" data-size="compact">Compact</button>
+        <button type="button" class="view-size-btn" data-size="standard">Standard</button>
+        <button type="button" class="view-size-btn" data-size="spacious">Spacious</button>
+      </div>
+    </div>
+
+    <div class="view-settings-tab-swipe" role="group" aria-label="Home tab drag">
+      <p>Home Tab Drag</p>
+      <div class="view-settings-tab-swipe-options">
+        <button type="button" class="view-tab-swipe-btn" data-tab-swipe="on">On</button>
+        <button type="button" class="view-tab-swipe-btn" data-tab-swipe="off">Off</button>
+      </div>
+    </div>
+
+    <div class="view-settings-circadian" role="group" aria-label="Circadian color rhythm">
+      <p>Color Rhythm</p>
+      <div class="view-settings-circadian-options">
+        <button type="button" class="view-circadian-btn" data-circadian-mode="auto">Auto Circadian</button>
+        <button type="button" class="view-circadian-btn" data-circadian-mode="static">Static Colors</button>
+      </div>
+    </div>
+
+    <div class="view-settings-actions">
+      <button id="view-settings-reset" type="button">Reset</button>
+    </div>
+  </section>
+</div>
+
+<script is:inline>
+  (() => {
+    const root = document.querySelector('[data-lab-controls]');
+    const openBtn = document.getElementById('view-settings-open');
+    const modal = document.getElementById('view-settings-modal');
+    const resetBtn = document.getElementById('view-settings-reset');
+    if (!root || !openBtn || !modal || !resetBtn) return;
+
+    const closeTargets = Array.from(modal.querySelectorAll('[data-close-view-settings]'));
+    const surfaceButtons = Array.from(modal.querySelectorAll('.view-surface-btn'));
+    const modeButtons = Array.from(modal.querySelectorAll('.view-mode-btn'));
+    const sizeButtons = Array.from(modal.querySelectorAll('.view-size-btn'));
+    const tabSwipeButtons = Array.from(modal.querySelectorAll('.view-tab-swipe-btn'));
+    const circadianButtons = Array.from(modal.querySelectorAll('.view-circadian-btn'));
+
+    const getApi = () => window.__modeSettings;
+    const getCircadianApi = () => window.__circadianSettings;
+    const getState = () =>
+      typeof getApi()?.getState === 'function'
+        ? getApi().getState()
+        : { surfaceMode: 'viewer', mode: 'normal', size: 'standard', tabSwipe: 'on' };
+    const getCircadianMode = () =>
+      typeof getCircadianApi()?.getMode === 'function' ? getCircadianApi().getMode() : 'auto';
+    const isLabMode = () => getState().surfaceMode === 'lab';
+    let lastUiSignature = '';
+
+    const syncPressedState = (button, selected) => {
+      if (!(button instanceof HTMLElement)) return;
+      if (button.classList.contains('is-active') !== selected) {
+        button.classList.toggle('is-active', selected);
+      }
+      const pressed = String(selected);
+      if (button.getAttribute('aria-pressed') !== pressed) {
+        button.setAttribute('aria-pressed', pressed);
+      }
+    };
+
+    const syncUi = () => {
+      const state = getState();
+      const circadianMode = getCircadianMode();
+      const signature = `${state.surfaceMode}|${state.mode}|${state.size}|${state.tabSwipe}|${circadianMode}`;
+      if (signature === lastUiSignature) return;
+      if (state.surfaceMode !== 'lab' && modal.hidden) {
+        lastUiSignature = signature;
+        return;
+      }
+
+      surfaceButtons.forEach((button) => {
+        const selected = button.getAttribute('data-surface-mode') === state.surfaceMode;
+        syncPressedState(button, selected);
+      });
+      modeButtons.forEach((button) => {
+        const selected = button.getAttribute('data-mode') === state.mode;
+        syncPressedState(button, selected);
+      });
+      sizeButtons.forEach((button) => {
+        const selected = button.getAttribute('data-size') === state.size;
+        syncPressedState(button, selected);
+      });
+      tabSwipeButtons.forEach((button) => {
+        const selected = button.getAttribute('data-tab-swipe') === state.tabSwipe;
+        syncPressedState(button, selected);
+      });
+      circadianButtons.forEach((button) => {
+        const selected = button.getAttribute('data-circadian-mode') === circadianMode;
+        syncPressedState(button, selected);
+      });
+      lastUiSignature = signature;
+    };
+
+    const syncVisibility = () => {
+      if (!isLabMode() && !modal.hidden) {
+        modal.hidden = true;
+        document.body.style.removeProperty('overflow');
+      }
+    };
+
+    const openModal = () => {
+      if (!isLabMode()) return;
+      syncUi();
+      modal.hidden = false;
+      document.body.style.overflow = 'hidden';
+    };
+
+    const closeModal = () => {
+      modal.hidden = true;
+      document.body.style.removeProperty('overflow');
+    };
+
+    openBtn.addEventListener('click', openModal);
+    closeTargets.forEach((node) => node.addEventListener('click', closeModal));
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !modal.hidden) closeModal();
+    });
+
+    surfaceButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const surfaceMode = button.getAttribute('data-surface-mode') === 'lab' ? 'lab' : 'viewer';
+        getApi()?.setSurfaceMode?.(surfaceMode);
+      });
+    });
+
+    modeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const mode = button.getAttribute('data-mode') || 'normal';
+        getApi()?.setMode?.(mode);
+      });
+    });
+
+    sizeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const size = button.getAttribute('data-size') || 'standard';
+        getApi()?.setSize?.(size);
+      });
+    });
+
+    tabSwipeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const tabSwipe = button.getAttribute('data-tab-swipe') || 'on';
+        getApi()?.setTabSwipe?.(tabSwipe);
+      });
+    });
+
+    circadianButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const mode = button.getAttribute('data-circadian-mode') || 'auto';
+        getCircadianApi()?.setMode?.(mode);
+      });
+    });
+
+    resetBtn.addEventListener('click', () => {
+      getApi()?.reset?.();
+      getCircadianApi()?.reset?.();
+    });
+
+    window.addEventListener('modesettings:change', () => {
+      syncVisibility();
+      syncUi();
+    });
+    window.addEventListener('circadian:change', syncUi);
+    syncUi();
+    syncVisibility();
+  })();
+</script>
+
+<style>
+  .view-settings {
+    display: none;
+  }
+
+  :global(html[data-surface-mode='lab']) .view-settings {
+    display: block;
+  }
+
+  .view-settings-open {
+    border: 1px solid var(--tone-line);
+    border-radius: 999px;
+    background: var(--tone-surface);
+    color: var(--tone-text);
+    padding: 0.36rem 0.74rem;
+    font-size: 0.78rem;
+    line-height: 1;
+    text-decoration: none;
+  }
+
+  .view-settings-open__short {
+    display: none;
+  }
+
+  .view-settings-open:hover,
+  .view-settings-open:focus-visible {
+    border-color: var(--tone-accent);
+    color: var(--tone-accent-glow);
+  }
+
+  @media (max-width: 640px) {
+    .view-settings-open {
+      padding-inline: 0.62rem;
+    }
+
+    .view-settings-open__full {
+      display: none;
+    }
+
+    .view-settings-open__short {
+      display: inline;
+    }
+  }
+
+  .view-settings-modal[hidden] {
+    display: none;
+  }
+
+  .view-settings-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: end center;
+    padding: 1rem;
+  }
+
+  .view-settings-backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: color-mix(in srgb, var(--tone-bg-deep) 70%, transparent);
+    padding: 0;
+  }
+
+  .view-settings-panel {
+    position: relative;
+    width: min(34rem, calc(100vw - 2rem));
+    border: 1px solid var(--tone-line);
+    border-radius: 0.86rem;
+    background: var(--tone-surface-strong);
+    color: var(--tone-text);
+    padding: 0.8rem;
+    backdrop-filter: blur(8px);
+  }
+
+  .view-settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+  }
+
+  .view-settings-header h2 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .view-settings-note {
+    margin: 0.46rem 0 0;
+    color: var(--tone-muted);
+    font-size: 0.8rem;
+  }
+
+  .view-settings-close {
+    border: 0;
+    background: transparent;
+    color: var(--tone-muted);
+    font-size: 1.3rem;
+    line-height: 1;
+  }
+
+  .view-settings-surface,
+  .view-settings-size,
+  .view-settings-tab-swipe,
+  .view-settings-circadian {
+    margin-top: 0.72rem;
+  }
+
+  .view-settings-modes {
+    margin-top: 0.75rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .view-settings-surface p,
+  .view-settings-size p,
+  .view-settings-tab-swipe p,
+  .view-settings-circadian p {
+    margin: 0;
+    color: var(--tone-muted);
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .view-settings-surface-options,
+  .view-settings-size-options,
+  .view-settings-tab-swipe-options,
+  .view-settings-circadian-options {
+    margin-top: 0.4rem;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .view-settings-surface-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .view-settings-size-options {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .view-settings-tab-swipe-options,
+  .view-settings-circadian-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .view-surface-btn,
+  .view-mode-btn,
+  .view-size-btn,
+  .view-tab-swipe-btn,
+  .view-circadian-btn {
+    border: 1px solid var(--tone-line);
+    border-radius: 0.58rem;
+    background: color-mix(in srgb, var(--tone-sky) 10%, var(--tone-surface));
+    color: var(--tone-text);
+    padding: 0.5rem 0.38rem;
+    font-size: 0.78rem;
+  }
+
+  .view-surface-btn.is-active,
+  .view-mode-btn.is-active,
+  .view-size-btn.is-active,
+  .view-tab-swipe-btn.is-active,
+  .view-circadian-btn.is-active {
+    border-color: var(--tone-accent);
+    color: var(--tone-accent-glow);
+    background: color-mix(in srgb, var(--tone-accent) 18%, transparent);
+  }
+
+  .view-settings-actions {
+    margin-top: 0.72rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .view-settings-actions button {
+    border: 1px solid var(--tone-line);
+    border-radius: 0.58rem;
+    background: transparent;
+    color: var(--tone-text);
+    padding: 0.4rem 0.62rem;
+    font-size: 0.8rem;
+  }
+
+  .view-settings-actions button:hover,
+  .view-settings-actions button:focus-visible {
+    border-color: var(--tone-accent);
+    color: var(--tone-accent-glow);
+  }
+
+  @media (min-width: 861px) {
+    .view-settings-modal {
+      place-items: center;
+    }
+  }
+</style>

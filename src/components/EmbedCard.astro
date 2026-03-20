@@ -1,0 +1,279 @@
+---
+import type { LinkHubItem } from '../data/linkhub';
+import {
+  getAuthoredFallbackExcerpt,
+  getEmbedAspectRatio,
+  getEmbedFallbackMessage,
+  getEmbedHeight,
+  getEmbedViewMode,
+  getLinkCtaLabel,
+  getProviderBadgeLabel,
+  resolveEmbed,
+  resolveInternalRoute
+} from '../lib/embed-resolver';
+
+interface Props {
+  item: LinkHubItem;
+  showResizeHint?: boolean;
+}
+
+const { item, showResizeHint: _showResizeHint = false } = Astro.props as Props;
+
+const isLinktreeUrl = (urlValue: string): boolean => {
+  try {
+    const parsed = new URL(urlValue);
+    return parsed.hostname.toLowerCase().includes('linktr.ee');
+  } catch {
+    return false;
+  }
+};
+
+const configuredEmbedUrl = typeof item.embedUrl === 'string' ? item.embedUrl.trim() : '';
+const resolvedUrl = configuredEmbedUrl || item.url;
+const resolution = resolveEmbed(resolvedUrl, item.preferredEmbed);
+const provider = resolution.provider;
+const embedUrl = resolution.embedUrl;
+const embedHeight = getEmbedHeight(provider);
+const embedAspectRatio = getEmbedAspectRatio(provider, resolvedUrl);
+const embedViewMode = getEmbedViewMode(provider, resolvedUrl);
+const hasAspectRatio = Boolean(embedAspectRatio);
+const internalRoute = resolveInternalRoute(item.url);
+const isEmbeddable = !internalRoute && resolution.embeddable && Boolean(embedUrl);
+const isExternal = /^https?:\/\//i.test(item.url);
+const isLinktree = isLinktreeUrl(item.url);
+const isUntitledLibraryLink = (() => {
+  try {
+    const parsed = new URL(item.url);
+    return parsed.hostname.toLowerCase().includes('untitled.stream') && /^\/library\/(track|project)\//.test(parsed.pathname);
+  } catch {
+    return false;
+  }
+})();
+const frameStyle = hasAspectRatio
+  ? `--embed-aspect-ratio:${embedAspectRatio}`
+  : `--embed-height:${embedHeight}px`;
+const fallbackMessage = isLinktree
+  ? "Linktree pages can't be embedded inline. Open Linktree to browse the full live stack."
+  : isUntitledLibraryLink && !configuredEmbedUrl
+    ? "Untitled library pages can't be embedded directly. Open the original link or add a dedicated /embed URL."
+  : getEmbedFallbackMessage(resolution);
+const metadataExcerpt = [item.tag ? `${item.tag} archive signal.` : '', item.year ? `Archive frame: ${item.year}.` : '']
+  .filter(Boolean)
+  .join(' ');
+const authoredFallbackExcerpt = getAuthoredFallbackExcerpt(provider, {
+  itemExcerpt: metadataExcerpt,
+  urlValue: item.url
+});
+const providerBadgeLabel = getProviderBadgeLabel(provider, item.url);
+const ctaLabel = getLinkCtaLabel(item.url, provider);
+---
+
+<article class="card hub-card" data-provider={provider || 'none'} data-view-mode={embedViewMode}>
+  <div class="hub-meta">
+    {item.tag && <span class="hub-tag">{item.tag}</span>}
+    {item.year && <span class="hub-year">{item.year}</span>}
+  </div>
+
+  <h3>{item.title}</h3>
+
+  {internalRoute ? (
+    <div class="hub-internal-preview">
+      <p class="hub-internal-badge">Internal Archive</p>
+      <p class="hub-internal-description">{internalRoute.description}</p>
+    </div>
+  ) : isEmbeddable ? (
+    <div class="hub-embed">
+      <div class:list={['hub-embed-frame', hasAspectRatio && 'has-aspect-ratio']} style={frameStyle}>
+        <iframe
+          src={embedUrl || undefined}
+          width="100%"
+          frameborder="0"
+          loading="lazy"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          allowFullScreen
+          title={`${item.title} embed`}
+        ></iframe>
+      </div>
+      <p class="hub-note lab-only">
+        If the embed fails, open the original link below.
+      </p>
+    </div>
+  ) : (
+    <div class="hub-fallback-shell">
+      <div class="hub-fallback-preview" aria-hidden="true">
+        <span>{providerBadgeLabel}</span>
+      </div>
+      <div class="hub-fallback-copy">
+        <p class="hub-fallback-badge">{providerBadgeLabel}</p>
+        <p class="hub-fallback-description viewer-only">{authoredFallbackExcerpt}</p>
+        <p class="hub-fallback-description lab-only">{fallbackMessage}</p>
+      </div>
+    </div>
+  )}
+
+  <a class="hub-link" href={item.url} {...(isExternal ? { target: '_blank', rel: 'noopener' } : {})}>
+    {ctaLabel}
+  </a>
+</article>
+
+<style>
+  .hub-card {
+    padding: 0.82rem;
+    display: grid;
+    gap: 0.68rem;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .hub-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    min-height: 1.1rem;
+  }
+
+  .hub-tag,
+  .hub-year {
+    font-size: 0.76rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  }
+
+  .hub-card h3 {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.28;
+  }
+
+  .hub-embed {
+    border: 1px solid var(--line2);
+    border-radius: 12px;
+    background: rgba(4, 7, 12, 0.62);
+    overflow-x: auto;
+  }
+
+  .hub-embed-frame {
+    width: 100%;
+    height: var(--embed-height, 300px);
+    min-height: 11rem;
+    border-radius: 12px 12px 0 0;
+    overflow: hidden;
+  }
+
+  .hub-embed-frame.has-aspect-ratio {
+    height: auto;
+    aspect-ratio: var(--embed-aspect-ratio, 16 / 9);
+  }
+
+  .hub-embed-frame iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #060911;
+  }
+
+  .hub-note {
+    margin: 0;
+    padding: 0.42rem 0.58rem;
+    font-size: 0.8rem;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+    border-top: 1px solid var(--line2);
+  }
+
+  .hub-fallback-shell {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
+    border-radius: 12px;
+    overflow: hidden;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 9%, transparent), transparent 68%),
+      color-mix(in srgb, var(--tone-surface-strong) 90%, transparent);
+  }
+
+  .hub-fallback-preview {
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
+    padding: 0.5rem 0.65rem;
+    background:
+      linear-gradient(120deg, color-mix(in srgb, var(--tone-accent) 18%, transparent), transparent),
+      linear-gradient(180deg, rgba(8, 12, 20, 0.62), rgba(8, 12, 20, 0.4));
+  }
+
+  .hub-fallback-preview span {
+    display: inline-flex;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 42%, transparent);
+    border-radius: 999px;
+    padding: 0.1rem 0.44rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tone-accent-glow);
+    background: color-mix(in srgb, var(--tone-accent) 18%, transparent);
+  }
+
+  .hub-fallback-copy {
+    padding: 0.62rem 0.72rem;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .hub-fallback-badge,
+  .hub-fallback-description {
+    margin: 0;
+  }
+
+  .hub-fallback-badge {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .hub-fallback-description {
+    font-size: 0.83rem;
+    line-height: 1.45;
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  }
+
+  .hub-internal-preview {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 22%, var(--line2));
+    border-radius: 12px;
+    padding: 0.75rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 10%, transparent), transparent 62%),
+      color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .hub-internal-badge {
+    margin: 0;
+    width: fit-content;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 42%, transparent);
+    border-radius: 999px;
+    padding: 0.12rem 0.5rem;
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--tone-accent-glow);
+    background: color-mix(in srgb, var(--tone-accent) 18%, transparent);
+  }
+
+  .hub-internal-description {
+    margin: 0;
+    font-size: 0.83rem;
+    line-height: 1.45;
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  }
+
+  .hub-link {
+    display: inline-flex;
+    width: fit-content;
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 38%, transparent);
+    font-size: 0.84rem;
+  }
+
+</style>

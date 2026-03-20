@@ -1,0 +1,241 @@
+---
+// Mini static snapshot of the LifeMapSemanticOrb.
+// Uses the same spherical projection math, rendered server-side as SVG.
+
+type Phase = 'platform' | 'emergence' | 'offering';
+
+type Region = {
+  id: string;
+  name: string;
+  phase: Phase;
+  accent: string;
+  angle: number;
+  elevation: number;
+  opens: string[];
+  route: string;
+};
+
+const REGIONS: Region[] = [
+  { id: 'resources',     name: 'Resources',     phase: 'platform',  accent: '#d8c18f', angle: 232, elevation: -18, opens: ['order', 'work', 'wellbeing'],      route: '/survival-os' },
+  { id: 'order',         name: 'Order',         phase: 'platform',  accent: '#d8c18f', angle: 308, elevation: -28, opens: ['growth', 'relationships'],         route: '/map' },
+  { id: 'work',          name: 'Work',          phase: 'platform',  accent: '#d8c18f', angle: 28,  elevation: -4,  opens: ['activity', 'society'],             route: '/work' },
+  { id: 'wellbeing',     name: 'Well-Being',    phase: 'platform',  accent: '#d8c18f', angle: 116, elevation: 22,  opens: ['growth', 'creativity'],            route: '/writing' },
+  { id: 'growth',        name: 'Growth',        phase: 'emergence', accent: '#9fd4b2', angle: 320, elevation: 10,  opens: ['creativity', 'society'],           route: '/about' },
+  { id: 'relationships', name: 'Relationships', phase: 'emergence', accent: '#9fd4b2', angle: 104, elevation: 14,  opens: ['society', 'creativity'],           route: '/contact' },
+  { id: 'activity',      name: 'Activity',      phase: 'emergence', accent: '#9fd4b2', angle: 208, elevation: -14, opens: ['creativity'],                      route: '/archive' },
+  { id: 'creativity',    name: 'Creativity',    phase: 'offering',  accent: '#c8b0e8', angle: 338, elevation: 6,   opens: [],                                  route: '/work' },
+  { id: 'society',       name: 'Society',       phase: 'offering',  accent: '#c8b0e8', angle: 138, elevation: 18,  opens: [],                                  route: '/writing' },
+];
+
+const RADIUS = 160;
+const DISTANCE = 720;
+// Static snapshot rotation (matches a nice front-facing view)
+const YAW_DEG   = 18;
+const PITCH_DEG = -12;
+
+function project(angle: number, elevation: number) {
+  const eRad = (elevation * Math.PI) / 180;
+  const aRad = (angle   * Math.PI)   / 180;
+  const yaw   = (YAW_DEG   * Math.PI) / 180;
+  const pitch = (PITCH_DEG * Math.PI) / 180;
+
+  const x0 = RADIUS * Math.cos(eRad) * Math.sin(aRad);
+  const y0 = RADIUS * Math.sin(eRad);
+  const z0 = RADIUS * Math.cos(eRad) * Math.cos(aRad);
+
+  const x1 = x0 * Math.cos(yaw) + z0 * Math.sin(yaw);
+  const z1 = -x0 * Math.sin(yaw) + z0 * Math.cos(yaw);
+  const y1 = y0;
+
+  const y2 = y1 * Math.cos(pitch) - z1 * Math.sin(pitch);
+  const z2 = y1 * Math.sin(pitch) + z1 * Math.cos(pitch);
+  const x2 = x1;
+
+  const perspective = DISTANCE / (DISTANCE - z2);
+  return {
+    x: Math.round(x2 * perspective * 10) / 10,
+    y: Math.round(y2 * perspective * 10) / 10,
+    z: z2,
+    scale: Math.max(0.72, Math.min(1.55, perspective)),
+    opacity: Math.max(0.2, Math.min(1, 0.26 + (z2 + RADIUS) / (RADIUS * 2))),
+    visible: z2 > -RADIUS * 0.98,
+  };
+}
+
+const projected = REGIONS.map((r) => ({ ...r, ...project(r.angle, r.elevation) }))
+  .sort((a, b) => a.z - b.z); // back-to-front
+
+// Build connection list (only visible → visible, once per pair)
+const connectionSet = new Set<string>();
+const connections: { ax: number; ay: number; bx: number; by: number; color: string; opacity: number }[] = [];
+
+for (const r of projected) {
+  if (!r.visible) continue;
+  for (const targetId of r.opens) {
+    const key = [r.id, targetId].sort().join('--');
+    if (connectionSet.has(key)) continue;
+    connectionSet.add(key);
+    const target = projected.find((p) => p.id === targetId);
+    if (!target || !target.visible) continue;
+    connections.push({
+      ax: r.x, ay: r.y,
+      bx: target.x, by: target.y,
+      color: r.accent,
+      opacity: Math.min(r.opacity, target.opacity) * 0.35,
+    });
+  }
+}
+
+// SVG viewBox centred at (0,0)
+const VIEW = 220;
+---
+
+<div class="nmm-wrap" aria-label="Life map orb preview">
+  <div class="nmm-inner">
+    <svg
+      viewBox={`${-VIEW} ${-VIEW} ${VIEW * 2} ${VIEW * 2}`}
+      role="img"
+      aria-labelledby="nmm-title"
+      class="nmm-svg"
+    >
+      <title id="nmm-title">Life-map orb — click to open the full atlas</title>
+
+      <defs>
+        <!-- Orb shell gradient -->
+        <radialGradient id="nmm-orb-fill" cx="44%" cy="36%" r="60%">
+          <stop offset="0%"   stop-color="rgba(255,255,255,0.04)" />
+          <stop offset="100%" stop-color="rgba(0,0,0,0)" />
+        </radialGradient>
+        <!-- Phase glows -->
+        <radialGradient id="nmm-glow-platform"  cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stop-color="rgba(216,193,143,0.55)" />
+          <stop offset="100%" stop-color="rgba(216,193,143,0)" />
+        </radialGradient>
+        <radialGradient id="nmm-glow-emergence" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stop-color="rgba(159,212,178,0.5)" />
+          <stop offset="100%" stop-color="rgba(159,212,178,0)" />
+        </radialGradient>
+        <radialGradient id="nmm-glow-offering"  cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stop-color="rgba(200,176,232,0.5)" />
+          <stop offset="100%" stop-color="rgba(200,176,232,0)" />
+        </radialGradient>
+        <filter id="nmm-soft" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="4" />
+        </filter>
+      </defs>
+
+      <!-- Orb shell ring -->
+      <circle
+        cx="0" cy="0" r={RADIUS + 2}
+        fill="url(#nmm-orb-fill)"
+        stroke="rgba(255,255,255,0.06)"
+        stroke-width="0.8"
+      />
+
+      <!-- Connections -->
+      <g aria-hidden="true">
+        {connections.map((c, i) => (
+          <line
+            x1={c.ax} y1={c.ay}
+            x2={c.bx} y2={c.by}
+            stroke={c.color}
+            stroke-width="0.9"
+            stroke-opacity={c.opacity}
+            stroke-dasharray="3 5"
+          />
+        ))}
+      </g>
+
+      <!-- Nodes back-to-front -->
+      {projected.filter((r) => r.visible).map((r) => {
+        const nr = Math.round(r.scale * 12);
+        const glowR = Math.round(r.scale * 24);
+        return (
+          <g
+            class="nmm-node"
+            transform={`translate(${r.x},${r.y})`}
+            style={`opacity:${r.opacity.toFixed(2)};`}
+            data-region={r.id}
+          >
+            {/* phase glow */}
+            <circle
+              cx="0" cy="0"
+              r={glowR}
+              fill={`url(#nmm-glow-${r.phase})`}
+              filter="url(#nmm-soft)"
+            />
+            {/* node shell */}
+            <circle
+              cx="0" cy="0"
+              r={nr}
+              fill={`rgba(8,13,22,0.7)`}
+              stroke={r.accent}
+              stroke-width={r.scale > 1.1 ? 1.4 : 0.9}
+              stroke-opacity="0.72"
+            />
+            {/* label */}
+            <text
+              y={nr + 11}
+              text-anchor="middle"
+              class="nmm-label"
+              style={`font-size:${Math.round(r.scale * 9)}px; fill:${r.accent}; fill-opacity:${(r.opacity * 0.9).toFixed(2)};`}
+            >{r.name}</text>
+          </g>
+        );
+      })}
+    </svg>
+  </div>
+
+  <a href="/map" class="nmm-cta" aria-label="Open the full atlas" data-astro-reload>Open full atlas →</a>
+</div>
+
+<style>
+  .nmm-wrap {
+    position: relative;
+    border-radius: 1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
+    background:
+      radial-gradient(ellipse 80% 70% at 50% 40%, color-mix(in srgb, var(--tone-accent) 5%, transparent), transparent 70%),
+      color-mix(in srgb, var(--tone-bg) 93%, transparent);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .nmm-inner {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .nmm-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .nmm-label {
+    font-family: var(--font-display, sans-serif);
+    letter-spacing: 0.02em;
+    pointer-events: none;
+  }
+
+  .nmm-node {
+    transition: opacity 160ms ease;
+    cursor: pointer;
+  }
+  .nmm-node:hover { opacity: 1 !important; }
+
+  .nmm-cta {
+    display: block;
+    padding: 0.45rem 1rem 0.6rem;
+    font-size: 0.75rem;
+    color: color-mix(in srgb, var(--tone-accent-glow) 70%, transparent);
+    text-decoration: none;
+    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 8%, var(--line2));
+    width: 100%;
+    text-align: right;
+  }
+  .nmm-cta:hover { text-decoration: underline; }
+</style>

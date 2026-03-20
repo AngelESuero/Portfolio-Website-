@@ -1,0 +1,230 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const experiments = [
+  {
+    id: 'chess',
+    label: 'Chess Lab',
+    description: 'An in-progress experiment with engine analysis and opening theory — thinking through the game structurally.',
+    href: '/chess',
+    status: 'active',
+    tag: 'Game / Logic'
+  },
+  {
+    id: 'meditation',
+    label: 'Meditation Tracker',
+    description: 'Logging stillness. A small tool for tracking sit sessions and noting what surfaces.',
+    href: '/meditation-tracker',
+    status: 'active',
+    tag: 'Practice / Tool'
+  },
+  {
+    id: 'ai-waves',
+    label: 'AI Waves Visual',
+    description: 'An alternate visual lens on the AGI timeline — wave interference patterns as metaphor.',
+    href: '/ai-waves',
+    status: 'draft',
+    tag: 'Visual / AGI'
+  },
+  {
+    id: 'survival-support',
+    label: 'Survival Support',
+    description: 'Practical support planning and triage. The version of Survival OS that faces outward.',
+    href: '/survival-support',
+    status: 'active',
+    tag: 'Tool / Civic'
+  },
+  {
+    id: 'pledge',
+    label: 'AI Accountability Pledge',
+    description: 'The commitment — civic and measurable. What it means to work with AI responsibly.',
+    href: '/ai-accountability-pledge',
+    status: 'active',
+    tag: 'Civic / Ethics'
+  },
+  {
+    id: 'env-weight',
+    label: 'Environmental Weight of AI',
+    description: 'An accounting of the physical cost of intelligence at scale — energy, water, land.',
+    href: '/environmental-weight-of-ai',
+    status: 'draft',
+    tag: 'Research / Environment'
+  },
+];
+---
+
+<BaseLayout
+  title="Elsewhere — Tinker Space"
+  description="Experimental projects, half-formed ideas, and open labs."
+  theme="archive"
+>
+  <div class="elsewhere-shell">
+    <header class="elsewhere-header">
+      <p class="elsewhere-kicker">Tinker Space</p>
+      <h1 class="elsewhere-title">Elsewhere</h1>
+      <p class="elsewhere-dek">
+        The experimental zone. Half-built tools, open questions, side investigations.
+        Nothing here is final — that's the point.
+      </p>
+    </header>
+
+    <div class="elsewhere-grid">
+      {experiments.map((item) => (
+        <a class="elsewhere-card" href={item.href} data-status={item.status}>
+          <div class="elsewhere-card__topline">
+            <span class="elsewhere-card__tag">{item.tag}</span>
+            {item.status === 'draft' && (
+              <span class="elsewhere-card__draft">Draft</span>
+            )}
+          </div>
+          <h2 class="elsewhere-card__label">{item.label}</h2>
+          <p class="elsewhere-card__desc">{item.description}</p>
+          <span class="elsewhere-card__arrow" aria-hidden="true">→</span>
+        </a>
+      ))}
+    </div>
+
+    <footer class="elsewhere-footer">
+      <p>More experiments get added as they get started — not when they're done.</p>
+      <a href="/" class="elsewhere-back">← Back home</a>
+    </footer>
+  </div>
+</BaseLayout>
+
+<style>
+  .elsewhere-shell {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: clamp(2rem, 5vw, 4rem) 1.25rem clamp(3rem, 6vw, 5rem);
+  }
+
+  .elsewhere-header {
+    margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .elsewhere-kicker {
+    margin: 0 0 0.6rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--tone-accent);
+  }
+
+  .elsewhere-title {
+    margin: 0 0 0.85rem;
+    font-size: clamp(2rem, 6vw, 3.2rem);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+  }
+
+  .elsewhere-dek {
+    margin: 0;
+    max-width: 52ch;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--tone-muted);
+  }
+
+  .elsewhere-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .elsewhere-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding: 1.1rem 1.1rem 1rem;
+    border-radius: 14px;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+    background: color-mix(in srgb, var(--tone-surface) 88%, transparent);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 150ms ease, transform 150ms ease, background 150ms ease;
+  }
+
+  .elsewhere-card:hover,
+  .elsewhere-card:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 42%, transparent);
+    background: color-mix(in srgb, var(--tone-accent) 5%, var(--tone-surface));
+    transform: translateY(-2px);
+  }
+
+  .elsewhere-card[data-status='draft'] {
+    opacity: 0.75;
+  }
+
+  .elsewhere-card__topline {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .elsewhere-card__tag {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--tone-accent);
+  }
+
+  .elsewhere-card__draft {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--tone-muted) 30%, transparent);
+    color: var(--tone-muted);
+  }
+
+  .elsewhere-card__label {
+    margin: 0;
+    font-size: 1.05rem;
+    line-height: 1.3;
+  }
+
+  .elsewhere-card__desc {
+    margin: 0;
+    font-size: 0.86rem;
+    line-height: 1.6;
+    color: var(--tone-muted);
+    flex: 1;
+  }
+
+  .elsewhere-card__arrow {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: color-mix(in srgb, var(--tone-accent-glow) 60%, transparent);
+    transition: transform 150ms ease, color 150ms ease;
+  }
+
+  .elsewhere-card:hover .elsewhere-card__arrow {
+    transform: translateX(3px);
+    color: var(--tone-accent-glow);
+  }
+
+  .elsewhere-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding-top: 1.5rem;
+    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 8%, var(--line2));
+    font-size: 0.84rem;
+    color: var(--tone-muted);
+  }
+
+  .elsewhere-back {
+    color: color-mix(in srgb, var(--tone-accent-glow) 70%, transparent);
+    text-decoration: none;
+  }
+  .elsewhere-back:hover { text-decoration: underline; }
+</style>

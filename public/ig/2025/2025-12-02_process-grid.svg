@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1500" viewBox="0 0 1200 1500">
+  <defs>
+    <pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="1.2" fill="#4b5563"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="1500" fill="#020617"/>
+  <rect width="1200" height="1500" fill="url(#dots)" opacity="0.35"/>
+  <text x="100" y="190" fill="#f8fafc" font-size="54" font-family="Arial, sans-serif" font-weight="700">2025 Process Grid</text>
+  <text x="100" y="262" fill="#f59e0b" font-size="30" font-family="Arial, sans-serif">Local-only archive mode</text>
+</svg>

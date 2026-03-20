@@ -1,0 +1,890 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+type Layer = 'self' | 'confidence' | 'community' | 'love';
+
+interface Piece {
+  number: string;
+  title: string;
+  youtubeId: string | null;
+  content: string;
+  pullQuote?: string;
+  layer: Layer;
+  type: 'poem' | 'prose' | 'title';
+}
+
+const layerLabels: Record<Layer, string> = {
+  self:       'Self-care',
+  confidence: 'Confidence',
+  community:  'Community',
+  love:       'Love',
+};
+
+const pieces: Piece[] = [
+  {
+    number: "1",
+    title: "I lost • but in that I won",
+    youtubeId: "l07lUPcYRSY",
+    layer: 'self',
+    type: 'poem',
+    pullQuote: "I don't need any of you to be me.",
+    content: `FOUNDATION #1
+
+I don't need any of you to be me.
+FUCK YOUR WHITE GOVERNMENTAL FASCISTIC TRAINING.
+I'LL DIE FOR MYSELF.`
+  },
+  {
+    number: "2",
+    title: "didn't think I would be here",
+    youtubeId: null,
+    layer: 'confidence',
+    type: 'title',
+    content: ''
+  },
+  {
+    number: "3",
+    title: "Made Me Confused",
+    youtubeId: "tQp95mLpND4",
+    layer: 'community',
+    type: 'prose',
+    pullQuote: "Always confused. Always forgotten.",
+    content: `!!!TOGETHER!!!
+
+Always confused. Always forgotten. Always an estranged memory but then again who ever remembers me? Who has the time? I'm alone. I could die. At any moment. Such short notice. One train a day. Three trains now. Fight my forgotten. Don't stretch it out. Don't break down. You're a machine. You're a monster. Twelve push-ups now. Who could need you. You got twenty-one responsibilities and you still don't know how? To love. I don't understand the problem. I don't understand how I'm not aware enough to handle gossip. I was a lonely kid. And now I got a heart? And it's throbbing? Seeking peace pain don't mean I'm ceased. I could keep going if you would swallow it down and let me. Why can't I? own? up? How come I'm not a man! I fought some battles. I've made some demands. But we have to leave and separate. Otherwise the same fate will always be the same fate. There's more pain waiting for you on the other side. Goodbyes.
+
+¡¡¡ALONE¡¡¡
+
+I found it. Hi, here I am again to tell you that I miss you but I can't handle any situation where I'm the one held responsible for my decisions because I love myself. If only you saw it from my perspective you would see how I'm the victim and how she hurt me the most. You know how this goes All-Ready.
+
+Two people hurt and then someone's making spaghetti. Time clicks on until the pain breaks you down. Till you can't fight it now. You wonder why these words survive and I can't recall them at ease. It's easier to be authentic and myself when there's no one judging me.
+
+Who's judging you?
+
+You know woman, what they gonna do. See someone like me and think little.
+
+Are you talking about you?
+
+Huh? Who, me?
+
+Yes, you. This ain't ready.
+
+~GRIEVING~
+
+Man I hate bleeding. That's why I don't like feeling. <60% water> But that also makes me a loner and that's something that I have never been able to handle.
+
+I guess I got to blame myself now. Wow. I'm alive. It's on me to heal my heart. Wow.`
+  },
+  {
+    number: "4",
+    title: "No Home",
+    youtubeId: "Qt-31QTn83I",
+    layer: 'self',
+    type: 'poem',
+    pullQuote: "Painful emotions don't go anywhere.",
+    content: `Painful emotions don't go anywhere,
+No matter how long you avoid them,
+they still persist,
+and all that emotional charge
+can get stuck on carpets and walls.
+Thank you 21 Roseville Avenue.`
+  },
+  {
+    number: "5",
+    title: "didn't think it was OK to say things",
+    youtubeId: null,
+    layer: 'confidence',
+    type: 'title',
+    content: ''
+  },
+  {
+    number: "6",
+    title: "STAY OR FALL: Painful Devotion",
+    youtubeId: "H0UDJniOpEo",
+    layer: 'love',
+    type: 'poem',
+    pullQuote: "We're black. We're blank. We're lost. Welcome home.",
+    content: `My Messiah nature takes hold of me.
+Visions of doors opening for the first time.
+Drunken wails in half empty bar halls.
+Men of broken dreams take center stage.
+Dance now among those robbed of love in the name of love.
+Laugh wholeheartedly while singers scream,
+"EPOCH OF THE OCEAN CARRERS.
+FEED ME POISON AND ILL HAVE YOU ON THE EDGE OF YOUR SEATS."
+We're black.
+We're blank.
+We're lost.
+Welcome home.
+
+Three years time, we'll all be free.
+And I'll have what I'm wishing for.`
+  },
+  {
+    number: "8",
+    title: "it's all good though",
+    youtubeId: null,
+    layer: 'self',
+    type: 'title',
+    content: ''
+  },
+  {
+    number: "9",
+    title: "Push Me, Again, This Project isn't —",
+    youtubeId: "XzO_PpeZdKo",
+    layer: 'confidence',
+    type: 'poem',
+    pullQuote: "Push me again, why don't you, one more.",
+    content: `I have my issues,
+but at least you knew them,
+Push me again, why don't you,
+one more.`
+  },
+  {
+    number: "10",
+    title: "PrettyStars",
+    youtubeId: "3t6bjwTfgg0",
+    layer: 'love',
+    type: 'poem',
+    pullQuote: "So much for so little.",
+    content: `So much for so little
+look up and you can imagine
+a bitter reality.`
+  },
+  {
+    number: "11",
+    title: "You're Not Alone",
+    youtubeId: "9eJ2AShPYH0",
+    layer: 'community',
+    type: 'title',
+    content: ''
+  },
+  {
+    number: "12",
+    title: "SCRAPS AFTER HEARTBREAKS: Apathy & Longing",
+    youtubeId: "klH9YFDg4Gw",
+    layer: 'love',
+    type: 'prose',
+    pullQuote: "Love prevails and lessons learned.",
+    content: `Move away from your pain at all costs / it wasn't worth the stress and obedience.
+
+Who are you in this world / seeking savage moments of clarity and confusion. Car full of weed activating my judgmental dillusions.
+
+I'll be the one to take the pain and keep moving. My biggest issue was being quiet about it, I guess I ended that, I was acting so stupid.
+
+"Who's him?," —→ fuck him, HOW YOU DOING? Conversations like this got me doubting myself.
+
+People were making me out to be an enemy when I just wasn't speaking up for me. I was nervous and afraid and there's no excuse for that shit inside, I'm just a sensitive guy, my intentions were pure.
+
+I don't really care what your experience was. I don't really care about your friends or my friends and their opinion. Either way I'm here today. MAKING AND CREATING MUSIC THATS GONNA GO GET ME.
+
+Love prevails and lessons learned. This won't be happening again. Until I drop the next video. See you until then, babayh.`
+  },
+  {
+    number: "13",
+    title: "Day 4",
+    youtubeId: "sDRYHJWnMjQ",
+    layer: 'self',
+    type: 'title',
+    content: ''
+  },
+  {
+    number: "14",
+    title: "NO FEAR: Anger & Lust (PROD. @east303buddy)",
+    youtubeId: "78sekf580CE",
+    layer: 'self',
+    type: 'poem',
+    pullQuote: "I'm alive.",
+    content: `Fear is poison
+pain and pleasure
+Some people get off on it
+I try to stay away.
+Only place I'm comfortable is isolation.
+Truthfully.
+
+I'm alive.`
+  }
+];
+---
+
+<BaseLayout title="The Art of Survival — Work" theme="work">
+  <div class="survival-entry">
+    <a href="/work" class="back-link">← Back to Work</a>
+    <h1 class="survival-title">The Art of Survival</h1>
+    <p class="survival-meta">2023 · Published · Digital Art, Music Production, Poetry</p>
+    <img src="/images/work/art-of-survival/isolation.jpg" alt="The Art of Survival" class="cover-image" width="1200" height="400" />
+
+    <div class="intro">
+      <p>The Art Of Survival is a collection of biographical and sometimes fantastical digital art and music that represents what survival feels like for me, a kid from Newark NJ, when I removed myself from my family, living on my own during my junior and senior year of college.</p>
+      <p>Each experience was a novel attempt in expressing my experience. I had no skill with digital art prior to starting. I downloaded Instagram and just started creating with visuals, some of my music, and music that mattered to me in the moment.</p>
+      <p>The story is one of generational curses and is my attempt at trying to understand and grow into the person I want to become: an artist, a leader, a better lover, and a better person.</p>
+
+      <div class="layers-key">
+        <span class="layer-key layer-key--self">Self-care</span>
+        <span class="layer-key layer-key--confidence">Confidence</span>
+        <span class="layer-key layer-key--community">Community</span>
+        <span class="layer-key layer-key--love">Love</span>
+      </div>
+    </div>
+
+    <div class="pieces-container">
+      {pieces.map((piece) => (
+        <div class={`piece piece--${piece.type} piece--layer-${piece.layer}`}>
+
+          {/* Title-only pieces — no video, no text */}
+          {piece.type === 'title' && (
+            <div class="piece__gap">
+              <span class="piece__gap-number">{piece.number}.</span>
+              <span class="piece__gap-title">{piece.title}</span>
+              {piece.youtubeId && (
+                <iframe
+                  src={`https://www.youtube.com/embed/${piece.youtubeId}`}
+                  title={piece.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                  class="piece__gap-video"
+                ></iframe>
+              )}
+            </div>
+          )}
+
+          {/* Poem pieces — centered column */}
+          {piece.type === 'poem' && (
+            <div class="piece__poem-wrap">
+              <div class="piece__poem-header">
+                <span class={`piece__layer-tag piece__layer-tag--${piece.layer}`}>{layerLabels[piece.layer]}</span>
+                <span class="piece__number">{piece.number}.</span>
+                <h2 class="piece__title">{piece.title}</h2>
+              </div>
+              <div class="piece__poem-body">
+                {piece.youtubeId && (
+                  <div class="piece__poem-video">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${piece.youtubeId}`}
+                      title={piece.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                )}
+                <div class="piece__poem-text">
+                  {piece.content.split('\n').map((line) => (
+                    <p>{line || <>&nbsp;</>}</p>
+                  ))}
+                </div>
+              </div>
+              {piece.pullQuote && (
+                <div class="piece__pull-quote">
+                  <p>{piece.pullQuote}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Prose pieces — full split layout */}
+          {piece.type === 'prose' && (
+            <div class="piece__prose-wrap">
+              <div class="piece__prose-header">
+                <span class={`piece__layer-tag piece__layer-tag--${piece.layer}`}>{layerLabels[piece.layer]}</span>
+                <span class="piece__number">{piece.number}.</span>
+                <h2 class="piece__title">{piece.title}</h2>
+              </div>
+              <div class="piece__prose-grid">
+                <div class="piece__prose-video">
+                  {piece.youtubeId && (
+                    <iframe
+                      src={`https://www.youtube.com/embed/${piece.youtubeId}`}
+                      title={piece.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowfullscreen
+                    ></iframe>
+                  )}
+                </div>
+                <div class="piece__prose-text">
+                  {piece.content.split('\n').map((line) => (
+                    <p>{line || <>&nbsp;</>}</p>
+                  ))}
+                </div>
+              </div>
+              {piece.pullQuote && (
+                <div class="piece__pull-quote piece__pull-quote--prose">
+                  <p>{piece.pullQuote}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+        </div>
+      ))}
+    </div>
+
+    <div class="outro">
+      <p class="outro__statement">I was completely alone for the first time in my own life.</p>
+      <div class="outro__body">
+        <p>The isolation project is an amalgamation of digital art and music that I, Angel Suero, created while living alone in my own apartment during the years of 2021–2023.</p>
+        <p>I didn't trust any of my tight-knit family to lean on. I broke up with my long term girlfriend in a grim and messy way. I had removed myself from many of the mutual friends we shared.</p>
+        <p>That was as immensely scary as it was eye-opening to who I really am.</p>
+      </div>
+      <p class="outro__credit"><em>Originally created for Roy Nathanson's Spring 2023 arts workshop "Creating a Full-Length Text/Music Performance and Recording."</em></p>
+    </div>
+  </div>
+
+  <div class="photo-backdrop">
+    {(() => {
+      const imagePaths = [
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfA_yIPk2by8WnEh_gZsYKMM5hjTR7u9QO8MX3iS0FchtwR.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDq638oSM4IyBr9gv2PmWunOTmott-vfAzoZBwAWBAgyAT.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfBB-XtMpEhHf9xiRVj6J6K2j0pbNObOCBXI5-qD9L8b9ax.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfBuYxp1yavJvtaADO_9BpKHD2wP1Qove2mVIAnSpMShPuo.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfCdnEZV51beS5uCjDnJogHXeAazuz-Hm8QA6HafV1nP14S.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfDaz3EPpC7l_tpSeHXEFxK0rIHWfPkuNoUUCa-m20H_FKp.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDNikdOuoBWSXn4TBW8nWylPkBCyOrtCM0hMA-B_nwldZQ.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfCGpNwHmXVfsd6PZDpN_RFdyVmxqPEpkTEFdIP0aNlUQ5k.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfC_sSwsIajlRonT_gtUt4_3q4XnRZwKGyqlwuDwV3K58Yn.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfBxZkZFx08aRNBbrr1M47S_Ka0VretMjj5xWkAojjoFhar.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfAx3gnXQYrK_twGaML9BpJUaeujzmicUSffITmEUxBlexy.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDlLY9CLbpk9V0hv0YGbYQ1NE9FqmySZc-tBlxyl6zLvd8.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfCT6p0GoTD4ymbagj9UG2gN4YeJB16hHa2D8nzVrjE4WG_.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDDlPA5Sjnk8WlKHN_D8nJAmpnk-fMDdDgN8rQYg10nYNm.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfDq1UfufKCGr3UviSW-BrVsDrpWX3_ahYRZn8h4aiXJr6j.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfCx8sTgGPkFQZLl_iD2oFBSQis_QJq2kA3r4kcd7nPX6WR.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfA_6bN4SXyoQIOlcra-Ma9cK6NeytgzE3aMtClcYSZHMBr.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Well-Being_ Angel/IMG_0603.JPG",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfB4JWxFxif2g6zsOR56C8vLnUN1LIFfziTpStv5JwVNBOs.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfBp9qa7QYlVxy4BiBUB_rLOz3xzTx6LkRyTTUm039dte4C.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfD_0w6aaQ52Ux3d0ioZb-2eiNwrZFPiq6uVMNtcni2sECM.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfBSq1m1WIt473l1T94EFTyMC95FbdqxFIYXCMyZQXMGbaL.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfD1qZGa6B6GQca7NnQDVYambFC7CPWcSCdwxH-iDd5-igm.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDa5r7Ketbr8Rxex0gnZ_3IkKJsQwMfvg-6FeGwPU42_NQ.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfCH4nnmNO-ji0JF3r4BtibCUz3TfqsLEBZW2wj5i-Wmt6E.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfC9KagLSJTw-I72bTjAK99jW7gjfBpZ71FY3_myUsBlPkb.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfD_LfIQ6CtkNs-SRGSa0V0c_iKHum425bsA1nRYFU_cqjv.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfByWAmV4ArtZ5xOUI8wYxY5LxafU0Y0B3WO6sQQfLHhGNJ.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfCm2HkTkbTNg8tXEXa3eoPlFT8pg5lTcCK_50UOXKLHDep.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfCTowzX0SEkH_kwCR-lqi93Rf_o-SJOz8V8iYrJxbDhkqO.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfDRY39_fdd23qBSLPtWwOs7WNXx3NEqqQt0Sk0MFuvPedy.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfAKle1YgM8JsqTp1huFxy0zbBoxRvjTRDjug_Rd85CmdX8.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDQZPTehxVhnks9-iHqwiLDnaz8EWY7l6wO2IIkwALmDNS.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfBod61Q67VxSBIkB0XuHSEJL3djoetUZk2a2JJsNMpovCE.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfCFv6zxGLBwHvp-8B-2tc45WSwURAMYXNpVeLTRbD9k9-W.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfAqO2tDGUL3dMV_4JzJVXVu_udAGFW9MXkjlFGTpcH6-ri.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfBfj3Zgth2xRG0jzahs3kd2lDnMyx3jPtH6ZUhunHLCVem.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfCCVYU48Xwk2a-8vopZpnHv44SG8LcYn-FuPkdnbdrUJ8h.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Instagram Archived Posts(1)/AfCFQv2pAuVnXKTgeoiD2sgF0j88QERJMrZZvbFqWzoa4A8.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfDorwiDCbBRdTyXSo_DbRN4wcRHVE5CskBNIjQ4FPFBCkP.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfDbq-mLPpUmXGKvRGmPHIsvZYf59QKxftYuzW6Rc6QOP2N.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDCU0mbtHqMz_UcqBilgNHs55DRMWBTjOu_CUnGzyfNNRq.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfDvsT1fhDKys4t_W1ps6hEJ-Sl814FR4IGBWxEEB7eX_kA.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfBv1LJpDgEzYIEjHuBdJE6cZhBDqEcwGyKvwHzbYVFsjJs.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfAt-T7Kv-EwvAO2Ki2ZJajKyzZkQ3_3-w6yROl6Ts3AL9L.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfAQ37WRxE8iwf7Dir3xm0Tr8N27LXT8oW8VvypatMsyGeM.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfBPe5lH0MHcLEprUCKA86PkN0YDWsDCeS2KbHrgXEEdWOu.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfCrf8RnRJ45jMm1xN1cVpVS-FD_RNKDvkhgTbmb9KONNZ1.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfCJ3cQv9Igm0BGdAy7pUlvosqgzIS7RtcOoBsNp8-Zov6A.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfCI1IENFBY3GEdiuZoHqOWKR3WOETG-uV3VivukYrkMplr.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDzQ5JNWJI834p27jGojI3Oz8lMZUDgi7rswHueRqO_XuG.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDhs3D0lVpVV6GIn6Se-wBf_a--ibFYPzbFlE703iA3ywG.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfBpR0TZLJgHjC0wzvJh_eHPoCWsxG68W9_gjJHROaKE1oI.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfAN_A-cdpA8uc922-8c8HDN2yr9VyH_Omt-Fl67Gif-MPl.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfCixtq1btxq6OcHkO4by-UWKJ6Ol4iVxU-_hBUqonjgoeY.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfA4mV0cS1ih8yqaZFCFCDwnnHF_MyCLTYlSTA5RQQM87AP.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfDE4n7S2_jZQ3Q1-KS9qsgjZUnsx61XYjZhG_3nsxHfTgY.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfCMBUH0qUyLyoGJqGBZ6lzk60wOSfIS2GuPJe5hxQSXtrP.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfBnFqrMR-qoFTk14SBhvxzTfzMarxT6vizX0AyZlzdBVCZ.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfC4x9pUlE8wk7YuBvBAdkSvBnMqd5Zu2fi8e2lVH2ZHUlk.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Well-Being_ Angel/IMG_0840.JPG",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfBQHkpOv_rVFkk8GE0Rt8egm3Z9XTuIxMuYriOMy9uieZX.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfAhNN4ceMcg-dxrRNpWQn96pGl0RB_ilfMoBXiA3VaVO48.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfBhaq4y2Cjisz1yswBvzZzSoTFA2Yi9nOa7B9NBqZZH5tB.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDgUavKVBJZ-hXyMJyRYhRUOUGnSL6nr1j0VbRqL1z2TfH.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfC56X5XIKcVaPGIgM3xIxTO7rpjsvvd_nr9AlEzenqxHVV.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfCocd4k20KFYSEOCZqqPStXPozrnh-6boGOcy39vT03yXZ.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDzYAeiS3gffKCct5mXEaOkHE1kmvhjuZ3_vJhQ4-wWGPr.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfAodQRtcpS8pz09oYUMCTf3uVYJu7hDdAjTQap7-Sq9Piu.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfA9vhBjOuhw7EUFZNo8X7XbPJxlAPojB97bA4Y15NgLouL.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDsJBgNokX51duksE4GhJ53Z7Rpw4UT1Vx0IlUIDL75-_e.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfBeL-1vRdW2O0TA7TJO2W3jxnZvK8FDqWaGtf8m2PSbiiZ.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfDO9yIARL8X27I65XelPDgICkXt35LphNyMbAKS1j78zhS.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDMDmDxIZJTmhC1JebsbqfTONnW4XtUw2jokJFaTcr-NVo.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfBXhCfuYcDbYdBVkU4J1Q3ii5Glta-LD3OyLl_yF530owc.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfBuTIP7F25c5r1YgmHaVvC4bHWUDmjfIFxxncaovYWEFm9.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfD3dtW4qLUQ1cI2gzWo4S6H-wIuW_gA2K8lInkFO53AAzp.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfD061-P3m-nRqzd2nfrrpvLL93jxrjE9A4FqX2IiX8nDXa.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Well-Being_ Angel/IMG_0844.JPG",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDR3qf7vQKV9Ntf8S3-sgZBV5MkF6A8WCgK2oKOEZK-aap.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDvJHwVVGcFYvuSdTqtFoZrwAH8flzYD8H--p5DN-rEUbj.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDJIbDDZNhJEpiNwa83G4op-gd9JPiZb3E_BL-mEDV6SRM.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfBP8p3FEXryzUSfOT0qfjFIjS4Lgbe3G_dzVKj1h5Ef071.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfAaJKQQl6LB7hj4DgeU1Az9bbUKS2FlJhNpGLDowyTVbA9.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfDBtcXBgZGN7eFU1hcXsXloVj9PPzZEIxAnRyl41HieZ1k.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfAQYsKcIbKI5ZO4mcGz_U07Z8_fx6fp6UHJxCZ9PBWKz0o.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfCIrpFpaOJQByvi8Tc9QPqFx5sK0VPtb1vpxjdbgRZ2oVr.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDOqE1r4s_jJ1ZRvEw5_Y2U_K9NmUwmziIq3QOoq4lBUyK.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Well-Being_ Angel/IMG_1938.JPG",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfBDNz0hfnJmOEPEfbqfDmF02BwiVhlHsaZqa_I_u7JjpQd.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfBwwWKhIo0cIMrhzjxXFa-jPm1AT6xFwz22EUAAETOzRvL.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDJSzU2iY663iZgAlGITcr145jXGxAZIRQFGoZwMAtTELB.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfA8LQhsiprv4fVYFcWcMIBc-7Ekog3_cQ1yJ15r3NWXD4n.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfCxn3KXfrAMwpL7q62aJYpuAx0j9CDGJOmfN6oTzP2n_R2.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfB-5mtfdydmvfho5_2Qi6FUdT-IdYOPW8OW8nm1M-BE8hm.jpg",
+        "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfAPpXfjbaitZFoYB78esH0yJavEX03jHcBPVKTOSE0FIoZ.jpg"
+      ];
+
+      return imagePaths.map((src, idx) => {
+        const rotation = (Math.sin(idx * 12.9898) * 43758.5453 % 1) * 30 - 15;
+        const scale = 0.7 + (Math.cos(idx * 78.233) * 43758.5453 % 1) * 0.4;
+        const xPercent = (Math.sin(idx * 23.456) * 43758.5453 % 1) * 85;
+        const yPercent = 35 + (Math.cos(idx * 67.890) * 43758.5453 % 1) * 50;
+        const duration = 6 + (Math.sin(idx * 34.567) * 43758.5453 % 1) * 4;
+        const delay = (Math.cos(idx * 56.789) * 43758.5453 % 1) * 3;
+
+        return (
+          <div
+            class="photo-card"
+            style={{
+              left: `${xPercent}%`,
+              top: `${yPercent}%`,
+              transform: `rotate(${rotation}deg) scale(${scale}) translate(-50%, -50%)`,
+              animationDuration: `${duration}s`,
+              animationDelay: `${delay}s`
+            }}
+          >
+            <img
+              src={src}
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        );
+      });
+    })()}
+  </div>
+
+  <div class="falling-line"></div>
+
+  <script>
+    const updateLineHeight = () => {
+      const pageHeight = document.documentElement.scrollHeight;
+      document.documentElement.style.setProperty('--page-height', `${pageHeight}px`);
+    };
+
+    const syncLineWithScroll = () => {
+      const line = document.querySelector('.falling-line');
+      if (!line) return;
+
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollProgress = scrollHeight > 0 ? window.scrollY / scrollHeight : 0;
+
+      // Position the line based on scroll progress
+      const scrollDistance = scrollProgress * (document.documentElement.scrollHeight - window.innerHeight);
+      line.style.transform = `translateX(-50%) translateY(${scrollDistance}px)`;
+    };
+
+    updateLineHeight();
+    window.addEventListener('resize', updateLineHeight);
+    window.addEventListener('scroll', syncLineWithScroll, { passive: true });
+  </script>
+</BaseLayout>
+
+<style>
+  .survival-entry {
+    position: relative;
+    z-index: 10;
+    isolation: isolate;
+  }
+
+  .back-link {
+    font-size: 0.85rem;
+    text-decoration: underline;
+    opacity: 0.7;
+  }
+
+  .survival-title {
+    margin: 0.5rem 0 0.25rem;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-family: var(--font-display, inherit);
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .survival-meta {
+    font-size: 0.85rem;
+    color: color-mix(in srgb, var(--tone-text) 58%, var(--tone-muted) 42%);
+    margin: 0 0 1.5rem;
+  }
+
+  .cover-image {
+    display: block;
+    width: 100%;
+    height: 360px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 3rem;
+  }
+
+  /* ── Intro ── */
+  .intro {
+    max-width: 64ch;
+    line-height: 1.75;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 4rem;
+  }
+
+  .layers-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .layer-key {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid;
+    font-weight: 500;
+  }
+
+  .layer-key--self       { border-color: #c0392b; color: #c0392b; }
+  .layer-key--confidence { border-color: #d4a017; color: #d4a017; }
+  .layer-key--community  { border-color: #7f8c8d; color: #7f8c8d; }
+  .layer-key--love       { border-color: #8e44ad; color: #8e44ad; }
+
+  /* ── Pieces container ── */
+  .pieces-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3.5rem;
+  }
+
+  /* ── Shared header ── */
+  .piece__number {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 40%, var(--tone-muted) 60%);
+    font-weight: 400;
+  }
+
+  .piece__title {
+    font-size: 1.45rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin: 0.35rem 0 0;
+    color: var(--tone-text);
+  }
+
+  .piece__layer-tag {
+    display: inline-block;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid;
+    margin-bottom: 0.6rem;
+    font-weight: 500;
+  }
+
+  .piece__layer-tag--self       { border-color: #c0392b33; color: #c0392b; background: #c0392b10; }
+  .piece__layer-tag--confidence { border-color: #d4a01733; color: #d4a017; background: #d4a01710; }
+  .piece__layer-tag--community  { border-color: #7f8c8d33; color: #7f8c8d; background: #7f8c8d10; }
+  .piece__layer-tag--love       { border-color: #8e44ad33; color: #8e44ad; background: #8e44ad10; }
+
+  /* ── Title-only / gap pieces ── */
+  .piece__gap {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid color-mix(in srgb, var(--tone-surface) 30%, transparent);
+    opacity: 0.5;
+  }
+
+  .piece__gap-number {
+    font-size: 0.75rem;
+    color: color-mix(in srgb, var(--tone-text) 40%, var(--tone-muted) 60%);
+  }
+
+  .piece__gap-title {
+    font-size: 1rem;
+    font-style: italic;
+    color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  }
+
+  .piece__gap-video {
+    width: 100%;
+    max-width: 320px;
+    aspect-ratio: 16 / 9;
+    border: none;
+    border-radius: 8px;
+    margin-top: 0.75rem;
+  }
+
+  /* ── Poem pieces ── */
+  .piece__poem-wrap {
+    max-width: 600px;
+  }
+
+  .piece__poem-header {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .piece__poem-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .piece__poem-video {
+    width: 100%;
+  }
+
+  .piece__poem-video iframe {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: none;
+    border-radius: 10px;
+  }
+
+  .piece__poem-text {
+    font-size: 1rem;
+    line-height: 1.8;
+    letter-spacing: 0.01em;
+    animation: subtle-float linear forwards;
+    animation-timeline: view();
+    animation-range: entry 0% cover 30%;
+  }
+
+  @keyframes subtle-float {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(-12px);
+    }
+  }
+
+  .piece__poem-text p {
+    margin: 0;
+  }
+
+  /* ── Pull quotes ── */
+  .piece__pull-quote {
+    margin-top: 1.5rem;
+    padding: 1rem 1.2rem;
+    border-left: 2px solid color-mix(in srgb, var(--tone-accent) 40%, transparent);
+    background: color-mix(in srgb, var(--tone-accent) 8%, transparent);
+    border-radius: 4px;
+  }
+
+  .piece__pull-quote p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    font-style: italic;
+    color: color-mix(in srgb, var(--tone-text) 85%, var(--tone-muted) 15%);
+  }
+
+  .piece__pull-quote--prose {
+    margin-top: 2rem;
+    grid-column: 1 / -1;
+  }
+
+  /* ── Prose pieces ── */
+  .piece__prose-header {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .piece__prose-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  .piece__prose-video {
+    position: sticky;
+    top: 2rem;
+  }
+
+  .piece__prose-video iframe {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: none;
+    border-radius: 10px;
+  }
+
+  .piece__prose-text {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: color-mix(in srgb, var(--tone-text) 92%, var(--tone-muted) 8%);
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .piece__prose-text p {
+    margin: 0;
+  }
+
+  /* ── Photo Backdrop Gallery ── */
+  .photo-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+    clip-path: polygon(0 40%, 100% 40%, 100% 100%, 0 100%);
+  }
+
+  .photo-card {
+    position: absolute;
+    width: 150px;
+    height: 170px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    animation: fadeInOut cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    will-change: opacity;
+  }
+
+  .photo-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0.2;
+    }
+    25% {
+      opacity: 0.4;
+    }
+    50% {
+      opacity: 0.5;
+    }
+    75% {
+      opacity: 0.3;
+    }
+    100% {
+      opacity: 0.2;
+    }
+  }
+
+  /* ── Outro ── */
+  .outro {
+    margin-top: 6rem;
+    padding: 4rem 2rem;
+    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 20%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 20%, transparent);
+    background: color-mix(in srgb, var(--tone-surface) 30%, transparent);
+    border-radius: 12px;
+    text-align: center;
+  }
+
+  .outro__statement {
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 700;
+    font-family: var(--font-display, inherit);
+    line-height: 1.3;
+    margin: 0 0 2.5rem;
+    color: var(--tone-text);
+  }
+
+  .outro__body {
+    max-width: 52ch;
+    margin: 0 auto 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    text-align: left;
+    font-size: 1rem;
+    line-height: 1.75;
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  }
+
+  .outro__body p {
+    margin: 0;
+  }
+
+  .outro__credit {
+    font-size: 0.85rem;
+    color: color-mix(in srgb, var(--tone-text) 55%, var(--tone-muted) 45%);
+    margin: 0;
+  }
+
+  /* ── Falling Line ── */
+  .falling-line {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 100vh;
+    background: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.85) 0%,
+      rgba(255, 255, 255, 0.51) 50%,
+      rgba(255, 255, 255, 0.085) 100%
+    );
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.68);
+    transform: translateX(-50%) translateY(0);
+    pointer-events: none;
+    z-index: 0;
+    animation: none;
+    animation-play-state: paused;
+  }
+
+  @keyframes fall {
+    0% {
+      top: calc(var(--page-height, 100vh) * -1);
+    }
+    100% {
+      top: var(--page-height, 100vh);
+    }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .piece__prose-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .piece__prose-video {
+      position: static;
+    }
+
+    .pieces-container {
+      gap: 4rem;
+    }
+
+    .outro {
+      padding: 2.5rem 1rem;
+      text-align: left;
+    }
+
+    .outro__statement {
+      font-size: 1.3rem;
+    }
+  }
+</style>

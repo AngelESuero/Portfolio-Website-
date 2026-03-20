@@ -1,0 +1,153 @@
+---
+import links from '../data/links.json';
+
+const externalLinks = links.filter((entry) => entry.external);
+const primaryOrder = ['Link Hub', 'YouTube', 'Instagram', 'GitHub', 'Untitled Stream'];
+const primaryLinks = primaryOrder
+  .map((label) => externalLinks.find((entry) => entry.label === label))
+  .filter(Boolean);
+const secondaryLinks = externalLinks.filter((entry) => !primaryOrder.includes(entry.label));
+---
+
+<nav aria-label="Linktree tabs" class="link-tabs-shell">
+  <p class="link-tabs-label">External links</p>
+  <div class="link-tabs-scroll" role="tablist" aria-label="Link tabs">
+    {primaryLinks.map((link) => {
+      const classes = 'link-tab-pill pill';
+      return (
+        <a
+          href={link.href}
+          class={classes}
+          aria-label={`Open ${link.label}`}
+          {...(link.external ? { target: '_blank', rel: 'noopener' } : {})}
+        >
+          {link.label}
+        </a>
+      );
+    })}
+
+    {secondaryLinks.length > 0 && (
+      <details class="link-tabs-more">
+        <summary class="link-tab-pill link-tab-more pill">More</summary>
+        <div class="link-tabs-popover" aria-label="More links">
+          {secondaryLinks.map((link) => (
+            <a
+              href={link.href}
+              class="link-tabs-popover-link"
+              aria-label={`Open ${link.label}`}
+              {...(link.external ? { target: '_blank', rel: 'noopener' } : {})}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+      </details>
+    )}
+  </div>
+</nav>
+
+<style>
+  .link-tabs-shell {
+    border-top: 1px solid var(--line2);
+    padding: 0.45rem 0 0.55rem;
+  }
+
+  .link-tabs-label {
+    margin: 0 auto 0.38rem;
+    max-width: 72rem;
+    padding: 0 1rem;
+    font-size: 0.69rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--tone-muted);
+  }
+
+  .link-tabs-scroll {
+    margin: 0 auto;
+    max-width: 72rem;
+    padding: 0 1rem;
+    display: flex;
+    gap: 0.55rem;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .link-tabs-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .link-tab-pill {
+    scroll-snap-align: start;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    color: var(--tone-text);
+    padding: 0.36rem 0.74rem;
+    font-size: 0.78rem;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 130ms ease, background-color 130ms ease;
+  }
+
+  .link-tab-pill:hover,
+  .link-tab-pill:focus-visible,
+  .link-tab-pill.is-active {
+    border-color: var(--tone-accent-bright);
+    color: var(--tone-accent-glow);
+    background: color-mix(in srgb, var(--tone-accent) 18%, transparent);
+  }
+
+  .link-tabs-more {
+    position: relative;
+  }
+
+  .link-tab-more {
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .link-tab-more::-webkit-details-marker {
+    display: none;
+  }
+
+  .link-tabs-popover {
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    right: 0;
+    min-width: 10.25rem;
+    z-index: 20;
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.38rem;
+    border: 1px solid var(--line);
+    border-radius: 0.7rem;
+    background: var(--tone-surface-strong);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.32);
+  }
+
+  .link-tabs-popover-link {
+    display: block;
+    border-radius: 0.45rem;
+    padding: 0.35rem 0.5rem;
+    text-decoration: none;
+    color: var(--tone-text);
+    font-size: 0.78rem;
+  }
+
+  .link-tabs-popover-link:hover,
+  .link-tabs-popover-link:focus-visible {
+    background: color-mix(in srgb, var(--tone-accent) 18%, transparent);
+    color: var(--tone-accent-glow);
+  }
+
+  @media (min-width: 861px) {
+    .link-tabs-scroll {
+      overflow: visible;
+      flex-wrap: nowrap;
+      padding-bottom: 0.1rem;
+    }
+  }
+</style>

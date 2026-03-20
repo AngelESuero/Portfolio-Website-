@@ -1,0 +1,36 @@
+---
+import CommitPanel from './CommitPanel.astro';
+import MediaMetadataFields from './MediaMetadataFields.astro';
+import StudioFormEnhancer from './StudioFormEnhancer.astro';
+import UploadPanel from './UploadPanel.astro';
+import { getStudioLane, type StudioLane } from '../../lib/studio';
+
+interface Props {
+  lane: Extract<StudioLane, 'music' | 'video' | 'image'>;
+}
+
+const { lane: laneSlug } = Astro.props as Props;
+const lane = getStudioLane(laneSlug);
+---
+
+<form class="studio-form" method="post" action="/api/create-entry" data-studio-form data-lane={lane.slug}>
+  <input type="hidden" name="medium" value={lane.slug} />
+
+  <UploadPanel lane={lane.slug} />
+
+  <MediaMetadataFields
+    defaultSource={lane.defaultSource}
+    sourceOptions={lane.sourceOptions}
+  />
+
+  <CommitPanel
+    lane={lane.slug}
+    title="Publish"
+    description="Nothing is written to the archive until you publish. The upload only prepares the media asset."
+    submitLabel={`Publish ${lane.label.toLowerCase()}`}
+    showPathPreview={false}
+    disabledInitially={true}
+  />
+</form>
+
+<StudioFormEnhancer lane={lane.slug} media={true} />

@@ -1,0 +1,234 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AIAccountabilityPanel from '../components/AIAccountabilityPanel.astro';
+---
+<BaseLayout title="AI Accountability Pledge — a_e.s_" theme="archive">
+  <section class="pledge-page">
+    <header class="pledge-header">
+      <p class="pledge-kicker">Commitment</p>
+      <h1 class="font-display text-3xl">AI Accountability Pledge</h1>
+      <p class="pledge-intro">
+        A framework for using AI without surrendering labor dignity, memory, or moral agency.
+        Not a manifesto. A working standard, applied daily.
+      </p>
+    </header>
+
+    <section class="pledge-principle-section">
+      <h2 class="pledge-section-title">The standard</h2>
+      <blockquote class="pledge-blockquote">
+        Before asking whether a system is efficient, stable, or profitable, ask whether people inside it can
+        breathe, eat, think, heal, move, create, relate, and participate without being crushed.
+        If the answer is no, then the system is not serving life. It is managing decline.
+      </blockquote>
+    </section>
+
+    <section class="pledge-commitments">
+      <h2 class="pledge-section-title">Commitments</h2>
+      <ol class="pledge-list">
+        <li class="pledge-item">
+          <div class="pledge-item-header">
+            <span class="pledge-item-num">01</span>
+            <h3>Transparency of use</h3>
+          </div>
+          <p>When AI shapes language, structure, or output, say so. Not as a disclaimer but as honesty about where the work came from. The ideas are mine. The shaping is collaborative. That distinction matters.</p>
+        </li>
+        <li class="pledge-item">
+          <div class="pledge-item-header">
+            <span class="pledge-item-num">02</span>
+            <h3>No replacement of human judgment</h3>
+          </div>
+          <p>AI can draft, research, and organize. It does not decide what matters, what to publish, or what to believe. Judgment stays with the person. The machine assists; it does not author values.</p>
+        </li>
+        <li class="pledge-item">
+          <div class="pledge-item-header">
+            <span class="pledge-item-num">03</span>
+            <h3>Protect labor dignity</h3>
+          </div>
+          <p>Automation should expand what people can do, not eliminate the people doing it. If a tool replaces a job, the question is not efficiency -- it is what happens to the person. That question comes first.</p>
+        </li>
+        <li class="pledge-item">
+          <div class="pledge-item-header">
+            <span class="pledge-item-num">04</span>
+            <h3>Environmental honesty</h3>
+          </div>
+          <p>Every model run, every training cycle, every inference request has a cost in energy, water, and carbon. Use AI intentionally, not casually. The convenience of generation should not obscure the weight of it.</p>
+        </li>
+        <li class="pledge-item">
+          <div class="pledge-item-header">
+            <span class="pledge-item-num">05</span>
+            <h3>No surveillance framing</h3>
+          </div>
+          <p>AI should not be used to monitor, rank, or profile people without their knowledge. The tools on this site do not track visitors, score behavior, or build profiles. Presence here is not data extraction.</p>
+        </li>
+        <li class="pledge-item">
+          <div class="pledge-item-header">
+            <span class="pledge-item-num">06</span>
+            <h3>Fail-safe defaults</h3>
+          </div>
+          <p>When AI-assisted systems on this site break, they fail quiet -- not loud. No hallucinated data presented as truth. No automated actions without human review. If the system cannot verify, it says so.</p>
+        </li>
+        <li class="pledge-item">
+          <div class="pledge-item-header">
+            <span class="pledge-item-num">07</span>
+            <h3>Preserve creative agency</h3>
+          </div>
+          <p>Music, writing, and visual work on this site are human-originated. AI may help with structure, research, or iteration, but the creative impulse -- the reason something exists at all -- is not delegated.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="pledge-principle-section">
+      <h2 class="pledge-section-title">The cost of running AI</h2>
+      <AIAccountabilityPanel />
+    </section>
+
+    <section class="pledge-principle-section">
+      <h2 class="pledge-section-title">Why this exists</h2>
+      <p class="pledge-body">
+        This pledge exists because the tools are powerful and the defaults are not neutral. AI systems are built
+        by companies with incentives that do not always align with the people using them. The convenience of
+        generation can obscure the cost of extraction. The speed of automation can erase the dignity of labor.
+      </p>
+      <p class="pledge-body">
+        This is not anti-technology. This site uses AI actively -- for research, writing assistance, code,
+        data sync, and archive management. But using a tool and being accountable for how you use it are
+        not the same thing. This page is the accountability part.
+      </p>
+      <p class="pledge-body pledge-closing">
+        People should not have to prove they are worth helping by first becoming a crisis.
+        Systems should not have to break before someone asks whether they were serving life.
+      </p>
+    </section>
+
+    <footer class="pledge-footer">
+      <p>
+        Related: <a href="/survival-os">Survival OS</a> · <a href="/agi">AGI Monitor</a> ·
+        <a href="/archive/writing/government-should-be-aligned-with-life">Government Should Be Aligned With Life</a>
+      </p>
+    </footer>
+  </section>
+</BaseLayout>
+
+<style>
+  .pledge-page {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    max-width: 68ch;
+  }
+
+  .pledge-header {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .pledge-kicker {
+    margin: 0;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--tone-accent-glow);
+  }
+
+  .pledge-intro {
+    margin: 0;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+    max-width: 58ch;
+  }
+
+  .pledge-section-title {
+    font-size: clamp(1.1rem, 2vw, 1.3rem);
+    margin: 0 0 0.8rem;
+  }
+
+  .pledge-blockquote {
+    margin: 0;
+    padding: 1rem 1.2rem;
+    border-left: 3px solid var(--tone-accent-glow);
+    background: color-mix(in srgb, var(--tone-surface-strong) 60%, transparent);
+    border-radius: 0 calc(var(--radius) * 0.5) calc(var(--radius) * 0.5) 0;
+    color: color-mix(in srgb, var(--tone-text) 92%, var(--tone-muted) 8%);
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  .pledge-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .pledge-item {
+    border: 1px solid var(--line2);
+    border-radius: calc(var(--radius) * var(--space-scale));
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--tone-surface-strong) 76%, transparent),
+      color-mix(in srgb, var(--tone-surface) 66%, transparent)
+    );
+    padding: clamp(0.9rem, 2.2vw, 1.15rem);
+  }
+
+  .pledge-item-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+
+  .pledge-item-num {
+    font-size: 0.72rem;
+    color: var(--tone-accent-glow);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .pledge-item h3 {
+    margin: 0;
+    font-size: clamp(0.95rem, 2vw, 1.08rem);
+  }
+
+  .pledge-item p {
+    margin: 0.55rem 0 0;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  .pledge-body {
+    margin: 0 0 0.8rem;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+    line-height: 1.6;
+  }
+
+  .pledge-closing {
+    margin-top: 1rem;
+    font-style: italic;
+    color: var(--tone-text);
+  }
+
+  .pledge-footer {
+    padding-top: 1rem;
+    border-top: 1px solid var(--line2);
+  }
+
+  .pledge-footer p {
+    margin: 0;
+    font-size: 0.84rem;
+    color: var(--tone-muted);
+  }
+
+  .pledge-footer a {
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+  }
+
+  .pledge-footer a:hover {
+    text-decoration: underline;
+  }
+
+  .pledge-principle-section {
+    display: grid;
+    gap: 0.6rem;
+  }
+</style>

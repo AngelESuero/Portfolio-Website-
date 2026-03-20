@@ -1,0 +1,199 @@
+{
+  "meta": {
+    "schemaVersion": 1,
+    "generatedAt": "2026-03-18T15:43:53.368Z",
+    "player": {
+      "platform": "chess.com",
+      "username": "Trid3nt",
+      "profileUrl": "https://www.chess.com/member/Trid3nt"
+    },
+    "sources": [
+      {
+        "name": "Chess.com Published Data API",
+        "url": "https://api.chess.com/pub/"
+      }
+    ]
+  },
+  "snapshots": [
+    {
+      "date": "2026-02-17",
+      "rapid": null,
+      "blitz": null,
+      "bullet": null
+    },
+    {
+      "date": "2026-02-18",
+      "rapid": 694,
+      "blitz": 317,
+      "bullet": 201
+    },
+    {
+      "date": "2026-02-19",
+      "rapid": 694,
+      "blitz": 317,
+      "bullet": 201
+    },
+    {
+      "date": "2026-02-20",
+      "rapid": 694,
+      "blitz": 317,
+      "bullet": 210
+    },
+    {
+      "date": "2026-02-21",
+      "rapid": 694,
+      "blitz": 317,
+      "bullet": 210
+    },
+    {
+      "date": "2026-02-22",
+      "rapid": 694,
+      "blitz": 326,
+      "bullet": 210
+    },
+    {
+      "date": "2026-02-23",
+      "rapid": 694,
+      "blitz": 326,
+      "bullet": 210
+    },
+    {
+      "date": "2026-02-24",
+      "rapid": 694,
+      "blitz": 326,
+      "bullet": 210
+    },
+    {
+      "date": "2026-02-25",
+      "rapid": 694,
+      "blitz": 326,
+      "bullet": 210
+    },
+    {
+      "date": "2026-02-26",
+      "rapid": 694,
+      "blitz": 326,
+      "bullet": 210
+    },
+    {
+      "date": "2026-02-27",
+      "rapid": 694,
+      "blitz": 326,
+      "bullet": 210
+    },
+    {
+      "date": "2026-02-28",
+      "rapid": 694,
+      "blitz": 326,
+      "bullet": 210
+    },
+    {
+      "date": "2026-03-01",
+      "rapid": 694,
+      "blitz": 326,
+      "bullet": 210
+    },
+    {
+      "date": "2026-03-02",
+      "rapid": 694,
+      "blitz": 326,
+      "bullet": 210
+    },
+    {
+      "date": "2026-03-03",
+      "rapid": 694,
+      "blitz": 326,
+      "bullet": 210
+    },
+    {
+      "date": "2026-03-04",
+      "rapid": 694,
+      "blitz": 326,
+      "bullet": 210
+    },
+    {
+      "date": "2026-03-05",
+      "rapid": 694,
+      "blitz": 326,
+      "bullet": 210
+    },
+    {
+      "date": "2026-03-06",
+      "rapid": 694,
+      "blitz": 326,
+      "bullet": 210
+    },
+    {
+      "date": "2026-03-07",
+      "rapid": 694,
+      "blitz": 336,
+      "bullet": 210
+    },
+    {
+      "date": "2026-03-08",
+      "rapid": 694,
+      "blitz": 326,
+      "bullet": 210
+    },
+    {
+      "date": "2026-03-09",
+      "rapid": 694,
+      "blitz": 336,
+      "bullet": 210
+    },
+    {
+      "date": "2026-03-10",
+      "rapid": 694,
+      "blitz": 336,
+      "bullet": 210
+    },
+    {
+      "date": "2026-03-11",
+      "rapid": 694,
+      "blitz": 336,
+      "bullet": 210
+    },
+    {
+      "date": "2026-03-12",
+      "rapid": 694,
+      "blitz": 336,
+      "bullet": 210
+    },
+    {
+      "date": "2026-03-13",
+      "rapid": 694,
+      "blitz": 336,
+      "bullet": 210
+    },
+    {
+      "date": "2026-03-14",
+      "rapid": 694,
+      "blitz": 336,
+      "bullet": 210
+    },
+    {
+      "date": "2026-03-15",
+      "rapid": 694,
+      "blitz": 337,
+      "bullet": 210
+    },
+    {
+      "date": "2026-03-16",
+      "rapid": 694,
+      "blitz": 328,
+      "bullet": 210
+    },
+    {
+      "date": "2026-03-17",
+      "rapid": 694,
+      "blitz": 328,
+      "bullet": 210
+    },
+    {
+      "date": "2026-03-18",
+      "rapid": 694,
+      "blitz": 328,
+      "bullet": 210
+    }
+  ]
+}

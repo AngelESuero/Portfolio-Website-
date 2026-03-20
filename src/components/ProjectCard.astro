@@ -1,0 +1,46 @@
+---
+import { resolveProjectTimeline } from '../data/linktree-timeline';
+
+interface ProjectCardProps {
+  project: {
+    slug: string;
+    data: {
+      title: string;
+      cover_image: string;
+      type: string;
+      description: string;
+      links?: { untitled?: string };
+      [key: string]: unknown;
+    };
+  };
+  isDraft?: boolean;
+}
+
+const { project, isDraft = false } = Astro.props as ProjectCardProps;
+const { slug, data } = project;
+const untitledUrl = typeof data.links?.untitled === 'string' ? data.links.untitled.trim() : '';
+const timeline = resolveProjectTimeline(data);
+---
+<article class="card min-w-[270px] p-4">
+  <img src={data.cover_image} alt={data.title} class="mb-3 h-36 w-full rounded object-cover" loading="lazy" width="600" height="144" />
+  <div class="flex items-center justify-between gap-2">
+    <p class="project-card-meta text-xs uppercase tracking-wide">{timeline.yearLabel} · {data.type}</p>
+    {isDraft && <span class="lab-only-inline rounded-full border border-amber-300/60 px-2 py-0.5 text-[0.66rem] uppercase tracking-[0.09em] text-amber-300">Draft</span>}
+  </div>
+  <h3 class="font-display text-lg">{data.title}</h3>
+  <p class="mt-2 text-sm">{data.description}</p>
+  <div class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1">
+    <a href={`/work/${slug}`} class="inline-block text-sm underline decoration-accent">View details</a>
+    {untitledUrl && (
+      <a href={untitledUrl} target="_blank" rel="noopener" class="inline-block text-sm underline decoration-accent">
+        Open on Untitled
+      </a>
+    )}
+  </div>
+</article>
+
+<style>
+  .project-card-meta {
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  }
+</style>

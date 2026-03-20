@@ -1,0 +1,167 @@
+---
+const ACCENT_SWATCHES: Record<string, string> = {
+  ochre: '#b97a2d',
+  blue: '#587a95',
+  red: '#a64a3b',
+  white: '#ede3d1',
+  black: '#171715'
+};
+
+const getAccentSwatch = (value?: string) =>
+  ACCENT_SWATCHES[String(value || '').trim().toLowerCase()] || ACCENT_SWATCHES.blue;
+
+const primaryNav = [
+  { label: 'Home', href: '/', color: 'ochre', tone: 'presence' },
+  { label: 'Work', href: '/work', color: 'ochre', tone: 'seva' },
+  { label: 'Writing', href: '/writing', color: 'white', tone: 'contemplation' },
+  { label: 'Archive', href: '/archive', color: 'blue', tone: 'clarity' },
+  { label: 'Contact', href: '/contact', color: 'white', tone: 'harmony' }
+];
+
+const secondaryNav = [
+  { label: 'Studio Notes', href: '/studio-notes', color: 'white', tone: 'contemplation' },
+  { label: 'Collaborations', href: '/collaborations', color: 'ochre', tone: 'grounding' },
+  { label: 'Map', href: '/map', color: 'blue', tone: 'presence' }
+];
+
+const aiGroup = [
+  { label: 'AI', href: '/ai', color: 'blue', tone: 'discernment' },
+  { label: 'AI x Survival', href: '/survival-os', color: 'red', tone: 'grounding' },
+  { label: 'Survival Support', href: '/survival-support', color: 'ochre', tone: 'grounding' },
+  { label: 'Market Model', href: '/market-model', color: 'ochre', tone: 'grounding' },
+  { label: 'Genre Tree', href: '/genre-tree', color: 'blue', tone: 'presence' },
+];
+
+const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const normalize = (path: string) => path.replace(/\/+$/, '') || '/';
+const isActive = (href: string) => {
+  const target = normalize(href);
+  return currentPath === target || (target !== '/' && currentPath.startsWith(`${target}/`));
+};
+import youtubeData from '../data/youtube.json';
+const latestVideoId = youtubeData.items[0]?.videoId ?? '';
+---
+
+<header class="site-header sticky top-0 z-50">
+  <div class="site-shell-row header-row flex w-full items-center justify-between py-3 md:py-4">
+    <a href="/" class="header-brand font-display text-2xl font-bold tracking-tight text-accent" style="word-spacing: -0.05em;">A<span style="font-size:0.45em; vertical-align:sub; letter-spacing:0.03em; opacity:0.75; margin-left:-0.1em;">es's</span> Path Toward Life</a>
+    <nav aria-label="Main navigation" class="header-nav hidden md:flex md:items-center">
+      {primaryNav.map((item) => (
+        <a
+          href={item.href}
+          class="header-link text-sm no-underline"
+          style={`--link-accent:${getAccentSwatch(item.color)}`}
+          {...(item.color ? { 'data-color': item.color } : {})}
+          {...(item.tone ? { 'data-tone': item.tone } : {})}
+          {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+    <div class="header-actions flex items-center gap-2">
+      <button
+        data-music-bar-header-toggle
+        aria-label="Toggle music player"
+        class="pill rounded px-3 py-1 text-sm"
+        type="button"
+      >
+        ♫
+      </button>
+      <button
+        data-youtube-pip-trigger
+        data-video-id={latestVideoId}
+        aria-label="Watch latest video"
+        class="pill rounded px-3 py-1 text-sm"
+        type="button"
+      >
+        ▶
+      </button>
+      <button
+        id="mobile-nav-toggle"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        class="pill rounded px-3 py-1 text-sm md:hidden"
+        type="button"
+      >
+        Menu
+      </button>
+    </div>
+  </div>
+  <div class="site-shell-row header-secondary hidden md:block">
+    <nav aria-label="Secondary navigation" class="header-secondary-nav">
+      <p class="header-secondary-label">Elsewhere</p>
+      <span class="header-ai-group">
+        {aiGroup.map((item) => (
+          <a
+            href={item.href}
+            class="header-link header-link--secondary text-sm no-underline"
+            style={`--link-accent:${getAccentSwatch(item.color)}`}
+            {...(item.color ? { 'data-color': item.color } : {})}
+            {...(item.tone ? { 'data-tone': item.tone } : {})}
+            {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
+          >
+            {item.label}
+          </a>
+        ))}
+      </span>
+      {secondaryNav.map((item) => (
+        <a
+          href={item.href}
+          class="header-link header-link--secondary text-sm no-underline"
+          style={`--link-accent:${getAccentSwatch(item.color)}`}
+          {...(item.color ? { 'data-color': item.color } : {})}
+          {...(item.tone ? { 'data-tone': item.tone } : {})}
+          {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+  <nav id="mobile-nav" aria-label="Mobile navigation" class="mobile-nav md:hidden" hidden>
+    <div class="site-shell-row mobile-nav-inner">
+      {primaryNav.map((item) => (
+        <a
+          href={item.href}
+          class="header-link mobile-nav-link no-underline"
+          style={`--link-accent:${getAccentSwatch(item.color)}`}
+          {...(item.color ? { 'data-color': item.color } : {})}
+          {...(item.tone ? { 'data-tone': item.tone } : {})}
+          {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
+        >
+          {item.label}
+        </a>
+      ))}
+      <div class="mobile-nav-section">
+        <p class="mobile-nav-label">Elsewhere</p>
+        <div class="mobile-ai-group">
+          {aiGroup.map((item) => (
+            <a
+              href={item.href}
+              class="header-link mobile-nav-link header-link--secondary no-underline"
+              style={`--link-accent:${getAccentSwatch(item.color)}`}
+              {...(item.color ? { 'data-color': item.color } : {})}
+              {...(item.tone ? { 'data-tone': item.tone } : {})}
+              {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
+            >
+              {item.label}
+            </a>
+          ))}
+        </div>
+        {secondaryNav.map((item) => (
+          <a
+            href={item.href}
+            class="header-link mobile-nav-link header-link--secondary no-underline"
+            style={`--link-accent:${getAccentSwatch(item.color)}`}
+            {...(item.color ? { 'data-color': item.color } : {})}
+            {...(item.tone ? { 'data-tone': item.tone } : {})}
+            {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
+          >
+            {item.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </nav>
+</header>

@@ -1,0 +1,1008 @@
+---
+import {
+  TRANSITION_SIGNAL_BACKBONE,
+  TRANSITION_SIGNAL_LANES,
+  TRANSITION_SIGNAL_SCORE_LABELS
+} from '../data/transition-signal-checklist';
+
+const scoringChoices = [0, 1, 2, 3] as const;
+---
+
+<section id="transition-signal-checklist" class="tsc-root">
+  <section class="view-surface tsc-hero">
+    <div class="tsc-hero-copy">
+      <p class="view-surface-kicker">Weekly tracker</p>
+      <h1>Transition Signal Checklist</h1>
+      <p class="tsc-dek">A restrained weekly read on whether AI-transition talk is becoming real movement.</p>
+    </div>
+
+    <section class="card tsc-overall-card" aria-live="polite">
+      <p class="tsc-label">Net score</p>
+      <p class="tsc-net-score"><span data-overall-net>0</span></p>
+      <p class="tsc-overall-state" data-overall-state>Mostly talk</p>
+      <p class="tsc-overall-summary" data-overall-summary>
+        Private movement and institutional response are still thin.
+      </p>
+    </section>
+  </section>
+
+  <div class="tsc-top-grid">
+    <section class="view-surface tsc-control-panel">
+      <div class="tsc-control-row">
+        <label class="tsc-field" for="tsc-period">
+          <span class="tsc-field-label">Week of</span>
+          <input id="tsc-period" name="tsc-period" type="date" />
+          <span class="tsc-field-note">Use the week-start date so each weekly read has its own record.</span>
+        </label>
+
+        <div class="tsc-stats" aria-label="Score totals">
+          <article class="card tsc-stat">
+            <p class="tsc-label">Positive</p>
+            <p class="tsc-stat-value" data-overall-positive>0</p>
+          </article>
+          <article class="card tsc-stat tsc-stat--counter">
+            <p class="tsc-label">Counter</p>
+            <p class="tsc-stat-value" data-overall-counter>0</p>
+          </article>
+          <article class="card tsc-stat">
+            <p class="tsc-label">Saved</p>
+            <p class="tsc-stat-value tsc-stat-value--saved" data-saved-at>Not yet</p>
+          </article>
+        </div>
+      </div>
+
+      <label class="tsc-snapshot" for="tsc-note">
+        <span class="tsc-field-label">Weekly snapshot</span>
+        <textarea
+          id="tsc-note"
+          name="tsc-note"
+          rows="2"
+          placeholder="Optional: what materially changed this week?"
+        ></textarea>
+      </label>
+
+      <div class="tsc-scale" aria-label="Scoring scale">
+        {
+          scoringChoices.map((score) => (
+            <article class="card tsc-scale-item">
+              <span class="tsc-scale-score">{score}</span>
+              <p>{TRANSITION_SIGNAL_SCORE_LABELS[score]}</p>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="tsc-actions">
+        <button type="button" id="tsc-reset-week" class="pill tsc-reset-button">Reset this week</button>
+      </div>
+    </section>
+
+    <section class="view-surface tsc-context">
+      <p class="view-surface-kicker">Read logic</p>
+      <h2>What the checklist is actually watching</h2>
+      <ul class="tsc-context-list">
+        {TRANSITION_SIGNAL_BACKBONE.map((item) => <li>{item}</li>)}
+      </ul>
+    </section>
+  </div>
+
+  <section class="tsc-lanes" aria-label="Signal lanes">
+    {
+      TRANSITION_SIGNAL_LANES.map((lane) => (
+        <details
+          class:list={[
+            'card tsc-lane',
+            lane.kind === 'counter' ? 'tsc-lane--counter' : 'tsc-lane--positive'
+          ]}
+          data-lane={lane.id}
+          open
+        >
+          <summary class="tsc-lane-summary-row">
+            <div class="tsc-lane-head">
+              <p class="tsc-lane-kicker">{lane.kind === 'counter' ? 'Counter lane' : 'Signal lane'}</p>
+              <h2>{lane.title}</h2>
+              <p class="tsc-lane-description">{lane.description}</p>
+              <p class="tsc-lane-summary-text" data-lane-summary={lane.id}>No scoring yet for this week.</p>
+            </div>
+
+            <div class="tsc-lane-meta">
+              <span class="tsc-lane-total" data-lane-total={lane.id}>
+                {lane.kind === 'counter' ? '-' : ''}
+                0 / {lane.items.length * 3}
+              </span>
+              <span class="tsc-lane-state" data-lane-state={lane.id}>
+                {lane.kind === 'counter' ? 'Low drag' : 'Absent'}
+              </span>
+            </div>
+          </summary>
+
+          <div class="tsc-lane-body">
+            {lane.items.map((item) => (
+              <fieldset class="tsc-item">
+                <legend>
+                  <span class="tsc-item-title">{item.title}</span>
+                  {item.help && <span class="tsc-item-help">{item.help}</span>}
+                </legend>
+
+                <div class="tsc-score-group" role="group" aria-label={`Score ${item.title}`}>
+                  {
+                    scoringChoices.map((score) => (
+                      <button
+                        type="button"
+                        class="tsc-score-button"
+                        data-score-item={item.id}
+                        data-score-value={String(score)}
+                        aria-pressed="false"
+                        aria-label={`${item.title}: ${score} ${TRANSITION_SIGNAL_SCORE_LABELS[score]}`}
+                      >
+                        {score}
+                      </button>
+                    ))
+                  }
+                </div>
+              </fieldset>
+            ))}
+          </div>
+        </details>
+      ))
+    }
+  </section>
+
+  <script
+    id="tsc-lanes-data"
+    type="application/json"
+    set:html={JSON.stringify(TRANSITION_SIGNAL_LANES)}
+  ></script>
+
+  <script is:inline>
+    (() => {
+      const STORAGE_KEY = 'transition-signal-checklist-v1';
+      const SCORE_VALUES = [0, 1, 2, 3];
+      const root = document.getElementById('transition-signal-checklist');
+      const dataNode = document.getElementById('tsc-lanes-data');
+      if (!(root instanceof HTMLElement) || !(dataNode instanceof HTMLScriptElement)) return;
+
+      const search = new URLSearchParams(window.location.search);
+      if (search.get('embed') === '1') {
+        document.documentElement.classList.add('tsc-embed-page');
+        document.body.classList.add('tsc-embed-page');
+        root.classList.add('tsc-root--embed');
+      }
+
+      let lanes = [];
+      try {
+        lanes = JSON.parse(dataNode.textContent || '[]');
+      } catch {
+        lanes = [];
+      }
+      if (!Array.isArray(lanes) || lanes.length === 0) return;
+
+      const itemIds = lanes.flatMap((lane) =>
+        Array.isArray(lane.items) ? lane.items.map((item) => String(item.id || '')) : []
+      );
+      const scoreButtons = Array.from(root.querySelectorAll('[data-score-item][data-score-value]'));
+      const periodInput = root.querySelector('#tsc-period');
+      const noteInput = root.querySelector('#tsc-note');
+      const resetButton = root.querySelector('#tsc-reset-week');
+      const overallPositiveNode = root.querySelector('[data-overall-positive]');
+      const overallCounterNode = root.querySelector('[data-overall-counter]');
+      const overallNetNode = root.querySelector('[data-overall-net]');
+      const overallStateNode = root.querySelector('[data-overall-state]');
+      const overallSummaryNode = root.querySelector('[data-overall-summary]');
+      const savedAtNode = root.querySelector('[data-saved-at]');
+      const laneSummaryNodes = new Map(
+        lanes.map((lane) => [lane.id, root.querySelector(`[data-lane-summary="${lane.id}"]`)])
+      );
+      const laneTotalNodes = new Map(
+        lanes.map((lane) => [lane.id, root.querySelector(`[data-lane-total="${lane.id}"]`)])
+      );
+      const laneStateNodes = new Map(
+        lanes.map((lane) => [lane.id, root.querySelector(`[data-lane-state="${lane.id}"]`)])
+      );
+      let storageAvailable = true;
+
+      if (!(periodInput instanceof HTMLInputElement) || !(noteInput instanceof HTMLTextAreaElement)) return;
+
+      const dateFormatter = new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+
+      const savedFormatter = new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit'
+      });
+
+      const getWeekStart = (input = new Date()) => {
+        const date = input instanceof Date ? new Date(input) : new Date(String(input));
+        if (Number.isNaN(date.valueOf())) return new Date();
+        date.setHours(12, 0, 0, 0);
+        const offset = (date.getDay() + 6) % 7;
+        date.setDate(date.getDate() - offset);
+        return date;
+      };
+
+      const toDateKey = (date = new Date()) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
+
+      const parseDate = (value) => {
+        const [year, month, day] = String(value || '')
+          .split('-')
+          .map((part) => Number.parseInt(part, 10));
+        if ([year, month, day].some((part) => Number.isNaN(part))) return null;
+        return new Date(year, month - 1, day);
+      };
+
+      const formatPeriod = (value) => {
+        const parsed = parseDate(value);
+        return parsed ? dateFormatter.format(parsed) : value;
+      };
+
+      const clampScore = (value) => {
+        const parsed = Number.parseInt(String(value || '0'), 10);
+        return SCORE_VALUES.includes(parsed) ? parsed : 0;
+      };
+
+      const blankScores = () => Object.fromEntries(itemIds.map((id) => [id, 0]));
+
+      const createBlankRecord = (period) => ({
+        period,
+        note: '',
+        updatedAt: null,
+        scores: blankScores()
+      });
+
+      const sanitizeRecord = (period, record) => {
+        const base = createBlankRecord(period);
+        const rawScores =
+          record && typeof record === 'object' && record.scores && typeof record.scores === 'object'
+            ? record.scores
+            : {};
+
+        itemIds.forEach((id) => {
+          base.scores[id] = clampScore(rawScores[id]);
+        });
+
+        if (record && typeof record.note === 'string') {
+          base.note = record.note.slice(0, 1000);
+        }
+
+        if (record && typeof record.updatedAt === 'string') {
+          base.updatedAt = record.updatedAt;
+        }
+
+        return base;
+      };
+
+      const readStore = () => {
+        try {
+          const raw = window.localStorage.getItem(STORAGE_KEY);
+          if (!raw) return { records: {} };
+          const parsed = JSON.parse(raw);
+          if (!parsed || typeof parsed !== 'object' || typeof parsed.records !== 'object') {
+            return { records: {} };
+          }
+          return parsed;
+        } catch {
+          storageAvailable = false;
+          return { records: {} };
+        }
+      };
+
+      const writeStore = (nextStore) => {
+        try {
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextStore));
+          storageAvailable = true;
+        } catch {
+          storageAvailable = false;
+        }
+      };
+
+      const hasMeaningfulData = (record) =>
+        record.note.trim().length > 0 || itemIds.some((id) => clampScore(record.scores[id]) > 0);
+
+      let store = readStore();
+      let currentPeriod = toDateKey(getWeekStart());
+      let currentRecord = sanitizeRecord(currentPeriod, store.records[currentPeriod]);
+
+      const getLaneMetrics = (lane) => {
+        const values = lane.items.map((item) => clampScore(currentRecord.scores[item.id]));
+        const total = values.reduce((sum, value) => sum + value, 0);
+        const max = lane.items.length * 3;
+        const ratio = max > 0 ? total / max : 0;
+        const strongest = lane.items
+          .map((item, index) => ({ title: item.title, value: values[index] }))
+          .filter((entry) => entry.value >= 2)
+          .map((entry) => entry.title)
+          .slice(0, 2);
+
+        return { total, max, ratio, strongest };
+      };
+
+      const getPositiveLaneState = (ratio) => {
+        if (ratio <= 0) {
+          return {
+            label: 'Absent',
+            summary: 'No real movement yet.'
+          };
+        }
+        if (ratio < 0.34) {
+          return {
+            label: 'Early',
+            summary: 'Some early motion, but still thin.'
+          };
+        }
+        if (ratio < 0.67) {
+          return {
+            label: 'Visible',
+            summary: 'Meaningful movement is visible.'
+          };
+        }
+        return {
+          label: 'Active',
+          summary: 'This lane is materially active.'
+        };
+      };
+
+      const getCounterLaneState = (ratio) => {
+        if (ratio <= 0) {
+          return {
+            label: 'Low drag',
+            summary: 'Little pushback is showing up.'
+          };
+        }
+        if (ratio < 0.34) {
+          return {
+            label: 'Mild drag',
+            summary: 'Some friction is present.'
+          };
+        }
+        if (ratio < 0.67) {
+          return {
+            label: 'Meaningful drag',
+            summary: 'Pushback is materially cutting into the read.'
+          };
+        }
+        return {
+          label: 'Strong drag',
+          summary: 'Counter-signals are strong enough to challenge the thesis.'
+        };
+      };
+
+      const buildLaneSummary = (lane, metrics) => {
+        const state =
+          lane.kind === 'counter'
+            ? getCounterLaneState(metrics.ratio)
+            : getPositiveLaneState(metrics.ratio);
+        const strongest = metrics.strongest.map((title) => title.replace(/[.!?]+$/, ''));
+
+        if (strongest.length === 0) return state.summary;
+        return `${state.summary} Strongest: ${strongest.join(' | ')}.`;
+      };
+
+      const buildOverallState = (net, positiveMax) => {
+        const ratio = positiveMax > 0 ? Math.max(0, net) / positiveMax : 0;
+        if (net <= 0 || ratio < 0.08) return 'Mostly talk';
+        if (ratio < 0.28) return 'Early motion';
+        if (ratio < 0.48) return 'Visible movement';
+        if (ratio < 0.68) return 'Coalescing push';
+        return 'Active transition pressure';
+      };
+
+      const buildOverallSummary = (metricsByLane, overallState) => {
+        const philanthropy = metricsByLane['philanthropy']?.total || 0;
+        const delivery = metricsByLane['delivery']?.total || 0;
+        const fastRelief = metricsByLane['fast-relief']?.total || 0;
+        const laborStress = metricsByLane['labor-stress']?.total || 0;
+        const government = metricsByLane['government']?.total || 0;
+        const politicalVehicle = metricsByLane['political-vehicle']?.total || 0;
+        const counterSignals = metricsByLane['counter-signals']?.total || 0;
+        const privateMove = philanthropy + delivery + fastRelief;
+        const positiveTotal =
+          philanthropy + delivery + laborStress + fastRelief + government + politicalVehicle;
+        const lines = [];
+
+        if (positiveTotal === 0 && counterSignals === 0) {
+          return 'Private movement and institutional response are still thin.';
+        }
+
+        if (privateMove > government + 2) {
+          lines.push('Private movement is running ahead of formal government response.');
+        }
+        if (laborStress > government + 1) {
+          lines.push('Labor stress is building faster than institutions are adapting.');
+        }
+        if (politicalVehicle < 3 && positiveTotal >= 4) {
+          lines.push('A 2028 vehicle still lacks enough visible money, megaphone, or movement.');
+        }
+        if (counterSignals >= 4) {
+          lines.push('Counter-signals are meaningfully cutting into the case for real movement.');
+        }
+
+        if (lines.length > 0) return lines.slice(0, 2).join(' ');
+
+        if (overallState === 'Active transition pressure') {
+          return 'Signals are aligning across multiple lanes rather than sitting in isolated pockets.';
+        }
+        if (overallState === 'Coalescing push') {
+          return 'Movement is starting to compound across funding, delivery, and politics.';
+        }
+        if (overallState === 'Visible movement') {
+          return 'This is no longer just thesis space, but it is still uneven and fragile.';
+        }
+        if (overallState === 'Early motion') {
+          return 'Pieces are appearing, but they are not yet durable enough to call a broad shift.';
+        }
+
+        return 'Private movement and institutional response are still thin.';
+      };
+
+      const renderSavedAt = () => {
+        if (!(savedAtNode instanceof HTMLElement)) return;
+        if (!storageAvailable) {
+          savedAtNode.textContent = 'Unavailable';
+          return;
+        }
+        if (!currentRecord.updatedAt) {
+          savedAtNode.textContent = 'Not yet';
+          return;
+        }
+        const parsed = new Date(currentRecord.updatedAt);
+        savedAtNode.textContent = Number.isNaN(parsed.valueOf())
+          ? 'Saved'
+          : savedFormatter.format(parsed);
+      };
+
+      const renderButtons = () => {
+        scoreButtons.forEach((button) => {
+          if (!(button instanceof HTMLButtonElement)) return;
+          const itemId = button.dataset.scoreItem || '';
+          const scoreValue = clampScore(button.dataset.scoreValue);
+          const currentValue = clampScore(currentRecord.scores[itemId]);
+          const isActive = currentValue === scoreValue;
+          button.classList.toggle('is-active', isActive);
+          button.dataset.selected = String(isActive);
+          button.setAttribute('aria-pressed', String(isActive));
+        });
+      };
+
+      const renderLanes = () => {
+        const metricsByLane = {};
+        lanes.forEach((lane) => {
+          const metrics = getLaneMetrics(lane);
+          metricsByLane[lane.id] = metrics;
+          const state =
+            lane.kind === 'counter'
+              ? getCounterLaneState(metrics.ratio)
+              : getPositiveLaneState(metrics.ratio);
+          const summaryNode = laneSummaryNodes.get(lane.id);
+          const totalNode = laneTotalNodes.get(lane.id);
+          const stateNode = laneStateNodes.get(lane.id);
+
+          if (summaryNode instanceof HTMLElement) {
+            summaryNode.textContent = buildLaneSummary(lane, metrics);
+          }
+
+          if (totalNode instanceof HTMLElement) {
+            totalNode.textContent = `${lane.kind === 'counter' ? '-' : ''}${metrics.total} / ${metrics.max}`;
+          }
+
+          if (stateNode instanceof HTMLElement) {
+            stateNode.textContent = state.label;
+            stateNode.dataset.state = state.label.toLowerCase().replace(/\s+/g, '-');
+          }
+        });
+
+        const positiveLanes = lanes.filter((lane) => lane.kind !== 'counter');
+        const counterLanes = lanes.filter((lane) => lane.kind === 'counter');
+        const positiveTotal = positiveLanes.reduce(
+          (sum, lane) => sum + (metricsByLane[lane.id]?.total || 0),
+          0
+        );
+        const positiveMax = positiveLanes.reduce(
+          (sum, lane) => sum + (metricsByLane[lane.id]?.max || 0),
+          0
+        );
+        const counterTotal = counterLanes.reduce(
+          (sum, lane) => sum + (metricsByLane[lane.id]?.total || 0),
+          0
+        );
+        const net = positiveTotal - counterTotal;
+        const overallState = buildOverallState(net, positiveMax);
+        const overallSummary = buildOverallSummary(metricsByLane, overallState);
+
+        if (overallPositiveNode instanceof HTMLElement) overallPositiveNode.textContent = String(positiveTotal);
+        if (overallCounterNode instanceof HTMLElement) overallCounterNode.textContent = String(counterTotal);
+        if (overallNetNode instanceof HTMLElement) overallNetNode.textContent = String(net);
+        if (overallStateNode instanceof HTMLElement) overallStateNode.textContent = overallState;
+        if (overallSummaryNode instanceof HTMLElement) overallSummaryNode.textContent = overallSummary;
+      };
+
+      const renderAll = () => {
+        periodInput.value = currentPeriod;
+        noteInput.value = currentRecord.note;
+        periodInput.setAttribute('aria-label', `Week of ${formatPeriod(currentPeriod)}`);
+        renderButtons();
+        renderLanes();
+        renderSavedAt();
+      };
+
+      const persistCurrentRecord = () => {
+        currentRecord = sanitizeRecord(currentPeriod, {
+          ...currentRecord,
+          updatedAt: new Date().toISOString()
+        });
+        store.records[currentPeriod] = currentRecord;
+        writeStore(store);
+        renderAll();
+      };
+
+      const switchPeriod = (nextPeriod) => {
+        currentPeriod = nextPeriod || toDateKey(getWeekStart());
+        currentRecord = sanitizeRecord(currentPeriod, store.records[currentPeriod]);
+        renderAll();
+      };
+
+      scoreButtons.forEach((button) => {
+        if (!(button instanceof HTMLButtonElement)) return;
+        button.addEventListener('click', () => {
+          const itemId = button.dataset.scoreItem || '';
+          const scoreValue = clampScore(button.dataset.scoreValue);
+          currentRecord = sanitizeRecord(currentPeriod, {
+            ...currentRecord,
+            scores: {
+              ...currentRecord.scores,
+              [itemId]: scoreValue
+            }
+          });
+          persistCurrentRecord();
+        });
+      });
+
+      periodInput.addEventListener('change', () => {
+        const nextPeriod = periodInput.value || toDateKey(getWeekStart());
+        switchPeriod(nextPeriod);
+      });
+
+      noteInput.addEventListener('input', () => {
+        currentRecord = sanitizeRecord(currentPeriod, {
+          ...currentRecord,
+          note: noteInput.value
+        });
+        persistCurrentRecord();
+      });
+
+      resetButton?.addEventListener('click', () => {
+        const label = formatPeriod(currentPeriod);
+        const hasData = hasMeaningfulData(currentRecord);
+        if (hasData) {
+          const confirmed = window.confirm(`Reset the checklist for ${label}?`);
+          if (!confirmed) return;
+        }
+        delete store.records[currentPeriod];
+        writeStore(store);
+        currentRecord = createBlankRecord(currentPeriod);
+        renderAll();
+      });
+
+      renderAll();
+    })();
+  </script>
+</section>
+
+<style>
+  .tsc-root {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .tsc-hero {
+    display: grid;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .tsc-hero-copy h1,
+  .tsc-context h2 {
+    margin: 0.35rem 0 0;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: clamp(1.45rem, 2.4vw, 2.15rem);
+  }
+
+  .tsc-dek,
+  .tsc-context-list,
+  .tsc-lane-description,
+  .tsc-lane-summary-text {
+    color: var(--tone-muted);
+  }
+
+  .tsc-dek {
+    margin: 0.75rem 0 0;
+    max-width: 48rem;
+  }
+
+  .tsc-overall-card {
+    padding: 1rem 1.05rem;
+    display: grid;
+    gap: 0.4rem;
+    align-content: start;
+  }
+
+  .tsc-label {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--tone-muted);
+  }
+
+  .tsc-net-score,
+  .tsc-stat-value {
+    margin: 0;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    line-height: 1;
+  }
+
+  .tsc-overall-state {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .tsc-overall-summary {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--tone-muted);
+  }
+
+  .tsc-top-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .tsc-control-panel {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .tsc-control-row {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .tsc-field,
+  .tsc-snapshot {
+    display: grid;
+    gap: 0.42rem;
+  }
+
+  .tsc-field-label {
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--tone-muted);
+  }
+
+  .tsc-field input,
+  .tsc-snapshot textarea {
+    width: 100%;
+    border-radius: 0.9rem;
+    border: 1px solid var(--tone-line);
+    background: var(--tone-surface-strong);
+    color: var(--tone-text);
+    padding: 0.82rem 0.92rem;
+  }
+
+  .tsc-field-note {
+    color: var(--tone-muted);
+    font-size: 0.86rem;
+  }
+
+  .tsc-stats {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .tsc-stat {
+    padding: 0.95rem 0.9rem;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .tsc-stat--counter {
+    border-color: color-mix(in srgb, #9b5c52 38%, var(--tone-line));
+  }
+
+  .tsc-stat-value--saved {
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+
+  .tsc-scale {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .tsc-scale-item {
+    padding: 0.85rem 0.75rem;
+    min-height: 100%;
+  }
+
+  .tsc-scale-item p {
+    margin: 0.35rem 0 0;
+    font-size: 0.86rem;
+    color: var(--tone-muted);
+  }
+
+  .tsc-scale-score {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 22%, var(--tone-line));
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 600;
+  }
+
+  .tsc-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .tsc-reset-button {
+    border-radius: 999px;
+    padding: 0.6rem 1rem;
+  }
+
+  .tsc-context-list {
+    margin: 1rem 0 0;
+    padding-left: 1.1rem;
+  }
+
+  .tsc-context-list li + li {
+    margin-top: 0.5rem;
+  }
+
+  .tsc-lanes {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .tsc-lane {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .tsc-lane--counter {
+    border-color: color-mix(in srgb, #9b5c52 40%, var(--tone-line));
+  }
+
+  .tsc-lane-summary-row {
+    list-style: none;
+    display: grid;
+    gap: 1rem;
+    padding: 1rem 1.05rem;
+    cursor: pointer;
+  }
+
+  .tsc-lane-summary-row::-webkit-details-marker {
+    display: none;
+  }
+
+  .tsc-lane-head h2 {
+    margin: 0.1rem 0 0;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+  }
+
+  .tsc-lane-kicker,
+  .tsc-lane-description,
+  .tsc-lane-summary-text {
+    margin: 0;
+  }
+
+  .tsc-lane-kicker {
+    color: var(--tone-muted);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .tsc-lane-description {
+    margin-top: 0.45rem;
+  }
+
+  .tsc-lane-summary-text {
+    margin-top: 0.5rem;
+    max-width: 56rem;
+    font-size: 0.95rem;
+  }
+
+  .tsc-lane-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .tsc-lane-total,
+  .tsc-lane-state {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.25rem;
+    border-radius: 999px;
+    border: 1px solid var(--tone-line);
+    background: color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
+    padding: 0.4rem 0.75rem;
+    font-size: 0.86rem;
+    line-height: 1;
+  }
+
+  .tsc-lane-total {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 600;
+  }
+
+  .tsc-lane-state[data-state='visible'],
+  .tsc-lane-state[data-state='active'] {
+    border-color: color-mix(in srgb, var(--tone-accent) 35%, var(--tone-line));
+    color: var(--tone-accent-glow);
+  }
+
+  .tsc-lane-state[data-state='meaningful-drag'],
+  .tsc-lane-state[data-state='strong-drag'] {
+    border-color: color-mix(in srgb, #b97063 55%, var(--tone-line));
+    color: #e2b0a4;
+  }
+
+  .tsc-lane-body {
+    display: grid;
+    gap: 0.8rem;
+    padding: 0 1.05rem 1.05rem;
+  }
+
+  .tsc-item {
+    margin: 0;
+    border: 1px solid var(--tone-line);
+    border-radius: 1rem;
+    padding: 0.9rem;
+    background: color-mix(in srgb, var(--tone-surface-strong) 92%, transparent);
+  }
+
+  .tsc-item legend {
+    display: grid;
+    gap: 0.3rem;
+    width: 100%;
+    padding: 0 0 0.7rem;
+  }
+
+  .tsc-item-title {
+    font-weight: 600;
+  }
+
+  .tsc-item-help {
+    color: var(--tone-muted);
+    font-size: 0.88rem;
+  }
+
+  .tsc-score-group {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .tsc-score-button {
+    border-radius: 0.85rem;
+    min-height: 2.75rem;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .tsc-score-button.is-active {
+    border-color: color-mix(in srgb, var(--tone-accent) 55%, var(--tone-line));
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--tone-accent) 18%, var(--tone-surface-strong)),
+        color-mix(in srgb, var(--tone-accent) 8%, var(--tone-surface-strong))
+      );
+    color: color-mix(in srgb, white 78%, var(--tone-accent-glow));
+    transform: translateY(-1px);
+  }
+
+  .tsc-score-button[data-score-value='0'].is-active {
+    border-color: var(--tone-line);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, white 4%, var(--tone-surface-strong)), var(--tone-surface-strong));
+    color: var(--tone-text);
+  }
+
+  :global(html.tsc-embed-page),
+  :global(body.tsc-embed-page) {
+    background: transparent;
+  }
+
+  :global(.tsc-embed-page #cursor-aura),
+  :global(.tsc-embed-page .hallway),
+  :global(.tsc-embed-page .site-overlay),
+  :global(.tsc-embed-page .garland-real),
+  :global(.tsc-embed-page .site-header),
+  :global(.tsc-embed-page .mode-walk),
+  :global(.tsc-embed-page .mode-explore) {
+    display: none !important;
+  }
+
+  :global(body.tsc-embed-page > footer) {
+    display: none !important;
+  }
+
+  :global(.tsc-embed-page .page-shell) {
+    padding: 0;
+  }
+
+  .tsc-root--embed .tsc-context {
+    display: none;
+  }
+
+  .tsc-root--embed .tsc-hero,
+  .tsc-root--embed .tsc-top-grid {
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 960px) {
+    .tsc-hero {
+      grid-template-columns: minmax(0, 1.7fr) minmax(18rem, 0.9fr);
+    }
+
+    .tsc-top-grid {
+      grid-template-columns: minmax(0, 1.4fr) minmax(17rem, 0.9fr);
+    }
+
+    .tsc-control-row {
+      grid-template-columns: minmax(15rem, 1fr) minmax(18rem, 1.05fr);
+      align-items: start;
+    }
+
+    .tsc-lane-summary-row {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+    }
+
+    .tsc-lane-meta {
+      align-items: flex-start;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .tsc-stats,
+    .tsc-scale,
+    .tsc-score-group {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .tsc-actions {
+      justify-content: stretch;
+    }
+
+    .tsc-reset-button {
+      width: 100%;
+    }
+  }
+</style>

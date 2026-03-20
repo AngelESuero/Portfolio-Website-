@@ -1,0 +1,544 @@
+---
+import mapRegions, { type MapRegion } from '../data/map-regions';
+
+interface MapRegionLayout extends MapRegion {
+  cx: number;
+  cy: number;
+  rx: number;
+  ry: number;
+  scale: number;
+}
+
+const regionLayout: Record<string, Omit<MapRegionLayout, keyof MapRegion>> = {
+  work:     { cx: 310, cy: 135, rx: 72,  ry: 24, scale: 1    },
+  sound:    { cx: 530, cy: 105, rx: 68,  ry: 22, scale: 0.9  },
+  writing:  { cx: 530, cy: 260, rx: 72,  ry: 22, scale: 0.86 },
+  agi:      { cx: 105, cy: 195, rx: 92,  ry: 23, scale: 0.88 },
+  survival: { cx: 310, cy: 295, rx: 86,  ry: 23, scale: 0.86 },
+  contact:  { cx: 148, cy: 330, rx: 66,  ry: 21, scale: 0.78 },
+};
+
+const homeMapRegions = mapRegions
+  .map((region) => {
+    const layout = regionLayout[region.id];
+    return layout ? { ...region, ...layout } : null;
+  })
+  .filter((region): region is MapRegionLayout => Boolean(region));
+
+const connections = [
+  { from: 'work',     to: 'sound',    bend: -20 },
+  { from: 'work',     to: 'agi',      bend:  26 },
+  { from: 'work',     to: 'survival', bend: -14 },
+  { from: 'work',     to: 'writing',  bend:  18 },
+  { from: 'survival', to: 'contact',  bend: -12 },
+  { from: 'agi',      to: 'contact',  bend: -10 },
+  { from: 'sound',    to: 'writing',  bend:  12 },
+];
+
+const findR = (id: string) => homeMapRegions.find((r) => r.id === id);
+
+const curvePath = (fromId: string, toId: string, bend = 0) => {
+  const from = findR(fromId);
+  const to   = findR(toId);
+  if (!from || !to) return '';
+  const midX = (from.cx + to.cx) / 2;
+  const midY = (from.cy + to.cy) / 2;
+  return `M ${from.cx} ${from.cy} Q ${midX} ${midY + bend} ${to.cx} ${to.cy}`;
+};
+
+// total path lengths (approx) so we can animate dash offsets
+const pathLengths: Record<string, number> = {};
+connections.forEach(({ from, to }) => {
+  const f = findR(from);
+  const t = findR(to);
+  if (f && t) {
+    const dx = t.cx - f.cx;
+    const dy = t.cy - f.cy;
+    pathLengths[`${from}-${to}`] = Math.round(Math.sqrt(dx * dx + dy * dy) * 1.1);
+  }
+});
+---
+
+<section
+  class="home-map-preview card"
+  data-home-map
+  data-empty-copy="Select any node to pull its thread."
+  aria-labelledby="home-map-preview-heading"
+>
+  <div class="home-map-preview__header">
+    <div class="space-y-1">
+      <p class="home-map-preview__kicker">Offerings</p>
+      <h2 id="home-map-preview-heading" class="font-display text-2xl">Select a path</h2>
+    </div>
+    <a class="home-map-preview__full-link" href="/map" data-astro-reload>Full atlas →</a>
+  </div>
+
+  <div class="home-map-preview__canvas">
+    <svg viewBox="0 52 648 320" role="img" aria-labelledby="home-map-svg-title">
+      <title id="home-map-svg-title">Interactive site map — click a region</title>
+
+      <defs>
+        <radialGradient id="hmp-field" cx="44%" cy="36%" r="68%">
+          <stop offset="0%"   stop-color="rgba(255,255,255,0.055)" />
+          <stop offset="48%"  stop-color="rgba(255,255,255,0.018)" />
+          <stop offset="100%" stop-color="rgba(255,255,255,0)" />
+        </radialGradient>
+
+        <!-- per-region glow filters -->
+        {homeMapRegions.map((r) => (
+          <filter id={`hmp-glow-${r.id}`} x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="8" result="blur" />
+            <feFlood flood-color={r.color} flood-opacity="0.35" result="color" />
+            <feComposite in="color" in2="blur" operator="in" result="glow" />
+            <feMerge>
+              <feMergeNode in="glow" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        ))}
+
+        <!-- animated dash gradient -->
+        <linearGradient id="hmp-line-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="rgba(255,255,255,0)" />
+          <stop offset="40%"  stop-color="rgba(255,255,255,0.28)" />
+          <stop offset="100%" stop-color="rgba(255,255,255,0)" />
+        </linearGradient>
+
+        <!-- edge fade mask -->
+        <linearGradient id="hmp-edge-fade" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="rgba(7,11,18,0.94)" />
+          <stop offset="6%"   stop-color="rgba(7,11,18,0)" />
+          <stop offset="94%"  stop-color="rgba(7,11,18,0)" />
+          <stop offset="100%" stop-color="rgba(7,11,18,0.94)" />
+        </linearGradient>
+      </defs>
+
+      <!-- field wash -->
+      <rect x="0" y="52" width="648" height="320" fill="url(#hmp-field)" />
+
+      <!-- connectors -->
+      <g class="hmp-connectors" aria-hidden="true">
+        {connections.map(({ from, to, bend }, i) => {
+          const d = curvePath(from, to, bend);
+          const len = pathLengths[`${from}-${to}`] ?? 200;
+          const fromR = findR(from);
+          const delay = (i * 0.4).toFixed(1);
+          return d ? (
+            <g class="hmp-connector" data-from={from} data-to={to}>
+              {/* base static line */}
+              <path
+                class="hmp-connector__base"
+                d={d}
+                style={`--conn-color:${fromR?.color ?? '#888'};`}
+              />
+              {/* animated travel dot */}
+              <path
+                class="hmp-connector__travel"
+                d={d}
+                style={`--conn-color:${fromR?.color ?? '#888'};--path-len:${len};--delay:${delay}s;`}
+              />
+            </g>
+          ) : null;
+        })}
+      </g>
+
+      <!-- regions -->
+      <g class="hmp-regions">
+        {homeMapRegions.map((region) => (
+          <g
+            tabindex="0"
+            role="button"
+            aria-label={`Show ${region.label}`}
+            aria-pressed="false"
+            data-region={region.id}
+            data-label={region.label}
+            data-summary={region.summary}
+            data-color={region.color}
+            data-route={region.route}
+            class="hmp-region"
+            style={`--rc:${region.color};`}
+            transform={`translate(${region.cx} ${region.cy})`}
+          >
+            {/* invisible hit target */}
+            <ellipse
+              class="hmp-region__hit"
+              cx="0" cy="0"
+              rx={region.rx + 18}
+              ry={region.ry + 16}
+            />
+            {/* outer aura */}
+            <ellipse
+              class="hmp-region__aura"
+              cx="0" cy="0"
+              rx={region.rx + 8}
+              ry={region.ry + 8}
+            />
+            {/* shell */}
+            <ellipse
+              class="hmp-region__shell"
+              cx="0" cy="0"
+              rx={region.rx}
+              ry={region.ry}
+            />
+            {/* label */}
+            <text y="4" text-anchor="middle">{region.label}</text>
+          </g>
+        ))}
+      </g>
+
+      <!-- edge vignette -->
+      <rect x="0" y="52" width="648" height="320" fill="url(#hmp-edge-fade)" pointer-events="none" />
+    </svg>
+  </div>
+
+  <!-- detail panel — revealed on region click -->
+  <div class="hmp-detail" data-home-map-detail aria-live="polite" aria-atomic="true">
+    <div class="hmp-detail__inner" data-home-map-detail-inner>
+      <p class="hmp-detail__label" data-home-map-detail-label></p>
+      <p class="hmp-detail__summary" data-home-map-detail-summary></p>
+      <a class="hmp-detail__link" data-home-map-detail-link href="#" aria-label="Go to section">Enter →</a>
+    </div>
+    <p class="hmp-detail__empty" data-home-map-detail-empty>
+      Select any node to pull its thread.
+    </p>
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    const root = document.currentScript?.previousElementSibling;
+    if (!(root instanceof HTMLElement) || !root.matches('[data-home-map]')) return;
+
+    const regions    = Array.from(root.querySelectorAll('[data-region]'));
+    const detail     = root.querySelector('[data-home-map-detail]');
+    const detailInner = root.querySelector('[data-home-map-detail-inner]');
+    const detailLabel = root.querySelector('[data-home-map-detail-label]');
+    const detailSummary = root.querySelector('[data-home-map-detail-summary]');
+    const detailLink = root.querySelector('[data-home-map-detail-link]');
+    const detailEmpty = root.querySelector('[data-home-map-detail-empty]');
+    let activeId = '';
+
+    const activate = (id) => {
+      activeId = id && activeId !== id ? id : '';
+      root.dataset.hasSelection = activeId ? 'true' : 'false';
+
+      regions.forEach((r) => {
+        const active = r.getAttribute('data-region') === activeId;
+        r.classList.toggle('is-active', active);
+        r.setAttribute('aria-pressed', String(active));
+      });
+
+      const activeR = regions.find((r) => r.getAttribute('data-region') === activeId);
+
+      if (activeId && activeR) {
+        const label   = activeR.getAttribute('data-label')   || '';
+        const summary = activeR.getAttribute('data-summary') || '';
+        const route   = activeR.getAttribute('data-route')   || '#';
+        const color   = activeR.getAttribute('data-color')   || '';
+
+        if (detailLabel)   detailLabel.textContent  = label;
+        if (detailSummary) detailSummary.textContent = summary;
+        if (detailLink instanceof HTMLAnchorElement) {
+          detailLink.href = route;
+          detailLink.style.color = color;
+          detailLink.style.borderColor = color + '66';
+        }
+        if (detail) detail.dataset.hasSelection = 'true';
+
+        // highlight connectors touching this region
+        root.querySelectorAll('[data-from],[data-to]').forEach((conn) => {
+          const touches = conn.getAttribute('data-from') === activeId || conn.getAttribute('data-to') === activeId;
+          conn.classList.toggle('is-lit', touches);
+        });
+      } else {
+        if (detail) delete detail.dataset.hasSelection;
+        root.querySelectorAll('[data-from],[data-to]').forEach((conn) => conn.classList.remove('is-lit'));
+      }
+
+      window.dispatchEvent(new CustomEvent('home-map:region-change', {
+        detail: activeId
+          ? { regionId: activeId, label: activeR?.getAttribute('data-label') || '', color: activeR?.getAttribute('data-color') || '', relatedCards: [] }
+          : { regionId: '', label: '', color: '', relatedCards: [] }
+      }));
+    };
+
+    regions.forEach((r) => {
+      r.addEventListener('click', () => activate(r.getAttribute('data-region')));
+      r.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(r.getAttribute('data-region')); }
+      });
+    });
+  })();
+</script>
+
+<style>
+  .home-map-preview {
+    display: grid;
+    gap: 1.1rem;
+    padding: clamp(1rem, 2.5vw, 1.5rem);
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
+    background:
+      radial-gradient(ellipse 80% 60% at 30% 0%, color-mix(in srgb, var(--tone-accent) 7%, transparent), transparent 70%),
+      radial-gradient(ellipse 60% 50% at 80% 10%, color-mix(in srgb, var(--tone-sky-bright) 4%, transparent), transparent 60%),
+      color-mix(in srgb, var(--tone-surface-strong) 92%, transparent);
+  }
+
+  .home-map-preview__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.85rem;
+  }
+
+  .home-map-preview__kicker {
+    margin: 0;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  }
+
+  .home-map-preview__full-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    min-height: 36px;
+    padding: 0.44rem 1rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
+    background: color-mix(in srgb, var(--tone-surface) 70%, transparent);
+    color: color-mix(in srgb, var(--tone-accent-glow) 88%, white 12%);
+    font-size: 0.82rem;
+    text-decoration: none;
+    transition: border-color 130ms ease, color 130ms ease, background 130ms ease;
+  }
+
+  .home-map-preview__full-link:hover,
+  .home-map-preview__full-link:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 60%, transparent);
+    color: var(--tone-accent-glow);
+    background: color-mix(in srgb, var(--tone-accent) 8%, var(--tone-surface));
+  }
+
+  /* ─── Canvas ──────────────────────────────────── */
+
+  .home-map-preview__canvas {
+    border-radius: 1.1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+    background:
+      radial-gradient(ellipse 60% 50% at 48% 30%, color-mix(in srgb, var(--tone-accent) 6%, transparent), transparent 70%),
+      radial-gradient(ellipse 40% 40% at 80% 15%, color-mix(in srgb, var(--tone-sky-bright) 4%, transparent), transparent 60%),
+      color-mix(in srgb, var(--tone-bg) 92%, transparent);
+    overflow: hidden;
+  }
+
+  .home-map-preview__canvas svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* ─── Connectors ─────────────────────────────── */
+
+  .hmp-connector__base {
+    fill: none;
+    stroke: color-mix(in srgb, var(--conn-color) 20%, transparent);
+    stroke-width: 1.1;
+    stroke-dasharray: 5 6;
+    opacity: 0.4;
+    transition: opacity 200ms ease, stroke 200ms ease;
+  }
+
+  .hmp-connector__travel {
+    fill: none;
+    stroke: var(--conn-color);
+    stroke-width: 1.8;
+    stroke-dasharray: 18 calc(var(--path-len, 200) - 18);
+    stroke-dashoffset: var(--path-len, 200);
+    opacity: 0;
+    animation: hmp-travel 3.8s linear calc(var(--delay, 0s)) infinite;
+    transition: opacity 200ms ease;
+  }
+
+  .hmp-connector.is-lit .hmp-connector__base {
+    stroke: color-mix(in srgb, var(--conn-color) 60%, transparent);
+    opacity: 0.85;
+  }
+
+  .hmp-connector.is-lit .hmp-connector__travel {
+    opacity: 0.9;
+  }
+
+  @keyframes hmp-travel {
+    0%   { stroke-dashoffset: calc(var(--path-len, 200)); opacity: 0; }
+    5%   { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { stroke-dashoffset: calc(var(--path-len, 200) * -1); opacity: 0; }
+  }
+
+  /* ─── Regions ────────────────────────────────── */
+
+  .hmp-region {
+    cursor: pointer;
+    transition: opacity 180ms ease, filter 180ms ease;
+  }
+
+  .hmp-region__hit {
+    fill: transparent;
+    stroke: transparent;
+  }
+
+  .hmp-region__aura {
+    fill: color-mix(in srgb, var(--rc) 7%, transparent);
+    stroke: none;
+    transition: fill 160ms ease, r 160ms ease;
+  }
+
+  .hmp-region__shell {
+    fill: color-mix(in srgb, var(--rc) 7%, rgba(8,13,22,0.06));
+    stroke: color-mix(in srgb, var(--rc) 36%, transparent);
+    stroke-width: 1.1;
+    transition: fill 160ms ease, stroke 160ms ease, filter 160ms ease;
+  }
+
+  .hmp-region text {
+    fill: color-mix(in srgb, var(--tone-text) 86%, white 14%);
+    font-family: var(--font-display, sans-serif);
+    font-size: 13.5px;
+    letter-spacing: 0.025em;
+    pointer-events: none;
+    transition: fill 160ms ease;
+  }
+
+  /* dim non-active regions */
+  .home-map-preview[data-has-selection='true'] .hmp-region:not(.is-active) {
+    opacity: 0.42;
+  }
+
+  /* hover / focus */
+  .hmp-region:hover,
+  .hmp-region:focus-visible {
+    opacity: 1;
+    filter: drop-shadow(0 0 14px color-mix(in srgb, var(--rc) 32%, transparent));
+    outline: none;
+  }
+
+  .hmp-region:hover .hmp-region__shell,
+  .hmp-region:focus-visible .hmp-region__shell {
+    fill: color-mix(in srgb, var(--rc) 14%, rgba(8,13,22,0.06));
+    stroke: color-mix(in srgb, var(--rc) 70%, white 8%);
+    stroke-width: 1.4;
+  }
+
+  /* active */
+  .hmp-region.is-active {
+    opacity: 1;
+    filter: drop-shadow(0 0 22px color-mix(in srgb, var(--rc) 50%, transparent));
+  }
+
+  .hmp-region.is-active .hmp-region__aura {
+    fill: color-mix(in srgb, var(--rc) 18%, transparent);
+    animation: hmp-pulse 2.4s ease-in-out infinite;
+  }
+
+  .hmp-region.is-active .hmp-region__shell {
+    fill: color-mix(in srgb, var(--rc) 16%, rgba(8,13,22,0.08));
+    stroke: color-mix(in srgb, var(--rc) 85%, white 10%);
+    stroke-width: 1.6;
+  }
+
+  .hmp-region.is-active text {
+    fill: white;
+  }
+
+  @keyframes hmp-pulse {
+    0%, 100% { opacity: 0.6; }
+    50%       { opacity: 1; }
+  }
+
+  /* ─── Detail panel ───────────────────────────── */
+
+  .hmp-detail {
+    position: relative;
+    min-height: 3.2rem;
+    display: grid;
+  }
+
+  .hmp-detail__inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+    background: color-mix(in srgb, var(--tone-surface) 60%, transparent);
+    opacity: 0;
+    transform: translateY(6px);
+    pointer-events: none;
+    transition: opacity 220ms ease, transform 220ms ease;
+    position: absolute;
+    inset: 0;
+  }
+
+  .hmp-detail[data-has-selection='true'] .hmp-detail__inner {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    position: static;
+  }
+
+  .hmp-detail[data-has-selection='true'] .hmp-detail__empty {
+    display: none;
+  }
+
+  .hmp-detail__label {
+    margin: 0;
+    font-family: var(--font-display, sans-serif);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--tone-text);
+    min-width: 6rem;
+  }
+
+  .hmp-detail__summary {
+    margin: 0;
+    flex: 1;
+    font-size: 0.84rem;
+    color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
+  }
+
+  .hmp-detail__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.36rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid;
+    font-size: 0.8rem;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity 140ms ease;
+    color: var(--tone-accent-glow);
+    border-color: color-mix(in srgb, var(--tone-accent) 30%, transparent);
+  }
+
+  .hmp-detail__link:hover { opacity: 0.8; }
+
+  .hmp-detail__empty {
+    margin: 0;
+    padding: 0.5rem 0;
+    font-size: 0.84rem;
+    color: color-mix(in srgb, var(--tone-text) 56%, var(--tone-muted) 44%);
+  }
+
+  /* ─── Reduced motion ─────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .hmp-connector__travel { animation: none; }
+    .hmp-region__aura      { animation: none; }
+    .hmp-region,
+    .hmp-region__shell,
+    .hmp-detail__inner     { transition: none; }
+  }
+</style>

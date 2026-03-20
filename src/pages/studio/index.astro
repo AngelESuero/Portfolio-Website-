@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+import LaneChooser from '../../components/studio/LaneChooser.astro';
+import RelatedEntriesHelper from '../../components/studio/RelatedEntriesHelper.astro';
+import StudioShell from '../../components/studio/StudioShell.astro';
+import { sortEntriesByDate } from '../../lib/archive-entries';
+
+const relatedEntryOptions = sortEntriesByDate(await getCollection('entries')).map((entry) => ({
+  slug: entry.slug,
+  title: entry.data.title
+}));
+---
+
+<StudioShell
+  title="Studio"
+  intro="Choose the lane first. Writing and notes stay text-first, proposals get their own intake sheet, and music, video, and image entries now begin with upload-or-URL media framing."
+  activeLane="overview"
+>
+  <LaneChooser />
+
+  <section class="studio-section">
+    <div class="studio-section__header">
+      <h2>Current flow</h2>
+      <p>Text lanes still commit straight to GitHub. Media lanes now upload to R2 first and only commit the MDX entry with the asset reference.</p>
+    </div>
+
+    <ol class="studio-flow-list">
+      <li>Pick the lane so the form only shows the fields that belong to that content type.</li>
+      <li>For music, video, and image entries, choose upload or external URL first.</li>
+      <li>Commit the entry through the existing GitHub-backed MDX flow.</li>
+      <li>Wait for the Cloudflare rebuild to publish the new archive page.</li>
+    </ol>
+  </section>
+
+  <Fragment slot="aside">
+    <section class="studio-sidebar__panel">
+      <p class="studio-sidebar__kicker font-archive">Phase 1.5</p>
+      <h2>Included now</h2>
+      <ul class="studio-flow-list">
+        <li>Lane-specific pages at `/studio/*` instead of one omnibus form.</li>
+        <li>Shared commit handling with slug preview, success state, and local autosave.</li>
+        <li>R2 upload prep for music, video, and image entries.</li>
+      </ul>
+    </section>
+
+    <section class="studio-sidebar__panel">
+      <p class="studio-sidebar__kicker font-archive">Still out of scope</p>
+      <h2>Phase 2 later</h2>
+      <p>Batch uploads, drag-and-drop polish, automatic thumbnails, transcription, waveform generation, and asset management stay out of this pass.</p>
+    </section>
+
+    <RelatedEntriesHelper entries={relatedEntryOptions} />
+  </Fragment>
+</StudioShell>
