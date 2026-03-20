@@ -24,7 +24,7 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const {
   title,
   description = 'Timeline and archive for A Path Toward Life',
-  image = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80',
+  image = 'https://portfolio-website-9c9.pages.dev/images/home-collage/collage-2.jpg',
   theme = 'archive',
   bodyClass = '',
   showHeader = true,
@@ -215,8 +215,7 @@ const shellGarlandStyle = [
           localStorage.setItem('music-bar-open', '0');
         };
 
-        // restore state
-        if (localStorage.getItem('music-bar-open') === '1') open();
+        // always start closed — user must manually open
 
         toggles.forEach(t => t.addEventListener('click', () => {
           bar.dataset.open === 'true' ? close() : open();

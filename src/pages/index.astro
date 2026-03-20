@@ -7,8 +7,6 @@ import agiTimeline from '../data/agi-curated-timeline.json';
 
 const allEntries = await getCollection('entries');
 const allProjects = await getCollection('projects');
-const sortedProjects = [...allProjects].sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0));
-const featuredProjects = sortedProjects.slice(0, 3);
 
 const entryCountByMedium = allEntries.reduce<Record<string, number>>((acc, e) => {
   const m = e.data.medium;
@@ -33,7 +31,7 @@ const recentEntries = [...allEntries]
 const recentWriting = [...allEntries]
   .filter(e => e.data.medium === 'writing')
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
-  .slice(0, 2);
+  .slice(0, 3);
 
 const mediumIcon: Record<string, string> = { music: '♪', video: '▶', writing: '✦', image: '◈', note: '◦', proposal: '⬡' };
 
@@ -49,7 +47,7 @@ const recentSignals = [...(agiTimeline.items as AgiItem[])]
     if (waveDelta !== 0) return waveDelta;
     return Number(b.year ?? 0) - Number(a.year ?? 0);
   })
-  .slice(0, 2);
+  .slice(0, 3);
 
 const waveLabels: Record<string, string> = {
   software_disruption_now: 'Wave 1 · Software',
@@ -58,92 +56,14 @@ const waveLabels: Record<string, string> = {
   scenario_territory: 'Wave 4 · Scenario',
 };
 
-const compactText = (value: string | null | undefined, maxLength = 88): string => {
-  if (!value) return '';
-
-  const normalized = String(value).replace(/\s+/g, ' ').trim();
-  if (normalized.length <= maxLength) return normalized;
-
-  const sentenceEnd = normalized.indexOf('. ');
-  const firstSentence = sentenceEnd > 0 ? normalized.slice(0, sentenceEnd + 1).trim() : normalized;
-  if (firstSentence.length <= maxLength) return firstSentence;
-
-  const clipped = firstSentence.slice(0, maxLength).replace(/\s+\S*$/, '').trimEnd();
-  return `${clipped}…`;
-};
-
 const agiUpdatedAt = '2026-03-06';
 const agiWaveCount = 4;
 
 const sortedEntries = [...allEntries].sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 const latestMusic = sortedEntries.find(e => e.data.medium === 'music');
 const latestWriting = sortedEntries.find(e => e.data.medium === 'writing');
-const latestProject = featuredProjects[0];
+const latestProject = allProjects.sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0))[0];
 const latestAgi = (agiTimeline.items as AgiItem[])[0];
-
-const encodeSrc = (value: string) => encodeURI(value);
-
-const homePhotos = [
-  {
-    src: '/images/work/art-of-survival/codex-photos/Google Photos/Creativity_ soundscape visual media/2019-11-18 17 12 14 - Angel - DSC00768.jpeg',
-    alt: 'Theatre performance scene',
-    label: 'Performance',
-  },
-  {
-    src: '/images/work/art-of-survival/codex-photos/Google Photos/Creativity_ Cover Art/24515F9A-5B7C-4285-AD0B-553F994827C3.png',
-    alt: 'Blue brain cover art',
-    label: 'Cover art',
-  },
-  {
-    src: '/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Well-Being_ Angel/RenderedImage.jpg',
-    alt: 'Portrait on a pink background',
-    label: 'Portrait',
-  },
-  {
-    src: '/images/work/art-of-survival/codex-photos/Google Photos/Instagram Posts(1)/38fim6df1f4.jpg',
-    alt: 'DIGGING archive still',
-    label: 'Archive still',
-  },
-  {
-    src: '/images/work/art-of-survival/codex-photos/download-2.png',
-    alt: 'Snowy street scene',
-    label: 'Snow',
-  },
-  {
-    src: '/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Well-Being_ Angel/IMG_0839.JPG',
-    alt: 'Group shot with balloons',
-    label: 'Community',
-  },
-  {
-    src: '/images/work/art-of-survival/codex-photos/Google Photos/Creativity_ soundscape visual media/IMG_7707.JPG',
-    alt: 'Cathedral mural interior',
-    label: 'Interior',
-  },
-  {
-    src: '/images/work/art-of-survival/isolation.jpg',
-    alt: 'The Art of Survival cover',
-    label: 'Survival',
-  },
-  {
-    src: '/images/scraps-cover.png',
-    alt: 'Scraps cover art',
-    label: 'Scraps',
-  },
-  {
-    src: '/images/nmoa-logo.png',
-    alt: 'Museum AV logo',
-    label: 'AV',
-  },
-];
-
-const carouselPhotos = [...homePhotos.slice(0, 8), ...homePhotos.slice(0, 8)];
-const backdropPhotos = [
-  { ...homePhotos[0], className: 'hi-backdrop__photo--theatre' },
-  { ...homePhotos[1], className: 'hi-backdrop__photo--brain' },
-  { ...homePhotos[2], className: 'hi-backdrop__photo--portrait' },
-  { ...homePhotos[4], className: 'hi-backdrop__photo--snow' },
-  { ...homePhotos[5], className: 'hi-backdrop__photo--community' },
-];
 
 const offerings = [
   { num: '01', label: 'Work',        desc: latestProject?.data.title ?? 'Projects',               href: '/work' },
@@ -156,22 +76,22 @@ const offerings = [
 const papers = [
   {
     title: 'Acquiring American Happiness in the 21st Century',
-    href: '/archive/writing/acquiring-american-happiness-in-the-21st-century',
+    href: 'https://docs.google.com/document/d/136D7WGfbruYxtIRdegr0Pj5PDNhHBCD_xXMl1ZysyS0',
     tags: ['culture', 'economics', 'well-being'],
   },
   {
     title: 'The Sacrifice of Power: An Analysis of Citizens under Capitalism',
-    href: '/archive/writing/the-sacrifice-of-power',
+    href: 'https://docs.google.com/document/d/12LKrLzWqtMsGeR29ypyGir_nsuicQok5sha2w1ucuNI',
     tags: ['political economy', 'power', 'capitalism'],
   },
   {
     title: 'Following Sound',
-    href: '/archive/writing/following-sound',
+    href: 'https://docs.google.com/document/d/1gMbp364uA-l41Ht0De0ZHHYANcf_Sf4lyaYZkzLJT1o',
     tags: ['music', 'field work', 'sound studies'],
   },
   {
     title: 'The Impact of Musical Instruments on Museum Visitation',
-    href: '/archive/writing/impact-of-musical-instruments-on-museum-visitation',
+    href: 'https://docs.google.com/document/d/178qn_MPC-1690goW3mP-kc_16PeGyajWBgeJVXw5RkE',
     tags: ['museums', 'music', 'community'],
   },
 ];
@@ -203,33 +123,50 @@ const elsewhereCards = [
   bodyClass="home-page"
 >
   <div class="hi-home">
-    <div class="hi-backdrop" aria-hidden="true">
-      {backdropPhotos.map((photo) => (
-        <img
-          class={`hi-backdrop__photo ${photo.className}`}
-          src={encodeSrc(photo.src)}
-          alt=""
-          loading="lazy"
-          decoding="async"
-        />
-      ))}
-    </div>
 
     <!-- ── Hero ──────────────────────────────────── -->
     <header class="hi-hero">
+      <div class="hi-hero__photo" aria-hidden="true"></div>
       <div class="hi-hero__text">
-        <h1 class="hi-name" style="word-spacing:-0.05em">A<span style="font-size:0.2em;vertical-align:-0.6em;letter-spacing:0.03em;opacity:0.75;margin-left:0.1em;margin-right:0.3em">es's</span>Path Toward Life</h1>
-        <p class="hi-lede">Music, images, writing, and civic work from Newark.</p>
+        <h1 class="hi-name">A<span class="hi-name__micro">es's</span> Path Toward Life</h1>
       </div>
     </header>
 
+    <!-- full-bleed scrolling photo carousel -->
     <div class="hi-photos" aria-hidden="true">
       <div class="hi-photos__track">
-        {carouselPhotos.map((photo) => (
-          <div class="hi-photo" style={`background-image:url('${encodeSrc(photo.src)}')`}></div>
+        {['download.jpg','download-1.jpg','download-2.jpg','download-3.jpg','download-4.jpg','download-5.jpg','download-6.jpg','download-7.jpg',
+          'download.jpg','download-1.jpg','download-2.jpg','download-3.jpg','download-4.jpg','download-5.jpg','download-6.jpg','download-7.jpg'].map((f) => (
+          <div class="hi-photo" style={`background-image:url('/photos/${f}')`}></div>
         ))}
       </div>
     </div>
+
+    <div class="hi-rule" aria-hidden="true"></div>
+
+    <!-- ── Micro about ───────────────────────────── -->
+    <section class="hi-micro-about" aria-label="About Angel Suero">
+      <div class="hi-micro-about__photos">
+        {[
+          '/images/home-collage/collage-2.jpg',
+          '/photos/download-5.jpg',
+          '/images/home-collage/collage-5.jpg',
+        ].map((src) => (
+          <div class="hi-micro-photo" style={`background-image:url('${src}')`}></div>
+        ))}
+      </div>
+      <div class="hi-micro-about__body">
+        <p class="hi-kicker">Who</p>
+        <p class="hi-micro-about__ident">
+          Newark-based music producer, visual storyteller, and community builder.
+          Sound, writing, and civic collaboration — turned into public memory.
+        </p>
+        <div class="hi-micro-about__roles">
+          {profile.roles.map((r: string) => <span class="hi-micro-role">{r}</span>)}
+        </div>
+        <a href="/about" class="hi-micro-about__cta">Full story →</a>
+      </div>
+    </section>
 
     <div class="hi-rule" aria-hidden="true"></div>
 
@@ -239,11 +176,11 @@ const elsewhereCards = [
         <p class="hi-kicker">Work</p>
         <a href="/work" class="hi-section__aside">All projects →</a>
       </div>
-      <h2 id="hi-work-heading" class="hi-section__title">What I'm making</h2>
+      <h2 id="hi-work-heading" class="hi-section__title">Recent projects</h2>
       <ul class="hi-rows" role="list">
-        {featuredProjects.map((project) => (
+        {allProjects.sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0)).slice(0, 3).map((project) => (
           <li>
-            <a class="hi-row hi-row--work" href={`/work/${project.slug}`}>
+            <a class="hi-row" href={`/work/${project.slug}`}>
               <span class="hi-row__icon" aria-hidden="true">▸</span>
               <span class="hi-row__title">{project.data.title}</span>
               <span class="hi-row__meta">{project.data.type} · {project.data.year}</span>
@@ -261,13 +198,13 @@ const elsewhereCards = [
         <p class="hi-kicker">Writing</p>
         <a href="/writing" class="hi-section__aside">All writing →</a>
       </div>
-      <h2 id="hi-writing-heading" class="hi-section__title">What I'm writing</h2>
+      <h2 id="hi-writing-heading" class="hi-section__title">Recent pieces</h2>
       <ul class="hi-writing-list" role="list">
         {recentWriting.map((entry) => (
           <li class="hi-writing-item">
             <a href={`/archive/writing/${entry.slug.split('/').pop()}`} class="hi-writing-link">
               <span class="hi-writing-title">{entry.data.title}</span>
-              {entry.data.summary && <span class="hi-writing-summary">{compactText(entry.data.summary, 72)}</span>}
+              {entry.data.summary && <span class="hi-writing-summary">{entry.data.summary}</span>}
             </a>
           </li>
         ))}
@@ -282,7 +219,7 @@ const elsewhereCards = [
         <p class="hi-kicker">Archive</p>
         <a href="/archive" class="hi-section__aside">All {totalEntries} entries →</a>
       </div>
-      <h2 id="hi-archive-heading" class="hi-section__title">Archive</h2>
+      <h2 id="hi-archive-heading" class="hi-section__title">Living record</h2>
       <div class="hi-stats" aria-label="Archive at a glance" style="margin-bottom: 1.2rem;">
         <span class="hi-stats__label" style="margin-right: 0.6rem;">By medium</span>
         {archiveStats.map((s) => (
@@ -313,17 +250,19 @@ const elsewhereCards = [
         <p class="hi-kicker">AGI Monitor</p>
         <a href="/agi" class="hi-section__aside">Full timeline →</a>
       </div>
-      <h2 id="hi-signals-heading" class="hi-section__title">Signals</h2>
+      <h2 id="hi-signals-heading" class="hi-section__title">Active signals</h2>
       <ul class="hi-signals" role="list">
         {recentSignals.map((item) => (
           <li class="hi-signal">
             <div class="hi-signal__meta">
               <span class="hi-signal__wave">{waveLabels[item.wave] ?? item.wave}</span>
               <span aria-hidden="true">·</span>
+              <span class="hi-signal__kind">{item.kind}</span>
+              <span aria-hidden="true">·</span>
               <span class="hi-signal__timing">{item.timingLabel}</span>
             </div>
             <p class="hi-signal__hed">{item.headline}</p>
-            <p class="hi-signal__imp">{compactText(item.public.summary, 80)}</p>
+            <p class="hi-signal__imp">{item.public.implication}</p>
           </li>
         ))}
       </ul>
@@ -336,7 +275,7 @@ const elsewhereCards = [
       <div class="hi-section__head">
         <p class="hi-kicker">Papers</p>
       </div>
-      <h2 id="hi-papers-heading" class="hi-section__title">Papers</h2>
+      <h2 id="hi-papers-heading" class="hi-section__title">Research writing</h2>
       <ul class="hi-rows" role="list">
         {papers.map((paper) => (
           <li>
@@ -353,11 +292,22 @@ const elsewhereCards = [
 
     <div class="hi-rule" aria-hidden="true"></div>
 
+    <!-- ── Photo gallery ──────────────────────────── -->
+    <div class="hi-gallery">
+      <div class="hi-gallery__grid">
+        {['download.jpg','download-1.jpg','download-2.jpg','download-3.jpg'].map((f) => (
+          <img src={`/photos/${f}`} alt="Photo from archive" class="hi-gallery__image" loading="lazy" />
+        ))}
+      </div>
+    </div>
+
+    <div class="hi-rule" aria-hidden="true"></div>
+
     <!-- ── Sound + Elsewhere ──────────────────────── -->
     <footer class="hi-footer">
       <div class="hi-footer__col">
         <p class="hi-kicker">Sound</p>
-        <p class="hi-footer__copy">{entryCountByMedium['music'] || 0} music entries, from beat tapes to sound studies.</p>
+        <p class="hi-footer__copy">{entryCountByMedium['music'] || 0} music entries — beat tapes, session logs, and sound studies.</p>
         <div class="hi-footer__links">
           <a href="/archive/music" class="hi-footer__link">Music archive →</a>
           <button class="hi-footer__link" onclick="document.querySelector('[data-music-bar-toggle]')?.click()" type="button">Open player ♪</button>
@@ -432,148 +382,67 @@ const elsewhereCards = [
 
   /* ── Layout shell ───────────────────────────── */
   .hi-home {
-    max-width: 1080px;
+    max-width: 740px;
     margin: 0 auto;
     padding: clamp(2.5rem, 5vw, 4rem) clamp(1.25rem, 4vw, 2rem) clamp(4rem, 8vw, 6rem);
     display: flex;
     flex-direction: column;
     gap: 0;
-    position: relative;
-    isolation: isolate;
-    overflow: visible;
-  }
-
-  .hi-home > :not(.hi-backdrop) {
-    position: relative;
-    z-index: 1;
   }
 
   .hi-rule {
     height: 1px;
     margin: clamp(2rem, 4vw, 3rem) 0;
-    width: min(100%, 760px);
-    margin-inline: auto;
     background: color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
-  }
-
-  .hi-backdrop {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    overflow: visible;
-    z-index: 0;
-  }
-
-  .hi-backdrop__photo {
-    position: absolute;
-    width: min(280px, 28vw);
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    border-radius: 1.1rem;
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 5%, transparent);
-    box-shadow:
-      0 18px 44px rgba(0, 0, 0, 0.05),
-      0 1px 0 rgba(255, 255, 255, 0.14) inset;
-    opacity: 0.08;
-    filter: saturate(0.62) contrast(0.94) brightness(0.97);
-  }
-
-  .hi-backdrop__photo--theatre {
-    top: -1.25rem;
-    right: -6rem;
-    width: min(300px, 28vw);
-    transform: rotate(4deg);
-  }
-
-  .hi-backdrop__photo--brain {
-    top: 9rem;
-    left: -6rem;
-    width: min(220px, 20vw);
-    transform: rotate(-8deg);
-    opacity: 0.06;
-  }
-
-  .hi-backdrop__photo--portrait {
-    top: 24rem;
-    right: -5rem;
-    width: min(190px, 18vw);
-    transform: rotate(6deg);
-    opacity: 0.07;
-  }
-
-  .hi-backdrop__photo--snow {
-    bottom: 25rem;
-    left: -6rem;
-    width: min(210px, 20vw);
-    transform: rotate(3deg);
-    opacity: 0.06;
-  }
-
-  .hi-backdrop__photo--community {
-    bottom: 10rem;
-    right: -6rem;
-    width: min(240px, 22vw);
-    transform: rotate(-4deg);
-    opacity: 0.07;
   }
 
   /* ── Hero ───────────────────────────────────── */
   .hi-hero {
-    width: min(100%, 760px);
-    margin-inline: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-    padding-bottom: clamp(0.5rem, 1.25vw, 1rem);
+    position: relative;
+    padding-bottom: clamp(1rem, 2vw, 1.5rem);
+    overflow: hidden;
+  }
+
+  .hi-hero__photo {
+    position: absolute;
+    top: -2rem;
+    right: -3rem;
+    width: min(280px, 45%);
+    aspect-ratio: 3/4;
+    background: url('/images/bg-station.jpg') center 34% / cover no-repeat;
+    border-radius: 1rem;
+    opacity: 0.07;
+    mask-image: linear-gradient(135deg, transparent 0%, black 60%);
+    -webkit-mask-image: linear-gradient(135deg, transparent 0%, black 60%);
+    pointer-events: none;
   }
 
   .hi-hero__text {
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-    max-width: 42rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hi-eyebrow {
+    margin: 0 0 0.75rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--tone-accent);
   }
 
   .hi-name {
-    margin: 0;
-    display: block;
-    font-size: clamp(2.4rem, 6.8vw, 4.6rem);
-    line-height: 0.98;
+    margin: 0 0 clamp(1rem, 2.5vw, 1.5rem);
+    font-size: clamp(2.4rem, 7vw, 4.2rem);
+    line-height: 1.02;
     letter-spacing: -0.035em;
     color: color-mix(in srgb, var(--tone-accent-glow) 60%, var(--tone-text) 40%);
   }
 
-  .hi-name__lead {
-    display: inline-block;
-    position: relative;
-    vertical-align: bottom;
-  }
-
-  .hi-name__letter {
-    display: inline;
-  }
-
-  .hi-name__micro {
-    position: absolute;
-    bottom: 0.05em;
-    left: calc(100% - 0.05em);
-    font-size: 0.2em;
-    line-height: 1;
-    letter-spacing: 0.03em;
-    opacity: 0.75;
-    white-space: nowrap;
-  }
-
-  .hi-name__rest {
-    display: inline-block;
-    margin-left: 0.02em;
-    vertical-align: bottom;
-  }
-
   .hi-lede {
-    margin: 0;
-    max-width: 32rem;
-    font-size: clamp(0.98rem, 1.7vw, 1.1rem);
+    margin: 0 0 0.75rem;
+    max-width: 54ch;
+    font-size: clamp(1rem, 1.8vw, 1.15rem);
     line-height: 1.62;
     color: var(--tone-text);
   }
@@ -609,8 +478,6 @@ const elsewhereCards = [
 
   /* ── Section shell ──────────────────────────── */
   .hi-section {
-    width: min(100%, 760px);
-    margin-inline: auto;
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -646,152 +513,6 @@ const elsewhereCards = [
     font-size: clamp(1.35rem, 3vw, 1.9rem);
     line-height: 1.12;
     letter-spacing: -0.02em;
-  }
-
-  /* ── Photo band ──────────────────────────────── */
-  .hi-photo-band {
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-  }
-
-  .hi-photo-band__grid {
-    display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    grid-auto-rows: 140px;
-    gap: 0.7rem;
-  }
-
-  .hi-photo-band__card {
-    position: relative;
-    overflow: hidden;
-    border-radius: 1rem;
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
-    background: color-mix(in srgb, var(--tone-surface-strong) 72%, transparent);
-    min-height: 150px;
-  }
-
-  .hi-photo-band__card:nth-child(1) {
-    grid-column: span 3;
-    grid-row: span 2;
-    min-height: 290px;
-  }
-
-  .hi-photo-band__card:nth-child(2),
-  .hi-photo-band__card:nth-child(3) {
-    grid-column: span 3;
-    min-height: 140px;
-  }
-
-  .hi-photo-band__card:nth-child(4),
-  .hi-photo-band__card:nth-child(5),
-  .hi-photo-band__card:nth-child(6) {
-    grid-column: span 2;
-  }
-
-  .hi-photo-band__image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 260ms ease, filter 260ms ease;
-    filter: saturate(0.92) contrast(1.02);
-  }
-
-  .hi-photo-band__card:hover .hi-photo-band__image {
-    transform: scale(1.03);
-    filter: saturate(1) contrast(1.05);
-  }
-
-  .hi-photo-band__label {
-    position: absolute;
-    left: 0.75rem;
-    bottom: 0.75rem;
-    padding: 0.22rem 0.52rem;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--tone-surface-strong) 80%, transparent);
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 10%, transparent);
-    font-size: 0.64rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
-    backdrop-filter: blur(12px);
-  }
-
-  /* ── Work cards ─────────────────────────────── */
-  .hi-work-grid {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.8rem;
-  }
-
-  .hi-work-card {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    border-radius: 1rem;
-    overflow: hidden;
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
-    background: color-mix(in srgb, var(--tone-surface-strong) 76%, transparent);
-    text-decoration: none;
-    color: inherit;
-    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
-  }
-
-  .hi-work-card:hover {
-    transform: translateY(-2px);
-    border-color: color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
-    background: color-mix(in srgb, var(--tone-accent) 4%, var(--tone-surface-strong));
-  }
-
-  .hi-work-card__media {
-    aspect-ratio: 4 / 3;
-    overflow: hidden;
-    background: color-mix(in srgb, var(--tone-surface-strong) 84%, transparent);
-  }
-
-  .hi-work-card__image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 260ms ease, filter 260ms ease;
-    filter: saturate(0.94) contrast(1.02);
-  }
-
-  .hi-work-card__image--contain {
-    object-fit: contain;
-    padding: 0.9rem;
-    background: color-mix(in srgb, var(--tone-surface-strong) 86%, transparent);
-  }
-
-  .hi-work-card:hover .hi-work-card__image {
-    transform: scale(1.03);
-    filter: saturate(1) contrast(1.05);
-  }
-
-  .hi-work-card__body {
-    display: grid;
-    gap: 0.25rem;
-    padding: 0.9rem 0.95rem 1rem;
-  }
-
-  .hi-work-card__type {
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: color-mix(in srgb, var(--tone-text) 56%, var(--tone-muted) 44%);
-  }
-
-  .hi-work-card__title {
-    font-size: 0.98rem;
-    font-weight: 600;
-    line-height: 1.35;
-    color: var(--tone-text);
   }
 
   /* ── Offerings list ─────────────────────────── */
@@ -919,11 +640,10 @@ const elsewhereCards = [
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.7rem;
   }
 
   .hi-signal {
-    padding: 0.85rem 0;
+    padding: clamp(0.7rem, 1.6vw, 0.95rem) 0;
     border-top: 1px solid color-mix(in srgb, var(--tone-accent) 8%, var(--line2));
   }
 
@@ -1177,48 +897,16 @@ const elsewhereCards = [
       padding-top: clamp(1.5rem, 5vw, 2.5rem);
     }
 
-    .hi-hero {
-      width: min(100%, 42rem);
-    }
-
-    .hi-backdrop__photo {
-      opacity: 0.035;
-      width: min(150px, 34vw);
-    }
-
-    .hi-backdrop__photo--theatre {
-      top: -0.5rem;
-      right: -2.25rem;
-      width: min(180px, 40vw);
-    }
-
-    .hi-backdrop__photo--brain,
-    .hi-backdrop__photo--archive,
-    .hi-backdrop__photo--interior {
-      display: none;
-    }
-
-    .hi-backdrop__photo--portrait {
-      top: 16rem;
-      right: -1.5rem;
-      width: min(130px, 30vw);
-    }
-
-    .hi-backdrop__photo--snow {
-      left: -1.75rem;
-      bottom: 33rem;
-      width: min(140px, 32vw);
-    }
-
-    .hi-backdrop__photo--community {
-      right: -1.25rem;
-      bottom: 18rem;
-      width: min(150px, 34vw);
-    }
-
     .hi-row {
-      gap: 0.35rem;
+      grid-template-columns: 1.2rem 3.5rem 1fr auto;
+      gap: 0.4rem;
     }
+
+    .hi-row--paper {
+      grid-template-columns: 1.2rem 1fr 1.2rem;
+    }
+
+    .hi-row__tags { display: none; }
 
     .hi-footer {
       grid-template-columns: 1fr;
@@ -2259,28 +1947,19 @@ const elsewhereCards = [
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.9rem;
-  }
-
-  .hi-writing-item {
-    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 8%, var(--line2));
-  }
-
-  .hi-writing-item:last-child {
-    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 8%, var(--line2));
+    gap: 1.5rem;
   }
 
   .hi-writing-link {
     display: flex;
     flex-direction: column;
-    gap: 0.14rem;
-    padding: 0.8rem 0;
+    gap: 0.25rem;
     text-decoration: none;
     color: inherit;
   }
 
   .hi-writing-title {
-    font-size: 0.98rem;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--tone-text);
     transition: color 150ms ease;
@@ -2291,13 +1970,137 @@ const elsewhereCards = [
   }
 
   .hi-writing-summary {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: var(--tone-muted, rgba(255,255,255,0.5));
     line-height: 1.5;
   }
 
+  /* ── Photo Gallery ──────────────────────────── */
+  .hi-gallery {
+    margin: clamp(1.5rem, 3vw, 2.5rem) 0;
+  }
+
+  .hi-gallery__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: clamp(0.5rem, 1.5vw, 0.9rem);
+  }
+
+  .hi-gallery__image {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: calc(var(--radius) * 0.6);
+    opacity: 0.35;
+    transition: opacity 0.3s ease;
+  }
+
+  .hi-gallery__image:hover {
+    opacity: 0.5;
+  }
+
+  @media (max-width: 840px) {
+    .hi-gallery__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .hi-gallery__image {
+      height: 100px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hi-gallery__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+
+    .hi-gallery__image {
+      height: 80px;
+    }
+  }
+
+  /* ── Micro about ────────────────────────────── */
+  .hi-micro-about {
+    display: flex;
+    gap: clamp(1rem, 3vw, 2rem);
+    align-items: flex-start;
+  }
+
+  .hi-micro-about__photos {
+    display: flex;
+    gap: 0.35rem;
+    flex-shrink: 0;
+  }
+
+  .hi-micro-photo {
+    width: clamp(60px, 8vw, 90px);
+    aspect-ratio: 3/4;
+    background-size: cover;
+    background-position: center;
+    border-radius: 3px;
+    filter: saturate(0.8);
+    transition: filter 0.3s ease;
+  }
+
+  .hi-micro-photo:hover { filter: saturate(1.05); }
+
+  .hi-micro-about__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .hi-micro-about__ident {
+    margin: 0;
+    font-size: clamp(0.9rem, 1.6vw, 1rem);
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+    max-width: 52ch;
+    line-height: 1.55;
+  }
+
+  .hi-micro-about__roles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .hi-micro-role {
+    font-size: 0.72rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 99px;
+    border: 1px solid var(--line2);
+    color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+    white-space: nowrap;
+  }
+
+  .hi-micro-about__cta {
+    font-size: 0.82rem;
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    letter-spacing: 0.03em;
+    align-self: flex-start;
+  }
+
+  .hi-micro-about__cta:hover { text-decoration: underline; }
+
+  @media (max-width: 520px) {
+    .hi-micro-about { flex-direction: column; }
+    .hi-micro-about__photos { order: -1; }
+    .hi-micro-photo { width: clamp(55px, 22vw, 80px); }
+  }
 </style>
+
+<script>
+  const photos = document.querySelector('.hi-photos');
+  if (photos) {
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        // contain once the carousel is less than 85% visible (user has scrolled)
+        photos.classList.toggle('is-contained', entry.intersectionRatio < 0.85);
+      },
+      { threshold: [0.85] }
+    );
+    obs.observe(photos);
+  }
+</script>

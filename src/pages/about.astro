@@ -1,31 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import profile from '../data/profile';
-
-const timelineStops = [
-  {
-    period: '2019–2021',
-    title: 'Study: History of survival',
-    description: 'Examined how oppressed populations survive across centuries. How does art come from conditions of constraint?'
-  },
-  {
-    period: '2022',
-    title: 'Field: Newark Water Coalition',
-    description: 'Two years volunteering with a grassroots organization. Structural failures aren\'t abstract — they\'re in my backyard. Healing requires individuals to first heal themselves.'
-  },
-  {
-    period: '2022–Present',
-    title: 'The cycle',
-    description: 'Study and creation feed each other. Every piece of work connects back to survival: how people, communities, and art persist.'
-  }
-];
+import LifeTimeline from '../components/LifeTimeline';
 ---
 
-<BaseLayout title="About - a_e.s_" theme="archive">
+<BaseLayout title="About - a_e.s_" theme="archive" image="https://portfolio-website-9c9.pages.dev/images/home-collage/collage-2.jpg">
   <section class="view-surface about-page">
     <header class="view-surface-header about-page__header">
       <p class="view-surface-kicker">Profile</p>
-      <h1>About</h1>
+      <h1>About <span class="about-page__version">v1</span></h1>
       <p class="about-page__identity">
         Angel Suero is a Newark-based music producer, visual storyteller, and community builder using sound, writing,
         and civic collaboration to turn lived process into public memory.
@@ -47,25 +30,43 @@ const timelineStops = [
       </p>
     </section>
 
-    <section class="about-page__timeline" aria-labelledby="about-timeline-heading">
-      <div class="about-page__timeline-header">
-        <p class="about-page__label">Development timeline</p>
-        <p class="about-page__timeline-copy" id="about-timeline-heading">
-          Formation over time, with the connective text kept quiet and the record doing most of the speaking.
-        </p>
-      </div>
-
-      <div class="about-page__timeline-list">
-        {timelineStops.map((stop) => (
-          <article class="about-page__stop">
-            <header class="about-page__stop-header">
-              <p class="about-page__stop-period">{stop.period}</p>
-              <h2>{stop.title}</h2>
-            </header>
-            <p class="about-page__stop-description">{stop.description}</p>
-          </article>
+    <!-- photo film strip -->
+    <div class="about-page__photos" aria-hidden="true">
+      <div class="about-page__photos-track">
+        {[
+          { src: '/photos/download.jpg' },
+          { src: '/images/home-collage/collage-2.jpg' },
+          { src: '/photos/download-1.jpg' },
+          { src: '/images/home-collage/collage-4.jpg' },
+          { src: '/photos/download-3.jpg' },
+          { src: '/images/home-collage/collage-5.jpg' },
+          { src: '/photos/download-5.jpg' },
+          { src: '/images/home-collage/collage-6.jpg' },
+          { src: '/photos/download-7.jpg' },
+          { src: '/images/home-collage/collage-7.jpg' },
+          { src: '/photos/download-2.jpg' },
+          { src: '/images/home-collage/collage-3.jpg' },
+          // duplicate first half for seamless loop
+          { src: '/photos/download.jpg' },
+          { src: '/images/home-collage/collage-2.jpg' },
+          { src: '/photos/download-1.jpg' },
+          { src: '/images/home-collage/collage-4.jpg' },
+          { src: '/photos/download-3.jpg' },
+          { src: '/images/home-collage/collage-5.jpg' },
+          { src: '/photos/download-5.jpg' },
+          { src: '/images/home-collage/collage-6.jpg' },
+          { src: '/photos/download-7.jpg' },
+          { src: '/images/home-collage/collage-7.jpg' },
+          { src: '/photos/download-2.jpg' },
+          { src: '/images/home-collage/collage-3.jpg' },
+        ].map(({ src }) => (
+          <div class="about-photo" style={`background-image:url('${src}')`}></div>
         ))}
       </div>
+    </div>
+
+    <section class="about-page__timeline-wrap">
+      <LifeTimeline client:load />
     </section>
 
     <section class="about-page__panel about-page__present-frame">
@@ -90,7 +91,6 @@ const timelineStops = [
 
   .about-page__identity,
   .about-page__context,
-  .about-page__timeline-copy,
   .about-page__label,
   .about-page__panel p,
   .about-page__quote p {
@@ -115,11 +115,10 @@ const timelineStops = [
     gap: 0.45rem;
   }
 
-  .about-page__panel,
-  .about-page__stop {
+  .about-page__panel {
     border: 1px solid var(--line2);
     border-radius: calc(var(--radius) * var(--space-scale));
-    background: linear-gradient(180deg, rgba(9, 13, 22, 0.68), rgba(6, 10, 17, 0.58));
+    background: color-mix(in srgb, var(--tone-surface) 90%, transparent);
     padding: clamp(0.95rem, 2.2vw, 1.2rem);
   }
 
@@ -132,75 +131,6 @@ const timelineStops = [
     color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
   }
 
-  .about-page__timeline {
-    display: grid;
-    gap: 0.85rem;
-  }
-
-  .about-page__timeline-header {
-    max-width: 54ch;
-    display: grid;
-    gap: 0.45rem;
-  }
-
-  .about-page__timeline-copy {
-    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
-  }
-
-  .about-page__timeline-list {
-    display: grid;
-    gap: 0.9rem;
-  }
-
-  .about-page__stop {
-    position: relative;
-    display: grid;
-    gap: 0.85rem;
-    overflow: hidden;
-  }
-
-  .about-page__stop::before {
-    content: '';
-    position: absolute;
-    inset: 1rem auto 1rem 0.9rem;
-    width: 2px;
-    border-radius: 999px;
-    background: linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--tone-accent-glow) 72%, transparent 28%),
-      color-mix(in srgb, var(--tone-accent) 20%, transparent 80%)
-    );
-    opacity: 0.78;
-  }
-
-  .about-page__stop-header {
-    padding-left: 1rem;
-    display: grid;
-    gap: 0.25rem;
-  }
-
-  .about-page__stop-period {
-    margin: 0;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--tone-accent-glow);
-  }
-
-  .about-page__stop h2 {
-    margin: 0;
-    font-size: clamp(1.05rem, 2vw, 1.22rem);
-    line-height: 1.2;
-  }
-
-  .about-page__stop-description {
-    margin: 0;
-    padding-left: 1rem;
-    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
-    line-height: 1.55;
-    font-size: 0.93rem;
-  }
-
   .about-page__label {
     font-size: 0.72rem;
     text-transform: uppercase;
@@ -208,18 +138,55 @@ const timelineStops = [
     color: var(--tone-accent-glow);
   }
 
-  @media (max-width: 760px) {
-    .about-page__stop::before {
-      inset: 0.95rem auto 0.95rem 0.8rem;
-    }
+  /* ── Photo film strip ─────────────────────── */
+  .about-page__photos {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    overflow: hidden;
+    margin-bottom: 0;
+  }
 
-    .about-page__stop-header,
-    .about-page__stop-quotes {
-      padding-left: 0.85rem;
-    }
+  .about-page__photos-track {
+    display: flex;
+    gap: 0.25rem;
+    width: max-content;
+    animation: about-scroll 28s linear infinite;
+  }
 
-    .about-page__quote {
-      padding-left: 0.8rem;
-    }
+  @media (prefers-reduced-motion: reduce) {
+    .about-page__photos-track { animation: none; }
+  }
+
+  @keyframes about-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  .about-photo {
+    width: clamp(120px, 18vw, 200px);
+    aspect-ratio: 3/4;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+    border-radius: 2px;
+    filter: saturate(0.85);
+    transition: filter 0.3s ease;
+  }
+
+  .about-photo:hover { filter: saturate(1); }
+
+  .about-page__timeline-wrap {
+    /* Let LifeTimeline handle its own layout */
+  }
+
+  .about-page__version {
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-muted) 60%, transparent);
+    vertical-align: middle;
+    margin-left: 0.4rem;
+    font-family: var(--font-body, system-ui, sans-serif);
   }
 </style>
