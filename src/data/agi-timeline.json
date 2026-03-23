@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-23T19:57:51.708Z",
+    "generatedAt": "2026-03-23T20:56:00.789Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,29 @@
     ]
   },
   "items": [
+    {
+      "id": "263f90c164c69a86811fc83ed32458f03b489c190a818a2f605ec73d7381fb19",
+      "title": "NVIDIA IGX Thor Powers Industrial, Medical, and Robotics Edge AI Applications",
+      "url": "https://developer.nvidia.com/blog/nvidia-igx-thor-powers-industrial-medical-and-robotics-edge-ai-applications/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-03-23T20:24:17.000Z",
+      "summary": "Industrial and medical systems are rapidly increasing the use of high-performance AI to improve worker productivity, human-machine interaction, and downtime... Industrial and medical systems are rapidly increasing the use of high-performance AI to improve worker productivity, human-machine interaction, and downtime management. From factory automation cells to autonomous mobile platforms to surgical rooms, operators are deploying increasingly complex generative AI models, more sensors, and higher‑fidelity data streams at the edge. Source",
+      "tags": [
+        "compute",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/nvidia-igx-thor-powers-industrial-medical-and-robotics-edge-ai-applications/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
     {
       "id": "74d39e3a5f6eccd9e21ee4c70d5cafc014cd338b1d83905710477ca90f5a85b3",
       "title": "Building a Zero-Trust Architecture for Confidential AI Factories",
@@ -15065,32 +15088,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2602.16424"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "a9336991660ea341e42ee2cf14b2940316a060d7cbfd7060a61f2f28f381a590",
-      "title": "From Logs to Language: Learning Optimal Verbalization for LLM-Based Recommendation at Industry Scale",
-      "url": "https://arxiv.org/abs/2602.20558",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-20T04:00:00.000Z",
-      "summary": "arXiv:2602.20558v2 Announce Type: replace Abstract: Large language models (LLMs) are promising backbones for generative recommender systems, yet a key challenge remains underexplored: verbalization, i.e., converting structured user interaction logs into effective natural language inputs. Existing methods rely on rigid templates that simply concatenate fields, yielding suboptimal representations for recommendation. We propose a data-centric framework that learns verbalization for LLM-based recommendation. Using reinforcement learning, a verbalization agent transforms raw interaction histories into optimized textual contexts, with recommendation accuracy as the training signal. This agent learns to filter noise, incorporate relevant metadata, and reorganize information to improve downstream predictions. Experiments on a large-scale industrial streaming dataset from Netflix show that learned verbalization delivers up to 93% relative improvement in discovery item recommendation accuracy over template-based baselines. Further analysis reveals emergent strategies such as user interest summarization, noise removal, and syntax normalization, offering insights into effective context construction for LLM-based recommender systems.",
-      "tags": [
-        "papers",
-        "agents",
-        "training",
-        "model",
-        "data"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.20558"
         },
         {
           "label": "Feed",
