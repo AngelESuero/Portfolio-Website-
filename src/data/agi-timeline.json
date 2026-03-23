@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-23T11:56:02.890Z",
+    "generatedAt": "2026-03-23T13:51:12.298Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,29 @@
     ]
   },
   "items": [
+    {
+      "id": "74d39e3a5f6eccd9e21ee4c70d5cafc014cd338b1d83905710477ca90f5a85b3",
+      "title": "Building a Zero-Trust Architecture for Confidential AI Factories",
+      "url": "https://developer.nvidia.com/blog/building-a-zero-trust-architecture-for-confidential-ai-factories/",
+      "sourceId": "nvidia_dev_blog",
+      "sourceName": "NVIDIA Developer — Blog",
+      "publishedAt": "2026-03-23T12:00:00.000Z",
+      "summary": "AI is moving from experimentation to production. However, most data enterprises need exists outside the public cloud. This includes sensitive information like... AI is moving from experimentation to production. However, most data enterprises need exists outside the public cloud. This includes sensitive information like patient records, market research, and legacy systems containing enterprise knowledge. There’s also a risk of using private data with AI models, and adoption is often slowed or blocked by privacy and trust concerns. Source",
+      "tags": [
+        "compute",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://developer.nvidia.com/blog/building-a-zero-trust-architecture-for-confidential-ai-factories/"
+        },
+        {
+          "label": "Feed",
+          "url": "https://developer.nvidia.com/blog/feed/"
+        }
+      ]
+    },
     {
       "id": "f9611730439c0bc6d02fb6d87f2c6bceae62da89d5f52013397a67318f1ad4fb",
       "title": "Deploying Disaggregated LLM Inference Workloads on Kubernetes",
@@ -15069,31 +15092,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2602.21814"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "2af16a7eb9e6eb72a1855d9365a900a753b0e1061d456c9652648b3b46b5cd02",
-      "title": "CIRCLE: A Framework for Evaluating AI from a Real-World Lens",
-      "url": "https://arxiv.org/abs/2602.24055",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-20T04:00:00.000Z",
-      "summary": "arXiv:2602.24055v3 Announce Type: replace Abstract: This paper proposes CIRCLE, a six-stage, lifecycle-based framework to bridge the reality gap between model-centric performance metrics and AI's materialized outcomes in deployment. Current approaches such as MLOps frameworks and AI model benchmarks offer detailed insights into system stability and model capabilities, but they do not provide decision-makers outside the AI stack with systematic evidence of how these systems actually behave in real-world contexts or affect their organizations over time. CIRCLE operationalizes the Validation phase of TEVV (Test, Evaluation, Verification, and Validation) by formalizing the translation of stakeholder concerns outside the stack into measurable signals. Unlike participatory design, which often remains localized, or algorithmic audits, which are often retrospective, CIRCLE provides a structured, prospective protocol for linking context-sensitive qualitative insights to scalable quantitative metrics. By integrating methods such as field testing, red teaming, and longitudinal studies into a coordinated pipeline, CIRCLE produces systematic knowledge: evidence that is comparable across sites yet sensitive to local context. This, in turn, can enable governance based on materialized downstream effects rather than theoretical capabilities.",
-      "tags": [
-        "papers",
-        "eval",
-        "policy",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.24055"
         },
         {
           "label": "Feed",
