@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-23T15:16:21.086Z",
+    "generatedAt": "2026-03-23T16:13:30.644Z",
     "sources": [
       {
         "id": "openai_news",
@@ -8900,6 +8900,31 @@
       ]
     },
     {
+      "id": "8d1925d2908b268247e02e34caa44208446e8439a90490cf632e313b6b81482d",
+      "title": "Creating with Sora Safely",
+      "url": "https://openai.com/index/creating-with-sora-safely",
+      "sourceId": "openai_news",
+      "sourceName": "OpenAI — News",
+      "publishedAt": "2026-03-23T00:00:00.000Z",
+      "summary": "To address the novel safety challenges posed by a state-of-the-art video model as well as a new social creation platform, we’ve built Sora 2 and the Sora app with safety at the foundation. Our approach is anchored in concrete protections.",
+      "tags": [
+        "primary",
+        "release",
+        "safety",
+        "model"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://openai.com/index/creating-with-sora-safely"
+        },
+        {
+          "label": "Feed",
+          "url": "https://openai.com/news/rss.xml"
+        }
+      ]
+    },
+    {
       "id": "ae3c99513c7b90f5d758f00ed0d6d92e4d9680b9e3c965d43c00519138a2eb71",
       "title": "Build a Domain-Specific Embedding Model in Under a Day",
       "url": "https://huggingface.co/blog/nvidia/domain-specific-embedding-finetune",
@@ -15066,32 +15091,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2602.20558"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "0a7f25ed2ae8e329eedffe4a2d3ed70e4c7bfa3c9ae1c224f7325459ba86208d",
-      "title": "Prompt Architecture Determines Reasoning Quality: A Variable Isolation Study on the Car Wash Problem",
-      "url": "https://arxiv.org/abs/2602.21814",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-20T04:00:00.000Z",
-      "summary": "arXiv:2602.21814v2 Announce Type: replace Abstract: Large language models consistently fail the \"car wash problem,\" a viral reasoning benchmark requiring implicit physical constraint inference. We present a variable isolation study (n=20 per condition, 6 conditions, 120 total trials) examining which prompt architecture layers in a production system enable correct reasoning. Using Claude 3.5 Sonnet with controlled hyperparameters (temperature 0.7, top_p 1.0), we find that the STAR (Situation-Task-Action-Result) reasoning framework alone raises accuracy from 0% to 85% (p=0.001, Fisher's exact test, odds ratio 13.22). Adding user profile context via vector database retrieval provides a further 10 percentage point gain, while RAG context contributes an additional 5 percentage points, achieving 100% accuracy in the full-stack condition. These results suggest that structured reasoning scaffolds -- specifically, forced goal articulation before inference -- matter substantially more than context injection for implicit constraint reasoning tasks.",
-      "tags": [
-        "papers",
-        "reasoning",
-        "eval",
-        "inference",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.21814"
         },
         {
           "label": "Feed",
