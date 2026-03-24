@@ -1,3 +1,95 @@
 ---
-return Astro.redirect('/social/x');
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const reservedNotes = [
+  'Selected tweets and people I actually want to keep near the surface.',
+  'A possible X shell rendered inside the app later, if that still makes sense.',
+  'A place for the feed layer once it earns its keep.'
+];
 ---
+
+<BaseLayout
+  title="X - Reserved"
+  description="A reserved X lane for later feed curation and app-level rendering."
+  theme="archive"
+  bodyClass="x-page"
+  flatSurface={true}
+>
+  <main class="x-page__shell">
+    <header class="x-page__header">
+      <p class="x-page__eyebrow">Reserved lane</p>
+      <h1>X</h1>
+      <p class="x-page__lede">
+        This lane is parked for later. When it opens, it can become a filtered stream for tweets, people, and notes
+        I want to keep close without turning the site into a feed zoo.
+      </p>
+    </header>
+
+    <section class="x-page__notes" aria-label="What lives here later">
+      <p class="x-page__label">Waiting list</p>
+      <ul class="x-page__list">
+        {reservedNotes.map((note) => <li>{note}</li>)}
+      </ul>
+    </section>
+
+    <p class="x-page__footnote">
+      For now, it stays quiet. Later it can point at the real X stream, a custom embed, or something more like an OS
+      layer.
+    </p>
+  </main>
+</BaseLayout>
+
+<style>
+  .x-page__shell {
+    max-width: 58ch;
+    margin: 0 auto;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .x-page__eyebrow,
+  .x-page__label,
+  .x-page__footnote,
+  .x-page__list {
+    margin: 0;
+  }
+
+  .x-page__eyebrow,
+  .x-page__label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+  }
+
+  .x-page__header {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .x-page__header h1 {
+    margin: 0;
+    font-size: clamp(2.6rem, 8vw, 4rem);
+    line-height: 0.95;
+  }
+
+  .x-page__lede,
+  .x-page__footnote,
+  .x-page__list li {
+    line-height: 1.7;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+  }
+
+  .x-page__notes {
+    padding-top: 0.35rem;
+    border-top: 1px solid var(--line2);
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .x-page__list {
+    padding-left: 1.05rem;
+    display: grid;
+    gap: 0.45rem;
+  }
+</style>

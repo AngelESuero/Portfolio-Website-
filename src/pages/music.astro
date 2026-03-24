@@ -1,0 +1,464 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import profile from '../data/profile';
+import { MUSIC_URLS, SOCIAL_URLS, VIDEO_URLS } from '../data/site-refs';
+
+const watchClips = [
+  {
+    title: 'SCRAPS After Heartbreaks',
+    year: '2023',
+    kind: 'Music video clip',
+    src: '/media/work/scraps/scraps-after-heartbreaks-musicvideo/2CKfTl0scAf.mp4',
+    poster: '/images/work/scraps/scraps-after-heartbreaks-musicvideo/2CKfTl0scAf-poster.png',
+    note: 'A direct cut from the archive, kept loose and physical.'
+  },
+  {
+    title: 'SCRAPS After Heartbreaks',
+    year: '2023',
+    kind: 'Music video clip',
+    src: '/media/work/scraps/scraps-after-heartbreaks-musicvideo/2ycBgc6PYPZ.mp4',
+    poster: '/images/work/scraps/scraps-after-heartbreaks-musicvideo/2ycBgc6PYPZ-poster.png',
+    note: 'Different frame, same pressure.'
+  },
+  {
+    title: 'SCRAPS After Heartbreaks',
+    year: '2023',
+    kind: 'Music video clip',
+    src: '/media/work/scraps/scraps-after-heartbreaks-musicvideo/7e3ZWjDFxaL.mp4',
+    poster: '/images/work/scraps/scraps-after-heartbreaks-musicvideo/7e3ZWjDFxaL-poster.png',
+    note: 'Another angle for the same emotional weather.'
+  },
+  {
+    title: 'Death of My Feminine',
+    year: '2022',
+    kind: 'Demo clip',
+    src: '/media/work/scraps/death-of-my-feminine-demos-2022/5MYgthfeSOc.mp4',
+    poster: '/images/work/scraps/death-of-my-feminine-demos-2022/5MYgthfeSOc-poster.png',
+    note: 'An earlier demo lane, kept close for mood and movement.'
+  }
+];
+
+const audioBites = [
+  {
+    title: 'SCRAPS AFTER HEARTBREAKS',
+    source: 'Native audio',
+    href: '/archive/music/scraps-after-heartbreaks',
+    note: 'A direct playable file from the archive.',
+    src: 'https://pub-cc1abfe7e4f342ddb929a047f6d5b3f3.r2.dev/studio/music/2026-02-01/scraps-after-heartbreaks-3c977bc4.mp3',
+    mime: 'audio/mpeg',
+    duration: '2:11'
+  },
+  {
+    title: 'My First Beat Tape',
+    source: 'Untitled',
+    href: '/archive/music/my-first-beat-tape',
+    note: 'A clean listening point from Untitled.',
+    embedUrl: MUSIC_URLS.untitledMyFirstBeatTape
+  },
+  {
+    title: 'Queries (The Beat Tape): Family... Love?',
+    source: 'Untitled',
+    href: '/archive/music/queries-the-beat-tape-family-love',
+    note: 'Family and love held as one connected sequence.',
+    embedUrl: `${MUSIC_URLS.untitledQueriesBeatTape}/embed`
+  },
+  {
+    title: 'The Every Day Soundscape',
+    source: 'Untitled',
+    href: '/archive/music/the-every-day-soundscape',
+    note: 'A neighboring atmospheric fragment.',
+    embedUrl: `${MUSIC_URLS.untitledEveryDaySoundscape}/embed`
+  },
+  {
+    title: 'Now Listening (Vol 4)',
+    source: 'Spotify',
+    href: MUSIC_URLS.spotifyVol4,
+    note: 'Current playlist pressure and reference zone.',
+    embedUrl: MUSIC_URLS.spotifyVol4
+  },
+  {
+    title: 'Volume 4 - SoundCloud',
+    source: 'SoundCloud',
+    href: 'https://soundcloud.com/aesuero/sets/volume-4-angel-sueros-top-50',
+    note: 'Another listening lane when the mood wants a different container.',
+    embedUrl: `https://w.soundcloud.com/player/?url=${encodeURIComponent('https://soundcloud.com/aesuero/sets/volume-4-angel-sueros-top-50')}&color=%23b97a2d&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false`
+  }
+];
+
+const inspirationPhotos = [
+  { src: '/images/home-collage/collage-2.jpg', alt: 'Collaged photo inspiration in warm tones.' },
+  { src: '/images/home-collage/collage-5.jpg', alt: 'A darker collage fragment from the home archive.' },
+  { src: '/photos/download-3.jpg', alt: 'Personal photo archive image.' },
+  { src: '/images/work/art-of-survival/isolation.jpg', alt: 'A still from The Art of Survival.' },
+  { src: '/photos/download-5.jpg', alt: 'Black and white portrait from the photo strip.' },
+  { src: '/images/home-collage/collage-7.jpg', alt: 'Another collage element with saturated color.' },
+  { src: '/photos/download-7.jpg', alt: 'Archive photo with soft light.' },
+  { src: '/images/home-collage/collage-4.jpg', alt: 'A collage detail used as visual texture.' }
+];
+
+const referenceLinks = [
+  { href: SOCIAL_URLS.youtube, label: 'YouTube' },
+  { href: SOCIAL_URLS.soundcloud, label: 'SoundCloud' },
+  { href: MUSIC_URLS.spotifyVol4, label: 'Spotify' },
+  { href: MUSIC_URLS.untitledMyFirstBeatTape, label: 'Untitled' },
+  { href: VIDEO_URLS.everydayLifeVideo, label: 'Everyday Life video' }
+];
+---
+
+<BaseLayout
+  title="Music Inspiration - a_e.s_"
+  description={`Videos, audio bites, and photos that keep ${profile.name} inspired.`}
+  theme="archive"
+  bodyClass="music-page"
+  flatSurface={true}
+>
+  <main class="music-page__shell">
+    <header class="music-hero">
+      <p class="music-hero__eyebrow">Always nearby</p>
+      <h1>Music Inspiration</h1>
+      <p class="music-hero__lede">
+        A living wall of videos, audio bites, and photos that stay open when I want to hear the next thing before it
+        exists.
+      </p>
+      <nav class="music-hero__nav" aria-label="Jump to media sections">
+        <a href="#watch">Watch</a>
+        <a href="#listen">Listen</a>
+        <a href="#browse">Browse</a>
+      </nav>
+    </header>
+
+    <section class="music-section" id="watch" aria-labelledby="music-watch-heading">
+      <div class="music-section__head">
+        <p class="music-section__kicker">Watch</p>
+        <h2 id="music-watch-heading">Moving clips</h2>
+      </div>
+
+      <div class="music-video-grid">
+        {watchClips.map((clip) => (
+          <article class="music-video">
+            <div class="music-video__meta">
+              <span>{clip.kind}</span>
+              <span>{clip.year}</span>
+            </div>
+            <h3>{clip.title}</h3>
+            <video controls preload="metadata" playsinline poster={clip.poster}>
+              <source src={clip.src} type="video/mp4" />
+            </video>
+            <p>{clip.note}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="music-section" id="listen" aria-labelledby="music-listen-heading">
+      <div class="music-section__head">
+        <p class="music-section__kicker">Listen</p>
+        <h2 id="music-listen-heading">Audio bites</h2>
+      </div>
+
+      <div class="music-audio-stack">
+        {audioBites.map((item) => (
+          <article class="music-audio-row">
+            <div class="music-audio-row__meta">
+              <p class="music-audio-row__source">{item.source}</p>
+              <h3>{item.title}</h3>
+              <p class="music-audio-row__note">{item.note}</p>
+            </div>
+
+            {'src' in item ? (
+              <div class="music-audio-row__player music-audio-row__player--native">
+                <audio controls preload="metadata">
+                  <source src={item.src} type={item.mime} />
+                </audio>
+                <p class="music-audio-row__detail">
+                  {item.duration && <span>{item.duration}</span>}
+                  <a href={item.href}>Open archive entry</a>
+                </p>
+              </div>
+            ) : (
+              <div class="music-audio-row__player">
+                <iframe
+                  src={item.embedUrl}
+                  title={`${item.title} embed`}
+                  loading="lazy"
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  frameborder="0"
+                ></iframe>
+                <p class="music-audio-row__detail">
+                  <a href={item.href} target="_blank" rel="noopener">Open source</a>
+                </p>
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="music-section" id="browse" aria-labelledby="music-browse-heading">
+      <div class="music-section__head">
+        <p class="music-section__kicker">Browse</p>
+        <h2 id="music-browse-heading">Photos that keep the ear open</h2>
+      </div>
+
+      <div class="music-photo-grid">
+        {inspirationPhotos.map((photo, index) => (
+          <figure class:list={['music-photo', index % 3 === 0 && 'music-photo--wide', index % 4 === 0 && 'music-photo--tall']}>
+            <img src={photo.src} alt={photo.alt} loading="lazy" />
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <footer class="music-footer">
+      <p class="music-footer__copy">
+        Open sources and reference lanes:
+      </p>
+      <div class="music-footer__links">
+        {referenceLinks.map((link) => (
+          <a href={link.href} {...(/^https?:\/\//i.test(link.href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+            {link.label}
+          </a>
+        ))}
+      </div>
+    </footer>
+  </main>
+</BaseLayout>
+
+<style>
+  .music-page__shell {
+    display: grid;
+    gap: clamp(1.1rem, 2.2vw, 1.55rem);
+  }
+
+  .music-hero {
+    display: grid;
+    gap: 0.55rem;
+    max-width: 68ch;
+  }
+
+  .music-hero__eyebrow,
+  .music-section__kicker,
+  .music-hero__nav,
+  .music-footer__copy {
+    margin: 0;
+  }
+
+  .music-hero__eyebrow,
+  .music-section__kicker {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+  }
+
+  .music-hero h1,
+  .music-section__head h2,
+  .music-video h3,
+  .music-audio-row h3 {
+    margin: 0;
+  }
+
+  .music-hero h1 {
+    font-size: clamp(2.4rem, 7vw, 4.4rem);
+    line-height: 0.95;
+  }
+
+  .music-hero__lede {
+    max-width: 52ch;
+    margin: 0;
+    line-height: 1.7;
+    color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
+  }
+
+  .music-hero__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    padding-top: 0.15rem;
+  }
+
+  .music-hero__nav a,
+  .music-footer__links a {
+    width: fit-content;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 28%, transparent);
+    padding-bottom: 0.1rem;
+  }
+
+  .music-hero__nav a:hover,
+  .music-hero__nav a:focus-visible,
+  .music-footer__links a:hover,
+  .music-footer__links a:focus-visible,
+  .music-audio-row__detail a:hover,
+  .music-audio-row__detail a:focus-visible {
+    color: var(--tone-accent-glow);
+    border-color: color-mix(in srgb, var(--tone-accent) 64%, transparent);
+  }
+
+  .music-section {
+    display: grid;
+    gap: 0.85rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
+  }
+
+  .music-section__head {
+    display: grid;
+    gap: 0.28rem;
+  }
+
+  .music-section__head h2 {
+    font-size: clamp(1.15rem, 2vw, 1.55rem);
+    line-height: 1.1;
+  }
+
+  .music-video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0.85rem;
+  }
+
+  .music-video {
+    display: grid;
+    gap: 0.45rem;
+    align-content: start;
+  }
+
+  .music-video__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  }
+
+  .music-video h3 {
+    font-size: 0.95rem;
+    line-height: 1.25;
+  }
+
+  .music-video video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: #05070c;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
+  }
+
+  .music-video p {
+    margin: 0;
+    line-height: 1.55;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .music-audio-stack {
+    display: grid;
+    gap: 0.95rem;
+  }
+
+  .music-audio-row {
+    display: grid;
+    gap: 0.55rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
+  }
+
+  .music-audio-row__source {
+    margin: 0;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  }
+
+  .music-audio-row__note {
+    margin: 0.25rem 0 0;
+    line-height: 1.55;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .music-audio-row__player {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .music-audio-row__player iframe,
+  .music-audio-row__player audio {
+    width: 100%;
+  }
+
+  .music-audio-row__player iframe {
+    min-height: 180px;
+    border: 0;
+    background: #05070c;
+  }
+
+  .music-audio-row__player audio {
+    min-height: 2.4rem;
+  }
+
+  .music-audio-row__detail {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+    font-size: 0.78rem;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  }
+
+  .music-photo-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .music-photo {
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
+    background: color-mix(in srgb, var(--tone-surface) 92%, transparent);
+  }
+
+  .music-photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    aspect-ratio: 1 / 1;
+  }
+
+  .music-photo--wide {
+    grid-column: span 2;
+  }
+
+  .music-photo--tall img {
+    aspect-ratio: 3 / 4;
+  }
+
+  .music-footer {
+    display: grid;
+    gap: 0.5rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
+  }
+
+  .music-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 1rem;
+  }
+
+  @media (max-width: 760px) {
+    .music-photo-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .music-photo--wide {
+      grid-column: span 2;
+    }
+  }
+</style>

@@ -1,9 +1,47 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import LifeTimeline from '../components/LifeTimeline';
 import profile from '../data/profile';
-import { SURVIVAL_OS } from '../data/survival-os';
 import { getCollection } from 'astro:content';
 import agiTimeline from '../data/agi-curated-timeline.json';
+
+const heroParticles = Array.from({ length: 24 }, (_, index) => {
+  const lanes = [
+    { left: 7, size: 2.5, duration: 12.5, delay: -0.5, drift: -16, blur: 0.4, alpha: 0.14, bottom: -18 },
+    { left: 15, size: 2.0, duration: 14.2, delay: -3.1, drift: -10, blur: 0.55, alpha: 0.16, bottom: -14 },
+    { left: 24, size: 2.9, duration: 13.4, delay: -1.8, drift: -4, blur: 0.45, alpha: 0.18, bottom: -16 },
+    { left: 33, size: 2.1, duration: 15.8, delay: -4.7, drift: 6, blur: 0.7, alpha: 0.15, bottom: -12 },
+    { left: 42, size: 3.4, duration: 12.9, delay: -2.4, drift: 12, blur: 0.5, alpha: 0.22, bottom: -15 },
+    { left: 51, size: 2.3, duration: 16.6, delay: -5.5, drift: 18, blur: 0.85, alpha: 0.14, bottom: -19 },
+    { left: 60, size: 3.0, duration: 13.7, delay: -0.9, drift: 24, blur: 0.48, alpha: 0.2, bottom: -13 },
+    { left: 69, size: 1.9, duration: 15.1, delay: -3.8, drift: 30, blur: 0.78, alpha: 0.16, bottom: -17 }
+  ];
+
+  const lane = lanes[index % lanes.length];
+  const wave = Math.floor(index / lanes.length);
+
+  return {
+    left: `${lane.left + wave * 4}%`,
+    size: `${lane.size + (wave % 2) * 0.35}px`,
+    duration: `${lane.duration + wave * 0.55}s`,
+    delay: `${lane.delay - wave * 1.2}s`,
+    drift: `${lane.drift + (wave % 3 - 1) * 10}px`,
+    blur: `${lane.blur + (wave % 2) * 0.1}px`,
+    alpha: lane.alpha + (wave % 3) * 0.01,
+    bottom: `${lane.bottom - wave * 2}%`,
+  };
+});
+
+const heroPhotos = [
+  'download.jpg',
+  'download-1.jpg',
+  'download-2.jpg',
+  'download-3.jpg',
+  'download-4.jpg',
+  'download-5.jpg',
+  'download-6.jpg',
+  'download-7.jpg',
+];
 
 const allEntries = await getCollection('entries');
 const allProjects = await getCollection('projects');
@@ -33,6 +71,11 @@ const recentWriting = [...allEntries]
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
   .slice(0, 3);
 
+const recentMusic = [...allEntries]
+  .filter(e => e.data.medium === 'music')
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 3);
+
 const mediumIcon: Record<string, string> = { music: '♪', video: '▶', writing: '✦', image: '◈', note: '◦', proposal: '⬡' };
 
 // 3 most recent AGI signals — sorted by wave descending, then year descending
@@ -55,24 +98,6 @@ const waveLabels: Record<string, string> = {
   physical_economy_disruption: 'Wave 3 · Physical',
   scenario_territory: 'Wave 4 · Scenario',
 };
-
-const agiUpdatedAt = '2026-03-06';
-const agiWaveCount = 4;
-
-const sortedEntries = [...allEntries].sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
-const latestMusic = sortedEntries.find(e => e.data.medium === 'music');
-const latestWriting = sortedEntries.find(e => e.data.medium === 'writing');
-const latestProject = allProjects.sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0))[0];
-const latestAgi = (agiTimeline.items as AgiItem[])[0];
-
-const offerings = [
-  { num: '01', label: 'Work',        desc: latestProject?.data.title ?? 'Projects',               href: '/work' },
-  { num: '02', label: 'Sound',       desc: latestMusic?.data.title ?? 'Music archive',            href: '/archive/music' },
-  { num: '03', label: 'Writing',     desc: latestWriting?.data.title ?? 'Essays & criticism',     href: '/writing' },
-  { num: '04', label: 'AI',          desc: latestAgi?.headline ?? 'AGI tracking',                 href: '/ai' },
-  { num: '05', label: 'Survival OS', desc: SURVIVAL_OS.framing.keepAlive,                         href: '/survival-os' },
-  { num: '06', label: 'Contact',     desc: 'Reach, collaborate, or correspond.',                  href: '/contact' },
-];
 const papers = [
   {
     title: 'Acquiring American Happiness in the 21st Century',
@@ -120,271 +145,140 @@ const elsewhereCards = [
   title="A Path Toward Life - Portfolio"
   description={profile.short_bio}
   theme="archive"
+  forceThemeMode="dark"
   bodyClass="home-page"
+  flatSurface={true}
+  showHeader={true}
+  ambientEffects={false}
 >
   <div class="hi-home">
-
-    <!-- ── Hero ──────────────────────────────────── -->
-    <header class="hi-hero">
-      <div class="hi-hero__photo" aria-hidden="true"></div>
-      <div class="hi-hero__text">
-        <h1 class="hi-name">A<span class="hi-name__micro">es's</span> Path Toward Life</h1>
-      </div>
-    </header>
-
-    <!-- full-bleed scrolling photo carousel -->
-    <div class="hi-photos" aria-hidden="true">
-      <div class="hi-photos__track">
-        {['download.jpg','download-1.jpg','download-2.jpg','download-3.jpg','download-4.jpg','download-5.jpg','download-6.jpg','download-7.jpg',
-          'download.jpg','download-1.jpg','download-2.jpg','download-3.jpg','download-4.jpg','download-5.jpg','download-6.jpg','download-7.jpg'].map((f) => (
-          <div class="hi-photo" style={`background-image:url('/photos/${f}')`}></div>
-        ))}
-      </div>
-    </div>
-
-    <div class="hi-rule" aria-hidden="true"></div>
-
-    <!-- ── Micro about ───────────────────────────── -->
-    <section class="hi-micro-about" aria-label="About Angel Suero">
-      <div class="hi-micro-about__photos">
-        {[
-          '/images/home-collage/collage-2.jpg',
-          '/photos/download-5.jpg',
-          '/images/home-collage/collage-5.jpg',
-        ].map((src) => (
-          <div class="hi-micro-photo" style={`background-image:url('${src}')`}></div>
-        ))}
-      </div>
-      <div class="hi-micro-about__body">
-        <p class="hi-kicker">Who</p>
-        <p class="hi-micro-about__ident">
-          Newark-based music producer, visual storyteller, and community builder.
-          Sound, writing, and civic collaboration — turned into public memory.
-        </p>
-        <div class="hi-micro-about__roles">
-          {profile.roles.map((r: string) => <span class="hi-micro-role">{r}</span>)}
-        </div>
-        <a href="/about" class="hi-micro-about__cta">Full story →</a>
-      </div>
-    </section>
-
-    <div class="hi-rule" aria-hidden="true"></div>
-
-    <!-- ── Work ──────────────────────────────────── -->
-    <section class="hi-section" aria-labelledby="hi-work-heading">
-      <div class="hi-section__head">
-        <p class="hi-kicker">Work</p>
-        <a href="/work" class="hi-section__aside">All projects →</a>
-      </div>
-      <h2 id="hi-work-heading" class="hi-section__title">Recent projects</h2>
-      <ul class="hi-rows" role="list">
-        {allProjects.sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0)).slice(0, 3).map((project) => (
-          <li>
-            <a class="hi-row" href={`/work/${project.slug}`}>
-              <span class="hi-row__icon" aria-hidden="true">▸</span>
-              <span class="hi-row__title">{project.data.title}</span>
-              <span class="hi-row__meta">{project.data.type} · {project.data.year}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <div class="hi-rule" aria-hidden="true"></div>
-
-    <!-- ── Writing ────────────────────────────────── -->
-    <section class="hi-section" aria-labelledby="hi-writing-heading">
-      <div class="hi-section__head">
-        <p class="hi-kicker">Writing</p>
-        <a href="/writing" class="hi-section__aside">All writing →</a>
-      </div>
-      <h2 id="hi-writing-heading" class="hi-section__title">Recent pieces</h2>
-      <ul class="hi-writing-list" role="list">
-        {recentWriting.map((entry) => (
-          <li class="hi-writing-item">
-            <a href={`/archive/writing/${entry.slug.split('/').pop()}`} class="hi-writing-link">
-              <span class="hi-writing-title">{entry.data.title}</span>
-              {entry.data.summary && <span class="hi-writing-summary">{entry.data.summary}</span>}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <div class="hi-rule" aria-hidden="true"></div>
-
-    <!-- ── Archive ───────────────────────────────── -->
-    <section class="hi-section" aria-labelledby="hi-archive-heading">
-      <div class="hi-section__head">
-        <p class="hi-kicker">Archive</p>
-        <a href="/archive" class="hi-section__aside">All {totalEntries} entries →</a>
-      </div>
-      <h2 id="hi-archive-heading" class="hi-section__title">Living record</h2>
-      <div class="hi-stats" aria-label="Archive at a glance" style="margin-bottom: 1.2rem;">
-        <span class="hi-stats__label" style="margin-right: 0.6rem;">By medium</span>
-        {archiveStats.map((s) => (
-          <a href={s.href} class="hi-stats__pill">
-            <strong>{s.count}</strong> {s.label}
-          </a>
-        ))}
-      </div>
-      <ul class="hi-rows" role="list">
-        {recentEntries.map((entry) => (
-          <li>
-            <a class="hi-row" href={`/archive/${entry.data.medium}/${entry.slug.split('/').pop()}`}>
-              <span class="hi-row__icon">{mediumIcon[entry.data.medium] ?? '·'}</span>
-              <span class="hi-row__medium">{entry.data.medium}</span>
-              <span class="hi-row__title">{entry.data.title}</span>
-              <span class="hi-row__date">{new Date(entry.data.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <div class="hi-rule" aria-hidden="true"></div>
-
-    <!-- ── AGI signals ────────────────────────────── -->
-    <section class="hi-section" aria-labelledby="hi-signals-heading">
-      <div class="hi-section__head">
-        <p class="hi-kicker">AGI Monitor</p>
-        <a href="/agi" class="hi-section__aside">Full timeline →</a>
-      </div>
-      <h2 id="hi-signals-heading" class="hi-section__title">Active signals</h2>
-      <ul class="hi-signals" role="list">
-        {recentSignals.map((item) => (
-          <li class="hi-signal">
-            <div class="hi-signal__meta">
-              <span class="hi-signal__wave">{waveLabels[item.wave] ?? item.wave}</span>
-              <span aria-hidden="true">·</span>
-              <span class="hi-signal__kind">{item.kind}</span>
-              <span aria-hidden="true">·</span>
-              <span class="hi-signal__timing">{item.timingLabel}</span>
-            </div>
-            <p class="hi-signal__hed">{item.headline}</p>
-            <p class="hi-signal__imp">{item.public.implication}</p>
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <div class="hi-rule" aria-hidden="true"></div>
-
-    <!-- ── Papers ─────────────────────────────────── -->
-    <section class="hi-section" aria-labelledby="hi-papers-heading">
-      <div class="hi-section__head">
-        <p class="hi-kicker">Papers</p>
-      </div>
-      <h2 id="hi-papers-heading" class="hi-section__title">Research writing</h2>
-      <ul class="hi-rows" role="list">
-        {papers.map((paper) => (
-          <li>
-            <a class="hi-row hi-row--paper" href={paper.href} target="_blank" rel="noopener noreferrer">
-              <span class="hi-row__icon" aria-hidden="true">⬡</span>
-              <span class="hi-row__title">{paper.title}</span>
-              <span class="hi-row__tags">{paper.tags.join(' · ')}</span>
-              <span class="hi-row__arrow" aria-hidden="true">↗</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <div class="hi-rule" aria-hidden="true"></div>
-
-    <!-- ── Photo gallery ──────────────────────────── -->
-    <div class="hi-gallery">
-      <div class="hi-gallery__grid">
-        {['download.jpg','download-1.jpg','download-2.jpg','download-3.jpg'].map((f) => (
-          <img src={`/photos/${f}`} alt="Photo from archive" class="hi-gallery__image" loading="lazy" />
-        ))}
-      </div>
-    </div>
-
-    <div class="hi-rule" aria-hidden="true"></div>
-
-    <!-- ── Sound + Elsewhere ──────────────────────── -->
-    <footer class="hi-footer">
-      <div class="hi-footer__col">
-        <p class="hi-kicker">Sound</p>
-        <p class="hi-footer__copy">{entryCountByMedium['music'] || 0} music entries — beat tapes, session logs, and sound studies.</p>
-        <div class="hi-footer__links">
-          <a href="/archive/music" class="hi-footer__link">Music archive →</a>
-          <button class="hi-footer__link" onclick="document.querySelector('[data-music-bar-toggle]')?.click()" type="button">Open player ♪</button>
-        </div>
-      </div>
-      <div class="hi-footer__col">
-        <p class="hi-kicker">Elsewhere</p>
-        <ul class="hi-elsewhere" role="list">
-          {elsewhereCards.map((card) => (
-            <li>
-              <a href={card.href} class="hi-elsewhere__link">
-                {card.label} <span aria-hidden="true">→</span>
-              </a>
-              <span class="hi-elsewhere__desc">{card.description}</span>
-            </li>
+    <section class="home-hero">
+      <div class="home-hero__content text-center">
+        <div class="home-particles" aria-hidden="true">
+          {heroParticles.map((particle) => (
+            <span
+              class="home-particle"
+              style={`--particle-left:${particle.left};--particle-size:${particle.size};--particle-duration:${particle.duration};--particle-delay:${particle.delay};--particle-drift:${particle.drift};--particle-blur:${particle.blur};--particle-alpha:${particle.alpha};--particle-bottom:${particle.bottom};`}
+            />
           ))}
-        </ul>
+        </div>
+        <div class="home-hero__controls">
+          <button class="home-view-toggle" data-home-view-toggle type="button" aria-pressed="false">
+            Traditional view
+          </button>
+        </div>
+        <p class="home-hero__eyebrow">Angel Suero</p>
+        <h1 class="home-hero__title"><span class="home-hero__word">A<span class="home-hero__micro">es&apos;s</span></span><span class="home-hero__word">Path Toward Life</span></h1>
+        <p class="home-hero__roles">Music, writing, visuals, archive, and Newark held in one place.</p>
       </div>
-    </footer>
+      <!-- full-bleed scrolling photo carousel -->
+      <div class="hi-photos" aria-hidden="true">
+        <div class="hi-photos__track">
+          <div class="hi-photos__group">
+            {heroPhotos.map((f) => (
+              <div class="hi-photo" style={`background-image:url('/photos/${f}')`}></div>
+            ))}
+          </div>
+          <div class="hi-photos__group" aria-hidden="true">
+            {heroPhotos.map((f) => (
+              <div class="hi-photo" style={`background-image:url('/photos/${f}')`}></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="hi-rule" aria-hidden="true"></div>
+
+    <section class="hi-life-timeline" aria-label="Life timeline">
+      <div class="hi-life-timeline__intro">
+        <p class="hi-life-timeline__kicker">Life timeline</p>
+        <p class="hi-life-timeline__copy">Open an era. See what came out of it.</p>
+      </div>
+      <LifeTimeline client:load layout="fullBleed" />
+    </section>
 
   </div>
 </BaseLayout>
 
 <style>
+  :global(body.home-page) {
+    background:
+      radial-gradient(78rem 46rem at 50% -8%, rgba(179, 132, 68, 0.18), transparent 62%),
+      radial-gradient(54rem 34rem at 18% 12%, rgba(94, 125, 155, 0.12), transparent 68%),
+      linear-gradient(180deg, rgba(12, 16, 24, 0.98), rgba(8, 11, 17, 1));
+    background-color: #080b11;
+    color: rgba(245, 238, 227, 0.96);
+  }
+
+  :global(body.home-page .site-content-stage) {
+    background: transparent;
+  }
+
+  :global(body.home-page .page-shell) {
+    padding-top: 0;
+  }
+
   /* ── Photo carousel ──────────────────────────── */
   .hi-photos {
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
+    width: 100dvw;
+    margin-left: calc(50% - 50dvw);
     overflow: hidden;
-    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+    margin-bottom: clamp(0.7rem, 1.5vw, 1rem);
+    padding-inline: clamp(0.35rem, 1vw, 0.9rem);
     transition: width 0.6s cubic-bezier(0.4,0,0.2,1),
                 margin-left 0.6s cubic-bezier(0.4,0,0.2,1),
                 border-radius 0.6s ease;
   }
 
-  .hi-photos.is-contained {
-    width: 100%;
-    margin-left: 0;
-    border-radius: 0.75rem;
-  }
-
   .hi-photos__track {
     display: flex;
-    gap: 0.75rem;
     width: max-content;
-    animation: hi-photos-scroll 36s linear infinite;
+    animation: hi-photos-scroll 56s linear infinite;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    contain: layout paint;
+    --photos-distance: 0px;
   }
 
   .hi-photos__track:hover {
     animation-play-state: paused;
   }
 
+  .hi-photos__group {
+    display: flex;
+    gap: clamp(0.4rem, 0.9vw, 0.8rem);
+    padding-right: clamp(0.4rem, 0.9vw, 0.8rem);
+    flex-shrink: 0;
+  }
+
   @keyframes hi-photos-scroll {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(calc(-1 * var(--photos-distance)), 0, 0); }
   }
 
   .hi-photo {
     flex-shrink: 0;
-    width: clamp(180px, 22vw, 300px);
+    width: clamp(240px, 28vw, 430px);
     aspect-ratio: 4/3;
     background-size: cover;
     background-position: center;
-    border-radius: 0.5rem;
-    opacity: 0.28;
-    filter: saturate(0.5) brightness(0.8);
+    border-radius: 0.35rem;
+    opacity: 0.52;
+    filter: saturate(0.78) brightness(1.02) contrast(0.94);
     transition: opacity 300ms ease, filter 300ms ease;
+    backface-visibility: hidden;
+    transform: translateZ(0);
   }
 
-  .hi-photos__track:hover .hi-photo { opacity: 0.12; filter: saturate(0.3) brightness(0.7); }
-  .hi-photo:hover { opacity: 0.55 !important; filter: saturate(0.7) brightness(0.9) !important; animation-play-state: paused; }
+  .hi-photos__track:hover .hi-photo { opacity: 0.24; filter: saturate(0.54) brightness(0.88); }
+  .hi-photo:hover { opacity: 0.72 !important; filter: saturate(0.92) brightness(1.06) !important; animation-play-state: paused; }
 
   /* ── Layout shell ───────────────────────────── */
   .hi-home {
-    max-width: 740px;
+    max-width: 1040px;
     margin: 0 auto;
-    padding: clamp(2.5rem, 5vw, 4rem) clamp(1.25rem, 4vw, 2rem) clamp(4rem, 8vw, 6rem);
+    padding: clamp(0.5rem, 1.2vw, 0.85rem) clamp(1rem, 3vw, 1.6rem) clamp(3rem, 6vw, 4.5rem);
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -392,88 +286,118 @@ const elsewhereCards = [
 
   .hi-rule {
     height: 1px;
-    margin: clamp(2rem, 4vw, 3rem) 0;
+    width: 100dvw;
+    margin: 0;
+    margin-left: calc(50% - 50dvw);
     background: color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
   }
 
-  /* ── Hero ───────────────────────────────────── */
-  .hi-hero {
-    position: relative;
-    padding-bottom: clamp(1rem, 2vw, 1.5rem);
-    overflow: hidden;
+  .hi-life-timeline {
+    --lt-top-extend: 0px;
+    padding: 0 0 clamp(0.6rem, 1.6vw, 1rem);
   }
 
-  .hi-hero__photo {
-    position: absolute;
-    top: -2rem;
-    right: -3rem;
-    width: min(280px, 45%);
-    aspect-ratio: 3/4;
-    background: url('/images/bg-station.jpg') center 34% / cover no-repeat;
-    border-radius: 1rem;
-    opacity: 0.07;
-    mask-image: linear-gradient(135deg, transparent 0%, black 60%);
-    -webkit-mask-image: linear-gradient(135deg, transparent 0%, black 60%);
-    pointer-events: none;
+  .hi-life-timeline__intro {
+    width: min(100%, 44rem);
+    margin: clamp(0.6rem, 1.2vw, 0.85rem) auto clamp(0.5rem, 1vw, 0.7rem);
+    padding: 0 clamp(1rem, 3vw, 2.75rem);
+    text-align: center;
   }
 
-  .hi-hero__text {
-    position: relative;
-    z-index: 1;
+  .hi-life-timeline__kicker,
+  .hi-life-timeline__copy {
+    margin: 0;
   }
 
-  .hi-eyebrow {
-    margin: 0 0 0.75rem;
-    font-size: 0.72rem;
+  .hi-life-timeline__kicker {
+    font-size: 0.7rem;
     font-weight: 700;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    letter-spacing: 0.18em;
-    color: var(--tone-accent);
+    color: rgba(230, 214, 191, 0.72);
   }
 
-  .hi-name {
-    margin: 0 0 clamp(1rem, 2.5vw, 1.5rem);
-    font-size: clamp(2.4rem, 7vw, 4.2rem);
-    line-height: 1.02;
-    letter-spacing: -0.035em;
-    color: color-mix(in srgb, var(--tone-accent-glow) 60%, var(--tone-text) 40%);
+  .hi-life-timeline__copy {
+    margin-top: 0.42rem;
+    font-size: 0.94rem;
+    line-height: 1.55;
+    color: rgba(236, 227, 214, 0.78);
   }
 
-  .hi-lede {
-    margin: 0 0 0.75rem;
-    max-width: 54ch;
-    font-size: clamp(1rem, 1.8vw, 1.15rem);
-    line-height: 1.62;
-    color: var(--tone-text);
-  }
-
-  .hi-body {
-    margin: 0 0 0.85rem;
-    max-width: 58ch;
-    font-size: 0.96rem;
-    line-height: 1.7;
-    color: var(--tone-muted);
-  }
-
-  .hi-roles {
-    margin: 0;
-    font-size: 0.78rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: color-mix(in srgb, var(--tone-text) 46%, var(--tone-muted) 54%);
-  }
-
-  .hi-context {
-    max-width: 68ch;
+  .home-storyline {
+    position: relative;
     display: grid;
-    gap: 0.65rem;
+    gap: 0;
+    margin-top: clamp(0.2rem, 1vw, 0.6rem);
+    padding-top: clamp(0.4rem, 1.4vw, 0.8rem);
   }
 
-  .hi-context__line {
-    margin: 0;
-    font-size: clamp(0.95rem, 1.8vw, 1.05rem);
-    line-height: 1.65;
-    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+  .home-storyline__rail {
+    position: absolute;
+    inset: 0 auto 0 50%;
+    width: 1px;
+    transform: translateX(-0.5px);
+    background:
+      linear-gradient(
+        180deg,
+        transparent,
+        color-mix(in srgb, var(--tone-accent) 18%, var(--line2)) 12%,
+        color-mix(in srgb, var(--tone-accent) 12%, var(--line2)) 88%,
+        transparent
+      );
+    pointer-events: none;
+    opacity: 0.78;
+  }
+
+  .home-storyline > .hi-rule {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .home-storyline__row {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 1rem minmax(0, 1fr);
+    align-items: start;
+    gap: 0;
+  }
+
+  .home-storyline__row::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0.95rem;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    transform: translateX(-50%);
+    background: var(--tone-surface);
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--tone-accent) 8%, transparent);
+    z-index: 2;
+  }
+
+  .home-storyline__row > * {
+    min-width: 0;
+  }
+
+  .home-storyline__row--left > *,
+  .home-storyline__row--right > * {
+    width: min(100%, 30rem);
+  }
+
+  .home-storyline__row--left > * {
+    grid-column: 1;
+    justify-self: end;
+    padding-right: clamp(0.35rem, 1vw, 0.8rem);
+    text-align: right;
+  }
+
+  .home-storyline__row--right > * {
+    grid-column: 3;
+    justify-self: start;
+    padding-left: clamp(0.35rem, 1vw, 0.8rem);
+    text-align: left;
   }
 
   /* ── Section shell ──────────────────────────── */
@@ -918,161 +842,138 @@ const elsewhereCards = [
     }
   }
 
-  /* legacy .home-hero placeholder to avoid stray CSS errors */
+  /* Home hero */
   .home-hero {
     position: relative;
     isolation: isolate;
-    min-height: clamp(22rem, 42vw, 32rem);
-    display: grid;
-    place-items: center;
+    min-height: clamp(11rem, 18vw, 14rem);
+    padding: clamp(1.35rem, 3vw, 2rem) 0 clamp(0.9rem, 2vw, 1.2rem);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: clamp(0.95rem, 2vw, 1.25rem);
     overflow: hidden;
-    border-radius: clamp(1.6rem, 3vw, 2.8rem);
-    margin-bottom: clamp(1rem, 2vw, 2rem);
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
-    background:
-      linear-gradient(180deg, rgba(5, 9, 17, 0.52), rgba(4, 8, 15, 0.88)),
-      radial-gradient(
-        120% 110% at 50% 28%,
-        rgba(7, 12, 20, 0.12),
-        rgba(4, 8, 15, 0.44) 54%,
-        rgba(4, 8, 15, 0.74) 100%
-      ),
-      radial-gradient(
-        78% 58% at 50% 4%,
-        color-mix(in srgb, var(--tone-accent) 4%, transparent),
-        transparent 72%
-      ),
-      linear-gradient(135deg, rgba(8, 13, 22, 0.44), rgba(4, 8, 15, 0.72)),
-      url('/images/bg-station.jpg');
-    background-position: center 34%;
-    background-size: cover;
-    box-shadow:
-      0 30px 80px rgba(0, 0, 0, 0.42),
-      0 1px 0 rgba(255, 255, 255, 0.03) inset;
-  }
-
-  .home-hero::before,
-  .home-hero::after {
-    content: '';
-    position: absolute;
-    pointer-events: none;
+    margin-bottom: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
   }
 
   .home-hero::before {
-    inset: -18% -8% 26%;
+    content: '';
+    position: absolute;
+    inset: -12% -8% 24% -8%;
     z-index: 0;
+    pointer-events: none;
     background:
-      radial-gradient(
-        34% 20% at 50% 22%,
-        color-mix(in srgb, var(--tone-accent-bright) 8%, transparent),
-        transparent 72%
-      ),
-      radial-gradient(
-        26% 16% at 26% 26%,
-        color-mix(in srgb, var(--tone-sky-bright) 6%, transparent),
-        transparent 74%
-      ),
-      radial-gradient(
-        26% 16% at 74% 24%,
-        color-mix(in srgb, var(--tone-sky-bright) 5%, transparent),
-        transparent 74%
-      );
-    filter: blur(42px);
-    opacity: 0.44;
-  }
-
-  .home-hero::after {
-    inset: 0;
-    z-index: 2;
-    background:
-      linear-gradient(
-        115deg,
-        transparent 0%,
-        transparent 24%,
-        rgba(255, 255, 255, 0.025) 34%,
-        transparent 46%,
-        transparent 100%
-      ),
-      repeating-linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0.014) 0 1px,
-        transparent 1px 40px
-      );
-    mix-blend-mode: screen;
-    opacity: 0.1;
+      radial-gradient(60% 64% at 50% 18%, rgba(232, 207, 179, 0.22), transparent 70%),
+      radial-gradient(46% 38% at 50% 58%, rgba(95, 122, 160, 0.12), transparent 74%),
+      linear-gradient(180deg, rgba(4, 8, 14, 0.08), transparent 58%);
   }
 
   .home-hero__content {
     position: relative;
     isolation: isolate;
     z-index: 4;
-    width: min(100%, 56rem);
-    padding:
-      clamp(4.25rem, 8vw, 6.75rem)
-      clamp(1.25rem, 5vw, 4rem)
-      clamp(3.25rem, 7vw, 5.5rem);
-    text-shadow: 0 10px 24px rgba(0, 0, 0, 0.44);
+    width: 100%;
+    padding: 0;
+    text-shadow: 0 10px 22px rgba(0, 0, 0, 0.42);
   }
 
-  .home-hero__content::before,
-  .home-hero__content::after {
-    content: '';
-    position: absolute;
+  .home-hero__controls {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-bottom: clamp(0.45rem, 1.2vw, 0.75rem);
     pointer-events: none;
   }
 
-  .home-hero__content::before {
-    z-index: 0;
-    inset:
-      clamp(1.1rem, 3vw, 2.2rem)
-      clamp(0.8rem, 4vw, 2.4rem)
-      clamp(1rem, 3vw, 2rem);
-    border-radius: clamp(1.35rem, 3vw, 2.2rem);
+  .home-view-toggle {
+    pointer-events: auto;
+    min-height: 2rem;
+    padding: 0.42rem 0.72rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(241, 230, 212, 0.92);
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 26%, var(--line2));
     background:
-      radial-gradient(
-        68% 54% at 50% 28%,
-        rgba(21, 31, 46, 0.16),
-        rgba(9, 14, 23, 0.36) 54%,
-        rgba(6, 10, 18, 0.64) 100%
-      ),
-      linear-gradient(
-        180deg,
-        rgba(9, 14, 23, 0.76),
-        rgba(7, 11, 19, 0.82) 44%,
-        rgba(4, 8, 15, 0.9)
-      );
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(18px) saturate(0.88);
+      linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+      rgba(20, 24, 34, 0.88);
     box-shadow:
-      0 28px 56px rgba(0, 0, 0, 0.34),
-      0 1px 0 rgba(255, 255, 255, 0.05) inset,
-      0 0 0 1px rgba(4, 8, 15, 0.16);
+      0 10px 22px rgba(0, 0, 0, 0.22),
+      0 1px 0 rgba(255, 255, 255, 0.05) inset;
   }
 
-  .home-hero__content::after {
-    z-index: 2;
-    inset:
-      clamp(1.45rem, 3.4vw, 2.5rem)
-      clamp(1.1rem, 4.6vw, 2.8rem)
-      clamp(1.35rem, 3.4vw, 2.3rem);
-    border-radius: clamp(1.1rem, 2.7vw, 2rem);
-    border: 1px solid rgba(255, 255, 255, 0.035);
+  .home-view-toggle:hover {
+    border-color: color-mix(in srgb, var(--tone-accent) 46%, var(--line2));
+    color: #fff3dd;
+  }
+
+  .home-particles {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+    border-radius: inherit;
+    mix-blend-mode: screen;
+    mask-image: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.12) 0%,
+      rgba(0, 0, 0, 0.7) 16%,
+      rgba(0, 0, 0, 1) 40%,
+      rgba(0, 0, 0, 1) 78%,
+      rgba(0, 0, 0, 0.16) 100%
+    );
+  }
+
+  .home-particle {
+    position: absolute;
+    left: var(--particle-left);
+    bottom: var(--particle-bottom);
+    width: var(--particle-size);
+    height: var(--particle-size);
+    border-radius: 999px;
     background:
-      linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.02),
-        transparent 22%,
-        transparent 74%,
-        rgba(242, 184, 75, 0.02)
-      );
+      radial-gradient(circle, rgba(255, 251, 242, 0.98) 0%, rgba(248, 230, 195, 0.9) 22%, rgba(242, 184, 75, 0.42) 54%, transparent 78%);
+    box-shadow:
+      0 0 12px rgba(255, 248, 232, 0.34),
+      0 0 30px rgba(242, 184, 75, 0.2);
+    filter: blur(var(--particle-blur));
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) scale(0.55);
+    animation: home-particle-rise var(--particle-duration) linear infinite;
+    animation-delay: var(--particle-delay);
+    will-change: transform, opacity;
   }
 
-  .home-hero__content > :not(.home-hero__ivy) {
-    position: relative;
-    z-index: 3;
+  @keyframes home-particle-rise {
+    0% {
+      transform: translate3d(0, 20px, 0) scale(0.55);
+      opacity: 0;
+    }
+
+    12% {
+      opacity: var(--particle-alpha);
+    }
+
+    65% {
+      opacity: calc(var(--particle-alpha) * 0.9);
+    }
+
+    100% {
+      transform: translate3d(var(--particle-drift), -82vh, 0) scale(1.28);
+      opacity: 0;
+    }
   }
 
   .home-hero__eyebrow,
+  .home-hero__title,
   .home-hero__lede,
   .home-hero__body,
   .home-hero__roles,
@@ -1081,17 +982,49 @@ const elsewhereCards = [
   }
 
   .home-hero__eyebrow {
+    margin-bottom: 0.32rem;
     font-size: 0.72rem;
-    letter-spacing: 0.18em;
+    font-weight: 600;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: rgba(229, 216, 197, 0.72);
+    color: rgba(232, 216, 193, 0.82);
   }
 
-  .home-hero h1 {
-    color: color-mix(in srgb, var(--tone-accent-glow) 70%, white 30%);
+  .home-hero__title {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.32em;
+    flex-wrap: wrap;
+    letter-spacing: -0.01em;
+    font-family: var(--font-display, sans-serif);
+    font-size: clamp(2.3rem, 5.8vw, 4.85rem);
+    font-weight: 700;
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+    color: color-mix(in srgb, var(--tone-accent-glow) 58%, white 42%);
     text-shadow:
-      0 14px 34px rgba(0, 0, 0, 0.34),
-      0 0 18px rgba(231, 179, 109, 0.1);
+      0 16px 40px rgba(0, 0, 0, 0.42),
+      0 0 18px rgba(231, 179, 109, 0.14);
+  }
+
+  .home-hero__word {
+    white-space: nowrap;
+  }
+
+  /* "es's" — the artist name suffix on the "A".
+     Smaller size = annotation. Gold = identity marker.
+     Raised above baseline = superscript, clearly read as part of "aes's". */
+  .home-hero__micro {
+    display: inline-block;
+    font-size: 0.24em;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    position: relative;
+    bottom: 0.5em;
+    color: var(--tone-accent-glow, #e8b96a);
+    text-shadow: 0 0 10px rgba(232, 185, 106, 0.28);
+    opacity: 1;
   }
 
   .home-hero__lede {
@@ -1111,12 +1044,14 @@ const elsewhereCards = [
   }
 
   .home-hero__roles {
-    max-width: 34rem;
+    max-width: 38rem;
+    margin-top: 0.48rem;
     margin-inline: auto;
-    font-size: 0.82rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(218, 201, 177, 0.62);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    letter-spacing: 0.015em;
+    text-transform: none;
+    color: rgba(236, 227, 214, 0.88);
   }
 
   .home-hero__lead-note {
@@ -1125,78 +1060,6 @@ const elsewhereCards = [
     font-size: 0.98rem;
     line-height: 1.72;
     color: rgba(241, 213, 164, 0.92);
-  }
-
-  .home-hero__paths {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 0.7rem;
-  }
-
-  .home-hero__path {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 2.5rem;
-    padding: 0.6rem 0.95rem;
-    border-radius: 999px;
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 28%, rgba(255, 255, 255, 0.08));
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012)),
-      rgba(9, 14, 22, 0.78);
-    color: rgba(243, 236, 226, 0.9);
-    text-decoration: none;
-    transition:
-      border-color 140ms ease,
-      color 140ms ease,
-      background-color 140ms ease;
-  }
-
-  .home-hero__path.is-primary {
-    color: rgba(247, 227, 190, 0.96);
-    border-color: color-mix(in srgb, var(--tone-accent) 42%, rgba(255, 255, 255, 0.08));
-    background:
-      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 18%, transparent), transparent 72%),
-      rgba(10, 15, 24, 0.92);
-  }
-
-  .home-hero__path:hover,
-  .home-hero__path:focus-visible {
-    color: var(--tone-accent-glow);
-    border-color: color-mix(in srgb, var(--tone-accent) 54%, rgba(255, 255, 255, 0.08));
-  }
-
-  .home-hero__ivy {
-    position: absolute;
-    top: clamp(0.2rem, 1vw, 0.9rem);
-    z-index: 1;
-    width: clamp(104px, 14%, 148px);
-    height: clamp(136px, 23%, 196px);
-    pointer-events: none;
-    background-repeat: no-repeat;
-    background-size: contain;
-    opacity: 0.52;
-    filter: saturate(0.6) brightness(0.66) contrast(0.9) drop-shadow(0 10px 14px rgba(0, 0, 0, 0.16));
-  }
-
-  .home-hero__ivy--left {
-    left: clamp(0.8rem, 2.4vw, 1.6rem);
-    background-image: url('/images/garland/left-vine.png');
-    background-position: left top;
-    transform: rotate(-4deg);
-    -webkit-mask-image: linear-gradient(160deg, rgba(0, 0, 0, 0.96) 18%, rgba(0, 0, 0, 0.9) 54%, transparent 100%);
-    mask-image: linear-gradient(160deg, rgba(0, 0, 0, 0.96) 18%, rgba(0, 0, 0, 0.9) 54%, transparent 100%);
-  }
-
-  .home-hero__ivy--right {
-    right: clamp(0.8rem, 2.4vw, 1.6rem);
-    background-image: url('/images/garland/right-vine.png');
-    background-position: right top;
-    transform: rotate(4deg);
-    -webkit-mask-image: linear-gradient(200deg, rgba(0, 0, 0, 0.96) 18%, rgba(0, 0, 0, 0.9) 54%, transparent 100%);
-    mask-image: linear-gradient(200deg, rgba(0, 0, 0, 0.96) 18%, rgba(0, 0, 0, 0.9) 54%, transparent 100%);
   }
 
   .home-start-kicker,
@@ -1524,112 +1387,21 @@ const elsewhereCards = [
     }
 
     .home-hero {
-      min-height: 19.5rem;
-      border-radius: 1.35rem;
+      min-height: 12rem;
+      border-radius: 0;
       margin-top: 0;
       margin-bottom: 0;
-      background-position: center 22%;
-    }
-
-    .home-hero::before {
-      opacity: 0.32;
-      filter: blur(38px);
     }
 
     .home-hero__content {
-      width: min(100%, 38rem);
-      padding:
-        clamp(2.6rem, 9.5vw, 3.4rem)
-        clamp(1rem, 5vw, 1.4rem)
-        clamp(1.9rem, 7vw, 2.5rem);
-    }
-
-    .home-hero__content > :not(.home-hero__ivy) + :not(.home-hero__ivy) {
-      margin-top: clamp(0.8rem, 3.6vw, 0.95rem);
-    }
-
-    .home-hero__content::before {
-      inset:
-        0.72rem
-        0.4rem
-        0.45rem;
-      border-radius: 1.1rem;
-      background:
-        radial-gradient(
-          90% 64% at 50% 22%,
-          rgba(18, 29, 44, 0.12),
-          rgba(7, 12, 21, 0.42) 46%,
-          rgba(4, 8, 15, 0.72) 100%
-        ),
-        linear-gradient(
-          180deg,
-          rgba(7, 12, 21, 0.9),
-          rgba(5, 9, 17, 0.93) 42%,
-          rgba(4, 8, 15, 0.98)
-        );
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      backdrop-filter: blur(20px) saturate(0.82);
-      box-shadow:
-        0 22px 42px rgba(0, 0, 0, 0.36),
-        0 1px 0 rgba(255, 255, 255, 0.05) inset;
-    }
-
-    .home-hero__content::after {
-      inset:
-        1.25rem
-        0.8rem
-        1rem;
-      border-radius: 0.95rem;
-      background:
-        linear-gradient(
-          180deg,
-          rgba(255, 255, 255, 0.012),
-          transparent 24%,
-          transparent 74%,
-          rgba(242, 184, 75, 0.014)
-        );
+      width: 100%;
+      padding: 0;
     }
 
     .home-hero h1 {
-      font-size: clamp(2.2rem, 8.8vw, 2.9rem);
+      font-size: clamp(2rem, 8.4vw, 2.8rem);
       line-height: 0.96;
       text-wrap: balance;
-    }
-
-    .home-hero__ivy {
-      top: 0.3rem;
-      width: clamp(72px, 18vw, 104px);
-      height: clamp(94px, 24vw, 136px);
-      opacity: 0.2;
-    }
-
-    .home-hero__ivy--left {
-      left: 0.5rem;
-    }
-
-    .home-hero__ivy--right {
-      right: 0.5rem;
-    }
-
-    .home-hero__paths {
-      gap: 0.55rem;
-    }
-
-    .home-hero__path {
-      width: 100%;
-      min-height: 2.9rem;
-      padding: 0.7rem 1rem;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.014)),
-        rgba(7, 12, 21, 0.88);
-      color: rgba(246, 239, 229, 0.95);
-    }
-
-    .home-hero__path.is-primary {
-      background:
-        linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 22%, transparent), transparent 72%),
-        rgba(7, 12, 21, 0.95);
-      color: rgba(249, 230, 194, 0.98);
     }
 
     .home-hero__lede {
@@ -1658,13 +1430,40 @@ const elsewhereCards = [
       color: rgba(245, 219, 175, 0.96);
     }
 
-    .home-hero::after {
-      opacity: 0.025;
-    }
-
     .home-start-grid {
       margin-top: 0.2rem;
       gap: 0.5rem;
+    }
+
+    .home-storyline {
+      margin-top: 0.1rem;
+      padding-top: 0.25rem;
+    }
+
+    .home-storyline__rail {
+      left: 0.85rem;
+      transform: none;
+      opacity: 0.34;
+    }
+
+    .home-storyline__row {
+      grid-template-columns: 1rem minmax(0, 1fr);
+    }
+
+    .home-storyline__row::before {
+      left: 0.6rem;
+      top: 0.9rem;
+      transform: translateX(-50%);
+    }
+
+    .home-storyline__row--left > *,
+    .home-storyline__row--right > * {
+      grid-column: 2;
+      justify-self: stretch;
+      width: 100%;
+      text-align: left;
+      padding-left: 0;
+      padding-right: 0;
     }
   }
 
@@ -2093,14 +1892,59 @@ const elsewhereCards = [
 
 <script>
   const photos = document.querySelector('.hi-photos');
-  if (photos) {
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        // contain once the carousel is less than 85% visible (user has scrolled)
-        photos.classList.toggle('is-contained', entry.intersectionRatio < 0.85);
-      },
-      { threshold: [0.85] }
-    );
-    obs.observe(photos);
+  const track = photos?.querySelector('.hi-photos__track');
+  const group = photos?.querySelector('.hi-photos__group');
+  const surfaceToggle = document.querySelector('[data-home-view-toggle]');
+  const surfaceModeKey = 'home-surface-mode';
+
+  if (track && group) {
+    const updateDistance = () => {
+      const width = group.getBoundingClientRect().width;
+      track.style.setProperty('--photos-distance', `${width}px`);
+    };
+
+    updateDistance();
+
+    if ('ResizeObserver' in window) {
+      const observer = new ResizeObserver(updateDistance);
+      observer.observe(group);
+    } else {
+      window.addEventListener('resize', updateDistance, { passive: true });
+    }
+  }
+
+  if (surfaceToggle) {
+    const readStoredMode = () => {
+      try {
+        return localStorage.getItem(surfaceModeKey) === 'traditional' ? 'traditional' : 'timeline';
+      } catch {
+        return 'timeline';
+      }
+    };
+
+    const writeStoredMode = (mode) => {
+      try {
+        localStorage.setItem(surfaceModeKey, mode);
+      } catch {
+        // Ignore storage failures and keep the toggle functional.
+      }
+    };
+
+    const applyMode = (mode) => {
+      const traditional = mode === 'traditional';
+      document.body.dataset.surfaceFrame = 'flat';
+      document.body.dataset.headerMode = traditional ? 'pinned' : 'peek';
+      document.body.dataset.headerReveal = traditional ? 'visible' : 'hidden';
+      surfaceToggle.setAttribute('aria-pressed', String(traditional));
+      surfaceToggle.textContent = traditional ? 'Timeline view' : 'Traditional view';
+      writeStoredMode(mode);
+    };
+
+    applyMode(readStoredMode());
+
+    surfaceToggle.addEventListener('click', () => {
+      const nextMode = document.body.dataset.surfaceFrame === 'framed' ? 'timeline' : 'traditional';
+      applyMode(nextMode);
+    });
   }
 </script>

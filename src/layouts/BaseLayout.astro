@@ -11,7 +11,9 @@ interface Props {
   description?: string;
   image?: string;
   theme?: string;
+  forceThemeMode?: 'light' | 'dark';
   bodyClass?: string;
+  flatSurface?: boolean;
   showHeader?: boolean;
   renderHeader?: boolean;
   renderFooter?: boolean;
@@ -26,7 +28,9 @@ const {
   description = 'Timeline and archive for A Path Toward Life',
   image = 'https://portfolio-website-9c9.pages.dev/images/home-collage/collage-2.jpg',
   theme = 'archive',
+  forceThemeMode,
   bodyClass = '',
+  flatSurface = false,
   showHeader = true,
   renderHeader = true,
   renderFooter = true,
@@ -74,16 +78,17 @@ const shellGarlandStyle = [
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Recursive:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <script is:inline>
+    <script is:inline define:vars={{ forceThemeMode }}>
       (() => {
         const root = document.documentElement;
+        const forcedTheme = forceThemeMode;
         const decimalHour = new Date().getHours() + new Date().getMinutes() / 60;
-        const theme = decimalHour >= 6 && decimalHour < 18 ? 'light' : 'dark';
+        const theme = forcedTheme ?? (decimalHour >= 6 && decimalHour < 18 ? 'light' : 'dark');
         root.classList.toggle('dark', theme === 'dark');
         root.classList.toggle('light', theme === 'light');
         root.style.colorScheme = theme;
         root.dataset.themeMode = theme;
-        root.dataset.themeSource = 'clock';
+        root.dataset.themeSource = forcedTheme ? 'forced' : 'clock';
         root.dataset.themePeriod = theme === 'light' ? 'day' : 'night';
       })();
     </script>
@@ -99,6 +104,7 @@ const shellGarlandStyle = [
   <body
     class={bodyClass}
     data-theme={theme}
+    data-surface-frame={flatSurface ? 'flat' : 'framed'}
     data-header-mode={renderHeader ? (showHeader ? 'pinned' : 'peek') : 'hidden'}
     data-header-reveal={showHeader ? 'visible' : 'hidden'}
     data-nav-phase="idle"
@@ -337,7 +343,7 @@ const shellGarlandStyle = [
           linear-gradient(180deg, color-mix(in srgb, var(--mb-accent) 10%, transparent), transparent 50%),
           var(--mb-bg);
         box-shadow: 0 -16px 56px rgba(0,0,0,0.55), 0 -1px 0 rgba(255,255,255,0.05) inset;
-        transition: transform 220ms cubic-bezier(.22,.68,0,1.2);
+        transition: transform 220ms cubic-bezier(.22,.68,0,1.2), width 220ms ease, border-radius 220ms ease;
       }
 
       .site-music-bar__toggle {
@@ -521,6 +527,35 @@ const shellGarlandStyle = [
       }
       .site-music-bar__archive-link:hover { color: var(--mb-accent-glow); text-decoration: underline; }
 
+      body.home-page .site-music-bar {
+        right: 0.85rem;
+        bottom: 0.85rem;
+        width: min(100vw - 1.5rem, 480px);
+        border-radius: 1.05rem;
+        border-bottom: 1px solid color-mix(in srgb, var(--mb-accent) 18%, var(--mb-line2));
+        box-shadow: 0 12px 36px rgba(0,0,0,0.36), 0 -1px 0 rgba(255,255,255,0.04) inset;
+      }
+
+      body.home-page .site-music-bar:not([data-open='true']) {
+        width: auto;
+        border-radius: 999px;
+      }
+
+      body.home-page .site-music-bar:not([data-open='true']) .site-music-bar__toggle {
+        gap: 0.4rem;
+        padding: 0.58rem 0.72rem;
+      }
+
+      body.home-page .site-music-bar:not([data-open='true']) .site-music-bar__label {
+        max-width: 0;
+        width: 0;
+        opacity: 0;
+      }
+
+      body.home-page .site-music-bar:not([data-open='true']) .site-music-bar__chevron {
+        display: none;
+      }
+
       @media (max-width: 560px) {
         .site-music-bar {
           right: 0;
@@ -613,6 +648,102 @@ const shellGarlandStyle = [
         });
         if (localStorage.getItem('music-bar-hidden') === '1' && musicBar) {
           musicBar.style.display = 'none';
+        }
+      })();
+    </script>
+
+    <script is:inline>
+      (() => {
+        const body = document.body;
+        const header = document.querySelector('.site-header');
+        const sensor = document.querySelector('.header-peek-sensor');
+
+        if (!body || !header) return;
+
+        const root = document.documentElement;
+        const setHeaderSize = () => {
+          root.style.setProperty('--site-header-size', `${header.getBoundingClientRect().height}px`);
+        };
+
+        setHeaderSize();
+
+        if ('ResizeObserver' in window) {
+          const resizeObserver = new ResizeObserver(setHeaderSize);
+          resizeObserver.observe(header);
+        } else {
+          window.addEventListener('resize', setHeaderSize, { passive: true });
+        }
+
+        let lastY = window.scrollY;
+        let ticking = false;
+
+        const canAutoReveal = () => {
+          if (body.dataset.headerMode === 'hidden') return false;
+          if (body.dataset.headerMode === 'peek' && body.dataset.surfaceFrame === 'flat') return false;
+          return true;
+        };
+
+        const syncHeaderReveal = () => {
+          ticking = false;
+          setHeaderSize();
+
+          if (!canAutoReveal()) {
+            body.dataset.headerReveal = 'hidden';
+            lastY = window.scrollY;
+            return;
+          }
+
+          const currentY = window.scrollY;
+          const delta = currentY - lastY;
+          const nearTop = currentY <= 16;
+          const scrollingDown = delta > 6;
+          const scrollingUp = delta < -6;
+          const hideThreshold = Math.max(header.getBoundingClientRect().height * 0.65, 72);
+
+          if (nearTop || scrollingUp) {
+            body.dataset.headerReveal = 'visible';
+          } else if (scrollingDown && currentY > hideThreshold) {
+            body.dataset.headerReveal = 'hidden';
+          }
+
+          lastY = currentY;
+        };
+
+        const onScroll = () => {
+          if (ticking) return;
+          ticking = true;
+          window.requestAnimationFrame(syncHeaderReveal);
+        };
+
+        syncHeaderReveal();
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', syncHeaderReveal, { passive: true });
+        window.addEventListener('pageshow', syncHeaderReveal);
+
+        if (sensor) {
+          sensor.addEventListener('pointerenter', () => {
+            if (canAutoReveal()) body.dataset.headerReveal = 'visible';
+          });
+        }
+
+        document.addEventListener(
+          'focusin',
+          () => {
+            if (canAutoReveal()) body.dataset.headerReveal = 'visible';
+          },
+          true
+        );
+
+        if ('MutationObserver' in window) {
+          const observer = new MutationObserver(() => {
+            syncHeaderReveal();
+          });
+
+          observer.observe(body, {
+            attributes: true,
+            attributeFilter: ['data-header-mode', 'data-surface-frame'],
+          });
         }
       })();
     </script>

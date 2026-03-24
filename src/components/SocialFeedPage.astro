@@ -46,7 +46,7 @@ interface SocialConfig {
 
 interface Props {
   config: SocialConfig;
-  igPreview?: Array<{ id?: string; src: string; caption?: string; date?: string }>;
+  igPreview?: Array<{ src: string; caption?: string; date?: string }>;
   manualItems?: SocialManualItem[];
 }
 
@@ -90,42 +90,6 @@ const xTimelineHandle =
 const showXTimeline = Boolean(xTimelineHandle) && (!hasManualLatestSource || !hasManualItems);
 const xWidgetRootId = `x-widget-${config.slug}`;
 const xTimelineHref = showXTimeline ? `https://x.com/${xTimelineHandle}` : '';
-const parsePreviewDate = (value?: string): Date | null => {
-  const raw = String(value || '').trim();
-  const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (match) {
-    const [, year, month, day] = match;
-    return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
-  }
-
-  const parsed = new Date(raw);
-  return Number.isNaN(parsed.valueOf()) ? null : parsed;
-};
-const formatPreviewDate = (value?: string): string => {
-  const parsed = parsePreviewDate(value);
-  if (!parsed) return String(value || '');
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    timeZone: 'UTC'
-  }).format(parsed);
-};
-const humanizePreviewId = (value?: string): string => {
-  const raw = String(value || '').trim();
-  if (!raw) return '';
-
-  const stripped = raw.replace(/^(\d{4}-\d{2}-\d{2})[_-]?/, '').trim();
-  const cleaned = stripped.replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
-  if (!cleaned) return '';
-
-  return cleaned
-    .split(' ')
-    .map((part) => (part ? part.charAt(0).toUpperCase() + part.slice(1) : part))
-    .join(' ');
-};
-const previewItemLabel = (item: { id?: string; caption?: string; date?: string }): string =>
-  String(item.caption || humanizePreviewId(item.id) || formatPreviewDate(item.date) || 'Open archive').trim() || 'Open archive';
 ---
 
 <section class="social-page">
@@ -201,16 +165,12 @@ const previewItemLabel = (item: { id?: string; caption?: string; date?: string }
 
   {showInstagramPreview && (
     <section class="social-block" aria-label="Instagram local preview">
-      <h2>Instagram cards</h2>
+      <h2>Local Archive Preview</h2>
       <div class="social-local-grid">
         {igPreview.map((item) => (
-          <a href="/instagram" class="social-local-card" aria-label={previewItemLabel(item)}>
-            <img src={item.src} alt={previewItemLabel(item)} loading="lazy" decoding="async" />
-            <div class="social-local-card__body">
-              <p class="social-local-card__meta">Local archive</p>
-              <p class="social-local-card__title">{previewItemLabel(item)}</p>
-              {item.date && <p class="social-local-card__date">{formatPreviewDate(item.date)}</p>}
-            </div>
+          <a href="/instagram" class="social-local-card">
+            <img src={item.src} alt={item.caption || 'Instagram archive preview'} loading="lazy" decoding="async" />
+            <span>{item.caption || item.date || 'Open archive'}</span>
           </a>
         ))}
       </div>
@@ -658,68 +618,31 @@ const previewItemLabel = (item: { id?: string; caption?: string; date?: string }
   .social-local-grid {
     margin-top: 0.72rem;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
-    gap: 0.72rem;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: 0.58rem;
   }
 
   .social-local-card {
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
-    border-radius: 0.98rem;
+    border: 1px solid rgba(113, 113, 122, 0.32);
+    border-radius: 0.65rem;
     overflow: hidden;
     text-decoration: none;
     color: inherit;
-    background:
-      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 4%, transparent), transparent 56%),
-      color-mix(in srgb, var(--tone-surface) 90%, transparent);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-    transition:
-      transform 160ms ease,
-      border-color 160ms ease,
-      box-shadow 160ms ease;
-  }
-
-  .social-local-card:hover,
-  .social-local-card:focus-visible {
-    transform: translateY(-2px);
-    border-color: color-mix(in srgb, var(--tone-accent) 42%, var(--line2));
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+    background: rgba(255, 255, 255, 0.06);
   }
 
   .social-local-card img {
     display: block;
     width: 100%;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 1 / 1;
     object-fit: cover;
-    background: #e8dfd2;
   }
 
-  .social-local-card__body {
-    display: grid;
-    gap: 0.18rem;
-    padding: 0.72rem 0.78rem 0.84rem;
-  }
-
-  .social-local-card__meta {
-    margin: 0;
-    font-size: 0.66rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: color-mix(in srgb, var(--tone-text) 66%, var(--tone-muted) 34%);
-  }
-
-  .social-local-card__title {
-    margin: 0;
-    font-size: 0.94rem;
-    line-height: 1.38;
-    color: var(--tone-text);
-  }
-
-  .social-local-card__date {
-    margin: 0;
-    font-size: 0.71rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: color-mix(in srgb, var(--tone-text) 58%, var(--tone-muted) 42%);
+  .social-local-card span {
+    display: block;
+    padding: 0.42rem 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1.35;
   }
 
   .social-embed-card figcaption {

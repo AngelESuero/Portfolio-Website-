@@ -1,0 +1,230 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const framework = [
+  {
+    number: 1,
+    label: 'Well-Being',
+    description: 'Physical and mental health, daily routine, self-care',
+  },
+  {
+    number: 2,
+    label: 'Growth',
+    description: 'Learning, education, spiritual practice, self-improvement',
+  },
+  {
+    number: 3,
+    label: 'Relationships',
+    description: 'Family, friends, love, community, emotional connection',
+  },
+  {
+    number: 4,
+    label: 'Work',
+    description: 'Career, job performance, productivity, skill development',
+    files: [
+      { label: 'Gallery Host Plus (GH+) Proposal', href: '/documents/gh-plus-proposal.pdf' },
+    ],
+  },
+  {
+    number: 5,
+    label: 'Creativity',
+    description: 'Artistic projects, music production, writing, design',
+    files: [
+      { label: 'Cocoa — reference doc', href: '/documents/cocoa.pdf' },
+      { label: 'Script End-6', href: '/documents/script-end-6.pdf' },
+      { label: 'Script — Night, Mother Project', href: '/documents/script-night-mother-project.pdf' },
+      { label: 'Sensitive Child — Graphic Novel Script', href: '/documents/sensitive-child-script.docx' },
+      { label: 'Sensitive Child — Presentation', href: '/documents/sensitive-child-presentation.pptx' },
+      { label: 'Stranger Things Bible (Montauk)', href: '/documents/stranger-things-bible.docx' },
+    ],
+  },
+  {
+    number: 6,
+    label: 'Activity',
+    description: 'Physical expression, exercise, boxing',
+    files: [
+      { label: 'Marvel Multiverse Timeline', href: '/documents/marvel_multiverse_timeline_with_tv.pdf' },
+    ],
+  },
+  {
+    number: 7,
+    label: 'Resources',
+    description: 'Finances, housing, material stability, basic needs',
+    files: [
+      { label: 'Livable Income Levels — Newark, NJ', href: '/documents/livable-income-newark.pdf' },
+      { label: 'Graham Stephan YouTube channel', href: 'https://www.youtube.com/@GrahamStephan' },
+    ],
+  },
+  {
+    number: 8,
+    label: 'Order',
+    description: 'Organization, structure, ethics, discipline',
+  },
+  {
+    number: 9,
+    label: 'Society',
+    description: 'Collective contribution, civic awareness, culture, systems',
+    files: [
+      { label: 'Retrofitting Bernie\'s GND for the AI Era', href: '/documents/retrofitting-bernie-gnd-ai-era.pdf' },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Resources — a_e.s_"
+  description="A 9-part framework for practical life alignment and balance across all domains."
+  theme="archive"
+  bodyClass="resources-page"
+  flatSurface={true}
+  forceThemeMode="dark"
+>
+  <main class="resources-main">
+    <section class="resources-header">
+      <p class="resources-eyebrow">Life Alignment Framework</p>
+      <h1 class="resources-title">Resources</h1>
+      <p class="resources-subtitle">
+        A 9-part framework for practical life alignment and balance across all domains.
+      </p>
+    </section>
+
+    <ol class="resources-list" aria-label="9-part life alignment framework">
+      {framework.map((item) => (
+        <li class="resources-item">
+          <span class="resources-number" aria-hidden="true">{item.number}</span>
+          <div class="resources-content">
+            <strong class="resources-label">{item.label}</strong>
+            <span class="resources-desc">{item.description}</span>
+            {item.files && (
+              <ul class="resources-files">
+                {item.files.map((f) => (
+                  <li>
+                    <a href={f.href} target="_blank" rel="noopener" class="resources-file-link">{f.label}</a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </li>
+      ))}
+    </ol>
+  </main>
+</BaseLayout>
+
+<style>
+  .resources-main {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 1.35rem 1rem 2.75rem;
+  }
+
+  .resources-header {
+    margin-bottom: 1.45rem;
+    max-width: 54ch;
+  }
+
+  .resources-eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--tone-muted, #888);
+    margin: 0 0 0.75rem;
+  }
+
+  .resources-title {
+    font-size: clamp(1.65rem, 3.2vw, 2.35rem);
+    line-height: 1.1;
+    margin: 0 0 1rem;
+    color: var(--tone-text, #f0ebe0);
+  }
+
+  .resources-subtitle {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--tone-muted, #aaa);
+    margin: 0;
+  }
+
+  .resources-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0;
+  }
+
+  .resources-item {
+    display: grid;
+    grid-template-columns: minmax(1.35rem, 1.6rem) minmax(0, 1fr);
+    gap: 0.82rem;
+    padding: 0.82rem 0;
+    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 8%, var(--tone-border, rgba(255,255,255,0.08)));
+  }
+
+  .resources-item:last-child {
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 8%, var(--tone-border, rgba(255,255,255,0.08)));
+  }
+
+  @media (min-width: 640px) {
+    .resources-item {
+      gap: 0.95rem;
+      padding: 0.92rem 0;
+    }
+    .resources-file-link {
+      display: inline;
+      width: auto;
+    }
+  }
+
+  .resources-number {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--accent, #b97a2d);
+    min-width: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .resources-content {
+    display: grid;
+    gap: 0.22rem;
+  }
+
+  .resources-label {
+    font-size: 0.94rem;
+    font-weight: 600;
+    color: var(--tone-text, #f0ebe0);
+  }
+
+  .resources-desc {
+    font-size: 0.82rem;
+    color: var(--tone-muted, #aaa);
+    line-height: 1.5;
+  }
+
+  .resources-files {
+    list-style: none;
+    padding: 0;
+    margin: 0.25rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.75rem;
+  }
+
+  .resources-file-link {
+    display: inline;
+    width: auto;
+    font-size: 0.74rem;
+    color: color-mix(in srgb, var(--accent, #b97a2d) 88%, var(--tone-text, #f0ebe0) 12%);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--accent, #b97a2d) 42%, transparent);
+    padding-bottom: 2px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .resources-file-link:hover {
+    color: var(--tone-text, #f0ebe0);
+    border-color: color-mix(in srgb, var(--accent, #b97a2d) 72%, transparent);
+  }
+</style>

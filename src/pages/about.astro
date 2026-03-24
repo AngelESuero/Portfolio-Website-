@@ -2,6 +2,68 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import profile from '../data/profile';
 import LifeTimeline from '../components/LifeTimeline';
+
+const archiveCautions = [
+  'This PDF tracks what appears in the reviewed email archive, not a complete biography.',
+  'The earliest layer is partly shared-family account history before the record becomes clearly centered on Angel.',
+  'One 2014 support email includes a birthdate marker that conflicts with later wording, so the email-only record keeps that question open.',
+  'Some school references are legible in context without every institutional detail being perfectly confirmed by the inbox alone.'
+];
+
+const archivePhases = [
+  {
+    range: '2012–2013',
+    title: 'Account foundations and early digital identity',
+    detail: 'The earliest email layer moves through a family-linked Gmail, gaming accounts, and first signs of an online identity before Angel is clearly named in the record.'
+  },
+  {
+    range: '2013–2014',
+    title: 'Angel becomes visible; NJ SEEDS entry',
+    detail: 'NJ SEEDS admissions and recruitment emails make Angel visible by name and show the family-supported application process turning into formal review.'
+  },
+  {
+    range: '2014–2015',
+    title: 'Essays, applications, and selective-school pressure',
+    detail: 'Essay drafts, workshop attendance, financial-aid paperwork, and school applications show a period shaped by revision pressure, adult support, and institutional navigation.'
+  },
+  {
+    range: '2015–2016',
+    title: 'Transition, alumni status, and new support systems',
+    detail: 'The archive shifts from admissions into follow-through: high-school check-ins, SEEDS alumni messaging, NJIT Upward Bound, and Angel beginning to speak more clearly in his own voice.'
+  },
+  {
+    range: '2017–2018',
+    title: 'College-prep intensification',
+    detail: 'The record becomes more procedural and future-facing, with employment paperwork, medical forms, college tours, and junior-year planning tightening around the next move.'
+  }
+];
+
+const rejectionStats = [
+  { value: '40', label: 'Direct employer rejections' },
+  { value: '29', label: 'Earlier review pass' },
+  { value: '11', label: 'New Gmail pass' },
+  { value: '1', label: 'Separate appendix item excluded' }
+];
+
+const rejectionNotes = [
+  'A consolidated record of direct employer and job-application rejection emails identified across two mailbox review passes.',
+  'The list keeps one forwarded 2021 fellowship rejection separate from the direct-employer total.',
+  'The document is useful less as a mood piece and more as a factual labor-market record during this period.'
+];
+
+const emailTimelineHighlights = [
+  '2012–2018 archive span',
+  'Identity formation',
+  'Educational mobility',
+  'Support structures'
+];
+
+const rejectionHighlights = [
+  '40 direct rejections',
+  '2 review passes combined',
+  'Creative, tech, editorial, and support roles',
+  'One appendix item kept separate'
+];
 ---
 
 <BaseLayout title="About - a_e.s_" theme="archive" image="https://portfolio-website-9c9.pages.dev/images/home-collage/collage-2.jpg">
@@ -14,13 +76,136 @@ import LifeTimeline from '../components/LifeTimeline';
         and civic collaboration to turn lived process into public memory.
       </p>
       <p class="about-page__context">
-        This page keeps a brief present-day frame near the top, then moves through a short development timeline kept
-        close to Angel&apos;s own language.
+        This page keeps a brief present-day frame near the top, then moves through both a lived timeline and an
+        archive-derived record of how institutional support, schooling, and self-definition show up in the documents.
       </p>
       <div class="about-page__roles" aria-label="Practice areas">
         {profile.roles.map((role) => <span class="chip rounded-full px-3 py-1 text-xs sm:text-sm">{role}</span>)}
       </div>
     </header>
+
+    <section class="about-page__archive-note" aria-labelledby="archive-documents-heading">
+      <div class="about-page__archive-shell">
+        <div class="about-page__archive-head">
+          <div>
+            <p class="about-page__label">Archive documents</p>
+            <h2 class="about-page__subhead" id="archive-documents-heading">Two records of the same life from different angles</h2>
+          </div>
+        </div>
+
+        <div class="about-page__tabs" role="tablist" aria-label="Archive documents">
+          <button class="about-page__tab is-active" type="button" role="tab" aria-selected="true" aria-controls="about-doc-email" id="about-tab-email" data-about-tab="email">
+            Email timeline
+          </button>
+          <button class="about-page__tab" type="button" role="tab" aria-selected="false" aria-controls="about-doc-rejections" id="about-tab-rejections" data-about-tab="rejections" tabindex="-1">
+            Rejection record
+          </button>
+        </div>
+
+        <div class="about-page__tab-panels">
+          <section class="about-page__tab-panel is-active" id="about-doc-email" role="tabpanel" aria-labelledby="about-tab-email" data-about-panel="email">
+            <div class="about-page__archive-head">
+              <p class="about-page__archive-intro">
+                A separate research pass through the Gmail archive surfaced a more documentary timeline: identity formation,
+                educational mobility, and the support structures that helped move each stage forward.
+              </p>
+              <a
+                class="about-page__doc-link"
+                href="/documents/angel-suero-email-timeline.pdf"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Open PDF
+              </a>
+            </div>
+
+            <div class="about-page__doc-stage">
+              <a class="about-page__doc-preview" href="/documents/angel-suero-email-timeline.pdf" target="_blank" rel="noreferrer">
+                <img src="/documents/previews/email-timeline-cover.png" alt="First page preview of the email-derived timeline PDF" loading="lazy" />
+              </a>
+              <div class="about-page__doc-meta">
+                <p class="about-page__doc-kicker">What it captures</p>
+                <p class="about-page__doc-copy">
+                  A chronology built from the reviewed Gmail archive, centered on the early account layer, NJ SEEDS,
+                  Upward Bound, essays, school transitions, and the institutional scaffolding around those years.
+                </p>
+                <div class="about-page__doc-tags">
+                  {emailTimelineHighlights.map((item) => <span class="about-page__doc-tag">{item}</span>)}
+                </div>
+              </div>
+            </div>
+
+            <ul class="about-page__archive-cautions">
+              {archiveCautions.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+
+            <div class="about-page__archive-phases">
+              {archivePhases.map((phase) => (
+                <article class="about-page__archive-phase">
+                  <p class="about-page__archive-range">{phase.range}</p>
+                  <div class="about-page__archive-copy">
+                    <h3>{phase.title}</h3>
+                    <p>{phase.detail}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section class="about-page__tab-panel" id="about-doc-rejections" role="tabpanel" aria-labelledby="about-tab-rejections" data-about-panel="rejections" aria-hidden="true">
+            <div class="about-page__archive-head">
+              <p class="about-page__archive-intro">
+                This document reads differently: less identity formation, more labor-market friction. It consolidates the direct employer rejection emails already identified across two review passes and keeps the forwarded fellowship item separate.
+              </p>
+              <a
+                class="about-page__doc-link"
+                href="/documents/combined-rejection-emails-report.pdf"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Open PDF
+              </a>
+            </div>
+
+            <div class="about-page__doc-stage">
+              <a class="about-page__doc-preview" href="/documents/combined-rejection-emails-report.pdf" target="_blank" rel="noreferrer">
+                <img src="/documents/previews/rejection-report-cover.png" alt="First page preview of the rejection email report PDF" loading="lazy" />
+              </a>
+              <div class="about-page__doc-meta">
+                <p class="about-page__doc-kicker">What it captures</p>
+                <p class="about-page__doc-copy">
+                  A consolidated hiring record across creative, editorial, technical, and support roles. It turns a diffuse search into something countable and legible.
+                </p>
+                <div class="about-page__doc-tags">
+                  {rejectionHighlights.map((item) => <span class="about-page__doc-tag">{item}</span>)}
+                </div>
+              </div>
+            </div>
+
+            <div class="about-page__rejection-stats">
+              {rejectionStats.map((stat) => (
+                <article class="about-page__rejection-stat">
+                  <p class="about-page__rejection-value">{stat.value}</p>
+                  <p class="about-page__rejection-label">{stat.label}</p>
+                </article>
+              ))}
+            </div>
+
+            <ul class="about-page__archive-cautions">
+              {rejectionNotes.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="about-page__timeline-wrap">
+      <LifeTimeline client:load variant="light" />
+    </section>
 
     <section class="about-page__panel about-page__present-frame" id="current-focus">
       <p class="about-page__label">Present day</p>
@@ -65,10 +250,6 @@ import LifeTimeline from '../components/LifeTimeline';
       </div>
     </div>
 
-    <section class="about-page__timeline-wrap">
-      <LifeTimeline client:load />
-    </section>
-
     <section class="about-page__panel about-page__present-frame">
       <p class="about-page__label">Still current</p>
       <p>
@@ -103,6 +284,13 @@ import LifeTimeline from '../components/LifeTimeline';
     color: color-mix(in srgb, var(--tone-text) 94%, var(--tone-muted) 6%);
   }
 
+  .about-page__subhead {
+    margin: 0.18rem 0 0;
+    font-size: clamp(1.1rem, 2.3vw, 1.55rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+
   .about-page__context {
     margin-top: 0.7rem;
     color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
@@ -113,6 +301,276 @@ import LifeTimeline from '../components/LifeTimeline';
     display: flex;
     flex-wrap: wrap;
     gap: 0.45rem;
+  }
+
+  .about-page__archive-note {
+    padding: clamp(1rem, 2.3vw, 1.35rem) 0;
+    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
+  }
+
+  .about-page__archive-shell {
+    display: grid;
+    gap: clamp(0.9rem, 2vw, 1.25rem);
+  }
+
+  .about-page__archive-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .about-page__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    padding-bottom: 0.15rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
+  }
+
+  .about-page__tab {
+    min-height: 2rem;
+    padding: 0.46rem 0.78rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--tone-surface) 78%, transparent);
+    color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .about-page__tab.is-active {
+    border-color: color-mix(in srgb, var(--tone-accent) 34%, var(--line2));
+    color: var(--tone-accent-glow);
+    background: color-mix(in srgb, var(--tone-accent) 10%, transparent);
+  }
+
+  .about-page__tab-panels {
+    display: grid;
+  }
+
+  .about-page__tab-panel {
+    display: grid;
+    gap: 1rem;
+    overflow: clip;
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(0.55rem);
+    pointer-events: none;
+    transition:
+      max-height 360ms cubic-bezier(0.2, 0.72, 0, 1),
+      opacity 220ms ease,
+      transform 260ms ease;
+  }
+
+  .about-page__tab-panel.is-active {
+    max-height: 240rem;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .about-page__doc-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .about-page__doc-preview {
+    display: block;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+    border-radius: 0.95rem;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--tone-surface) 84%, transparent);
+    box-shadow: 0 14px 26px rgba(0, 0, 0, 0.08);
+  }
+
+  .about-page__doc-preview img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .about-page__doc-meta {
+    display: grid;
+    gap: 0.55rem;
+    align-content: start;
+  }
+
+  .about-page__doc-kicker,
+  .about-page__doc-copy {
+    margin: 0;
+  }
+
+  .about-page__doc-kicker {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tone-accent);
+  }
+
+  .about-page__doc-copy {
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+    line-height: 1.6;
+    max-width: 56ch;
+  }
+
+  .about-page__doc-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .about-page__doc-tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.8rem;
+    padding: 0.2rem 0.58rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+    font-size: 0.72rem;
+    background: color-mix(in srgb, var(--tone-surface) 78%, transparent);
+  }
+
+  .about-page__doc-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    padding: 0.42rem 0.7rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 16%, var(--line2));
+    border-radius: 999px;
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .about-page__doc-link:hover {
+    border-color: color-mix(in srgb, var(--tone-accent) 34%, var(--line2));
+    color: var(--tone-text);
+  }
+
+  .about-page__archive-intro {
+    max-width: 70ch;
+    margin: 0;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+  }
+
+  .about-page__archive-cautions {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.45rem;
+    max-width: 74ch;
+  }
+
+  .about-page__archive-cautions li {
+    position: relative;
+    padding-left: 1rem;
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+    line-height: 1.55;
+  }
+
+  .about-page__archive-cautions li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--tone-accent);
+  }
+
+  .about-page__archive-phases {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 9%, var(--line2));
+  }
+
+  .about-page__archive-phase {
+    display: grid;
+    grid-template-columns: minmax(6.2rem, 7.5rem) minmax(0, 1fr);
+    gap: 1rem;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 9%, var(--line2));
+  }
+
+  .about-page__archive-range {
+    margin: 0;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--tone-accent);
+  }
+
+  .about-page__archive-copy {
+    display: grid;
+    gap: 0.22rem;
+  }
+
+  .about-page__archive-copy h3,
+  .about-page__archive-copy p {
+    margin: 0;
+  }
+
+  .about-page__archive-copy h3 {
+    font-size: clamp(0.98rem, 1.6vw, 1.15rem);
+    line-height: 1.15;
+    color: var(--tone-text);
+  }
+
+  .about-page__archive-copy p {
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+    line-height: 1.55;
+  }
+
+  .about-page__rejection-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .about-page__rejection-stat {
+    padding: 0.85rem 0.95rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
+    border-radius: 0.95rem;
+    background: color-mix(in srgb, var(--tone-surface) 80%, transparent);
+  }
+
+  .about-page__rejection-value,
+  .about-page__rejection-label {
+    margin: 0;
+  }
+
+  .about-page__rejection-value {
+    font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+    line-height: 1;
+    color: var(--tone-accent-glow);
+    font-weight: 700;
+  }
+
+  .about-page__rejection-label {
+    margin-top: 0.35rem;
+    font-size: 0.76rem;
+    line-height: 1.45;
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  }
+
+  .about-page__timeline-wrap {
+    margin: clamp(0.4rem, 1.6vw, 1rem) 0;
+    padding: clamp(1.25rem, 3vw, 2rem) clamp(1rem, 3vw, 1.5rem) clamp(1.5rem, 3.5vw, 2rem);
+    background: #f8f6f2;
+    color: #1a1a1a;
+    border-top: 1px solid #d8d4ce;
+    border-bottom: 1px solid #d8d4ce;
   }
 
   .about-page__panel {
@@ -175,10 +633,6 @@ import LifeTimeline from '../components/LifeTimeline';
 
   .about-photo:hover { filter: saturate(1); }
 
-  .about-page__timeline-wrap {
-    /* Let LifeTimeline handle its own layout */
-  }
-
   .about-page__version {
     font-size: 0.6rem;
     font-weight: 400;
@@ -189,4 +643,60 @@ import LifeTimeline from '../components/LifeTimeline';
     margin-left: 0.4rem;
     font-family: var(--font-body, system-ui, sans-serif);
   }
+
+  @media (max-width: 720px) {
+    .about-page__archive-head,
+    .about-page__archive-phase {
+      grid-template-columns: 1fr;
+    }
+
+    .about-page__doc-stage {
+      grid-template-columns: 1fr;
+    }
+
+    .about-page__doc-link {
+      width: fit-content;
+    }
+
+    .about-page__rejection-stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
 </style>
+
+<script>
+  const aboutTabs = Array.from(document.querySelectorAll('[data-about-tab]'));
+  const aboutPanels = Array.from(document.querySelectorAll('[data-about-panel]'));
+
+  if (aboutTabs.length && aboutPanels.length) {
+    const activateAboutTab = (name) => {
+      aboutTabs.forEach((tab) => {
+        const active = tab.dataset.aboutTab === name;
+        tab.classList.toggle('is-active', active);
+        tab.setAttribute('aria-selected', String(active));
+        tab.tabIndex = active ? 0 : -1;
+      });
+
+      aboutPanels.forEach((panel) => {
+        const active = panel.dataset.aboutPanel === name;
+        panel.classList.toggle('is-active', active);
+        panel.setAttribute('aria-hidden', String(!active));
+      });
+    };
+
+    aboutTabs.forEach((tab) => {
+      tab.addEventListener('click', () => activateAboutTab(tab.dataset.aboutTab));
+      tab.addEventListener('keydown', (event) => {
+        if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+        event.preventDefault();
+        const currentIndex = aboutTabs.indexOf(tab);
+        const nextIndex = event.key === 'ArrowRight'
+          ? (currentIndex + 1) % aboutTabs.length
+          : (currentIndex - 1 + aboutTabs.length) % aboutTabs.length;
+        const nextTab = aboutTabs[nextIndex];
+        activateAboutTab(nextTab.dataset.aboutTab);
+        nextTab.focus();
+      });
+    });
+  }
+</script>

@@ -1,0 +1,273 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const rejections = [
+  { date: 'Mar 23, 2026', org: 'Disney / WABC', role: 'Part Time NABET Desk Assistant', outcome: 'Considering other candidates whose background and experience align more closely.' },
+  { date: 'Mar 19, 2026', org: 'Education Law Center', role: 'Program Assistant at ELC', outcome: 'Moved forward with other candidates.' },
+  { date: 'Mar 13, 2026', org: 'The New York Times', role: 'Puzzle Assistant, Digital', outcome: 'Position filled.' },
+  { date: 'Mar 11, 2026', org: 'Anthropic', role: 'Product Support Specialist', outcome: 'Would not move forward in the interview process.' },
+  { date: 'Feb 19, 2026', org: 'Sony Music', role: 'Associate Director, Creative – Alamo', outcome: 'Application not selected for further consideration.' },
+  { date: 'Feb 19, 2026', org: 'Universal Music Group', role: 'Tech Support Analyst', outcome: 'Will no longer be filling the position.' },
+  { date: 'Jan 27, 2026', org: 'OpenAI', role: 'IT Support Specialist', outcome: 'Would not move forward with candidacy.' },
+  { date: 'Jan 26, 2026', org: 'Aquent', role: 'Instructional Writer', outcome: 'Not selected for the next step in the process.' },
+  { date: 'Jan 25, 2026', org: 'Adobe', role: '2026 Intern, Experience Design', outcome: 'Decided not to move forward with the application.' },
+  { date: 'Jan 22, 2026', org: 'PGIM', role: 'Associate, RFP Writer (Hybrid)', outcome: 'Chose other candidates whose experience was a stronger match.' },
+  { date: 'Jan 14, 2026', org: 'Universal Music Group', role: 'Specialist, Content Creation', outcome: 'Pursued other candidates; not selected to move forward.' },
+  { date: 'Jan 12, 2026', org: 'Santa Monica Studio', role: 'Sr Technical Producer (Contract)', outcome: 'Would not proceed with candidacy.' },
+  { date: 'Jan 8, 2026', org: 'Wasserman', role: 'Content Creator', outcome: 'Did not have an appropriate position at this time.' },
+  { date: 'Jul 15, 2025', org: 'Sony Music', role: 'Coordinator, Insights & Reporting', outcome: 'Application not selected for further consideration.' },
+  { date: 'May 23, 2025', org: 'Bungie', role: 'Contract Marathon Associate Marketing Manager', outcome: 'Would not proceed because the position was closed.' },
+  { date: 'Apr 30, 2025', org: 'PlayStation Global', role: 'Quest Designer (Contract)', outcome: 'Moved ahead with other candidates.' },
+  { date: 'Apr 21, 2025', org: 'NPR', role: 'Producer II, Planet Money Summer School (Temporary)', outcome: 'Pursued other candidates.' },
+  { date: 'Mar 3, 2025', org: 'Macmillan', role: 'Editorial Assistant, First Second and 23rd Street Books', outcome: 'Position filled.' },
+  { date: 'Feb 18, 2025', org: 'PSEG', role: 'Temporary Credit & Collections Representative – Newark', outcome: 'Resume reviewed; moved ahead with other candidates.' },
+  { date: 'Oct 11, 2024', org: 'Universal Music Group', role: 'Administrative Assistant, Production', outcome: 'Pursued other candidates; not selected to move forward.' },
+  { date: 'Oct 4, 2024', org: 'Sony Music', role: 'International/US Admin Assistant', outcome: 'Application not selected for further consideration.' },
+  { date: 'Sep 23, 2024', org: 'Sony Music', role: 'Coordinator, Fan Engagement – Columbia', outcome: 'Application not selected for further consideration.' },
+  { date: 'Sep 6, 2024', org: 'PSEG', role: 'General Clerk', outcome: 'Decided not to fill the position at that time.' },
+  { date: 'Aug 14, 2024', org: 'Sony Music', role: 'Coordinator, Artist & DSP Optimization', outcome: 'Application not selected for further consideration.' },
+  { date: 'Aug 10, 2024', org: 'Sony Music', role: 'Label Copy Coordinator', outcome: 'Application not selected for further consideration.' },
+  { date: 'Jul 23, 2024', org: 'Sony Music', role: 'Coordinator, Artist & DSP Optimization', outcome: 'Application not selected for further consideration.' },
+  { date: 'Jul 10, 2024', org: 'PSEG', role: 'Utility Mechanic Apprentice – Oradell', outcome: 'Moved forward with other candidates.' },
+  { date: 'Jul 9, 2024', org: 'Sony Music', role: 'Administrative Assistant (Records)', outcome: 'Application not selected for further consideration.' },
+  { date: 'Jun 28, 2024', org: 'Sony Music', role: 'Artist Support Associate', outcome: 'Application not selected for further consideration.' },
+  { date: 'Jun 21, 2024', org: 'Sony Music', role: 'Coordinator, Promotion', outcome: 'Application not selected for further consideration.' },
+  { date: 'Jun 12, 2024', org: 'Swatch Group', role: 'Watchmaker / Watch Technician', outcome: 'Application was not selected.' },
+  { date: 'Apr 11, 2024', org: 'Sony Music', role: 'Admin Assistant', outcome: 'Application not selected for further consideration.' },
+  { date: 'Apr 11, 2024', org: 'Sony Music Entertainment', role: 'Administrative Assistant', outcome: 'Application not selected for further consideration.' },
+  { date: 'Apr 1, 2024', org: 'Santander', role: 'Part Time Teller, Newark, NJ', outcome: 'Would not be moved forward; advanced with other candidates.' },
+  { date: 'Mar 20, 2024', org: 'Sony Music', role: 'Artist Development Assistant (AWAL)', outcome: 'Application not selected for further consideration.' },
+  { date: 'Mar 16, 2024', org: 'Sony Music', role: 'Administrative Assistant, A&R; Administration', outcome: 'Application not selected for further consideration.' },
+  { date: 'Mar 15, 2024', org: 'Sony Music Entertainment US', role: 'Admin Assistant, Marketing', outcome: 'Application not selected for further consideration.' },
+  { date: 'Feb 16, 2024', org: 'Sony Music Entertainment US', role: 'Creative Coordinator', outcome: 'Application not selected for further consideration.' },
+  { date: 'Feb 16, 2024', org: 'Sony Music', role: 'Administrative Assistant, Video Production', outcome: 'Application not selected for further consideration.' },
+  { date: 'May 5, 2023', org: 'Corporate Immigration Partners P.C.', role: 'Technical Writer – Remote', outcome: 'Employer moved to the next step; application not selected.' },
+];
+
+const fellowship = { date: 'Dec 15, 2021', org: 'NYU Gallatin Global Fellowship in Human Rights', role: '2022 Fellowship Application', outcome: 'Forwarded rejection-related email.' };
+---
+
+<BaseLayout
+  title="Rejection Log — a_e.s_"
+  description="40 direct employer rejections, documented. Sony Music, Disney, NYT, Anthropic, OpenAI, NPR, and more."
+  theme="archive"
+  bodyClass="rejections-page"
+  flatSurface={true}
+  forceThemeMode="dark"
+>
+  <main class="rej-main">
+    <section class="rej-header">
+      <p class="rej-eyebrow">Application Record</p>
+      <h1 class="rej-title">40 Rejections</h1>
+      <p class="rej-subtitle">
+        Direct employer rejections, sourced from the Gmail archive. Sony Music, Disney / WABC, The New York Times, Anthropic, OpenAI, NPR, PlayStation, Adobe, and 32 others. All documented. All real.
+      </p>
+      <div class="rej-stats">
+        <div class="rej-stat">
+          <span class="rej-stat__num">40</span>
+          <span class="rej-stat__label">Direct rejections</span>
+        </div>
+        <div class="rej-stat">
+          <span class="rej-stat__num">3</span>
+          <span class="rej-stat__label">Years on record</span>
+        </div>
+        <div class="rej-stat">
+          <span class="rej-stat__num">15+</span>
+          <span class="rej-stat__label">Sony Music alone</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="rej-table-wrap" aria-label="Rejection log">
+      <table class="rej-table">
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Organization</th>
+            <th scope="col">Role</th>
+            <th scope="col" class="rej-th--outcome">Outcome</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rejections.map((r) => (
+            <tr>
+              <td class="rej-td--date">{r.date}</td>
+              <td class="rej-td--org">{r.org}</td>
+              <td class="rej-td--role">{r.role}</td>
+              <td class="rej-td--outcome">{r.outcome}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+
+    <section class="rej-appendix">
+      <p class="rej-appendix__label">Appendix — Fellowship</p>
+      <table class="rej-table rej-table--small">
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Organization</th>
+            <th scope="col">Role</th>
+            <th scope="col" class="rej-th--outcome">Note</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rej-td--date">{fellowship.date}</td>
+            <td class="rej-td--org">{fellowship.org}</td>
+            <td class="rej-td--role">{fellowship.role}</td>
+            <td class="rej-td--outcome">{fellowship.outcome}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .rej-main {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: clamp(2rem, 4vw, 3.5rem) clamp(1rem, 3vw, 1.75rem) clamp(3rem, 6vw, 5rem);
+  }
+
+  .rej-header {
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .rej-eyebrow {
+    margin: 0 0 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(230, 214, 191, 0.55);
+  }
+
+  .rej-title {
+    margin: 0 0 0.75rem;
+    font-family: var(--font-display, serif);
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: color-mix(in srgb, var(--tone-accent-glow, #e8cfa0) 60%, white 40%);
+  }
+
+  .rej-subtitle {
+    max-width: 52rem;
+    margin: 0 0 2rem;
+    font-size: clamp(0.92rem, 1.2vw, 1.02rem);
+    line-height: 1.62;
+    color: rgba(236, 227, 214, 0.72);
+  }
+
+  .rej-stats {
+    display: flex;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    flex-wrap: wrap;
+  }
+
+  .rej-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .rej-stat__num {
+    font-family: var(--font-display, serif);
+    font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+    font-weight: 700;
+    line-height: 1;
+    color: color-mix(in srgb, var(--tone-accent-glow, #e8cfa0) 70%, white 30%);
+  }
+
+  .rej-stat__label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(230, 214, 191, 0.5);
+  }
+
+  .rej-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .rej-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: clamp(0.78rem, 0.95vw, 0.88rem);
+  }
+
+  .rej-table thead th {
+    padding: 0.5rem 0.75rem 0.6rem;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(230, 214, 191, 0.5);
+    text-align: left;
+    border-bottom: 1px solid rgba(230, 214, 191, 0.1);
+  }
+
+  .rej-table tbody tr {
+    border-bottom: 1px solid rgba(230, 214, 191, 0.07);
+    transition: background 0.15s ease;
+  }
+
+  .rej-table tbody tr:hover {
+    background: rgba(230, 214, 191, 0.04);
+  }
+
+  .rej-table td {
+    padding: 0.62rem 0.75rem;
+    vertical-align: top;
+    color: rgba(236, 227, 214, 0.82);
+    line-height: 1.5;
+  }
+
+  .rej-td--date {
+    white-space: nowrap;
+    color: rgba(230, 214, 191, 0.5) !important;
+    font-size: 0.74rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .rej-td--org {
+    font-weight: 500;
+    color: rgba(236, 227, 214, 0.92) !important;
+    min-width: 10rem;
+  }
+
+  .rej-td--role {
+    color: rgba(236, 227, 214, 0.78) !important;
+  }
+
+  .rej-td--outcome {
+    color: rgba(230, 214, 191, 0.5) !important;
+    font-size: 0.78rem;
+    font-style: italic;
+  }
+
+  .rej-appendix {
+    margin-top: clamp(2.5rem, 4vw, 3.5rem);
+    padding-top: clamp(1.5rem, 2.5vw, 2rem);
+    border-top: 1px solid rgba(230, 214, 191, 0.12);
+  }
+
+  .rej-appendix__label {
+    margin: 0 0 1rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(230, 214, 191, 0.45);
+  }
+
+  .rej-table--small {
+    font-size: clamp(0.74rem, 0.9vw, 0.84rem);
+  }
+</style>

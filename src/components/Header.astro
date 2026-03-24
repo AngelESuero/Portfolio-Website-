@@ -15,21 +15,24 @@ const primaryNav = [
   { label: 'Work', href: '/work', color: 'ochre', tone: 'seva' },
   { label: 'Writing', href: '/writing', color: 'white', tone: 'contemplation' },
   { label: 'Archive', href: '/archive', color: 'blue', tone: 'clarity' },
+  { label: 'About', href: '/about', color: 'white', tone: 'presence' },
   { label: 'Contact', href: '/contact', color: 'white', tone: 'harmony' }
 ];
 
 const secondaryNav = [
   { label: 'Studio Notes', href: '/studio-notes', color: 'white', tone: 'contemplation' },
   { label: 'Collaborations', href: '/collaborations', color: 'ochre', tone: 'grounding' },
-  { label: 'Map', href: '/map', color: 'blue', tone: 'presence' }
+  { label: 'Map', href: '/map', color: 'blue', tone: 'presence' },
+  { label: 'Genre Tree', href: '/genre-tree', color: 'ochre', tone: 'grounding' },
+  { label: 'Market Model', href: '/market-model', color: 'blue', tone: 'clarity' },
+  { label: 'Resources', href: '/resources', color: 'white', tone: 'contemplation' },
+  { label: 'Rejections', href: '/rejections', color: 'red', tone: 'grounding' }
 ];
 
 const aiGroup = [
   { label: 'AI', href: '/ai', color: 'blue', tone: 'discernment' },
   { label: 'AI x Survival', href: '/survival-os', color: 'red', tone: 'grounding' },
   { label: 'Survival Support', href: '/survival-support', color: 'ochre', tone: 'grounding' },
-  { label: 'Market Model', href: '/market-model', color: 'ochre', tone: 'grounding' },
-  { label: 'Genre Tree', href: '/genre-tree', color: 'blue', tone: 'presence' },
 ];
 
 const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
@@ -44,7 +47,7 @@ const latestVideoId = youtubeData.items[0]?.videoId ?? '';
 
 <header class="site-header sticky top-0 z-50">
   <div class="site-shell-row header-row flex w-full items-center justify-between py-3 md:py-4">
-    <a href="/" class="header-brand font-display text-2xl font-bold tracking-tight text-accent" style="word-spacing: -0.05em;">A<span style="font-size:0.45em; vertical-align:sub; letter-spacing:0.03em; opacity:0.75; margin-left:-0.1em;">es's</span> Path Toward Life</a>
+    <a href="/" class="header-brand font-display text-2xl font-bold tracking-tight text-accent">A<span class="header-brand__micro">es's</span> Path Toward Life</a>
     <nav aria-label="Main navigation" class="header-nav hidden md:flex md:items-center">
       {primaryNav.map((item) => (
         <a

@@ -690,6 +690,7 @@
   };
 
   const syncThemeWithClock = () => {
+    if (root.dataset.themeSource === 'forced') return;
     const previousTheme = root.dataset.themeMode || 'dark';
     const nextTheme = applyTheme(getClockTheme());
     if (previousTheme !== nextTheme) {
@@ -745,6 +746,11 @@
 
     if (body.dataset.headerMode !== 'peek') {
       body.dataset.headerReveal = 'visible';
+      return;
+    }
+
+    // flat surface (e.g. home timeline mode) — inline scroll logic owns header reveal
+    if (body.dataset.surfaceFrame === 'flat') {
       return;
     }
 

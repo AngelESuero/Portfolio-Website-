@@ -8,12 +8,7 @@ import AngelGenreHybridTree from '../components/AngelGenreHybridTree';
   description="Angel's game genre ancestor tree — a hybrid view of played and future games by genre."
   theme="archive"
 >
-  <main style="width: 100%; padding: 2rem 0;">
-    <section style="margin-bottom: 3rem; text-align: center;">
-      <h1 style="font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1; margin: 0; color: var(--tone-text);">
-        A Path Toward Genre Ancestry
-      </h1>
-    </section>
+  <main style="max-width: 1100px; margin: 0 auto; padding: clamp(2rem, 4vw, 3.5rem) clamp(1rem, 3vw, 1.75rem) clamp(3rem, 6vw, 5rem);">
     <AngelGenreHybridTree client:load />
   </main>
 </BaseLayout>

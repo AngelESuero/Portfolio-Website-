@@ -1,0 +1,345 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const entries = [
+  {
+    period: '2000',
+    label: 'Born, New Jersey',
+    body: [
+      'He arrived in the first year of a new century, in a small corner of New Jersey, to a woman who drove a royal blue Honda CRV and loved him in a language that didn\'t always have words. His mother is the first fact of his life. Everything after is a response to her.',
+    ],
+  },
+  {
+    period: '2000–09',
+    label: 'Merengue in the kitchen',
+    body: [
+      'The early years were merengue in the kitchen. They were his grandmother\'s hands and his mother\'s laughter and the particular warmth of a home that was small but never felt that way. He was a daydreamer from the start — the kind of child who stopped mid-sentence to wonder how the moon dreams, or whether the sun has a flavor.',
+      'He filed these questions away like precious things, because nobody around him seemed to think they were worth asking. He had not yet learned that nobody around him was right.',
+    ],
+  },
+  {
+    period: '2010',
+    label: 'The walk away from the car',
+    body: [
+      'When he was ten, he stepped out of his mother\'s blue Honda CRV and didn\'t look back. He had just been told he would repeat the fifth grade, and he could not bear to see her face — not because she was disappointed in him (she wasn\'t; she was furious at the school), but because he didn\'t know that yet.',
+      'He assumed the worst and walked forward into it anyway. That walk became a promise: he would not disappoint her. He would not disappoint anyone who believed in him. He kept moving.',
+    ],
+  },
+  {
+    period: '2011',
+    label: 'GVZ413',
+    body: [
+      'He found his way into the IB program and assigned himself a code: GVZ413. Part identification number, part alter ego, part armor. Built from his candidate number and his GPA — the most legible proof he had that he belonged.',
+      'GVZ413 was the part of him that knew how to survive a system not designed for him. Angel was the part that kept the system from taking everything. They needed each other. That is the most honest thing he has ever said about himself.',
+    ],
+  },
+  {
+    period: '2015–18',
+    label: 'The blue-tied, yellow-shirted years',
+    body: [
+      'High school in a blue-tied yellow-shirted uniform. Chess player, Class Representative, school newspaper writer. He attended NJIT Upward Bound and stayed Saturdays when other people didn\'t. He made music in his bedroom — not as a hobby, as a necessity.',
+      'He listened to a best friend reveal his homosexuality and felt the weight and the honor of being trusted with something that fragile. He fell into politics the way you fall into a vocation: not because it was practical, but because the world seemed to require it of him.',
+    ],
+  },
+  {
+    period: 'Summer 2018',
+    label: 'London',
+    body: [
+      'The School of Ethics and Global Leadership. He sat at dinner his first night with a bowl of curry steaming in front of him and ten strangers who had flown in from Shanghai, Seattle, Istanbul, Houston. He felt like an outsider, which was familiar. He felt like he had nothing to offer, which was wrong.',
+      'He broke the silence and told them about his small corner of New Jersey. Hands went up before he was finished. Three weeks later he asked Kori Schake — former senior official in American politics — what it means to be human inside power. She said she loved the question.',
+      'On the last night he screened a music video and led his first real discussion on the American racial divide. They all listened. He flew home understanding that his perspective was not a burden. It was the thing he had to give.',
+    ],
+  },
+  {
+    period: '2019',
+    label: 'NYU Gallatin',
+    body: [
+      'Gallatin is a school without a major — you build your own concentration, name it, defend it. For someone who had always been building himself from available materials, this felt less like an academic choice and more like recognition.',
+      'He designed his studies around the intersections he had always lived: culture and power, identity and form, the politics of who gets to be seen and who doesn\'t. People called him "that Latin music kid who carries a grandfather-esque wisdom." He did not argue with this.',
+    ],
+  },
+  {
+    period: '2022–23',
+    label: 'Americas Scholars',
+    body: [
+      'Selected for NYU Gallatin\'s Americas Scholars program, which took his work further — past the borders of the classroom and into the field. He wrote, he thought, he stayed curious in the way he always had. He graduated.',
+    ],
+  },
+  {
+    period: '2026',
+    label: 'Now',
+    body: [
+      'He is still his mother\'s son. Still the child who walked away from the car with a promise clenched in his chest. Still the one who asks questions other people think are impractical, because he has learned that those are often the only questions worth asking.',
+      'He is working in media and creative work, looking for the place where all of it converges. He has not stopped moving since 2010 and he does not intend to start now.',
+    ],
+  },
+];
+---
+
+<BaseLayout title="Story — Angel Suero" description="A biographical timeline of Angel Edras Suero — New Jersey to London to New York.">
+  <section class="story-page">
+
+    <header class="story-header">
+      <h1>Angel Edras Suero</h1>
+      <p class="story-header__sub">New Jersey &rarr; London &rarr; New York</p>
+    </header>
+
+    <div class="story-timeline" id="story-timeline">
+      {entries.map((entry, i) => (
+        <div class="story-entry" data-index={i}>
+          <button class="story-tick" aria-expanded="false">
+            <span class="story-tick__year">{entry.period}</span>
+            <span class="story-tick__label">{entry.label}</span>
+            <span class="story-tick__arrow" aria-hidden="true">
+              <svg viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="2,1 6,4 2,7"/>
+              </svg>
+            </span>
+          </button>
+          <div class="story-panel" role="region">
+            <div class="story-panel__inner">
+              <span class="story-panel__badge">ai-written placeholder</span>
+              {entry.body.map((p) => <p>{p}</p>)}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <footer class="story-footer">
+      <p>Angel Edras Suero &mdash; New Jersey, 2026</p>
+    </footer>
+
+  </section>
+</BaseLayout>
+
+<script is:inline>
+  document.querySelectorAll('.story-tick').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const entry = btn.closest('.story-entry');
+      const isOpen = entry.classList.contains('is-open');
+
+      // close all
+      document.querySelectorAll('.story-entry.is-open').forEach((e) => {
+        e.classList.remove('is-open');
+        e.querySelector('.story-tick').setAttribute('aria-expanded', 'false');
+      });
+
+      // open this one if it was closed
+      if (!isOpen) {
+        entry.classList.add('is-open');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+</script>
+
+<style>
+  .story-page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: clamp(3rem, 8vw, 5rem) clamp(1.25rem, 5vw, 2.5rem) clamp(4rem, 10vw, 7rem);
+  }
+
+  /* ── Header ── */
+  .story-header {
+    text-align: center;
+    margin-bottom: clamp(3rem, 8vw, 5rem);
+  }
+
+  .story-header h1 {
+    font-size: 12px;
+    font-family: 'Helvetica Neue', 'Arial', sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--tone-muted);
+    margin: 0;
+  }
+
+  .story-header__sub {
+    font-size: 11px;
+    font-family: 'Helvetica Neue', 'Arial', sans-serif;
+    color: color-mix(in srgb, var(--tone-muted) 70%, transparent);
+    letter-spacing: 0.1em;
+    margin: 6px 0 0;
+  }
+
+  /* ── Timeline ── */
+  .story-timeline {
+    position: relative;
+  }
+
+  /* Vertical line */
+  .story-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--line2);
+  }
+
+  /* ── Entry ── */
+  .story-entry {
+    position: relative;
+    padding-left: 32px;
+  }
+
+  /* ── Tick (button) ── */
+  .story-tick {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    padding: 18px 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    color: inherit;
+    position: relative;
+  }
+
+  /* Dot on the line */
+  .story-tick::before {
+    content: '';
+    position: absolute;
+    left: -37px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--tone-muted) 60%, transparent);
+    border: 2px solid var(--tone-bg, transparent);
+    transition: background 0.2s, transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .story-entry.is-open .story-tick::before,
+  .story-tick:hover::before {
+    background: var(--tone-accent-glow);
+    transform: scale(1.15);
+  }
+
+  .story-tick__year {
+    font-size: 11px;
+    font-family: 'Helvetica Neue', 'Arial', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-muted) 80%, transparent);
+    min-width: 80px;
+    flex-shrink: 0;
+    transition: color 0.2s;
+  }
+
+  .story-entry.is-open .story-tick__year,
+  .story-tick:hover .story-tick__year {
+    color: var(--tone-accent-glow);
+  }
+
+  .story-tick__label {
+    font-size: 15px;
+    color: color-mix(in srgb, var(--tone-text) 75%, var(--tone-muted) 25%);
+    transition: color 0.2s;
+    line-height: 1.4;
+    flex: 1;
+  }
+
+  .story-entry.is-open .story-tick__label,
+  .story-tick:hover .story-tick__label {
+    color: var(--tone-text);
+  }
+
+  /* Arrow */
+  .story-tick__arrow {
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.25s;
+    flex-shrink: 0;
+    color: var(--tone-text);
+  }
+
+  .story-tick__arrow svg {
+    width: 8px;
+    height: 8px;
+  }
+
+  .story-tick:hover .story-tick__arrow,
+  .story-entry.is-open .story-tick__arrow {
+    opacity: 1;
+  }
+
+  .story-entry.is-open .story-tick__arrow {
+    transform: rotate(90deg);
+  }
+
+  /* ── Panel ── */
+  .story-panel {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.3s ease;
+    opacity: 0;
+  }
+
+  .story-entry.is-open .story-panel {
+    max-height: 800px;
+    opacity: 1;
+  }
+
+  .story-panel__inner {
+    padding: 0 0 28px 96px;
+    font-size: 15px;
+    line-height: 1.8;
+    color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
+  }
+
+  .story-panel__inner p {
+    margin: 0 0 14px;
+  }
+
+  .story-panel__inner p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Badge */
+  .story-panel__badge {
+    display: inline-block;
+    font-size: 10px;
+    font-family: 'Helvetica Neue', 'Arial', sans-serif;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-muted) 70%, transparent);
+    border: 1px solid color-mix(in srgb, var(--tone-muted) 25%, transparent);
+    border-radius: 3px;
+    padding: 2px 7px;
+    margin-bottom: 12px;
+  }
+
+  /* ── Footer ── */
+  .story-footer {
+    text-align: center;
+    margin-top: 60px;
+    font-size: 11px;
+    font-family: 'Helvetica Neue', 'Arial', sans-serif;
+    letter-spacing: 0.12em;
+    color: color-mix(in srgb, var(--tone-muted) 50%, transparent);
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 480px) {
+    .story-panel__inner {
+      padding-left: 0;
+    }
+
+    .story-tick__year {
+      min-width: 64px;
+    }
+  }
+</style>

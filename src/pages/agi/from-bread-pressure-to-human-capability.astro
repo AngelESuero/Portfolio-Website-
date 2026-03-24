@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import MarketModel from '../../components/MarketModel';
 
 type Score = 0 | 1 | 2 | 3;
 
@@ -146,15 +145,6 @@ const scoreWidth = (score: Score) => `${((score + 1) / 4) * 100}%`;
         AI pressure. The second layer is the civilizational question: what people and culture
         actually do with that relief if it arrives.
       </p>
-    </section>
-
-    <section class="panel">
-      <h2>Market framework</h2>
-      <p>
-        A survival floor requires a clear model of which markets are survival necessities and which
-        are personal desire. This framework maps all 20 NAICS sectors into that distinction.
-      </p>
-      <MarketModel client:load />
     </section>
 
     <section class="panel tracker-readme">

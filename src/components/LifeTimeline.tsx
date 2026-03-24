@@ -3,16 +3,16 @@
  *
  * A living, interactive map of Angel Suero's milestones.
  *
- * - Personal/narrative entries expand on click to reveal AI-generated prose
- *   (clearly badged "AI-generated placeholder" — fill in with your own words).
- * - Work/project entries link directly to portfolio pages.
- * - Placeholder entries are dimmed with a reserved-spot marker.
- * - A footer link points to the original AI draft (angel.html).
+ * - Entries expand individually instead of hiding behind bundle categories.
+ * - Narrative entries reveal the fuller draft prose already stored in the data.
+ * - Work/project entries link directly into the portfolio.
  */
 
 import React, { useState } from 'react';
 
 type Category = 'personal' | 'education' | 'work' | 'project';
+type LifeStage = 'youth' | 'preteen' | 'teen' | 'youngAdult';
+type ShowcaseKind = 'writing' | 'music' | 'photos' | 'video' | 'work' | 'ideas' | 'community';
 
 interface TimelineEntry {
   id: string;
@@ -27,6 +27,24 @@ interface TimelineEntry {
   placeholderNote?: string;
   /** AI-written narrative — shown in expandable panel, always badged */
   aiNarrative?: string[];
+}
+
+interface ShowcaseLink {
+  label: string;
+  href: string;
+  kind: ShowcaseKind;
+}
+
+interface StageShowcase {
+  id: LifeStage;
+  title: string;
+  ageRange: string;
+  yearRange: string;
+  summary: string;
+  accomplishments: string[];
+  featuredEntryIds: string[];
+  showcases: ShowcaseLink[];
+  previewImages: string[];
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -353,6 +371,15 @@ const ENTRIES: TimelineEntry[] = [
     hrefLabel: 'AI work →',
   },
   {
+    id: 'rejections',
+    year: '2023–2026',
+    title: '40 Rejections — On Record',
+    shortDesc: 'Sony Music, Disney, NYT, Anthropic, OpenAI, NPR, PlayStation, Adobe, and 32 others. All documented. All real.',
+    category: 'work',
+    href: '/rejections',
+    hrefLabel: 'See the record →',
+  },
+  {
     id: 'now',
     year: '2026',
     title: 'Now',
@@ -367,425 +394,796 @@ const ENTRIES: TimelineEntry[] = [
   },
 ];
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Category meta
-// ─────────────────────────────────────────────────────────────────────────────
-
-const CATEGORY_META: Record<Category, { label: string; color: string; dotColor: string }> = {
-  personal:  { label: 'Personal',   color: 'var(--tone-sky-bright, #7fa3bf)',     dotColor: 'var(--tone-sky, #587a95)' },
-  education: { label: 'Education',  color: 'var(--tone-accent, #b97a2d)',        dotColor: 'var(--tone-accent, #b97a2d)' },
-  work:      { label: 'Work',       color: 'var(--tone-accent-bright, #d1913d)', dotColor: 'var(--tone-accent-bright, #d1913d)' },
-  project:   { label: 'Project',    color: 'var(--tone-cosmic-bright, #8b5cf6)', dotColor: 'var(--tone-cosmic-bright, #8b5cf6)' },
+const SHOWCASE_KIND_LABELS: Record<ShowcaseKind, string> = {
+  writing: 'Writing',
+  music: 'Music',
+  photos: 'Photos',
+  video: 'Video',
+  work: 'Work',
+  ideas: 'Ideas',
+  community: 'Community',
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Styles (inline — component is self-contained)
-// ─────────────────────────────────────────────────────────────────────────────
+const ENTRY_LOOKUP = new Map(ENTRIES.map((entry) => [entry.id, entry] as const));
 
-const css = {
-  section: {
-    display: 'grid',
-    gap: 'clamp(1.4rem, 3vw, 2rem)',
-  } as React.CSSProperties,
-
-  header: {
-    maxWidth: '54ch',
-    display: 'grid',
-    gap: '0.45rem',
-  } as React.CSSProperties,
-
-  kicker: {
-    margin: 0,
-    fontSize: '0.72rem',
-    textTransform: 'uppercase' as const,
-    letterSpacing: '0.12em',
-    color: 'var(--tone-accent, #b97a2d)',
-  } as React.CSSProperties,
-
-  heading: {
-    margin: 0,
-    fontSize: 'clamp(1.3rem, 2.5vw, 1.6rem)',
-    lineHeight: 1.15,
-    color: 'var(--tone-text)',
-  } as React.CSSProperties,
-
-  subhead: {
-    margin: 0,
-    fontSize: '0.9rem',
-    color: 'color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%)',
-    lineHeight: 1.55,
-  } as React.CSSProperties,
-
-  list: {
-    listStyle: 'none',
-    margin: 0,
-    padding: 0,
-    position: 'relative' as const,
-    display: 'grid',
-    gap: 0,
-    // The vertical line is rendered as a pseudo-element via a wrapper div
-  } as React.CSSProperties,
-
-  listInner: {
-    position: 'relative' as const,
-  } as React.CSSProperties,
-
-  vertLine: {
-    position: 'absolute' as const,
-    top: '0.65rem',
-    bottom: 0,
-    left: '0.55rem',
-    width: '1px',
-    background: 'linear-gradient(180deg, color-mix(in srgb, var(--tone-accent-glow, #e7b36d) 55%, transparent), color-mix(in srgb, var(--tone-accent, #b97a2d) 12%, transparent 88%))',
-    pointerEvents: 'none' as const,
-  } as React.CSSProperties,
-
-  item: {
-    display: 'grid',
-    gridTemplateColumns: '1.2rem 1fr',
-    gap: '0 1rem',
-    alignItems: 'start' as const,
-    paddingBottom: '0.75rem',
-    position: 'relative' as const,
-  } as React.CSSProperties,
-
-  nodeCol: {
-    display: 'flex',
-    alignItems: 'flex-start' as const,
-    justifyContent: 'center' as const,
-    paddingTop: '0.8rem',
-    zIndex: 1,
-  } as React.CSSProperties,
-
-  footer: {
-    paddingTop: '0.5rem',
-    borderTop: '1px solid var(--line2, rgba(237,227,209,0.06))',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    fontSize: '0.78rem',
-    color: 'color-mix(in srgb, var(--tone-muted) 70%, transparent)',
-  } as React.CSSProperties,
-
-  footerLink: {
-    color: 'var(--tone-accent-glow, #e7b36d)',
-    textDecoration: 'underline',
-    textDecorationColor: 'color-mix(in srgb, var(--tone-accent-glow, #e7b36d) 35%, transparent)',
-    textUnderlineOffset: '3px',
-    fontSize: '0.78rem',
-  } as React.CSSProperties,
-};
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Sub-components
-// ─────────────────────────────────────────────────────────────────────────────
-
-function CategoryTag({ category }: { category: Category }) {
-  const meta = CATEGORY_META[category];
-  return (
-    <span
-      style={{
-        display: 'inline-block',
-        fontSize: '0.65rem',
-        textTransform: 'uppercase',
-        letterSpacing: '0.1em',
-        padding: '0.15em 0.6em',
-        borderRadius: '999px',
-        border: `1px solid color-mix(in srgb, ${meta.color} 35%, transparent)`,
-        background: `color-mix(in srgb, ${meta.color} 9%, transparent)`,
-        color: meta.color,
-        fontWeight: 500,
-        lineHeight: 1.6,
-        flexShrink: 0,
-      }}
-    >
-      {meta.label}
-    </span>
-  );
-}
-
-function AiBadge() {
-  return (
-    <span
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '0.3em',
-        fontSize: '0.65rem',
-        textTransform: 'uppercase',
-        letterSpacing: '0.1em',
-        color: 'color-mix(in srgb, var(--tone-muted) 75%, transparent)',
-        border: '1px solid color-mix(in srgb, var(--tone-muted) 22%, transparent)',
-        borderRadius: '3px',
-        padding: '0.18em 0.55em',
-        marginBottom: '0.75rem',
-      }}
-    >
-      ✦ AI-generated placeholder
-    </span>
-  );
-}
-
-function TimelineItem({ entry }: { entry: TimelineEntry }) {
-  const [open, setOpen] = useState(false);
-  const meta = CATEGORY_META[entry.category];
-  const hasNarrative = !!(entry.aiNarrative && entry.aiNarrative.length > 0);
-  const isClickable = hasNarrative || (!!entry.href && !entry.placeholder);
-  const isLinked = !!entry.href && !entry.placeholder;
-
-  const [hovered, setHovered] = useState(false);
-
-  // Card element — <a> if linked only, otherwise <div>
-  const cardStyle: React.CSSProperties = {
-    display: 'grid',
-    gap: '0.45rem',
-    padding: 'clamp(0.8rem, 2vw, 1rem)',
-    border: `1px solid ${hovered && isClickable
-      ? `color-mix(in srgb, ${meta.color} 45%, transparent)`
-      : 'var(--line2, rgba(237,227,209,0.06))'}`,
-    borderRadius: 'calc(var(--radius, 6px) * 1.2)',
-    background: hovered && isClickable
-      ? `linear-gradient(160deg, color-mix(in srgb, ${meta.color} 7%, transparent), color-mix(in srgb, var(--bg1, #1b1916) 97%, transparent))`
-      : 'linear-gradient(160deg, color-mix(in srgb, var(--tone-surface, rgba(255,255,255,0.04)) 80%, transparent), color-mix(in srgb, var(--bg1, #1b1916) 96%, transparent))',
-    color: 'inherit',
-    textDecoration: 'none',
-    cursor: isClickable ? 'pointer' : 'default',
-    transition: 'border-color 180ms ease, background 180ms ease, transform 180ms ease, box-shadow 260ms ease',
-    transform: hovered && isClickable ? 'translateX(3px)' : 'none',
-    boxShadow: hovered && isClickable ? `0 4px 20px color-mix(in srgb, ${meta.color} 10%, transparent)` : 'none',
-    opacity: entry.placeholder && !hasNarrative ? 0.52 : 1,
-    position: 'relative' as const,
-    overflow: 'hidden' as const,
-  };
-
-  // Accent edge bar on left when hovered
-  const edgeBarStyle: React.CSSProperties = {
-    position: 'absolute',
-    inset: '0.6rem auto 0.6rem 0',
-    width: '2px',
-    borderRadius: '999px',
-    background: hovered && isClickable
-      ? `linear-gradient(180deg, ${meta.color}, color-mix(in srgb, ${meta.color} 20%, transparent))`
-      : 'transparent',
-    transition: 'background 180ms ease',
-  };
-
-  const dotStyle: React.CSSProperties = {
-    width: '0.65rem',
-    height: '0.65rem',
-    borderRadius: '50%',
-    border: `1.5px ${entry.placeholder && !hasNarrative ? 'dashed' : 'solid'} ${meta.dotColor}`,
-    background: hovered && isClickable ? meta.color : 'var(--bg1, #1b1916)',
-    opacity: entry.placeholder && !hasNarrative ? 0.5 : 1,
-    transition: 'background 180ms ease, box-shadow 180ms ease',
-    boxShadow: hovered && isClickable ? `0 0 6px color-mix(in srgb, ${meta.color} 55%, transparent)` : 'none',
-    flexShrink: 0,
-  };
-
-  function handleCardClick() {
-    if (hasNarrative) setOpen(o => !o);
+const STAGE_SHOWCASES: StageShowcase[] = [
+  {
+    id: 'youth',
+    title: 'Youth',
+    ageRange: 'Ages 0–9',
+    yearRange: '2000–2009',
+    summary: 'Family, Newark, and sound build the emotional base before anything looks like a career.',
+    accomplishments: [
+      'Formed an early archive instinct through family memory, city atmosphere, and observation.',
+      'Absorbed music as environment first: merengue in the kitchen before music became practice.',
+      'Built the habit of noticing, questioning, and holding onto moments.'
+    ],
+    previewImages: ['/images/home-collage/collage-2.jpg', '/photos/download-5.jpg', '/images/home-collage/collage-6.jpg'],
+    featuredEntryIds: ['born', 'kitchen'],
+    showcases: [
+      { label: 'About', href: '/about', kind: 'writing' },
+      { label: 'Photo archive', href: '/instagram', kind: 'photos' },
+      { label: 'Archive', href: '/archive', kind: 'ideas' }
+    ]
+  },
+  {
+    id: 'preteen',
+    title: 'Preteen',
+    ageRange: 'Ages 10–12',
+    yearRange: '2010–2012',
+    summary: 'Discipline and self-invention start after the school rupture and turn into forward motion.',
+    accomplishments: [
+      'Turned the fifth-grade setback into a private promise to keep moving.',
+      'Built GVZ413 as an academic alter ego and a survival mechanism.',
+      'Learned to treat school, identity, and effort as things you can construct.'
+    ],
+    previewImages: ['/photos/download-7.jpg', '/photos/download-1.jpg', '/images/home-collage/collage-4.jpg'],
+    featuredEntryIds: ['car', 'gvz'],
+    showcases: [
+      { label: 'About', href: '/about', kind: 'writing' },
+      { label: 'Story', href: '/story', kind: 'ideas' },
+      { label: 'Photo archive', href: '/instagram', kind: 'photos' }
+    ]
+  },
+  {
+    id: 'teen',
+    title: 'Teen',
+    ageRange: 'Ages 13–19',
+    yearRange: '2013–2019',
+    summary: 'Voice forms through school, politics, ethics, friendship, and bedroom music.',
+    accomplishments: [
+      'Built visible leadership through chess, class representation, the school paper, and Upward Bound.',
+      'Learned in London that perspective itself could be a contribution, not a burden.',
+      'Moved from private instinct toward public voice in music, writing, and conversation.'
+    ],
+    previewImages: ['/photos/download-2.jpg', '/images/home-collage/collage-3.jpg', '/images/home-collage/collage-1.jpg'],
+    featuredEntryIds: ['highschool', 'london', 'gallatin'],
+    showcases: [
+      { label: 'Life in IB', href: '/archive/writing/life-in-ib', kind: 'writing' },
+      { label: 'My First Beat Tape', href: '/archive/music/my-first-beat-tape', kind: 'music' },
+      { label: 'Photo archive', href: '/instagram', kind: 'photos' }
+    ]
+  },
+  {
+    id: 'youngAdult',
+    title: 'Young Adult',
+    ageRange: 'Ages 20+',
+    yearRange: '2020–Now',
+    summary: 'The practice branches outward into thesis work, music, museum AV, Newark collaborations, archives, and AI systems thinking.',
+    accomplishments: [
+      'Built The Art of Survival and graduated Gallatin with a body of work, not just a degree.',
+      'Turned music, videos, essays, and demos into a living public archive.',
+      'Moved across museum, community, and systems work without separating them from art.'
+    ],
+    previewImages: ['/photos/download-3.jpg', '/photos/download.jpg', '/images/home-collage/collage-5.jpg'],
+    featuredEntryIds: ['art-of-survival', 'nmoa', 'writing-archive', 'agi'],
+    showcases: [
+      { label: 'Writing archive', href: '/archive/writing', kind: 'writing' },
+      { label: 'Music archive', href: '/archive/music', kind: 'music' },
+      { label: 'Work', href: '/work', kind: 'work' },
+      { label: 'Collaborations', href: '/collaborations', kind: 'community' },
+      { label: 'Photo archive', href: '/instagram', kind: 'photos' },
+      { label: 'AGI signals', href: '/agi', kind: 'ideas' },
+      { label: 'Rejection log', href: '/rejections', kind: 'work' }
+    ]
   }
+];
 
-  const CardEl = isLinked && !hasNarrative ? 'a' : 'div';
-  const cardProps = isLinked && !hasNarrative
-    ? { href: entry.href, ...(entry.external ? { target: '_blank', rel: 'noopener noreferrer' } : {}) }
-    : {};
+type LifeTimelineProps = {
+  variant?: 'dark' | 'light';
+  layout?: 'contained' | 'fullBleed';
+};
+
+export default function LifeTimeline({ variant = 'dark', layout = 'contained' }: LifeTimelineProps) {
+  const [activeEntryId, setActiveEntryId] = useState<string | null>('youth');
+  const isFullBleed = layout === 'fullBleed';
 
   return (
-    <li style={css.item}>
-      {/* Node dot */}
-      <div style={css.nodeCol}>
-        <span style={dotStyle} aria-hidden="true" />
-      </div>
+    <section className={`life-timeline life-timeline--${variant}`} aria-label="Life timeline">
+      <ol className="life-timeline__list" role="list">
+        {STAGE_SHOWCASES.map((stage, index) => {
+          const open = activeEntryId === stage.id;
+          const titleSide = index % 2 === 0 ? 'left' : 'right';
+          const detailSide = titleSide === 'left' ? 'right' : 'left';
+          const featuredMoments = stage.featuredEntryIds
+            .map((entryId) => ENTRY_LOOKUP.get(entryId))
+            .filter((entry): entry is TimelineEntry => Boolean(entry))
+            .map((entry) => entry.title);
 
-      {/* Card */}
-      <CardEl
-        style={cardStyle}
-        onClick={hasNarrative ? handleCardClick : undefined}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        onFocus={() => setHovered(true)}
-        onBlur={() => setHovered(false)}
-        tabIndex={isClickable ? 0 : undefined}
-        role={hasNarrative ? 'button' : undefined}
-        aria-expanded={hasNarrative ? open : undefined}
-        {...cardProps as Record<string, unknown>}
-      >
-        {/* Edge accent bar */}
-        <span style={edgeBarStyle} aria-hidden="true" />
+          return (
+            <li
+              key={stage.id}
+              className={`life-timeline__entry life-timeline__entry--${titleSide}${open ? ' is-active' : ''}`}
+            >
+              <button
+                type="button"
+                className="life-timeline__tick"
+                onClick={() => setActiveEntryId((current) => (current === stage.id ? null : stage.id))}
+                aria-expanded={open}
+                aria-controls={`life-timeline-panel-${stage.id}`}
+              >
+                <span className="life-timeline__side life-timeline__side--title">
+                  <span className="life-timeline__year">{stage.ageRange}</span>
+                  <span className="life-timeline__label">{stage.title}</span>
+                  <span className="life-timeline__meta">{stage.yearRange}</span>
+                  <span className="life-timeline__peek" aria-hidden="true">
+                    {stage.previewImages.slice(0, 2).map((src) => (
+                      <span
+                        key={`${stage.id}-${src}-peek`}
+                        className="life-timeline__peekImage"
+                        style={{ backgroundImage: `url('${src}')` }}
+                      />
+                    ))}
+                  </span>
+                </span>
+                <span className="life-timeline__center" aria-hidden="true">
+                  <span className="life-timeline__dot"></span>
+                </span>
+                <span className="life-timeline__side life-timeline__side--summary">
+                  <span className="life-timeline__summary">{stage.summary}</span>
+                  <span className={`life-timeline__tab${open ? ' is-open' : ''}`} aria-hidden="true">
+                    <span className="life-timeline__tabLabel">{open ? 'Hide showcase' : 'Open showcase'}</span>
+                    <span className="life-timeline__arrow">
+                      <svg viewBox="0 0 8 8">
+                        <polyline points="2,1 6,4 2,7" />
+                      </svg>
+                    </span>
+                  </span>
+                </span>
+              </button>
 
-        {/* Meta row */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <span style={{
-            fontSize: '0.72rem',
-            textTransform: 'uppercase',
-            letterSpacing: '0.1em',
-            color: meta.color,
-            fontVariantNumeric: 'tabular-nums',
-            fontWeight: 500,
-          }}>
-            {entry.year}
-          </span>
-          <CategoryTag category={entry.category} />
-          {hasNarrative && (
-            <span style={{
-              marginLeft: 'auto',
-              fontSize: '0.7rem',
-              color: 'color-mix(in srgb, var(--tone-muted) 65%, transparent)',
-              transition: 'transform 250ms ease',
-              transform: open ? 'rotate(90deg)' : 'none',
-              display: 'inline-block',
-            }} aria-hidden="true">›</span>
-          )}
-        </div>
+              <div
+                id={`life-timeline-panel-${stage.id}`}
+                className="life-timeline__panel"
+                aria-hidden={!open}
+              >
+                <div className="life-timeline__panelInner">
+                  <div className="life-timeline__panelAxis" aria-hidden="true"></div>
+                  <div className={`life-timeline__panelBody life-timeline__panelBody--${detailSide}`}>
+                    <div className="life-timeline__heroBlock">
+                      <div className="life-timeline__visuals" aria-hidden="true">
+                        {stage.previewImages.map((src, imageIndex) => (
+                          <span
+                            key={`${stage.id}-${src}`}
+                            className={`life-timeline__visual life-timeline__visual--${imageIndex + 1}`}
+                            style={{ backgroundImage: `url('${src}')` }}
+                          />
+                        ))}
+                      </div>
 
-        {/* Title */}
-        <h3 style={{
-          margin: 0,
-          fontSize: 'clamp(0.95rem, 1.8vw, 1.08rem)',
-          lineHeight: 1.25,
-          color: 'var(--tone-text)',
-          fontWeight: 500,
-        }}>
-          {entry.title}
-        </h3>
+                      <div className="life-timeline__heroCopy">
+                        <p className="life-timeline__sectionLabel">Era frame</p>
+                        <p className="life-timeline__heroSummary">{stage.summary}</p>
+                        <div className="life-timeline__badges">
+                          <span className="life-timeline__badge life-timeline__badge--ghost">{stage.ageRange}</span>
+                          <span className="life-timeline__badge life-timeline__badge--ghost">{stage.yearRange}</span>
+                          <span className="life-timeline__badge">{stage.showcases.length} branches</span>
+                        </div>
+                      </div>
+                    </div>
 
-        {/* Short description */}
-        <p style={{
-          margin: 0,
-          fontSize: '0.88rem',
-          lineHeight: 1.6,
-          color: 'color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%)',
-        }}>
-          {entry.shortDesc}
-        </p>
+                    <div className="life-timeline__block">
+                      <p className="life-timeline__sectionLabel">Accomplishments</p>
+                      <ul className="life-timeline__accomplishments">
+                        {stage.accomplishments.map((item) => (
+                          <li key={item} className="life-timeline__accomplishment">{item}</li>
+                        ))}
+                      </ul>
+                    </div>
 
-        {/* Expandable narrative panel */}
-        {hasNarrative && (
-          <div style={{
-            overflow: 'hidden',
-            maxHeight: open ? '600px' : '0',
-            opacity: open ? 1 : 0,
-            transition: 'max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease',
-          }}>
-            <div style={{
-              paddingTop: '0.85rem',
-              borderTop: '1px solid var(--line2, rgba(237,227,209,0.06))',
-              marginTop: '0.4rem',
-            }}>
-              <AiBadge />
-              {entry.aiNarrative!.map((para, i) => (
-                <p key={i} style={{
-                  margin: 0,
-                  marginBottom: i < entry.aiNarrative!.length - 1 ? '0.85rem' : 0,
-                  fontSize: '0.9rem',
-                  lineHeight: 1.75,
-                  color: 'color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%)',
-                  fontFamily: 'Georgia, serif',
-                }}>
-                  {para}
-                </p>
-              ))}
-              {isLinked && (
-                <a
-                  href={entry.href}
-                  onClick={e => e.stopPropagation()}
-                  style={{
-                    display: 'inline-block',
-                    marginTop: '1rem',
-                    fontSize: '0.78rem',
-                    color: meta.color,
-                    textDecoration: 'underline',
-                    textDecorationColor: `color-mix(in srgb, ${meta.color} 40%, transparent)`,
-                    textUnderlineOffset: '3px',
-                    letterSpacing: '0.03em',
-                  }}
-                >
-                  {entry.hrefLabel ?? 'View →'}
-                </a>
-              )}
-            </div>
-          </div>
-        )}
+                    <div className="life-timeline__block">
+                      <p className="life-timeline__sectionLabel">Showcases</p>
+                      <div className="life-timeline__showcases">
+                        {stage.showcases.map((item) => (
+                          <a key={item.href} href={item.href} className="life-timeline__showcase">
+                            <span className="life-timeline__showcaseKind">{SHOWCASE_KIND_LABELS[item.kind]}</span>
+                            <span className="life-timeline__showcaseLabel">{item.label}</span>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
 
-        {/* Non-narrative linked CTA — shows on hover */}
-        {isLinked && !hasNarrative && (
-          <span style={{
-            display: 'inline-block',
-            marginTop: '0.15rem',
-            fontSize: '0.78rem',
-            letterSpacing: '0.04em',
-            color: meta.color,
-            opacity: hovered ? 1 : 0,
-            transform: hovered ? 'translateX(0)' : 'translateX(-4px)',
-            transition: 'opacity 180ms ease, transform 180ms ease',
-          }}>
-            {entry.hrefLabel ?? 'View →'}
-          </span>
-        )}
+                    <div className="life-timeline__block">
+                      <p className="life-timeline__sectionLabel">Featured moments</p>
+                      <div className="life-timeline__moments">
+                        {featuredMoments.map((moment) => (
+                          <span key={moment} className="life-timeline__moment">{moment}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
 
-        {/* Placeholder note */}
-        {entry.placeholder && !hasNarrative && (
-          <span style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.35em',
-            fontSize: '0.72rem',
-            letterSpacing: '0.06em',
-            color: 'color-mix(in srgb, var(--tone-muted) 55%, transparent)',
-            textTransform: 'uppercase',
-          }}>
-            <span aria-hidden="true" style={{ opacity: 0.5 }}>⊙</span>
-            {entry.placeholderNote ?? 'Coming soon'}
-          </span>
-        )}
-      </CardEl>
-    </li>
-  );
-}
+      <style>{`
+        .life-timeline {
+          --lt-text: ${variant === 'light' ? '#1a1a1a' : 'color-mix(in srgb, var(--tone-text) 94%, white 6%)'};
+          --lt-muted: ${variant === 'light' ? '#7a746b' : 'color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%)'};
+          --lt-soft: ${variant === 'light' ? '#8a8278' : 'color-mix(in srgb, var(--tone-text) 74%, var(--tone-muted) 26%)'};
+          --lt-line: ${variant === 'light' ? '#d8d4ce' : 'color-mix(in srgb, var(--tone-accent) 12%, var(--line2))'};
+          --lt-node: ${variant === 'light' ? '#c8c3bc' : 'color-mix(in srgb, var(--tone-text) 18%, var(--line2) 82%)'};
+          --lt-node-active: ${variant === 'light' ? '#1a1a1a' : 'var(--tone-accent-glow)'};
+          --lt-panel-border: ${variant === 'light' ? '#ddd6ca' : 'color-mix(in srgb, var(--tone-accent) 12%, var(--line2))'};
+          --lt-badge-border: ${variant === 'light' ? '#ddd6ca' : 'color-mix(in srgb, var(--tone-accent) 14%, var(--line2))'};
+          --lt-badge-text: ${variant === 'light' ? '#8b8377' : 'color-mix(in srgb, var(--tone-text) 56%, var(--tone-muted) 44%)'};
+          --lt-link: ${variant === 'light' ? '#1a1a1a' : 'var(--tone-accent-glow)'};
+          width: ${isFullBleed ? '100dvw' : 'auto'};
+          max-width: ${isFullBleed ? 'none' : '1080px'};
+          margin: 0 ${isFullBleed ? 'calc(50% - 50dvw)' : 'auto'};
+          padding: 0 ${isFullBleed ? 'clamp(1rem, 3vw, 2.75rem)' : 'clamp(1rem, 2.4vw, 1.75rem)'};
+          color: var(--lt-text);
+        }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Main component
-// ─────────────────────────────────────────────────────────────────────────────
+        .life-timeline__list {
+          position: relative;
+          list-style: none;
+          margin: 0;
+          padding: 0;
+        }
 
-export default function LifeTimeline() {
-  return (
-    <section style={css.section} aria-labelledby="lt-heading">
-      {/* Header */}
-      <div style={css.header}>
-        <p style={css.kicker}>Life timeline</p>
-        <h2 id="lt-heading" style={css.heading}>Formation over time</h2>
-        <p style={css.subhead}>
-          A living map of milestones — education, work, and creative projects — wired to the portfolio.
-          Click narrative entries to expand. Dimmed entries are reserved spots.
-        </p>
-      </div>
+        .life-timeline__list::before {
+          content: '';
+          position: absolute;
+          left: 50%;
+          top: calc(-1 * var(--lt-top-extend, 0px));
+          bottom: 0;
+          width: 1px;
+          background: var(--lt-line);
+          transform: translateX(-0.5px);
+        }
 
-      {/* Timeline */}
-      <div style={{ position: 'relative' }}>
-        {/* Vertical line */}
-        <div style={css.vertLine} aria-hidden="true" />
-        <ol style={css.list} role="list">
-          {ENTRIES.map(entry => (
-            <TimelineItem key={entry.id} entry={entry} />
-          ))}
-        </ol>
-      </div>
+        .life-timeline__entry {
+          position: relative;
+          padding: clamp(0.24rem, 0.65vw, 0.45rem) 0 clamp(0.42rem, 0.95vw, 0.72rem);
+        }
 
-      {/* Footer — accessible link to the original AI draft */}
-      <div style={css.footer}>
-        <span aria-hidden="true" style={{ opacity: 0.5 }}>✦</span>
-        <span>Narrative prose is AI-generated and reserved for your own words.</span>
-        <a
-          href="file:///Users/angelsuero/Library/Application%20Support/Claude/local-agent-mode-sessions/cc769079-c6e7-4db4-8b1c-3800c5796c3d/7b871437-f9e5-4684-a0f7-f738a1c373a4/local_67874b6c-da4d-49ff-a4b5-8fa6a9cef1aa/outputs/angel.html"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={css.footerLink}
-          aria-label="View original AI-generated timeline draft (opens in new tab)"
-        >
-          View AI draft →
-        </a>
-      </div>
+        .life-timeline__entry::before {
+          content: '';
+          position: absolute;
+          left: calc(50% - 6px);
+          top: clamp(1.12rem, 1.9vw, 1.32rem);
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background: var(--lt-node);
+          border: 2px solid ${variant === 'light' ? '#f8f6f2' : 'var(--tone-surface)'};
+          transition: background 0.2s ease, transform 0.2s ease;
+          z-index: 1;
+        }
+
+        .life-timeline__entry:hover::before,
+        .life-timeline__entry.is-active::before {
+          background: var(--lt-node-active);
+          transform: scale(1.15);
+        }
+
+        .life-timeline__tick {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) clamp(2.2rem, 3vw, 3rem) minmax(0, 1fr);
+          align-items: start;
+          gap: clamp(0.55rem, 1.2vw, 0.9rem);
+          width: 100%;
+          padding: clamp(0.62rem, 1.15vw, 0.85rem) 0;
+          border: 0;
+          background: transparent;
+          color: inherit;
+          text-align: left;
+          cursor: pointer;
+          user-select: none;
+        }
+
+        .life-timeline__side {
+          display: grid;
+          gap: 0.18rem;
+          min-width: 0;
+          min-height: ${isFullBleed ? 'clamp(4.6rem, 6vw, 5.3rem)' : 'auto'};
+          padding: ${isFullBleed ? 'clamp(0.55rem, 1vw, 0.8rem) clamp(0.1rem, 0.4vw, 0.18rem)' : '0'};
+          border: 0;
+          border-radius: 0;
+          background: transparent;
+          box-shadow: none;
+        }
+
+        .life-timeline__side--title {
+          align-content: start;
+        }
+
+        .life-timeline__side--summary {
+          align-content: start;
+          padding-top: clamp(0.15rem, 0.5vw, 0.3rem);
+        }
+
+        .life-timeline__peek {
+          display: inline-flex;
+          gap: 0.35rem;
+          margin-top: 0.42rem;
+        }
+
+        .life-timeline__peekImage {
+          width: 2.5rem;
+          height: 2.95rem;
+          border-radius: 0.45rem;
+          background-size: cover;
+          background-position: center;
+          border: 1px solid color-mix(in srgb, var(--lt-panel-border) 66%, transparent);
+          opacity: 0.78;
+          filter: saturate(0.86) brightness(0.9);
+          transition: opacity 0.2s ease, filter 0.2s ease, transform 0.2s ease;
+        }
+
+        .life-timeline__entry--left .life-timeline__side--title {
+          grid-column: 1;
+          justify-items: end;
+          text-align: right;
+          padding-right: clamp(0.4rem, 1vw, 0.75rem);
+        }
+
+        .life-timeline__entry--left .life-timeline__side--summary {
+          grid-column: 3;
+          text-align: left;
+          padding-left: clamp(0.3rem, 0.9vw, 0.7rem);
+        }
+
+        .life-timeline__entry--right .life-timeline__side--title {
+          grid-column: 3;
+          text-align: left;
+          padding-left: clamp(0.4rem, 1vw, 0.75rem);
+        }
+
+        .life-timeline__entry--right .life-timeline__side--summary {
+          grid-column: 1;
+          justify-items: end;
+          text-align: right;
+          padding-right: clamp(0.3rem, 0.9vw, 0.7rem);
+        }
+
+        .life-timeline__center {
+          grid-column: 2;
+          display: flex;
+          align-items: flex-start;
+          justify-content: center;
+          padding-top: clamp(0.62rem, 1vw, 0.82rem);
+        }
+
+        .life-timeline__dot {
+          width: 0.24rem;
+          height: 0.24rem;
+          border-radius: 999px;
+          background: color-mix(in srgb, var(--lt-node-active) 78%, transparent);
+          box-shadow: 0 0 0 5px color-mix(in srgb, var(--lt-node-active) 10%, transparent);
+          opacity: 0;
+          transform: scale(0.7);
+          transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .life-timeline__year {
+          font-size: 0.68rem;
+          font-family: 'Helvetica Neue', sans-serif;
+          font-weight: 700;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: var(--lt-soft);
+          transition: color 0.2s ease;
+        }
+
+        .life-timeline__label {
+          font-size: clamp(1rem, 1.4vw, 1.26rem);
+          font-family: Georgia, serif;
+          line-height: 1.18;
+          color: var(--lt-text);
+          transition: color 0.2s ease;
+          text-wrap: balance;
+        }
+
+        .life-timeline__meta {
+          font-size: 0.65rem;
+          font-family: 'Helvetica Neue', sans-serif;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: var(--lt-soft);
+        }
+
+        .life-timeline__summary {
+          max-width: 28rem;
+          font-size: clamp(0.84rem, 1.05vw, 0.96rem);
+          line-height: 1.58;
+          color: ${variant === 'light' ? '#444039' : 'color-mix(in srgb, var(--tone-text) 92%, var(--tone-muted) 8%)'};
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        .life-timeline__entry:hover .life-timeline__year,
+        .life-timeline__entry.is-active .life-timeline__year,
+        .life-timeline__entry:hover .life-timeline__label,
+        .life-timeline__entry.is-active .life-timeline__label,
+        .life-timeline__entry:hover .life-timeline__peekImage,
+        .life-timeline__entry.is-active .life-timeline__peekImage {
+          color: var(--lt-text);
+        }
+
+        .life-timeline__entry:hover .life-timeline__peekImage,
+        .life-timeline__entry.is-active .life-timeline__peekImage {
+          opacity: 0.98;
+          filter: saturate(0.96) brightness(0.98);
+          transform: translateY(-1px);
+        }
+
+        .life-timeline__tab {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.35rem;
+          width: fit-content;
+          margin-top: 0.28rem;
+          padding: 0.08rem 0 0.14rem;
+          border: 0;
+          border-bottom: 1px solid color-mix(in srgb, var(--lt-panel-border) 68%, transparent);
+          border-radius: 999px;
+          background: transparent;
+          color: var(--lt-soft);
+          transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+        }
+
+        .life-timeline__tabLabel {
+          font-size: 0.63rem;
+          font-family: 'Helvetica Neue', sans-serif;
+          font-weight: 600;
+          letter-spacing: 0.11em;
+          text-transform: uppercase;
+        }
+
+        .life-timeline__entry:hover .life-timeline__tab,
+        .life-timeline__entry.is-active .life-timeline__tab {
+          color: var(--lt-link);
+          border-color: color-mix(in srgb, var(--lt-link) 35%, var(--lt-panel-border));
+          background: transparent;
+        }
+
+        .life-timeline__arrow {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 0.72rem;
+          height: 0.72rem;
+          opacity: 0.68;
+          transition: opacity 0.2s ease, transform 0.25s ease;
+        }
+
+        .life-timeline__entry:hover .life-timeline__arrow,
+        .life-timeline__entry.is-active .life-timeline__arrow,
+        .life-timeline__entry:hover .life-timeline__dot,
+        .life-timeline__entry.is-active .life-timeline__dot {
+          opacity: 1;
+        }
+
+        .life-timeline__entry.is-active .life-timeline__arrow {
+          transform: rotate(90deg);
+        }
+
+        .life-timeline__entry:hover .life-timeline__dot,
+        .life-timeline__entry.is-active .life-timeline__dot {
+          transform: scale(1);
+        }
+
+        .life-timeline__arrow svg {
+          width: 0.5rem;
+          height: 0.5rem;
+          fill: none;
+          stroke: var(--lt-text);
+          stroke-width: 2;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+        }
+
+        .life-timeline__panel {
+          overflow: hidden;
+          max-height: 0;
+          opacity: 0;
+          transition:
+            max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+            opacity 0.3s ease;
+        }
+
+        .life-timeline__entry.is-active .life-timeline__panel {
+          max-height: 1600px;
+          opacity: 1;
+        }
+
+        .life-timeline__panelInner {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) clamp(2.2rem, 3vw, 3rem) minmax(0, 1fr);
+          gap: clamp(0.85rem, 1.8vw, 1.35rem);
+          padding: 0 0 clamp(0.7rem, 1.15vw, 1rem);
+        }
+
+        .life-timeline__panelAxis {
+          grid-column: 2;
+        }
+
+        .life-timeline__panelBody {
+          display: grid;
+          gap: 0.72rem;
+          padding-top: 0.55rem;
+          padding-bottom: ${isFullBleed ? 'clamp(0.4rem, 0.9vw, 0.65rem)' : '0'};
+          max-width: ${isFullBleed ? 'none' : '27rem'};
+          min-height: ${isFullBleed ? '100%' : 'auto'};
+          border: 0;
+          border-radius: 0;
+          background: transparent;
+          box-shadow: none;
+          border-top: 1px solid color-mix(in srgb, var(--lt-panel-border) 72%, transparent);
+        }
+
+        .life-timeline__panelBody--left {
+          grid-column: 1;
+          justify-self: end;
+          text-align: right;
+          padding-right: ${isFullBleed ? 'clamp(0.55rem, 1.15vw, 0.95rem)' : 'clamp(0.4rem, 1vw, 0.75rem)'};
+          padding-left: 0;
+        }
+
+        .life-timeline__panelBody--right {
+          grid-column: 3;
+          padding-left: ${isFullBleed ? 'clamp(0.55rem, 1.15vw, 0.95rem)' : 'clamp(0.4rem, 1vw, 0.75rem)'};
+          padding-right: 0;
+        }
+
+        .life-timeline__heroBlock {
+          display: grid;
+          gap: 0.72rem;
+        }
+
+        .life-timeline__visuals {
+          display: grid;
+          grid-template-columns: 0.95fr 1.2fr 0.8fr;
+          gap: 0.4rem;
+        }
+
+        .life-timeline__visual {
+          display: block;
+          min-height: clamp(4.2rem, 7vw, 6.1rem);
+          border-radius: 0.55rem;
+          background-size: cover;
+          background-position: center;
+          border: 1px solid color-mix(in srgb, var(--lt-panel-border) 70%, transparent);
+          opacity: 0.94;
+          filter: saturate(0.92) brightness(0.92);
+        }
+
+        .life-timeline__visual--2 {
+          min-height: clamp(4.8rem, 8vw, 7rem);
+        }
+
+        .life-timeline__heroCopy {
+          display: grid;
+          gap: 0.42rem;
+        }
+
+        .life-timeline__heroSummary {
+          margin: 0;
+          font-size: clamp(0.9rem, 1vw, 1rem);
+          line-height: 1.55;
+          color: ${variant === 'light' ? '#444' : 'color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%)'};
+        }
+
+        .life-timeline__badges {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.45rem;
+        }
+
+        .life-timeline__panelBody--left .life-timeline__badges {
+          justify-content: flex-end;
+        }
+
+        .life-timeline__badge {
+          display: inline-flex;
+          align-items: center;
+          min-height: 1.4rem;
+          padding: 0.12rem 0.48rem;
+          border: 1px solid var(--lt-badge-border);
+          border-radius: 999px;
+          font-size: 0.61rem;
+          font-family: 'Helvetica Neue', sans-serif;
+          letter-spacing: 0.11em;
+          text-transform: uppercase;
+          color: var(--lt-badge-text);
+        }
+
+        .life-timeline__badge--ghost {
+          opacity: 0.9;
+        }
+
+        .life-timeline__block {
+          display: grid;
+          gap: 0.5rem;
+        }
+
+        .life-timeline__sectionLabel {
+          margin: 0;
+          font-size: 0.64rem;
+          font-family: 'Helvetica Neue', sans-serif;
+          font-weight: 700;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: var(--lt-link);
+        }
+
+        .life-timeline__accomplishments {
+          margin: 0;
+          padding: 0;
+          list-style: none;
+          display: grid;
+          gap: 0.42rem;
+        }
+
+        .life-timeline__accomplishment {
+          margin: 0;
+          font-size: clamp(0.86rem, 0.98vw, 0.96rem);
+          line-height: 1.6;
+          color: ${variant === 'light' ? '#444' : 'color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%)'};
+        }
+
+        .life-timeline__showcases {
+          display: grid;
+          gap: 0.2rem;
+        }
+
+        .life-timeline__showcase {
+          display: grid;
+          grid-template-columns: auto 1fr;
+          align-items: baseline;
+          gap: 0.5rem;
+          padding: 0.35rem 0;
+          border: 0;
+          border-bottom: 1px solid color-mix(in srgb, var(--lt-panel-border) 58%, transparent);
+          border-radius: 0;
+          background: transparent;
+          text-decoration: none;
+          transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+        }
+
+        .life-timeline__showcase:hover {
+          transform: translateX(2px);
+          border-color: color-mix(in srgb, var(--lt-link) 34%, var(--lt-panel-border));
+          background: transparent;
+        }
+
+        .life-timeline__showcaseKind {
+          font-size: 0.6rem;
+          font-family: 'Helvetica Neue', sans-serif;
+          font-weight: 700;
+          letter-spacing: 0.13em;
+          text-transform: uppercase;
+          color: var(--lt-soft);
+        }
+
+        .life-timeline__showcaseLabel {
+          font-size: clamp(0.84rem, 0.98vw, 0.94rem);
+          line-height: 1.35;
+          color: var(--lt-text);
+        }
+
+        .life-timeline__moments {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.35rem;
+        }
+
+        .life-timeline__moment {
+          display: inline-flex;
+          align-items: center;
+          min-height: 1.4rem;
+          padding: 0.16rem 0.48rem;
+          border-radius: 999px;
+          border: 1px solid color-mix(in srgb, var(--lt-badge-border) 92%, transparent);
+          color: var(--lt-badge-text);
+          font-size: 0.58rem;
+          font-family: 'Helvetica Neue', sans-serif;
+          letter-spacing: 0.08em;
+        }
+
+        .life-timeline__link {
+          display: inline-flex;
+          width: fit-content;
+          align-items: center;
+          min-height: 1.65rem;
+          padding-bottom: 2px;
+          border-bottom: 1px solid var(--lt-panel-border);
+          font-size: 0.6rem;
+          font-family: 'Helvetica Neue', sans-serif;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: var(--lt-link);
+          text-decoration: none;
+        }
+
+        .life-timeline__link:hover {
+          color: var(--lt-text);
+          border-bottom-color: var(--lt-link);
+        }
+
+        @media (max-width: 720px) {
+          .life-timeline {
+            padding-inline: 1rem;
+          }
+
+          .life-timeline__list::before {
+            left: 0.95rem;
+            transform: none;
+          }
+
+          .life-timeline__entry::before {
+            left: 0.6rem;
+            top: 1.12rem;
+          }
+
+          .life-timeline__tick,
+          .life-timeline__panelInner {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+          }
+
+          .life-timeline__center,
+          .life-timeline__panelAxis {
+            display: none;
+          }
+
+          .life-timeline__side--title,
+          .life-timeline__side--summary,
+          .life-timeline__panelBody--left,
+          .life-timeline__panelBody--right {
+            grid-column: 1;
+            justify-items: start;
+            justify-self: stretch;
+            text-align: left;
+            max-width: none;
+            padding-left: 1.85rem;
+            padding-right: 0;
+          }
+
+          .life-timeline__arrow {
+            margin-top: 0;
+          }
+
+          .life-timeline__panelBody--left .life-timeline__badges {
+            justify-content: flex-start;
+          }
+
+          .life-timeline__visuals {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+          }
+
+          .life-timeline__peek {
+            justify-content: flex-start;
+          }
+        }
+      `}</style>
     </section>
   );
 }

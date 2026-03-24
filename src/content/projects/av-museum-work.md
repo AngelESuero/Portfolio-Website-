@@ -5,7 +5,7 @@ type: "video"
 status: "Ongoing"
 tools: ["Projection Setups", "Playback Reliability", "Site-Specific AV"]
 links: {}
-featured: true
+featured: false
 role: "Gallery Host / AV Technician"
 relatedProjects:
   - "newark-night-video-notes"
