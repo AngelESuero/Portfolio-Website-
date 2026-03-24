@@ -971,6 +971,8 @@ html[data-surface-mode='viewer'] .header-lab-only {
     min-width: 0;
     max-width: 18ch;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-size: clamp(1.28rem, 6vw, 1.58rem);
     line-height: 0.94;
   }
@@ -1022,6 +1024,8 @@ html[data-surface-mode='viewer'] .header-lab-only {
   border-top: 1px solid var(--line2);
   background: rgba(5, 10, 18, 0.92);
   backdrop-filter: blur(8px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .mobile-nav-inner {

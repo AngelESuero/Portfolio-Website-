@@ -869,15 +869,22 @@
   const closeMobileNav = () => {
     if (!(mobileToggle instanceof HTMLElement) || !(mobileNav instanceof HTMLElement)) return;
     mobileNav.hidden = true;
+    mobileNav.style.maxHeight = '';
     mobileToggle.setAttribute('aria-expanded', 'false');
     mobileToggle.textContent = 'Menu';
   };
 
   const openMobileNav = () => {
     if (!(mobileToggle instanceof HTMLElement) || !(mobileNav instanceof HTMLElement)) return;
+    // Capture header bar height before nav expands to avoid circular ResizeObserver feedback
+    const headerRow = document.querySelector('.site-header .header-row');
+    const barHeight = headerRow ? Math.round(headerRow.getBoundingClientRect().height) : 56;
+    const musicBar = document.querySelector('.site-music-bar');
+    const musicBarHeight = (musicBar && !musicBar.hidden) ? Math.round(musicBar.getBoundingClientRect().height) : 0;
+    mobileNav.style.maxHeight = `calc(100dvh - ${barHeight}px - ${musicBarHeight}px)`;
     mobileNav.hidden = false;
     mobileToggle.setAttribute('aria-expanded', 'true');
-    mobileToggle.textContent = 'Close';
+    mobileToggle.textContent = '×';
   };
 
   const initMobileNav = () => {

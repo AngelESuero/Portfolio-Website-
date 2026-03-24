@@ -1208,6 +1208,10 @@ export default function LifeTimeline({ variant = 'dark', layout = 'contained' }:
 
           .life-timeline__side--title,
           .life-timeline__side--summary,
+          .life-timeline__entry--left .life-timeline__side--title,
+          .life-timeline__entry--left .life-timeline__side--summary,
+          .life-timeline__entry--right .life-timeline__side--title,
+          .life-timeline__entry--right .life-timeline__side--summary,
           .life-timeline__panelBody--left,
           .life-timeline__panelBody--right {
             grid-column: 1;
@@ -1217,6 +1221,7 @@ export default function LifeTimeline({ variant = 'dark', layout = 'contained' }:
             max-width: none;
             padding-left: 1.85rem;
             padding-right: 0;
+            min-height: auto;
           }
 
           .life-timeline__arrow {

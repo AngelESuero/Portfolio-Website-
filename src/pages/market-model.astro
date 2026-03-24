@@ -43,3 +43,17 @@ import MarketModel from '../components/MarketModel';
     </section>
   </main>
 </BaseLayout>
+
+<style>
+  @media (max-width: 600px) {
+    /* Stack the section label above content on narrow screens */
+    :global(.mm-section-grid) {
+      grid-template-columns: 1fr !important;
+      gap: 0.5rem 0 !important;
+    }
+    /* Stack the survival markets two-column grid vertically */
+    :global(.mm-survival-grid) {
+      grid-template-columns: 1fr !important;
+    }
+  }
+</style>

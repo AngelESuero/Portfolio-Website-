@@ -13,6 +13,7 @@
     "sync:linktree": "node scripts/sync-linktree.mjs",
     "sync:x": "node scripts/sync-x.mjs",
     "sync:youtube": "node scripts/sync-youtube.mjs",
+    "import:youtube-entries": "node scripts/import-youtube-entries.mjs",
     "sync:chess": "node scripts/sync-chess.mjs",
     "sync:data": "npm run sync:agi && npm run sync:linktree && npm run sync:x && npm run sync:youtube && npm run sync:chess"
   },

@@ -22,7 +22,7 @@ export default function MarketModel() {
   };
 
   const Section = ({ number, title, subtitle, children }: { number: number; title: string; subtitle?: string; children: React.ReactNode }) => (
-    <div style={{ display: "grid", gridTemplateColumns: "120px 1fr", gap: "0 24px", paddingBottom: 28, marginBottom: 28, borderBottom: "1px solid #F3F4F6" }}>
+    <div className="mm-section-grid" style={{ display: "grid", gridTemplateColumns: "120px 1fr", gap: "0 24px", paddingBottom: 28, marginBottom: 28, borderBottom: "1px solid #F3F4F6" }}>
       <div style={{ paddingTop: 2 }}>
         <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: ".12em", textTransform: "uppercase", color: "#9CA3AF", marginBottom: 4 }}>Stage {number}</div>
         <div style={{ fontSize: 13, fontWeight: 600, color: "#111827", lineHeight: 1.4, marginBottom: subtitle ? 4 : 0 }}>{title}</div>
@@ -56,7 +56,7 @@ export default function MarketModel() {
       </Section>
 
       <Section number={2} title="Survival markets" subtitle="what a person must access to live">
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+        <div className="mm-survival-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           <div style={{ border: "1px solid rgba(29, 78, 216, 0.25)", borderRadius: 8, padding: "10px 12px", background: "rgba(29, 78, 216, 0.08)" }}>
             <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: ".1em", textTransform: "uppercase", color: "#7BA3D9", marginBottom: 8 }}>Directly subsidized</div>
             {subsidized.map(m => (

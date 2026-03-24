@@ -26,6 +26,7 @@ const statusLabel = getEntryDisplayStatus(entry.data.status);
 const showStatus = shouldShowEntryStatus(entry.data.status);
 const hasBody = entryHasBody(entry);
 const noteFragment = entry.data.medium === 'note' ? getEntryFragment(entry, 190) : '';
+const thumbnail = typeof entry.data.thumbnail === 'string' ? entry.data.thumbnail.trim() : '';
 const externalUrl = typeof entry.data.external_url === 'string' ? entry.data.external_url.trim() : '';
 const externalProvider = externalUrl ? providerFromUrl(externalUrl) : null;
 const externalLabel = externalUrl ? getLinkCtaLabel(externalUrl, externalProvider) : '';
@@ -37,6 +38,7 @@ const internalLabel = entry.data.medium === 'writing'
     : entry.data.medium === 'note'
       ? 'Open note'
       : 'Open entry';
+const showVideoThumbnail = entry.data.medium === 'video' && Boolean(thumbnail);
 const showMediaBlock = entry.data.medium === 'music' || entry.data.medium === 'video' || entry.data.medium === 'image';
 ---
 <article class="card entry-card" data-medium={entry.data.medium} data-status={entry.data.status}>
@@ -53,7 +55,13 @@ const showMediaBlock = entry.data.medium === 'music' || entry.data.medium === 'v
     <a href={href}>{entry.data.title}</a>
   </h2>
 
-  {showMediaBlock && <EntryMediaBlock entry={entry} compact={true} />}
+  {showVideoThumbnail ? (
+    <figure class="entry-card__thumbnail">
+      <img src={thumbnail} alt={entry.data.title} loading="lazy" decoding="async" />
+    </figure>
+  ) : (
+    showMediaBlock && <EntryMediaBlock entry={entry} compact={true} />
+  )}
 
   {entry.data.medium === 'note' ? (
     <p class="entry-card__fragment">{noteFragment || entry.data.summary}</p>
@@ -148,6 +156,21 @@ const showMediaBlock = entry.data.medium === 'music' || entry.data.medium === 'v
     margin: 0;
     color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
     line-height: 1.62;
+  }
+
+  .entry-card__thumbnail {
+    margin: 0;
+    border: 1px solid var(--line2);
+    border-radius: 0.95rem;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--tone-surface-strong) 90%, transparent);
+  }
+
+  .entry-card__thumbnail img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
   }
 
   .entry-card__footer {
