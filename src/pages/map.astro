@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import LifeMapSemanticOrb from '../../app/components/LifeMapSemanticOrb';
+import LifeMapTabs from '../../app/components/LifeMapTabs';
 ---
 
 <BaseLayout
@@ -16,7 +16,7 @@ import LifeMapSemanticOrb from '../../app/components/LifeMapSemanticOrb';
   <div class="map-page-intro">
     <p class="map-kicker">Life Map</p>
     <h1 class="map-title">Organizational Atlas</h1>
-    <p class="map-dek">A systems view of a life — what must hold first, what opens once it does, and what moves outward when enough of it can hold.</p>
+    <p class="map-dek">A systems view of a life, now with both an atlas view and an unfurling reading view for the same material.</p>
     <div class="map-phase-legend">
       <span class="map-phase map-phase--platform">Platform</span>
       <span class="map-phase-sep">·</span>
@@ -26,7 +26,7 @@ import LifeMapSemanticOrb from '../../app/components/LifeMapSemanticOrb';
     </div>
   </div>
   <div class="map-divider" aria-hidden="true"></div>
-  <LifeMapSemanticOrb client:load />
+  <LifeMapTabs client:load />
 </BaseLayout>
 
 <style>

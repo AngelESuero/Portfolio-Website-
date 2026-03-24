@@ -1,4 +1,12 @@
 ---
+type NavItem = {
+  label: string;
+  href: string;
+  color: string;
+  tone: string;
+  view?: string;
+};
+
 const ACCENT_SWATCHES: Record<string, string> = {
   ochre: '#b97a2d',
   blue: '#587a95',
@@ -10,7 +18,7 @@ const ACCENT_SWATCHES: Record<string, string> = {
 const getAccentSwatch = (value?: string) =>
   ACCENT_SWATCHES[String(value || '').trim().toLowerCase()] || ACCENT_SWATCHES.blue;
 
-const primaryNav = [
+const primaryNav: NavItem[] = [
   { label: 'Home', href: '/', color: 'ochre', tone: 'presence' },
   { label: 'Work', href: '/work', color: 'ochre', tone: 'seva' },
   { label: 'Writing', href: '/writing', color: 'white', tone: 'contemplation' },
@@ -19,27 +27,40 @@ const primaryNav = [
   { label: 'Contact', href: '/contact', color: 'white', tone: 'harmony' }
 ];
 
-const secondaryNav = [
+const secondaryNav: NavItem[] = [
   { label: 'Studio Notes', href: '/studio-notes', color: 'white', tone: 'contemplation' },
   { label: 'Collaborations', href: '/collaborations', color: 'ochre', tone: 'grounding' },
+  { label: 'Theater', href: '/theater', color: 'red', tone: 'presence' },
   { label: 'Map', href: '/map', color: 'blue', tone: 'presence' },
+  { label: 'Map #2', href: '/map?view=unfurling', color: 'white', tone: 'clarity', view: 'unfurling' },
   { label: 'Genre Tree', href: '/genre-tree', color: 'ochre', tone: 'grounding' },
   { label: 'Market Model', href: '/market-model', color: 'blue', tone: 'clarity' },
   { label: 'Resources', href: '/resources', color: 'white', tone: 'contemplation' },
   { label: 'Rejections', href: '/rejections', color: 'red', tone: 'grounding' }
 ];
 
-const aiGroup = [
+const aiGroup: NavItem[] = [
   { label: 'AI', href: '/ai', color: 'blue', tone: 'discernment' },
   { label: 'AI x Survival', href: '/survival-os', color: 'red', tone: 'grounding' },
   { label: 'Survival Support', href: '/survival-support', color: 'ochre', tone: 'grounding' },
 ];
 
 const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const currentView = Astro.url.searchParams.get('view') || '';
 const normalize = (path: string) => path.replace(/\/+$/, '') || '/';
-const isActive = (href: string) => {
-  const target = normalize(href);
-  return currentPath === target || (target !== '/' && currentPath.startsWith(`${target}/`));
+const hrefPath = (href: string) => normalize(href.split('?')[0] || href);
+const isActive = (item: NavItem) => {
+  const target = hrefPath(item.href);
+  const pathMatch = currentPath === target || (target !== '/' && currentPath.startsWith(`${target}/`));
+
+  if (!pathMatch) return false;
+
+  if (target === '/map') {
+    if (item.view) return currentView === item.view;
+    return currentView === '';
+  }
+
+  return true;
 };
 import youtubeData from '../data/youtube.json';
 const latestVideoId = youtubeData.items[0]?.videoId ?? '';
@@ -56,7 +77,7 @@ const latestVideoId = youtubeData.items[0]?.videoId ?? '';
           style={`--link-accent:${getAccentSwatch(item.color)}`}
           {...(item.color ? { 'data-color': item.color } : {})}
           {...(item.tone ? { 'data-tone': item.tone } : {})}
-          {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
+          {...(isActive(item) ? { 'aria-current': 'page' } : {})}
         >
           {item.label}
         </a>
@@ -102,7 +123,7 @@ const latestVideoId = youtubeData.items[0]?.videoId ?? '';
             style={`--link-accent:${getAccentSwatch(item.color)}`}
             {...(item.color ? { 'data-color': item.color } : {})}
             {...(item.tone ? { 'data-tone': item.tone } : {})}
-            {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
+            {...(isActive(item) ? { 'aria-current': 'page' } : {})}
           >
             {item.label}
           </a>
@@ -115,7 +136,7 @@ const latestVideoId = youtubeData.items[0]?.videoId ?? '';
           style={`--link-accent:${getAccentSwatch(item.color)}`}
           {...(item.color ? { 'data-color': item.color } : {})}
           {...(item.tone ? { 'data-tone': item.tone } : {})}
-          {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
+          {...(isActive(item) ? { 'aria-current': 'page' } : {})}
         >
           {item.label}
         </a>
@@ -131,7 +152,7 @@ const latestVideoId = youtubeData.items[0]?.videoId ?? '';
           style={`--link-accent:${getAccentSwatch(item.color)}`}
           {...(item.color ? { 'data-color': item.color } : {})}
           {...(item.tone ? { 'data-tone': item.tone } : {})}
-          {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
+          {...(isActive(item) ? { 'aria-current': 'page' } : {})}
         >
           {item.label}
         </a>
@@ -146,7 +167,7 @@ const latestVideoId = youtubeData.items[0]?.videoId ?? '';
               style={`--link-accent:${getAccentSwatch(item.color)}`}
               {...(item.color ? { 'data-color': item.color } : {})}
               {...(item.tone ? { 'data-tone': item.tone } : {})}
-              {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
+              {...(isActive(item) ? { 'aria-current': 'page' } : {})}
             >
               {item.label}
             </a>
@@ -159,7 +180,7 @@ const latestVideoId = youtubeData.items[0]?.videoId ?? '';
             style={`--link-accent:${getAccentSwatch(item.color)}`}
             {...(item.color ? { 'data-color': item.color } : {})}
             {...(item.tone ? { 'data-tone': item.tone } : {})}
-            {...(isActive(item.href) ? { 'aria-current': 'page' } : {})}
+            {...(isActive(item) ? { 'aria-current': 'page' } : {})}
           >
             {item.label}
           </a>
