@@ -1,207 +1,69 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import SubstackPanel from '../../components/SubstackPanel.astro';
+import WritingWorkbench from '../../../app/components/WritingWorkbench';
 import { formatLongUtcDate, formatShortUtcDate } from '../../lib/date-formatting';
 import { isPostReady } from '../../lib/post-readiness';
 
 const posts = (await getCollection('posts')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const readyPosts = posts.filter(isPostReady);
 const allTags = [...new Set(posts.flatMap((post) => post.data.tags.map((tag) => tag.trim().toLowerCase())))]
   .filter(Boolean)
   .sort((a, b) => a.localeCompare(b));
-const readyPosts = posts.filter(isPostReady);
-const featuredPosts = posts.filter((post) => post.data.featured);
-const readyFeaturedPosts = featuredPosts.filter(isPostReady);
-const featuredPost = readyFeaturedPosts[0] ?? featuredPosts[0] ?? readyPosts[0] ?? posts[0] ?? null;
-const supportingPosts = featuredPost ? posts.filter((post) => post.id !== featuredPost.id) : [];
-const corpusConstellations = [
-  {
-    title: 'Philosophical Inquiry',
-    band: 'Theory',
-    color: '#7caec6',
-    summary: 'A sustained argument with skepticism, moral genealogy, dualism, fear, consciousness, and the question of a livable good.',
-    tension: 'How can a person think clearly enough to judge, act, and avoid inherited moral traps?',
-    anchors: [
-      { name: 'Acquiring American Happiness in the 21st Century', href: '/archive/writing/acquiring-american-happiness-in-the-21st-century' },
-      { name: 'Descartes Essay Outline' },
-      { name: 'Nietzsche study notes' },
-      { name: 'Is A Human Body Merely A Complex Physical System?' }
-    ]
-  },
-  {
-    title: 'Power and Political Economy',
-    band: 'Systems',
-    color: '#c57d66',
-    summary: 'Capitalism is treated as a machinery of alienation, dispossession, and managed distraction rather than a neutral background.',
-    tension: 'What does it cost a person or city to survive inside a structure built around extraction and hierarchy?',
-    anchors: [
-      { name: 'The Sacrifice of Power', href: '/archive/writing/the-sacrifice-of-power' },
-      { name: 'Government Should Be Aligned With Life', href: '/archive/writing/government-should-be-aligned-with-life' },
-      { name: 'Entertainment, Suffering, and the Everyday' },
-      { name: 'Theorizing Politics' },
-      { name: 'Housing crisis research' }
-    ]
-  },
-  {
-    title: 'Urban Praxis and Newark',
-    band: 'Field',
-    color: '#6ba88c',
-    summary: 'The writing stops being purely diagnostic and becomes logistical, geographic, and materially grounded in Newark.',
-    tension: 'How does theory hold up when it has to move water, build coalitions, and face infrastructure failure directly?',
-    anchors: [
-      { name: 'Newark Water Coalition fellowship assignments' },
-      { name: 'Ironbound reports' },
-      { name: 'Right to the City analysis' },
-      { name: 'Gallery Host Plus proposal' }
-    ]
-  },
-  {
-    title: 'Identity and Acculturation',
-    band: 'Identity',
-    color: '#a87fc2',
-    summary: 'Race, language loss, and belonging are treated as socially engineered pressures with deep psychological consequences.',
-    tension: 'What happens when inherited identity weakens while dominant culture still refuses full recognition?',
-    anchors: [
-      { name: 'Life in IB', href: '/archive/writing/life-in-ib' },
-      { name: 'Impacts of Acculturation' },
-      { name: 'Baldwin-centered politics work' },
-      { name: 'The Bluest Eye analysis' }
-    ]
-  },
-  {
-    title: 'Creative Resistance',
-    band: 'Art',
-    color: '#d9b56d',
-    summary: 'Music, scripts, and narrative experiments become tools for recovering what rigid systems trained out of the self.',
-    tension: 'How does form itself become a way of surviving, reclaiming sensation, and resisting control?',
-    anchors: [
-      { name: 'Cocoa', href: '/archive/writing/cocoa' },
-      { name: 'End (first ten pages)', href: '/archive/writing/end-first-ten-pages-hbo' },
-      { name: 'The Art of Survival', href: '/archive/writing/the-art-of-survival' },
-      { name: 'Beyond Syntax' },
-      { name: 'Sensitive Child' }
-    ]
-  },
-  {
-    title: 'AI and Future Systems',
-    band: 'Futures',
-    color: '#9182c7',
-    summary: 'The later work extends systemic critique into automation, AI governance, and the defense of human cognition.',
-    tension: 'How can emerging systems be used without surrendering labor dignity, memory, artists, or moral agency?',
-    anchors: [
-      { name: 'Government Should Be Aligned With Life', href: '/archive/writing/government-should-be-aligned-with-life' },
-      { name: 'AI Accountability Pledge', href: '/ai-accountability-pledge' },
-      { name: 'Automation Feasibility: 2025-2035 Analysis' },
-      { name: 'The Singularity Horizon' }
-    ]
-  }
-];
 
-const writingArc = [
-  {
-    period: '2015-2017',
-    title: 'Formalist Survival',
-    summary: 'A rigid, high-performance voice shaped by the Essay Codex, the Divorce Decree, and the need to survive restrictive academic structures.'
-  },
-  {
-    period: '2018-2022',
-    title: 'Systemic Deconstruction',
-    summary: 'The archive expands into philosophy, Marxist critique, race, literature, and historical power, using research to dismantle inherited narratives.'
-  },
-  {
-    period: '2022-2025',
-    title: 'Applied Humanism',
-    summary: 'Theory becomes praxis through Newark fieldwork, creative recovery, and technical writing on AI, automation, and institutional accountability.'
-  }
-];
+const latestPublished = readyPosts.slice(0, 6).map((post) => ({
+  title: post.data.title,
+  href: `/writing/${post.slug}`,
+  date: formatShortUtcDate(post.data.date),
+  summary: post.data.summary,
+  tags: post.data.tags
+}));
 ---
-<BaseLayout title="Writing — a_e.s_" theme="writing">
-  <section class="writing-hero">
-    <p class="writing-kicker">Essays / Reports / Field Notes</p>
-    <h1 class="font-display text-4xl md:text-5xl">Writing</h1>
-    <p class="writing-description">
-      Essays and field notes on systems, Newark, identity, creative recovery, and AI futures.
-    </p>
-    <div class="writing-meta">
-      <p>{posts.length} {posts.length === 1 ? 'entry' : 'entries'}</p>
-      <p>Archive frame: 2015-2025</p>
-      {posts[0] && <p>Latest: {formatLongUtcDate(posts[0].data.date)}</p>}
+
+<BaseLayout title="Writing — a_e.s_" theme="writing" bodyClass="writing-workbench-page">
+  <section class="writing-page-header">
+    <div class="writing-page-header__copy">
+      <p class="writing-page-header__kicker">Writing desk</p>
+      <h1 class="font-display text-4xl md:text-5xl">Writing</h1>
+      <p class="writing-page-header__dek">
+        This page is now built like a working surface first. Draft in the desk, save each note straight to your computer,
+        and keep the published archive below.
+      </p>
     </div>
-    <a class="writing-rss-link" href="/rss.xml">RSS feed</a>
+
+    <div class="writing-page-header__meta">
+      <p>{posts.length} total entries</p>
+      <p>{readyPosts.length} published pieces</p>
+      {posts[0] && <p>Latest public date: {formatLongUtcDate(posts[0].data.date)}</p>}
+      <a href="/rss.xml">RSS feed</a>
+    </div>
   </section>
-  {/* TODO: This featured slot assumes a post with enough interior to justify the prominence. */}
-  {featuredPost && (
-    <section class="writing-proof" aria-labelledby="writing-proof-heading">
-      <div class="writing-proof-header">
-        <h2 id="writing-proof-heading" class="font-display text-2xl">Start with one entry</h2>
+
+  <section class="writing-desk-shell">
+    <WritingWorkbench client:load published={latestPublished} totalPublished={readyPosts.length} />
+  </section>
+
+  <section class="writing-archive" id="writing-list" aria-labelledby="writing-archive-heading">
+    <div class="writing-archive__header">
+      <div>
+        <p class="writing-archive__kicker">Public archive</p>
+        <h2 id="writing-archive-heading" class="font-display text-2xl">Published and in-progress entries</h2>
+        <p class="writing-archive__dek">
+          The desk above is for making notes. The list below is still the site record.
+        </p>
       </div>
 
-      <div class="writing-proof-grid">
-        {(() => {
-          const featuredPostReady = isPostReady(featuredPost);
-          return (
-        <article class="writing-card writing-card--featured">
-          <p class="writing-card-date">Featured entry · {formatLongUtcDate(featuredPost.data.date)}</p>
-          <h2 class="writing-proof-title">
-            <a href={`/writing/${featuredPost.slug}`} class="writing-card-title">{featuredPost.data.title}</a>
-          </h2>
-          <p class="writing-card-summary">{featuredPostReady ? featuredPost.data.summary : '—'}</p>
-          <div class="writing-card-footer">
-            <div class="writing-tags">
-              {featuredPost.data.tags.map((tag) => <span class="writing-tag">#{tag}</span>)}
-            </div>
-            {featuredPostReady && (
-              <a href={`/writing/${featuredPost.slug}`} class="writing-read-link" aria-label={`Read ${featuredPost.data.title}`}>
-                Read
-              </a>
-            )}
-          </div>
-        </article>
-          );
-        })()}
-
-        {supportingPosts.length > 0 && (
-          <div class="writing-proof-stack">
-            <p class="writing-proof-stack-label">From nearby in the archive</p>
-            {supportingPosts.slice(0, 2).map((post) => (
-              (() => {
-                const postReady = isPostReady(post);
-                return (
-                  <article class="writing-proof-mini">
-                    <p class="writing-card-date">{formatShortUtcDate(post.data.date)}</p>
-                    <h3>
-                      <a href={`/writing/${post.slug}`} class="writing-card-title">{post.data.title}</a>
-                    </h3>
-                    <p>{postReady ? post.data.summary : '—'}</p>
-                    {!postReady && (
-                      <div class="writing-tags">
-                        {post.data.tags.map((tag) => <span class="writing-tag">#{tag}</span>)}
-                      </div>
-                    )}
-                  </article>
-                );
-              })()
+      <div class="writing-archive__controls">
+        {allTags.length > 0 && (
+          <div class="writing-filters" role="group" aria-label="Filter posts by tag">
+            <button type="button" class="writing-filter is-active" data-filter="all" aria-pressed="true">All</button>
+            {allTags.map((tag) => (
+              <button type="button" class="writing-filter" data-filter={tag} aria-pressed="false">#{tag}</button>
             ))}
           </div>
         )}
+        <p class="writing-results" id="writing-results-count">{posts.length} {posts.length === 1 ? 'entry' : 'entries'}</p>
       </div>
-    </section>
-  )}
-
-  <SubstackPanel secondaryHref="#writing-list" secondaryLabel="Jump to site archive" />
-
-  <section class="writing-archive" id="writing-list" aria-labelledby="writing-archive-heading">
-    <div class="writing-archive-header">
-      <h2 id="writing-archive-heading" class="font-display text-2xl">Site Archive</h2>
-      {allTags.length > 0 && (
-        <div class="writing-filters" role="group" aria-label="Filter posts by tag">
-          <button type="button" class="writing-filter is-active" data-filter="all" aria-pressed="true">All</button>
-          {allTags.map((tag) => (
-            <button type="button" class="writing-filter" data-filter={tag} aria-pressed="false">#{tag}</button>
-          ))}
-        </div>
-      )}
-      <p class="writing-results" id="writing-results-count">{posts.length} {posts.length === 1 ? 'entry' : 'entries'}</p>
     </div>
 
     {posts.length === 0 ? (
@@ -209,109 +71,43 @@ const writingArc = [
     ) : (
       <>
         <ul class="writing-list" id="writing-list-items">
-          {posts.map((post) => (
-            (() => {
-              const postReady = isPostReady(post);
-              return (
-                <li class="writing-item" data-tags={post.data.tags.map((tag) => tag.trim().toLowerCase()).join(' ')}>
-                  <article class="writing-card">
-                    <p class="writing-card-date">{formatShortUtcDate(post.data.date)}</p>
+          {posts.map((post) => {
+            const postReady = isPostReady(post);
+            return (
+              <li class="writing-item" data-tags={post.data.tags.map((tag) => tag.trim().toLowerCase()).join(' ')}>
+                <article class="writing-entry-row">
+                  <div class="writing-entry-row__meta">
+                    <p>{formatShortUtcDate(post.data.date)}</p>
+                    <span class:list={['writing-entry-row__state', { 'is-ready': postReady }]}>
+                      {postReady ? 'Published' : 'In progress'}
+                    </span>
+                  </div>
+
+                  <div class="writing-entry-row__body">
                     <h3 class="font-display text-2xl">
-                      <a href={`/writing/${post.slug}`} class="writing-card-title">{post.data.title}</a>
+                      <a href={`/writing/${post.slug}`}>{post.data.title}</a>
                     </h3>
-                    <p class="writing-card-summary">{postReady ? post.data.summary : '—'}</p>
-                    <div class="writing-card-footer">
+                    <p>{postReady ? post.data.summary : 'This entry is still being shaped.'}</p>
+                    <div class="writing-entry-row__footer">
                       <div class="writing-tags">
                         {post.data.tags.map((tag) => <span class="writing-tag">#{tag}</span>)}
                       </div>
                       {postReady && (
                         <a href={`/writing/${post.slug}`} class="writing-read-link" aria-label={`Read ${post.data.title}`}>
-                          Read
+                          Read entry
                         </a>
                       )}
                     </div>
-                  </article>
-                </li>
-              );
-            })()
-          ))}
+                  </div>
+                </article>
+              </li>
+            );
+          })}
         </ul>
         <p class="writing-empty" id="writing-empty-state" hidden>No posts match this tag yet.</p>
       </>
     )}
   </section>
-
-  <section class="writing-vault" aria-labelledby="writing-vault-heading">
-    <div class="writing-vault-header">
-      <h2 id="writing-vault-heading" class="font-display text-2xl">Archive Threads</h2>
-      <p>Click a constellation to explore its anchor works and central tension.</p>
-    </div>
-    <ul class="writing-vault-list">
-      {corpusConstellations.map((cluster) => (
-        <li>
-          <article class="writing-vault-card" data-constellation style={`--band-color: ${cluster.color}`}>
-            <button class="writing-vault-toggle" type="button" aria-expanded="false">
-              <div class="writing-vault-topline">
-                <h3 class="font-display text-xl">{cluster.title}</h3>
-                <span class="writing-vault-status" style={`border-color: ${cluster.color}; color: ${cluster.color}`}>{cluster.band}</span>
-              </div>
-              <p class="writing-vault-logline">{cluster.summary}</p>
-              <span class="writing-vault-chevron" aria-hidden="true"></span>
-            </button>
-            <div class="writing-vault-detail" hidden>
-              <p class="writing-vault-tension"><strong>Central tension:</strong> {cluster.tension}</p>
-              <div class="writing-vault-anchors">
-                <p class="writing-vault-anchors-label">Anchor works</p>
-                <ul class="writing-vault-anchor-list">
-                  {cluster.anchors.map((anchor) => (
-                    <li>
-                      {anchor.href ? (
-                        <a href={anchor.href} class="writing-vault-anchor-link">{anchor.name}</a>
-                      ) : (
-                        <span class="writing-vault-anchor-pending">{anchor.name}</span>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </article>
-        </li>
-      ))}
-    </ul>
-  </section>
-
-  <section class="writing-trajectory" aria-labelledby="writing-trajectory-heading">
-    <div class="writing-trajectory-header">
-      <h2 id="writing-trajectory-heading" class="font-display text-2xl">Intellectual Arc</h2>
-    </div>
-    <div class="writing-trajectory-grid">
-      {writingArc.map((phase) => (
-        <article class="writing-trajectory-card">
-          <p class="writing-trajectory-period">{phase.period}</p>
-          <h3 class="font-display text-xl">{phase.title}</h3>
-          <p>{phase.summary}</p>
-        </article>
-      ))}
-    </div>
-  </section>
-
-  <script is:inline>
-    (() => {
-      const cards = Array.from(document.querySelectorAll('[data-constellation]'));
-      cards.forEach((card) => {
-        const toggle = card.querySelector('.writing-vault-toggle');
-        const detail = card.querySelector('.writing-vault-detail');
-        if (!toggle || !detail) return;
-        toggle.addEventListener('click', () => {
-          const expanded = toggle.getAttribute('aria-expanded') === 'true';
-          toggle.setAttribute('aria-expanded', String(!expanded));
-          detail.hidden = expanded;
-          card.classList.toggle('is-open', !expanded);
-        });
-      });
-    })();
-  </script>
 
   <script is:inline>
     (() => {
@@ -322,6 +118,7 @@ const writingArc = [
       if (!filterButtons.length || !items.length || !results) return;
 
       const label = (count) => `${count} ${count === 1 ? 'entry' : 'entries'}`;
+
       const setActive = (activeFilter) => {
         filterButtons.forEach((candidate) => {
           const active = (candidate.getAttribute('data-filter') || 'all') === activeFilter;
@@ -358,330 +155,101 @@ const writingArc = [
 </BaseLayout>
 
 <style>
-  .writing-hero {
-    border: 1px solid var(--line2);
-    border-radius: calc(var(--radius) * var(--space-scale));
-    background: linear-gradient(
-      120deg,
-      color-mix(in srgb, var(--tone-surface-strong) 72%, transparent),
-      color-mix(in srgb, var(--tone-surface) 60%, transparent)
-    );
-    padding: clamp(1.05rem, 2.4vw, 1.85rem);
+  :global(body.writing-workbench-page[data-theme='writing']) {
+    background:
+      radial-gradient(42rem 24rem at 12% 8%, color-mix(in srgb, var(--tone-accent) 14%, transparent), transparent 72%),
+      radial-gradient(38rem 20rem at 88% 10%, color-mix(in srgb, var(--tone-sky) 12%, transparent), transparent 74%),
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-bg-deep) 92%, black), var(--tone-bg));
   }
 
-  .writing-kicker {
-    margin: 0;
+  .writing-page-header,
+  .writing-desk-shell,
+  .writing-archive {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .writing-page-header {
+    padding-top: 1.4rem;
+    display: grid;
+    gap: 1rem;
+    align-items: end;
+  }
+
+  .writing-page-header__kicker {
+    margin: 0 0 0.45rem;
+    font-size: 0.72rem;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
-    font-size: 0.7rem;
-    color: var(--tone-muted);
+    letter-spacing: 0.22em;
+    color: var(--tone-accent-glow);
   }
 
-  .writing-description {
-    margin-top: 0.8rem;
+  .writing-page-header__dek {
+    margin: 0.85rem 0 0;
     max-width: 62ch;
-    color: color-mix(in srgb, var(--tone-text) 85%, var(--tone-muted) 15%);
+    color: var(--tone-muted);
+    line-height: 1.7;
   }
 
-  .writing-meta {
+  .writing-page-header__meta {
     display: flex;
     flex-wrap: wrap;
     gap: 0.55rem 1rem;
-    margin-top: 0.8rem;
-    font-size: 0.82rem;
+    padding: 0.95rem 1rem;
+    border: 1px solid var(--line2);
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--tone-surface) 82%, transparent);
+    font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
   }
 
-  .writing-meta p {
+  .writing-page-header__meta p,
+  .writing-page-header__meta a {
     margin: 0;
   }
 
-  .writing-rss-link {
-    display: inline-flex;
-    margin-top: 0.9rem;
-    font-size: 0.9rem;
+  .writing-page-header__meta a {
     color: var(--tone-accent-glow);
     text-decoration: none;
     border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 50%, transparent);
   }
 
-  .writing-rss-link:hover,
-  .writing-rss-link:focus-visible {
-    border-color: color-mix(in srgb, var(--tone-accent) 80%, transparent);
+  .writing-desk-shell {
+    margin-top: 1.25rem;
   }
 
   .writing-archive {
-    margin-top: clamp(1.3rem, 3vw, 2.4rem);
+    margin-top: clamp(1.6rem, 3vw, 2.5rem);
+    padding-bottom: 2.2rem;
   }
 
-  .writing-proof {
-    margin-top: clamp(1.3rem, 3vw, 2.4rem);
-  }
-
-  .writing-vault {
-    margin-top: clamp(1.3rem, 3vw, 2.4rem);
-  }
-
-  .writing-trajectory {
-    margin-top: clamp(1.3rem, 3vw, 2.4rem);
-  }
-
-  .writing-vault-header p {
-    margin: 0.55rem 0 0;
-    color: var(--tone-muted);
-  }
-
-  .writing-proof-header p {
-    margin: 0.55rem 0 0;
-    color: var(--tone-muted);
-    max-width: 62ch;
-  }
-
-  .writing-proof-grid {
-    margin-top: 1rem;
+  .writing-archive__header {
     display: grid;
-    gap: 0.85rem;
-    grid-template-columns: minmax(0, 1.3fr) minmax(17rem, 0.9fr);
-    align-items: start;
+    gap: 1rem;
+    align-items: end;
   }
 
-  .writing-card--featured {
-    background: color-mix(in srgb, var(--tone-surface) 88%, transparent);
+  .writing-archive__kicker {
+    margin: 0;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--tone-accent-glow);
   }
 
-  .writing-proof-title {
-    margin: 0.5rem 0 0;
-    line-height: 1.14;
-    font-size: clamp(1.55rem, 2.7vw, 2.15rem);
+  .writing-archive__dek {
+    margin: 0.6rem 0 0;
+    max-width: 60ch;
+    color: var(--tone-muted);
   }
 
-  .writing-proof-stack {
-    border: 1px solid var(--line2);
-    border-radius: calc(var(--radius) * var(--space-scale));
-    background: color-mix(in srgb, var(--tone-surface) 90%, transparent);
-    padding: clamp(0.9rem, 2.2vw, 1.15rem);
+  .writing-archive__controls {
     display: grid;
     gap: 0.75rem;
-  }
-
-  .writing-proof-stack-label {
-    margin: 0;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--tone-accent-glow);
-  }
-
-  .writing-proof-mini {
-    display: grid;
-    gap: 0.4rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--line2);
-  }
-
-  .writing-proof-mini:first-of-type {
-    padding-top: 0;
-    border-top: 0;
-  }
-
-  .writing-proof-mini h3,
-  .writing-proof-mini p:last-child {
-    margin: 0;
-  }
-
-  .writing-proof-mini p:last-child {
-    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
-  }
-
-  .writing-vault-list {
-    list-style: none;
-    margin: 1rem 0 0;
-    padding: 0;
-    display: grid;
-    gap: 0.85rem;
-  }
-
-  .writing-vault-card {
-    border: 1px solid var(--line2);
-    border-radius: calc(var(--radius) * var(--space-scale));
-    background: linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--tone-surface-strong) 76%, transparent),
-      color-mix(in srgb, var(--tone-surface) 66%, transparent)
-    );
-    padding: 0;
-    overflow: hidden;
-    transition: border-color 0.2s ease;
-  }
-
-  .writing-vault-card.is-open {
-    border-color: var(--band-color, var(--line2));
-  }
-
-  .writing-vault-toggle {
-    all: unset;
-    display: block;
-    width: 100%;
-    padding: clamp(0.9rem, 2.2vw, 1.15rem);
-    cursor: pointer;
-    position: relative;
-    box-sizing: border-box;
-  }
-
-  .writing-vault-toggle:focus-visible {
-    outline: 2px solid var(--band-color, var(--tone-accent));
-    outline-offset: -2px;
-  }
-
-  .writing-vault-chevron {
-    position: absolute;
-    right: 1rem;
-    top: 1.1rem;
-    width: 0.6rem;
-    height: 0.6rem;
-    border-right: 2px solid var(--tone-muted);
-    border-bottom: 2px solid var(--tone-muted);
-    transform: rotate(45deg);
-    transition: transform 0.2s ease;
-  }
-
-  .writing-vault-card.is-open .writing-vault-chevron {
-    transform: rotate(-135deg);
-  }
-
-  .writing-vault-topline {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 0.5rem;
-    padding-right: 1.5rem;
-  }
-
-  .writing-vault-topline h3 {
-    margin: 0;
-  }
-
-  .writing-vault-status {
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 35%, var(--line2));
-    border-radius: 999px;
-    padding: 0.2rem 0.55rem;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--tone-accent-glow);
-  }
-
-  .writing-vault-logline {
-    margin: 0.62rem 0 0;
-    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
-  }
-
-  .writing-vault-detail {
-    padding: 0 clamp(0.9rem, 2.2vw, 1.15rem) clamp(0.9rem, 2.2vw, 1.15rem);
-    border-top: 1px solid color-mix(in srgb, var(--band-color, var(--line2)) 30%, transparent);
-  }
-
-  .writing-vault-tension {
-    margin: 0.8rem 0 0;
-    color: var(--tone-muted);
-    font-size: 0.88rem;
-    font-style: italic;
-  }
-
-  .writing-vault-anchors {
-    margin-top: 0.8rem;
-  }
-
-  .writing-vault-anchors-label {
-    margin: 0;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--band-color, var(--tone-accent-glow));
-  }
-
-  .writing-vault-anchor-list {
-    list-style: none;
-    margin: 0.5rem 0 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-  }
-
-  .writing-vault-anchor-link {
-    display: inline-block;
-    padding: 0.25rem 0.6rem;
-    border: 1px solid color-mix(in srgb, var(--band-color, var(--tone-accent)) 40%, var(--line2));
-    border-radius: 999px;
-    font-size: 0.78rem;
-    color: var(--tone-text);
-    text-decoration: none;
-    transition: border-color 0.15s ease, color 0.15s ease;
-  }
-
-  .writing-vault-anchor-link:hover {
-    border-color: var(--band-color, var(--tone-accent));
-    color: var(--band-color, var(--tone-accent-glow));
-  }
-
-  .writing-vault-anchor-pending {
-    display: inline-block;
-    padding: 0.25rem 0.6rem;
-    border: 1px solid color-mix(in srgb, var(--line2) 50%, transparent);
-    border-radius: 999px;
-    font-size: 0.78rem;
-    color: var(--tone-muted);
-  }
-
-  .writing-trajectory-header p {
-    margin: 0.55rem 0 0;
-    color: var(--tone-muted);
-    max-width: 68ch;
-  }
-
-  .writing-trajectory-grid {
-    display: grid;
-    gap: 0.85rem;
-    margin-top: 1rem;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .writing-trajectory-card {
-    border: 1px solid var(--line2);
-    border-radius: calc(var(--radius) * var(--space-scale));
-    background: linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--tone-surface-strong) 76%, transparent),
-      color-mix(in srgb, var(--tone-surface) 66%, transparent)
-    );
-    padding: clamp(0.9rem, 2.2vw, 1.15rem);
-  }
-
-  .writing-trajectory-card h3 {
-    margin: 0.42rem 0 0;
-  }
-
-  .writing-trajectory-card p:last-child {
-    margin: 0.62rem 0 0;
-    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
-  }
-
-  .writing-trajectory-period {
-    margin: 0;
-    font-size: 0.74rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--tone-accent-glow);
-  }
-
-  .writing-archive-header {
-    display: grid;
-    gap: 0.8rem;
-    align-items: end;
   }
 
   .writing-filters {
@@ -691,26 +259,28 @@ const writingArc = [
   }
 
   .writing-filter {
+    appearance: none;
     border: 1px solid var(--line2);
     border-radius: 999px;
-    background: color-mix(in srgb, var(--tone-surface) 52%, transparent);
+    background: color-mix(in srgb, var(--tone-surface) 84%, transparent);
     color: var(--tone-muted);
-    padding: 0.33rem 0.72rem;
-    font-size: 0.74rem;
-    letter-spacing: 0.02em;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
   }
 
-  .writing-filter.is-active,
-  .writing-filter:hover,
-  .writing-filter:focus-visible {
+  .writing-filter.is-active {
+    border-color: color-mix(in srgb, var(--tone-accent) 38%, var(--line2));
+    background: color-mix(in srgb, var(--tone-accent) 12%, transparent);
     color: var(--tone-accent-glow);
-    border-color: color-mix(in srgb, var(--tone-accent) 32%, var(--line2));
   }
 
   .writing-results {
     margin: 0;
     font-size: 0.82rem;
-    color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+    color: var(--tone-muted);
   }
 
   .writing-list {
@@ -721,59 +291,69 @@ const writingArc = [
     gap: 0.85rem;
   }
 
-  .writing-card {
+  .writing-entry-row {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1rem;
     border: 1px solid var(--line2);
-    border-radius: calc(var(--radius) * var(--space-scale));
-    background: linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--tone-surface-strong) 74%, transparent),
-      color-mix(in srgb, var(--tone-surface) 64%, transparent)
-    );
-    padding: clamp(0.9rem, 2.2vw, 1.2rem);
-    transition: border-color 160ms ease, transform 160ms ease;
+    border-radius: 1.1rem;
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--tone-surface-strong) 76%, transparent),
+        color-mix(in srgb, var(--tone-surface) 66%, transparent)
+      );
   }
 
-  .writing-card:hover {
-    border-color: color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
-    transform: translateY(-1px);
-  }
-
-  .writing-card-date {
-    margin: 0;
-    font-size: 0.78rem;
-    letter-spacing: 0.08em;
+  .writing-entry-row__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-items: center;
+    font-size: 0.72rem;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+    letter-spacing: 0.08em;
+    color: var(--tone-muted);
   }
 
-  .writing-card h3 {
-    margin: 0.5rem 0 0;
-    line-height: 1.2;
+  .writing-entry-row__state {
+    border: 1px solid var(--line2);
+    border-radius: 999px;
+    padding: 0.2rem 0.5rem;
   }
 
-  .writing-card-title {
+  .writing-entry-row__state.is-ready {
+    border-color: color-mix(in srgb, var(--tone-accent) 30%, var(--line2));
+    color: var(--tone-accent-glow);
+  }
+
+  .writing-entry-row__body {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .writing-entry-row__body h3,
+  .writing-entry-row__body p {
+    margin: 0;
+  }
+
+  .writing-entry-row__body a {
     color: var(--tone-text);
     text-decoration: none;
   }
 
-  .writing-card-title:hover,
-  .writing-card-title:focus-visible {
-    color: var(--tone-accent-glow);
+  .writing-entry-row__body > p {
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+    line-height: 1.65;
+    max-width: 64ch;
   }
 
-  .writing-card-summary {
-    margin: 0.6rem 0 0;
-    max-width: 70ch;
-    color: color-mix(in srgb, var(--tone-text) 89%, var(--tone-muted) 11%);
-  }
-
-  .writing-card-footer {
-    margin-top: 0.82rem;
+  .writing-entry-row__footer {
     display: flex;
     flex-wrap: wrap;
+    gap: 0.75rem;
     align-items: center;
     justify-content: space-between;
-    gap: 0.55rem;
   }
 
   .writing-tags {
@@ -783,41 +363,53 @@ const writingArc = [
   }
 
   .writing-tag {
-    border: 1px solid var(--line2);
+    display: inline-flex;
+    padding: 0.22rem 0.48rem;
     border-radius: 999px;
+    border: 1px solid var(--line2);
     font-size: 0.72rem;
-    padding: 0.25rem 0.55rem;
-    color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
-    background: color-mix(in srgb, var(--tone-surface) 56%, transparent);
+    color: var(--tone-muted);
+    background: color-mix(in srgb, var(--tone-surface) 84%, transparent);
   }
 
   .writing-read-link {
     color: var(--tone-accent-glow);
-    font-size: 0.85rem;
     text-decoration: none;
     border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 55%, transparent);
-    white-space: nowrap;
-  }
-
-  .writing-read-link:hover,
-  .writing-read-link:focus-visible {
-    border-color: color-mix(in srgb, var(--tone-accent) 90%, transparent);
+    font-size: 0.84rem;
   }
 
   .writing-empty {
-    margin-top: 0.8rem;
+    margin-top: 1rem;
     color: var(--tone-muted);
+    font-style: italic;
   }
 
-  @media (max-width: 700px) {
-    .writing-proof-grid,
-    .writing-trajectory-grid {
-      grid-template-columns: 1fr;
+  @media (min-width: 900px) {
+    .writing-page-header {
+      grid-template-columns: minmax(0, 1.4fr) minmax(18rem, 0.9fr);
     }
 
-    .writing-card-footer {
-      align-items: flex-start;
-      flex-direction: column;
+    .writing-archive__header {
+      grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
+    }
+
+    .writing-entry-row {
+      grid-template-columns: minmax(10rem, 0.34fr) minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .writing-entry-row__meta {
+      align-content: start;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .writing-page-header,
+    .writing-desk-shell,
+    .writing-archive {
+      padding-left: 1rem;
+      padding-right: 1rem;
     }
   }
 </style>
