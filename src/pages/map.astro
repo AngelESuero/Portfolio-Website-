@@ -6,11 +6,12 @@ import LifeMapTabs from '../../app/components/LifeMapTabs';
 <BaseLayout
   title="Organizational Atlas - a_e.s_"
   theme="archive"
+  bodyClass="map-page"
   showHeader={true}
   renderHeader={true}
   renderFooter={false}
   fullBleed={true}
-  ambientEffects={false}
+  ambientEffects={true}
   viewTransitions={false}
 >
   <div class="map-page-intro">
@@ -30,6 +31,13 @@ import LifeMapTabs from '../../app/components/LifeMapTabs';
 </BaseLayout>
 
 <style>
+  :global(body.map-page) {
+    background:
+      radial-gradient(54rem 32rem at 14% 6%, var(--street-warm), transparent 70%),
+      radial-gradient(46rem 28rem at 86% 10%, var(--street-cool), transparent 72%),
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-bg-deep) 92%, black), var(--tone-bg));
+  }
+
   .map-page-intro {
     max-width: 1440px;
     margin: 0 auto;
@@ -89,7 +97,7 @@ import LifeMapTabs from '../../app/components/LifeMapTabs';
     max-width: 1440px;
     margin: 1.5rem auto 0;
     padding: 0 1.5rem;
-    border-top: 1px solid rgba(255,255,255,0.07);
+    border-top: 1px solid color-mix(in srgb, var(--tone-line) 92%, rgba(255,255,255,0.03));
   }
 
   @media (max-width: 640px) {
