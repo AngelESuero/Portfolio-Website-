@@ -1,7 +1,7 @@
 {
   "meta": {
     "schemaVersion": 1,
-    "generatedAt": "2026-03-23T23:48:24.700Z",
+    "generatedAt": "2026-03-24T03:14:56.490Z",
     "sources": [
       {
         "id": "openai_news",
@@ -48,6 +48,30 @@
     ]
   },
   "items": [
+    {
+      "id": "8616f151d28eaba46db499aa2613b92247f7978024bf499551f51bb01acdadf2",
+      "title": "A New Framework for Evaluation of Voice Agents (EVA)",
+      "url": "https://huggingface.co/blog/ServiceNow-AI/eva",
+      "sourceId": "hf_blog",
+      "sourceName": "Hugging Face — Blog",
+      "publishedAt": "2026-03-24T02:01:52.000Z",
+      "summary": null,
+      "tags": [
+        "open-source",
+        "agents",
+        "eval"
+      ],
+      "citations": [
+        {
+          "label": "Original",
+          "url": "https://huggingface.co/blog/ServiceNow-AI/eva"
+        },
+        {
+          "label": "Feed",
+          "url": "https://huggingface.co/blog/feed.xml"
+        }
+      ]
+    },
     {
       "id": "263f90c164c69a86811fc83ed32458f03b489c190a818a2f605ec73d7381fb19",
       "title": "NVIDIA IGX Thor Powers Industrial, Medical, and Robotics Edge AI Applications",
@@ -15063,31 +15087,6 @@
         {
           "label": "Original",
           "url": "https://arxiv.org/abs/2602.06023"
-        },
-        {
-          "label": "Feed",
-          "url": "https://rss.arxiv.org/rss/cs.AI"
-        }
-      ]
-    },
-    {
-      "id": "7b1d0a3be8d4a35afeaf332c9738d50852143b89240fe5a30702a1e44e8e5471",
-      "title": "Verifiable Semantics for Agent-to-Agent Communication",
-      "url": "https://arxiv.org/abs/2602.16424",
-      "sourceId": "arxiv_cs_ai",
-      "sourceName": "arXiv — cs.AI",
-      "publishedAt": "2026-03-20T04:00:00.000Z",
-      "summary": "arXiv:2602.16424v2 Announce Type: replace Abstract: Multiagent AI systems require consistent communication, but we lack methods to verify that agents share the same understanding of the terms used. Natural language is interpretable but vulnerable to semantic drift, while learned protocols are efficient but opaque. We propose a certification protocol based on the stimulus-meaning model, where agents are tested on shared observable events and terms are certified if empirical disagreement falls below a statistical threshold. In this protocol, agents restricting their reasoning to certified terms (\"core-guarded reasoning\") achieve provably bounded disagreement. We also outline mechanisms for detecting drift (recertification) and recovering shared vocabulary (renegotiation). In simulations with varying degrees of semantic divergence, core-guarding reduces disagreement by 72-96%. In a validation with fine-tuned language models, disagreement is reduced by 51%. Our framework provides a first step towards verifiable agent-to-agent communication.",
-      "tags": [
-        "papers",
-        "agents",
-        "reasoning",
-        "model"
-      ],
-      "citations": [
-        {
-          "label": "Original",
-          "url": "https://arxiv.org/abs/2602.16424"
         },
         {
           "label": "Feed",
