@@ -371,8 +371,20 @@ function Toggle({ value, onChange }: { value: boolean; onChange: () => void }) {
       type="button"
       onClick={onChange}
       className="inline-flex items-center gap-3 rounded-full border border-white/8 bg-white/[0.035] px-3.5 py-2.5 text-[11px] tracking-[0.16em] text-stone-300 transition hover:bg-white/[0.055]"
+      style={{
+        borderColor: "var(--tone-line)",
+        background: "color-mix(in srgb, var(--tone-surface) 88%, transparent)",
+        color: "var(--tone-muted)"
+      }}
     >
-      <span className={`relative h-5 w-9 rounded-full transition ${value ? "bg-stone-200/18" : "bg-white/8"}`}>
+      <span
+        className="relative h-5 w-9 rounded-full transition"
+        style={{
+          background: value
+            ? "color-mix(in srgb, var(--tone-accent) 18%, var(--tone-surface-strong))"
+            : "color-mix(in srgb, var(--tone-line) 72%, transparent)"
+        }}
+      >
         <span className={`absolute top-1 h-3 w-3 rounded-full bg-stone-100 transition-transform ${value ? "translate-x-5" : "translate-x-1"}`} />
       </span>
       <span>{value ? "hide reads" : "show reads"}</span>
@@ -508,9 +520,10 @@ function QuoteEntry({
         <div
           className="flex h-9 w-9 items-center justify-center rounded-full border text-[0.95rem] text-stone-200 sm:h-10 sm:w-10"
           style={{
-            borderColor: "rgba(255,255,255,0.08)",
-            background: theme.wash,
-            boxShadow: "0 0 0 1px rgba(255,255,255,0.015) inset"
+            borderColor: "var(--tone-line)",
+            background: `color-mix(in srgb, ${theme.wash} 74%, var(--tone-surface))`,
+            boxShadow: "0 0 0 1px rgba(255,255,255,0.015) inset",
+            color: "var(--tone-text)"
           }}
           aria-label={showInterpretations ? marker.label : "entry"}
           title={showInterpretations ? marker.label : "entry"}
@@ -521,7 +534,7 @@ function QuoteEntry({
         <div
           className="absolute bottom-0 left-1/2 top-[3.6rem] w-px -translate-x-1/2"
           style={{
-            background: isLast ? "transparent" : "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))"
+            background: isLast ? "transparent" : "linear-gradient(180deg, var(--tone-line), rgba(255,255,255,0.02))"
           }}
         />
       </div>
@@ -529,17 +542,24 @@ function QuoteEntry({
       <div className="min-w-0 max-w-[72ch]">
         <blockquote className="relative pl-4 sm:pl-5">
           <div className="absolute left-0 top-0 text-[1.5rem] leading-none text-white/12">“</div>
-          <div className={`font-serif text-stone-100 ${quoteClass}`}>{entry.quote}</div>
+          <div className={`font-serif ${quoteClass}`} style={{ color: "var(--tone-text)" }}>{entry.quote}</div>
         </blockquote>
 
         {showInterpretations ? (
           <div className="mt-4 pl-4 sm:pl-5">
             {entry.incomplete ? (
-              <div className="mb-3 inline-flex rounded-full border border-amber-100/10 bg-amber-100/[0.035] px-2.5 py-1 text-[10px] tracking-[0.12em] text-amber-100/60">
+              <div
+                className="mb-3 inline-flex rounded-full border px-2.5 py-1 text-[10px] tracking-[0.12em]"
+                style={{
+                  borderColor: "color-mix(in srgb, var(--tone-accent) 18%, var(--tone-line))",
+                  background: "color-mix(in srgb, var(--tone-accent) 10%, transparent)",
+                  color: "color-mix(in srgb, var(--tone-accent-glow) 70%, var(--tone-muted))"
+                }}
+              >
                 unfinished edge
               </div>
             ) : null}
-            <p className="max-w-[68ch] text-[0.95rem] leading-7 text-stone-400">{entry.read}</p>
+            <p className="max-w-[68ch] text-[0.95rem] leading-7" style={{ color: "var(--tone-muted)" }}>{entry.read}</p>
           </div>
         ) : null}
       </div>
@@ -571,19 +591,19 @@ function SectionBlock({
       <div
         className="relative overflow-hidden rounded-[1.6rem] border bg-white/[0.018] transition-all duration-300"
         style={{
-          borderColor: active ? "rgba(255,255,255,0.09)" : "rgba(255,255,255,0.055)",
+          borderColor: active ? "color-mix(in srgb, var(--tone-line) 96%, rgba(255,255,255,0.04))" : "var(--tone-line)",
           background: active
-            ? `linear-gradient(180deg, ${theme.wash}, rgba(255,255,255,0.018) 34%, rgba(255,255,255,0.014) 100%)`
-            : "linear-gradient(180deg, rgba(255,255,255,0.018), rgba(255,255,255,0.012))",
-          boxShadow: active ? "0 10px 34px rgba(0,0,0,0.12)" : "none"
+            ? `linear-gradient(180deg, color-mix(in srgb, ${theme.wash} 82%, var(--tone-surface)), color-mix(in srgb, var(--tone-surface) 96%, transparent) 34%, color-mix(in srgb, var(--tone-surface-strong) 94%, transparent) 100%)`
+            : "linear-gradient(180deg, color-mix(in srgb, var(--tone-surface) 92%, transparent), color-mix(in srgb, var(--tone-surface-strong) 94%, transparent))",
+          boxShadow: active ? "0 18px 46px rgba(0,0,0,0.14)" : "none"
         }}
       >
         <div className="absolute inset-x-0 top-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${theme.line}, transparent)` }} />
 
         <div className="border-b border-white/6 px-5 py-6 sm:px-8 sm:py-8">
           <div className="max-w-3xl">
-            <h2 className="text-[2rem] font-medium tracking-[-0.03em] text-stone-100 sm:text-[2.25rem]">{section.title}</h2>
-            <p className="mt-3 max-w-[56ch] text-[0.96rem] leading-7 text-stone-400">{section.description}</p>
+            <h2 className="text-[2rem] font-medium tracking-[-0.03em] sm:text-[2.25rem]" style={{ color: "var(--tone-text)" }}>{section.title}</h2>
+            <p className="mt-3 max-w-[56ch] text-[0.96rem] leading-7" style={{ color: "var(--tone-muted)" }}>{section.description}</p>
           </div>
         </div>
 
@@ -640,7 +660,13 @@ export default function UnfurlingLifeModel() {
   const currentTheme = SECTION_THEMES[current.key];
 
   return (
-    <div className="min-h-[300vh] bg-[#11100d] text-stone-100">
+    <div
+      className="min-h-[300vh] text-stone-100"
+      style={{
+        background:
+          "radial-gradient(42rem 22rem at 78% 8%, color-mix(in srgb, var(--tone-sky) 12%, transparent), transparent 72%), radial-gradient(38rem 20rem at 18% 14%, color-mix(in srgb, var(--tone-accent) 12%, transparent), transparent 74%), linear-gradient(180deg, color-mix(in srgb, var(--tone-bg-deep) 90%, black), color-mix(in srgb, var(--tone-bg) 96%, black))"
+      }}
+    >
       <div className="mx-auto grid max-w-[1480px] grid-cols-1 gap-12 px-5 py-8 sm:px-8 lg:grid-cols-[minmax(0,1.34fr)_minmax(320px,0.58fr)] lg:gap-16 lg:px-10">
         <div className="py-[4vh] lg:order-1 lg:pt-2 lg:pb-[8vh]">
           <div className="mb-4 flex items-center justify-end lg:mb-3">
@@ -662,16 +688,24 @@ export default function UnfurlingLifeModel() {
             <div
               className="overflow-hidden rounded-[1.9rem] border bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03),rgba(255,255,255,0.012)_58%,rgba(255,255,255,0)_100%)] p-5 sm:p-6"
               style={{
-                borderColor: "rgba(255,255,255,0.07)",
-                boxShadow: "0 18px 60px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.015) inset"
+                borderColor: "var(--tone-line)",
+                background:
+                  "radial-gradient(circle at center, color-mix(in srgb, var(--tone-surface) 28%, rgba(255,255,255,0.05)), color-mix(in srgb, var(--tone-surface) 8%, transparent) 58%, rgba(255,255,255,0) 100%)",
+                boxShadow: "0 24px 64px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.015) inset"
               }}
             >
-              <div className="rounded-[1.45rem] border border-white/6 bg-black/12 px-4 py-5">
+              <div
+                className="rounded-[1.45rem] border px-4 py-5"
+                style={{
+                  borderColor: "var(--tone-line)",
+                  background: "color-mix(in srgb, var(--tone-surface-strong) 78%, rgba(10,12,16,0.24))"
+                }}
+              >
                 <ModelGraphic progress={progress} />
               </div>
 
               <div className="mt-5 space-y-5">
-                <div className="h-[3px] overflow-hidden rounded-full bg-white/6">
+                <div className="h-[3px] overflow-hidden rounded-full" style={{ background: "color-mix(in srgb, var(--tone-line) 86%, transparent)" }}>
                   <div
                     className="h-full rounded-full transition-[width] duration-150"
                     style={{
@@ -681,12 +715,24 @@ export default function UnfurlingLifeModel() {
                   />
                 </div>
 
-                <div className="rounded-[1.15rem] border border-white/7 bg-black/16 px-4 py-4">
-                  <div className="text-[1.08rem] font-medium text-stone-200">{current.title}</div>
-                  <p className="mt-2 text-[0.93rem] leading-7 text-stone-400">{current.description}</p>
+                <div
+                  className="rounded-[1.15rem] border px-4 py-4"
+                  style={{
+                    borderColor: "var(--tone-line)",
+                    background: "color-mix(in srgb, var(--tone-surface) 84%, rgba(10,12,16,0.24))"
+                  }}
+                >
+                  <div className="text-[1.08rem] font-medium" style={{ color: "var(--tone-text)" }}>{current.title}</div>
+                  <p className="mt-2 text-[0.93rem] leading-7" style={{ color: "var(--tone-muted)" }}>{current.description}</p>
                 </div>
 
-                <div className="rounded-[1.15rem] border border-white/6 bg-white/[0.016] p-2.5">
+                <div
+                  className="rounded-[1.15rem] border p-2.5"
+                  style={{
+                    borderColor: "var(--tone-line)",
+                    background: "color-mix(in srgb, var(--tone-surface) 76%, transparent)"
+                  }}
+                >
                   <ModelSectionList currentKey={current.key} />
                 </div>
               </div>

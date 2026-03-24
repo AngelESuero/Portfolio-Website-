@@ -134,9 +134,8 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
   description={`A screening-room presentation page for ${profile.name}'s music and YouTube archive.`}
   theme="archive"
   bodyClass="theater-page"
-  flatSurface={true}
   fullBleed={true}
-  ambientEffects={false}
+  ambientEffects={true}
 >
   <main class="theater-shell">
     <section class="theater-hero">
@@ -407,36 +406,49 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
 
 <style>
   :global(body.theater-page) {
-    --theater-gold: #dfb26a;
-    --theater-cream: #f4e6cc;
-    --theater-red: #4d1517;
-    --theater-red-soft: rgba(102, 26, 28, 0.78);
-    --theater-panel: rgba(9, 8, 10, 0.82);
-    --theater-border: rgba(244, 230, 204, 0.12);
-    --theater-copy: rgba(244, 236, 220, 0.82);
+    --theater-gold: var(--tone-accent-glow);
+    --theater-cream: var(--tone-text);
+    --theater-red: color-mix(in srgb, var(--tone-accent) 52%, #341715);
+    --theater-red-soft: color-mix(in srgb, var(--tone-accent) 38%, rgba(36, 16, 18, 0.9));
+    --theater-panel: color-mix(in srgb, var(--tone-surface) 90%, rgba(10, 11, 16, 0.28));
+    --theater-border: color-mix(in srgb, var(--tone-line) 92%, rgba(255,255,255,0.03));
+    --theater-copy: var(--tone-muted);
     background:
-      radial-gradient(circle at 50% 12%, rgba(229, 184, 96, 0.16), transparent 28%),
-      radial-gradient(circle at 50% 48%, rgba(255, 238, 196, 0.08), transparent 30%),
-      linear-gradient(180deg, #14090a 0%, #09070a 44%, #060507 100%);
-    color: var(--theater-cream);
+      radial-gradient(60rem 34rem at 50% 8%, color-mix(in srgb, var(--tone-accent) 16%, transparent), transparent 62%),
+      radial-gradient(42rem 28rem at 82% 12%, color-mix(in srgb, var(--tone-sky) 11%, transparent), transparent 72%),
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-bg-deep) 90%, black), var(--tone-bg) 52%, color-mix(in srgb, var(--tone-bg) 96%, black));
+    color: var(--tone-text);
+  }
+
+  :global(body.theater-page .site-content-stage::before) {
+    border-color: color-mix(in srgb, var(--reading-plane-line) 94%, rgba(255,255,255,0.03));
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--reading-plane) 94%, rgba(10, 12, 18, 0.08)),
+        color-mix(in srgb, var(--reading-plane-strong) 98%, rgba(7, 9, 14, 0.08))
+      );
+    box-shadow: 0 24px 74px rgba(0, 0, 0, 0.24);
   }
 
   .theater-shell {
     position: relative;
     display: grid;
     gap: clamp(4rem, 7vw, 7rem);
+    width: min(100%, var(--measure));
+    margin-inline: auto;
     padding-bottom: clamp(4rem, 8vw, 7rem);
   }
 
   .theater-shell::before {
     content: '';
-    position: fixed;
+    position: absolute;
     inset: 0;
     pointer-events: none;
     background:
-      radial-gradient(circle at 50% 0%, rgba(243, 212, 155, 0.12), transparent 34%),
-      linear-gradient(90deg, rgba(0, 0, 0, 0.48) 0%, transparent 18%, transparent 82%, rgba(0, 0, 0, 0.48) 100%);
-    opacity: 0.85;
+      radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--tone-accent) 14%, transparent), transparent 34%),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.18) 0%, transparent 18%, transparent 82%, rgba(0, 0, 0, 0.18) 100%);
+    opacity: 0.78;
   }
 
   .theater-hero {
@@ -459,11 +471,15 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
     bottom: 0;
     width: min(22vw, 17rem);
     background:
-      linear-gradient(180deg, rgba(128, 26, 29, 0.96), rgba(70, 13, 17, 0.92)),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--tone-accent) 44%, #2d1814),
+        color-mix(in srgb, var(--tone-bg-deep) 86%, #130d10)
+      ),
       repeating-linear-gradient(
         90deg,
-        rgba(255, 255, 255, 0.05) 0,
-        rgba(255, 255, 255, 0.05) 8px,
+        rgba(255, 255, 255, 0.035) 0,
+        rgba(255, 255, 255, 0.035) 8px,
         rgba(0, 0, 0, 0.05) 8px,
         rgba(0, 0, 0, 0.05) 18px
       );
@@ -624,9 +640,10 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
   .theater-booth,
   .theater-listens__item {
     border: 1px solid var(--theater-border);
-    background: linear-gradient(180deg, rgba(18, 16, 18, 0.92), rgba(9, 8, 10, 0.78));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--theater-panel) 96%, rgba(255,255,255,0.02)), color-mix(in srgb, var(--tone-surface-strong) 88%, rgba(7,8,10,0.2)));
     box-shadow:
-      0 18px 60px rgba(0, 0, 0, 0.36),
+      0 18px 60px rgba(0, 0, 0, 0.26),
       inset 0 1px 0 rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(14px);
   }
@@ -660,9 +677,9 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
     align-items: center;
     width: 100%;
     padding: 0.72rem;
-    border: 1px solid rgba(244, 230, 204, 0.08);
+    border: 1px solid color-mix(in srgb, var(--tone-line) 88%, rgba(255,255,255,0.03));
     border-radius: 1rem;
-    background: rgba(255, 255, 255, 0.025);
+    background: color-mix(in srgb, var(--tone-surface) 82%, transparent);
     color: inherit;
     text-align: left;
     cursor: pointer;
@@ -673,8 +690,8 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
   .theater-picker__item.is-active,
   .theater-picker__item.is-priority {
     transform: translateY(-2px);
-    border-color: rgba(223, 178, 106, 0.28);
-    background: rgba(223, 178, 106, 0.08);
+    border-color: color-mix(in srgb, var(--theater-gold) 26%, var(--tone-line));
+    background: color-mix(in srgb, var(--theater-gold) 9%, var(--tone-surface));
   }
 
   .theater-picker__item img {
@@ -711,7 +728,7 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
     width: fit-content;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgba(244, 230, 204, 0.08);
+    border: 1px solid color-mix(in srgb, var(--tone-line) 88%, rgba(255,255,255,0.03));
     border-radius: 999px;
     padding: 0.35rem 0.7rem;
     font-size: 0.72rem;
@@ -734,8 +751,8 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(circle at 50% 14%, rgba(249, 229, 184, 0.14), transparent 25%),
-      linear-gradient(180deg, rgba(81, 26, 30, 0.26), transparent 28%);
+      radial-gradient(circle at 50% 14%, color-mix(in srgb, var(--tone-accent-glow) 18%, transparent), transparent 25%),
+      linear-gradient(180deg, color-mix(in srgb, var(--theater-red) 28%, transparent), transparent 28%);
     pointer-events: none;
   }
 
@@ -761,8 +778,8 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
     padding: clamp(0.75rem, 1.6vw, 1rem);
     border-radius: 1.6rem;
     background:
-      linear-gradient(180deg, rgba(5, 5, 6, 0.78), rgba(0, 0, 0, 0.92)),
-      radial-gradient(circle at 50% 50%, rgba(255, 241, 207, 0.1), transparent 55%);
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-bg-deep) 78%, black), color-mix(in srgb, var(--tone-bg-deep) 96%, black)),
+      radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--tone-accent-glow) 12%, transparent), transparent 55%);
     box-shadow:
       inset 0 0 0 1px rgba(255, 255, 255, 0.04),
       0 24px 40px rgba(0, 0, 0, 0.35);
@@ -775,7 +792,7 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
     padding: clamp(0.5rem, 1vw, 0.75rem);
     border-radius: 1.15rem;
     background:
-      linear-gradient(180deg, rgba(77, 21, 23, 0.88), rgba(25, 10, 11, 0.95)),
+      linear-gradient(180deg, color-mix(in srgb, var(--theater-red) 88%, rgba(20, 10, 12, 0.92)), color-mix(in srgb, var(--tone-bg-deep) 90%, #120b0d)),
       linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent);
     box-shadow:
       0 0 0 1px rgba(255, 243, 216, 0.08),
@@ -829,8 +846,8 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
     padding: 1rem;
     border-radius: 1.35rem;
     border: 1px solid var(--theater-border);
-    background: rgba(9, 8, 10, 0.74);
-    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+    background: color-mix(in srgb, var(--tone-surface) 84%, rgba(8, 8, 10, 0.16));
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.2);
   }
 
   .theater-clip__meta {
@@ -877,7 +894,7 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
     padding: 0.9rem;
     border-radius: 1.25rem;
     border: 1px solid var(--theater-border);
-    background: rgba(11, 10, 12, 0.7);
+    background: color-mix(in srgb, var(--tone-surface) 84%, rgba(8, 8, 10, 0.14));
     text-decoration: none;
     transition: transform 180ms ease, border-color 180ms ease;
   }

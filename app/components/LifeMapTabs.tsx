@@ -18,14 +18,14 @@ const VIEW_META: Record<
     eyebrow: "Spatial systems view",
     description:
       "The original orbital map. Rotate through dependencies, openings, and the regions that hold the rest together.",
-    accent: "#d8c18f"
+    accent: "var(--tone-accent-glow)"
   },
   unfurling: {
     label: "Unfurling",
     eyebrow: "Verbatim reading view",
     description:
       "A scroll-linked pass through survival, stability, and expansion, with quotes intact and plain-language reading underneath.",
-    accent: "#e7cba7"
+    accent: "var(--tone-sky-bright)"
   }
 };
 
@@ -65,7 +65,8 @@ export default function LifeMapTabs() {
           style={{
             borderColor: "var(--tone-line)",
             background:
-              "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.018))"
+              "linear-gradient(180deg, color-mix(in srgb, var(--tone-surface) 92%, rgba(255,255,255,0.03)), color-mix(in srgb, var(--tone-surface-strong) 94%, transparent))",
+            boxShadow: "0 22px 52px rgba(0,0,0,0.16)"
           }}
         >
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -111,7 +112,9 @@ export default function LifeMapTabs() {
                       className="rounded-full border px-4 py-2 text-[0.78rem] font-medium uppercase tracking-[0.16em] transition-colors duration-150"
                       style={{
                         borderColor: active ? `${meta.accent}66` : "var(--tone-line)",
-                        background: active ? `${meta.accent}12` : "rgba(255,255,255,0.02)",
+                        background: active
+                          ? `color-mix(in srgb, ${meta.accent} 14%, var(--tone-surface-strong))`
+                          : "color-mix(in srgb, var(--tone-surface) 82%, transparent)",
                         color: active ? meta.accent : "var(--tone-muted)"
                       }}
                     >
