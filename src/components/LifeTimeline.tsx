@@ -11,7 +11,7 @@
 import React, { useState } from 'react';
 
 type Category = 'personal' | 'education' | 'work' | 'project';
-type LifeStage = 'youth' | 'preteen' | 'teen' | 'youngAdult';
+type LifeStage = 'youth' | 'preteen' | 'teen' | 'college' | 'postGrad' | 'current';
 type ShowcaseKind = 'writing' | 'music' | 'photos' | 'video' | 'work' | 'ideas' | 'community';
 
 interface TimelineEntry {
@@ -155,8 +155,10 @@ const ENTRIES: TimelineEntry[] = [
     title: "NJIT Professor's Assistant",
     shortDesc: 'Supported NJIT faculty. Early experience translating complex material for students.',
     category: 'work',
-    placeholder: true,
-    placeholderNote: 'Entry reserved',
+    aiNarrative: [
+      "Before Gallatin fully took hold, he was already working inside classrooms in a different way — sitting alongside a professor at NJIT, helping students parse concepts that didn't yield easily. He learned then that the gap between understanding and explaining is where the real work lives.",
+      "He has been bridging that gap ever since.",
+    ],
   },
   {
     id: 'gallatin-pa',
@@ -164,8 +166,10 @@ const ENTRIES: TimelineEntry[] = [
     title: "NYU Gallatin Professor's Assistant",
     shortDesc: 'Assisted faculty at Gallatin — bridging research and pedagogy while completing the B.A.',
     category: 'work',
-    placeholder: true,
-    placeholderNote: 'Entry reserved',
+    aiNarrative: [
+      "In September 2021, while still working toward his own degree, he took on the role of Professor's Assistant at Gallatin — which meant reading the same questions from both sides of the table simultaneously.",
+      "There is something particular about helping other students think through interdisciplinary work when you are yourself figuring out interdisciplinary work. The doubling made him sharper. It also made him more patient.",
+    ],
   },
   {
     id: 'eae',
@@ -173,8 +177,10 @@ const ENTRIES: TimelineEntry[] = [
     title: 'E.A.E. Enterprises — Startup ATM Co.',
     shortDesc: 'Worked with a startup in the ATM space. Early exposure to small-business operations and fintech infrastructure.',
     category: 'work',
-    placeholder: true,
-    placeholderNote: 'Entry reserved',
+    aiNarrative: [
+      "E.A.E. Enterprises was a small ATM startup, and his time there was less about the machines than about watching how a small business actually runs — the logistics, the friction, the gap between a good idea and a solvent operation.",
+      "He learned things there that no classroom assigned. How cash flow thinks differently from capital. How infrastructure is invisible until it fails. He kept those lessons.",
+    ],
   },
   {
     id: 'nmoa',
@@ -248,10 +254,9 @@ const ENTRIES: TimelineEntry[] = [
     shortDesc: "Selected for Gallatin's Americas Scholars program. Work moved past the classroom and into the field.",
     category: 'education',
     aiNarrative: [
-      "Selected for NYU Gallatin's Americas Scholars program, which took his work further — past the borders of the classroom and into the field. He wrote, he thought, he stayed curious in the way he always had. He graduated.",
+      "Selected for NYU Gallatin's Americas Scholars program in his junior and senior years. The program takes seriously the idea that the Americas are not one story but many — overlapping, contested, and alive. For someone who had been building a concentration around survival and civic memory, this felt like the institutional confirmation that the questions were real.",
+      "He wrote, he thought, he stayed curious in the way he always had. He graduated.",
     ],
-    placeholder: true,
-    placeholderNote: 'Entry reserved — expand for draft',
   },
   {
     id: 'scraps-heartbreaks',
@@ -465,26 +470,73 @@ const STAGE_SHOWCASES: StageShowcase[] = [
     ]
   },
   {
-    id: 'youngAdult',
-    title: 'Young Adult',
-    ageRange: 'Ages 20+',
-    yearRange: '2020–Now',
-    summary: 'The practice branches outward into thesis work, music, museum AV, Newark collaborations, archives, and AI systems thinking.',
+    id: 'college',
+    title: 'College',
+    ageRange: 'Ages 19–23',
+    yearRange: '2019–2023',
+    summary: 'NYU Gallatin B.A. — a self-designed concentration in survival, archive, and civic art. Work and studies run simultaneously.',
     accomplishments: [
-      'Built The Art of Survival and graduated Gallatin with a body of work, not just a degree.',
-      'Turned music, videos, essays, and demos into a living public archive.',
-      'Moved across museum, community, and systems work without separating them from art.'
+      'Enrolled at NYU Gallatin School of Individualized Study and built a self-directed concentration around survival, civic art, and community memory.',
+      'Held concurrent Professor\'s Assistant roles at both NYU Gallatin (Sep 2021) and NJIT while completing the degree.',
+      'Started at the Newark Museum of Art as a Gallery Host — running AV systems, projection setups, and exhibition playback.',
+      'Produced Queries (The Beat Tape) and launched The Art of Survival — biographical digital art made with zero prior skills.',
+      'Co-authored community reports via the Newark Water Coalition; documented 100+ households and 15+ meetings.'
     ],
-    previewImages: ['/photos/download-3.jpg', '/photos/download.jpg', '/images/home-collage/collage-5.jpg'],
-    featuredEntryIds: ['art-of-survival', 'nmoa', 'writing-archive', 'agi'],
+    previewImages: ['/photos/download-3.jpg', '/images/home-collage/collage-5.jpg', '/photos/download.jpg'],
+    featuredEntryIds: ['gallatin', 'gallatin-pa', 'njit-pa', 'eae', 'nmoa', 'queries', 'art-of-survival'],
     showcases: [
+      { label: 'The Art of Survival', href: '/work/the-art-of-survival', kind: 'work' },
+      { label: 'Queries Beat Tape', href: '/work/queries-beat-tape-family-love', kind: 'music' },
+      { label: 'AV & Museum Work', href: '/work/av-museum-work', kind: 'work' },
       { label: 'Writing archive', href: '/archive/writing', kind: 'writing' },
+      { label: 'Collaborations', href: '/collaborations', kind: 'community' }
+    ]
+  },
+  {
+    id: 'postGrad',
+    title: 'Post-Grad',
+    ageRange: 'Ages 23–24',
+    yearRange: '2023–2024',
+    summary: 'Graduated Gallatin. SCRAPS projects, Newark Night footage, essays, and the beginning of a documented rejection record.',
+    accomplishments: [
+      'Earned B.A. from NYU Gallatin with an individualized concentration in survival, archive practice, and civic art.',
+      'Released SCRAPS After Heartbreaks music video (Feb–May 2023) and SCRAPS Dark Days, Symptoms & No Context Demos.',
+      'Shot Newark Night Video Notes — a street-level visual diary of the city after dark.',
+      'Built a writing archive spanning essays on power, community, and survival.',
+      'Began systematically documenting 40 direct employer rejections as a factual labor-market record.'
+    ],
+    previewImages: ['/images/home-collage/collage-3.jpg', '/photos/download-2.jpg', '/photos/download-7.jpg'],
+    featuredEntryIds: ['graduated', 'americas', 'scraps-heartbreaks', 'newark-night', 'writing-archive', 'scraps-dark', 'rejections'],
+    showcases: [
+      { label: 'SCRAPS After Heartbreaks', href: '/work/scraps-after-heartbreaks-musicvideo', kind: 'video' },
+      { label: 'Newark Night Video Notes', href: '/work/newark-night-video-notes', kind: 'video' },
+      { label: 'SCRAPS Dark Days', href: '/work/scraps-dark-days-symptoms-no-context-demos-2023-2024', kind: 'music' },
+      { label: 'Writing archive', href: '/archive/writing', kind: 'writing' },
+      { label: 'Rejection record', href: '/rejections', kind: 'work' }
+    ]
+  },
+  {
+    id: 'current',
+    title: 'Current',
+    ageRange: 'Ages 24+',
+    yearRange: '2024–Now',
+    summary: 'Systems thinking and archive practice converge. Market Model, AGI research, Survival OS, and building with AI.',
+    accomplishments: [
+      'Built the Market Model — a structural diagram of how creative economies and attention markets actually work.',
+      'Published the AGI Signals Timeline: a wave-based read of the AGI transition organized by signal type, not hype.',
+      'Developed Survival OS — a blueprint mapping what keeps a human alive and what AI could safely automate.',
+      'Assembled a living public archive of music, video, and writing as an open record of process.',
+      'Active AI and prompt engineering practice: building with Claude, researching accountability, keeping human judgment central.'
+    ],
+    previewImages: ['/photos/download-5.jpg', '/images/home-collage/collage-6.jpg', '/photos/download-1.jpg'],
+    featuredEntryIds: ['market-model', 'agi', 'survival-os', 'post-labor', 'archive', 'ai-work', 'now'],
+    showcases: [
+      { label: 'Market Model', href: '/market-model', kind: 'ideas' },
+      { label: 'AGI Signals', href: '/agi', kind: 'ideas' },
+      { label: 'Survival OS', href: '/survival-os', kind: 'ideas' },
+      { label: 'Post-Labor Economics', href: '/post-labor-economics', kind: 'ideas' },
       { label: 'Music archive', href: '/archive/music', kind: 'music' },
-      { label: 'Work', href: '/work', kind: 'work' },
-      { label: 'Collaborations', href: '/collaborations', kind: 'community' },
-      { label: 'Photo archive', href: '/instagram', kind: 'photos' },
-      { label: 'AGI signals', href: '/agi', kind: 'ideas' },
-      { label: 'Rejection log', href: '/rejections', kind: 'work' }
+      { label: 'Now', href: '/now', kind: 'writing' }
     ]
   }
 ];

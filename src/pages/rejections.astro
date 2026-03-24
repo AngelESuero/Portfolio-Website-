@@ -45,11 +45,289 @@ const rejections = [
 ];
 
 const fellowship = { date: 'Dec 15, 2021', org: 'NYU Gallatin Global Fellowship in Human Rights', role: '2022 Fellowship Application', outcome: 'Forwarded rejection-related email.' };
+
+const inventorySummary = {
+  searchDate: 'Mar 24, 2026',
+  priorCombinedClearApplications: 112,
+  combinedClearApplications: 179,
+  deepPassAdditions: 67,
+  outboundMessages: 54,
+  directRejections: rejections.length,
+  reviewedMailboxes: 3,
+  mailboxes: [
+    {
+      mailbox: 'aes903@nyu.edu',
+      clearApplications: 97,
+      note: '60 from the updated NYU pass, plus 37 older records found in the deep pass.',
+    },
+    {
+      mailbox: 'angelesuero2@gmail.com',
+      clearApplications: 82,
+      note: '52 from the updated second pass, plus 30 older records found in the deep pass.',
+    },
+    {
+      mailbox: 'angelesuero@a-e-space.info',
+      clearApplications: 0,
+      note: 'Reviewed in the addendum; only duplicates and receipts without role names were found.',
+    },
+  ],
+  included: [
+    'Job or internship applications where the employer and role name were both visible in the email record.',
+    'Records backed by a confirmation, interview note, status update, or rejection email.',
+  ],
+  excluded: [
+    'School marketing, housing or lottery records, loans or insurance, and other non-employment email trails.',
+    'Incomplete applications, reminder emails, duplicates, and records that never showed a clear role name.',
+  ],
+  reportHref: '/documents/combined-gmail-job-applications-inventory.pdf',
+  rejectionReportHref: '/documents/combined-rejection-emails-report.pdf',
+};
+
+const outboundSummary = {
+  included: 'Sent emails to companies, organizations, recruiters, museums, venues, media outlets, and public institutions with attachments and clear job-search context.',
+  excluded: 'Self-forwards, recommendation requests, replies without attachments, and clearly non-job material.',
+  note: 'This appendix tracks outbound outreach, not submitted applications or rejection notices.',
+};
+
+const outboundHighlights = [
+  {
+    date: 'Feb 16, 2026',
+    account: 'angelesuero@a-e-space.info',
+    recipient: 'Front Desk',
+    subject: 'Re: Entry-level studio support - availability for runner / session support',
+  },
+  {
+    date: 'Feb 3, 2026',
+    account: 'angelesuero@a-e-space.info',
+    recipient: 'Reservoir Media',
+    subject: 'Inquiry: Internship opportunities (music rights / publishing support) - resume + transcript attached',
+  },
+  {
+    date: 'Feb 3, 2026',
+    account: 'angelesuero@a-e-space.info',
+    recipient: 'Guggenheim',
+    subject: 'Inquiry: Best contact for entry-level AV / media production roles - resume + transcript attached',
+  },
+  {
+    date: 'Jan 27, 2026',
+    account: 'angelesuero@a-e-space.info',
+    recipient: 'Spotify',
+    subject: 'Correction: attachments re-sent - Podcast / creator ecosystem roles (Resume + transcript attached)',
+  },
+  {
+    date: 'Jan 26, 2026',
+    account: 'angelesuero@a-e-space.info',
+    recipient: 'TED',
+    subject: 'Inquiry: Conference production + storytelling operations roles (Resume + transcript attached)',
+  },
+  {
+    date: 'Jan 24, 2026',
+    account: 'angelesuero@a-e-space.info',
+    recipient: 'NJPAC',
+    subject: 'AV / event production support (contract / part-time) - Angel Suero',
+  },
+  {
+    date: 'Jan 23, 2026',
+    account: 'angelesuero@a-e-space.info',
+    recipient: 'Newark Symphony Hall',
+    subject: 'Event AV / venue ops support - contract or on-call availability (Angel Suero)',
+  },
+  {
+    date: 'Jan 24, 2025',
+    account: 'aes903@nyu.edu',
+    recipient: 'Borough of Roselle',
+    subject: 'Attention: LIBRARY ASSISTANT',
+  },
+  {
+    date: 'Aug 29, 2024',
+    account: 'aes903@nyu.edu',
+    recipient: 'ProjectArt',
+    subject: 'Teaching Artist Residency',
+  },
+  {
+    date: 'Jul 2, 2024',
+    account: 'aes903@nyu.edu',
+    recipient: 'Studio Museum in Harlem',
+    subject: 'Application for Internship!',
+  },
+  {
+    date: 'Sep 1, 2021',
+    account: 'aes903@nyu.edu',
+    recipient: 'Newark Museum of Art',
+    subject: 'Application for Gallery Host',
+  },
+];
+
+const heldOutRecords = [
+  {
+    source: 'New Jersey Performing Arts Center (2 emails)',
+    reason: 'Generic thank-you notes confirmed receipt of a resume but did not expose the role name.',
+  },
+  {
+    source: 'New Jersey Courts (multiple emails)',
+    reason: 'Application receipts were found, but the surfaced emails did not show role titles and could not be deduped confidently.',
+  },
+  {
+    source: 'ScreenRant',
+    reason: 'Application-received email did not surface a role name clearly enough to count with confidence.',
+  },
+  {
+    source: 'POSH DJs',
+    reason: 'Interview-step email referenced an application but did not surface the role name clearly.',
+  },
+  {
+    source: 'UnitedMasters | Translation (2 emails)',
+    reason: 'Confirmations were found, but the role wording in the surfaced email was too unclear to classify confidently.',
+  },
+  {
+    source: 'City of Newark, Division of Arts and Cultural Affairs',
+    reason: 'Submittable confirmation named the organization but not the role title.',
+  },
+  {
+    source: 'Macmillan — Editorial Assistant, First Second and 23rd Street Books',
+    reason: 'Email said the application remained incomplete pending data-review consent, so it was not counted as a clean completed submission.',
+  },
+  {
+    source: 'Book of the Month / CBR / IT By Design / TED reminder emails',
+    reason: 'Saved or incomplete-application reminders rather than completed submissions.',
+  },
+  {
+    source: 'Housing / apartment / lottery records and financial-product emails',
+    reason: 'Housing, SoFi, Avant, Prosper, Klarna, and similar trails were not employment applications.',
+  },
+  {
+    source: '80,000 Hours advising',
+    reason: 'This was an application to an advising program rather than employment.',
+  },
+];
+
+const addendumHeldOutRecords = [
+  {
+    source: 'angelesuero@a-e-space.info',
+    reason: 'Surfaced duplicates of roles already represented in the report plus one New Jersey Courts receipt with no role name.',
+  },
+  {
+    source: 'IAG / Independent Artist Group',
+    reason: 'Surfaced emails conflicted between “Agency Trainee” and “Summer Intern New York” wording, so the role was held out rather than guessed.',
+  },
+  {
+    source: 'Syska Hennessy Group',
+    reason: 'A rejection email surfaced the employer but not the role title clearly enough to classify confidently.',
+  },
+  {
+    source: 'Industrial Bank',
+    reason: 'An ADP thank-you email confirmed an application but did not surface the role title.',
+  },
+  {
+    source: 'Role-less LinkedIn sent / reminder emails',
+    reason: 'Several older LinkedIn reminders named employers but not a stable role title, so they remained excluded.',
+  },
+];
+
+const heldOutSourceGroups = heldOutRecords.length + addendumHeldOutRecords.length;
+const otherClearApplications = inventorySummary.combinedClearApplications - inventorySummary.directRejections;
+const totalRecordedEffort = inventorySummary.combinedClearApplications + inventorySummary.outboundMessages;
+const explicitClosureShare = Math.round((inventorySummary.directRejections / inventorySummary.combinedClearApplications) * 100);
+
+const normalizeResponseOrg = (org) => {
+  if (/sony music/i.test(org)) return 'Sony Music and related entities';
+  if (/universal music group/i.test(org)) return 'Universal Music Group';
+  if (/pseg/i.test(org)) return 'PSEG';
+  return org;
+};
+
+const getResponseMeta = (outcome) => {
+  const text = outcome.toLowerCase();
+
+  if (text.includes('position filled')) {
+    return { label: 'Position filled', tone: 'filled' };
+  }
+
+  if (text.includes('closed') || text.includes('no longer be filling') || text.includes('not to fill')) {
+    return { label: 'Position closed / not filled', tone: 'closed' };
+  }
+
+  if (
+    text.includes('other candidates')
+    || text.includes('stronger match')
+    || text.includes('considering other candidates')
+    || text.includes('moved ahead')
+    || text.includes('moved forward')
+    || text.includes('pursued other candidates')
+    || text.includes('next step')
+  ) {
+    return { label: 'Other candidates advanced', tone: 'advanced' };
+  }
+
+  if (
+    text.includes('not selected')
+    || text.includes('not move forward')
+    || text.includes('would not proceed')
+    || text.includes('did not have an appropriate position')
+    || text.includes('application was not selected')
+    || text.includes('decided not to move forward')
+  ) {
+    return { label: 'Not selected / no forward movement', tone: 'stopped' };
+  }
+
+  return { label: 'Other outcome', tone: 'other' };
+};
+
+const rejectionsWithType = rejections.map((record) => ({
+  ...record,
+  response: getResponseMeta(record.outcome),
+  normalizedOrg: normalizeResponseOrg(record.org),
+}));
+
+const responsesByYear = Object.entries(
+  rejectionsWithType.reduce((acc, record) => {
+    const year = record.date.slice(-4);
+    acc[year] = (acc[year] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>)
+)
+  .sort((a, b) => Number(b[0]) - Number(a[0]))
+  .map(([label, count]) => ({
+    label,
+    count,
+    share: Math.round((count / rejectionsWithType.length) * 100),
+  }));
+
+const responsesByType = Object.entries(
+  rejectionsWithType.reduce((acc, record) => {
+    acc[record.response.label] = (acc[record.response.label] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>)
+)
+  .map(([label, count]) => ({
+    label,
+    count,
+    share: Math.round((count / rejectionsWithType.length) * 100),
+  }))
+  .sort((a, b) => b.count - a.count);
+
+const repeatedEmployers = Object.entries(
+  rejectionsWithType.reduce((acc, record) => {
+    acc[record.normalizedOrg] = (acc[record.normalizedOrg] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>)
+)
+  .map(([label, count]) => ({
+    label,
+    count,
+    share: Math.round((count / rejectionsWithType.length) * 100),
+  }))
+  .sort((a, b) => b.count - a.count)
+  .filter((item) => item.count > 1);
+
+const topEmployerResponseCount = repeatedEmployers.slice(0, 3).reduce((sum, item) => sum + item.count, 0);
+const topEmployerResponseShare = Math.round((topEmployerResponseCount / rejectionsWithType.length) * 100);
+const responseWindow = `${rejections[rejections.length - 1]?.date} to ${rejections[0]?.date}`;
 ---
 
 <BaseLayout
   title="Rejection Log — a_e.s_"
-  description="40 direct employer rejections, documented. Sony Music, Disney, NYT, Anthropic, OpenAI, NPR, and more."
+  description="40 documented rejections inside a 179-application Gmail job-search archive, plus 54 confirmed outbound outreach emails."
   theme="archive"
   bodyClass="rejections-page"
   flatSurface={true}
@@ -57,83 +335,347 @@ const fellowship = { date: 'Dec 15, 2021', org: 'NYU Gallatin Global Fellowship 
 >
   <main class="rej-main">
     <section class="rej-header">
-      <p class="rej-eyebrow">Application Record</p>
-      <h1 class="rej-title">40 Rejections</h1>
+      <p class="rej-eyebrow">Job Search Record</p>
+      <h1 class="rej-title">Effort and Response Log</h1>
       <p class="rej-subtitle">
-        Direct employer rejections, sourced from the Gmail archive. Sony Music, Disney / WABC, The New York Times, Anthropic, OpenAI, NPR, PlayStation, Adobe, and 32 others. All documented. All real.
+        {inventorySummary.combinedClearApplications} clear applications and {inventorySummary.outboundMessages} direct outreach emails are on record. {inventorySummary.directRejections} application records came back with explicit rejection, position-filled, position-closed, or similar language and are listed below.
       </p>
-      <div class="rej-stats">
-        <div class="rej-stat">
-          <span class="rej-stat__num">40</span>
-          <span class="rej-stat__label">Direct rejections</span>
-        </div>
-        <div class="rej-stat">
-          <span class="rej-stat__num">3</span>
-          <span class="rej-stat__label">Years on record</span>
-        </div>
-        <div class="rej-stat">
-          <span class="rej-stat__num">15+</span>
-          <span class="rej-stat__label">Sony Music alone</span>
-        </div>
+      <div class="rej-link-row">
+        <a class="rej-link" href={inventorySummary.reportHref}>Open updated Gmail inventory</a>
+        <a class="rej-link" href={inventorySummary.rejectionReportHref}>Open rejection report</a>
       </div>
     </section>
 
-    <section class="rej-table-wrap" aria-label="Rejection log">
-      <table class="rej-table">
-        <thead>
-          <tr>
-            <th scope="col">Date</th>
-            <th scope="col">Organization</th>
-            <th scope="col">Role</th>
-            <th scope="col" class="rej-th--outcome">Outcome</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rejections.map((r) => (
-            <tr>
-              <td class="rej-td--date">{r.date}</td>
-              <td class="rej-td--org">{r.org}</td>
-              <td class="rej-td--role">{r.role}</td>
-              <td class="rej-td--outcome">{r.outcome}</td>
-            </tr>
+    <section class="rej-ledgers" aria-label="Effort and returned responses">
+      <article class="rej-panel rej-ledger">
+        <div class="rej-section-head">
+          <div>
+            <p class="rej-section-label">Effort Recorded</p>
+            <h2 class="rej-section-title">What went out</h2>
+          </div>
+          <p class="rej-section-note">Applications and sent outreach stay separate so the record does not blur them together.</p>
+        </div>
+
+        <div class="rej-metric-grid">
+          <div class="rej-metric">
+            <span class="rej-metric__num">{inventorySummary.combinedClearApplications}</span>
+            <span class="rej-metric__label">Clear applications</span>
+          </div>
+          <div class="rej-metric">
+            <span class="rej-metric__num">{inventorySummary.outboundMessages}</span>
+            <span class="rej-metric__label">Sent outreach emails</span>
+          </div>
+          <div class="rej-metric">
+            <span class="rej-metric__num">{totalRecordedEffort}</span>
+            <span class="rej-metric__label">Tracked effort records</span>
+          </div>
+          <div class="rej-metric">
+            <span class="rej-metric__num">{inventorySummary.reviewedMailboxes}</span>
+            <span class="rej-metric__label">Mailboxes reviewed</span>
+          </div>
+        </div>
+
+        <table class="rej-mini-table">
+          <tbody>
+            {inventorySummary.mailboxes.map((item) => (
+              <tr>
+                <td>
+                  <strong>{item.mailbox}</strong>
+                  <span>{item.note}</span>
+                </td>
+                <td class="rej-mini-table__count">{item.clearApplications}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </article>
+
+      <article class="rej-panel rej-ledger">
+        <div class="rej-section-head">
+          <div>
+            <p class="rej-section-label">Responses Returned</p>
+            <h2 class="rej-section-title">What came back</h2>
+          </div>
+          <p class="rej-section-note">This panel covers the response side of the {inventorySummary.combinedClearApplications}-application lane only.</p>
+        </div>
+
+        <div class="rej-metric-grid">
+          <div class="rej-metric">
+            <span class="rej-metric__num">{inventorySummary.directRejections}</span>
+            <span class="rej-metric__label">Explicit no / closed outcomes</span>
+          </div>
+          <div class="rej-metric">
+            <span class="rej-metric__num">{explicitClosureShare}%</span>
+            <span class="rej-metric__label">Application archive with explicit closure</span>
+          </div>
+          <div class="rej-metric">
+            <span class="rej-metric__num">{otherClearApplications}</span>
+            <span class="rej-metric__label">Applications without explicit closure here</span>
+          </div>
+          <div class="rej-metric">
+            <span class="rej-metric__num">{topEmployerResponseShare}%</span>
+            <span class="rej-metric__label">Responses concentrated in top 3 employers</span>
+          </div>
+        </div>
+
+        <p class="rej-ledger__note">
+          Response window in this log: {responseWindow}. The deeper pass added {inventorySummary.deepPassAdditions} older records and raised the application archive from {inventorySummary.priorCombinedClearApplications} to {inventorySummary.combinedClearApplications}.
+        </p>
+      </article>
+    </section>
+
+    <section class="rej-signal-grid" aria-label="Response patterns">
+      <article class="rej-panel">
+        <div class="rej-section-head">
+          <div>
+            <p class="rej-section-label">Responses By Year</p>
+            <h2 class="rej-section-title">Where the weight landed</h2>
+          </div>
+        </div>
+
+        <ul class="rej-rank-list">
+          {responsesByYear.map((item) => (
+            <li class="rej-rank-row">
+              <div>
+                <strong>{item.label}</strong>
+                <span>{item.share}% of the explicit response log</span>
+              </div>
+              <span class="rej-rank-row__count">{item.count}</span>
+            </li>
           ))}
-        </tbody>
-      </table>
+        </ul>
+      </article>
+
+      <article class="rej-panel">
+        <div class="rej-section-head">
+          <div>
+            <p class="rej-section-label">Response Language</p>
+            <h2 class="rej-section-title">How employers answered</h2>
+          </div>
+        </div>
+
+        <ul class="rej-rank-list">
+          {responsesByType.map((item) => (
+            <li class="rej-rank-row">
+              <div>
+                <strong>{item.label}</strong>
+                <span>{item.share}% of the explicit response log</span>
+              </div>
+              <span class="rej-rank-row__count">{item.count}</span>
+            </li>
+          ))}
+        </ul>
+      </article>
+
+      <article class="rej-panel">
+        <div class="rej-section-head">
+          <div>
+            <p class="rej-section-label">Repeated Employers</p>
+            <h2 class="rej-section-title">Where responses clustered</h2>
+          </div>
+        </div>
+
+        <ul class="rej-rank-list">
+          {repeatedEmployers.slice(0, 6).map((item) => (
+            <li class="rej-rank-row">
+              <div>
+                <strong>{item.label}</strong>
+                <span>{item.share}% of the explicit response log</span>
+              </div>
+              <span class="rej-rank-row__count">{item.count}</span>
+            </li>
+          ))}
+        </ul>
+
+        <p class="rej-panel__footnote">
+          {topEmployerResponseCount} of {inventorySummary.directRejections} explicit responses came from the top three repeated employers.
+        </p>
+      </article>
+    </section>
+
+    <section class="rej-table-section" aria-label="Rejection log">
+      <div class="rej-section-head rej-section-head--table">
+        <div>
+          <p class="rej-section-label">Main Table</p>
+          <h2 class="rej-section-title">Explicit responses to documented applications</h2>
+        </div>
+        <p class="rej-section-note">Most recent first. This table is the direct evidence lane, not the explanation of it.</p>
+      </div>
+
+      <div class="rej-table-wrap">
+        <table class="rej-table">
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Organization</th>
+              <th scope="col">Role</th>
+              <th scope="col">Response type</th>
+              <th scope="col" class="rej-th--outcome">Response text</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rejectionsWithType.map((record) => (
+              <tr>
+                <td class="rej-td--date">{record.date}</td>
+                <td class="rej-td--org">{record.org}</td>
+                <td class="rej-td--role">{record.role}</td>
+                <td>
+                  <span class={`rej-type-chip rej-type-chip--${record.response.tone}`}>{record.response.label}</span>
+                </td>
+                <td class="rej-td--outcome">{record.outcome}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="rej-method-grid" aria-label="Counting rules">
+      <article class="rej-panel">
+        <p class="rej-section-label">Counted In The Application Total</p>
+        <ul class="rej-list">
+          {inventorySummary.included.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </article>
+
+      <article class="rej-panel">
+        <p class="rej-section-label">Not Counted In The Application Total</p>
+        <ul class="rej-list rej-list--muted">
+          {inventorySummary.excluded.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </article>
+
+      <article class="rej-panel">
+        <p class="rej-section-label">Separate Outreach Lane</p>
+        <p class="rej-panel__copy">{inventorySummary.outboundMessages} confirmed sent emails with resumes or transcripts attached appear in the latest PDF.</p>
+        <p class="rej-panel__copy">{outboundSummary.note}</p>
+        <p class="rej-panel__copy rej-panel__copy--muted">Included: {outboundSummary.included}</p>
+        <p class="rej-panel__copy rej-panel__copy--muted">Not included: {outboundSummary.excluded}</p>
+      </article>
     </section>
 
     <section class="rej-appendix">
-      <p class="rej-appendix__label">Appendix — Fellowship</p>
-      <table class="rej-table rej-table--small">
-        <thead>
-          <tr>
-            <th scope="col">Date</th>
-            <th scope="col">Organization</th>
-            <th scope="col">Role</th>
-            <th scope="col" class="rej-th--outcome">Note</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="rej-td--date">{fellowship.date}</td>
-            <td class="rej-td--org">{fellowship.org}</td>
-            <td class="rej-td--role">{fellowship.role}</td>
-            <td class="rej-td--outcome">{fellowship.outcome}</td>
-          </tr>
-        </tbody>
-      </table>
+      <details class="rej-disclosure">
+        <summary class="rej-disclosure__summary">Appendix — Records reviewed but not counted ({heldOutSourceGroups} source groups)</summary>
+        <div class="rej-disclosure__body">
+          <p class="rej-appendix__intro">
+            These records were reviewed during the Gmail search but left out of the application total because they were ambiguous, incomplete, duplicates, or not job applications.
+          </p>
+          <table class="rej-table rej-table--small">
+            <thead>
+              <tr>
+                <th scope="col">Source</th>
+                <th scope="col" class="rej-th--outcome">Why it stayed out</th>
+              </tr>
+            </thead>
+            <tbody>
+              {heldOutRecords.map((record) => (
+                <tr>
+                  <td class="rej-td--org">{record.source}</td>
+                  <td class="rej-td--outcome">{record.reason}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="rej-disclosure">
+        <summary class="rej-disclosure__summary">Appendix — Deep-pass records not counted ({addendumHeldOutRecords.length})</summary>
+        <div class="rej-disclosure__body">
+          <p class="rej-appendix__intro">
+            These records surfaced during the deep pass, but they still did not qualify as new clear applications.
+          </p>
+          <table class="rej-table rej-table--small">
+            <thead>
+              <tr>
+                <th scope="col">Source</th>
+                <th scope="col" class="rej-th--outcome">Why it stayed out</th>
+              </tr>
+            </thead>
+            <tbody>
+              {addendumHeldOutRecords.map((record) => (
+                <tr>
+                  <td class="rej-td--org">{record.source}</td>
+                  <td class="rej-td--outcome">{record.reason}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="rej-disclosure">
+        <summary class="rej-disclosure__summary">Appendix — Outbound outreach samples ({outboundHighlights.length} shown)</summary>
+        <div class="rej-disclosure__body">
+          <p class="rej-appendix__intro">
+            The latest PDF includes {inventorySummary.outboundMessages} confirmed sent outreach emails. The sample below shows part of that separate appendix.
+          </p>
+          <table class="rej-table rej-table--small">
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">From account</th>
+                <th scope="col">Recipient / org</th>
+                <th scope="col" class="rej-th--outcome">Subject</th>
+              </tr>
+            </thead>
+            <tbody>
+              {outboundHighlights.map((record) => (
+                <tr>
+                  <td class="rej-td--date">{record.date}</td>
+                  <td class="rej-td--account">{record.account}</td>
+                  <td class="rej-td--org">{record.recipient}</td>
+                  <td class="rej-td--subject">{record.subject}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p class="rej-appendix__footnote">Included in this appendix: {outboundSummary.included}</p>
+          <p class="rej-appendix__footnote rej-appendix__footnote--muted">Not included in this appendix: {outboundSummary.excluded}</p>
+        </div>
+      </details>
+
+      <details class="rej-disclosure">
+        <summary class="rej-disclosure__summary">Appendix — Fellowship note</summary>
+        <div class="rej-disclosure__body">
+          <table class="rej-table rej-table--small">
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Organization</th>
+                <th scope="col">Role</th>
+                <th scope="col" class="rej-th--outcome">Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="rej-td--date">{fellowship.date}</td>
+                <td class="rej-td--org">{fellowship.org}</td>
+                <td class="rej-td--role">{fellowship.role}</td>
+                <td class="rej-td--outcome">{fellowship.outcome}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
     </section>
   </main>
 </BaseLayout>
 
 <style>
   .rej-main {
-    max-width: 1040px;
+    max-width: 1180px;
     margin: 0 auto;
-    padding: clamp(2rem, 4vw, 3.5rem) clamp(1rem, 3vw, 1.75rem) clamp(3rem, 6vw, 5rem);
+    padding: clamp(2rem, 4vw, 3.5rem) clamp(1rem, 3vw, 1.8rem) clamp(3.5rem, 6vw, 5.5rem);
   }
 
   .rej-header {
-    margin-bottom: clamp(2rem, 4vw, 3rem);
+    margin-bottom: clamp(1.8rem, 3vw, 2.5rem);
   }
 
   .rej-eyebrow {
@@ -156,44 +698,230 @@ const fellowship = { date: 'Dec 15, 2021', org: 'NYU Gallatin Global Fellowship 
   }
 
   .rej-subtitle {
-    max-width: 52rem;
-    margin: 0 0 2rem;
-    font-size: clamp(0.92rem, 1.2vw, 1.02rem);
-    line-height: 1.62;
+    max-width: 58rem;
+    margin: 0;
+    font-size: clamp(0.96rem, 1.2vw, 1.04rem);
+    line-height: 1.65;
+    color: rgba(236, 227, 214, 0.78);
+  }
+
+  .rej-link-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1rem;
+  }
+
+  .rej-link {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    border: 1px solid rgba(230, 214, 191, 0.18);
+    padding: 0.48rem 0.8rem;
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: rgba(245, 239, 229, 0.92);
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.035);
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .rej-link:hover {
+    background: rgba(255, 255, 255, 0.065);
+    border-color: rgba(230, 214, 191, 0.28);
+  }
+
+  .rej-ledgers,
+  .rej-signal-grid,
+  .rej-method-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .rej-signal-grid,
+  .rej-table-section,
+  .rej-method-grid {
+    margin-top: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .rej-signal-grid,
+  .rej-method-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .rej-panel,
+  .rej-table-section,
+  .rej-disclosure {
+    border: 1px solid rgba(230, 214, 191, 0.12);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012)),
+      rgba(12, 10, 8, 0.72);
+    border-radius: 1.2rem;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14);
+  }
+
+  .rej-panel,
+  .rej-ledger,
+  .rej-disclosure {
+    padding: 1.05rem 1.05rem 1.15rem;
+  }
+
+  .rej-section-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .rej-section-head--table {
+    padding: 1rem 1rem 0;
+  }
+
+  .rej-section-label,
+  .rej-disclosure__summary {
+    margin: 0;
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(230, 214, 191, 0.48);
+  }
+
+  .rej-section-title {
+    margin: 0.2rem 0 0;
+    font-size: 1.08rem;
+    line-height: 1.25;
+    color: rgba(245, 239, 229, 0.95);
+  }
+
+  .rej-section-note,
+  .rej-ledger__note,
+  .rej-panel__copy,
+  .rej-panel__footnote,
+  .rej-appendix__intro,
+  .rej-mini-table td span,
+  .rej-list li,
+  .rej-rank-row span {
+    margin: 0;
+    font-size: 0.84rem;
+    line-height: 1.6;
     color: rgba(236, 227, 214, 0.72);
   }
 
-  .rej-stats {
-    display: flex;
-    gap: clamp(1.5rem, 3vw, 2.5rem);
-    flex-wrap: wrap;
+  .rej-section-note {
+    max-width: 21rem;
+    text-align: right;
   }
 
-  .rej-stat {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
+  .rej-metric-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1rem;
   }
 
-  .rej-stat__num {
+  .rej-metric {
+    padding: 0.9rem 0.95rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(230, 214, 191, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .rej-metric__num,
+  .rej-rank-row__count {
     font-family: var(--font-display, serif);
-    font-size: clamp(1.6rem, 2.8vw, 2.2rem);
-    font-weight: 700;
+    font-size: clamp(1.6rem, 2.6vw, 2rem);
     line-height: 1;
+    color: color-mix(in srgb, var(--tone-accent-glow, #e8cfa0) 72%, white 28%);
+  }
+
+  .rej-metric__label {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(230, 214, 191, 0.48);
+  }
+
+  .rej-ledger__note {
+    padding-top: 0.9rem;
+    border-top: 1px solid rgba(230, 214, 191, 0.08);
+  }
+
+  .rej-mini-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .rej-mini-table tr + tr {
+    border-top: 1px solid rgba(230, 214, 191, 0.08);
+  }
+
+  .rej-mini-table td {
+    padding: 0.78rem 0;
+    vertical-align: top;
+  }
+
+  .rej-mini-table td strong,
+  .rej-rank-row strong {
+    display: block;
+    margin-bottom: 0.16rem;
+    font-size: 0.88rem;
+    color: rgba(245, 239, 229, 0.93);
+  }
+
+  .rej-mini-table__count {
+    width: 4rem;
+    text-align: right;
+    font-family: var(--font-display, serif);
+    font-size: 1.35rem;
     color: color-mix(in srgb, var(--tone-accent-glow, #e8cfa0) 70%, white 30%);
   }
 
-  .rej-stat__label {
-    font-size: 0.65rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: rgba(230, 214, 191, 0.5);
+  .rej-rank-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .rej-rank-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 0;
+    border-top: 1px solid rgba(230, 214, 191, 0.08);
+  }
+
+  .rej-rank-row:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .rej-rank-row__count {
+    flex-shrink: 0;
+    font-size: 1.45rem;
+  }
+
+  .rej-panel__copy + .rej-panel__copy {
+    margin-top: 0.6rem;
+  }
+
+  .rej-panel__copy--muted,
+  .rej-panel__footnote,
+  .rej-list--muted li {
+    color: rgba(230, 214, 191, 0.62);
   }
 
   .rej-table-wrap {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    padding: 0.5rem 1rem 1rem;
   }
 
   .rej-table {
@@ -242,32 +970,138 @@ const fellowship = { date: 'Dec 15, 2021', org: 'NYU Gallatin Global Fellowship 
     min-width: 10rem;
   }
 
+  .rej-td--account {
+    min-width: 11rem;
+    color: rgba(236, 227, 214, 0.72) !important;
+    font-size: 0.77rem;
+    word-break: break-word;
+  }
+
   .rej-td--role {
     color: rgba(236, 227, 214, 0.78) !important;
+  }
+
+  .rej-type-chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid rgba(230, 214, 191, 0.12);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    background: rgba(255, 255, 255, 0.035);
+    color: rgba(245, 239, 229, 0.88);
+  }
+
+  .rej-type-chip--advanced {
+    background: rgba(164, 195, 255, 0.1);
+    color: rgba(197, 218, 255, 0.92);
+  }
+
+  .rej-type-chip--stopped {
+    background: rgba(232, 175, 138, 0.1);
+    color: rgba(247, 210, 185, 0.92);
+  }
+
+  .rej-type-chip--closed {
+    background: rgba(214, 184, 255, 0.1);
+    color: rgba(225, 206, 255, 0.92);
+  }
+
+  .rej-type-chip--filled {
+    background: rgba(182, 229, 191, 0.11);
+    color: rgba(207, 242, 213, 0.92);
+  }
+
+  .rej-type-chip--other {
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(236, 227, 214, 0.76);
+  }
+
+  .rej-td--subject {
+    color: rgba(230, 214, 191, 0.62) !important;
+    font-size: 0.78rem;
+    line-height: 1.55;
   }
 
   .rej-td--outcome {
     color: rgba(230, 214, 191, 0.5) !important;
     font-size: 0.78rem;
-    font-style: italic;
+    line-height: 1.55;
   }
 
   .rej-appendix {
     margin-top: clamp(2.5rem, 4vw, 3.5rem);
-    padding-top: clamp(1.5rem, 2.5vw, 2rem);
+    padding-top: clamp(1rem, 2vw, 1.6rem);
     border-top: 1px solid rgba(230, 214, 191, 0.12);
   }
 
-  .rej-appendix__label {
-    margin: 0 0 1rem;
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: rgba(230, 214, 191, 0.45);
+  .rej-disclosure + .rej-disclosure {
+    margin-top: 0.85rem;
+  }
+
+  .rej-disclosure__summary {
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .rej-disclosure__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .rej-disclosure__body {
+    margin-top: 0.9rem;
+  }
+
+  .rej-list {
+    margin: 0;
+    padding-left: 1rem;
+  }
+
+  .rej-list li + li {
+    margin-top: 0.55rem;
+  }
+
+  .rej-appendix__footnote {
+    margin: 0.85rem 0 0;
+    font-size: 0.75rem;
+    line-height: 1.55;
+    color: rgba(236, 227, 214, 0.62);
+  }
+
+  .rej-appendix__footnote--muted {
+    color: rgba(230, 214, 191, 0.5);
   }
 
   .rej-table--small {
     font-size: clamp(0.74rem, 0.9vw, 0.84rem);
+  }
+
+  @media (max-width: 880px) {
+    .rej-ledgers,
+    .rej-signal-grid,
+    .rej-method-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .rej-section-head {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .rej-section-note {
+      max-width: none;
+      text-align: left;
+    }
+
+    .rej-metric-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .rej-table-wrap {
+      padding-inline: 0.75rem;
+    }
   }
 </style>

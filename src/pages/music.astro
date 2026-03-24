@@ -3,6 +3,34 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import profile from '../data/profile';
 import { MUSIC_URLS, SOCIAL_URLS, VIDEO_URLS } from '../data/site-refs';
 
+const spotifyVol4EmbedUrl = 'https://open.spotify.com/embed/playlist/1aeafuJB347VmKXu4jvaTO';
+const soundcloudVol4Url = 'https://soundcloud.com/aesuero/sets/volume-4-angel-sueros-top-50';
+
+type NativeAudioBite = {
+  title: string;
+  source: string;
+  href: string;
+  note: string;
+  src: string;
+  mime: string;
+  duration?: string;
+};
+
+type ExternalAudioBite = {
+  title: string;
+  source: string;
+  href: string;
+  note: string;
+  presentation: 'embed' | 'handoff';
+  linkLabel: string;
+  embedUrl?: string;
+  secondaryHref?: string;
+  secondaryLabel?: string;
+  handoffCopy?: string;
+};
+
+type AudioBite = NativeAudioBite | ExternalAudioBite;
+
 const watchClips = [
   {
     title: 'SCRAPS After Heartbreaks',
@@ -38,7 +66,7 @@ const watchClips = [
   }
 ];
 
-const audioBites = [
+const audioBites: AudioBite[] = [
   {
     title: 'SCRAPS AFTER HEARTBREAKS',
     source: 'Native audio',
@@ -53,35 +81,51 @@ const audioBites = [
     source: 'Untitled',
     href: '/archive/music/my-first-beat-tape',
     note: 'A clean listening point from Untitled.',
-    embedUrl: MUSIC_URLS.untitledMyFirstBeatTape
+    presentation: 'embed',
+    linkLabel: 'Open archive entry',
+    embedUrl: MUSIC_URLS.untitledMyFirstBeatTape,
+    secondaryHref: MUSIC_URLS.untitledMyFirstBeatTape,
+    secondaryLabel: 'Listen on Untitled'
   },
   {
     title: 'Queries (The Beat Tape): Family... Love?',
     source: 'Untitled',
     href: '/archive/music/queries-the-beat-tape-family-love',
     note: 'Family and love held as one connected sequence.',
-    embedUrl: `${MUSIC_URLS.untitledQueriesBeatTape}/embed`
+    presentation: 'handoff',
+    linkLabel: 'Open archive entry',
+    secondaryHref: MUSIC_URLS.untitledQueriesBeatTape,
+    secondaryLabel: 'Listen on Untitled',
+    handoffCopy: 'Untitled keeps this piece off the inline player here, so the archive entry and source page stay linked instead.'
   },
   {
     title: 'The Every Day Soundscape',
     source: 'Untitled',
     href: '/archive/music/the-every-day-soundscape',
     note: 'A neighboring atmospheric fragment.',
-    embedUrl: `${MUSIC_URLS.untitledEveryDaySoundscape}/embed`
+    presentation: 'handoff',
+    linkLabel: 'Open archive entry',
+    secondaryHref: MUSIC_URLS.untitledEveryDaySoundscape,
+    secondaryLabel: 'Listen on Untitled',
+    handoffCopy: 'This record opens more reliably from the archive and original Untitled page than it does as an embedded frame.'
   },
   {
     title: 'Now Listening (Vol 4)',
     source: 'Spotify',
     href: MUSIC_URLS.spotifyVol4,
     note: 'Current playlist pressure and reference zone.',
-    embedUrl: MUSIC_URLS.spotifyVol4
+    presentation: 'embed',
+    linkLabel: 'Open source',
+    embedUrl: spotifyVol4EmbedUrl
   },
   {
     title: 'Volume 4 - SoundCloud',
     source: 'SoundCloud',
-    href: 'https://soundcloud.com/aesuero/sets/volume-4-angel-sueros-top-50',
+    href: soundcloudVol4Url,
     note: 'Another listening lane when the mood wants a different container.',
-    embedUrl: `https://w.soundcloud.com/player/?url=${encodeURIComponent('https://soundcloud.com/aesuero/sets/volume-4-angel-sueros-top-50')}&color=%23b97a2d&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false`
+    presentation: 'embed',
+    linkLabel: 'Open source',
+    embedUrl: `https://w.soundcloud.com/player/?url=${encodeURIComponent(soundcloudVol4Url)}&color=%23b97a2d&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false`
   }
 ];
 
@@ -175,7 +219,7 @@ const referenceLinks = [
                   <a href={item.href}>Open archive entry</a>
                 </p>
               </div>
-            ) : (
+            ) : item.presentation === 'embed' && item.embedUrl ? (
               <div class="music-audio-row__player">
                 <iframe
                   src={item.embedUrl}
@@ -186,8 +230,31 @@ const referenceLinks = [
                   frameborder="0"
                 ></iframe>
                 <p class="music-audio-row__detail">
-                  <a href={item.href} target="_blank" rel="noopener">Open source</a>
+                  <a href={item.href} {...(/^https?:\/\//i.test(item.href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+                    {item.linkLabel}
+                  </a>
+                  {item.secondaryHref && item.secondaryLabel ? (
+                    <a href={item.secondaryHref} target="_blank" rel="noopener noreferrer">
+                      {item.secondaryLabel}
+                    </a>
+                  ) : null}
                 </p>
+              </div>
+            ) : (
+              <div class="music-audio-row__player music-audio-row__player--handoff">
+                <div class="music-audio-row__fallback">
+                  <p>{item.handoffCopy ?? 'Playback continues on the archive entry or original source.'}</p>
+                  <div class="music-audio-row__handoff-actions">
+                    <a href={item.href} {...(/^https?:\/\//i.test(item.href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+                      {item.linkLabel}
+                    </a>
+                    {item.secondaryHref && item.secondaryLabel ? (
+                      <a href={item.secondaryHref} target="_blank" rel="noopener noreferrer">
+                        {item.secondaryLabel}
+                      </a>
+                    ) : null}
+                  </div>
+                </div>
               </div>
             )}
           </article>
@@ -226,15 +293,51 @@ const referenceLinks = [
 </BaseLayout>
 
 <style>
+  :global(html body.music-page[data-theme='archive']) {
+    --tone-bg: #d7c8b4;
+    --tone-bg-deep: #c4b29d;
+    --tone-surface: rgba(239, 229, 214, 0.95);
+    --tone-surface-strong: rgba(227, 215, 199, 0.975);
+    --tone-line: rgba(112, 88, 57, 0.2);
+    --line2: rgba(112, 88, 57, 0.16);
+    background:
+      radial-gradient(42rem 24rem at 50% 0%, rgba(255, 237, 205, 0.28), transparent 50%),
+      linear-gradient(180deg, #e1d3c0 0%, #d5c6b2 46%, #cbbca6 100%);
+  }
+
+  :global(html body.music-page .site-overlay) {
+    background:
+      linear-gradient(to right, rgba(255, 246, 232, 0.08), transparent 28%),
+      linear-gradient(to left, rgba(111, 87, 53, 0.06), transparent 40%),
+      radial-gradient(1100px 700px at 18% 2%, rgb(var(--accent-rgb) / 0.028), transparent 64%),
+      radial-gradient(1100px 700px at 84% 4%, rgb(var(--cursor-rgb) / 0.022), transparent 66%),
+      linear-gradient(180deg, rgba(244, 235, 221, 0.06), rgba(219, 205, 185, 0.1) 48%, rgba(199, 183, 159, 0.12));
+  }
+
   .music-page__shell {
     display: grid;
-    gap: clamp(1.1rem, 2.2vw, 1.55rem);
+    gap: clamp(1.2rem, 2.4vw, 1.9rem);
+  }
+
+  .music-hero,
+  .music-section,
+  .music-footer {
+    position: relative;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
+    border-radius: 1.4rem;
+    background:
+      linear-gradient(180deg, rgba(247, 240, 231, 0.92), rgba(234, 224, 210, 0.94)),
+      radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--tone-accent) 7%, transparent), transparent 56%);
+    box-shadow:
+      0 18px 40px rgba(102, 81, 45, 0.09),
+      0 1px 0 rgba(255, 255, 255, 0.62) inset;
   }
 
   .music-hero {
     display: grid;
     gap: 0.55rem;
     max-width: 68ch;
+    padding: clamp(1.25rem, 2.4vw, 1.8rem);
   }
 
   .music-hero__eyebrow,
@@ -292,16 +395,17 @@ const referenceLinks = [
   .music-footer__links a:hover,
   .music-footer__links a:focus-visible,
   .music-audio-row__detail a:hover,
-  .music-audio-row__detail a:focus-visible {
+  .music-audio-row__detail a:focus-visible,
+  .music-audio-row__handoff-actions a:hover,
+  .music-audio-row__handoff-actions a:focus-visible {
     color: var(--tone-accent-glow);
     border-color: color-mix(in srgb, var(--tone-accent) 64%, transparent);
   }
 
   .music-section {
     display: grid;
-    gap: 0.85rem;
-    padding-top: 0.9rem;
-    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
+    gap: 1rem;
+    padding: clamp(1.1rem, 2vw, 1.4rem);
   }
 
   .music-section__head {
@@ -324,6 +428,12 @@ const referenceLinks = [
     display: grid;
     gap: 0.45rem;
     align-content: start;
+    padding: 0.85rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, rgba(249, 243, 235, 0.8), rgba(236, 227, 214, 0.92));
+    box-shadow: 0 14px 28px rgba(102, 81, 45, 0.06);
   }
 
   .music-video__meta {
@@ -363,8 +473,12 @@ const referenceLinks = [
   .music-audio-row {
     display: grid;
     gap: 0.55rem;
-    padding-top: 0.9rem;
-    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
+    padding: 1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, rgba(249, 243, 235, 0.82), rgba(235, 225, 212, 0.94));
+    box-shadow: 0 14px 30px rgba(102, 81, 45, 0.06);
   }
 
   .music-audio-row__source {
@@ -410,6 +524,38 @@ const referenceLinks = [
     color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
   }
 
+  .music-audio-row__detail a,
+  .music-audio-row__handoff-actions a {
+    width: fit-content;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 28%, transparent);
+    padding-bottom: 0.1rem;
+  }
+
+  .music-audio-row__fallback {
+    display: grid;
+    gap: 0.85rem;
+    padding: 1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 16%, var(--line2));
+    border-radius: 0.95rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 9%, transparent), transparent 72%),
+      color-mix(in srgb, var(--tone-surface-strong) 94%, transparent);
+  }
+
+  .music-audio-row__fallback p {
+    margin: 0;
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .music-audio-row__handoff-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+  }
+
   .music-photo-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -420,7 +566,9 @@ const referenceLinks = [
     margin: 0;
     overflow: hidden;
     border: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
+    border-radius: 1rem;
     background: color-mix(in srgb, var(--tone-surface) 92%, transparent);
+    box-shadow: 0 14px 26px rgba(102, 81, 45, 0.06);
   }
 
   .music-photo img {
@@ -442,8 +590,7 @@ const referenceLinks = [
   .music-footer {
     display: grid;
     gap: 0.5rem;
-    padding-top: 0.4rem;
-    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
+    padding: 1rem 1.2rem 1.1rem;
   }
 
   .music-footer__links {

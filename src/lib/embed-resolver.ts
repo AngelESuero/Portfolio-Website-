@@ -322,17 +322,15 @@ export const resolveEmbed = (urlValue: string, preferredProvider?: LinkHubProvid
       return { provider, embedUrl: null, embeddable: false, reason: 'invite_link' };
     }
 
-    if (parsed.pathname.startsWith('/embed/') || parsed.pathname.endsWith('/embed')) {
+    // Untitled only renders reliably inline from dedicated /embed/{id} URLs.
+    // Library pages and their /embed variants often reject framing, so we keep
+    // those as outbound handoffs instead of pretending inline playback works.
+    if (normalizedPath.startsWith('/embed/')) {
       return { provider, embedUrl: urlValue, embeddable: true, reason: 'ok' };
     }
 
-    if (/^\/library\/(track|project)\/[^/]+$/i.test(normalizedPath)) {
-      return {
-        provider,
-        embedUrl: `${parsed.origin}${normalizedPath}/embed`,
-        embeddable: true,
-        reason: 'ok'
-      };
+    if (/^\/library\/(track|project)\/[^/]+(?:\/embed)?$/i.test(normalizedPath)) {
+      return { provider, embedUrl: null, embeddable: false, reason: 'unsupported_url_shape' };
     }
 
     return { provider, embedUrl: null, embeddable: false, reason: 'unsupported_url_shape' };
@@ -435,7 +433,7 @@ export const getEmbedFallbackMessage = (resolution: EmbedResolution): string => 
     resolution.provider === 'untitled' &&
     (resolution.reason === 'unsupported_url_shape' || resolution.reason === 'invite_link')
   ) {
-    return "Untitled links need a dedicated /embed URL for inline playback. Open the original link to view this piece.";
+    return 'Untitled only plays inline from dedicated embed URLs. Open the archive entry or source page for this piece.';
   }
 
   if (resolution.provider === 'instagram' && resolution.reason === 'profile_only') {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { startTransition, useEffect, useMemo, useRef, useState } from "react";
 
 type Entry = {
   quote: string;
@@ -13,6 +13,18 @@ type Section = {
   title: string;
   description: string;
   entries: Entry[];
+};
+
+type SectionKey = Section["key"];
+type SectionMetric = { key: SectionKey; top: number };
+type GraphicNodes = {
+  coreStop: SVGStopElement | null;
+  coreEllipse: SVGEllipseElement | null;
+  shellLeft: SVGPathElement | null;
+  shellRight: SVGPathElement | null;
+  innerLeft: SVGPathElement | null;
+  innerRight: SVGPathElement | null;
+  stem: SVGPathElement | null;
 };
 
 const SECTIONS: Section[] = [
@@ -332,6 +344,40 @@ const clamp = (n: number, min: number, max: number) => Math.min(Math.max(n, min)
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const ease = (t: number) => 0.5 - Math.cos(Math.PI * clamp(t, 0, 1)) / 2;
 
+function buildGraphicState(progress: number) {
+  const p = ease(progress);
+  const shellOpen = lerp(16, 128, p);
+  const innerOpen = lerp(8, 86, p);
+  const glow = lerp(0.1, 0.28, p);
+  const stemY = lerp(514, 438, p);
+
+  return {
+    coreStopColor: `rgba(255,240,200,${glow})`,
+    coreCy: String(stemY),
+    shellLeft: `M 260 604 C ${260 - shellOpen} 560, ${260 - shellOpen * 1.15} 488, ${260 - shellOpen * 0.92} 378 C ${260 - shellOpen * 0.34} 430, ${260 - shellOpen * 0.14} 512, 260 604 Z`,
+    shellRight: `M 260 604 C ${260 + shellOpen} 560, ${260 + shellOpen * 1.15} 488, ${260 + shellOpen * 0.92} 378 C ${260 + shellOpen * 0.34} 430, ${260 + shellOpen * 0.14} 512, 260 604 Z`,
+    innerLeft: `M 260 602 C ${260 - innerOpen} 560, ${260 - innerOpen * 0.95} 508, ${260 - innerOpen * 0.72} 430 C ${260 - innerOpen * 0.24} 470, ${260 - innerOpen * 0.08} 536, 260 602 Z`,
+    innerRight: `M 260 602 C ${260 + innerOpen} 560, ${260 + innerOpen * 0.95} 508, ${260 + innerOpen * 0.72} 430 C ${260 + innerOpen * 0.24} 470, ${260 + innerOpen * 0.08} 536, 260 602 Z`,
+    stemPath: `M 260 604 L 260 ${lerp(556, 402, p)}`,
+    stemWidth: String(lerp(2.1, 1.25, p))
+  };
+}
+
+function applyGraphicProgress(nodes: GraphicNodes, progress: number) {
+  const state = buildGraphicState(progress);
+
+  if (nodes.coreStop) nodes.coreStop.setAttribute("stop-color", state.coreStopColor);
+  if (nodes.coreEllipse) nodes.coreEllipse.setAttribute("cy", state.coreCy);
+  if (nodes.shellLeft) nodes.shellLeft.setAttribute("d", state.shellLeft);
+  if (nodes.shellRight) nodes.shellRight.setAttribute("d", state.shellRight);
+  if (nodes.innerLeft) nodes.innerLeft.setAttribute("d", state.innerLeft);
+  if (nodes.innerRight) nodes.innerRight.setAttribute("d", state.innerRight);
+  if (nodes.stem) {
+    nodes.stem.setAttribute("d", state.stemPath);
+    nodes.stem.setAttribute("stroke-width", state.stemWidth);
+  }
+}
+
 function validateSections(): void {
   console.assert(SECTIONS.length === 3, "Expected exactly three sections.");
   console.assert(clamp(-5, 0, 1) === 0, "Clamp should respect lower bound.");
@@ -365,42 +411,52 @@ function getEntryWeight(entry: Entry, index: number): "lead" | "heavy" | "frayed
   return "body";
 }
 
-function Toggle({ value, onChange }: { value: boolean; onChange: () => void }) {
+function Toggle({ value, onChange }: { value: boolean; onChange: (nextValue: boolean) => void }) {
+  const options = [
+    { label: "With reads", nextValue: true, active: value },
+    { label: "Quotes only", nextValue: false, active: !value }
+  ];
+
   return (
-    <button
-      type="button"
-      onClick={onChange}
-      className="inline-flex items-center gap-3 rounded-full border border-white/8 bg-white/[0.035] px-3.5 py-2.5 text-[11px] tracking-[0.16em] text-stone-300 transition hover:bg-white/[0.055]"
+    <div
+      role="group"
+      aria-label="Reading mode"
+      className="inline-flex items-center rounded-full border p-1"
       style={{
         borderColor: "var(--tone-line)",
         background: "color-mix(in srgb, var(--tone-surface) 88%, transparent)",
-        color: "var(--tone-muted)"
+        boxShadow: "0 1px 0 rgba(255,255,255,0.08) inset"
       }}
     >
-      <span
-        className="relative h-5 w-9 rounded-full transition"
-        style={{
-          background: value
-            ? "color-mix(in srgb, var(--tone-accent) 18%, var(--tone-surface-strong))"
-            : "color-mix(in srgb, var(--tone-line) 72%, transparent)"
-        }}
-      >
-        <span className={`absolute top-1 h-3 w-3 rounded-full bg-stone-100 transition-transform ${value ? "translate-x-5" : "translate-x-1"}`} />
-      </span>
-      <span>{value ? "hide reads" : "show reads"}</span>
-    </button>
+      {options.map((option) => (
+        <button
+          key={option.label}
+          type="button"
+          onClick={() => onChange(option.nextValue)}
+          aria-pressed={option.active}
+          className="rounded-full px-3.5 py-2 text-[11px] font-medium transition sm:px-4"
+          style={{
+            background: option.active ? "var(--tone-accent)" : "transparent",
+            color: option.active ? "var(--tone-bg-deep)" : "var(--tone-muted)",
+            boxShadow: option.active ? "0 1px 0 rgba(255,255,255,0.18) inset" : "none"
+          }}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
   );
 }
 
-function ModelGraphic({ progress }: { progress: number }) {
-  const p = ease(progress);
-  const shellOpen = lerp(16, 128, p);
-  const innerOpen = lerp(8, 86, p);
-  const glow = lerp(0.1, 0.28, p);
-  const stemY = lerp(514, 438, p);
-
+function ModelGraphic() {
   return (
-    <svg viewBox="0 0 520 760" className="h-auto w-full" role="img" aria-label="An unfurling form that opens as progress increases.">
+    <svg
+      data-graphic-root
+      viewBox="0 0 520 760"
+      className="h-auto w-full"
+      role="img"
+      aria-label="An unfurling form that opens as progress increases."
+    >
       <defs>
         <radialGradient id="fieldGlow" cx="50%" cy="55%" r="58%">
           <stop offset="0%" stopColor="rgba(255,244,220,0.10)" />
@@ -408,7 +464,7 @@ function ModelGraphic({ progress }: { progress: number }) {
           <stop offset="100%" stopColor="rgba(255,244,220,0)" />
         </radialGradient>
         <radialGradient id="coreGlow" cx="50%" cy="50%" r="40%">
-          <stop offset="0%" stopColor={`rgba(255,240,200,${glow})`} />
+          <stop data-graphic="core-stop" offset="0%" stopColor="rgba(255,240,200,0.10)" />
           <stop offset="100%" stopColor="rgba(255,240,200,0)" />
         </radialGradient>
       </defs>
@@ -416,7 +472,7 @@ function ModelGraphic({ progress }: { progress: number }) {
       <rect x="0" y="0" width="520" height="760" fill="url(#fieldGlow)" />
       <ellipse cx="260" cy="640" rx="150" ry="60" fill="rgba(255,255,255,0.02)" />
       <ellipse cx="260" cy="640" rx="110" ry="36" fill="rgba(255,231,184,0.10)" />
-      <ellipse cx="260" cy={stemY} rx="90" ry="110" fill="url(#coreGlow)" />
+      <ellipse data-graphic="core-ellipse" cx="260" cy="514" rx="90" ry="110" fill="url(#coreGlow)" />
 
       <path
         d={`M 260 618 C 210 602, 180 592, 150 575 L 160 650 C 195 660, 222 666, 260 668 C 298 666, 325 660, 360 650 L 370 575 C 340 592, 310 602, 260 618 Z`}
@@ -426,35 +482,40 @@ function ModelGraphic({ progress }: { progress: number }) {
       />
 
       <path
-        d={`M 260 604 C ${260 - shellOpen} 560, ${260 - shellOpen * 1.15} 488, ${260 - shellOpen * 0.92} 378 C ${260 - shellOpen * 0.34} 430, ${260 - shellOpen * 0.14} 512, 260 604 Z`}
+        data-graphic="shell-left"
+        d="M 260 604 C 244 560, 241.6 488, 245.28 378 C 254.56 430, 257.76 512, 260 604 Z"
         fill="rgba(255,248,238,0.68)"
         stroke="rgba(255,255,255,0.12)"
         strokeWidth="1"
       />
       <path
-        d={`M 260 604 C ${260 + shellOpen} 560, ${260 + shellOpen * 1.15} 488, ${260 + shellOpen * 0.92} 378 C ${260 + shellOpen * 0.34} 430, ${260 + shellOpen * 0.14} 512, 260 604 Z`}
+        data-graphic="shell-right"
+        d="M 260 604 C 276 560, 278.4 488, 274.72 378 C 265.44 430, 262.24 512, 260 604 Z"
         fill="rgba(255,248,238,0.68)"
         stroke="rgba(255,255,255,0.12)"
         strokeWidth="1"
       />
 
       <path
-        d={`M 260 602 C ${260 - innerOpen} 560, ${260 - innerOpen * 0.95} 508, ${260 - innerOpen * 0.72} 430 C ${260 - innerOpen * 0.24} 470, ${260 - innerOpen * 0.08} 536, 260 602 Z`}
+        data-graphic="inner-left"
+        d="M 260 602 C 252 560, 252.4 508, 254.24 430 C 258.08 470, 259.36 536, 260 602 Z"
         fill="rgba(255,243,230,0.86)"
         stroke="rgba(255,255,255,0.11)"
         strokeWidth="0.95"
       />
       <path
-        d={`M 260 602 C ${260 + innerOpen} 560, ${260 + innerOpen * 0.95} 508, ${260 + innerOpen * 0.72} 430 C ${260 + innerOpen * 0.24} 470, ${260 + innerOpen * 0.08} 536, 260 602 Z`}
+        data-graphic="inner-right"
+        d="M 260 602 C 268 560, 267.6 508, 265.76 430 C 261.92 470, 260.64 536, 260 602 Z"
         fill="rgba(255,243,230,0.86)"
         stroke="rgba(255,255,255,0.11)"
         strokeWidth="0.95"
       />
 
       <path
-        d={`M 260 604 L 260 ${lerp(556, 402, p)}`}
+        data-graphic="stem"
+        d="M 260 604 L 260 556"
         stroke="rgba(255,244,220,0.62)"
-        strokeWidth={lerp(2.1, 1.25, p)}
+        strokeWidth="2.1"
         strokeLinecap="round"
       />
       <circle cx="260" cy="604" r="4.5" fill="rgba(255,244,220,0.72)" />
@@ -471,7 +532,7 @@ function ModelSectionList({ currentKey }: { currentKey: Section["key"] }) {
         return (
           <div
             key={section.key}
-            className="flex items-center gap-3 rounded-xl px-3 py-2 transition"
+            className="flex items-center gap-3 rounded-xl px-3 py-2"
             style={{ background: active ? theme.wash : "transparent" }}
           >
             <div
@@ -569,36 +630,35 @@ function QuoteEntry({
 
 type SectionBlockProps = {
   section: Section;
-  progress: number;
+  isActive: boolean;
   showInterpretations?: boolean;
 };
 
 function SectionBlock({
   section,
-  progress,
+  isActive,
   showInterpretations = true
 }: SectionBlockProps) {
-  const active =
-    section.key === "survival"
-      ? progress < 0.28
-      : section.key === "stability"
-        ? progress < 0.66
-        : progress >= 0.66;
   const theme = SECTION_THEMES[section.key];
+  const surfaceBackground = `linear-gradient(180deg, color-mix(in srgb, ${theme.wash} 54%, var(--tone-surface)), color-mix(in srgb, var(--tone-surface) 94%, transparent) 34%, color-mix(in srgb, var(--tone-surface-strong) 95%, transparent) 100%)`;
 
   return (
-    <section className="py-10 sm:py-14">
+    <section data-section-key={section.key} className="py-10 sm:py-14">
       <div
-        className="relative overflow-hidden rounded-[1.6rem] border bg-white/[0.018] transition-all duration-300"
+        className="relative overflow-hidden rounded-[1.6rem] border bg-white/[0.018]"
         style={{
-          borderColor: active ? "color-mix(in srgb, var(--tone-line) 96%, rgba(255,255,255,0.04))" : "var(--tone-line)",
-          background: active
-            ? `linear-gradient(180deg, color-mix(in srgb, ${theme.wash} 82%, var(--tone-surface)), color-mix(in srgb, var(--tone-surface) 96%, transparent) 34%, color-mix(in srgb, var(--tone-surface-strong) 94%, transparent) 100%)`
-            : "linear-gradient(180deg, color-mix(in srgb, var(--tone-surface) 92%, transparent), color-mix(in srgb, var(--tone-surface-strong) 94%, transparent))",
-          boxShadow: active ? "0 18px 46px rgba(0,0,0,0.14)" : "none"
+          borderColor: "var(--tone-line)",
+          background: surfaceBackground,
+          boxShadow: "0 12px 30px rgba(0,0,0,0.08)"
         }}
       >
-        <div className="absolute inset-x-0 top-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${theme.line}, transparent)` }} />
+        <div
+          className="absolute inset-x-0 top-0 h-px"
+          style={{
+            opacity: isActive ? 0.95 : 0.42,
+            background: `linear-gradient(90deg, transparent, ${theme.line}, transparent)`
+          }}
+        />
 
         <div className="border-b border-white/6 px-5 py-6 sm:px-8 sm:py-8">
           <div className="max-w-3xl">
@@ -609,7 +669,7 @@ function SectionBlock({
 
         <div>
           {section.entries.map((entry, index) => (
-            <QuoteEntry
+            <MemoQuoteEntry
               key={`${section.key}-${index}`}
               entry={entry}
               index={index}
@@ -624,44 +684,171 @@ function SectionBlock({
   );
 }
 
+const MemoToggle = React.memo(Toggle);
+const MemoModelGraphic = React.memo(ModelGraphic);
+const MemoModelSectionList = React.memo(ModelSectionList);
+const MemoQuoteEntry = React.memo(QuoteEntry);
+const MemoSectionBlock = React.memo(SectionBlock);
+
 export default function UnfurlingLifeModel() {
-  const [progress, setProgress] = useState(0);
+  const [currentKey, setCurrentKey] = useState<SectionKey>("survival");
   const [showInterpretations, setShowInterpretations] = useState(true);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const currentKeyRef = useRef<SectionKey>("survival");
+  const progressRef = useRef(0);
+  const progressFillRef = useRef<HTMLDivElement | null>(null);
+  const graphicNodesRef = useRef<GraphicNodes>({
+    coreStop: null,
+    coreEllipse: null,
+    shellLeft: null,
+    shellRight: null,
+    innerLeft: null,
+    innerRight: null,
+    stem: null
+  });
+  const layoutRef = useRef<{
+    rootTop: number;
+    scrollSpan: number;
+    sections: SectionMetric[];
+  }>({
+    rootTop: 0,
+    scrollSpan: 1,
+    sections: []
+  });
+
+  useEffect(() => {
+    currentKeyRef.current = currentKey;
+  }, [currentKey]);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    const graphicRoot = root?.querySelector<SVGSVGElement>("[data-graphic-root]");
+
+    if (!graphicRoot) return;
+
+    graphicNodesRef.current = {
+      coreStop: graphicRoot.querySelector<SVGStopElement>("[data-graphic='core-stop']"),
+      coreEllipse: graphicRoot.querySelector<SVGEllipseElement>("[data-graphic='core-ellipse']"),
+      shellLeft: graphicRoot.querySelector<SVGPathElement>("[data-graphic='shell-left']"),
+      shellRight: graphicRoot.querySelector<SVGPathElement>("[data-graphic='shell-right']"),
+      innerLeft: graphicRoot.querySelector<SVGPathElement>("[data-graphic='inner-left']"),
+      innerRight: graphicRoot.querySelector<SVGPathElement>("[data-graphic='inner-right']"),
+      stem: graphicRoot.querySelector<SVGPathElement>("[data-graphic='stem']")
+    };
+
+    applyGraphicProgress(graphicNodesRef.current, progressRef.current);
+  }, []);
 
   useEffect(() => {
     let raf = 0;
 
-    const onScroll = () => {
+    const applyProgressUI = (nextProgress: number) => {
+      progressRef.current = nextProgress;
+
+      if (progressFillRef.current) {
+        progressFillRef.current.style.transform = `scaleX(${nextProgress})`;
+      }
+
+      applyGraphicProgress(graphicNodesRef.current, nextProgress);
+    };
+
+    const readLayout = () => {
+      const root = rootRef.current;
+      if (!root) return;
+
+      const rootRect = root.getBoundingClientRect();
+      const sectionMetrics = Array.from(root.querySelectorAll<HTMLElement>("[data-section-key]"))
+        .map((node) => {
+          const key = node.dataset.sectionKey as SectionKey | undefined;
+          if (!key) return null;
+          const rect = node.getBoundingClientRect();
+          return {
+            key,
+            top: window.scrollY + rect.top
+          };
+        })
+        .filter((metric): metric is SectionMetric => Boolean(metric));
+
+      layoutRef.current = {
+        rootTop: window.scrollY + rootRect.top,
+        scrollSpan: Math.max(rootRect.height - window.innerHeight, 1),
+        sections: sectionMetrics
+      };
+    };
+
+    const syncScrollState = () => {
+      const { rootTop, scrollSpan, sections } = layoutRef.current;
+      const nextProgress = clamp((window.scrollY - rootTop) / scrollSpan, 0, 1);
+
+      if (Math.abs(progressRef.current - nextProgress) > 0.002) {
+        applyProgressUI(nextProgress);
+      }
+
+      if (!sections.length) return;
+
+      const anchor = window.scrollY + window.innerHeight * 0.35;
+      let nextKey = sections[0].key;
+
+      for (const section of sections) {
+        if (anchor >= section.top - 1) nextKey = section.key;
+      }
+
+      if (currentKeyRef.current !== nextKey) {
+        currentKeyRef.current = nextKey;
+        startTransition(() => {
+          setCurrentKey(nextKey);
+        });
+      }
+    };
+
+    const scheduleSync = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(syncScrollState);
+    };
+
+    const scheduleMeasure = () => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
-        const doc = document.documentElement;
-        const total = doc.scrollHeight - window.innerHeight;
-        const next = total <= 0 ? 0 : window.scrollY / total;
-        setProgress(clamp(next, 0, 1));
+        readLayout();
+        syncScrollState();
       });
     };
 
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    scheduleMeasure();
+
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver === "function") {
+      resizeObserver = new ResizeObserver(scheduleMeasure);
+
+      const root = rootRef.current;
+      const observedNodes = root
+        ? [root, ...Array.from(root.querySelectorAll<HTMLElement>("[data-section-key]"))]
+        : [];
+
+      observedNodes.forEach((node) => resizeObserver?.observe(node));
+    }
+
+    window.addEventListener("scroll", scheduleSync, { passive: true });
+    window.addEventListener("resize", scheduleMeasure);
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      resizeObserver?.disconnect();
+      window.removeEventListener("scroll", scheduleSync);
+      window.removeEventListener("resize", scheduleMeasure);
     };
-  }, []);
+  }, [showInterpretations]);
 
   const current = useMemo(() => {
-    if (progress < 0.28) return SECTIONS[0];
-    if (progress < 0.66) return SECTIONS[1];
-    return SECTIONS[2];
-  }, [progress]);
+    return SECTIONS.find((section) => section.key === currentKey) ?? SECTIONS[0];
+  }, [currentKey]);
 
   const currentTheme = SECTION_THEMES[current.key];
 
   return (
     <div
-      className="min-h-[300vh] text-stone-100"
+      ref={rootRef}
+      data-unfurling-root
+      className="text-stone-100"
       style={{
         background:
           "radial-gradient(42rem 22rem at 78% 8%, color-mix(in srgb, var(--tone-sky) 12%, transparent), transparent 72%), radial-gradient(38rem 20rem at 18% 14%, color-mix(in srgb, var(--tone-accent) 12%, transparent), transparent 74%), linear-gradient(180deg, color-mix(in srgb, var(--tone-bg-deep) 90%, black), color-mix(in srgb, var(--tone-bg) 96%, black))"
@@ -670,14 +857,14 @@ export default function UnfurlingLifeModel() {
       <div className="mx-auto grid max-w-[1480px] grid-cols-1 gap-12 px-5 py-8 sm:px-8 lg:grid-cols-[minmax(0,1.34fr)_minmax(320px,0.58fr)] lg:gap-16 lg:px-10">
         <div className="py-[4vh] lg:order-1 lg:pt-2 lg:pb-[8vh]">
           <div className="mb-4 flex items-center justify-end lg:mb-3">
-            <Toggle value={showInterpretations} onChange={() => setShowInterpretations((value) => !value)} />
+            <MemoToggle value={showInterpretations} onChange={setShowInterpretations} />
           </div>
 
           {SECTIONS.map((section) => (
-            <SectionBlock
+            <MemoSectionBlock
               key={section.key}
               section={section}
-              progress={progress}
+              isActive={section.key === current.key}
               showInterpretations={showInterpretations}
             />
           ))}
@@ -694,22 +881,24 @@ export default function UnfurlingLifeModel() {
                 boxShadow: "0 24px 64px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.015) inset"
               }}
             >
-              <div
-                className="rounded-[1.45rem] border px-4 py-5"
-                style={{
-                  borderColor: "var(--tone-line)",
-                  background: "color-mix(in srgb, var(--tone-surface-strong) 78%, rgba(10,12,16,0.24))"
-                }}
-              >
-                <ModelGraphic progress={progress} />
+                <div
+                  className="rounded-[1.45rem] border px-4 py-5"
+                  style={{
+                    borderColor: "var(--tone-line)",
+                    background: "color-mix(in srgb, var(--tone-surface-strong) 78%, rgba(10,12,16,0.24))"
+                  }}
+                >
+                <MemoModelGraphic />
               </div>
 
               <div className="mt-5 space-y-5">
                 <div className="h-[3px] overflow-hidden rounded-full" style={{ background: "color-mix(in srgb, var(--tone-line) 86%, transparent)" }}>
                   <div
-                    className="h-full rounded-full transition-[width] duration-150"
+                    ref={progressFillRef}
+                    className="h-full rounded-full"
                     style={{
-                      width: `${progress * 100}%`,
+                      transform: "scaleX(0)",
+                      transformOrigin: "left center",
                       background: `linear-gradient(90deg, ${currentTheme.accent}, rgba(255,255,255,0.42))`
                     }}
                   />
@@ -733,7 +922,7 @@ export default function UnfurlingLifeModel() {
                     background: "color-mix(in srgb, var(--tone-surface) 76%, transparent)"
                   }}
                 >
-                  <ModelSectionList currentKey={current.key} />
+                  <MemoModelSectionList currentKey={current.key} />
                 </div>
               </div>
             </div>

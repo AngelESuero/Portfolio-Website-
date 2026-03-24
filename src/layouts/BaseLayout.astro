@@ -1,5 +1,4 @@
 ---
-import { existsSync } from 'node:fs';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -38,28 +37,6 @@ const {
   ambientEffects = true,
   viewTransitions = false,
 } = Astro.props;
-
-const resolvePublicAsset = (candidates: string[]) => {
-  for (const relativePath of candidates) {
-    if (existsSync(new URL(`../../public/${relativePath}`, import.meta.url))) {
-      return `/${relativePath}`;
-    }
-  }
-
-  return null;
-};
-
-const shellGarlandAssets = {
-  top: resolvePublicAsset(['images/garland/top-vine.avif', 'images/garland/top-vine.webp', 'images/garland/top-vine.png']),
-  left: resolvePublicAsset(['images/garland/left-vine.avif', 'images/garland/left-vine.webp', 'images/garland/left-vine.png']),
-  right: resolvePublicAsset(['images/garland/right-vine.avif', 'images/garland/right-vine.webp', 'images/garland/right-vine.png'])
-};
-
-const shellGarlandStyle = [
-  `--shell-garland-top:${shellGarlandAssets.top ? `url('${shellGarlandAssets.top}')` : 'none'}`,
-  `--shell-garland-left:${shellGarlandAssets.left ? `url('${shellGarlandAssets.left}')` : 'none'}`,
-  `--shell-garland-right:${shellGarlandAssets.right ? `url('${shellGarlandAssets.right}')` : 'none'}`
-].join(';');
 ---
 
 <!doctype html>
@@ -114,18 +91,9 @@ const shellGarlandStyle = [
       <div class="site-depth-stage" aria-hidden="true">
         <HallwayBackdrop accent="var(--accent)" />
         <div class="site-overlay"></div>
-        <div
-          class="site-shell-frame"
-          style={shellGarlandStyle}
-          data-has-top-vine={shellGarlandAssets.top ? 'true' : 'false'}
-          data-has-left-photo={shellGarlandAssets.left ? 'true' : 'false'}
-          data-has-right-photo={shellGarlandAssets.right ? 'true' : 'false'}
-        >
+        <div class="site-shell-frame">
           <span class="site-shell-frame__enclosure"></span>
           <span class="site-shell-frame__wire"></span>
-          <span class="site-shell-frame__vine"></span>
-          <span class="site-shell-frame__photo site-shell-frame__photo--left"></span>
-          <span class="site-shell-frame__photo site-shell-frame__photo--right"></span>
         </div>
       </div>
     )}

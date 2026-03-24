@@ -94,7 +94,6 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         id: 'everyday-soundscape',
         title: 'The Every Day Soundscape',
         url: MUSIC_URLS.untitledEveryDaySoundscape,
-        embedUrl: `${MUSIC_URLS.untitledEveryDaySoundscape}/embed`,
         year: '2019',
         tag: 'Track',
         preferredEmbed: 'untitled'
@@ -103,7 +102,6 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
         id: 'queries-beat-tape',
         title: 'Queries (The Beat Tape): Family... Love?',
         url: MUSIC_URLS.untitledQueriesBeatTape,
-        embedUrl: `${MUSIC_URLS.untitledQueriesBeatTape}/embed`,
         year: '2020',
         tag: 'Project',
         preferredEmbed: 'untitled'

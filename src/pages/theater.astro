@@ -4,6 +4,9 @@ import profile from '../data/profile';
 import youtubeData from '../data/youtube.json';
 import { MUSIC_URLS, SOCIAL_URLS } from '../data/site-refs';
 
+const spotifyVol4EmbedUrl = 'https://open.spotify.com/embed/playlist/1aeafuJB347VmKXu4jvaTO';
+const soundcloudVol4Url = 'https://soundcloud.com/aesuero/sets/volume-4-angel-sueros-top-50';
+
 type VideoFeature = {
   title: string;
   videoId: string;
@@ -15,9 +18,14 @@ type VideoFeature = {
 type AudioFeature = {
   title: string;
   source: string;
-  embedUrl: string;
   href: string;
+  linkLabel: string;
   note: string;
+  presentation: 'embed' | 'handoff';
+  embedUrl?: string;
+  secondaryHref?: string;
+  secondaryLabel?: string;
+  handoffCopy?: string;
 };
 
 type ClipFeature = {
@@ -45,36 +53,52 @@ const listeningRoom: AudioFeature[] = [
   {
     title: 'My First Beat Tape',
     source: 'Untitled',
+    presentation: 'embed',
     embedUrl: MUSIC_URLS.untitledMyFirstBeatTape,
     href: '/archive/music/my-first-beat-tape',
+    linkLabel: 'Open archive entry',
+    secondaryHref: MUSIC_URLS.untitledMyFirstBeatTape,
+    secondaryLabel: 'Listen on Untitled',
     note: 'The tape sitting closest to the room, ready to start the night.'
   },
   {
     title: 'Queries (The Beat Tape): Family... Love?',
     source: 'Untitled',
-    embedUrl: `${MUSIC_URLS.untitledQueriesBeatTape}/embed`,
+    presentation: 'handoff',
     href: '/archive/music/queries-the-beat-tape-family-love',
-    note: 'Family and love held together as one long question.'
+    linkLabel: 'Open archive entry',
+    secondaryHref: MUSIC_URLS.untitledQueriesBeatTape,
+    secondaryLabel: 'Listen on Untitled',
+    note: 'Family and love held together as one long question.',
+    handoffCopy: 'Untitled keeps this record off the in-room screen, so the archive entry and source link carry the handoff instead.'
   },
   {
     title: 'The Every Day Soundscape',
     source: 'Untitled',
-    embedUrl: `${MUSIC_URLS.untitledEveryDaySoundscape}/embed`,
+    presentation: 'handoff',
     href: '/archive/music/the-every-day-soundscape',
-    note: 'An atmospheric lane for the quieter hours in the room.'
+    linkLabel: 'Open archive entry',
+    secondaryHref: MUSIC_URLS.untitledEveryDaySoundscape,
+    secondaryLabel: 'Listen on Untitled',
+    note: 'An atmospheric lane for the quieter hours in the room.',
+    handoffCopy: 'This listening lane opens more reliably through the archive and the original Untitled page than it does inside an iframe.'
   },
   {
     title: 'Now Listening (Vol 4)',
     source: 'Spotify',
-    embedUrl: MUSIC_URLS.spotifyVol4,
+    presentation: 'embed',
+    embedUrl: spotifyVol4EmbedUrl,
     href: MUSIC_URLS.spotifyVol4,
+    linkLabel: 'Open source',
     note: 'Current reference pressure and playlist motion.'
   },
   {
     title: 'Volume 4',
     source: 'SoundCloud',
-    embedUrl: `https://w.soundcloud.com/player/?url=${encodeURIComponent('https://soundcloud.com/aesuero/sets/volume-4-angel-sueros-top-50')}&color=%23b97a2d&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false`,
-    href: SOCIAL_URLS.soundcloud,
+    presentation: 'embed',
+    embedUrl: `https://w.soundcloud.com/player/?url=${encodeURIComponent(soundcloudVol4Url)}&color=%23b97a2d&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false`,
+    href: soundcloudVol4Url,
+    linkLabel: 'Open source',
     note: 'A looser route through the same energy.'
   }
 ];
@@ -125,7 +149,6 @@ const boothTape = {
 };
 
 const defaultVideo = recentVideos[0];
-const defaultMusic = listeningRoom[0];
 const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo?.videoId}?autoplay=0&rel=0&modestbranding=1`;
 ---
 
@@ -180,9 +203,13 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
                 data-type={`YouTube • ${video.publishedAt}`}
                 data-title={video.title}
                 data-note="Fresh from the channel and ready for the main screen."
+                data-presentation="embed"
                 data-src={`https://www.youtube-nocookie.com/embed/${video.videoId}?autoplay=0&rel=0&modestbranding=1`}
                 data-href={video.href}
                 data-link-label="Open on YouTube"
+                data-secondary-href=""
+                data-secondary-label=""
+                data-handoff-copy=""
               >
                 <img src={video.thumbnailUrl} alt="" loading="lazy" />
                 <span>
@@ -214,12 +241,22 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
                 allowFullScreen
                 referrerpolicy="strict-origin-when-cross-origin"
               ></iframe>
+              <div class="theater-screen__handoff" data-theater-handoff hidden>
+                <p>Archive handoff</p>
+                <h4 data-theater-handoff-title>Open this record from the archive.</h4>
+                <p data-theater-handoff-copy>
+                  This selection opens more reliably through the archive and source links than it does inside the room.
+                </p>
+              </div>
             </div>
           </div>
 
           <div class="theater-screening__foot">
             <p data-theater-note>Fresh from the channel and ready for the main screen.</p>
-            <a data-theater-link href={defaultVideo?.href} target="_blank" rel="noopener noreferrer">Open on YouTube</a>
+            <div class="theater-screening__actions">
+              <a data-theater-link href={defaultVideo?.href} target="_blank" rel="noopener noreferrer">Open on YouTube</a>
+              <a data-theater-secondary-link href="" hidden></a>
+            </div>
           </div>
         </div>
 
@@ -237,12 +274,16 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
                 data-theater-item
                 data-mode="music"
                 data-kicker="On the speakers"
-                data-type={`${item.source} embed`}
+                data-type={item.presentation === 'embed' ? `${item.source} embed` : `${item.source} archive handoff`}
                 data-title={item.title}
                 data-note={item.note}
-                data-src={item.embedUrl}
+                data-presentation={item.presentation}
+                data-src={item.embedUrl ?? ''}
                 data-href={item.href}
-                data-link-label={item.source === 'Spotify' || item.source === 'SoundCloud' ? 'Open source' : 'Open archive entry'}
+                data-link-label={item.linkLabel}
+                data-secondary-href={item.secondaryHref ?? ''}
+                data-secondary-label={item.secondaryLabel ?? ''}
+                data-handoff-copy={item.handoffCopy ?? ''}
               >
                 <span class="theater-picker__pill">{item.source}</span>
                 <span>
@@ -323,14 +364,30 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
                 </a>
               </div>
               <h3>{item.title}</h3>
-              <iframe
-                src={item.embedUrl}
-                title={`${item.title} embed`}
-                loading="lazy"
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                allowFullScreen
-                frameborder="0"
-              ></iframe>
+              {item.presentation === 'embed' && item.embedUrl ? (
+                <iframe
+                  src={item.embedUrl}
+                  title={`${item.title} embed`}
+                  loading="lazy"
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  frameborder="0"
+                ></iframe>
+              ) : (
+                <div class="theater-listens__fallback">
+                  <p>{item.handoffCopy ?? 'This piece opens more reliably through the archive and source link.'}</p>
+                  <div class="theater-listens__actions">
+                    <a href={item.href} {...(/^https?:\/\//i.test(item.href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+                      {item.linkLabel}
+                    </a>
+                    {item.secondaryHref && item.secondaryLabel ? (
+                      <a href={item.secondaryHref} target="_blank" rel="noopener noreferrer">
+                        {item.secondaryLabel}
+                      </a>
+                    ) : null}
+                  </div>
+                </div>
+              )}
             </article>
           ))}
         </div>
@@ -352,46 +409,95 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
     (() => {
       const items = Array.from(document.querySelectorAll('[data-theater-item]'));
       const frame = document.querySelector('[data-theater-iframe]');
+      const handoff = document.querySelector('[data-theater-handoff]');
+      const handoffTitle = document.querySelector('[data-theater-handoff-title]');
+      const handoffCopy = document.querySelector('[data-theater-handoff-copy]');
       const title = document.querySelector('[data-theater-title]');
       const kicker = document.querySelector('[data-theater-kicker]');
       const type = document.querySelector('[data-theater-type]');
       const note = document.querySelector('[data-theater-note]');
       const link = document.querySelector('[data-theater-link]');
+      const secondaryLink = document.querySelector('[data-theater-secondary-link]');
 
       if (
         !(frame instanceof HTMLIFrameElement) ||
+        !(handoff instanceof HTMLElement) ||
+        !(handoffTitle instanceof HTMLElement) ||
+        !(handoffCopy instanceof HTMLElement) ||
         !(title instanceof HTMLElement) ||
         !(kicker instanceof HTMLElement) ||
         !(type instanceof HTMLElement) ||
         !(note instanceof HTMLElement) ||
-        !(link instanceof HTMLAnchorElement)
+        !(link instanceof HTMLAnchorElement) ||
+        !(secondaryLink instanceof HTMLAnchorElement)
       ) {
         return;
       }
 
       const activate = (button) => {
         const src = button.getAttribute('data-src');
+        const presentation = button.getAttribute('data-presentation') || 'embed';
         const nextTitle = button.getAttribute('data-title');
         const nextKicker = button.getAttribute('data-kicker');
         const nextType = button.getAttribute('data-type');
         const nextNote = button.getAttribute('data-note');
         const nextHref = button.getAttribute('data-href');
         const nextLabel = button.getAttribute('data-link-label');
+        const nextSecondaryHref = button.getAttribute('data-secondary-href');
+        const nextSecondaryLabel = button.getAttribute('data-secondary-label');
+        const nextHandoffCopy = button.getAttribute('data-handoff-copy');
 
-        if (!src || !nextTitle || !nextKicker || !nextType || !nextNote || !nextHref || !nextLabel) {
+        if (!nextTitle || !nextKicker || !nextType || !nextNote || !nextHref || !nextLabel) {
           return;
         }
 
-        frame.src = src;
-        frame.title = nextTitle;
+        if (presentation === 'embed' && src) {
+          frame.hidden = false;
+          frame.src = src;
+          frame.title = nextTitle;
+          handoff.hidden = true;
+        } else {
+          frame.hidden = true;
+          frame.src = 'about:blank';
+          frame.title = '';
+          handoff.hidden = false;
+          handoffTitle.textContent = nextTitle;
+          handoffCopy.textContent =
+            nextHandoffCopy || 'This piece opens more reliably through the archive and source links than it does inline.';
+        }
+
         title.textContent = nextTitle;
         kicker.textContent = nextKicker;
         type.textContent = nextType;
         note.textContent = nextNote;
         link.href = nextHref;
         link.textContent = nextLabel;
-        link.target = /^https?:\/\//i.test(nextHref) ? '_blank' : '';
-        link.rel = /^https?:\/\//i.test(nextHref) ? 'noopener noreferrer' : '';
+        if (/^https?:\/\//i.test(nextHref)) {
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+        } else {
+          link.removeAttribute('target');
+          link.removeAttribute('rel');
+        }
+
+        if (nextSecondaryHref && nextSecondaryLabel) {
+          secondaryLink.hidden = false;
+          secondaryLink.href = nextSecondaryHref;
+          secondaryLink.textContent = nextSecondaryLabel;
+          if (/^https?:\/\//i.test(nextSecondaryHref)) {
+            secondaryLink.target = '_blank';
+            secondaryLink.rel = 'noopener noreferrer';
+          } else {
+            secondaryLink.removeAttribute('target');
+            secondaryLink.removeAttribute('rel');
+          }
+        } else {
+          secondaryLink.hidden = true;
+          secondaryLink.removeAttribute('href');
+          secondaryLink.textContent = '';
+          secondaryLink.removeAttribute('target');
+          secondaryLink.removeAttribute('rel');
+        }
 
         items.forEach((item) => item.classList.remove('is-active'));
         button.classList.add('is-active');
@@ -405,19 +511,40 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
 </BaseLayout>
 
 <style>
-  :global(body.theater-page) {
+  :global(html body.theater-page[data-theme='archive']) {
+    --tone-bg: #181110;
+    --tone-bg-deep: #0d0909;
+    --tone-surface: rgba(33, 24, 23, 0.9);
+    --tone-surface-strong: rgba(20, 14, 14, 0.97);
+    --tone-text: rgba(245, 236, 223, 0.96);
+    --tone-muted: rgba(213, 195, 174, 0.76);
+    --tone-line: rgba(235, 215, 189, 0.13);
+    --line2: rgba(235, 215, 189, 0.1);
+    --reading-plane: rgba(25, 18, 18, 0.9);
+    --reading-plane-strong: rgba(16, 12, 12, 0.96);
+    --reading-plane-line: rgba(235, 215, 189, 0.08);
+    --reading-plane-shadow: 0 28px 78px rgba(0, 0, 0, 0.42);
     --theater-gold: var(--tone-accent-glow);
     --theater-cream: var(--tone-text);
     --theater-red: color-mix(in srgb, var(--tone-accent) 52%, #341715);
     --theater-red-soft: color-mix(in srgb, var(--tone-accent) 38%, rgba(36, 16, 18, 0.9));
-    --theater-panel: color-mix(in srgb, var(--tone-surface) 90%, rgba(10, 11, 16, 0.28));
-    --theater-border: color-mix(in srgb, var(--tone-line) 92%, rgba(255,255,255,0.03));
+    --theater-panel: color-mix(in srgb, var(--tone-surface) 94%, rgba(0, 0, 0, 0.22));
+    --theater-border: color-mix(in srgb, var(--tone-line) 98%, rgba(255,255,255,0.03));
     --theater-copy: var(--tone-muted);
     background:
-      radial-gradient(60rem 34rem at 50% 8%, color-mix(in srgb, var(--tone-accent) 16%, transparent), transparent 62%),
-      radial-gradient(42rem 28rem at 82% 12%, color-mix(in srgb, var(--tone-sky) 11%, transparent), transparent 72%),
-      linear-gradient(180deg, color-mix(in srgb, var(--tone-bg-deep) 90%, black), var(--tone-bg) 52%, color-mix(in srgb, var(--tone-bg) 96%, black));
+      radial-gradient(60rem 34rem at 50% 8%, color-mix(in srgb, var(--tone-accent) 18%, transparent), transparent 58%),
+      radial-gradient(42rem 28rem at 82% 12%, color-mix(in srgb, var(--tone-sky) 14%, transparent), transparent 68%),
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-bg-deep) 94%, black), var(--tone-bg) 48%, color-mix(in srgb, var(--tone-bg) 90%, black));
     color: var(--tone-text);
+  }
+
+  :global(html body.theater-page .site-overlay) {
+    background:
+      linear-gradient(to right, rgba(0, 0, 0, 0.22), transparent 26%),
+      linear-gradient(to left, rgba(0, 0, 0, 0.22), transparent 26%),
+      radial-gradient(64rem 34rem at 50% 4%, rgba(255, 214, 154, 0.06), transparent 54%),
+      radial-gradient(52rem 28rem at 82% 12%, rgba(92, 58, 45, 0.12), transparent 66%),
+      linear-gradient(180deg, rgba(10, 7, 8, 0.28), rgba(15, 10, 11, 0.18) 42%, rgba(10, 8, 10, 0.42));
   }
 
   :global(body.theater-page .site-content-stage::before) {
@@ -429,6 +556,38 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
         color-mix(in srgb, var(--reading-plane-strong) 98%, rgba(7, 9, 14, 0.08))
       );
     box-shadow: 0 24px 74px rgba(0, 0, 0, 0.24);
+  }
+
+  :global(.light body.theater-page .site-header) {
+    background:
+      linear-gradient(180deg, rgba(22, 16, 15, 0.95), rgba(18, 13, 13, 0.84)),
+      linear-gradient(90deg, rgba(255, 214, 154, 0.05), transparent 24%, transparent 76%, rgba(143, 94, 71, 0.06));
+    border-bottom-color: color-mix(in srgb, var(--tone-accent) 24%, rgba(255, 244, 223, 0.1));
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  :global(.light body.theater-page .site-header .header-brand),
+  :global(.light body.theater-page .site-header nav a) {
+    color: var(--tone-text) !important;
+  }
+
+  :global(.light body.theater-page .site-header .header-link) {
+    border-color: color-mix(in srgb, var(--link-accent, var(--tone-accent)) 24%, rgba(255, 244, 223, 0.1));
+    background:
+      linear-gradient(180deg, rgba(46, 33, 31, 0.88), rgba(27, 20, 19, 0.76));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 0 0 1px rgba(255, 255, 255, 0.02);
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--link-accent, var(--tone-accent)) 16%);
+  }
+
+  :global(.light body.theater-page .site-header .header-link:hover),
+  :global(.light body.theater-page .site-header .header-link:focus-visible),
+  :global(.light body.theater-page .site-header .header-link[aria-current='page']) {
+    border-color: color-mix(in srgb, var(--link-accent, var(--tone-accent)) 44%, rgba(255, 244, 223, 0.1));
+    background:
+      linear-gradient(180deg, rgba(56, 40, 37, 0.94), rgba(35, 25, 23, 0.82));
+    color: color-mix(in srgb, var(--link-accent, var(--tone-accent)) 58%, var(--tone-text) 42%);
   }
 
   .theater-shell {
@@ -461,6 +620,9 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
       clamp(1.4rem, 4vw, 4rem)
       clamp(2.8rem, 7vw, 4.8rem);
     overflow: hidden;
+    background:
+      radial-gradient(42rem 22rem at 50% 68%, rgba(255, 214, 154, 0.08), transparent 54%),
+      linear-gradient(180deg, rgba(8, 6, 7, 0.36), rgba(8, 6, 7, 0.14) 24%, rgba(8, 6, 7, 0.52) 100%);
   }
 
   .theater-hero::before,
@@ -559,10 +721,16 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
   }
 
   .theater-hero__actions,
-  .theater-exit__actions {
+  .theater-exit__actions,
+  .theater-screening__actions,
+  .theater-listens__actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.85rem;
+  }
+
+  .theater-hero__actions,
+  .theater-exit__actions {
     justify-content: center;
   }
 
@@ -578,18 +746,20 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
 
   .theater-hero__actions a,
   .theater-exit__actions a {
-    border: 1px solid rgba(244, 230, 204, 0.14);
+    border: 1px solid rgba(244, 230, 204, 0.16);
     border-radius: 999px;
     padding: 0.9rem 1.25rem;
-    background: rgba(255, 255, 255, 0.04);
+    background:
+      linear-gradient(180deg, rgba(45, 33, 31, 0.9), rgba(24, 18, 17, 0.82));
     transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
   }
 
   .theater-hero__actions a:hover,
   .theater-exit__actions a:hover {
     transform: translateY(-2px);
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(244, 230, 204, 0.24);
+    background:
+      linear-gradient(180deg, rgba(58, 42, 39, 0.96), rgba(31, 23, 21, 0.88));
+    border-color: rgba(244, 230, 204, 0.28);
   }
 
   .theater-stage,
@@ -679,7 +849,9 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
     padding: 0.72rem;
     border: 1px solid color-mix(in srgb, var(--tone-line) 88%, rgba(255,255,255,0.03));
     border-radius: 1rem;
-    background: color-mix(in srgb, var(--tone-surface) 82%, transparent);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)),
+      color-mix(in srgb, var(--tone-surface) 88%, transparent);
     color: inherit;
     text-align: left;
     cursor: pointer;
@@ -690,8 +862,10 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
   .theater-picker__item.is-active,
   .theater-picker__item.is-priority {
     transform: translateY(-2px);
-    border-color: color-mix(in srgb, var(--theater-gold) 26%, var(--tone-line));
-    background: color-mix(in srgb, var(--theater-gold) 9%, var(--tone-surface));
+    border-color: color-mix(in srgb, var(--theater-gold) 34%, var(--tone-line));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--theater-gold) 10%, rgba(255,255,255,0.02)), rgba(255,255,255,0.01)),
+      color-mix(in srgb, var(--theater-gold) 12%, var(--tone-surface));
   }
 
   .theater-picker__item img {
@@ -807,6 +981,46 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
     background: #000;
   }
 
+  .theater-screen__handoff {
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: 0.8rem;
+    width: 100%;
+    height: 100%;
+    padding: clamp(1.25rem, 3vw, 2.1rem);
+    border-radius: 0.8rem;
+    text-align: center;
+    background:
+      radial-gradient(circle at 50% 18%, rgba(255, 219, 160, 0.12), transparent 30%),
+      linear-gradient(180deg, rgba(23, 13, 15, 0.84), rgba(9, 7, 9, 0.96));
+    box-shadow: inset 0 0 0 1px rgba(255, 244, 223, 0.06);
+  }
+
+  .theater-screen__handoff p,
+  .theater-screen__handoff h4 {
+    margin: 0;
+  }
+
+  .theater-screen__handoff > p:first-child {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(244, 230, 204, 0.54);
+  }
+
+  .theater-screen__handoff h4 {
+    font-size: clamp(1.3rem, 2vw, 1.8rem);
+    letter-spacing: -0.03em;
+    color: var(--theater-cream);
+  }
+
+  .theater-screen__handoff p:last-child {
+    max-width: 30rem;
+    color: rgba(244, 230, 204, 0.72);
+    line-height: 1.7;
+  }
+
   .theater-screening__foot {
     position: relative;
     z-index: 1;
@@ -846,7 +1060,9 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
     padding: 1rem;
     border-radius: 1.35rem;
     border: 1px solid var(--theater-border);
-    background: color-mix(in srgb, var(--tone-surface) 84%, rgba(8, 8, 10, 0.16));
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.012)),
+      color-mix(in srgb, var(--tone-surface) 90%, rgba(8, 8, 10, 0.16));
     box-shadow: 0 18px 50px rgba(0, 0, 0, 0.2);
   }
 
@@ -894,7 +1110,9 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
     padding: 0.9rem;
     border-radius: 1.25rem;
     border: 1px solid var(--theater-border);
-    background: color-mix(in srgb, var(--tone-surface) 84%, rgba(8, 8, 10, 0.14));
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.012)),
+      color-mix(in srgb, var(--tone-surface) 90%, rgba(8, 8, 10, 0.14));
     text-decoration: none;
     transition: transform 180ms ease, border-color 180ms ease;
   }
@@ -937,6 +1155,22 @@ const defaultFeatureSrc = `https://www.youtube-nocookie.com/embed/${defaultVideo
     border: 0;
     border-radius: 1rem;
     background: rgba(0, 0, 0, 0.85);
+  }
+
+  .theater-listens__fallback {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-line) 88%, rgba(255,255,255,0.03));
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--theater-gold) 8%, transparent), transparent 72%),
+      color-mix(in srgb, var(--tone-surface) 92%, rgba(8, 8, 10, 0.14));
+  }
+
+  .theater-listens__actions a {
+    color: var(--theater-gold);
+    text-decoration: none;
   }
 
   .theater-exit {
