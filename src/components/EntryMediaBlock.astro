@@ -67,6 +67,11 @@ const isExternal = /^https?:\/\//i.test(externalUrl);
     </div>
     {assetCaption && <figcaption>{assetCaption}</figcaption>}
   </figure>
+) : compact && hasEmbed ? (
+  <div class:list={['entry-media-block', 'entry-media-block--fallback', 'entry-media-block--compact', 'entry-media-block--compact-placeholder']}>
+    <p class="entry-media-block__badge">{providerLabel}</p>
+    <p class="entry-media-block__fallback-note">Open the entry to load the player.</p>
+  </div>
 ) : hasEmbed && embedUrl ? (
   <div class:list={['entry-media-block', 'entry-media-block--embed', compact && 'entry-media-block--compact']} data-view-mode={viewMode}>
     <div class:list={['entry-media-block__frame', aspectRatio && 'has-aspect-ratio']} style={frameStyle}>
@@ -155,6 +160,14 @@ const isExternal = /^https?:\/\//i.test(externalUrl);
     display: grid;
     gap: 0.4rem;
     padding: 0.82rem 0.88rem;
+  }
+
+  .entry-media-block--compact-placeholder {
+    min-height: 9.25rem;
+    align-content: end;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 74%),
+      linear-gradient(135deg, color-mix(in srgb, var(--tone-surface-strong) 88%, rgba(0, 0, 0, 0.2)), color-mix(in srgb, var(--tone-surface) 94%, transparent));
   }
 
   .entry-media-block__badge {

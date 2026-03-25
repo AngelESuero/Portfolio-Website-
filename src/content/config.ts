@@ -89,8 +89,10 @@ const entries = defineCollection({
     duration: z.string().optional(),
     ingest: z
       .object({
-        mode: z.enum(['manual', 'rss', 'local']).optional(),
+        mode: z.enum(['manual', 'rss', 'local', 'channel']).optional(),
         rss_url: z.string().url().optional(),
+        catalog_url: z.string().url().optional(),
+        surface: z.string().optional(),
         source_id: z.string().optional()
       })
       .optional()

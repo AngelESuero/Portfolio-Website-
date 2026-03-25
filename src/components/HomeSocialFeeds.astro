@@ -324,7 +324,7 @@ const defaultYoutubeStatus =
     };
 
     const hydrateYoutube = () => {
-      fetch('/api/social-rss?slug=youtube')
+      fetch('/api/social-rss/youtube.json')
         .then((response) => {
           if (!response.ok) throw new Error(`RSS endpoint returned ${response.status}`);
           return response.json();

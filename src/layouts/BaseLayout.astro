@@ -22,6 +22,8 @@ interface Props {
 }
 
 const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const DEFAULT_MUSIC_TRACK_SRC = 'https://untitled.stream/embed/m8IEX655GwMH';
+const DEFAULT_MUSIC_TRACK_LABEL = 'My First Beat Tape';
 const {
   title,
   description = 'Timeline and archive for A Path Toward Life',
@@ -112,12 +114,14 @@ const {
       class="site-music-bar"
       id="site-music-bar"
       data-site-music-bar
+      data-default-track-src={DEFAULT_MUSIC_TRACK_SRC}
+      data-default-track-label={DEFAULT_MUSIC_TRACK_LABEL}
       aria-label="Music player"
       transition:persist
     >
       <button class="site-music-bar__toggle" data-music-bar-toggle aria-label="Toggle music player" aria-expanded="false">
         <span class="site-music-bar__icon" aria-hidden="true">♫</span>
-        <span class="site-music-bar__label" data-music-bar-label>My First Beat Tape</span>
+        <span class="site-music-bar__label" data-music-bar-label>{DEFAULT_MUSIC_TRACK_LABEL}</span>
         <span class="site-music-bar__chevron" aria-hidden="true">▲</span>
       </button>
       <div class="site-music-bar__panel" data-music-bar-panel hidden>
@@ -130,9 +134,11 @@ const {
           <div class="site-music-bar__embed-wrap">
             <iframe
               id="site-music-iframe"
-              src="https://untitled.stream/embed/m8IEX655GwMH"
+              src="about:blank"
+              data-track-src={DEFAULT_MUSIC_TRACK_SRC}
               width="100%"
               height="140"
+              loading="lazy"
               allowfullscreen
               allow="picture-in-picture"
               frameborder="0"
@@ -167,18 +173,36 @@ const {
         const toggles = Array.from(document.querySelectorAll('[data-music-bar-toggle]'));
         const toggle = toggles[0];
         const panel = bar?.querySelector('[data-music-bar-panel]');
-        const chevronEl = bar?.querySelector('.site-music-bar__chevron');
         const chevron = bar?.querySelector('.site-music-bar__chevron');
         const label = bar?.querySelector('[data-music-bar-label]');
         const iframe = bar?.querySelector('#site-music-iframe');
         const tracks = Array.from(bar?.querySelectorAll('[data-track-src]') ?? []);
         if (!bar || !panel) return;
 
+        const defaultTrackSrc = bar.getAttribute('data-default-track-src') || '';
+        const defaultTrackLabel = bar.getAttribute('data-default-track-label') || '';
+        const getSavedTrackSrc = () => localStorage.getItem('music-bar-track') || defaultTrackSrc;
+        const getSavedTrackLabel = () => localStorage.getItem('music-bar-track-label') || defaultTrackLabel;
+        const syncTrackButtons = (src) => {
+          tracks.forEach((track) => {
+            const isActive = track.getAttribute('data-track-src') === src;
+            track.classList.toggle('is-active', isActive);
+          });
+        };
+        const loadTrack = (src) => {
+          if (!src || !(iframe instanceof HTMLIFrameElement)) return;
+          if (iframe.getAttribute('src') !== src) {
+            iframe.src = src;
+          }
+          iframe.dataset.loaded = 'true';
+        };
+
         const open = () => {
           panel.removeAttribute('hidden');
           toggles.forEach(t => t.setAttribute('aria-expanded', 'true'));
           bar.dataset.open = 'true';
           if (chevron) chevron.textContent = '▼';
+          loadTrack(getSavedTrackSrc());
           localStorage.setItem('music-bar-open', '1');
         };
         const close = () => {
@@ -202,9 +226,8 @@ const {
             const src = btn.getAttribute('data-track-src');
             const trackLabel = btn.getAttribute('data-track-label');
             if (src && iframe instanceof HTMLIFrameElement) {
-              iframe.src = src;
-              tracks.forEach((t) => t.classList.remove('is-active'));
-              btn.classList.add('is-active');
+              loadTrack(src);
+              syncTrackButtons(src);
               if (label && trackLabel) label.textContent = trackLabel;
               localStorage.setItem('music-bar-track', src);
               localStorage.setItem('music-bar-track-label', trackLabel ?? '');
@@ -214,14 +237,14 @@ const {
 
         // restore last track
         const restoreTrack = () => {
-          const savedSrc = localStorage.getItem('music-bar-track');
-          const savedLabel = localStorage.getItem('music-bar-track-label');
-          if (savedSrc && iframe instanceof HTMLIFrameElement) {
-            iframe.src = savedSrc;
+          const savedSrc = getSavedTrackSrc();
+          const savedLabel = getSavedTrackLabel();
+          if (savedSrc) {
             if (label && savedLabel) label.textContent = savedLabel;
-            tracks.forEach((t) => {
-              t.classList.toggle('is-active', t.getAttribute('data-track-src') === savedSrc);
-            });
+            syncTrackButtons(savedSrc);
+            if (bar.dataset.open === 'true' || iframe?.dataset.loaded === 'true') {
+              loadTrack(savedSrc);
+            }
           }
         };
         restoreTrack();

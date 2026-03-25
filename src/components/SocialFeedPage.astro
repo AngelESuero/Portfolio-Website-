@@ -264,7 +264,7 @@ const xTimelineHref = showXTimeline ? `https://x.com/${xTimelineHandle}` : '';
         }).format(date);
       };
 
-      fetch(`/api/social-rss?slug=${encodeURIComponent(slug)}`)
+      fetch(`/api/social-rss/${encodeURIComponent(slug)}.json`)
         .then((response) => {
           if (!response.ok) throw new Error(`RSS API error ${response.status}`);
           return response.json();

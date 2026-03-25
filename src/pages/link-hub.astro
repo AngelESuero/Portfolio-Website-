@@ -184,7 +184,7 @@ const categoryColors = Object.fromEntries(LINK_HUB_CATEGORIES.map((category) => 
         };
 
         try {
-          const response = await fetch('/api/social-rss?slug=substack');
+          const response = await fetch('/api/social-rss/substack.json');
           if (!response.ok) throw new Error(`RSS endpoint returned ${response.status}`);
           const payload = await response.json();
           const items = Array.isArray(payload?.items) ? payload.items.slice(0, 5) : [];

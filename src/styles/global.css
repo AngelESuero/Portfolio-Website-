@@ -560,7 +560,7 @@ html[data-cursor-idle='false'] {
   box-shadow:
     0 14px 40px rgba(0, 0, 0, 0.36),
     0 1px 0 rgba(255, 255, 255, 0.025) inset;
-  backdrop-filter: blur(12px) saturate(1.02);
+  contain: paint;
 }
 
 .header-peek-sensor {
@@ -577,11 +577,11 @@ body[data-header-mode='peek'] .header-peek-sensor {
 
 .site-header {
   background:
-    linear-gradient(180deg, rgba(6, 10, 17, 0.92), rgba(6, 10, 17, 0.8)),
+    linear-gradient(180deg, rgba(10, 12, 18, 0.96), rgba(10, 12, 18, 0.88)),
     linear-gradient(90deg, rgba(255, 255, 255, 0.018), transparent 24%, transparent 76%, rgba(255, 255, 255, 0.018));
   border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 9%, var(--line2));
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(14px) saturate(1.06);
+  contain: paint;
   transform-origin: 50% 0%;
   transition:
     opacity var(--motion-route) var(--ease-standard),
@@ -591,7 +591,7 @@ body[data-header-mode='peek'] .header-peek-sensor {
 
 body[data-header-mode='peek'] .site-header {
   margin-bottom: calc(var(--site-header-size, 64px) * -1);
-  will-change: transform, opacity, filter;
+  will-change: transform, opacity;
   transition:
     opacity 220ms var(--ease-standard),
     transform 240ms var(--ease-emphasized),
@@ -601,7 +601,7 @@ body[data-header-mode='peek'] .site-header {
 body[data-header-mode='peek'][data-header-reveal='hidden'] .site-header {
   opacity: 0;
   transform: translateY(calc(-1 * (var(--site-header-size, 64px) + 0.2rem))) scale(0.992);
-  filter: blur(6px);
+  filter: none;
   pointer-events: none;
 }
 
@@ -1105,6 +1105,7 @@ body[data-surface-frame='flat'] .header-peek-sensor {
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
+  contain: paint;
   transform-origin: var(--focus-zoom-origin-x) var(--focus-zoom-origin-y);
   transform: translate3d(var(--focus-zoom-pan-x), var(--focus-zoom-pan-y), 0) scale(var(--focus-zoom-scale));
   transition: transform var(--focus-zoom-duration) cubic-bezier(0.18, 0.84, 0.2, 1);
@@ -1161,6 +1162,7 @@ html[data-focus-zoom-active='true'] .site-depth-stage {
   border-radius: clamp(1.15rem, 2vw, 1.75rem);
   background: linear-gradient(180deg, var(--reading-plane), var(--reading-plane-strong));
   box-shadow: var(--reading-plane-shadow);
+  contain: paint;
 }
 
 body[data-surface-frame='flat'] .site-content-stage::before {
@@ -1188,6 +1190,7 @@ footer {
 }
 
 .site-overlay {
+  contain: paint;
   transition: opacity var(--motion-route) var(--ease-standard);
 }
 
