@@ -1,0 +1,586 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import EntryCard from '../../components/EntryCard.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { focusLanes, focusLaneBySlug, type FocusLane, type FocusLaneSlug } from '../../data/focus-lanes';
+import { formatShortArchiveUtcDate } from '../../lib/date-formatting';
+import { sortEntriesByDate } from '../../lib/archive-entries';
+import { resolveProjectTimeline } from '../../data/linktree-timeline';
+
+type Entry = CollectionEntry<'entries'>;
+type Project = CollectionEntry<'projects'>;
+type Post = CollectionEntry<'posts'>;
+
+const normalize = (value: string) => String(value || '').trim().toLowerCase();
+const toWordSet = (values: string[]) => new Set(values.map(normalize).filter(Boolean));
+const compareProjectsByRecency = (a: Project, b: Project) => {
+  const yearDelta = resolveProjectTimeline(b.data).sortYear - resolveProjectTimeline(a.data).sortYear;
+  if (yearDelta !== 0) return yearDelta;
+
+  const orderA = a.data.timeline_order ?? Number.MAX_SAFE_INTEGER;
+  const orderB = b.data.timeline_order ?? Number.MAX_SAFE_INTEGER;
+  if (orderA !== orderB) return orderA - orderB;
+
+  return a.data.title.localeCompare(b.data.title);
+};
+
+const scoreKeywordMatches = (text: string, keywords: string[] = [], weight = 1) =>
+  keywords.reduce((score, keyword) => (text.includes(normalize(keyword)) ? score + weight : score), 0);
+
+const scoreEntry = (lane: FocusLane, entry: Entry) => {
+  let score = 0;
+  const slug = normalize(entry.slug);
+  const tags = toWordSet(entry.data.tags);
+  const text = normalize([entry.data.title, entry.data.summary, entry.body, entry.slug].join(' '));
+
+  if (lane.entrySlugs?.map(normalize).includes(slug)) score += 120;
+  if (lane.entryMediums?.includes(entry.data.medium)) score += 18;
+
+  for (const tag of lane.entryTags || []) {
+    if (tags.has(normalize(tag))) score += 24;
+  }
+
+  score += scoreKeywordMatches(text, lane.entryKeywords, 8);
+  return score;
+};
+
+const scoreProject = (lane: FocusLane, project: Project) => {
+  let score = 0;
+  const slug = normalize(project.slug);
+  const text = normalize([project.data.title, project.data.description, project.body, project.data.role || ''].join(' '));
+
+  if (lane.projectSlugs?.map(normalize).includes(slug)) score += 120;
+  if (lane.projectTypes?.includes(project.data.type)) score += 16;
+  score += scoreKeywordMatches(text, lane.projectKeywords, 9);
+  return score;
+};
+
+const scorePost = (lane: FocusLane, post: Post) => {
+  let score = 0;
+  const slug = normalize(post.slug);
+  const tags = toWordSet(post.data.tags);
+  const text = normalize([post.data.title, post.data.summary, post.body, post.slug].join(' '));
+
+  if (lane.postSlugs?.map(normalize).includes(slug)) score += 120;
+
+  for (const tag of lane.postTags || []) {
+    if (tags.has(normalize(tag))) score += 24;
+  }
+
+  score += scoreKeywordMatches(text, lane.postKeywords, 9);
+  return score;
+};
+
+const rankMatches = <T,>(items: T[], scorer: (item: T) => number) =>
+  items
+    .map((item) => ({ item, score: scorer(item) }))
+    .filter((match) => match.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .map((match) => match.item);
+
+export function getStaticPaths() {
+  return focusLanes.map((lane) => ({
+    params: { slug: lane.slug },
+    props: { lane }
+  }));
+}
+
+const { lane } = Astro.props as { lane: FocusLane };
+const allEntries = sortEntriesByDate(await getCollection('entries'));
+const allProjects = [...(await getCollection('projects'))].sort(compareProjectsByRecency);
+const allPosts = [...(await getCollection('posts'))].sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const matchedProjects = rankMatches(allProjects, (project) => scoreProject(lane, project)).slice(0, 6);
+const matchedEntries = rankMatches(allEntries, (entry) => scoreEntry(lane, entry)).slice(0, 12);
+const matchedPosts = rankMatches(allPosts, (post) => scorePost(lane, post)).slice(0, 6);
+
+const latestEntry = matchedEntries[0] ?? null;
+const latestProject = matchedProjects[0] ?? null;
+const latestPost = matchedPosts[0] ?? null;
+---
+
+<BaseLayout title={`${lane.label} — a_e.s_`} description={lane.description} theme="archive">
+  <section class="view-surface focus-page" style={`--focus-accent:${lane.swatch}`}>
+    <header class="view-surface-header focus-hero">
+      <div class="focus-hero__copy">
+        <p class="view-surface-kicker">Practice lane</p>
+        <h1>{lane.label}</h1>
+        <p class="focus-hero__description">{lane.description}</p>
+        <div class="focus-hero__actions">
+          <a href={lane.primaryLink.href} class="focus-hero__action">{lane.primaryLink.label}</a>
+          {lane.secondaryLink && <a href={lane.secondaryLink.href} class="focus-hero__action focus-hero__action--secondary">{lane.secondaryLink.label}</a>}
+        </div>
+        {lane.heroImages && lane.heroImages.length > 0 && (
+          <div class="focus-hero__gallery" aria-label={`${lane.label} visual highlights`}>
+            {lane.heroImages.map((image, index) => (
+              <figure class:list={['focus-hero__frame', index === 0 && 'is-featured']}>
+                <img src={image.src} alt={image.alt} loading="lazy" />
+              </figure>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div class="focus-hero__stats font-archive">
+        <div>
+          <span>Projects</span>
+          <strong>{matchedProjects.length}</strong>
+        </div>
+        <div>
+          <span>Archive</span>
+          <strong>{matchedEntries.length}</strong>
+        </div>
+        <div>
+          <span>Posts</span>
+          <strong>{matchedPosts.length}</strong>
+        </div>
+      </div>
+    </header>
+
+    <nav class="focus-tabs font-archive" aria-label="Focus lanes">
+      {focusLanes.map((item) => (
+        <a
+          href={`/focus/${item.slug}`}
+          class:list={['focus-tabs__link', item.slug === lane.slug && 'is-current']}
+          {...(item.slug === lane.slug ? { 'aria-current': 'page' } : {})}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="focus-layout">
+      <aside class="focus-rail">
+        <section class="focus-rail__block">
+          <p class="focus-rail__label font-archive">What lives here</p>
+          <ul class="focus-rail__list">
+            {lane.highlights.map((item) => <li>{item}</li>)}
+          </ul>
+        </section>
+
+        {lane.stageNote && (
+          <section class="focus-rail__block">
+            <p class="focus-rail__label font-archive">Current shape</p>
+            <p class="focus-rail__note">{lane.stageNote}</p>
+          </section>
+        )}
+
+        <section class="focus-rail__block">
+          <p class="focus-rail__label font-archive">Latest signals</p>
+          <div class="focus-rail__signals">
+            {latestProject && (
+              <div>
+                <span>Project</span>
+                <a href={`/work/${latestProject.slug}`}>{latestProject.data.title}</a>
+              </div>
+            )}
+            {latestEntry && (
+              <div>
+                <span>Archive</span>
+                <a href={`/archive/${latestEntry.slug}`}>{latestEntry.data.title}</a>
+              </div>
+            )}
+            {latestPost && (
+              <div>
+                <span>Post</span>
+                <a href={`/writing/${latestPost.slug}`}>{latestPost.data.title}</a>
+              </div>
+            )}
+          </div>
+        </section>
+      </aside>
+
+      <div class="focus-stream">
+        {matchedProjects.length > 0 && (
+          <section class="focus-section">
+            <div class="focus-section__head">
+              <p class="focus-section__kicker font-archive">Projects</p>
+              <h2>Longer-form work in this lane</h2>
+            </div>
+            <div class="focus-projects">
+              {matchedProjects.map((project) => <ProjectCard project={project} />)}
+            </div>
+          </section>
+        )}
+
+        {matchedEntries.length > 0 && (
+          <section class="focus-section">
+            <div class="focus-section__head">
+              <p class="focus-section__kicker font-archive">Archive</p>
+              <h2>Records, fragments, and surfaced entries</h2>
+            </div>
+            <ul class="focus-entries">
+              {matchedEntries.map((entry) => (
+                <li>
+                  <EntryCard entry={entry} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {matchedPosts.length > 0 && (
+          <section class="focus-section">
+            <div class="focus-section__head">
+              <p class="focus-section__kicker font-archive">Posts</p>
+              <h2>Public writing that sharpens the lane</h2>
+            </div>
+            <div class="focus-posts">
+              {matchedPosts.map((post) => (
+                <a href={`/writing/${post.slug}`} class="focus-post">
+                  <p class="focus-post__meta font-archive">{formatShortArchiveUtcDate(post.data.date)}</p>
+                  <h3>{post.data.title}</h3>
+                  <p>{post.data.summary}</p>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {matchedProjects.length === 0 && matchedEntries.length === 0 && matchedPosts.length === 0 && (
+          <section class="focus-section focus-section--empty">
+            <div class="focus-section__head">
+              <p class="focus-section__kicker font-archive">Still forming</p>
+              <h2>This lane is not populated yet.</h2>
+            </div>
+            <p>There is not enough site content attached to this category yet, but the tab is in place and ready to hold it.</p>
+          </section>
+        )}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .focus-page {
+    display: grid;
+    gap: 1.35rem;
+  }
+
+  .focus-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.58fr);
+    gap: 1rem;
+    align-items: end;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--focus-accent) 18%, var(--line2));
+    border-radius: 1.35rem;
+    padding: clamp(1.1rem, 2vw, 1.6rem);
+    background:
+      radial-gradient(circle at top right, color-mix(in srgb, var(--focus-accent) 16%, transparent), transparent 44%),
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-surface) 88%, transparent), color-mix(in srgb, var(--tone-surface-strong) 74%, transparent));
+  }
+
+  .focus-hero__copy {
+    display: grid;
+    gap: 0.85rem;
+    max-width: 62ch;
+  }
+
+  .focus-hero__description {
+    margin: 0;
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  }
+
+  .focus-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+
+  .focus-hero__gallery {
+    display: grid;
+    grid-template-columns: 1.15fr 0.9fr 0.9fr;
+    gap: 0.75rem;
+    margin-top: 0.2rem;
+  }
+
+  .focus-hero__frame {
+    margin: 0;
+    overflow: hidden;
+    border-radius: 1rem;
+    border: 1px solid color-mix(in srgb, var(--focus-accent) 18%, var(--line2));
+    background: color-mix(in srgb, var(--tone-surface-strong) 82%, transparent);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08);
+  }
+
+  .focus-hero__frame img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 15rem;
+    object-fit: cover;
+  }
+
+  .focus-hero__frame.is-featured img {
+    min-height: 18rem;
+  }
+
+  .focus-hero__action {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0.52rem 0.88rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--focus-accent) 26%, var(--line2));
+    text-decoration: none;
+    color: var(--tone-text);
+    background: color-mix(in srgb, var(--focus-accent) 8%, transparent);
+  }
+
+  .focus-hero__action--secondary {
+    background: color-mix(in srgb, var(--tone-surface) 88%, transparent);
+  }
+
+  .focus-hero__action:hover,
+  .focus-hero__action:focus-visible {
+    border-color: color-mix(in srgb, var(--focus-accent) 42%, var(--line2));
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--focus-accent) 12%);
+  }
+
+  .focus-hero__stats {
+    display: grid;
+    gap: 0.6rem;
+    align-self: stretch;
+  }
+
+  .focus-hero__stats div {
+    border: 1px solid color-mix(in srgb, var(--focus-accent) 14%, var(--line2));
+    border-radius: 1rem;
+    padding: 0.78rem 0.9rem;
+    background: color-mix(in srgb, var(--tone-surface-strong) 70%, transparent);
+  }
+
+  .focus-hero__stats span {
+    display: block;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  }
+
+  .focus-hero__stats strong {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 1.9rem;
+    color: color-mix(in srgb, var(--tone-text) 76%, var(--focus-accent) 24%);
+  }
+
+  .focus-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .focus-tabs__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.25rem;
+    padding: 0.42rem 0.72rem;
+    border-radius: 999px;
+    border: 1px solid var(--line2);
+    background: color-mix(in srgb, var(--tone-surface) 88%, transparent);
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+    text-decoration: none;
+  }
+
+  .focus-tabs__link.is-current,
+  .focus-tabs__link:hover,
+  .focus-tabs__link:focus-visible {
+    border-color: color-mix(in srgb, var(--focus-accent) 28%, var(--line2));
+    background: color-mix(in srgb, var(--focus-accent) 10%, transparent);
+    color: var(--tone-text);
+  }
+
+  .focus-layout {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.38fr) minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  .focus-rail {
+    display: grid;
+    gap: 0.85rem;
+    align-content: start;
+    position: sticky;
+    top: 8.5rem;
+    height: fit-content;
+  }
+
+  .focus-rail__block {
+    border: 1px solid color-mix(in srgb, var(--focus-accent) 12%, var(--line2));
+    border-radius: 1rem;
+    padding: 0.92rem;
+    background: color-mix(in srgb, var(--tone-surface) 92%, transparent);
+  }
+
+  .focus-rail__label {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  }
+
+  .focus-rail__list {
+    margin: 0.75rem 0 0;
+    padding-left: 1rem;
+    display: grid;
+    gap: 0.5rem;
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  }
+
+  .focus-rail__note {
+    margin: 0.72rem 0 0;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+    line-height: 1.6;
+  }
+
+  .focus-rail__signals {
+    display: grid;
+    gap: 0.72rem;
+    margin-top: 0.72rem;
+  }
+
+  .focus-rail__signals div {
+    display: grid;
+    gap: 0.18rem;
+  }
+
+  .focus-rail__signals span {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--tone-muted);
+  }
+
+  .focus-rail__signals a {
+    color: var(--tone-text);
+    text-decoration: none;
+    line-height: 1.4;
+  }
+
+  .focus-rail__signals a:hover,
+  .focus-rail__signals a:focus-visible {
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--focus-accent) 22%);
+  }
+
+  .focus-stream {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .focus-section {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .focus-section__head {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .focus-section__head h2,
+  .focus-post h3 {
+    margin: 0;
+  }
+
+  .focus-section__kicker {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  }
+
+  .focus-projects,
+  .focus-entries {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .focus-projects {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+
+  .focus-entries {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .focus-posts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.8rem;
+  }
+
+  .focus-post {
+    display: grid;
+    gap: 0.55rem;
+    text-decoration: none;
+    color: var(--tone-text);
+    border: 1px solid color-mix(in srgb, var(--focus-accent) 12%, var(--line2));
+    border-radius: 1rem;
+    padding: 0.95rem;
+    background: color-mix(in srgb, var(--tone-surface) 94%, transparent);
+  }
+
+  .focus-post:hover,
+  .focus-post:focus-visible {
+    border-color: color-mix(in srgb, var(--focus-accent) 24%, var(--line2));
+  }
+
+  .focus-post__meta {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  }
+
+  .focus-post p {
+    margin: 0;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+    line-height: 1.58;
+  }
+
+  .focus-section--empty {
+    border: 1px dashed color-mix(in srgb, var(--focus-accent) 24%, var(--line2));
+    border-radius: 1rem;
+    padding: 1rem;
+  }
+
+  .focus-section--empty p {
+    margin: 0;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+  }
+
+  @media (max-width: 960px) {
+    .focus-hero,
+    .focus-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .focus-rail {
+      position: static;
+    }
+
+    .focus-hero__gallery {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .focus-hero__gallery {
+      grid-template-columns: 1fr;
+    }
+
+    .focus-hero__frame img,
+    .focus-hero__frame.is-featured img {
+      min-height: 14rem;
+    }
+  }
+</style>

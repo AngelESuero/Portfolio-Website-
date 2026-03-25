@@ -10,7 +10,7 @@ import {
   normalizeEntryTag,
   sortEntriesByDate
 } from '../../lib/archive-entries';
-import { formatLongUtcDate } from '../../lib/date-formatting';
+import { formatLongArchiveUtcDate } from '../../lib/date-formatting';
 
 const entries = sortEntriesByDate(await getCollection('entries'));
 const mediums = ARCHIVE_MEDIUMS;
@@ -43,7 +43,7 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
       <div class="archive-page__meta font-archive">
         <p>{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
         <p>{mediums.length} mediums</p>
-        {entries[0] && <p>Latest: {formatLongUtcDate(entries[0].data.date)}</p>}
+        {entries[0] && <p>Latest: {formatLongArchiveUtcDate(entries[0].data.date)}</p>}
       </div>
     </header>
 

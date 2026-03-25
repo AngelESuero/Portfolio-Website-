@@ -7,50 +7,309 @@ const sent = Astro.url.searchParams.get('sent') === '1';
 const error = Astro.url.searchParams.get('error');
 const deliveryUnavailable = error === 'unavailable';
 const deliveryFailed = error === 'failed';
+
+const channels = [
+  {
+    title: 'Instagram',
+    handle: '@a_e.s_',
+    href: profile.social_links.instagram,
+    note: 'Fastest for direct creative reach-outs, visuals, and ongoing contact.'
+  },
+  {
+    title: 'YouTube',
+    handle: '@a_e.s_4',
+    href: profile.social_links.youtube,
+    note: 'Best for the public work trail, channel context, and recent uploads.'
+  },
+  {
+    title: 'Discord',
+    handle: 'Creators Corner',
+    href: profile.social_links.discord_creators,
+    note: 'Best for work-in-progress conversation, shared references, and faster back-and-forth.'
+  },
+  {
+    title: 'Link hub',
+    handle: 'All current routes',
+    href: profile.link_hub_url,
+    note: 'Use this when you want the broader map of platforms and active links.'
+  }
+];
 ---
 
-<BaseLayout title="Contact - a_e.s_" theme="contact">
-  <h1 class="font-display text-4xl">Contact</h1>
-  <p class="mt-2">Use the verified channels below for direct outreach.</p>
+<BaseLayout title="Contact - a_e.s_" theme="contact" bodyClass="contact-page">
+  <main class="contact-shell">
+    <section class="contact-hero">
+      <div class="contact-hero__copy">
+        <p class="contact-hero__kicker">Direct outreach</p>
+        <h1>Contact</h1>
+        <p class="contact-hero__lede">
+          Use the verified channels below to reach Angel directly. The goal here is clarity: where to go, what it is
+          for, and what is most likely to get seen.
+        </p>
+      </div>
 
-  {sent && !error && (
-    <p class="mt-4 rounded border border-emerald-300/70 bg-emerald-100/20 px-3 py-2 text-sm" role="status">
-      Message sent. Thank you.
-    </p>
-  )}
+      <div class="contact-hero__aside">
+        <p class="contact-hero__aside-label">Fastest path</p>
+        <p class="contact-hero__aside-copy">
+          Instagram, YouTube, Discord, or the full link hub depending on how direct you want the contact to be.
+        </p>
+      </div>
+    </section>
 
-  {(deliveryUnavailable || deliveryFailed) && (
-    <>
-      <p class="viewer-only mt-4 rounded border border-amber-300/70 bg-amber-100/20 px-3 py-2 text-sm" role="alert">
-        Messaging portal is temporarily paused. Please use one of the direct links below.
+    {sent && !error && (
+      <p class="contact-status contact-status--success" role="status">
+        Message sent. Thank you.
       </p>
-      <p class="lab-only mt-4 rounded border border-amber-300/70 bg-amber-100/20 px-3 py-2 text-sm" role="alert">
-        {deliveryUnavailable
-          ? 'Form delivery is currently unavailable. Please use one of the direct links below.'
-          : 'Contact delivery failed. Please try again later or use one of the direct links below.'}
-      </p>
-    </>
-  )}
+    )}
 
-  <div class="viewer-only mt-5 max-w-xl rounded border border-zinc-300/40 bg-zinc-200/10 px-3 py-2 text-sm">
-    Fastest path: use Instagram, YouTube, Discord, or the link hub below.
-  </div>
+    {(deliveryUnavailable || deliveryFailed) && (
+      <>
+        <p class="contact-status contact-status--warning viewer-only" role="alert">
+          Messaging portal is temporarily paused. Please use one of the direct links below.
+        </p>
+        <p class="contact-status contact-status--warning lab-only" role="alert">
+          {deliveryUnavailable
+            ? 'Form delivery is currently unavailable. Please use one of the direct links below.'
+            : 'Contact delivery failed. Please try again later or use one of the direct links below.'}
+        </p>
+      </>
+    )}
 
-  <section class="lab-only mt-6 max-w-xl rounded border border-zinc-300/40 bg-zinc-200/10 p-4">
-    <h2 class="font-display text-xl">Form Testing (Lab Mode)</h2>
-    <p class="mt-2 text-sm text-zinc-300">Use this form to test contact delivery and endpoint behavior.</p>
-    <form class="mt-4 grid gap-3" method="post" action="/contact">
-      <label>Name <input required name="name" class="mt-1 w-full rounded border p-2 text-black" /></label>
-      <label>Email <input required type="email" name="email" class="mt-1 w-full rounded border p-2 text-black" /></label>
-      <label>Message <textarea required name="message" rows="5" class="mt-1 w-full rounded border p-2 text-black"></textarea></label>
-      <button class="rounded bg-accent px-4 py-2 text-white">Send</button>
-    </form>
-  </section>
+    <section class="contact-grid" aria-label="Verified outreach channels">
+      {channels.map((channel) => (
+        <article class="contact-card">
+          <div class="contact-card__head">
+            <div>
+              <p class="contact-card__label">{channel.title}</p>
+              <h2>{channel.handle}</h2>
+            </div>
+            <CopyButton value={channel.href} />
+          </div>
+          <p class="contact-card__note">{channel.note}</p>
+          <a href={channel.href} class="contact-card__link" target="_blank" rel="noopener">
+            Open {channel.title}
+          </a>
+        </article>
+      ))}
+    </section>
 
-  <div class="mt-8 space-y-2">
-    <p><a href={profile.social_links.instagram} class="underline">Instagram @a_e_s_</a> <CopyButton value={profile.social_links.instagram} /></p>
-    <p><a href={profile.social_links.youtube} class="underline">YouTube @a_e_s_</a> <CopyButton value={profile.social_links.youtube} /></p>
-    <p><a href={profile.social_links.discord} class="underline">Discord</a> <CopyButton value={profile.social_links.discord} /></p>
-    <p><a href={profile.link_hub_url} class="underline">Link hub</a> <CopyButton value={profile.link_hub_url} /></p>
-  </div>
+    <details class="contact-lab lab-only">
+      <summary>Form testing</summary>
+      <div class="contact-lab__body">
+        <p>Use this form to test contact delivery and endpoint behavior.</p>
+        <form class="contact-form" method="post" action="/contact">
+          <label>
+            <span>Name</span>
+            <input required name="name" />
+          </label>
+          <label>
+            <span>Email</span>
+            <input required type="email" name="email" />
+          </label>
+          <label>
+            <span>Message</span>
+            <textarea required name="message" rows="5"></textarea>
+          </label>
+          <button type="submit">Send</button>
+        </form>
+      </div>
+    </details>
+  </main>
 </BaseLayout>
+
+<style>
+  :global(body.contact-page[data-theme='contact']) {
+    background:
+      radial-gradient(44rem 28rem at 16% 0%, rgba(187, 151, 99, 0.18), transparent 70%),
+      radial-gradient(36rem 24rem at 86% 12%, rgba(126, 161, 191, 0.16), transparent 72%),
+      linear-gradient(180deg, rgba(246, 241, 232, 0.98), rgba(236, 228, 214, 0.98));
+  }
+
+  .contact-shell {
+    width: min(1040px, calc(100vw - 2rem));
+    margin: 0 auto;
+    padding: clamp(2rem, 4vw, 3.4rem) 0 clamp(3rem, 6vw, 4.5rem);
+    display: grid;
+    gap: 1.15rem;
+  }
+
+  .contact-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.7fr);
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .contact-hero__copy,
+  .contact-hero__aside,
+  .contact-card,
+  .contact-lab {
+    border: 1px solid rgba(194, 173, 141, 0.62);
+    background: rgba(249, 244, 236, 0.88);
+    border-radius: 1.3rem;
+    box-shadow: 0 18px 34px rgba(116, 92, 61, 0.08);
+  }
+
+  .contact-hero__copy,
+  .contact-hero__aside {
+    padding: clamp(1.15rem, 2.4vw, 1.5rem);
+  }
+
+  .contact-hero__kicker,
+  .contact-card__label,
+  .contact-hero__aside-label {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(188, 142, 85, 0.92);
+  }
+
+  .contact-hero h1,
+  .contact-card h2 {
+    margin: 0.45rem 0 0;
+    font-family: var(--font-display, serif);
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+    color: rgba(56, 42, 30, 0.98);
+  }
+
+  .contact-hero h1 {
+    font-size: clamp(2.75rem, 7vw, 5rem);
+  }
+
+  .contact-card h2 {
+    font-size: clamp(1.2rem, 2vw, 1.45rem);
+  }
+
+  .contact-hero__lede,
+  .contact-hero__aside-copy,
+  .contact-card__note {
+    margin: 0.75rem 0 0;
+    line-height: 1.7;
+    color: rgba(74, 60, 49, 0.84);
+  }
+
+  .contact-status {
+    margin: 0;
+    border-radius: 1rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid transparent;
+  }
+
+  .contact-status--success {
+    border-color: rgba(78, 141, 98, 0.32);
+    background: rgba(225, 245, 229, 0.78);
+    color: rgba(34, 84, 46, 0.94);
+  }
+
+  .contact-status--warning {
+    border-color: rgba(194, 143, 81, 0.34);
+    background: rgba(255, 242, 222, 0.84);
+    color: rgba(110, 70, 28, 0.94);
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .contact-card {
+    padding: 1rem 1rem 1.05rem;
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .contact-card__head {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .contact-card__link {
+    width: fit-content;
+    color: rgba(156, 95, 45, 0.96);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(196, 147, 102, 0.7);
+    font-weight: 600;
+  }
+
+  .contact-card__link:hover,
+  .contact-card__link:focus-visible {
+    color: rgba(104, 61, 22, 0.98);
+    border-color: rgba(156, 95, 45, 0.94);
+  }
+
+  .contact-lab {
+    overflow: hidden;
+  }
+
+  .contact-lab summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 1rem 1rem 0.95rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(133, 98, 57, 0.9);
+  }
+
+  .contact-lab__body {
+    padding: 0 1rem 1rem;
+    color: rgba(74, 60, 49, 0.84);
+  }
+
+  .contact-form {
+    margin-top: 0.9rem;
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .contact-form label {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .contact-form span {
+    font-size: 0.8rem;
+    color: rgba(86, 70, 57, 0.82);
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    border-radius: 0.9rem;
+    border: 1px solid rgba(194, 173, 141, 0.85);
+    background: rgba(255, 252, 246, 0.98);
+    color: rgba(42, 31, 22, 0.96);
+    padding: 0.8rem 0.9rem;
+  }
+
+  .contact-form button {
+    width: fit-content;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(156, 95, 45, 0.96);
+    color: white;
+    padding: 0.72rem 1.1rem;
+    cursor: pointer;
+  }
+
+  :global(.contact-page .copy-btn) {
+    border-radius: 999px;
+    border: 1px solid rgba(194, 173, 141, 0.9);
+    background: rgba(255, 250, 242, 0.96);
+    color: rgba(80, 62, 46, 0.9);
+    padding: 0.38rem 0.72rem;
+  }
+
+  @media (max-width: 820px) {
+    .contact-hero,
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

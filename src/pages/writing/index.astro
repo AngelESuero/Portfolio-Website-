@@ -4,9 +4,17 @@ import { getCollection } from 'astro:content';
 import WritingWorkbench from '../../../app/components/WritingWorkbench';
 import { formatLongUtcDate, formatShortUtcDate } from '../../lib/date-formatting';
 import { isPostReady } from '../../lib/post-readiness';
+import { getEntryHref, sortEntriesByDate } from '../../lib/archive-entries';
 
 const posts = (await getCollection('posts')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const readyPosts = posts.filter(isPostReady);
+const archiveWritingEntries = sortEntriesByDate(
+  (await getCollection('entries')).filter((entry) => (
+    entry.data.medium === 'writing' &&
+    !entry.slug.startsWith('writing/_') &&
+    entry.slug !== 'writing/test'
+  ))
+);
 const allTags = [...new Set(posts.flatMap((post) => post.data.tags.map((tag) => tag.trim().toLowerCase())))]
   .filter(Boolean)
   .sort((a, b) => a.localeCompare(b));
@@ -17,6 +25,53 @@ const latestPublished = readyPosts.slice(0, 6).map((post) => ({
   date: formatShortUtcDate(post.data.date),
   summary: post.data.summary,
   tags: post.data.tags
+}));
+
+const getGoogleDocPreviewUrl = (value: string): string | null => {
+  try {
+    const parsed = new URL(value);
+    const docMatch = parsed.pathname.match(/^\/document\/d\/([^/]+)/);
+    if (parsed.hostname.includes('docs.google.com') && docMatch?.[1]) {
+      return `https://docs.google.com/document/d/${docMatch[1]}/preview`;
+    }
+
+    const driveMatch = parsed.pathname.match(/^\/file\/d\/([^/]+)/);
+    if (parsed.hostname.includes('drive.google.com') && driveMatch?.[1]) {
+      return `https://drive.google.com/file/d/${driveMatch[1]}/preview`;
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+};
+
+const getArchiveDocumentSupport = (entry: (typeof archiveWritingEntries)[number]) => {
+  if (entry.slug === 'writing/my-astrology-chart') {
+    return {
+      sourceHref: '/documents/archive/my-astrology-chart.pdf',
+      sourceLabel: 'Open PDF',
+      previewUrl: '/documents/archive/my-astrology-chart.pdf',
+      previewLabel: 'Inline PDF preview'
+    };
+  }
+
+  const externalUrl = typeof entry.data.external_url === 'string' ? entry.data.external_url.trim() : '';
+  if (!externalUrl) return null;
+
+  const previewUrl = getGoogleDocPreviewUrl(externalUrl);
+  return {
+    sourceHref: externalUrl,
+    sourceLabel: previewUrl ? 'Open source doc' : 'Open source link',
+    previewUrl,
+    previewLabel: previewUrl ? 'Inline source preview' : ''
+  };
+};
+
+const archiveDocuments = archiveWritingEntries.map((entry) => ({
+  entry,
+  href: getEntryHref(entry),
+  support: getArchiveDocumentSupport(entry)
 }));
 ---
 
@@ -34,6 +89,7 @@ const latestPublished = readyPosts.slice(0, 6).map((post) => ({
     <div class="writing-page-header__meta">
       <p>{posts.length} total entries</p>
       <p>{readyPosts.length} published pieces</p>
+      <p>{archiveDocuments.length} archive documents</p>
       {posts[0] && <p>Latest public date: {formatLongUtcDate(posts[0].data.date)}</p>}
       <a href="/rss.xml">RSS feed</a>
     </div>
@@ -41,6 +97,79 @@ const latestPublished = readyPosts.slice(0, 6).map((post) => ({
 
   <section class="writing-desk-shell">
     <WritingWorkbench client:load published={latestPublished} totalPublished={readyPosts.length} />
+  </section>
+
+  <section class="writing-documents" aria-labelledby="writing-documents-heading">
+    <div class="writing-documents__header">
+      <div>
+        <p class="writing-documents__kicker">Archive documents</p>
+        <h2 id="writing-documents-heading" class="font-display text-2xl">The longer record behind the posts</h2>
+        <p class="writing-documents__dek">
+          These are the writing entries that live in the archive itself: papers, recovered fragments, reference
+          documents, and records that do not all fit the post format.
+        </p>
+      </div>
+      <a href="/archive/writing" class="writing-documents__browse">Open full writing archive</a>
+    </div>
+
+    {archiveDocuments.length === 0 ? (
+      <p class="writing-empty">No archive documents are filed yet.</p>
+    ) : (
+      <div class="writing-documents__grid">
+        {archiveDocuments.map(({ entry, href, support }) => (
+          <article class="writing-document-card">
+            <div class="writing-document-card__meta">
+              <p>{formatShortUtcDate(entry.data.date)}</p>
+              <span>{entry.data.status}</span>
+            </div>
+
+            <h3 class="font-display text-2xl">
+              <a href={href}>{entry.data.title}</a>
+            </h3>
+
+            <p class="writing-document-card__summary">{entry.data.summary}</p>
+
+            {entry.data.tags.length > 0 && (
+              <div class="writing-tags">
+                {entry.data.tags.map((tag) => <span class="writing-tag">#{tag}</span>)}
+              </div>
+            )}
+
+            <div class="writing-document-card__actions">
+              <a href={href} class="writing-document-card__link">Open archive record</a>
+              {support && (
+                <a
+                  href={support.sourceHref}
+                  class="writing-document-card__link writing-document-card__link--secondary"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  {support.sourceLabel}
+                </a>
+              )}
+            </div>
+
+            {support?.previewUrl ? (
+              <details class="writing-document-card__preview">
+                <summary>{support.previewLabel}</summary>
+                <div class="writing-document-card__frame">
+                  <iframe
+                    src={support.previewUrl}
+                    title={`${entry.data.title} preview`}
+                    loading="lazy"
+                    allow="autoplay"
+                  ></iframe>
+                </div>
+              </details>
+            ) : support ? (
+              <p class="writing-document-card__note">This document is linked on-site, but its source does not expose a reliable inline preview.</p>
+            ) : (
+              <p class="writing-document-card__note">This record is preserved in the archive even though the source artifact is not fully attached yet.</p>
+            )}
+          </article>
+        ))}
+      </div>
+    )}
   </section>
 
   <section class="writing-archive" id="writing-list" aria-labelledby="writing-archive-heading">
@@ -164,6 +293,7 @@ const latestPublished = readyPosts.slice(0, 6).map((post) => ({
 
   .writing-page-header,
   .writing-desk-shell,
+  .writing-documents,
   .writing-archive {
     max-width: 1440px;
     margin: 0 auto;
@@ -227,6 +357,121 @@ const latestPublished = readyPosts.slice(0, 6).map((post) => ({
     padding-bottom: 2.2rem;
   }
 
+  .writing-documents {
+    margin-top: clamp(1.6rem, 3vw, 2.4rem);
+  }
+
+  .writing-documents__header {
+    display: grid;
+    gap: 1rem;
+    align-items: end;
+  }
+
+  .writing-documents__kicker {
+    margin: 0;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--tone-accent-glow);
+  }
+
+  .writing-documents__dek {
+    margin: 0.6rem 0 0;
+    max-width: 62ch;
+    color: var(--tone-muted);
+    line-height: 1.7;
+  }
+
+  .writing-documents__browse {
+    width: fit-content;
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 50%, transparent);
+  }
+
+  .writing-documents__grid {
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .writing-document-card {
+    border: 1px solid var(--line2);
+    border-radius: 1.1rem;
+    background: color-mix(in srgb, var(--tone-surface) 90%, transparent);
+    padding: 1rem;
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .writing-document-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 1rem;
+    align-items: center;
+  }
+
+  .writing-document-card__meta p,
+  .writing-document-card__meta span {
+    margin: 0;
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  }
+
+  .writing-document-card__summary,
+  .writing-document-card__note {
+    margin: 0;
+    color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
+    line-height: 1.65;
+  }
+
+  .writing-document-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+
+  .writing-document-card__link {
+    width: fit-content;
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 50%, transparent);
+  }
+
+  .writing-document-card__link--secondary {
+    color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
+    border-color: var(--line2);
+  }
+
+  .writing-document-card__preview {
+    border-top: 1px solid var(--line2);
+    padding-top: 0.85rem;
+  }
+
+  .writing-document-card__preview summary {
+    cursor: pointer;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .writing-document-card__frame {
+    margin-top: 0.85rem;
+    border: 1px solid var(--line2);
+    border-radius: 0.9rem;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--tone-bg-deep) 78%, black 22%);
+  }
+
+  .writing-document-card__frame iframe {
+    display: block;
+    width: 100%;
+    min-height: 26rem;
+    border: 0;
+    background: white;
+  }
+
   .writing-archive__header {
     display: grid;
     gap: 1rem;
@@ -256,6 +501,12 @@ const latestPublished = readyPosts.slice(0, 6).map((post) => ({
     display: flex;
     flex-wrap: wrap;
     gap: 0.45rem;
+  }
+
+  @media (max-width: 900px) {
+    .writing-documents__grid {
+      grid-template-columns: 1fr;
+    }
   }
 
   .writing-filter {

@@ -12,6 +12,7 @@ const { project } = Astro.props;
 const { Content } = await project.render();
 const timeline = resolveProjectTimeline(project.data);
 const linkLabels: Record<string, string> = {
+  confluence: 'Publication',
   untitled: 'Untitled',
   youtube: 'YouTube',
   instagram: 'Instagram',
@@ -31,43 +32,10 @@ const projectMedia = Array.isArray(project.data.media) ? project.data.media : []
 const isVideoMedia = (src: string) => /\.(mp4|mov|webm)$/i.test(src);
 
 const backdropImagePaths = project.data.photo_backdrop ? [
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfD_0w6aaQ52Ux3d0ioZb-2eiNwrZFPiq6uVMNtcni2sECM.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfBSq1m1WIt473l1T94EFTyMC95FbdqxFIYXCMyZQXMGbaL.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfD1qZGa6B6GQca7NnQDVYambFC7CPWcSCdwxH-iDd5-igm.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDa5r7Ketbr8Rxex0gnZ_3IkKJsQwMfvg-6FeGwPU42_NQ.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfCH4nnmNO-ji0JF3r4BtibCUz3TfqsLEBZW2wj5i-Wmt6E.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfC9KagLSJTw-I72bTjAK99jW7gjfBpZ71FY3_myUsBlPkb.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfByWAmV4ArtZ5xOUI8wYxY5LxafU0Y0B3WO6sQQfLHhGNJ.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfCm2HkTkbTNg8tXEXa3eoPlFT8pg5lTcCK_50UOXKLHDep.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfDRY39_fdd23qBSLPtWwOs7WNXx3NEqqQt0Sk0MFuvPedy.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfAKle1YgM8JsqTp1huFxy0zbBoxRvjTRDjug_Rd85CmdX8.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfBod61Q67VxSBIkB0XuHSEJL3djoetUZk2a2JJsNMpovCE.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfAqO2tDGUL3dMV_4JzJVXVu_udAGFW9MXkjlFGTpcH6-ri.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfBfj3Zgth2xRG0jzahs3kd2lDnMyx3jPtH6ZUhunHLCVem.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Instagram Archived Posts(1)/AfCFQv2pAuVnXKTgeoiD2sgF0j88QERJMrZZvbFqWzoa4A8.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfDorwiDCbBRdTyXSo_DbRN4wcRHVE5CskBNIjQ4FPFBCkP.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfDbq-mLPpUmXGKvRGmPHIsvZYf59QKxftYuzW6Rc6QOP2N.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfDvsT1fhDKys4t_W1ps6hEJ-Sl814FR4IGBWxEEB7eX_kA.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfBv1LJpDgEzYIEjHuBdJE6cZhBDqEcwGyKvwHzbYVFsjJs.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfAt-T7Kv-EwvAO2Ki2ZJajKyzZkQ3_3-w6yROl6Ts3AL9L.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Well-Being_ Angel/IMG_0840.JPG",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfAhNN4ceMcg-dxrRNpWQn96pGl0RB_ilfMoBXiA3VaVO48.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDgUavKVBJZ-hXyMJyRYhRUOUGnSL6nr1j0VbRqL1z2TfH.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfDE4n7S2_jZQ3Q1-KS9qsgjZUnsx61XYjZhG_3nsxHfTgY.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfBnFqrMR-qoFTk14SBhvxzTfzMarxT6vizX0AyZlzdBVCZ.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Well-Being_ Angel/IMG_0844.JPG",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDR3qf7vQKV9Ntf8S3-sgZBV5MkF6A8WCgK2oKOEZK-aap.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfDJIbDDZNhJEpiNwa83G4op-gd9JPiZb3E_BL-mEDV6SRM.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfBP8p3FEXryzUSfOT0qfjFIjS4Lgbe3G_dzVKj1h5Ef071.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfAQYsKcIbKI5ZO4mcGz_U07Z8_fx6fp6UHJxCZ9PBWKz0o.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfCIrpFpaOJQByvi8Tc9QPqFx5sK0VPtb1vpxjdbgRZ2oVr.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Well-Being_ Angel/IMG_1938.JPG",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfBDNz0hfnJmOEPEfbqfDmF02BwiVhlHsaZqa_I_u7JjpQd.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfBwwWKhIo0cIMrhzjxXFa-jPm1AT6xFwz22EUAAETOzRvL.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfA8LQhsiprv4fVYFcWcMIBc-7Ekog3_cQ1yJ15r3NWXD4n.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfCxn3KXfrAMwpL7q62aJYpuAx0j9CDGJOmfN6oTzP2n_R2.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Instagram Stories/AfB-5mtfdydmvfho5_2Qi6FUdT-IdYOPW8OW8nm1M-BE8hm.jpg",
-  "/images/work/art-of-survival/codex-photos/Google Photos/Google Photos/Resources_ A_E.S_ Instagram Stories/AfAPpXfjbaitZFoYB78esH0yJavEX03jHcBPVKTOSE0FIoZ.jpg"
+  "/images/work/art-of-survival/isolation.jpg",
+  "/images/site-selects/march-1-car-portrait.png",
+  "/images/site-selects/march-17-tropical-fit.png",
+  "/images/site-selects/march-20-portrait.png"
 ] : [];
 
 const backdropCards = backdropImagePaths.map((src, idx) => ({

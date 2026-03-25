@@ -6,6 +6,7 @@ type NavItem = {
   tone: string;
   view?: string;
 };
+import { focusLanes } from '../data/focus-lanes';
 
 const ACCENT_SWATCHES: Record<string, string> = {
   ochre: '#b97a2d',
@@ -38,6 +39,13 @@ const secondaryNav: NavItem[] = [
   { label: 'Resources', href: '/resources', color: 'white', tone: 'contemplation' },
   { label: 'Rejections', href: '/rejections', color: 'red', tone: 'grounding' }
 ];
+
+const focusNav: NavItem[] = focusLanes.map((lane) => ({
+  label: lane.label,
+  href: `/focus/${lane.slug}`,
+  color: lane.navColor,
+  tone: lane.navTone
+}));
 
 const aiGroup: NavItem[] = [
   { label: 'AI', href: '/ai', color: 'blue', tone: 'discernment' },
@@ -141,6 +149,19 @@ const latestVideoId = youtubeData.items[0]?.videoId ?? '';
           {item.label}
         </a>
       ))}
+      <p class="header-secondary-label">Practice</p>
+      {focusNav.map((item) => (
+        <a
+          href={item.href}
+          class="header-link header-link--secondary text-sm no-underline"
+          style={`--link-accent:${getAccentSwatch(item.color)}`}
+          {...(item.color ? { 'data-color': item.color } : {})}
+          {...(item.tone ? { 'data-tone': item.tone } : {})}
+          {...(isActive(item) ? { 'aria-current': 'page' } : {})}
+        >
+          {item.label}
+        </a>
+      ))}
     </nav>
   </div>
   <nav id="mobile-nav" aria-label="Mobile navigation" class="mobile-nav md:hidden" hidden>
@@ -174,6 +195,19 @@ const latestVideoId = youtubeData.items[0]?.videoId ?? '';
           ))}
         </div>
         {secondaryNav.map((item) => (
+          <a
+            href={item.href}
+            class="header-link mobile-nav-link header-link--secondary no-underline"
+            style={`--link-accent:${getAccentSwatch(item.color)}`}
+            {...(item.color ? { 'data-color': item.color } : {})}
+            {...(item.tone ? { 'data-tone': item.tone } : {})}
+            {...(isActive(item) ? { 'aria-current': 'page' } : {})}
+          >
+            {item.label}
+          </a>
+        ))}
+        <p class="mobile-nav-label">Practice</p>
+        {focusNav.map((item) => (
           <a
             href={item.href}
             class="header-link mobile-nav-link header-link--secondary no-underline"

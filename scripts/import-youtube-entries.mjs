@@ -246,11 +246,11 @@ async function main() {
       continue;
     }
 
-    const date = item.publishedAt ? new Date(item.publishedAt).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+    const date = item.publishedAt ? new Date(item.publishedAt).toISOString() : new Date().toISOString();
     const frontmatter = [
       '---',
       `title: ${quote(item.title || 'Untitled')}`,
-      `date: ${date}`,
+      `date: ${quote(date)}`,
       'medium: video',
       'source: youtube',
       'status: published',

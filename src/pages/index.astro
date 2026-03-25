@@ -32,15 +32,31 @@ const heroParticles = Array.from({ length: 24 }, (_, index) => {
   };
 });
 
-const heroPhotos = [
-  'download.jpg',
-  'download-1.jpg',
-  'download-2.jpg',
-  'download-3.jpg',
-  'download-4.jpg',
-  'download-5.jpg',
-  'download-6.jpg',
-  'download-7.jpg',
+const showcaseStripPhotos = [
+  '/photos/download.jpg',
+  '/images/home-collage/collage-2.jpg',
+  '/photos/download-1.jpg',
+  '/images/home-collage/collage-4.jpg',
+  '/photos/download-3.jpg',
+  '/images/home-collage/collage-5.jpg',
+  '/photos/download-5.jpg',
+  '/images/home-collage/collage-6.jpg',
+  '/photos/download-7.jpg',
+  '/images/home-collage/collage-7.jpg',
+  '/photos/download-2.jpg',
+  '/images/home-collage/collage-3.jpg',
+  '/photos/download.jpg',
+  '/images/home-collage/collage-2.jpg',
+  '/photos/download-1.jpg',
+  '/images/home-collage/collage-4.jpg',
+  '/photos/download-3.jpg',
+  '/images/home-collage/collage-5.jpg',
+  '/photos/download-5.jpg',
+  '/images/home-collage/collage-6.jpg',
+  '/photos/download-7.jpg',
+  '/images/home-collage/collage-7.jpg',
+  '/photos/download-2.jpg',
+  '/images/home-collage/collage-3.jpg',
 ];
 
 const allEntries = await getCollection('entries');
@@ -171,21 +187,32 @@ const elsewhereCards = [
         <h1 class="home-hero__title"><span class="home-hero__word">A<span class="home-hero__micro">es&apos;s</span></span><span class="home-hero__word">Path Toward Life</span></h1>
         <p class="home-hero__roles">Music, writing, visuals, archive, and Newark held in one place.</p>
       </div>
-      <!-- full-bleed scrolling photo carousel -->
-      <div class="hi-photos" aria-hidden="true">
-        <div class="hi-photos__track">
-          <div class="hi-photos__group">
-            {heroPhotos.map((f) => (
-              <div class="hi-photo" style={`background-image:url('/photos/${f}')`}></div>
-            ))}
-          </div>
-          <div class="hi-photos__group" aria-hidden="true">
-            {heroPhotos.map((f) => (
-              <div class="hi-photo" style={`background-image:url('/photos/${f}')`}></div>
-            ))}
-          </div>
+    </section>
+
+    <section class="home-showcase" aria-label="Open showcase">
+      <section class="home-showcase__panel">
+        <p class="home-showcase__label">Present day</p>
+        <p>
+          The site holds music, writing, visuals, and active archive threads as a living record: quieter than a
+          dashboard, more open than a finished portfolio shell.
+        </p>
+      </section>
+
+      <div class="home-showcase__photos" aria-hidden="true">
+        <div class="home-showcase__photos-track">
+          {showcaseStripPhotos.map((src) => (
+            <div class="home-showcase__photo" style={`background-image:url('${src}')`}></div>
+          ))}
         </div>
       </div>
+
+      <section class="home-showcase__panel">
+        <p class="home-showcase__label">Still current</p>
+        <p>
+          The present-tense throughline stays the same: music, study, Newark, and archive practice feeding one another
+          rather than sitting in separate categories.
+        </p>
+      </section>
     </section>
 
     <div class="hi-rule" aria-hidden="true"></div>
@@ -219,61 +246,6 @@ const elsewhereCards = [
     padding-top: 0;
   }
 
-  /* ── Photo carousel ──────────────────────────── */
-  .hi-photos {
-    width: 100dvw;
-    margin-left: calc(50% - 50dvw);
-    overflow: hidden;
-    margin-bottom: clamp(0.7rem, 1.5vw, 1rem);
-    padding-inline: clamp(0.35rem, 1vw, 0.9rem);
-    transition: width 0.6s cubic-bezier(0.4,0,0.2,1),
-                margin-left 0.6s cubic-bezier(0.4,0,0.2,1),
-                border-radius 0.6s ease;
-  }
-
-  .hi-photos__track {
-    display: flex;
-    width: max-content;
-    animation: hi-photos-scroll 56s linear infinite;
-    will-change: transform;
-    transform: translate3d(0, 0, 0);
-    contain: layout paint;
-    --photos-distance: 0px;
-  }
-
-  .hi-photos__track:hover {
-    animation-play-state: paused;
-  }
-
-  .hi-photos__group {
-    display: flex;
-    gap: clamp(0.4rem, 0.9vw, 0.8rem);
-    padding-right: clamp(0.4rem, 0.9vw, 0.8rem);
-    flex-shrink: 0;
-  }
-
-  @keyframes hi-photos-scroll {
-    from { transform: translate3d(0, 0, 0); }
-    to   { transform: translate3d(calc(-1 * var(--photos-distance)), 0, 0); }
-  }
-
-  .hi-photo {
-    flex-shrink: 0;
-    width: clamp(240px, 28vw, 430px);
-    aspect-ratio: 4/3;
-    background-size: cover;
-    background-position: center;
-    border-radius: 0.35rem;
-    opacity: 0.52;
-    filter: saturate(0.78) brightness(1.02) contrast(0.94);
-    transition: opacity 300ms ease, filter 300ms ease;
-    backface-visibility: hidden;
-    transform: translateZ(0);
-  }
-
-  .hi-photos__track:hover .hi-photo { opacity: 0.24; filter: saturate(0.54) brightness(0.88); }
-  .hi-photo:hover { opacity: 0.72 !important; filter: saturate(0.92) brightness(1.06) !important; animation-play-state: paused; }
-
   /* ── Layout shell ───────────────────────────── */
   .hi-home {
     max-width: 1040px;
@@ -282,6 +254,80 @@ const elsewhereCards = [
     display: flex;
     flex-direction: column;
     gap: 0;
+  }
+
+  .home-showcase {
+    width: min(1020px, calc(100vw - 2rem));
+    margin: 0 auto clamp(1.2rem, 3vw, 2rem);
+    padding: clamp(1rem, 2vw, 1.25rem) 0;
+    background: rgba(248, 244, 236, 0.9);
+    border: 1px solid rgba(214, 198, 175, 0.62);
+    border-radius: 1.6rem;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+  }
+
+  .home-showcase__panel {
+    max-width: 68ch;
+    margin: 0 clamp(0.85rem, 2vw, 1.25rem);
+    border: 1px solid rgba(214, 198, 175, 0.7);
+    border-radius: 1.05rem;
+    background: rgba(249, 244, 235, 0.96);
+    padding: clamp(0.95rem, 2.2vw, 1.2rem);
+  }
+
+  .home-showcase__panel p {
+    margin: 0;
+  }
+
+  .home-showcase__panel p:last-child {
+    margin-top: 0.6rem;
+    color: rgba(64, 52, 42, 0.88);
+  }
+
+  .home-showcase__label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(202, 177, 139, 0.95);
+  }
+
+  .home-showcase__photos {
+    width: 100vw;
+    margin: 1rem calc(-50vw + 50%) 1rem;
+    overflow: hidden;
+  }
+
+  .home-showcase__photos-track {
+    display: flex;
+    gap: 0.25rem;
+    width: max-content;
+    animation: home-showcase-scroll 28s linear infinite;
+  }
+
+  @keyframes home-showcase-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  .home-showcase__photo {
+    width: clamp(120px, 18vw, 200px);
+    aspect-ratio: 3 / 4;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+    border-radius: 2px;
+    filter: saturate(0.85);
+    transition: filter 0.3s ease;
+  }
+
+  .home-showcase__photo:hover {
+    filter: saturate(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-showcase__photos-track {
+      animation: none;
+    }
   }
 
   .hi-rule {

@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import EntryMediaBlock from '../components/EntryMediaBlock.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import profile from '../data/profile';
-import { formatLongUtcDate, formatShortUtcDate } from '../lib/date-formatting';
+import { formatLongArchiveUtcDate, formatShortArchiveUtcDate } from '../lib/date-formatting';
 import type { ArchiveEntry } from '../lib/archive-entries';
 import {
   ARCHIVE_MEDIUMS,
@@ -57,23 +57,31 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
     <section class="theater-hero">
       <div class="theater-hero__copy">
         <p class="theater-hero__eyebrow">Archive screening room</p>
-        <h1>Center stage for the archive.</h1>
-        <p class="theater-hero__lede">
-          Choose a record from the queue. The stage holds the full archive entry while the rest of the room stays in
-          support.
+        <div class="theater-hero__marquee">
+          <span class="theater-hero__label">Now on screen</span>
+          <div class="theater-hero__facts">
+            <span data-theater-hero-medium>{activeEntry ? getEntryDisplayMedium(activeEntry.data.medium) : 'Archive'}</span>
+            <span data-theater-hero-source>{activeEntry ? getEntryDisplaySource(activeEntry.data.source) : 'Ready'}</span>
+            <span data-theater-hero-date>{activeEntry ? formatShortArchiveUtcDate(activeEntry.data.date) : 'No selection'}</span>
+          </div>
+        </div>
+        <h1 data-theater-hero-title>{activeEntry ? activeEntry.data.title : 'Center stage for the archive.'}</h1>
+        <p class="theater-hero__lede" data-theater-hero-summary>
+          {activeEntry
+            ? activeEntry.data.summary
+            : 'Choose a record from the queue. The stage holds the full archive entry while the rest of the room stays in support.'}
         </p>
         <div class="theater-hero__actions">
           <a href="#stage">Enter the room</a>
-          <a href="/archive">Browse archive</a>
+          {activeEntry ? <a href={getEntryHref(activeEntry)} data-theater-hero-link>Open selected entry</a> : <a href="/archive" data-theater-hero-link>Browse archive</a>}
         </div>
       </div>
     </section>
 
     <section class="theater-stage" id="stage" aria-labelledby="theater-stage-heading">
       <div class="theater-stage__intro">
-        <p class="theater-stage__eyebrow">Selected archive</p>
-        <h2 id="theater-stage-heading">One record at a time, held in the light.</h2>
-        <p>The queue stays narrow, the notes stay quiet, and the selected entry owns the frame.</p>
+        <p class="theater-stage__eyebrow">Projection room</p>
+        <h2 id="theater-stage-heading">A readable program rail, one dominant screen, and quiet notes at the edge.</h2>
       </div>
 
       <div class="theater-room">
@@ -94,15 +102,21 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
                 data-entry-source={getEntryDisplaySource(entry.data.source)}
                 data-entry-status={shouldShowEntryStatus(entry.data.status) ? getEntryDisplayStatus(entry.data.status) : 'Published'}
                 data-entry-href={getEntryHref(entry)}
+                data-entry-title={entry.data.title}
+                data-entry-summary={entry.data.summary}
+                data-entry-date={formatShortArchiveUtcDate(entry.data.date)}
                 aria-pressed={activeEntry && entry.slug === activeEntry.slug ? 'true' : 'false'}
                 aria-controls={`theater-panel-${entry.slug}`}
               >
-                <span class="theater-picker__pill">{getEntryDisplayMedium(entry.data.medium)}</span>
-                <span>
-                  <strong>{entry.data.title}</strong>
-                  <small>
-                    {formatShortUtcDate(entry.data.date)} · {getEntryDisplaySource(entry.data.source)}
+                <span class="theater-picker__top">
+                  <span class="theater-picker__pill">{getEntryDisplayMedium(entry.data.medium)}</span>
+                  <small class="theater-picker__source">
+                    {getEntryDisplaySource(entry.data.source)} · {formatShortArchiveUtcDate(entry.data.date)}
                   </small>
+                </span>
+                <span class="theater-picker__body">
+                  <strong>{entry.data.title}</strong>
+                  <small>{entry.data.summary}</small>
                 </span>
               </button>
             ))}
@@ -133,7 +147,7 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
                 >
                   <header class="theater-panel__header">
                     <p class="theater-panel__meta">
-                      <span>{formatLongUtcDate(entry.data.date)}</span>
+                      <span>{formatLongArchiveUtcDate(entry.data.date)}</span>
                       <span>{getEntryDisplayMedium(entry.data.medium)}</span>
                       <span>{getEntryDisplaySource(entry.data.source)}</span>
                     </p>
@@ -196,9 +210,10 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
           </div>
 
           <div class="theater-notes">
-            <p class="theater-notes__lede">
-              The selected record gets the biggest frame. The rest of the archive stays close, but off to the side.
-            </p>
+            <p class="theater-notes__eyebrow">Selected record</p>
+            <h3 class="theater-notes__title" data-theater-notes-title>
+              {activeEntry ? activeEntry.data.title : 'No entry selected'}
+            </h3>
 
             <div class="theater-notes__stack">
               <div>
@@ -247,9 +262,16 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
       const items = Array.from(document.querySelectorAll('[data-theater-item]'));
       const panels = Array.from(document.querySelectorAll('[data-theater-panel]'));
       const notesLink = document.querySelector('[data-theater-notes-link]');
+      const notesTitle = document.querySelector('[data-theater-notes-title]');
       const notesMedium = document.querySelector('[data-theater-notes-medium]');
       const notesSource = document.querySelector('[data-theater-notes-source]');
       const notesStatus = document.querySelector('[data-theater-notes-status]');
+      const heroLink = document.querySelector('[data-theater-hero-link]');
+      const heroTitle = document.querySelector('[data-theater-hero-title]');
+      const heroSummary = document.querySelector('[data-theater-hero-summary]');
+      const heroMedium = document.querySelector('[data-theater-hero-medium]');
+      const heroSource = document.querySelector('[data-theater-hero-source]');
+      const heroDate = document.querySelector('[data-theater-hero-date]');
       const findSlug = (candidate) =>
         items.find((item) => item instanceof HTMLButtonElement && item.dataset.entrySlug === candidate)?.dataset.entrySlug || null;
 
@@ -281,9 +303,40 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
           item.setAttribute('aria-pressed', String(isActive));
 
           if (isActive) {
+            if (heroLink instanceof HTMLAnchorElement) {
+              heroLink.href = item.dataset.entryHref || '/archive';
+              heroLink.textContent = item.dataset.entryHref ? 'Open selected entry' : 'Browse archive';
+            }
+
+            if (heroTitle instanceof HTMLElement) {
+              heroTitle.textContent = item.dataset.entryTitle || 'Center stage for the archive.';
+            }
+
+            if (heroSummary instanceof HTMLElement) {
+              heroSummary.textContent =
+                item.dataset.entrySummary ||
+                'Choose a record from the queue. The stage holds the full archive entry while the rest of the room stays in support.';
+            }
+
+            if (heroMedium instanceof HTMLElement) {
+              heroMedium.textContent = item.dataset.entryMedium || 'Archive';
+            }
+
+            if (heroSource instanceof HTMLElement) {
+              heroSource.textContent = item.dataset.entrySource || 'Ready';
+            }
+
+            if (heroDate instanceof HTMLElement) {
+              heroDate.textContent = item.dataset.entryDate || 'No selection';
+            }
+
             if (notesLink instanceof HTMLAnchorElement) {
               notesLink.href = item.dataset.entryHref || '/archive';
               notesLink.textContent = item.dataset.entryHref ? 'Open entry' : 'Open archive';
+            }
+
+            if (notesTitle instanceof HTMLElement) {
+              notesTitle.textContent = item.dataset.entryTitle || 'No entry selected';
             }
 
             if (notesMedium instanceof HTMLElement) {
@@ -410,8 +463,8 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
   .theater-shell {
     position: relative;
     display: grid;
-    gap: clamp(4rem, 7vw, 6rem);
-    width: min(100%, var(--measure));
+    gap: clamp(2.4rem, 5vw, 4.5rem);
+    width: min(100%, calc(var(--measure) + 8rem));
     margin-inline: auto;
     padding-bottom: clamp(4rem, 8vw, 7rem);
   }
@@ -431,15 +484,15 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
     position: relative;
     display: grid;
     align-items: end;
-    min-height: calc(100svh - 5rem);
+    min-height: clamp(25rem, 58svh, 38rem);
     padding:
-      clamp(7rem, 14vw, 10rem)
+      clamp(5.5rem, 10vw, 8rem)
       clamp(1.4rem, 4vw, 4rem)
-      clamp(2.8rem, 7vw, 4.8rem);
+      clamp(2rem, 5vw, 3.2rem);
     overflow: hidden;
     background:
-      radial-gradient(42rem 22rem at 50% 68%, rgba(255, 214, 154, 0.08), transparent 54%),
-      linear-gradient(180deg, rgba(8, 6, 7, 0.36), rgba(8, 6, 7, 0.14) 24%, rgba(8, 6, 7, 0.52) 100%);
+      radial-gradient(34rem 18rem at 50% 74%, rgba(255, 214, 154, 0.1), transparent 52%),
+      linear-gradient(180deg, rgba(8, 6, 7, 0.28), rgba(8, 6, 7, 0.12) 24%, rgba(8, 6, 7, 0.54) 100%);
   }
 
   .theater-hero::before,
@@ -448,7 +501,7 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
     position: absolute;
     top: 0;
     bottom: 0;
-    width: min(22vw, 17rem);
+    width: min(18vw, 14rem);
     background:
       linear-gradient(
         180deg,
@@ -482,9 +535,47 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
     z-index: 1;
     display: grid;
     gap: 1rem;
-    max-width: 42rem;
+    max-width: 48rem;
     margin-inline: auto;
     text-align: center;
+  }
+
+  .theater-hero__marquee {
+    display: grid;
+    gap: 0.6rem;
+    justify-items: center;
+  }
+
+  .theater-hero__label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(244, 230, 204, 0.12);
+    border-radius: 999px;
+    padding: 0.38rem 0.72rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(244, 230, 204, 0.74);
+    background: rgba(21, 15, 15, 0.6);
+  }
+
+  .theater-hero__facts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    color: rgba(244, 230, 204, 0.66);
+    font-size: 0.76rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .theater-hero__facts span:not(:first-child)::before {
+    content: '•';
+    margin-right: 0.55rem;
+    color: rgba(244, 230, 204, 0.34);
   }
 
   .theater-hero__eyebrow,
@@ -511,7 +602,9 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
   }
 
   .theater-hero h1 {
-    font-size: clamp(3.2rem, 8vw, 6.8rem);
+    font-size: clamp(3rem, 7vw, 6rem);
+    max-width: 14ch;
+    margin-inline: auto;
   }
 
   .theater-hero__lede,
@@ -523,9 +616,9 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
   }
 
   .theater-hero__lede {
-    max-width: 35rem;
+    max-width: 39rem;
     margin-inline: auto;
-    font-size: 1rem;
+    font-size: 1.02rem;
   }
 
   .theater-hero__actions,
@@ -574,20 +667,20 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
   .theater-exit {
     display: grid;
     gap: 0.75rem;
-    max-width: 48rem;
-    margin: 0 auto clamp(1.4rem, 4vw, 2.25rem);
+    max-width: 56rem;
+    margin: 0 auto clamp(1rem, 3vw, 1.6rem);
     text-align: center;
   }
 
   .theater-stage__intro h2,
   .theater-exit h2 {
-    font-size: clamp(2rem, 4.2vw, 3.6rem);
+    font-size: clamp(1.45rem, 2.5vw, 2.2rem);
   }
 
   .theater-room {
     display: grid;
-    grid-template-columns: minmax(14rem, 0.58fr) minmax(0, 1.86fr) minmax(12rem, 0.48fr);
-    gap: clamp(1rem, 2vw, 1.25rem);
+    grid-template-columns: minmax(18rem, 0.86fr) minmax(0, 2.4fr) minmax(12.5rem, 0.54fr);
+    gap: clamp(1rem, 2vw, 1.4rem);
     align-items: start;
   }
 
@@ -598,7 +691,7 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
     gap: 1rem;
     align-content: start;
     max-height: calc(100svh - 6rem);
-    padding: 1rem;
+    padding: 1.05rem;
     overflow: auto;
     border: 1px solid var(--theater-border);
     border-radius: 1.5rem;
@@ -625,11 +718,10 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
 
   .theater-picker__item {
     display: grid;
-    grid-template-columns: 6.8rem minmax(0, 1fr);
-    gap: 0.8rem;
-    align-items: center;
+    gap: 0.7rem;
+    align-items: start;
     width: 100%;
-    padding: 0.72rem;
+    padding: 0.9rem 0.95rem;
     border: 1px solid color-mix(in srgb, var(--tone-line) 88%, rgba(255, 255, 255, 0.03));
     border-radius: 1rem;
     background:
@@ -641,6 +733,19 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
     transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
   }
 
+  .theater-picker__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.45rem;
+  }
+
+  .theater-picker__body {
+    display: grid;
+    gap: 0.38rem;
+  }
+
   .theater-picker__item:hover,
   .theater-picker__item.is-active {
     transform: translateY(-2px);
@@ -650,19 +755,29 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
       color-mix(in srgb, var(--theater-gold) 12%, var(--tone-surface));
   }
 
-  .theater-picker__item span {
-    display: grid;
-    gap: 0.25rem;
-  }
-
   .theater-picker__item strong {
-    font-size: 0.95rem;
+    font-size: 1rem;
+    line-height: 1.28;
     color: var(--theater-cream);
   }
 
-  .theater-picker__item small {
+  .theater-picker__item small,
+  .theater-picker__source {
     color: rgba(244, 230, 204, 0.56);
     line-height: 1.45;
+  }
+
+  .theater-picker__body small {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .theater-picker__source {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
   .theater-picker__pill {
@@ -689,26 +804,27 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
 
   .theater-screening__marquee {
     display: grid;
-    gap: 0.4rem;
+    gap: 0.28rem;
     align-items: end;
     padding-inline: 0.2rem;
   }
 
   .theater-screening__marquee h2 {
-    font-size: clamp(1.8rem, 4vw, 3.2rem);
+    font-size: clamp(1.2rem, 2vw, 1.8rem);
+    max-width: 18ch;
   }
 
   .theater-screening__marquee span {
     color: rgba(244, 230, 204, 0.62);
-    font-size: 0.95rem;
+    font-size: 0.88rem;
     line-height: 1.55;
   }
 
   .theater-screen {
     position: relative;
     display: grid;
-    min-height: min(76svh, 58rem);
-    padding: clamp(1rem, 2vw, 1.35rem);
+    min-height: min(80svh, 62rem);
+    padding: clamp(1.1rem, 2vw, 1.5rem);
     border-radius: 1.8rem;
     overflow: hidden;
     background:
@@ -734,10 +850,10 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
   .theater-panel {
     position: relative;
     display: grid;
-    gap: 1rem;
+    gap: 1.15rem;
     min-height: 100%;
-    padding: clamp(1rem, 2vw, 1.5rem);
-    border-radius: 1.45rem;
+    padding: clamp(1.1rem, 2.2vw, 1.75rem);
+    border-radius: 1.55rem;
     border: 1px solid rgba(255, 243, 216, 0.08);
     background:
       radial-gradient(circle at 50% 0%, rgba(255, 221, 163, 0.08), transparent 38%),
@@ -778,7 +894,7 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
 
   .theater-panel__heading h3 {
     margin: 0;
-    font-size: clamp(1.7rem, 3vw, 2.35rem);
+    font-size: clamp(1.85rem, 3vw, 2.7rem);
     letter-spacing: -0.04em;
     line-height: 1.02;
   }
@@ -844,18 +960,28 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
   }
 
   .theater-rail--notes {
-    gap: 1.2rem;
+    gap: 1rem;
   }
 
   .theater-notes {
     display: grid;
-    gap: 1rem;
+    gap: 0.9rem;
   }
 
-  .theater-notes__lede {
+  .theater-notes__eyebrow {
     margin: 0;
-    color: var(--theater-copy);
-    line-height: 1.7;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(244, 230, 204, 0.56);
+  }
+
+  .theater-notes__title {
+    margin: 0;
+    font-size: 1.25rem;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--theater-cream);
   }
 
   .theater-notes__stack {
@@ -866,7 +992,7 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
   .theater-notes__stack div {
     display: grid;
     gap: 0.25rem;
-    padding: 0.85rem;
+    padding: 0.8rem;
     border: 1px solid color-mix(in srgb, var(--tone-line) 88%, rgba(255, 255, 255, 0.03));
     border-radius: 1rem;
     background:
@@ -911,8 +1037,25 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
   }
 
   @media (max-width: 900px) {
+    .theater-shell {
+      gap: 2rem;
+    }
+
     .theater-room {
       grid-template-columns: 1fr;
+    }
+
+    .theater-screening {
+      order: 1;
+      position: static;
+    }
+
+    .theater-rail--archive {
+      order: 2;
+    }
+
+    .theater-rail--notes {
+      order: 3;
     }
 
     .theater-rail {
@@ -920,13 +1063,18 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
       max-height: none;
     }
 
-    .theater-screening {
-      position: static;
-    }
-
     .theater-panel__heading {
       flex-direction: column;
       align-items: flex-start;
+    }
+
+    .theater-hero {
+      min-height: auto;
+      padding-top: clamp(4.75rem, 16vw, 6rem);
+    }
+
+    .theater-hero h1 {
+      max-width: 10ch;
     }
   }
 </style>

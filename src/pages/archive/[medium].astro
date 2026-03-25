@@ -11,7 +11,7 @@ import {
   type ArchiveMedium,
   sortEntriesByDate
 } from '../../lib/archive-entries';
-import { formatLongUtcDate } from '../../lib/date-formatting';
+import { formatLongArchiveUtcDate } from '../../lib/date-formatting';
 import { resolveMusicManifestItems } from '../../lib/music-player';
 
 const mediumDescriptions: Record<ArchiveMedium, string> = {
@@ -44,7 +44,7 @@ const musicPlayerItems = medium === 'music' ? resolveMusicManifestItems(allEntri
       <p class="archive-medium__description">{mediumDescriptions[medium]}</p>
       <div class="archive-medium__meta font-archive">
         <p>{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
-        {entries[0] && <p>Latest: {formatLongUtcDate(entries[0].data.date)}</p>}
+        {entries[0] && <p>Latest: {formatLongArchiveUtcDate(entries[0].data.date)}</p>}
       </div>
     </header>
 

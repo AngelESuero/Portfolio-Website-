@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="A Path Toward Life">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0e4d1" />
+      <stop offset="100%" stop-color="#d7b06a" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="#14110f" />
+  <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#bg)" opacity="0.92" />
+  <path
+    d="M20 47 29.5 17h5L44 47h-5.9l-2.1-6.9H28L25.9 47Zm9.4-11.4h5.2L32 26.6Z"
+    fill="#1c1713"
+  />
+</svg>

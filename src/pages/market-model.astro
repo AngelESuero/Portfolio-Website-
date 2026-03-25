@@ -7,51 +7,165 @@ import MarketModel from '../components/MarketModel';
   title="Market Model - a_e.s_"
   description="A framework mapping all NAICS sectors into survival necessities versus personal desire."
   theme="archive"
+  bodyClass="market-model-page"
 >
-  <main style="width: min(1120px, calc(100vw - 2rem)); margin: 0 auto; padding: 3rem 0;">
-    <section style="margin-bottom: 3rem;">
-      <p style="font-size: 0.875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--tone-accent-glow); margin: 0 0 0.5rem;">Elsewhere</p>
-      <h1 style="font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1; margin: 0 0 1rem; color: var(--tone-text);">Market Model</h1>
-      <p style="font-size: 1.125rem; line-height: 1.6; color: var(--tone-text); max-width: 40rem; margin: 0;">
-        A survival floor requires a clear model of which markets are survival necessities and which are personal desire. This framework maps all 20 NAICS sectors into that distinction.
-      </p>
-    </section>
+  <main class="market-model-shell">
+    <header class="market-model-hero">
+      <div>
+        <p class="market-model-hero__kicker">Elsewhere</p>
+        <h1>Market Model</h1>
+        <p class="market-model-hero__lede">
+          A survival floor requires a clear distinction between what people must access to live and what belongs to
+          preference, leisure, or market desire. This model maps the economy around that split.
+        </p>
+      </div>
 
-    <section style="background: color-mix(in srgb, var(--tone-accent) 4%, rgba(255, 255, 255, 0.02)); border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, rgba(255, 255, 255, 0.08)); border-radius: 12px; padding: 2rem; margin-bottom: 3rem;">
+      <aside class="market-model-hero__card">
+        <p class="market-model-hero__card-label">Core claim</p>
+        <p>
+          If a person cannot live without a market, it should not be treated like an ordinary consumer choice.
+        </p>
+      </aside>
+    </header>
+
+    <section class="market-model-stage">
       <MarketModel client:load />
     </section>
 
-    <section style="max-width: 40rem; line-height: 1.8; color: var(--tone-text);">
-      <h2 style="font-size: 1.25rem; margin: 0 0 1rem; color: var(--tone-accent-glow);">Context</h2>
-      <p>
-        This model distinguishes three categories across the full economy:
-      </p>
-      <ul style="margin: 1rem 0; padding-left: 1.5rem;">
-        <li style="margin-bottom: 0.75rem;">
-          <strong>Survival + directly subsidized:</strong> Markets for goods and services a person must access to live, and which are subsidized by government or collective action (housing, food, utilities, healthcare, transportation).
-        </li>
-        <li style="margin-bottom: 0.75rem;">
-          <strong>Survival + not directly subsidized:</strong> Markets that sustain life but operate at market rates or are regulated rather than directly provided (finance and payment access).
-        </li>
-        <li style="margin-bottom: 0.75rem;">
-          <strong>Personal desire:</strong> All other economic activity — markets for things people want, not markets for things they need to survive.
-        </li>
-      </ul>
-      <p>
-        Understanding this distinction is foundational to any conversation about a survival floor, UBI, or post-scarcity economic design.
-      </p>
+    <section class="market-model-notes">
+      <article class="market-model-note">
+        <p class="market-model-note__label">How to read it</p>
+        <h2>Three bands, one question</h2>
+        <p>
+          The model separates the economy into directly subsidized survival markets, survival markets that are still
+          market-facing, and everything else that sits in the desire lane.
+        </p>
+      </article>
+
+      <article class="market-model-note">
+        <p class="market-model-note__label">Why it matters</p>
+        <h2>Not every market should carry the same burden</h2>
+        <p>
+          Housing, food, utilities, healthcare, and transportation are not optional categories. When they are treated
+          like ordinary purchases, the survival floor breaks first.
+        </p>
+      </article>
+
+      <article class="market-model-note">
+        <p class="market-model-note__label">Use</p>
+        <h2>A policy and design lens</h2>
+        <p>
+          This is a framework for thinking about UBI, survival infrastructure, city systems, and what should be
+          collectively supported before the rest of the economy starts asking for preference signals.
+        </p>
+      </article>
     </section>
   </main>
 </BaseLayout>
 
 <style>
+  :global(body.market-model-page[data-theme='archive']) {
+    background:
+      radial-gradient(44rem 26rem at 14% 0%, rgba(196, 158, 93, 0.14), transparent 72%),
+      radial-gradient(34rem 22rem at 86% 8%, rgba(116, 156, 188, 0.16), transparent 74%),
+      linear-gradient(180deg, rgba(247, 242, 233, 0.98), rgba(236, 228, 214, 0.98));
+  }
+
+  .market-model-shell {
+    width: min(1100px, calc(100vw - 2rem));
+    margin: 0 auto;
+    padding: clamp(2rem, 4vw, 3.2rem) 0 clamp(3rem, 6vw, 4.6rem);
+    display: grid;
+    gap: 1.15rem;
+  }
+
+  .market-model-hero,
+  .market-model-stage,
+  .market-model-note {
+    border: 1px solid rgba(198, 180, 151, 0.68);
+    background: rgba(250, 245, 238, 0.92);
+    border-radius: 1.35rem;
+    box-shadow: 0 18px 34px rgba(110, 89, 61, 0.08);
+  }
+
+  .market-model-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(260px, 0.68fr);
+    gap: 1rem;
+    padding: clamp(1.2rem, 2.5vw, 1.65rem);
+    align-items: stretch;
+  }
+
+  .market-model-hero__kicker,
+  .market-model-hero__card-label,
+  .market-model-note__label {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(181, 136, 78, 0.94);
+  }
+
+  .market-model-hero h1,
+  .market-model-note h2 {
+    margin: 0.45rem 0 0;
+    font-family: var(--font-display, serif);
+    letter-spacing: -0.04em;
+    line-height: 1.04;
+    color: rgba(57, 42, 29, 0.98);
+  }
+
+  .market-model-hero h1 {
+    font-size: clamp(2.4rem, 6vw, 4.3rem);
+  }
+
+  .market-model-note h2 {
+    font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+  }
+
+  .market-model-hero__lede,
+  .market-model-hero__card p,
+  .market-model-note p:last-child {
+    margin: 0.78rem 0 0;
+    line-height: 1.72;
+    color: rgba(73, 59, 47, 0.86);
+  }
+
+  .market-model-hero__card {
+    padding: 1rem 1.05rem;
+    border-radius: 1rem;
+    background: rgba(243, 234, 220, 0.8);
+    border: 1px solid rgba(198, 180, 151, 0.62);
+  }
+
+  .market-model-stage {
+    padding: clamp(1.2rem, 2.8vw, 1.8rem);
+    overflow: hidden;
+  }
+
+  .market-model-notes {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .market-model-note {
+    padding: 1rem 1rem 1.1rem;
+  }
+
+  @media (max-width: 900px) {
+    .market-model-hero,
+    .market-model-notes {
+      grid-template-columns: 1fr;
+    }
+  }
+
   @media (max-width: 600px) {
-    /* Stack the section label above content on narrow screens */
     :global(.mm-section-grid) {
       grid-template-columns: 1fr !important;
       gap: 0.5rem 0 !important;
     }
-    /* Stack the survival markets two-column grid vertically */
+
     :global(.mm-survival-grid) {
       grid-template-columns: 1fr !important;
     }

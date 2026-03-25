@@ -38,31 +38,11 @@ const archivePhases = [
   }
 ];
 
-const rejectionStats = [
-  { value: '40', label: 'Direct employer rejections' },
-  { value: '29', label: 'Earlier review pass' },
-  { value: '11', label: 'New Gmail pass' },
-  { value: '1', label: 'Separate appendix item excluded' }
-];
-
-const rejectionNotes = [
-  'A consolidated record of direct employer and job-application rejection emails identified across two mailbox review passes.',
-  'The list keeps one forwarded 2021 fellowship rejection separate from the direct-employer total.',
-  'The document is useful less as a mood piece and more as a factual labor-market record during this period.'
-];
-
 const emailTimelineHighlights = [
   '2012–2018 archive span',
   'Identity formation',
   'Educational mobility',
   'Support structures'
-];
-
-const rejectionHighlights = [
-  '40 direct rejections',
-  '2 review passes combined',
-  'Creative, tech, editorial, and support roles',
-  'One appendix item kept separate'
 ];
 ---
 
@@ -76,8 +56,8 @@ const rejectionHighlights = [
         and civic collaboration to turn lived process into public memory.
       </p>
       <p class="about-page__context">
-        This page keeps a brief present-day frame near the top, then moves through both a lived timeline and an
-        archive-derived record of how institutional support, schooling, and self-definition show up in the documents.
+        This page stays focused on biography, timeline, and the email-derived record of support structures, school
+        movement, and early self-definition.
       </p>
       <div class="about-page__roles" aria-label="Practice areas">
         {profile.roles.map((role) => <span class="chip rounded-full px-3 py-1 text-xs sm:text-sm">{role}</span>)}
@@ -89,116 +69,55 @@ const rejectionHighlights = [
         <div class="about-page__archive-head">
           <div>
             <p class="about-page__label">Archive documents</p>
-            <h2 class="about-page__subhead" id="archive-documents-heading">Two records of the same life from different angles</h2>
+            <h2 class="about-page__subhead" id="archive-documents-heading">Email-derived timeline</h2>
+          </div>
+          <a
+            class="about-page__doc-link"
+            href="/documents/angel-suero-email-timeline.pdf"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Open PDF
+          </a>
+        </div>
+
+        <p class="about-page__archive-intro">
+          A research pass through the Gmail archive surfaced a more documentary timeline: identity formation,
+          educational mobility, and the support structures that helped move each stage forward.
+        </p>
+
+        <div class="about-page__doc-stage">
+          <a class="about-page__doc-preview" href="/documents/angel-suero-email-timeline.pdf" target="_blank" rel="noreferrer">
+            <img src="/documents/previews/email-timeline-cover.png" alt="First page preview of the email-derived timeline PDF" loading="lazy" />
+          </a>
+          <div class="about-page__doc-meta">
+            <p class="about-page__doc-kicker">What it captures</p>
+            <p class="about-page__doc-copy">
+              A chronology built from the reviewed Gmail archive, centered on the early account layer, NJ SEEDS,
+              Upward Bound, essays, school transitions, and the institutional scaffolding around those years.
+            </p>
+            <div class="about-page__doc-tags">
+              {emailTimelineHighlights.map((item) => <span class="about-page__doc-tag">{item}</span>)}
+            </div>
           </div>
         </div>
 
-        <div class="about-page__tabs" role="tablist" aria-label="Archive documents">
-          <button class="about-page__tab is-active" type="button" role="tab" aria-selected="true" aria-controls="about-doc-email" id="about-tab-email" data-about-tab="email">
-            Email timeline
-          </button>
-          <button class="about-page__tab" type="button" role="tab" aria-selected="false" aria-controls="about-doc-rejections" id="about-tab-rejections" data-about-tab="rejections" tabindex="-1">
-            Rejection record
-          </button>
-        </div>
+        <ul class="about-page__archive-cautions">
+          {archiveCautions.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
 
-        <div class="about-page__tab-panels">
-          <section class="about-page__tab-panel is-active" id="about-doc-email" role="tabpanel" aria-labelledby="about-tab-email" data-about-panel="email">
-            <div class="about-page__archive-head">
-              <p class="about-page__archive-intro">
-                A separate research pass through the Gmail archive surfaced a more documentary timeline: identity formation,
-                educational mobility, and the support structures that helped move each stage forward.
-              </p>
-              <a
-                class="about-page__doc-link"
-                href="/documents/angel-suero-email-timeline.pdf"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Open PDF
-              </a>
-            </div>
-
-            <div class="about-page__doc-stage">
-              <a class="about-page__doc-preview" href="/documents/angel-suero-email-timeline.pdf" target="_blank" rel="noreferrer">
-                <img src="/documents/previews/email-timeline-cover.png" alt="First page preview of the email-derived timeline PDF" loading="lazy" />
-              </a>
-              <div class="about-page__doc-meta">
-                <p class="about-page__doc-kicker">What it captures</p>
-                <p class="about-page__doc-copy">
-                  A chronology built from the reviewed Gmail archive, centered on the early account layer, NJ SEEDS,
-                  Upward Bound, essays, school transitions, and the institutional scaffolding around those years.
-                </p>
-                <div class="about-page__doc-tags">
-                  {emailTimelineHighlights.map((item) => <span class="about-page__doc-tag">{item}</span>)}
-                </div>
+        <div class="about-page__archive-phases">
+          {archivePhases.map((phase) => (
+            <article class="about-page__archive-phase">
+              <p class="about-page__archive-range">{phase.range}</p>
+              <div class="about-page__archive-copy">
+                <h3>{phase.title}</h3>
+                <p>{phase.detail}</p>
               </div>
-            </div>
-
-            <ul class="about-page__archive-cautions">
-              {archiveCautions.map((item) => (
-                <li>{item}</li>
-              ))}
-            </ul>
-
-            <div class="about-page__archive-phases">
-              {archivePhases.map((phase) => (
-                <article class="about-page__archive-phase">
-                  <p class="about-page__archive-range">{phase.range}</p>
-                  <div class="about-page__archive-copy">
-                    <h3>{phase.title}</h3>
-                    <p>{phase.detail}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </section>
-
-          <section class="about-page__tab-panel" id="about-doc-rejections" role="tabpanel" aria-labelledby="about-tab-rejections" data-about-panel="rejections" aria-hidden="true">
-            <div class="about-page__archive-head">
-              <p class="about-page__archive-intro">
-                This document reads differently: less identity formation, more labor-market friction. It consolidates the direct employer rejection emails already identified across two review passes and keeps the forwarded fellowship item separate.
-              </p>
-              <a
-                class="about-page__doc-link"
-                href="/documents/combined-rejection-emails-report.pdf"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Open PDF
-              </a>
-            </div>
-
-            <div class="about-page__doc-stage">
-              <a class="about-page__doc-preview" href="/documents/combined-rejection-emails-report.pdf" target="_blank" rel="noreferrer">
-                <img src="/documents/previews/rejection-report-cover.png" alt="First page preview of the rejection email report PDF" loading="lazy" />
-              </a>
-              <div class="about-page__doc-meta">
-                <p class="about-page__doc-kicker">What it captures</p>
-                <p class="about-page__doc-copy">
-                  A consolidated hiring record across creative, editorial, technical, and support roles. It turns a diffuse search into something countable and legible.
-                </p>
-                <div class="about-page__doc-tags">
-                  {rejectionHighlights.map((item) => <span class="about-page__doc-tag">{item}</span>)}
-                </div>
-              </div>
-            </div>
-
-            <div class="about-page__rejection-stats">
-              {rejectionStats.map((stat) => (
-                <article class="about-page__rejection-stat">
-                  <p class="about-page__rejection-value">{stat.value}</p>
-                  <p class="about-page__rejection-label">{stat.label}</p>
-                </article>
-              ))}
-            </div>
-
-            <ul class="about-page__archive-cautions">
-              {rejectionNotes.map((item) => (
-                <li>{item}</li>
-              ))}
-            </ul>
-          </section>
+            </article>
+          ))}
         </div>
       </div>
     </section>
@@ -207,54 +126,11 @@ const rejectionHighlights = [
       <LifeTimeline client:load variant="light" />
     </section>
 
-    <section class="about-page__panel about-page__present-frame" id="current-focus">
-      <p class="about-page__label">Present day</p>
-      <p>
-        The site holds music, writing, visuals, and active archive threads as a living record: quieter than a
-        dashboard, more open than a finished portfolio shell.
-      </p>
-    </section>
-
-    <!-- photo film strip -->
-    <div class="about-page__photos" aria-hidden="true">
-      <div class="about-page__photos-track">
-        {[
-          { src: '/photos/download.jpg' },
-          { src: '/images/home-collage/collage-2.jpg' },
-          { src: '/photos/download-1.jpg' },
-          { src: '/images/home-collage/collage-4.jpg' },
-          { src: '/photos/download-3.jpg' },
-          { src: '/images/home-collage/collage-5.jpg' },
-          { src: '/photos/download-5.jpg' },
-          { src: '/images/home-collage/collage-6.jpg' },
-          { src: '/photos/download-7.jpg' },
-          { src: '/images/home-collage/collage-7.jpg' },
-          { src: '/photos/download-2.jpg' },
-          { src: '/images/home-collage/collage-3.jpg' },
-          // duplicate first half for seamless loop
-          { src: '/photos/download.jpg' },
-          { src: '/images/home-collage/collage-2.jpg' },
-          { src: '/photos/download-1.jpg' },
-          { src: '/images/home-collage/collage-4.jpg' },
-          { src: '/photos/download-3.jpg' },
-          { src: '/images/home-collage/collage-5.jpg' },
-          { src: '/photos/download-5.jpg' },
-          { src: '/images/home-collage/collage-6.jpg' },
-          { src: '/photos/download-7.jpg' },
-          { src: '/images/home-collage/collage-7.jpg' },
-          { src: '/photos/download-2.jpg' },
-          { src: '/images/home-collage/collage-3.jpg' },
-        ].map(({ src }) => (
-          <div class="about-photo" style={`background-image:url('${src}')`}></div>
-        ))}
-      </div>
-    </div>
-
     <section class="about-page__panel about-page__present-frame">
       <p class="about-page__label">Still current</p>
       <p>
-        The present-tense throughline stays the same: music, study, Newark, and archive practice feeding one another
-        rather than sitting in separate categories.
+        The throughline stays the same: Newark, study, music, archive practice, and a life record that stays tied to
+        actual documents instead of just portfolio claims.
       </p>
     </section>
   </section>
@@ -319,59 +195,6 @@ const rejectionHighlights = [
     align-items: flex-start;
     justify-content: space-between;
     gap: 1rem;
-  }
-
-  .about-page__tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-    padding-bottom: 0.15rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
-  }
-
-  .about-page__tab {
-    min-height: 2rem;
-    padding: 0.46rem 0.78rem;
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--tone-surface) 78%, transparent);
-    color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
-    font-size: 0.74rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
-  }
-
-  .about-page__tab.is-active {
-    border-color: color-mix(in srgb, var(--tone-accent) 34%, var(--line2));
-    color: var(--tone-accent-glow);
-    background: color-mix(in srgb, var(--tone-accent) 10%, transparent);
-  }
-
-  .about-page__tab-panels {
-    display: grid;
-  }
-
-  .about-page__tab-panel {
-    display: grid;
-    gap: 1rem;
-    overflow: clip;
-    max-height: 0;
-    opacity: 0;
-    transform: translateY(0.55rem);
-    pointer-events: none;
-    transition:
-      max-height 360ms cubic-bezier(0.2, 0.72, 0, 1),
-      opacity 220ms ease,
-      transform 260ms ease;
-  }
-
-  .about-page__tab-panel.is-active {
-    max-height: 240rem;
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
   }
 
   .about-page__doc-stage {
@@ -532,38 +355,6 @@ const rejectionHighlights = [
     line-height: 1.55;
   }
 
-  .about-page__rejection-stats {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0.75rem;
-  }
-
-  .about-page__rejection-stat {
-    padding: 0.85rem 0.95rem;
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
-    border-radius: 0.95rem;
-    background: color-mix(in srgb, var(--tone-surface) 80%, transparent);
-  }
-
-  .about-page__rejection-value,
-  .about-page__rejection-label {
-    margin: 0;
-  }
-
-  .about-page__rejection-value {
-    font-size: clamp(1.15rem, 2.2vw, 1.45rem);
-    line-height: 1;
-    color: var(--tone-accent-glow);
-    font-weight: 700;
-  }
-
-  .about-page__rejection-label {
-    margin-top: 0.35rem;
-    font-size: 0.76rem;
-    line-height: 1.45;
-    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
-  }
-
   .about-page__timeline-wrap {
     margin: clamp(0.4rem, 1.6vw, 1rem) 0;
     padding: clamp(1.25rem, 3vw, 2rem) clamp(1rem, 3vw, 1.5rem) clamp(1.5rem, 3.5vw, 2rem);
@@ -596,43 +387,6 @@ const rejectionHighlights = [
     color: var(--tone-accent-glow);
   }
 
-  /* ── Photo film strip ─────────────────────── */
-  .about-page__photos {
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    overflow: hidden;
-    margin-bottom: 0;
-  }
-
-  .about-page__photos-track {
-    display: flex;
-    gap: 0.25rem;
-    width: max-content;
-    animation: about-scroll 28s linear infinite;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .about-page__photos-track { animation: none; }
-  }
-
-  @keyframes about-scroll {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
-  }
-
-  .about-photo {
-    width: clamp(120px, 18vw, 200px);
-    aspect-ratio: 3/4;
-    background-size: cover;
-    background-position: center;
-    flex-shrink: 0;
-    border-radius: 2px;
-    filter: saturate(0.85);
-    transition: filter 0.3s ease;
-  }
-
-  .about-photo:hover { filter: saturate(1); }
-
   .about-page__version {
     font-size: 0.6rem;
     font-weight: 400;
@@ -657,46 +411,5 @@ const rejectionHighlights = [
     .about-page__doc-link {
       width: fit-content;
     }
-
-    .about-page__rejection-stats {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
   }
 </style>
-
-<script>
-  const aboutTabs = Array.from(document.querySelectorAll('[data-about-tab]'));
-  const aboutPanels = Array.from(document.querySelectorAll('[data-about-panel]'));
-
-  if (aboutTabs.length && aboutPanels.length) {
-    const activateAboutTab = (name) => {
-      aboutTabs.forEach((tab) => {
-        const active = tab.dataset.aboutTab === name;
-        tab.classList.toggle('is-active', active);
-        tab.setAttribute('aria-selected', String(active));
-        tab.tabIndex = active ? 0 : -1;
-      });
-
-      aboutPanels.forEach((panel) => {
-        const active = panel.dataset.aboutPanel === name;
-        panel.classList.toggle('is-active', active);
-        panel.setAttribute('aria-hidden', String(!active));
-      });
-    };
-
-    aboutTabs.forEach((tab) => {
-      tab.addEventListener('click', () => activateAboutTab(tab.dataset.aboutTab));
-      tab.addEventListener('keydown', (event) => {
-        if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
-        event.preventDefault();
-        const currentIndex = aboutTabs.indexOf(tab);
-        const nextIndex = event.key === 'ArrowRight'
-          ? (currentIndex + 1) % aboutTabs.length
-          : (currentIndex - 1 + aboutTabs.length) % aboutTabs.length;
-        const nextTab = aboutTabs[nextIndex];
-        activateAboutTab(nextTab.dataset.aboutTab);
-        nextTab.focus();
-      });
-    });
-  }
-</script>

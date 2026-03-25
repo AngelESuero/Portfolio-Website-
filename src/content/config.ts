@@ -15,6 +15,7 @@ const projects = defineCollection({
     status: z.string(),
     tools: z.array(z.string()),
     links: z.object({
+      confluence: z.string().optional(),
       github: z.string().optional(),
       linktree: z.string().optional(),
       youtube: z.string().optional(),

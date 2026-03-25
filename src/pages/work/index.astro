@@ -54,6 +54,7 @@ type PreparedProject = {
 };
 
 const linkLabels: Record<string, string> = {
+  confluence: 'Publication',
   untitled: 'Untitled',
   youtube: 'YouTube',
   instagram: 'Instagram',
@@ -142,6 +143,8 @@ const outwardLabel = (link: PreparedLink): string => {
       return 'Open release links';
     case 'github':
       return 'Browse the code';
+    case 'confluence':
+      return 'Read the publication';
     default:
       return `Visit ${link.label}`;
   }

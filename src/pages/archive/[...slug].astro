@@ -19,7 +19,7 @@ import {
   shouldShowEntryStatus,
   sortEntriesByDate
 } from '../../lib/archive-entries';
-import { formatLongUtcDate } from '../../lib/date-formatting';
+import { formatLongArchiveUtcDate } from '../../lib/date-formatting';
 import { getMusicEntryRef, resolveMusicManifestItems } from '../../lib/music-player';
 import { getLinkCtaLabel, providerFromUrl } from '../../lib/embed-resolver';
 
@@ -69,7 +69,7 @@ const showFooterSourceLink = Boolean(externalUrl) && !showManifestMusicPlayer;
 
     <header class="archive-entry__header">
       <p class="archive-entry__meta font-archive">
-        <span>{formatLongUtcDate(entry.data.date)}</span>
+        <span>{formatLongArchiveUtcDate(entry.data.date)}</span>
         <span>{mediumLabel}</span>
         <span>{sourceLabel}</span>
       </p>
