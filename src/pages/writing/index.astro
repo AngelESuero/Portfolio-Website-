@@ -27,6 +27,10 @@ const latestPublished = readyPosts.slice(0, 6).map((post) => ({
   tags: post.data.tags
 }));
 
+const politicalTagSet = new Set(['political', 'political-economy', 'governance', 'civic', 'capitalism']);
+const hasPoliticalTag = (tags: string[]) => tags.some((tag) => politicalTagSet.has(tag.trim().toLowerCase()));
+const politicalPosts = readyPosts.filter((post) => hasPoliticalTag(post.data.tags));
+
 const getGoogleDocPreviewUrl = (value: string): string | null => {
   try {
     const parsed = new URL(value);
@@ -73,6 +77,123 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
   href: getEntryHref(entry),
   support: getArchiveDocumentSupport(entry)
 }));
+
+const politicalArchiveDocuments = archiveDocuments.filter(({ entry }) => hasPoliticalTag(entry.data.tags));
+const archiveDocumentsWithoutPolitical = archiveDocuments.filter(({ entry }) => !hasPoliticalTag(entry.data.tags));
+
+type PoliticalRecord = {
+  title: string;
+  date: Date;
+  summary: string;
+  tags: string[];
+  siteHref?: string;
+  archiveHref?: string;
+  sourceHref?: string;
+  sourceLabel?: string;
+  previewUrl?: string | null;
+  previewLabel?: string;
+  sourceType: string;
+};
+
+const politicalRecordMap = new Map<string, PoliticalRecord>();
+
+for (const post of politicalPosts) {
+  const key = post.data.title.trim().toLowerCase();
+  politicalRecordMap.set(key, {
+    title: post.data.title,
+    date: post.data.date,
+    summary: post.data.summary,
+    tags: post.data.tags,
+    siteHref: `/writing/${post.slug}`,
+    sourceType: 'On-site essay'
+  });
+}
+
+for (const { entry, href, support } of politicalArchiveDocuments) {
+  const key = entry.data.title.trim().toLowerCase();
+  const existing = politicalRecordMap.get(key);
+
+  if (existing) {
+    existing.archiveHref = href;
+    existing.sourceHref = support?.sourceHref;
+    existing.sourceLabel = support?.sourceLabel;
+    existing.previewUrl = support?.previewUrl;
+    existing.previewLabel = support?.previewLabel;
+    if (entry.data.date.valueOf() > existing.date.valueOf()) {
+      existing.date = entry.data.date;
+      existing.summary = entry.data.summary;
+    }
+    continue;
+  }
+
+  politicalRecordMap.set(key, {
+    title: entry.data.title,
+    date: entry.data.date,
+    summary: entry.data.summary,
+    tags: entry.data.tags,
+    archiveHref: href,
+    sourceHref: support?.sourceHref,
+    sourceLabel: support?.sourceLabel,
+    previewUrl: support?.previewUrl,
+    previewLabel: support?.previewLabel,
+    sourceType: entry.data.status
+  });
+}
+
+const politicalRecords = [...politicalRecordMap.values()].sort((a, b) => b.date.valueOf() - a.date.valueOf());
+
+const driveFileViewUrl = (fileId: string): string => `https://drive.google.com/file/d/${fileId}/view?usp=sharing`;
+const driveFilePreviewUrl = (fileId: string): string => `https://drive.google.com/file/d/${fileId}/preview`;
+
+type DrivePoliticalSource = {
+  title: string;
+  summary: string;
+  sourceType: string;
+  tags: string[];
+  sourceLinks: Array<{ label: string; href: string }>;
+  previewUrl?: string | null;
+  previewLabel?: string;
+};
+
+const drivePoliticalSources: DrivePoliticalSource[] = [
+  {
+    title: 'Theorizing Politics',
+    summary: 'A political draft in Drive, preserved in both DOCX and PDF form so you can open either version quickly.',
+    sourceType: 'DOCX + PDF',
+    tags: ['politics', 'theory', 'drive'],
+    sourceLinks: [
+      { label: 'Open DOCX', href: driveFileViewUrl('1n5bP6tS4W4Q0zhGnPHvfqEBPEGegg24a') },
+      { label: 'Open PDF', href: driveFileViewUrl('1IJeUqVQmb0DLCRMm-p5DFHuf6-oEyqWj') }
+    ],
+    previewUrl: driveFilePreviewUrl('1IJeUqVQmb0DLCRMm-p5DFHuf6-oEyqWj'),
+    previewLabel: 'Preview PDF'
+  },
+  {
+    title: 'Capitalism at war with itself',
+    summary: 'A Drive essay on political economy and contradiction inside the system itself.',
+    sourceType: 'HTML draft',
+    tags: ['capitalism', 'political-economy', 'drive'],
+    sourceLinks: [{ label: 'Open HTML', href: driveFileViewUrl('1ilPtMFGGNasnyzzwJc7qWa64EGimfS3w') }]
+  },
+  {
+    title: 'Human Survival Needs in 2025',
+    summary: 'A survival-and-politics draft that fits the writing tab’s civic lane and reads like a living policy note.',
+    sourceType: 'Google Doc',
+    tags: ['survival', 'politics', 'drive'],
+    sourceLinks: [{ label: 'Open source doc', href: driveFileViewUrl('1osw33f4u5o_YbrlKsEoq47fF4B8vNoTHlWsGEyuYz4E') }],
+    previewUrl: driveFilePreviewUrl('1osw33f4u5o_YbrlKsEoq47fF4B8vNoTHlWsGEyuYz4E'),
+    previewLabel: 'Preview doc'
+  },
+  {
+    title: 'Essay For Desert Of The Real',
+    summary: 'A theory-heavy essay draft in Drive that sits close to the political writing lane.',
+    sourceType: 'DOCX',
+    tags: ['essay', 'politics', 'drive'],
+    sourceLinks: [{ label: 'Open DOCX', href: driveFileViewUrl('129D_8DSXKOWwACEDRzygo4ZntY-KNNwE') }],
+    previewUrl: driveFilePreviewUrl('129D_8DSXKOWwACEDRzygo4ZntY-KNNwE'),
+    previewLabel: 'Preview DOCX'
+  }
+];
 ---
 
 <BaseLayout title="Writing — a_e.s_" theme="writing" bodyClass="writing-workbench-page">
@@ -95,6 +216,144 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
     </div>
   </section>
 
+  {politicalPosts.length > 0 || politicalArchiveDocuments.length > 0 ? (
+    <section class="writing-documents" aria-labelledby="writing-politics-heading">
+      <div class="writing-documents__header">
+        <div>
+          <p class="writing-documents__kicker">Political writings</p>
+          <h2 id="writing-politics-heading" class="font-display text-2xl">Drive-linked pieces and essays on power</h2>
+          <p class="writing-documents__dek">
+            These are the clearest political writings already in the archive and their linked source docs, surfaced here so they are easy to find from the writing tab.
+          </p>
+        </div>
+      </div>
+
+      <div class="writing-documents__grid">
+        {politicalRecords.map((record) => (
+          <article class="writing-document-card">
+            <div class="writing-document-card__meta">
+              <p>{formatShortUtcDate(record.date)}</p>
+              <span>{record.sourceType}</span>
+            </div>
+
+            <h3 class="font-display text-2xl">
+              <a href={record.siteHref || record.archiveHref || '#'}>{record.title}</a>
+            </h3>
+
+            <p class="writing-document-card__summary">{record.summary}</p>
+
+            {record.tags.length > 0 && (
+              <div class="writing-tags">
+                {record.tags.map((tag) => <span class="writing-tag">#{tag}</span>)}
+              </div>
+            )}
+
+            <div class="writing-document-card__actions">
+              {record.siteHref && (
+                <a href={record.siteHref} class="writing-document-card__link">Read on site</a>
+              )}
+              {record.archiveHref && (
+                <a href={record.archiveHref} class="writing-document-card__link writing-document-card__link--secondary">
+                  Open archive record
+                </a>
+              )}
+              {record.sourceHref && (
+                <a
+                  href={record.sourceHref}
+                  class="writing-document-card__link writing-document-card__link--secondary"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  {record.sourceLabel}
+                </a>
+              )}
+            </div>
+
+            {record.previewUrl ? (
+              <details class="writing-document-card__preview">
+                <summary>{record.previewLabel}</summary>
+                <div class="writing-document-card__frame">
+                  <iframe
+                    src={record.previewUrl}
+                    title={`${record.title} preview`}
+                    loading="lazy"
+                    allow="autoplay"
+                  ></iframe>
+                </div>
+              </details>
+            ) : record.sourceHref ? (
+              <p class="writing-document-card__note">This document is linked on-site, but its source does not expose a reliable inline preview.</p>
+            ) : null}
+          </article>
+        ))}
+      </div>
+    </section>
+  ) : null}
+
+  {drivePoliticalSources.length > 0 ? (
+    <section class="writing-documents" aria-labelledby="writing-drive-politics-heading">
+      <div class="writing-documents__header">
+        <div>
+          <p class="writing-documents__kicker">Drive sources</p>
+          <h2 id="writing-drive-politics-heading" class="font-display text-2xl">Political drafts found in Google Drive</h2>
+          <p class="writing-documents__dek">
+            These are the clearest political or political-adjacent writings I found in your Drive. They are linked here directly so the writing tab can point back to the source material.
+          </p>
+        </div>
+      </div>
+
+      <div class="writing-documents__grid">
+        {drivePoliticalSources.map((record) => (
+          <article class="writing-document-card">
+            <div class="writing-document-card__meta">
+              <p>Google Drive</p>
+              <span>{record.sourceType}</span>
+            </div>
+
+            <h3 class="font-display text-2xl">{record.title}</h3>
+
+            <p class="writing-document-card__summary">{record.summary}</p>
+
+            {record.tags.length > 0 && (
+              <div class="writing-tags">
+                {record.tags.map((tag) => <span class="writing-tag">#{tag}</span>)}
+              </div>
+            )}
+
+            <div class="writing-document-card__actions">
+              {record.sourceLinks.map((link) => (
+                <a
+                  href={link.href}
+                  class="writing-document-card__link"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+
+            {record.previewUrl ? (
+              <details class="writing-document-card__preview">
+                <summary>{record.previewLabel}</summary>
+                <div class="writing-document-card__frame">
+                  <iframe
+                    src={record.previewUrl}
+                    title={`${record.title} preview`}
+                    loading="lazy"
+                    allow="autoplay"
+                  ></iframe>
+                </div>
+              </details>
+            ) : (
+              <p class="writing-document-card__note">This Drive file is linked directly. If you want it publicly embedded later, we can swap it to a hosted PDF or public doc.</p>
+            )}
+          </article>
+        ))}
+      </div>
+    </section>
+  ) : null}
+
   <section class="writing-desk-shell">
     <WritingWorkbench client:load published={latestPublished} totalPublished={readyPosts.length} />
   </section>
@@ -112,11 +371,11 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
       <a href="/archive/writing" class="writing-documents__browse">Open full writing archive</a>
     </div>
 
-    {archiveDocuments.length === 0 ? (
+    {archiveDocumentsWithoutPolitical.length === 0 ? (
       <p class="writing-empty">No archive documents are filed yet.</p>
     ) : (
       <div class="writing-documents__grid">
-        {archiveDocuments.map(({ entry, href, support }) => (
+        {archiveDocumentsWithoutPolitical.map(({ entry, href, support }) => (
           <article class="writing-document-card">
             <div class="writing-document-card__meta">
               <p>{formatShortUtcDate(entry.data.date)}</p>

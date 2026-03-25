@@ -93,8 +93,9 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
 
           <div class="theater-picker theater-picker--archive">
             {renderedPanels.map(({ entry }) => (
-              <button
-                type="button"
+              <a
+                href={`?entry=${entry.slug}#stage`}
+                role="button"
                 class:list={['theater-picker__item', activeEntry && entry.slug === activeEntry.slug && 'is-active']}
                 data-theater-item
                 data-entry-slug={entry.slug}
@@ -118,7 +119,7 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
                   <strong>{entry.data.title}</strong>
                   <small>{entry.data.summary}</small>
                 </span>
-              </button>
+              </a>
             ))}
           </div>
         </aside>
@@ -273,7 +274,7 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
       const heroSource = document.querySelector('[data-theater-hero-source]');
       const heroDate = document.querySelector('[data-theater-hero-date]');
       const findSlug = (candidate) =>
-        items.find((item) => item instanceof HTMLButtonElement && item.dataset.entrySlug === candidate)?.dataset.entrySlug || null;
+        items.find((item) => item instanceof HTMLElement && item.dataset.entrySlug === candidate)?.dataset.entrySlug || null;
 
       if (!items.length || !panels.length) {
         return;
@@ -282,8 +283,8 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
       const setActive = (slug, pushState, replaceState = false) => {
         const nextSlug =
           findSlug(slug) ||
-          items.find((item) => item instanceof HTMLButtonElement && item.classList.contains('is-active'))?.dataset.entrySlug ||
-          items.find((item) => item instanceof HTMLButtonElement)?.dataset.entrySlug ||
+          items.find((item) => item instanceof HTMLElement && item.classList.contains('is-active'))?.dataset.entrySlug ||
+          items.find((item) => item instanceof HTMLElement)?.dataset.entrySlug ||
           null;
 
         if (!nextSlug) {
@@ -297,7 +298,7 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
         });
 
         items.forEach((item) => {
-          if (!(item instanceof HTMLButtonElement)) return;
+          if (!(item instanceof HTMLAnchorElement)) return;
           const isActive = item.dataset.entrySlug === nextSlug;
           item.classList.toggle('is-active', isActive);
           item.setAttribute('aria-pressed', String(isActive));
@@ -367,8 +368,9 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
       setActive(new URL(window.location.href).searchParams.get('entry'), false, true);
 
       items.forEach((item) => {
-        if (!(item instanceof HTMLButtonElement)) return;
-        item.addEventListener('click', () => {
+        if (!(item instanceof HTMLAnchorElement)) return;
+        item.addEventListener('click', (event) => {
+          event.preventDefault();
           const slug = item.dataset.entrySlug;
           if (!slug) return;
           setActive(slug, true);
@@ -717,6 +719,7 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
   }
 
   .theater-picker__item {
+    appearance: none;
     display: grid;
     gap: 0.7rem;
     align-items: start;
@@ -728,6 +731,7 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
       linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)),
       color-mix(in srgb, var(--tone-surface) 88%, transparent);
     color: inherit;
+    text-decoration: none;
     text-align: left;
     cursor: pointer;
     transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;

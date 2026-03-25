@@ -264,11 +264,12 @@ const elsewhereCards = [
     border: 1px solid rgba(214, 198, 175, 0.62);
     border-radius: 1.6rem;
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+    --home-showcase-inset: clamp(0.85rem, 2vw, 1.25rem);
   }
 
   .home-showcase__panel {
     max-width: 68ch;
-    margin: 0 clamp(0.85rem, 2vw, 1.25rem);
+    margin: 0 var(--home-showcase-inset);
     border: 1px solid rgba(214, 198, 175, 0.7);
     border-radius: 1.05rem;
     background: rgba(249, 244, 235, 0.96);
@@ -292,8 +293,8 @@ const elsewhereCards = [
   }
 
   .home-showcase__photos {
-    width: 100vw;
-    margin: 1rem calc(-50vw + 50%) 1rem;
+    width: auto;
+    margin: 1rem var(--home-showcase-inset);
     overflow: hidden;
   }
 
@@ -1040,7 +1041,7 @@ const elsewhereCards = [
     display: flex;
     align-items: baseline;
     justify-content: center;
-    gap: 0.32em;
+    gap: 0.12em;
     flex-wrap: wrap;
     letter-spacing: -0.01em;
     font-family: var(--font-display, sans-serif);
@@ -1067,7 +1068,7 @@ const elsewhereCards = [
     font-weight: 600;
     letter-spacing: 0.05em;
     position: relative;
-    bottom: 0.5em;
+    bottom: 0.34em;
     color: var(--tone-accent-glow, #e8b96a);
     text-shadow: 0 0 10px rgba(232, 185, 106, 0.28);
     opacity: 1;

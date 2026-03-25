@@ -124,8 +124,22 @@ const latestVideoId = youtubeData.items[0]?.videoId ?? '';
     <nav aria-label="Secondary navigation" class="header-secondary-nav">
       <div class="header-secondary-group">
         <p class="header-secondary-label">Elsewhere</p>
-        <span class="header-ai-group">
-          {aiGroup.map((item) => (
+        <div class="header-secondary-group__items">
+          <span class="header-ai-group">
+            {aiGroup.map((item) => (
+              <a
+                href={item.href}
+                class="header-link header-link--secondary text-sm no-underline"
+                style={`--link-accent:${getAccentSwatch(item.color)}`}
+                {...(item.color ? { 'data-color': item.color } : {})}
+                {...(item.tone ? { 'data-tone': item.tone } : {})}
+                {...(isActive(item) ? { 'aria-current': 'page' } : {})}
+              >
+                {item.label}
+              </a>
+            ))}
+          </span>
+          {secondaryNav.map((item) => (
             <a
               href={item.href}
               class="header-link header-link--secondary text-sm no-underline"
@@ -137,34 +151,36 @@ const latestVideoId = youtubeData.items[0]?.videoId ?? '';
               {item.label}
             </a>
           ))}
-        </span>
-        {secondaryNav.map((item) => (
-          <a
-            href={item.href}
-            class="header-link header-link--secondary text-sm no-underline"
-            style={`--link-accent:${getAccentSwatch(item.color)}`}
-            {...(item.color ? { 'data-color': item.color } : {})}
-            {...(item.tone ? { 'data-tone': item.tone } : {})}
-            {...(isActive(item) ? { 'aria-current': 'page' } : {})}
-          >
-            {item.label}
-          </a>
-        ))}
+        </div>
       </div>
-      <div class="header-secondary-group">
+      <div class="header-secondary-group header-secondary-group--practice">
         <p class="header-secondary-label">Practice</p>
-        {focusNav.map((item) => (
-          <a
-            href={item.href}
-            class="header-link header-link--secondary text-sm no-underline"
-            style={`--link-accent:${getAccentSwatch(item.color)}`}
-            {...(item.color ? { 'data-color': item.color } : {})}
-            {...(item.tone ? { 'data-tone': item.tone } : {})}
-            {...(isActive(item) ? { 'aria-current': 'page' } : {})}
-          >
-            {item.label}
-          </a>
-        ))}
+        <div class="header-secondary-group__items">
+          <span class="header-ai-group header-ai-group--ghost" aria-hidden="true">
+            {aiGroup.map((item) => (
+              <span
+                class="header-link header-link--secondary text-sm no-underline"
+                style={`--link-accent:${getAccentSwatch(item.color)}`}
+                {...(item.color ? { 'data-color': item.color } : {})}
+                {...(item.tone ? { 'data-tone': item.tone } : {})}
+              >
+                {item.label}
+              </span>
+            ))}
+          </span>
+          {focusNav.map((item) => (
+            <a
+              href={item.href}
+              class="header-link header-link--secondary text-sm no-underline"
+              style={`--link-accent:${getAccentSwatch(item.color)}`}
+              {...(item.color ? { 'data-color': item.color } : {})}
+              {...(item.tone ? { 'data-tone': item.tone } : {})}
+              {...(isActive(item) ? { 'aria-current': 'page' } : {})}
+            >
+              {item.label}
+            </a>
+          ))}
+        </div>
       </div>
     </nav>
   </div>
