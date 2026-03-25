@@ -685,6 +685,11 @@ body[data-header-mode='peek'][data-header-reveal='hidden'] .site-header {
 }
 
 .site-header .header-secondary-nav {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.site-header .header-secondary-group {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
