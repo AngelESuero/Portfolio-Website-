@@ -57,6 +57,40 @@ const countingRules = [
   'Excluded: incomplete applications, duplicates, reminders, and non-employment email trails.',
   'Outreach: sent emails with attachments and clear job-search context were tracked separately.',
 ];
+
+const deepPassAdditions = [
+  { mailbox: 'aes903@nyu.edu', employer: 'Spotify', role: '2024 Summer Internship, User Research (New York City)', evidence: 'Confirmation' },
+  { mailbox: 'aes903@nyu.edu', employer: 'Immigrantly Podcast', role: 'Gen Z Podcast Host', evidence: 'Confirmation' },
+  { mailbox: 'aes903@nyu.edu', employer: 'Hachette Book Group', role: 'Marketing and Publicity Intern, James Patterson Books', evidence: 'Confirmation' },
+  { mailbox: 'aes903@nyu.edu', employer: 'NBA', role: 'Production Trainee, Hustle Stats', evidence: 'Confirmation' },
+  { mailbox: 'aes903@nyu.edu', employer: 'Fox Corporation', role: 'Executive Assistant / Media Industry', evidence: 'Confirmation' },
+  { mailbox: 'angelesuero2@gmail.com', employer: 'BRICK Education Network', role: 'Teacher (2024-2025 School Year)', evidence: 'Confirmation' },
+  { mailbox: 'angelesuero2@gmail.com', employer: 'Chess Wizards', role: 'Chess Tutor - Instructor | Fall', evidence: 'Confirmation / interview / rejection' },
+  { mailbox: 'angelesuero2@gmail.com', employer: 'The New York Public Library', role: 'Program and Technology Associate (A/V)', evidence: 'Confirmation' },
+  { mailbox: 'angelesuero2@gmail.com', employer: 'The Pace Gallery', role: 'Archives Associate', evidence: 'Confirmation' },
+  { mailbox: 'angelesuero2@gmail.com', employer: 'The Music Studio', role: 'Administrative Assistant', evidence: 'Confirmation' },
+];
+
+const outreachEvidence = [
+  { date: 'Feb 16, 2026', from: 'angelesuero@a-e-space.info', recipient: 'Front Desk', subject: 'Re: Entry-level studio support - availability for runner / session support' },
+  { date: 'Feb 10, 2026', from: 'angelesuero@a-e-space.info', recipient: 'ID4D', subject: 'Inquiry: Supporting digital ID (ID4D) implementation blueprints' },
+  { date: 'Feb 10, 2026', from: 'angelesuero@a-e-space.info', recipient: 'G2Px', subject: 'Inquiry: Supporting G2P payment blueprint and delivery design work' },
+  { date: 'Feb 3, 2026', from: 'angelesuero@a-e-space.info', recipient: 'Reservoir Media', subject: 'Inquiry: Internship opportunities (music rights / publishing support) - resume + transcript attached' },
+  { date: 'Feb 3, 2026', from: 'angelesuero@a-e-space.info', recipient: 'Guggenheim', subject: 'Inquiry: Best contact for entry-level AV / media production roles - resume + transcript attached' },
+  { date: 'Feb 3, 2026', from: 'angelesuero@a-e-space.info', recipient: 'AMNH', subject: 'Inquiry: Entry-level roles (AV / digital media / production support) - resume + transcript attached' },
+  { date: 'Feb 3, 2026', from: 'angelesuero@a-e-space.info', recipient: 'Newark Alliance', subject: 'Inquiry: Newark-based program / partnership roles (best hiring contact?) - resume + transcript attached' },
+  { date: 'Jan 27, 2026', from: 'angelesuero@a-e-space.info', recipient: 'Spotify', subject: 'Correction: attachments re-sent - Podcast / creator ecosystem roles' },
+  { date: 'Jan 27, 2026', from: 'angelesuero@a-e-space.info', recipient: 'WNYC / NYPR', subject: 'Routing request: Audio production / studio ops roles (Resume + transcript attached)' },
+  { date: 'Jan 26, 2026', from: 'angelesuero@a-e-space.info', recipient: 'TED', subject: 'Inquiry: Conference production + storytelling operations roles (Resume + transcript attached)' },
+];
+
+const heldOutExamples = [
+  'New Jersey Performing Arts Center: generic thank-you notes confirmed receipt of a resume, but the role name was not exposed.',
+  'New Jersey Courts: application receipts were found, but the surfaced emails did not show role titles clearly enough to dedupe confidently.',
+  'ScreenRant: application-received email did not surface a role name clearly enough to count with confidence.',
+  'POSH DJs: interview-step email referenced an application but did not surface the role title clearly.',
+  'UnitedMasters | Translation: confirmations were found, but the role wording in the surfaced email was too unclear to classify confidently.',
+];
 ---
 
 <BaseLayout
@@ -72,7 +106,7 @@ const countingRules = [
       <p class="rej-eyebrow">Career Search Record</p>
       <h1 class="rej-title">Career Search Log</h1>
       <p class="rej-subtitle">
-        You put out {inventorySummary.combinedClearApplications} clear applications and {inventorySummary.outboundMessages} outreach emails. {inventorySummary.directRejections} of those attempts came back with an explicit outcome.
+        You put out {inventorySummary.combinedClearApplications} clear applications and {inventorySummary.outboundMessages} outreach emails. {inventorySummary.directRejections} of those attempts came back with an explicit outcome. The PDF also adds 67 older named applications and a separate outreach appendix, which are surfaced below.
       </p>
       <div class="rej-link-row">
         <a class="rej-link" href={inventorySummary.reportHref}>Open source PDF</a>
@@ -147,6 +181,114 @@ const countingRules = [
             ))}
           </tbody>
         </table>
+      </div>
+    </section>
+
+    <section class="rej-addendum" aria-label="Additional evidence from the deep pass">
+      <div class="rej-section-head rej-section-head--table">
+        <div>
+          <p class="rej-section-label">More evidence</p>
+          <h2 class="rej-section-title">Deep-pass addendum and outreach appendix</h2>
+        </div>
+        <p class="rej-section-note">
+          The source PDF adds 67 older named applications and 54 confirmed outreach emails. Representative rows are shown here so the evidence lives on the page instead of only in the PDF.
+        </p>
+      </div>
+
+      <div class="rej-stat-grid rej-stat-grid--four">
+        <div class="rej-stat">
+          <span class="rej-stat__num">67</span>
+          <span class="rej-stat__label">Older named additions</span>
+        </div>
+        <div class="rej-stat">
+          <span class="rej-stat__num">37</span>
+          <span class="rej-stat__label">aes903@nyu.edu additions</span>
+        </div>
+        <div class="rej-stat">
+          <span class="rej-stat__num">30</span>
+          <span class="rej-stat__label">angelesuero2@gmail.com additions</span>
+        </div>
+        <div class="rej-stat">
+          <span class="rej-stat__num">54</span>
+          <span class="rej-stat__label">Confirmed outreach emails</span>
+        </div>
+      </div>
+
+      <div class="rej-appendix-grid">
+        <details class="rej-disclosure" open>
+          <summary class="rej-disclosure__summary">Older named applications</summary>
+          <div class="rej-disclosure__body">
+            <p class="rej-mini-note">
+              The addendum surfaces 37 older named applications from <strong>aes903@nyu.edu</strong> and 30 from <strong>angelesuero2@gmail.com</strong>. <strong>angelesuero@a-e-space.info</strong> contributed 0 unique named additions because its surfaced confirmations were duplicates or role-less receipts.
+            </p>
+            <div class="rej-table-wrap rej-table-wrap--compact">
+              <table class="rej-table rej-table--compact">
+                <thead>
+                  <tr>
+                    <th scope="col">Mailbox / source</th>
+                    <th scope="col">Employer</th>
+                    <th scope="col">Role</th>
+                    <th scope="col" class="rej-th--outcome">Evidence</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {deepPassAdditions.map((record) => (
+                    <tr>
+                      <td class="rej-td--account">{record.mailbox}</td>
+                      <td class="rej-td--org">{record.employer}</td>
+                      <td class="rej-td--role">{record.role}</td>
+                      <td class="rej-td--outcome">{record.evidence}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p class="rej-appendix__footnote">The full 67-item addendum is in the source PDF link above.</p>
+          </div>
+        </details>
+
+        <details class="rej-disclosure" open>
+          <summary class="rej-disclosure__summary">Confirmed outreach appendix</summary>
+          <div class="rej-disclosure__body">
+            <p class="rej-mini-note">
+              These are separate from the application confirmations and outcome table. They document sent resume / transcript / CV outreach with attachments and direct job-search context.
+            </p>
+            <div class="rej-table-wrap rej-table-wrap--compact">
+              <table class="rej-table rej-table--compact">
+                <thead>
+                  <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">From account</th>
+                    <th scope="col">Recipient / org</th>
+                    <th scope="col" class="rej-th--outcome">Subject</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {outreachEvidence.map((record) => (
+                    <tr>
+                      <td class="rej-td--date">{record.date}</td>
+                      <td class="rej-td--account">{record.from}</td>
+                      <td class="rej-td--org">{record.recipient}</td>
+                      <td class="rej-td--outcome">{record.subject}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p class="rej-appendix__footnote">The full 54-message outreach appendix is in the source PDF link above.</p>
+          </div>
+        </details>
+
+        <details class="rej-disclosure" open>
+          <summary class="rej-disclosure__summary">Held out from the addendum</summary>
+          <div class="rej-disclosure__body">
+            <ul class="rej-list">
+              {heldOutExamples.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        </details>
       </div>
     </section>
 
@@ -311,6 +453,11 @@ const countingRules = [
     margin-bottom: 1rem;
   }
 
+  .rej-stat-grid--four {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-bottom: 0;
+  }
+
   .rej-stat {
     padding: 0.9rem 0.95rem;
     border-radius: 1rem;
@@ -346,10 +493,19 @@ const countingRules = [
     padding: 0.5rem 1rem 1rem;
   }
 
+  .rej-table-wrap--compact {
+    padding-top: 0.25rem;
+    padding-bottom: 0.75rem;
+  }
+
   .rej-table {
     width: 100%;
     border-collapse: collapse;
     font-size: clamp(0.78rem, 0.95vw, 0.88rem);
+  }
+
+  .rej-table--compact {
+    font-size: clamp(0.74rem, 0.88vw, 0.84rem);
   }
 
   .rej-table thead th {
@@ -361,6 +517,11 @@ const countingRules = [
     color: rgba(230, 214, 191, 0.5);
     text-align: left;
     border-bottom: 1px solid rgba(230, 214, 191, 0.1);
+  }
+
+  .rej-table--compact thead th {
+    padding-top: 0.38rem;
+    padding-bottom: 0.48rem;
   }
 
   .rej-table tbody tr {
@@ -377,6 +538,11 @@ const countingRules = [
     vertical-align: top;
     color: rgba(236, 227, 214, 0.82);
     line-height: 1.5;
+  }
+
+  .rej-table--compact td {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
   }
 
   .rej-td--date {
@@ -413,6 +579,16 @@ const countingRules = [
     margin-top: clamp(1.5rem, 3vw, 2rem);
   }
 
+  .rej-addendum {
+    margin-top: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .rej-appendix-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
   .rej-disclosure {
     margin-top: 0.85rem;
     border-top: 1px solid rgba(230, 214, 191, 0.12);
@@ -429,6 +605,13 @@ const countingRules = [
 
   .rej-disclosure__body {
     margin-top: 0.9rem;
+  }
+
+  .rej-mini-note {
+    margin: 0 0 0.8rem;
+    font-size: 0.84rem;
+    line-height: 1.6;
+    color: rgba(236, 227, 214, 0.72);
   }
 
   .rej-list {
@@ -451,6 +634,10 @@ const countingRules = [
     }
 
     .rej-stat-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .rej-stat-grid--four {
       grid-template-columns: 1fr;
     }
 
