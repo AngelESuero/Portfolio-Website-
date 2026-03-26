@@ -94,10 +94,15 @@ const allPosts = [...(await getCollection('posts'))].sort((a, b) => b.data.date.
 const matchedProjects = rankMatches(allProjects, (project) => scoreProject(lane, project)).slice(0, 6);
 const matchedEntries = rankMatches(allEntries, (entry) => scoreEntry(lane, entry)).slice(0, 12);
 const matchedPosts = rankMatches(allPosts, (post) => scorePost(lane, post)).slice(0, 6);
+const referenceDocs = lane.referenceDocs ?? [];
+const latestReferenceDoc = referenceDocs[0] ?? null;
 
 const latestEntry = matchedEntries[0] ?? null;
 const latestProject = matchedProjects[0] ?? null;
 const latestPost = matchedPosts[0] ?? null;
+const heroPrimaryStat = referenceDocs.length > 0
+  ? { label: 'Sources', value: referenceDocs.length }
+  : { label: 'Projects', value: matchedProjects.length };
 ---
 
 <BaseLayout title={`${lane.label} — a_e.s_`} description={lane.description} theme="archive">
@@ -124,8 +129,8 @@ const latestPost = matchedPosts[0] ?? null;
 
       <div class="focus-hero__stats font-archive">
         <div>
-          <span>Projects</span>
-          <strong>{matchedProjects.length}</strong>
+          <span>{heroPrimaryStat.label}</span>
+          <strong>{heroPrimaryStat.value}</strong>
         </div>
         <div>
           <span>Archive</span>
@@ -169,6 +174,12 @@ const latestPost = matchedPosts[0] ?? null;
         <section class="focus-rail__block">
           <p class="focus-rail__label font-archive">Latest signals</p>
           <div class="focus-rail__signals">
+            {latestReferenceDoc && (
+              <div>
+                <span>Source</span>
+                <a href={latestReferenceDoc.sourceLinks[0]?.href || '#'}>{latestReferenceDoc.title}</a>
+              </div>
+            )}
             {latestProject && (
               <div>
                 <span>Project</span>
@@ -192,6 +203,57 @@ const latestPost = matchedPosts[0] ?? null;
       </aside>
 
       <div class="focus-stream">
+        {referenceDocs.length > 0 && (
+          <section class="focus-section">
+            <div class="focus-section__head">
+              <p class="focus-section__kicker font-archive">Works cited</p>
+              <h2>Drive sources behind the archive</h2>
+            </div>
+            <div class="focus-references">
+              {referenceDocs.map((doc) => (
+                <article class="focus-reference">
+                  <div class="focus-reference__meta">
+                    <p>{doc.context}</p>
+                    <span>{doc.sourceType}</span>
+                  </div>
+
+                  <h3>{doc.title}</h3>
+
+                  <p class="focus-reference__summary">{doc.summary}</p>
+
+                  {doc.tags.length > 0 && (
+                    <div class="focus-reference__tags">
+                      {doc.tags.map((tag) => <span class="focus-reference__tag">#{tag}</span>)}
+                    </div>
+                  )}
+
+                  <div class="focus-reference__actions">
+                    {doc.sourceLinks.map((link) => (
+                      <a href={link.href} class="focus-reference__link" target="_blank" rel="noopener">
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+
+                  {doc.previewUrl ? (
+                    <details class="focus-reference__preview">
+                      <summary>{doc.previewLabel ?? 'Preview source'}</summary>
+                      <div class="focus-reference__frame">
+                        <iframe
+                          src={doc.previewUrl}
+                          title={`${doc.title} preview`}
+                          loading="lazy"
+                          allow="autoplay"
+                        ></iframe>
+                      </div>
+                    </details>
+                  ) : null}
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+
         {matchedProjects.length > 0 && (
           <section class="focus-section">
             <div class="focus-section__head">
@@ -545,6 +607,111 @@ const latestPost = matchedPosts[0] ?? null;
     margin: 0;
     color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
     line-height: 1.58;
+  }
+
+  .focus-references {
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .focus-reference {
+    display: grid;
+    gap: 0.72rem;
+    border: 1px solid color-mix(in srgb, var(--focus-accent) 14%, var(--line2));
+    border-radius: 1rem;
+    padding: 0.95rem;
+    background: color-mix(in srgb, var(--tone-surface) 94%, transparent);
+  }
+
+  .focus-reference__meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  }
+
+  .focus-reference__meta p,
+  .focus-reference__meta span,
+  .focus-reference h3,
+  .focus-reference__summary {
+    margin: 0;
+  }
+
+  .focus-reference__summary {
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+    line-height: 1.58;
+  }
+
+  .focus-reference__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .focus-reference__tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.75rem;
+    padding: 0.14rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid var(--line2);
+    background: color-mix(in srgb, var(--tone-surface) 88%, transparent);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  }
+
+  .focus-reference__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .focus-reference__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.1rem;
+    padding: 0.42rem 0.68rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--focus-accent) 18%, var(--line2));
+    background: color-mix(in srgb, var(--focus-accent) 8%, transparent);
+    color: var(--tone-text);
+    text-decoration: none;
+  }
+
+  .focus-reference__link:hover,
+  .focus-reference__link:focus-visible {
+    border-color: color-mix(in srgb, var(--focus-accent) 34%, var(--line2));
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--focus-accent) 12%);
+  }
+
+  .focus-reference__preview {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .focus-reference__preview summary {
+    cursor: pointer;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  }
+
+  .focus-reference__frame {
+    overflow: hidden;
+    border-radius: 0.9rem;
+    border: 1px solid color-mix(in srgb, var(--focus-accent) 12%, var(--line2));
+    background: color-mix(in srgb, var(--tone-surface-strong) 78%, transparent);
+  }
+
+  .focus-reference__frame iframe {
+    display: block;
+    width: 100%;
+    min-height: 14rem;
+    border: 0;
   }
 
   .focus-section--empty {

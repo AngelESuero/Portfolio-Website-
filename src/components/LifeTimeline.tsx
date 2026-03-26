@@ -548,9 +548,9 @@ type LifeTimelineProps = {
 };
 
 export default function LifeTimeline({ variant = 'dark', layout = 'contained' }: LifeTimelineProps) {
-  const [activeEntryId, setActiveEntryId] = useState<string | null>('youth');
+  const [activeEntryId, setActiveEntryId] = useState<string | null>(null);
   const isFullBleed = layout === 'fullBleed';
-  const activeStage = STAGE_SHOWCASES.find((stage) => stage.id === activeEntryId) ?? STAGE_SHOWCASES[0];
+  const activeStage = STAGE_SHOWCASES.find((stage) => stage.id === activeEntryId) ?? null;
   const timelineStyle = {
     '--lt-text': variant === 'light' ? '#1a1a1a' : 'color-mix(in srgb, var(--tone-text) 94%, white 6%)',
     '--lt-muted': variant === 'light' ? '#7a746b' : 'color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%)',
@@ -585,30 +585,45 @@ export default function LifeTimeline({ variant = 'dark', layout = 'contained' }:
       <div className={`life-timeline__layout${isFullBleed ? ' life-timeline__layout--fullBleed' : ''}`}>
         {isFullBleed ? (
           <aside className="life-timeline__gallery" aria-label="Selected era preview">
-            <div className="life-timeline__gallerySurface" data-stage={activeStage.id}>
-              <div className="life-timeline__galleryMeta">
-                <p className="life-timeline__sectionLabel">Selected era</p>
-                <h3 className="life-timeline__galleryTitle">{activeStage.title}</h3>
-                <p className="life-timeline__gallerySummary">{activeStage.summary}</p>
-                <div className="life-timeline__badges life-timeline__galleryBadges">
-                  <span className="life-timeline__badge life-timeline__badge--ghost">{activeStage.ageRange}</span>
-                  <span className="life-timeline__badge life-timeline__badge--ghost">{activeStage.yearRange}</span>
-                  <span className="life-timeline__badge">{activeStage.showcases.length} branches</span>
-                </div>
-              </div>
+            <div
+              className={`life-timeline__gallerySurface${activeStage ? '' : ' life-timeline__gallerySurface--empty'}`}
+              data-stage={activeStage?.id ?? 'empty'}
+            >
+              {activeStage ? (
+                <>
+                  <div className="life-timeline__galleryMeta">
+                    <p className="life-timeline__sectionLabel">Selected era</p>
+                    <h3 className="life-timeline__galleryTitle">{activeStage.title}</h3>
+                    <p className="life-timeline__gallerySummary">{activeStage.summary}</p>
+                    <div className="life-timeline__badges life-timeline__galleryBadges">
+                      <span className="life-timeline__badge life-timeline__badge--ghost">{activeStage.ageRange}</span>
+                      <span className="life-timeline__badge life-timeline__badge--ghost">{activeStage.yearRange}</span>
+                      <span className="life-timeline__badge">{activeStage.showcases.length} branches</span>
+                    </div>
+                  </div>
 
-              <div className="life-timeline__galleryGrid" aria-hidden="true">
-                {activeStage.previewImages.map((src, imageIndex) => (
-                  <img
-                    key={`${activeStage.id}-${src}`}
-                    src={src}
-                    alt=""
-                    className={`life-timeline__galleryImage life-timeline__galleryImage--${imageIndex + 1}`}
-                    loading={imageIndex === 0 ? 'eager' : 'lazy'}
-                    decoding="async"
-                  />
-                ))}
-              </div>
+                  <div className="life-timeline__galleryGrid" aria-hidden="true">
+                    {activeStage.previewImages.map((src, imageIndex) => (
+                      <img
+                        key={`${activeStage.id}-${src}`}
+                        src={src}
+                        alt=""
+                        className={`life-timeline__galleryImage life-timeline__galleryImage--${imageIndex + 1}`}
+                        loading={imageIndex === 0 ? 'eager' : 'lazy'}
+                        decoding="async"
+                      />
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="life-timeline__galleryEmpty">
+                  <p className="life-timeline__sectionLabel">Selected era</p>
+                  <h3 className="life-timeline__galleryTitle">Choose an era</h3>
+                  <p className="life-timeline__gallerySummary">
+                    The main display stays hidden until you click one of the eras on the timeline.
+                  </p>
+                </div>
+              )}
             </div>
           </aside>
         ) : null}

@@ -28,21 +28,13 @@ const stageSeedEntries = [requestedEntry, ...featuredEntries, ...archiveEntries.
 const stageEntries = Array.from(
   new Map(stageSeedEntries.map((entry) => [entry.slug, entry])).values()
 ).slice(0, requestedEntry ? 9 : 8);
-const defaultEntry =
-  requestedEntry ??
-  stageEntries.find((entry) => entry.data.medium === 'video') ??
-  stageEntries.find((entry) => entry.data.medium === 'image') ??
-  stageEntries.find((entry) => entry.data.medium === 'music') ??
-  stageEntries[0] ??
-  archiveEntries[0] ??
-  null;
 const renderedPanels = await Promise.all(
   stageEntries.map(async (entry) => {
     const { Content } = await entry.render();
     return { entry, Content };
   })
 );
-const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
+const activeEntry = requestedEntry ?? null;
 ---
 
 <BaseLayout
@@ -69,7 +61,7 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
         <p class="theater-hero__lede" data-theater-hero-summary>
           {activeEntry
             ? activeEntry.data.summary
-            : 'Choose a record from the queue. The stage holds the full archive entry while the rest of the room stays in support.'}
+            : 'Choose a record from the queue. The stage will load one entry at a time while the rest of the room stays quiet.'}
         </p>
         <div class="theater-hero__actions">
           <a href="#stage">Enter the room</a>
@@ -128,15 +120,39 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
           <div class="theater-screening__marquee">
             <p>Center stage</p>
             <div>
-              <h2>The real archive entry stays on the screen.</h2>
-              <span>Click a record from the queue to change the projection.</span>
+              <h2 data-theater-stage-heading>
+                {activeEntry ? 'The real archive entry stays on the screen.' : 'Select a card to load the projection.'}
+              </h2>
+              <span data-theater-stage-copy>
+                {activeEntry ? 'Click a record from the queue to change the projection.' : 'The screen stays empty until a record is chosen.'}
+              </span>
             </div>
           </div>
 
           <div class="theater-screen" aria-live="polite">
-            {activeEntry ? renderedPanels.map(({ entry, Content }) => {
+            <article class:list={['theater-panel', 'theater-panel--empty']} data-theater-placeholder hidden={Boolean(activeEntry)}>
+              <header class="theater-panel__header">
+                <p class="theater-panel__meta">
+                  <span>Archive</span>
+                  <span>Theater</span>
+                </p>
+                <div class="theater-panel__heading">
+                  <h3>Select a record to start the projection.</h3>
+                </div>
+                <p class="theater-panel__summary">
+                  The queue is ready. Pick one card and the screen will load that single entry while everything else
+                  stays out of the way.
+                </p>
+              </header>
+
+              <footer class="theater-panel__footer">
+                <a href="/archive">Open archive</a>
+              </footer>
+            </article>
+
+            {renderedPanels.map(({ entry, Content }) => {
               const showStatus = shouldShowEntryStatus(entry.data.status);
-              const isActive = entry.slug === activeEntry.slug;
+              const isActive = Boolean(activeEntry && entry.slug === activeEntry.slug);
 
               return (
                 <article
@@ -146,61 +162,40 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
                   data-entry-slug={entry.slug}
                   hidden={!isActive}
                 >
-                  <header class="theater-panel__header">
-                    <p class="theater-panel__meta">
-                      <span>{formatLongArchiveUtcDate(entry.data.date)}</span>
-                      <span>{getEntryDisplayMedium(entry.data.medium)}</span>
-                      <span>{getEntryDisplaySource(entry.data.source)}</span>
-                    </p>
-
-                    <div class="theater-panel__heading">
-                      <h3>{entry.data.title}</h3>
-                      {showStatus ? <span class="theater-panel__status">{getEntryDisplayStatus(entry.data.status)}</span> : null}
-                    </div>
-
-                    <p class="theater-panel__summary">{entry.data.summary}</p>
-
-                    <div class="theater-panel__tags" aria-label="Entry tags">
-                      {entry.data.tags.map((tag) => <span>#{tag}</span>)}
-                    </div>
-                  </header>
-
-                  <div class="theater-panel__media">
-                    <EntryMediaBlock entry={entry} compact={false} />
-                  </div>
-
-                  <section class="reading-prose theater-panel__body">
-                    <Content />
-                  </section>
-
-                  <footer class="theater-panel__footer">
-                    <a href={getEntryHref(entry)}>Open archive entry</a>
-                    <a href={getArchiveMediumHref(entry.data.medium)}>
-                      Browse {getEntryDisplayMedium(entry.data.medium).toLowerCase()}
-                    </a>
-                  </footer>
-                </article>
-              );
-            }) : (
-              <article class="theater-panel is-active theater-panel--empty">
                 <header class="theater-panel__header">
                   <p class="theater-panel__meta">
                     <span>Archive</span>
                     <span>Theater</span>
                   </p>
                   <div class="theater-panel__heading">
-                    <h3>The room is waiting for archive entries.</h3>
+                    <h3>{entry.data.title}</h3>
+                    {showStatus ? <span class="theater-panel__status">{getEntryDisplayStatus(entry.data.status)}</span> : null}
                   </div>
-                  <p class="theater-panel__summary">
-                    The theater needs at least one archive record before it can put something on the screen.
-                  </p>
+
+                  <p class="theater-panel__summary">{entry.data.summary}</p>
+
+                  <div class="theater-panel__tags" aria-label="Entry tags">
+                    {entry.data.tags.map((tag) => <span>#{tag}</span>)}
+                  </div>
                 </header>
 
+                <div class="theater-panel__media">
+                  <EntryMediaBlock entry={entry} compact={false} />
+                </div>
+
+                <section class="reading-prose theater-panel__body">
+                  <Content />
+                </section>
+
                 <footer class="theater-panel__footer">
-                  <a href="/archive">Open archive</a>
+                  <a href={getEntryHref(entry)}>Open archive entry</a>
+                  <a href={getArchiveMediumHref(entry.data.medium)}>
+                    Browse {getEntryDisplayMedium(entry.data.medium).toLowerCase()}
+                  </a>
                 </footer>
               </article>
-            )}
+              );
+            })}
           </div>
         </div>
 
@@ -273,21 +268,98 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
       const heroMedium = document.querySelector('[data-theater-hero-medium]');
       const heroSource = document.querySelector('[data-theater-hero-source]');
       const heroDate = document.querySelector('[data-theater-hero-date]');
+      const stageHeading = document.querySelector('[data-theater-stage-heading]');
+      const stageCopy = document.querySelector('[data-theater-stage-copy]');
+      const placeholder = document.querySelector('[data-theater-placeholder]');
       const findSlug = (candidate) =>
         items.find((item) => item instanceof HTMLElement && item.dataset.entrySlug === candidate)?.dataset.entrySlug || null;
+      const clearSelection = () => {
+        panels.forEach((panel) => {
+          if (!(panel instanceof HTMLElement)) return;
+          panel.hidden = true;
+          panel.classList.remove('is-active');
+        });
+
+        items.forEach((item) => {
+          if (!(item instanceof HTMLAnchorElement)) return;
+          item.classList.remove('is-active');
+          item.setAttribute('aria-pressed', 'false');
+        });
+
+        if (placeholder instanceof HTMLElement) {
+          placeholder.hidden = false;
+        }
+
+        if (heroLink instanceof HTMLAnchorElement) {
+          heroLink.href = '/archive';
+          heroLink.textContent = 'Browse archive';
+        }
+
+        if (heroTitle instanceof HTMLElement) {
+          heroTitle.textContent = 'Center stage for the archive.';
+        }
+
+        if (heroSummary instanceof HTMLElement) {
+          heroSummary.textContent =
+            'Choose a record from the queue. The stage will load one entry at a time while the rest of the room stays quiet.';
+        }
+
+        if (heroMedium instanceof HTMLElement) {
+          heroMedium.textContent = 'Archive';
+        }
+
+        if (heroSource instanceof HTMLElement) {
+          heroSource.textContent = 'Ready';
+        }
+
+        if (heroDate instanceof HTMLElement) {
+          heroDate.textContent = 'No selection';
+        }
+
+        if (notesLink instanceof HTMLAnchorElement) {
+          notesLink.href = '/archive';
+          notesLink.textContent = 'Open archive';
+        }
+
+        if (notesTitle instanceof HTMLElement) {
+          notesTitle.textContent = 'No entry selected';
+        }
+
+        if (notesMedium instanceof HTMLElement) {
+          notesMedium.textContent = 'Archive';
+        }
+
+        if (notesSource instanceof HTMLElement) {
+          notesSource.textContent = 'Waiting';
+        }
+
+        if (notesStatus instanceof HTMLElement) {
+          notesStatus.textContent = 'No entry selected';
+        }
+
+        if (stageHeading instanceof HTMLElement) {
+          stageHeading.textContent = 'Select a card to load the projection.';
+        }
+
+        if (stageCopy instanceof HTMLElement) {
+          stageCopy.textContent = 'The screen stays empty until a record is chosen.';
+        }
+      };
 
       if (!items.length || !panels.length) {
         return;
       }
 
       const setActive = (slug, pushState, replaceState = false) => {
-        const nextSlug =
-          findSlug(slug) ||
-          items.find((item) => item instanceof HTMLElement && item.classList.contains('is-active'))?.dataset.entrySlug ||
-          items.find((item) => item instanceof HTMLElement)?.dataset.entrySlug ||
-          null;
+        const nextSlug = slug ? findSlug(slug) : null;
 
         if (!nextSlug) {
+          clearSelection();
+          if (pushState || replaceState) {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('entry');
+            history[replaceState ? 'replaceState' : 'pushState']({ entry: null }, '', url);
+          }
           return;
         }
 
@@ -304,6 +376,10 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
           item.setAttribute('aria-pressed', String(isActive));
 
           if (isActive) {
+            if (placeholder instanceof HTMLElement) {
+              placeholder.hidden = true;
+            }
+
             if (heroLink instanceof HTMLAnchorElement) {
               heroLink.href = item.dataset.entryHref || '/archive';
               heroLink.textContent = item.dataset.entryHref ? 'Open selected entry' : 'Browse archive';
@@ -329,6 +405,14 @@ const activeEntry = defaultEntry ?? renderedPanels[0]?.entry ?? null;
 
             if (heroDate instanceof HTMLElement) {
               heroDate.textContent = item.dataset.entryDate || 'No selection';
+            }
+
+            if (stageHeading instanceof HTMLElement) {
+              stageHeading.textContent = 'The real archive entry stays on the screen.';
+            }
+
+            if (stageCopy instanceof HTMLElement) {
+              stageCopy.textContent = 'Click a record from the queue to change the projection.';
             }
 
             if (notesLink instanceof HTMLAnchorElement) {

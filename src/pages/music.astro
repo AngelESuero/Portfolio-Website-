@@ -5,6 +5,8 @@ import { MUSIC_URLS, SOCIAL_URLS, VIDEO_URLS } from '../data/site-refs';
 
 const spotifyVol4EmbedUrl = 'https://open.spotify.com/embed/playlist/1aeafuJB347VmKXu4jvaTO';
 const soundcloudVol4Url = 'https://soundcloud.com/aesuero/sets/volume-4-angel-sueros-top-50';
+const musicIntelligenceDeckUrl = 'https://docs.google.com/presentation/d/1wcI3Nzq9VYx6s9EDlWwkc8EyfsAR0cOPK7PRQo0Qm5A/edit';
+const musicIntelligenceHtmlUrl = 'https://docs.google.com/presentation/u/0/d/1wcI3Nzq9VYx6s9EDlWwkc8EyfsAR0cOPK7PRQo0Qm5A/htmlpresent';
 const driveFileViewUrl = (fileId: string): string => `https://drive.google.com/file/d/${fileId}/view?usp=sharing`;
 const driveFilePreviewUrl = (fileId: string): string => `https://drive.google.com/file/d/${fileId}/preview`;
 
@@ -41,6 +43,24 @@ type WorkshopWritingSource = {
   sourceLinks: Array<{ label: string; href: string }>;
   previewUrl?: string | null;
   previewLabel?: string;
+};
+
+type SignalStat = {
+  value: string;
+  label: string;
+  note: string;
+};
+
+type SignalScene = {
+  title: string;
+  summary: string;
+  tags: string[];
+};
+
+type SignalArtistGroup = {
+  title: string;
+  names: string[];
+  note: string;
 };
 
 const watchClips = [
@@ -157,7 +177,71 @@ const referenceLinks = [
   { href: SOCIAL_URLS.soundcloud, label: 'SoundCloud' },
   { href: MUSIC_URLS.spotifyVol4, label: 'Spotify' },
   { href: MUSIC_URLS.untitledMyFirstBeatTape, label: 'Untitled' },
+  { href: musicIntelligenceDeckUrl, label: 'Music Intelligence deck' },
   { href: VIDEO_URLS.everydayLifeVideo, label: 'Everyday Life video' }
+];
+
+const signalStats: SignalStat[] = [
+  {
+    value: '100k+',
+    label: 'tracks added daily',
+    note: 'The deck uses streaming volume as the main signal of churn and momentum.'
+  },
+  {
+    value: '2x',
+    label: 'US plays since July',
+    note: 'The report treats the U.S. as the place where a lot of the SoundCloud motion is compounding.'
+  },
+  {
+    value: '78%',
+    label: 'Gen Z share in one lane',
+    note: 'Several of the slides make the audience feel young, fast, and highly networked.'
+  },
+  {
+    value: '+83%',
+    label: 'schranz uploads',
+    note: 'The hard-techno lane is accelerating quickly, especially around darker substyles.'
+  }
+];
+
+const signalScenes: SignalScene[] = [
+  {
+    title: 'Experimental sounds move mainstream',
+    summary:
+      'The report argues that fringe scenes built on SoundCloud are no longer hidden in the margins; they are becoming the visible center of the platform.',
+    tags: ['SoundCloud-born', 'experimental', 'fringe-to-center']
+  },
+  {
+    title: 'DMV rap keeps its own lineage',
+    summary:
+      'The deck points to a regional lane that borrows from trap and drill but still feels distinct because of the go-go lineage underneath it.',
+    tags: ['DMV rap', 'go-go', 'regional']
+  },
+  {
+    title: 'Hard techno speeds up',
+    summary:
+      'Hardstyle, hardcore, and hardtekk tracks above 180 BPM are all climbing at once, which makes the scene feel like it is literally running hotter.',
+    tags: ['hardtekk', 'hardstyle', '180 BPM']
+  },
+  {
+    title: 'Garage, minimal tech house, and indie cross-pollinate',
+    summary:
+      'The report keeps circling back to scenes that are traveling globally and borrowing from one another instead of staying in a single lane.',
+    tags: ['garage', 'minimal tech house', 'indie rock']
+  }
+];
+
+const signalArtists: SignalArtistGroup[] = [
+  {
+    title: 'Artists to watch',
+    names: ['HAVINMOTION', 'JAEYCHINO', 'KURU', 'SKINO', 'KP SKYWALKA'],
+    note: 'The deck frames these names as the next wave in the DMV-connected lane.'
+  },
+  {
+    title: 'Hard-techno names',
+    names: ['CLOUDY', 'FABITEKK', 'KLANGKUENSTLER', 'Nino Paid'],
+    note: 'The other group lives on the harder, darker edge of the report: faster rhythms, sharper textures, and more technical pressure.'
+  }
 ];
 
 const workshopWritings: WorkshopWritingSource[] = [
@@ -208,6 +292,7 @@ const workshopWritings: WorkshopWritingSource[] = [
       <nav class="music-hero__nav" aria-label="Jump to media sections">
         <a href="#watch">Watch</a>
         <a href="#listen">Listen</a>
+        <a href="#report">Report</a>
         <a href="#read">Read</a>
         <a href="#browse">Browse</a>
       </nav>
@@ -301,6 +386,84 @@ const workshopWritings: WorkshopWritingSource[] = [
             )}
           </article>
         ))}
+      </div>
+    </section>
+
+    <section class="music-section music-report" id="report" aria-labelledby="music-report-heading">
+      <div class="music-section__head">
+        <p class="music-section__kicker">Report</p>
+        <h2 id="music-report-heading">SoundCloud intelligence</h2>
+      </div>
+
+      <div class="music-report__grid">
+        <article class="music-report__intro">
+          <p class="music-report__eyebrow">From the slide deck</p>
+          <div class="music-report__wordmark" aria-label="SoundCloud Music Intelligence Report 2026">
+            <span>SoundCloud</span>
+            <span>Music</span>
+            <span>Intelligence</span>
+            <span>Report</span>
+            <span>2026</span>
+          </div>
+          <p class="music-report__copy">
+            The deck treats SoundCloud data as a vantage point for what is moving from fringe into the center. That
+            makes it a good fit for this site: part listening shelf, part field note, part live research record.
+          </p>
+          <p class="music-report__copy">
+            It also maps onto the rest of the page cleanly. The listening lanes stay playable, but the report tells
+            you why those scenes, artists, and sounds are worth watching right now.
+          </p>
+          <div class="music-report__actions">
+            <a href={musicIntelligenceDeckUrl} target="_blank" rel="noopener noreferrer">Open slide deck</a>
+            <a href={musicIntelligenceHtmlUrl} target="_blank" rel="noopener noreferrer">View HTML deck</a>
+          </div>
+        </article>
+
+        <div class="music-report__stats">
+          {signalStats.map((stat) => (
+            <article class="music-report__stat">
+              <p>{stat.label}</p>
+              <strong>{stat.value}</strong>
+              <span>{stat.note}</span>
+            </article>
+          ))}
+        </div>
+
+        <div class="music-report__rows">
+          <article class="music-report__panel">
+            <p class="music-report__panel-kicker">Scenes to watch</p>
+            <div class="music-report__scene-list">
+              {signalScenes.map((scene) => (
+                <div class="music-report__scene">
+                  <h3>{scene.title}</h3>
+                  <p>{scene.summary}</p>
+                  <div class="music-report__tag-row">
+                    {scene.tags.map((tag) => (
+                      <span class="music-report__tag">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </article>
+
+          <article class="music-report__panel">
+            <p class="music-report__panel-kicker">Artists to watch</p>
+            <div class="music-report__artist-list">
+              {signalArtists.map((group) => (
+                <div class="music-report__artist">
+                  <h3>{group.title}</h3>
+                  <div class="music-report__names">
+                    {group.names.map((name) => (
+                      <span>{name}</span>
+                    ))}
+                  </div>
+                  <p>{group.note}</p>
+                </div>
+              ))}
+            </div>
+          </article>
+        </div>
       </div>
     </section>
 
@@ -641,6 +804,199 @@ const workshopWritings: WorkshopWritingSource[] = [
     gap: 0.6rem 1rem;
   }
 
+  .music-report {
+    gap: 1rem;
+  }
+
+  .music-report__grid {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .music-report__intro {
+    display: grid;
+    gap: 0.7rem;
+    padding: 1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, rgba(249, 243, 235, 0.88), rgba(235, 225, 212, 0.96)),
+      radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--tone-accent) 9%, transparent), transparent 58%);
+    box-shadow: 0 14px 28px rgba(102, 81, 45, 0.06);
+  }
+
+  .music-report__eyebrow,
+  .music-report__panel-kicker {
+    margin: 0;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  }
+
+  .music-report__wordmark {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .music-report__wordmark span,
+  .music-report__tag,
+  .music-report__names span {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 0.34rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
+    background: color-mix(in srgb, var(--tone-surface-strong) 78%, transparent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.66rem;
+    line-height: 1;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+  }
+
+  .music-report__copy {
+    margin: 0;
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .music-report__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+  }
+
+  .music-report__actions a {
+    width: fit-content;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 28%, transparent);
+    padding-bottom: 0.1rem;
+  }
+
+  .music-report__actions a:hover,
+  .music-report__actions a:focus-visible {
+    color: var(--tone-accent-glow);
+    border-color: color-mix(in srgb, var(--tone-accent) 64%, transparent);
+  }
+
+  .music-report__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .music-report__stat {
+    display: grid;
+    gap: 0.3rem;
+    padding: 0.9rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, rgba(249, 243, 235, 0.82), rgba(235, 225, 212, 0.94));
+    box-shadow: 0 14px 30px rgba(102, 81, 45, 0.06);
+  }
+
+  .music-report__stat p,
+  .music-report__stat span {
+    margin: 0;
+    line-height: 1.45;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  }
+
+  .music-report__stat p {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .music-report__stat strong {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    line-height: 1;
+    color: color-mix(in srgb, var(--tone-text) 96%, #fff 4%);
+  }
+
+  .music-report__rows {
+    display: grid;
+    gap: 0.85rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .music-report__panel {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, rgba(249, 243, 235, 0.82), rgba(235, 225, 212, 0.94));
+    box-shadow: 0 14px 30px rgba(102, 81, 45, 0.06);
+  }
+
+  .music-report__scene-list,
+  .music-report__artist-list {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .music-report__scene {
+    display: grid;
+    gap: 0.35rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
+  }
+
+  .music-report__scene:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .music-report__scene h3,
+  .music-report__artist h3 {
+    margin: 0;
+    font-size: 0.98rem;
+    line-height: 1.2;
+  }
+
+  .music-report__scene p,
+  .music-report__artist p {
+    margin: 0;
+    line-height: 1.55;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .music-report__tag-row,
+  .music-report__names {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .music-report__tag,
+  .music-report__names span {
+    font-size: 0.62rem;
+    padding: 0.3rem 0.5rem;
+  }
+
+  .music-report__artist {
+    display: grid;
+    gap: 0.4rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
+  }
+
+  .music-report__artist:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .music-report__artist p {
+    font-size: 0.94rem;
+  }
+
   .music-writing-stack {
     display: grid;
     gap: 0.95rem;
@@ -773,6 +1129,10 @@ const workshopWritings: WorkshopWritingSource[] = [
 
     .music-photo--wide {
       grid-column: span 2;
+    }
+
+    .music-report__rows {
+      grid-template-columns: 1fr;
     }
   }
 </style>

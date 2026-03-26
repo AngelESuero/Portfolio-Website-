@@ -38,6 +38,11 @@
   overflow-anchor: none;
 }
 
+.life-timeline__gallerySurface--empty {
+  min-height: clamp(18rem, 34vw, 24rem);
+  align-content: center;
+}
+
 @keyframes life-timeline-gallery-enter {
   from {
     opacity: 0;
@@ -53,6 +58,15 @@
 .life-timeline__galleryMeta {
   display: grid;
   gap: 0.4rem;
+}
+
+.life-timeline__galleryEmpty {
+  display: grid;
+  gap: 0.45rem;
+  align-content: center;
+  justify-items: start;
+  min-height: clamp(18rem, 34vw, 24rem);
+  padding: clamp(0.35rem, 0.6vw, 0.5rem);
 }
 
 .life-timeline__galleryTitle {
