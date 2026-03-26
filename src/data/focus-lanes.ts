@@ -183,8 +183,9 @@ export const focusLanes: FocusLane[] = [
     highlights: [
       'Archive-native music entries and project-level releases',
       'Music videos, process clips, and resurfaced song fragments',
-      'Writing that explains how the sound work is being approached'
+      'Workshop essays and class writing that explain how the sound work is being approached'
     ],
+    stageNote: 'The lane includes the listening record and the workshop writing that shaped it.',
     primaryLink: {
       href: '/archive/music',
       label: 'Browse music archive'

@@ -5,6 +5,8 @@ import { MUSIC_URLS, SOCIAL_URLS, VIDEO_URLS } from '../data/site-refs';
 
 const spotifyVol4EmbedUrl = 'https://open.spotify.com/embed/playlist/1aeafuJB347VmKXu4jvaTO';
 const soundcloudVol4Url = 'https://soundcloud.com/aesuero/sets/volume-4-angel-sueros-top-50';
+const driveFileViewUrl = (fileId: string): string => `https://drive.google.com/file/d/${fileId}/view?usp=sharing`;
+const driveFilePreviewUrl = (fileId: string): string => `https://drive.google.com/file/d/${fileId}/preview`;
 
 type NativeAudioBite = {
   title: string;
@@ -30,6 +32,16 @@ type ExternalAudioBite = {
 };
 
 type AudioBite = NativeAudioBite | ExternalAudioBite;
+
+type WorkshopWritingSource = {
+  title: string;
+  context: string;
+  summary: string;
+  sourceType: string;
+  sourceLinks: Array<{ label: string; href: string }>;
+  previewUrl?: string | null;
+  previewLabel?: string;
+};
 
 const watchClips = [
   {
@@ -147,6 +159,35 @@ const referenceLinks = [
   { href: MUSIC_URLS.untitledMyFirstBeatTape, label: 'Untitled' },
   { href: VIDEO_URLS.everydayLifeVideo, label: 'Everyday Life video' }
 ];
+
+const workshopWritings: WorkshopWritingSource[] = [
+  {
+    title: 'Village Vanguard',
+    context: 'Kwami Coleman · Urban Music, Urban Spaces',
+    summary: 'A class paper on the Village Vanguard and the way a room shapes how jazz gets heard and remembered.',
+    sourceType: 'DOCX + notes',
+    sourceLinks: [
+      { label: 'Open HW doc', href: driveFileViewUrl('1GLPiL-0DSIOUCOu4wW2fQk4XY0ifHBh4VMzgQMIf9YE') },
+      { label: 'Open Newark venue draft', href: driveFileViewUrl('1N1x1RIAC-GYIqgrTCKQJX8ALUBvAGxOxAkJSD2yMltU') },
+      { label: 'Open rationale', href: driveFileViewUrl('1pFLtcpfjtGCAnjl4dofYhWd3QKlVa7Um') }
+    ],
+    previewUrl: driveFilePreviewUrl('1GLPiL-0DSIOUCOu4wW2fQk4XY0ifHBh4VMzgQMIf9YE'),
+    previewLabel: 'Preview HW doc'
+  },
+  {
+    title: 'Beyond Syntax Essay',
+    context: 'Roy Nathanson · Beyond Syntax',
+    summary: 'Workshop essays from Roy Nathanson’s class, where music and text get treated as one performance problem.',
+    sourceType: 'DOCX + reflection',
+    sourceLinks: [
+      { label: 'Open essay', href: driveFileViewUrl('122Iz0ONUTxigcZrlcPKH1bUicAOhMo4MtZ7-R83ZgNc') },
+      { label: 'Open reflection', href: driveFileViewUrl('183_dqzV54ebKmdYJ-ioqwhju0oCvLVwh') },
+      { label: 'Open rationale', href: driveFileViewUrl('1PGdTHy7lqtLU6i5EkaUiQ9VuGw7o_6RX9OOdlg7Vo_k') }
+    ],
+    previewUrl: driveFilePreviewUrl('122Iz0ONUTxigcZrlcPKH1bUicAOhMo4MtZ7-R83ZgNc'),
+    previewLabel: 'Preview essay'
+  }
+];
 ---
 
 <BaseLayout
@@ -167,6 +208,7 @@ const referenceLinks = [
       <nav class="music-hero__nav" aria-label="Jump to media sections">
         <a href="#watch">Watch</a>
         <a href="#listen">Listen</a>
+        <a href="#read">Read</a>
         <a href="#browse">Browse</a>
       </nav>
     </header>
@@ -257,6 +299,49 @@ const referenceLinks = [
                 </div>
               </div>
             )}
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="music-section" id="read" aria-labelledby="music-read-heading">
+      <div class="music-section__head">
+        <p class="music-section__kicker">Read</p>
+        <h2 id="music-read-heading">Workshop writing</h2>
+      </div>
+
+      <div class="music-writing-stack">
+        {workshopWritings.map((item) => (
+          <article class="music-writing-card">
+            <div class="music-writing-card__meta">
+              <p>{item.context}</p>
+              <span>{item.sourceType}</span>
+            </div>
+
+            <h3>{item.title}</h3>
+            <p class="music-writing-card__note">{item.summary}</p>
+
+            <div class="music-writing-card__links">
+              {item.sourceLinks.map((link) => (
+                <a href={link.href} {...(/^https?:\/\//i.test(link.href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+                  {link.label}
+                </a>
+              ))}
+            </div>
+
+            {item.previewUrl ? (
+              <details class="music-writing-card__preview">
+                <summary>{item.previewLabel}</summary>
+                <div class="music-writing-card__frame">
+                  <iframe
+                    src={item.previewUrl}
+                    title={`${item.title} preview`}
+                    loading="lazy"
+                    allow="autoplay"
+                  ></iframe>
+                </div>
+              </details>
+            ) : null}
           </article>
         ))}
       </div>
@@ -554,6 +639,88 @@ const referenceLinks = [
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem 1rem;
+  }
+
+  .music-writing-stack {
+    display: grid;
+    gap: 0.95rem;
+  }
+
+  .music-writing-card {
+    display: grid;
+    gap: 0.6rem;
+    padding: 1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, rgba(249, 243, 235, 0.84), rgba(235, 225, 212, 0.94));
+    box-shadow: 0 14px 30px rgba(102, 81, 45, 0.06);
+  }
+
+  .music-writing-card__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  }
+
+  .music-writing-card h3 {
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.2;
+  }
+
+  .music-writing-card__note {
+    margin: 0;
+    line-height: 1.55;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .music-writing-card__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+  }
+
+  .music-writing-card__links a {
+    width: fit-content;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 28%, transparent);
+    padding-bottom: 0.1rem;
+  }
+
+  .music-writing-card__links a:hover,
+  .music-writing-card__links a:focus-visible {
+    color: var(--tone-accent-glow);
+    border-color: color-mix(in srgb, var(--tone-accent) 64%, transparent);
+  }
+
+  .music-writing-card__preview {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .music-writing-card__preview summary {
+    cursor: pointer;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .music-writing-card__frame {
+    overflow: hidden;
+    border-radius: 0.9rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
+    background: #05070c;
+  }
+
+  .music-writing-card__frame iframe {
+    display: block;
+    width: 100%;
+    min-height: 240px;
+    border: 0;
   }
 
   .music-photo-grid {

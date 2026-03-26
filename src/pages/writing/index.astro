@@ -145,9 +145,10 @@ const politicalRecords = [...politicalRecordMap.values()].sort((a, b) => b.date.
 const driveFileViewUrl = (fileId: string): string => `https://drive.google.com/file/d/${fileId}/view?usp=sharing`;
 const driveFilePreviewUrl = (fileId: string): string => `https://drive.google.com/file/d/${fileId}/preview`;
 
-type DrivePoliticalSource = {
+type DriveEssaySource = {
   title: string;
   summary: string;
+  context: string;
   sourceType: string;
   tags: string[];
   sourceLinks: Array<{ label: string; href: string }>;
@@ -155,10 +156,11 @@ type DrivePoliticalSource = {
   previewLabel?: string;
 };
 
-const drivePoliticalSources: DrivePoliticalSource[] = [
+const driveEssaySources: DriveEssaySource[] = [
   {
     title: 'Theorizing Politics',
-    summary: 'A political draft in Drive, preserved in both DOCX and PDF form so you can open either version quickly.',
+    context: 'George Shulman · Theorizing Politics',
+    summary: 'A political theory draft in Drive, preserved in DOCX and PDF form so you can open either version quickly.',
     sourceType: 'DOCX + PDF',
     tags: ['politics', 'theory', 'drive'],
     sourceLinks: [
@@ -169,7 +171,22 @@ const drivePoliticalSources: DrivePoliticalSource[] = [
     previewLabel: 'Preview PDF'
   },
   {
+    title: 'Acculturation of Hispanics',
+    context: 'Deidre Royster · Race and Ethnicity',
+    summary: 'A Drive paper on acculturation, identity, and mental health in the Royster thread.',
+    sourceType: 'DOCX',
+    tags: ['race', 'ethnicity', 'acculturation', 'drive'],
+    sourceLinks: [
+      { label: 'Open DOCX', href: driveFileViewUrl('17FPZ0ghTLwSCjZrGcvC_TZiBiHtfiVsP') },
+      { label: 'Preview DOCX', href: driveFilePreviewUrl('17FPZ0ghTLwSCjZrGcvC_TZiBiHtfiVsP') },
+      { label: 'Open search results', href: 'https://drive.google.com/drive/search?q=Acculturation%20of%20Hispanics' }
+    ],
+    previewUrl: driveFilePreviewUrl('17FPZ0ghTLwSCjZrGcvC_TZiBiHtfiVsP'),
+    previewLabel: 'Preview doc'
+  },
+  {
     title: 'Capitalism at war with itself',
+    context: 'Political economy · Drive draft',
     summary: 'A Drive essay on political economy and contradiction inside the system itself.',
     sourceType: 'HTML draft',
     tags: ['capitalism', 'political-economy', 'drive'],
@@ -177,7 +194,8 @@ const drivePoliticalSources: DrivePoliticalSource[] = [
   },
   {
     title: 'Human Survival Needs in 2025',
-    summary: 'A survival-and-politics draft that fits the writing tab’s civic lane and reads like a living policy note.',
+    context: 'Policy note · Drive draft',
+    summary: 'A survival-and-politics draft that reads like a living policy note.',
     sourceType: 'Google Doc',
     tags: ['survival', 'politics', 'drive'],
     sourceLinks: [{ label: 'Open source doc', href: driveFileViewUrl('1osw33f4u5o_YbrlKsEoq47fF4B8vNoTHlWsGEyuYz4E') }],
@@ -186,10 +204,15 @@ const drivePoliticalSources: DrivePoliticalSource[] = [
   },
   {
     title: 'Essay For Desert Of The Real',
-    summary: 'A theory-heavy essay draft in Drive that sits close to the political writing lane.',
-    sourceType: 'DOCX',
-    tags: ['essay', 'politics', 'drive'],
-    sourceLinks: [{ label: 'Open DOCX', href: driveFileViewUrl('129D_8DSXKOWwACEDRzygo4ZntY-KNNwE') }],
+    context: 'Desert of the Real / Susan Sontag thread',
+    summary: 'A theory-heavy essay draft in Drive that the search path surfaces as the closest confirmed Sontag-adjacent thread.',
+    sourceType: 'DOCX + proposal',
+    tags: ['essay', 'politics', 'drive', 'marx'],
+    sourceLinks: [
+      { label: 'Open DOCX', href: driveFileViewUrl('129D_8DSXKOWwACEDRzygo4ZntY-KNNwE') },
+      { label: 'Open proposal', href: driveFileViewUrl('16hLqb7IAXvXGW5VhHXiZydEc0Luqowc1_3xwjo8Vxtc') },
+      { label: 'Open intro draft', href: driveFileViewUrl('1RlJ1Gzdh1ohEi0hTIiMjHpGXf-IvsshT') }
+    ],
     previewUrl: driveFilePreviewUrl('129D_8DSXKOWwACEDRzygo4ZntY-KNNwE'),
     previewLabel: 'Preview DOCX'
   }
@@ -290,23 +313,23 @@ const drivePoliticalSources: DrivePoliticalSource[] = [
     </section>
   ) : null}
 
-  {drivePoliticalSources.length > 0 ? (
-    <section class="writing-documents" aria-labelledby="writing-drive-politics-heading">
+  {driveEssaySources.length > 0 ? (
+    <section class="writing-documents" aria-labelledby="writing-drive-essays-heading">
       <div class="writing-documents__header">
         <div>
           <p class="writing-documents__kicker">Drive sources</p>
-          <h2 id="writing-drive-politics-heading" class="font-display text-2xl">Political drafts found in Google Drive</h2>
+          <h2 id="writing-drive-essays-heading" class="font-display text-2xl">Course-linked essays and source docs in Google Drive</h2>
           <p class="writing-documents__dek">
-            These are the clearest political or political-adjacent writings I found in your Drive. They are linked here directly so the writing tab can point back to the source material.
+            These are the clearest course-linked essays I found in your Drive. They are linked here directly so the writing tab can point back to the source material.
           </p>
         </div>
       </div>
 
       <div class="writing-documents__grid">
-        {drivePoliticalSources.map((record) => (
+        {driveEssaySources.map((record) => (
           <article class="writing-document-card">
             <div class="writing-document-card__meta">
-              <p>Google Drive</p>
+              <p>{record.context}</p>
               <span>{record.sourceType}</span>
             </div>
 
