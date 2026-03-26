@@ -36,16 +36,18 @@ const secondaryNav: NavItem[] = [
   { label: 'Map #2', href: '/map?view=unfurling', color: 'white', tone: 'clarity', view: 'unfurling' },
   { label: 'Genre Tree', href: '/genre-tree', color: 'ochre', tone: 'grounding' },
   { label: 'Market Model', href: '/market-model', color: 'blue', tone: 'clarity' },
-  { label: 'Resources', href: '/resources', color: 'white', tone: 'contemplation' },
-  { label: 'Rejections', href: '/rejections', color: 'red', tone: 'grounding' }
+  { label: 'Resources', href: '/resources', color: 'white', tone: 'contemplation' }
 ];
 
-const focusNav: NavItem[] = focusLanes.map((lane) => ({
-  label: lane.label,
-  href: `/focus/${lane.slug}`,
-  color: lane.navColor,
-  tone: lane.navTone
-}));
+const focusNav: NavItem[] = [
+  ...focusLanes.map((lane) => ({
+    label: lane.label,
+    href: `/focus/${lane.slug}`,
+    color: lane.navColor,
+    tone: lane.navTone
+  })),
+  { label: 'Career Search', href: '/rejections', color: 'red', tone: 'grounding' }
+];
 
 const aiGroup: NavItem[] = [
   { label: 'AI', href: '/ai', color: 'blue', tone: 'discernment' },
@@ -156,18 +158,6 @@ const latestVideoId = youtubeData.items[0]?.videoId ?? '';
       <div class="header-secondary-group header-secondary-group--practice">
         <p class="header-secondary-label">Practice</p>
         <div class="header-secondary-group__items">
-          <span class="header-ai-group header-ai-group--ghost" aria-hidden="true">
-            {aiGroup.map((item) => (
-              <span
-                class="header-link header-link--secondary text-sm no-underline"
-                style={`--link-accent:${getAccentSwatch(item.color)}`}
-                {...(item.color ? { 'data-color': item.color } : {})}
-                {...(item.tone ? { 'data-tone': item.tone } : {})}
-              >
-                {item.label}
-              </span>
-            ))}
-          </span>
           {focusNav.map((item) => (
             <a
               href={item.href}

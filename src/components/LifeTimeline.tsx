@@ -379,11 +379,11 @@ const ENTRIES: TimelineEntry[] = [
   {
     id: 'rejections',
     year: '2023–2026',
-    title: '40 Rejections — On Record',
+    title: 'Career Search — On Record',
     shortDesc: 'Sony Music, Disney, NYT, Anthropic, OpenAI, NPR, PlayStation, Adobe, and 32 others. All documented. All real.',
     category: 'work',
     href: '/rejections',
-    hrefLabel: 'See the record →',
+    hrefLabel: 'See the career search →',
   },
   {
     id: 'now',
@@ -498,13 +498,13 @@ const STAGE_SHOWCASES: StageShowcase[] = [
     title: 'Post-Grad',
     ageRange: 'Ages 23–24',
     yearRange: '2023–2024',
-    summary: 'Graduated Gallatin. SCRAPS projects, Newark Night footage, essays, and the beginning of a documented rejection record.',
+    summary: 'Graduated Gallatin. SCRAPS projects, Newark Night footage, essays, and the beginning of a documented career-search record.',
     accomplishments: [
       'Earned B.A. from NYU Gallatin with an individualized concentration in survival, archive practice, and civic art.',
       'Released SCRAPS After Heartbreaks music video (Feb–May 2023) and SCRAPS Dark Days, Symptoms & No Context Demos.',
       'Shot Newark Night Video Notes — a street-level visual diary of the city after dark.',
       'Built a writing archive spanning essays on power, community, and survival.',
-      'Began systematically documenting 40 direct employer rejections as a factual labor-market record.'
+      'Began systematically documenting 40 direct employer outcomes as a factual career-search record.'
     ],
     previewImages: ['/images/home-collage/collage-3.jpg', '/photos/download-2.jpg', '/photos/download-7.jpg'],
     featuredEntryIds: ['graduated', 'americas', 'scraps-heartbreaks', 'newark-night', 'writing-archive', 'scraps-dark', 'rejections'],
@@ -513,7 +513,7 @@ const STAGE_SHOWCASES: StageShowcase[] = [
       { label: 'Newark Night Video Notes', href: '/work/newark-night-video-notes', kind: 'video' },
       { label: 'SCRAPS Dark Days', href: '/work/scraps-dark-days-symptoms-no-context-demos-2023-2024', kind: 'music' },
       { label: 'Writing archive', href: '/archive/writing', kind: 'writing' },
-      { label: 'Rejection record', href: '/rejections', kind: 'work' }
+      { label: 'Career search record', href: '/rejections', kind: 'work' }
     ]
   },
   {
