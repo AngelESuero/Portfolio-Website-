@@ -424,7 +424,7 @@ const STAGE_SHOWCASES: StageShowcase[] = [
       'Absorbed music as environment first: merengue in the kitchen before music became practice.',
       'Built the habit of noticing, questioning, and holding onto moments.'
     ],
-    previewImages: ['/images/home-collage/collage-2.jpg', '/photos/download-5.jpg', '/images/home-collage/collage-6.jpg'],
+    previewImages: ['/images/home-preview/collage-2.jpg', '/images/home-preview/download-5.jpg', '/images/home-preview/collage-6.jpg'],
     featuredEntryIds: ['born', 'kitchen'],
     showcases: [
       { label: 'About', href: '/about', kind: 'writing' },
@@ -443,7 +443,7 @@ const STAGE_SHOWCASES: StageShowcase[] = [
       'Built GVZ413 as an academic alter ego and a survival mechanism.',
       'Learned to treat school, identity, and effort as things you can construct.'
     ],
-    previewImages: ['/photos/download-7.jpg', '/photos/download-1.jpg', '/images/home-collage/collage-4.jpg'],
+    previewImages: ['/images/home-preview/download-7.jpg', '/images/home-preview/download-1.jpg', '/images/home-preview/collage-4.jpg'],
     featuredEntryIds: ['car', 'gvz'],
     showcases: [
       { label: 'About', href: '/about', kind: 'writing' },
@@ -462,7 +462,7 @@ const STAGE_SHOWCASES: StageShowcase[] = [
       'Learned in London that perspective itself could be a contribution, not a burden.',
       'Moved from private instinct toward public voice in music, writing, and conversation.'
     ],
-    previewImages: ['/photos/download-2.jpg', '/images/home-collage/collage-3.jpg', '/images/home-collage/collage-1.jpg'],
+    previewImages: ['/images/home-preview/download-2.jpg', '/images/home-preview/collage-3.jpg', '/images/home-preview/collage-1.jpg'],
     featuredEntryIds: ['highschool', 'london', 'gallatin'],
     showcases: [
       { label: 'Life in IB', href: '/archive/writing/life-in-ib', kind: 'writing' },
@@ -483,7 +483,7 @@ const STAGE_SHOWCASES: StageShowcase[] = [
       'Produced Queries (The Beat Tape) and launched The Art of Survival — biographical digital art made with zero prior skills.',
       'Co-authored community reports via the Newark Water Coalition; documented 100+ households and 15+ meetings.'
     ],
-    previewImages: ['/photos/download-3.jpg', '/images/home-collage/collage-5.jpg', '/photos/download.jpg'],
+    previewImages: ['/images/home-preview/download-3.jpg', '/images/home-preview/collage-5.jpg', '/images/home-preview/download.jpg'],
     featuredEntryIds: ['gallatin', 'gallatin-pa', 'njit-pa', 'eae', 'nmoa', 'queries', 'art-of-survival'],
     showcases: [
       { label: 'The Art of Survival', href: '/work/the-art-of-survival', kind: 'work' },
@@ -506,7 +506,7 @@ const STAGE_SHOWCASES: StageShowcase[] = [
       'Built a writing archive spanning essays on power, community, and survival.',
       'Began systematically documenting 40 direct employer rejections as a factual labor-market record.'
     ],
-    previewImages: ['/images/home-collage/collage-3.jpg', '/photos/download-2.jpg', '/photos/download-7.jpg'],
+    previewImages: ['/images/home-preview/collage-3.jpg', '/images/home-preview/download-2.jpg', '/images/home-preview/download-7.jpg'],
     featuredEntryIds: ['graduated', 'americas', 'scraps-heartbreaks', 'newark-night', 'writing-archive', 'scraps-dark', 'rejections'],
     showcases: [
       { label: 'SCRAPS After Heartbreaks', href: '/work/scraps-after-heartbreaks-musicvideo', kind: 'video' },
@@ -529,7 +529,7 @@ const STAGE_SHOWCASES: StageShowcase[] = [
       'Assembled a living public archive of music, video, and writing as an open record of process.',
       'Active AI and prompt engineering practice: building with Claude, researching accountability, keeping human judgment central.'
     ],
-    previewImages: ['/photos/download-5.jpg', '/images/home-collage/collage-6.jpg', '/photos/download-1.jpg'],
+    previewImages: ['/images/home-preview/download-5.jpg', '/images/home-preview/collage-6.jpg', '/images/home-preview/download-1.jpg'],
     featuredEntryIds: ['market-model', 'agi', 'survival-os', 'post-labor', 'archive', 'ai-work', 'now'],
     showcases: [
       { label: 'Market Model', href: '/market-model', kind: 'ideas' },
