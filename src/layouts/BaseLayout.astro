@@ -671,6 +671,7 @@ const {
 
         const canAutoReveal = () => {
           if (body.dataset.headerMode === 'hidden') return false;
+          if (body.dataset.headerMode === 'peek' && body.dataset.surfaceFrame === 'flat') return false;
           return true;
         };
 

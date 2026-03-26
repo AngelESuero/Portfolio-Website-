@@ -379,11 +379,11 @@ const ENTRIES: TimelineEntry[] = [
   {
     id: 'rejections',
     year: '2023–2026',
-    title: 'Career Search — On Record',
+    title: '40 Rejections — On Record',
     shortDesc: 'Sony Music, Disney, NYT, Anthropic, OpenAI, NPR, PlayStation, Adobe, and 32 others. All documented. All real.',
     category: 'work',
     href: '/rejections',
-    hrefLabel: 'See the career search →',
+    hrefLabel: 'See the record →',
   },
   {
     id: 'now',
@@ -498,13 +498,13 @@ const STAGE_SHOWCASES: StageShowcase[] = [
     title: 'Post-Grad',
     ageRange: 'Ages 23–24',
     yearRange: '2023–2024',
-    summary: 'Graduated Gallatin. SCRAPS projects, Newark Night footage, essays, and the beginning of a documented career-search record.',
+    summary: 'Graduated Gallatin. SCRAPS projects, Newark Night footage, essays, and the beginning of a documented rejection record.',
     accomplishments: [
       'Earned B.A. from NYU Gallatin with an individualized concentration in survival, archive practice, and civic art.',
       'Released SCRAPS After Heartbreaks music video (Feb–May 2023) and SCRAPS Dark Days, Symptoms & No Context Demos.',
       'Shot Newark Night Video Notes — a street-level visual diary of the city after dark.',
       'Built a writing archive spanning essays on power, community, and survival.',
-      'Began systematically documenting 40 direct employer outcomes as a factual career-search record.'
+      'Began systematically documenting 40 direct employer rejections as a factual labor-market record.'
     ],
     previewImages: ['/images/home-collage/collage-3.jpg', '/photos/download-2.jpg', '/photos/download-7.jpg'],
     featuredEntryIds: ['graduated', 'americas', 'scraps-heartbreaks', 'newark-night', 'writing-archive', 'scraps-dark', 'rejections'],
@@ -513,7 +513,7 @@ const STAGE_SHOWCASES: StageShowcase[] = [
       { label: 'Newark Night Video Notes', href: '/work/newark-night-video-notes', kind: 'video' },
       { label: 'SCRAPS Dark Days', href: '/work/scraps-dark-days-symptoms-no-context-demos-2023-2024', kind: 'music' },
       { label: 'Writing archive', href: '/archive/writing', kind: 'writing' },
-      { label: 'Career search record', href: '/rejections', kind: 'work' }
+      { label: 'Rejection record', href: '/rejections', kind: 'work' }
     ]
   },
   {
@@ -548,9 +548,8 @@ type LifeTimelineProps = {
 };
 
 export default function LifeTimeline({ variant = 'dark', layout = 'contained' }: LifeTimelineProps) {
-  const [activeEntryId, setActiveEntryId] = useState<string | null>(null);
+  const [activeEntryId, setActiveEntryId] = useState<string | null>('youth');
   const isFullBleed = layout === 'fullBleed';
-  const activeStage = STAGE_SHOWCASES.find((stage) => stage.id === activeEntryId) ?? null;
   const timelineStyle = {
     '--lt-text': variant === 'light' ? '#1a1a1a' : 'color-mix(in srgb, var(--tone-text) 94%, white 6%)',
     '--lt-muted': variant === 'light' ? '#7a746b' : 'color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%)',
@@ -582,171 +581,124 @@ export default function LifeTimeline({ variant = 'dark', layout = 'contained' }:
 
   return (
     <section className={`life-timeline life-timeline--${variant}`} aria-label="Life timeline" style={timelineStyle}>
-      <div className={`life-timeline__layout${isFullBleed ? ' life-timeline__layout--fullBleed' : ''}`}>
-        {isFullBleed ? (
-          <aside className="life-timeline__gallery" aria-label="Selected era preview">
-            <div
-              className={`life-timeline__gallerySurface${activeStage ? '' : ' life-timeline__gallerySurface--empty'}`}
-              data-stage={activeStage?.id ?? 'empty'}
-            >
-              {activeStage ? (
-                <>
-                  <div className="life-timeline__galleryMeta">
-                    <p className="life-timeline__sectionLabel">Selected era</p>
-                    <h3 className="life-timeline__galleryTitle">{activeStage.title}</h3>
-                    <p className="life-timeline__gallerySummary">{activeStage.summary}</p>
-                    <div className="life-timeline__badges life-timeline__galleryBadges">
-                      <span className="life-timeline__badge life-timeline__badge--ghost">{activeStage.ageRange}</span>
-                      <span className="life-timeline__badge life-timeline__badge--ghost">{activeStage.yearRange}</span>
-                      <span className="life-timeline__badge">{activeStage.showcases.length} branches</span>
-                    </div>
-                  </div>
+      <ol className="life-timeline__list" role="list">
+        {STAGE_SHOWCASES.map((stage, index) => {
+          const open = activeEntryId === stage.id;
+          const titleSide = index % 2 === 0 ? 'left' : 'right';
+          const detailSide = titleSide === 'left' ? 'right' : 'left';
+          const featuredMoments = stage.featuredEntryIds
+            .map((entryId) => ENTRY_LOOKUP.get(entryId))
+            .filter((entry): entry is TimelineEntry => Boolean(entry))
+            .map((entry) => entry.title);
 
-                  <div className="life-timeline__galleryGrid" aria-hidden="true">
-                    {activeStage.previewImages.map((src, imageIndex) => (
-                      <img
-                        key={`${activeStage.id}-${src}`}
-                        src={src}
-                        alt=""
-                        className={`life-timeline__galleryImage life-timeline__galleryImage--${imageIndex + 1}`}
-                        loading={imageIndex === 0 ? 'eager' : 'lazy'}
-                        decoding="async"
+          return (
+            <li
+              key={stage.id}
+              className={`life-timeline__entry life-timeline__entry--${titleSide}${open ? ' is-active' : ''}`}
+            >
+              <button
+                type="button"
+                className="life-timeline__tick"
+                onClick={() => setActiveEntryId((current) => (current === stage.id ? null : stage.id))}
+                aria-expanded={open}
+                aria-controls={`life-timeline-panel-${stage.id}`}
+              >
+                <span className="life-timeline__side life-timeline__side--title">
+                  <span className="life-timeline__year">{stage.ageRange}</span>
+                  <span className="life-timeline__label">{stage.title}</span>
+                  <span className="life-timeline__meta">{stage.yearRange}</span>
+                  <span className="life-timeline__peek" aria-hidden="true">
+                    {stage.previewImages.slice(0, 2).map((src) => (
+                      <span
+                        key={`${stage.id}-${src}-peek`}
+                        className="life-timeline__peekImage"
+                        style={{ backgroundImage: `url('${src}')` }}
                       />
                     ))}
-                  </div>
-                </>
-              ) : (
-                <div className="life-timeline__galleryEmpty">
-                  <p className="life-timeline__sectionLabel">Selected era</p>
-                  <h3 className="life-timeline__galleryTitle">Choose an era</h3>
-                  <p className="life-timeline__gallerySummary">
-                    The main display stays hidden until you click one of the eras on the timeline.
-                  </p>
-                </div>
-              )}
-            </div>
-          </aside>
-        ) : null}
+                  </span>
+                </span>
+                <span className="life-timeline__center" aria-hidden="true">
+                  <span className="life-timeline__dot"></span>
+                </span>
+                <span className="life-timeline__side life-timeline__side--summary">
+                  <span className="life-timeline__summary">{stage.summary}</span>
+                  <span className={`life-timeline__tab${open ? ' is-open' : ''}`} aria-hidden="true">
+                    <span className="life-timeline__tabLabel">{open ? 'Hide showcase' : 'Open showcase'}</span>
+                    <span className="life-timeline__arrow">
+                      <svg viewBox="0 0 8 8">
+                        <polyline points="2,1 6,4 2,7" />
+                      </svg>
+                    </span>
+                  </span>
+                </span>
+              </button>
 
-        <ol className="life-timeline__list" role="list">
-          {STAGE_SHOWCASES.map((stage, index) => {
-            const open = activeEntryId === stage.id;
-            const titleSide = index % 2 === 0 ? 'left' : 'right';
-            const detailSide = titleSide === 'left' ? 'right' : 'left';
-            const featuredMoments = stage.featuredEntryIds
-              .map((entryId) => ENTRY_LOOKUP.get(entryId))
-              .filter((entry): entry is TimelineEntry => Boolean(entry))
-              .map((entry) => entry.title);
-
-            return (
-              <li
-                key={stage.id}
-                className={`life-timeline__entry life-timeline__entry--${titleSide}${open ? ' is-active' : ''}`}
+              <div
+                id={`life-timeline-panel-${stage.id}`}
+                className="life-timeline__panel"
+                aria-hidden={!open}
               >
-                <button
-                  type="button"
-                  className="life-timeline__tick"
-                  onClick={() => setActiveEntryId((current) => (current === stage.id ? null : stage.id))}
-                  aria-expanded={open}
-                  aria-controls={`life-timeline-panel-${stage.id}`}
-                >
-                  <span className="life-timeline__side life-timeline__side--title">
-                    <span className="life-timeline__year">{stage.ageRange}</span>
-                    <span className="life-timeline__label">{stage.title}</span>
-                    <span className="life-timeline__meta">{stage.yearRange}</span>
-                    <span className="life-timeline__peek" aria-hidden="true">
-                      {stage.previewImages.slice(0, 2).map((src) => (
-                        <span
-                          key={`${stage.id}-${src}-peek`}
-                          className="life-timeline__peekImage"
-                          style={{ backgroundImage: `url('${src}')` }}
-                        />
-                      ))}
-                    </span>
-                  </span>
-                  <span className="life-timeline__center" aria-hidden="true">
-                    <span className="life-timeline__dot"></span>
-                  </span>
-                  <span className="life-timeline__side life-timeline__side--summary">
-                    <span className="life-timeline__summary">{stage.summary}</span>
-                    <span className={`life-timeline__tab${open ? ' is-open' : ''}`} aria-hidden="true">
-                      <span className="life-timeline__tabLabel">{open ? 'Hide showcase' : 'Open showcase'}</span>
-                      <span className="life-timeline__arrow">
-                        <svg viewBox="0 0 8 8">
-                          <polyline points="2,1 6,4 2,7" />
-                        </svg>
-                      </span>
-                    </span>
-                  </span>
-                </button>
-
-                <div
-                  id={`life-timeline-panel-${stage.id}`}
-                  className="life-timeline__panel"
-                  aria-hidden={!open}
-                >
-                  <div className="life-timeline__panelInner">
-                    <div className="life-timeline__panelAxis" aria-hidden="true"></div>
-                    <div className={`life-timeline__panelBody life-timeline__panelBody--${detailSide}`}>
-                      <div className="life-timeline__heroBlock">
-                        <div className="life-timeline__visuals" aria-hidden="true">
-                          {stage.previewImages.map((src, imageIndex) => (
-                            <span
-                              key={`${stage.id}-${src}`}
-                              className={`life-timeline__visual life-timeline__visual--${imageIndex + 1}`}
-                              style={{ backgroundImage: `url('${src}')` }}
-                            />
-                          ))}
-                        </div>
-
-                        <div className="life-timeline__heroCopy">
-                          <p className="life-timeline__sectionLabel">Era frame</p>
-                          <p className="life-timeline__heroSummary">{stage.summary}</p>
-                          <div className="life-timeline__badges">
-                            <span className="life-timeline__badge life-timeline__badge--ghost">{stage.ageRange}</span>
-                            <span className="life-timeline__badge life-timeline__badge--ghost">{stage.yearRange}</span>
-                            <span className="life-timeline__badge">{stage.showcases.length} branches</span>
-                          </div>
-                        </div>
+                <div className="life-timeline__panelInner">
+                  <div className="life-timeline__panelAxis" aria-hidden="true"></div>
+                  <div className={`life-timeline__panelBody life-timeline__panelBody--${detailSide}`}>
+                    <div className="life-timeline__heroBlock">
+                      <div className="life-timeline__visuals" aria-hidden="true">
+                        {stage.previewImages.map((src, imageIndex) => (
+                          <span
+                            key={`${stage.id}-${src}`}
+                            className={`life-timeline__visual life-timeline__visual--${imageIndex + 1}`}
+                            style={{ backgroundImage: `url('${src}')` }}
+                          />
+                        ))}
                       </div>
 
-                      <div className="life-timeline__block">
-                        <p className="life-timeline__sectionLabel">Accomplishments</p>
-                        <ul className="life-timeline__accomplishments">
-                          {stage.accomplishments.map((item) => (
-                            <li key={item} className="life-timeline__accomplishment">{item}</li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      <div className="life-timeline__block">
-                        <p className="life-timeline__sectionLabel">Showcases</p>
-                        <div className="life-timeline__showcases">
-                          {stage.showcases.map((item) => (
-                            <a key={item.href} href={item.href} className="life-timeline__showcase">
-                              <span className="life-timeline__showcaseKind">{SHOWCASE_KIND_LABELS[item.kind]}</span>
-                              <span className="life-timeline__showcaseLabel">{item.label}</span>
-                            </a>
-                          ))}
+                      <div className="life-timeline__heroCopy">
+                        <p className="life-timeline__sectionLabel">Era frame</p>
+                        <p className="life-timeline__heroSummary">{stage.summary}</p>
+                        <div className="life-timeline__badges">
+                          <span className="life-timeline__badge life-timeline__badge--ghost">{stage.ageRange}</span>
+                          <span className="life-timeline__badge life-timeline__badge--ghost">{stage.yearRange}</span>
+                          <span className="life-timeline__badge">{stage.showcases.length} branches</span>
                         </div>
                       </div>
+                    </div>
 
-                      <div className="life-timeline__block">
-                        <p className="life-timeline__sectionLabel">Featured moments</p>
-                        <div className="life-timeline__moments">
-                          {featuredMoments.map((moment) => (
-                            <span key={moment} className="life-timeline__moment">{moment}</span>
-                          ))}
-                        </div>
+                    <div className="life-timeline__block">
+                      <p className="life-timeline__sectionLabel">Accomplishments</p>
+                      <ul className="life-timeline__accomplishments">
+                        {stage.accomplishments.map((item) => (
+                          <li key={item} className="life-timeline__accomplishment">{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="life-timeline__block">
+                      <p className="life-timeline__sectionLabel">Showcases</p>
+                      <div className="life-timeline__showcases">
+                        {stage.showcases.map((item) => (
+                          <a key={item.href} href={item.href} className="life-timeline__showcase">
+                            <span className="life-timeline__showcaseKind">{SHOWCASE_KIND_LABELS[item.kind]}</span>
+                            <span className="life-timeline__showcaseLabel">{item.label}</span>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="life-timeline__block">
+                      <p className="life-timeline__sectionLabel">Featured moments</p>
+                      <div className="life-timeline__moments">
+                        {featuredMoments.map((moment) => (
+                          <span key={moment} className="life-timeline__moment">{moment}</span>
+                        ))}
                       </div>
                     </div>
                   </div>
                 </div>
-              </li>
-            );
-          })}
-        </ol>
-      </div>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
     </section>
   );
 }

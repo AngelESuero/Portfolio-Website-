@@ -1,0 +1,484 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Newark — a_e.s_"
+  description="Problems I'm looking at in Newark: homelessness data, market shifts, and what the numbers say about the city's present."
+  theme="archive"
+>
+
+<style>
+  .nwk-wrap {
+    --nwk-accent: #b36a3a;
+    --nwk-accent-soft: rgba(179,106,58,0.10);
+    --nwk-line: rgba(179,106,58,0.20);
+    --nwk-expand: #4a8c6a;
+    --nwk-expand-soft: rgba(74,140,106,0.10);
+    --nwk-recede: #8c4a4a;
+    --nwk-recede-soft: rgba(140,74,74,0.10);
+  }
+
+  .nwk-hero {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--nwk-line);
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--tone-surface) 80%, var(--nwk-accent-soft));
+    padding: clamp(1.2rem, 3vw, 2rem);
+    margin-bottom: 1.6rem;
+  }
+  .nwk-watermark {
+    position: absolute; inset: 0; display: flex; align-items: center;
+    justify-content: center; pointer-events: none; user-select: none; overflow: hidden;
+  }
+  .nwk-watermark span {
+    font-size: clamp(4rem, 14vw, 9rem); font-weight: 800; letter-spacing: 0.12em;
+    text-transform: uppercase; color: rgba(179,106,58,0.06); white-space: nowrap;
+    transform: rotate(-6deg);
+  }
+  .nwk-kicker { font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--nwk-accent); font-weight: 700; margin: 0 0 0.6rem; }
+  .nwk-hero h1 { margin: 0; font-size: clamp(2rem, 4vw, 3.4rem); line-height: 0.98; letter-spacing: -0.04em; }
+  .nwk-hero p { margin: 0.9rem 0 0; max-width: 72ch; color: var(--tone-muted); line-height: 1.6; }
+
+  /* ── Tabs ─────────────────────────────────── */
+  .nwk-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.4rem; flex-wrap: wrap; }
+  .nwk-tab {
+    padding: 0.42rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--nwk-line);
+    background: color-mix(in srgb, var(--tone-surface) 88%, transparent);
+    color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
+    font-size: 0.84rem;
+    cursor: pointer;
+    transition: border-color 120ms ease, color 120ms ease;
+  }
+  .nwk-tab.is-active,
+  .nwk-tab:hover {
+    border-color: color-mix(in srgb, var(--nwk-accent) 40%, var(--nwk-line));
+    color: var(--tone-text);
+  }
+  .nwk-tab-panel { display: none; }
+  .nwk-tab-panel.is-active { display: block; }
+
+  /* ── Cards ────────────────────────────────── */
+  .nwk-card {
+    border: 1px solid var(--nwk-line);
+    border-radius: 16px;
+    background: var(--tone-surface);
+    padding: 1.2rem 1.3rem;
+    margin-bottom: 1.1rem;
+  }
+  .nwk-card:last-child { margin-bottom: 0; }
+  .nwk-card h2 {
+    font-size: 1rem; letter-spacing: -0.02em; margin: 0 0 1rem;
+    color: var(--tone-text);
+  }
+  .nwk-card h3 {
+    font-size: 0.88rem; font-weight: 700; margin: 0 0 0.4rem;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--nwk-accent);
+  }
+
+  /* ── Stats ────────────────────────────────── */
+  .nwk-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.1rem;
+  }
+  .nwk-stat {
+    border: 1px solid var(--nwk-line);
+    border-radius: 12px;
+    padding: 0.9rem 1rem;
+    background: color-mix(in srgb, var(--tone-surface) 60%, var(--tone-bg) 40%);
+    text-align: center;
+  }
+  .nwk-stat__num {
+    display: block;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--nwk-accent);
+    line-height: 1;
+  }
+  .nwk-stat__label {
+    display: block;
+    font-size: 0.76rem;
+    color: var(--tone-muted);
+    margin-top: 0.3rem;
+    line-height: 1.4;
+  }
+
+  /* ── Disparity bars ───────────────────────── */
+  .nwk-bars { display: grid; gap: 0.75rem; }
+  .nwk-bar-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 40px;
+    gap: 0.6rem;
+    align-items: center;
+    font-size: 0.82rem;
+  }
+  .nwk-bar-track {
+    height: 14px;
+    background: color-mix(in srgb, var(--tone-bg) 70%, var(--nwk-accent-soft));
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--nwk-line);
+  }
+  .nwk-bar-fill { height: 100%; border-radius: 999px; }
+  .nwk-bar-fill.homeless  { background: linear-gradient(90deg, #8c5033, #c47952); }
+  .nwk-bar-fill.county    { background: linear-gradient(90deg, #6b7e8a, #9fb4c0); }
+  .nwk-bar-fill.poverty   { background: linear-gradient(90deg, #7a8c6a, #a8b89a); }
+  .nwk-bar-section-label { font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--tone-muted); margin: 0.8rem 0 0.4rem; }
+
+  /* ── Income sources ───────────────────────── */
+  .nwk-income-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.6rem;
+  }
+  .nwk-income-item {
+    border: 1px solid var(--nwk-line);
+    border-radius: 10px;
+    padding: 0.7rem 0.8rem;
+    background: color-mix(in srgb, var(--tone-surface) 60%, var(--tone-bg) 40%);
+  }
+  .nwk-income-item__pct {
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--nwk-accent);
+    line-height: 1;
+  }
+  .nwk-income-item__label {
+    font-size: 0.76rem;
+    color: var(--tone-muted);
+    margin-top: 0.25rem;
+    line-height: 1.35;
+  }
+
+  /* ── Causes ───────────────────────────────── */
+  .nwk-causes { display: grid; gap: 0.6rem; }
+  .nwk-cause-row {
+    display: grid;
+    grid-template-columns: 1fr 48px;
+    gap: 0.6rem;
+    align-items: center;
+    font-size: 0.84rem;
+    padding: 0.65rem 0.8rem;
+    border: 1px solid var(--nwk-line);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--tone-surface) 60%, var(--tone-bg) 40%);
+  }
+  .nwk-cause-pct { font-weight: 800; text-align: right; color: var(--nwk-accent); font-size: 0.95rem; }
+
+  /* ── Lede ─────────────────────────────────── */
+  .nwk-lede {
+    padding: 1.4rem 0 1.6rem;
+  }
+  .nwk-lede__stat {
+    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.08;
+    margin: 0 0 0.75rem;
+    color: var(--tone-text);
+  }
+  .nwk-lede__stat em {
+    color: var(--nwk-accent);
+    font-style: normal;
+  }
+  .nwk-lede p:not(.nwk-lede__stat) {
+    margin: 0;
+    font-size: 1.04rem;
+    line-height: 1.65;
+    max-width: 68ch;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  }
+
+  /* ── Callout ──────────────────────────────── */
+  .nwk-callout {
+    border: 1px dashed var(--nwk-accent);
+    border-radius: 14px;
+    background: var(--nwk-accent-soft);
+    padding: 1rem 1.1rem;
+    margin-bottom: 1.1rem;
+  }
+  .nwk-callout strong {
+    display: block; margin-bottom: 0.5rem; color: var(--nwk-accent);
+    letter-spacing: 0.03em; text-transform: uppercase; font-size: 0.72rem;
+  }
+  .nwk-callout p { margin: 0; font-size: 0.88rem; line-height: 1.6; }
+
+  /* ── Market signals ───────────────────────── */
+  .nwk-signals { display: grid; gap: 0.75rem; }
+  .nwk-signal {
+    border: 1px solid var(--nwk-line);
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+    background: color-mix(in srgb, var(--tone-surface) 60%, var(--tone-bg) 40%);
+  }
+  .nwk-signal__header { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.5rem; }
+  .nwk-signal__tag {
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.2rem 0.55rem; border-radius: 999px;
+  }
+  .nwk-signal__tag.expanding {
+    background: var(--nwk-expand-soft);
+    color: var(--nwk-expand);
+    border: 1px solid rgba(74,140,106,0.3);
+  }
+  .nwk-signal__tag.receding {
+    background: var(--nwk-recede-soft);
+    color: var(--nwk-recede);
+    border: 1px solid rgba(140,74,74,0.3);
+  }
+  .nwk-signal h3 { margin: 0; font-size: 0.95rem; font-weight: 700; letter-spacing: -0.01em; }
+  .nwk-signal p { margin: 0.4rem 0 0; font-size: 0.84rem; color: var(--tone-muted); line-height: 1.55; }
+
+  .nwk-source-note {
+    border-top: 1px solid var(--nwk-line);
+    padding-top: 1rem;
+    margin-top: 1.8rem;
+    color: var(--tone-muted);
+    font-size: 0.78rem;
+    line-height: 1.6;
+  }
+  .nwk-source-note a { color: var(--nwk-accent); }
+
+  /* ── Path grid ────────────────────────────── */
+  .nwk-path-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    margin-bottom: 0.8rem;
+  }
+  .nwk-path-col h3 {
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--tone-muted);
+    margin: 0 0 0.7rem;
+  }
+
+  @media (max-width: 600px) {
+    .nwk-path-grid { grid-template-columns: 1fr; }
+    .nwk-bar-row { grid-template-columns: 100px 1fr 36px; }
+    .nwk-stats { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+
+<div class="nwk-wrap">
+
+  <section class="nwk-hero">
+    <div class="nwk-watermark" aria-hidden="true"><span>NEWARK</span></div>
+    <div style="position:relative;z-index:1;">
+      <p class="nwk-kicker">Problems I'm looking at</p>
+      <h1>Newark</h1>
+    </div>
+  </section>
+
+  <nav class="nwk-tabs" role="tablist" aria-label="Newark research tabs">
+    <button class="nwk-tab is-active" role="tab" aria-selected="true"  aria-controls="tab-housing"  id="btn-housing">Housing &amp; Homelessness</button>
+    <button class="nwk-tab"           role="tab" aria-selected="false" aria-controls="tab-markets"  id="btn-markets">Market Shifts</button>
+  </nav>
+
+  <!-- ── Tab 1: Housing & Homelessness ──────── -->
+  <div class="nwk-tab-panel is-active" id="tab-housing" role="tabpanel" aria-labelledby="btn-housing">
+
+    <div class="nwk-lede">
+      <p class="nwk-lede__stat">Most people losing housing in Newark <em>weren't sleeping outside the week before.</em></p>
+      <p>They were on someone's couch. The most common reported cause of homelessness here isn't addiction or mental illness — it's being asked to leave a shared residence. 24% said that. Another 21% were evicted. Most had no income when it happened. The 2025 Essex/Newark count found 2,291 unhoused people, roughly 84% from Newark.</p>
+    </div>
+
+    <div class="nwk-stats">
+      <div class="nwk-stat"><span class="nwk-stat__num">2,291</span><span class="nwk-stat__label">people counted, Essex Co. 2025</span></div>
+      <div class="nwk-stat"><span class="nwk-stat__num">51%</span><span class="nwk-stat__label">had zero income when counted</span></div>
+      <div class="nwk-stat"><span class="nwk-stat__num">24%</span><span class="nwk-stat__label">asked to leave a shared home</span></div>
+      <div class="nwk-stat"><span class="nwk-stat__num">31.6%</span><span class="nwk-stat__label">were living with family/friends before</span></div>
+    </div>
+
+    <article class="nwk-card">
+      <h2>The path in</h2>
+      <div class="nwk-path-grid">
+        <div class="nwk-path-col">
+          <h3>Where they were living before</h3>
+          <div class="nwk-causes">
+            <div class="nwk-cause-row"><span>With family or friends</span><span class="nwk-cause-pct">31.6%</span></div>
+            <div class="nwk-cause-row"><span>Emergency shelter</span><span class="nwk-cause-pct">21.4%</span></div>
+            <div class="nwk-cause-row"><span>Permanent housing</span><span class="nwk-cause-pct">14.2%</span></div>
+            <div class="nwk-cause-row"><span>Places not meant for habitation</span><span class="nwk-cause-pct">12.9%</span></div>
+          </div>
+        </div>
+        <div class="nwk-path-col">
+          <h3>What pushed them out</h3>
+          <div class="nwk-causes">
+            <div class="nwk-cause-row"><span>Asked to leave shared residence</span><span class="nwk-cause-pct">24%</span></div>
+            <div class="nwk-cause-row"><span>Eviction or risk of eviction</span><span class="nwk-cause-pct">21%</span></div>
+            <div class="nwk-cause-row"><span>Loss or reduction of job income</span><span class="nwk-cause-pct">13%</span></div>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:0.78rem;color:var(--tone-muted);margin:0.8rem 0 0;line-height:1.5;">Prior living situation from 2022 Essex PIT; causes from 2025 count. The dominant story is informal housing → asked to leave → street.</p>
+    </article>
+
+    <article class="nwk-card">
+      <h2>Economic situation when counted</h2>
+      <div class="nwk-income-grid">
+        <div class="nwk-income-item"><div class="nwk-income-item__pct">51%</div><div class="nwk-income-item__label">No income at all</div></div>
+        <div class="nwk-income-item"><div class="nwk-income-item__pct">13%</div><div class="nwk-income-item__label">Earned / work income</div></div>
+        <div class="nwk-income-item"><div class="nwk-income-item__pct">13%</div><div class="nwk-income-item__label">General Assistance</div></div>
+        <div class="nwk-income-item"><div class="nwk-income-item__pct">10%</div><div class="nwk-income-item__label">SSI</div></div>
+        <div class="nwk-income-item"><div class="nwk-income-item__pct">56%</div><div class="nwk-income-item__label">On Medicaid</div></div>
+        <div class="nwk-income-item"><div class="nwk-income-item__pct">44%</div><div class="nwk-income-item__label">On SNAP</div></div>
+      </div>
+      <p style="font-size:0.82rem;color:var(--tone-muted);margin:1rem 0 0;line-height:1.55;">These aren't people who fell from stable middle-class lives. The data doesn't show a "former class background" — but it shows people who were already in economically fragile, doubled-up situations before losing housing entirely.</p>
+    </article>
+
+    <article class="nwk-card">
+      <h2>Who it falls on</h2>
+      <p class="nwk-bar-section-label" style="margin-top:0;">Share of homeless population</p>
+      <div class="nwk-bars">
+        <div class="nwk-bar-row"><span>Black / African Am.</span><div class="nwk-bar-track"><div class="nwk-bar-fill homeless" style="width:71%"></div></div><span>71%</span></div>
+        <div class="nwk-bar-row"><span>Hispanic / Latino</span><div class="nwk-bar-track"><div class="nwk-bar-fill homeless" style="width:17%"></div></div><span>17%</span></div>
+        <div class="nwk-bar-row"><span>White</span><div class="nwk-bar-track"><div class="nwk-bar-fill homeless" style="width:8%"></div></div><span>8%</span></div>
+      </div>
+      <p class="nwk-bar-section-label">vs. Essex County population</p>
+      <div class="nwk-bars">
+        <div class="nwk-bar-row"><span>Black / African Am.</span><div class="nwk-bar-track"><div class="nwk-bar-fill county" style="width:40%"></div></div><span>40%</span></div>
+        <div class="nwk-bar-row"><span>White</span><div class="nwk-bar-track"><div class="nwk-bar-fill county" style="width:39%"></div></div><span>39%</span></div>
+      </div>
+      <p style="font-size:0.82rem;color:var(--tone-muted);margin:1rem 0 0;line-height:1.55;">Black residents are 40% of the county and 49% of its poverty population — but 71% of the homeless population. The gap is bigger than poverty alone explains. The report says racial disparity in homelessness is stronger than poverty as a predictor.</p>
+    </article>
+
+    <p class="nwk-source-note">
+      Data: <a href="https://monarchhousing.org/wp-content/uploads/2025/07/PIT-Report-2025-Essex.pdf" target="_blank" rel="noopener">Monarch Housing Associates — NJ 2025 Point-in-Time Count, Essex County</a> ·
+      <a href="https://monarchhousing.org/wp-content/uploads/2024/10/Essex-PIT-Report-2024.pdf" target="_blank" rel="noopener">2024 PIT Count</a>.
+      Newark made up 1,922 of the 2,291 people whose municipality was recorded (~84%). Essex race/income data is the best public proxy for Newark but not a perfect city-only table.
+      Next pass: age, family status, disability, Newark vs. East Orange / Irvington / rest of Essex.
+    </p>
+  </div>
+
+  <!-- ── Tab 2: Market Shifts ────────────────── -->
+  <div class="nwk-tab-panel" id="tab-markets" role="tabpanel" aria-labelledby="btn-markets">
+
+    <div class="nwk-lede">
+      <p class="nwk-lede__stat">Newark is attracting real investment. <em>The question is who it's being built for.</em></p>
+      <p>A $125M film studio broke ground in December 2025. Port cargo hit double-digit growth. Premium residential is filling space that office buildings won't. Capital is moving into the city — but the people showing up in the homelessness count aren't in the plans for what's being built. The city is being repositioned around them, not for them.</p>
+    </div>
+
+    <article class="nwk-card">
+      <h2>Expanding</h2>
+      <div class="nwk-signals">
+
+        <div class="nwk-signal">
+          <div class="nwk-signal__header">
+            <span class="nwk-signal__tag expanding">Expanding</span>
+            <h3>Film / TV production infrastructure</h3>
+          </div>
+          <p>Lionsgate Newark broke ground December 2025 — ~$125M, 12 acres, soundstages, production offices, set-building. Newark is pairing it with local film-job training. Cleanest new growth lane in the city.</p>
+        </div>
+
+        <div class="nwk-signal">
+          <div class="nwk-signal__header">
+            <span class="nwk-signal__tag expanding">Expanding</span>
+            <h3>Mixed-use residential and adaptive reuse</h3>
+          </div>
+          <p>Capital is moving toward housing-heavy redevelopment. Penn Plaza East: up to 1,000 units + retail. 10 Park Place: office converted to 196 affordable units with ground-floor commercial. The market is repricing older inventory as housing, not office.</p>
+        </div>
+
+        <div class="nwk-signal">
+          <div class="nwk-signal__header">
+            <span class="nwk-signal__tag expanding">Expanding</span>
+            <h3>Port / logistics / distribution</h3>
+          </div>
+          <p>Port of NY/NJ hit 8.7M TEUs in 2024 — double-digit cargo growth over 2023. NJ industrial leasing in 2025 concentrated in the Turnpike/port corridor, especially modern Class A space. Not new, but still real.</p>
+        </div>
+
+        <div class="nwk-signal">
+          <div class="nwk-signal__header">
+            <span class="nwk-signal__tag expanding">Expanding</span>
+            <h3>Downtown street-level retail</h3>
+          </div>
+          <p>Grocery, service, and experience retail tied to mixed-use — not mall anchors. Hahne &amp; Co. completed full retail lease-up of ~30,000 sq ft. Demand is real where it's attached to residential density.</p>
+        </div>
+
+        <div class="nwk-signal">
+          <div class="nwk-signal__header">
+            <span class="nwk-signal__tag expanding">Expanding</span>
+            <h3>Broadband and digital infrastructure</h3>
+          </div>
+          <p>Newark Fiber already serves 85 non-city buildings, ~27,000 residents, ~25 new commercial customers per year. A real buildout, not a promise.</p>
+        </div>
+
+      </div>
+    </article>
+
+    <article class="nwk-card">
+      <h2>Softening</h2>
+      <div class="nwk-signals">
+
+        <div class="nwk-signal">
+          <div class="nwk-signal__header">
+            <span class="nwk-signal__tag receding">Receding</span>
+            <h3>Older commodity office space</h3>
+          </div>
+          <p>19.5% vacancy in Q4 2025 even with positive absorption. Demand is concentrating in better buildings only. Older inventory is getting converted to housing — the market has decided it's not office anymore.</p>
+        </div>
+
+        <div class="nwk-signal">
+          <div class="nwk-signal__header">
+            <span class="nwk-signal__tag receding">Receding</span>
+            <h3>Spec warehouse</h3>
+          </div>
+          <p>Port logistics still matter, but the easy-growth phase cooled. NJ industrial vacancy hit 8.9%, 2025 net absorption was negative, vacant new deliveries and sublease space are piling up.</p>
+        </div>
+
+        <div class="nwk-signal">
+          <div class="nwk-signal__header">
+            <span class="nwk-signal__tag receding">Receding</span>
+            <h3>Anchor / department-store retail</h3>
+          </div>
+          <p>Already over. Hahne's success is as a repurposed mixed-use property — not a return to the old format. Newark's retail wins are attached to residential density, not anchor stores.</p>
+        </div>
+
+      </div>
+    </article>
+
+    <div class="nwk-callout">
+      <strong>Not yet confirmed</strong>
+      <p>Life sciences looks more like a New Jersey-wide story than a Newark-specific wave. Next pass: district-level breakdown — Downtown, Ironbound, South Ward, airport/port zone.</p>
+    </div>
+
+    <p class="nwk-source-note">Research from public development filings, leasing market reports, and press coverage. Separating real expansion from booster talk. Next pass: district-level breakdown.</p>
+  </div>
+
+</div>
+
+<script is:inline>
+  (() => {
+    const tabs = Array.from(document.querySelectorAll('.nwk-tab'));
+    const panels = Array.from(document.querySelectorAll('.nwk-tab-panel'));
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const target = tab.getAttribute('aria-controls');
+
+        tabs.forEach((t) => {
+          t.classList.remove('is-active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        panels.forEach((p) => p.classList.remove('is-active'));
+
+        tab.classList.add('is-active');
+        tab.setAttribute('aria-selected', 'true');
+        const panel = document.getElementById(target);
+        if (panel) panel.classList.add('is-active');
+      });
+    });
+  })();
+</script>
+
+</BaseLayout>

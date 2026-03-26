@@ -2,9 +2,6 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LifeTimeline from '../components/LifeTimeline';
 import profile from '../data/profile';
-import { getCollection } from 'astro:content';
-import agiTimeline from '../data/agi-curated-timeline.json';
-
 const heroParticles = Array.from({ length: 24 }, (_, index) => {
   const lanes = [
     { left: 7, size: 2.5, duration: 12.5, delay: -0.5, drift: -16, blur: 0.4, alpha: 0.14, bottom: -18 },
@@ -59,101 +56,6 @@ const showcaseStripPhotos = [
   '/images/home-collage/collage-3.jpg',
 ];
 
-const allEntries = await getCollection('entries');
-const allProjects = await getCollection('projects');
-
-const entryCountByMedium = allEntries.reduce<Record<string, number>>((acc, e) => {
-  const m = e.data.medium;
-  acc[m] = (acc[m] || 0) + 1;
-  return acc;
-}, {});
-
-const archiveStats = [
-  { label: 'music', count: entryCountByMedium['music'] || 0, href: '/archive/music' },
-  { label: 'video', count: entryCountByMedium['video'] || 0, href: '/archive/video' },
-  { label: 'writing', count: entryCountByMedium['writing'] || 0, href: '/archive/writing' },
-];
-const totalEntries = allEntries.length;
-const totalProjects = allProjects.length;
-
-// 3 most recent entries for the recent feed
-const recentEntries = [...allEntries]
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
-  .slice(0, 3);
-
-// 3 most recent writing entries to display on home page
-const recentWriting = [...allEntries]
-  .filter(e => e.data.medium === 'writing')
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
-  .slice(0, 3);
-
-const recentMusic = [...allEntries]
-  .filter(e => e.data.medium === 'music')
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
-  .slice(0, 3);
-
-const mediumIcon: Record<string, string> = { music: '♪', video: '▶', writing: '✦', image: '◈', note: '◦', proposal: '⬡' };
-
-// 3 most recent AGI signals — sorted by wave descending, then year descending
-type AgiItem = { id: string; headline: string; wave: string; year?: number; timingLabel: string; public: { summary: string; implication: string }; kind: string };
-const agiWaveOrder = new Map(
-  (Array.isArray((agiTimeline as any).waves) ? (agiTimeline as any).waves : [])
-    .map((wave: any, index: number) => [String(wave.id || index), index])
-);
-const recentSignals = [...(agiTimeline.items as AgiItem[])]
-  .sort((a, b) => {
-    const waveDelta = (agiWaveOrder.get(String(b.wave || '')) ?? 0) - (agiWaveOrder.get(String(a.wave || '')) ?? 0);
-    if (waveDelta !== 0) return waveDelta;
-    return Number(b.year ?? 0) - Number(a.year ?? 0);
-  })
-  .slice(0, 3);
-
-const waveLabels: Record<string, string> = {
-  software_disruption_now: 'Wave 1 · Software',
-  broad_labor_stress: 'Wave 2 · Labor',
-  physical_economy_disruption: 'Wave 3 · Physical',
-  scenario_territory: 'Wave 4 · Scenario',
-};
-const papers = [
-  {
-    title: 'Acquiring American Happiness in the 21st Century',
-    href: 'https://docs.google.com/document/d/136D7WGfbruYxtIRdegr0Pj5PDNhHBCD_xXMl1ZysyS0',
-    tags: ['culture', 'economics', 'well-being'],
-  },
-  {
-    title: 'The Sacrifice of Power: An Analysis of Citizens under Capitalism',
-    href: 'https://docs.google.com/document/d/12LKrLzWqtMsGeR29ypyGir_nsuicQok5sha2w1ucuNI',
-    tags: ['political economy', 'power', 'capitalism'],
-  },
-  {
-    title: 'Following Sound',
-    href: 'https://docs.google.com/document/d/1gMbp364uA-l41Ht0De0ZHHYANcf_Sf4lyaYZkzLJT1o',
-    tags: ['music', 'field work', 'sound studies'],
-  },
-  {
-    title: 'The Impact of Musical Instruments on Museum Visitation',
-    href: 'https://docs.google.com/document/d/178qn_MPC-1690goW3mP-kc_16PeGyajWBgeJVXw5RkE',
-    tags: ['museums', 'music', 'community'],
-  },
-];
-
-const elsewhereCards = [
-  {
-    href: '/elsewhere',
-    label: 'Tinker Space',
-    description: 'Experiments, drafts, and open labs'
-  },
-  {
-    href: '/survival-support',
-    label: 'Survival Support',
-    description: 'Practical support planning and triage'
-  },
-  {
-    href: '/ai-accountability-pledge',
-    label: 'AI Accountability Pledge',
-    description: 'The commitment, civic and measurable'
-  }
-];
 
 ---
 
@@ -177,11 +79,6 @@ const elsewhereCards = [
               style={`--particle-left:${particle.left};--particle-size:${particle.size};--particle-duration:${particle.duration};--particle-delay:${particle.delay};--particle-drift:${particle.drift};--particle-blur:${particle.blur};--particle-alpha:${particle.alpha};--particle-bottom:${particle.bottom};`}
             />
           ))}
-        </div>
-        <div class="home-hero__controls">
-          <button class="home-view-toggle" data-home-view-toggle type="button" aria-pressed="false">
-            Traditional view
-          </button>
         </div>
         <p class="home-hero__eyebrow">Angel Suero</p>
         <h1 class="home-hero__title"><span class="home-hero__word">A<span class="home-hero__micro">es&apos;s</span></span><span class="home-hero__word">Path Toward Life</span></h1>
@@ -257,8 +154,11 @@ const elsewhereCards = [
   }
 
   .home-showcase {
-    width: min(1020px, calc(100vw - 2rem));
-    margin: 0 auto clamp(1.2rem, 3vw, 2rem);
+    width: calc(100% + 2 * clamp(1rem, 3vw, 1.6rem));
+    max-width: 1020px;
+    margin-left: calc(-1 * clamp(1rem, 3vw, 1.6rem));
+    margin-right: calc(-1 * clamp(1rem, 3vw, 1.6rem));
+    margin-bottom: clamp(1.2rem, 3vw, 2rem);
     padding: clamp(1rem, 2vw, 1.25rem) 0;
     background: rgba(248, 244, 236, 0.9);
     border: 1px solid rgba(214, 198, 175, 0.62);
@@ -272,7 +172,7 @@ const elsewhereCards = [
   }
 
   .home-showcase__panel {
-    width: min(68ch, calc(100% - (var(--home-showcase-inset) * 2)));
+    width: min(62ch, calc(100% - (var(--home-showcase-inset) * 2)));
     margin-inline: auto;
     border: 1px solid rgba(214, 198, 175, 0.7);
     border-radius: 1.05rem;
@@ -299,16 +199,43 @@ const elsewhereCards = [
   .home-showcase__photos {
     width: 100dvw;
     margin: 0 calc(50% - 50dvw);
-    padding-block: 0.1rem;
+    padding-block: 0.35rem;
     overflow: hidden;
+    position: relative;
+    isolation: isolate;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+  }
+
+  .home-showcase__photos::before,
+  .home-showcase__photos::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: clamp(1rem, 5vw, 4rem);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .home-showcase__photos::before {
+    left: 0;
+    background: linear-gradient(90deg, rgba(248, 244, 236, 0.95), rgba(248, 244, 236, 0));
+  }
+
+  .home-showcase__photos::after {
+    right: 0;
+    background: linear-gradient(270deg, rgba(248, 244, 236, 0.95), rgba(248, 244, 236, 0));
   }
 
   .home-showcase__photos-track {
     display: flex;
-    gap: 0.25rem;
+    gap: 0.38rem;
     width: max-content;
-    animation: home-showcase-scroll 28s linear infinite;
-    padding-inline: 0;
+    animation: home-showcase-scroll 36s linear infinite;
+    padding-inline: clamp(0.6rem, 2vw, 1.1rem);
+    opacity: 0.88;
+    will-change: transform;
   }
 
   @keyframes home-showcase-scroll {
@@ -317,18 +244,21 @@ const elsewhereCards = [
   }
 
   .home-showcase__photo {
-    width: clamp(120px, 18vw, 200px);
-    aspect-ratio: 3 / 4;
+    width: clamp(96px, 13vw, 150px);
+    aspect-ratio: 4 / 5;
     background-size: cover;
     background-position: center;
     flex-shrink: 0;
-    border-radius: 0.2rem;
-    filter: saturate(0.85);
+    border-radius: 0.55rem;
+    border: 1px solid rgba(214, 198, 175, 0.45);
+    filter: saturate(0.72) brightness(0.88) contrast(0.95);
+    box-shadow: 0 8px 18px rgba(26, 18, 12, 0.08);
+    opacity: 0.96;
     transition: filter 0.3s ease;
   }
 
   .home-showcase__photo:hover {
-    filter: saturate(1);
+    filter: saturate(0.84) brightness(0.94) contrast(0.97);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -872,6 +802,49 @@ const elsewhereCards = [
   @media (max-width: 600px) {
     .hi-home {
       padding-top: clamp(1.5rem, 5vw, 2.5rem);
+    }
+
+    .home-showcase {
+      width: calc(100% + 2 * clamp(1rem, 3vw, 1.6rem));
+      padding: 0.8rem 0 0.9rem;
+      gap: 0.5rem;
+      border-radius: 1.35rem;
+    }
+
+    .home-showcase__panel {
+      width: calc(100% - 0.7rem);
+      padding: 0.8rem;
+      border-radius: 0.92rem;
+    }
+
+    .home-showcase__panel p:last-child {
+      margin-top: 0.45rem;
+      line-height: 1.5;
+    }
+
+    .home-showcase__photos {
+      padding-block: 0.15rem;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+      mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+    }
+
+    .home-showcase__photos::before,
+    .home-showcase__photos::after {
+      width: 0.8rem;
+      opacity: 0.85;
+    }
+
+    .home-showcase__photos-track {
+      gap: 0.28rem;
+      animation-duration: 52s;
+      padding-inline: 0.3rem;
+      opacity: 0.74;
+    }
+
+    .home-showcase__photo {
+      width: clamp(76px, 21vw, 96px);
+      border-radius: 0.42rem;
+      filter: saturate(0.64) brightness(0.82) contrast(0.92);
     }
 
     .hi-row {
@@ -1944,60 +1917,5 @@ const elsewhereCards = [
 </style>
 
 <script>
-  const photos = document.querySelector('.hi-photos');
-  const track = photos?.querySelector('.hi-photos__track');
-  const group = photos?.querySelector('.hi-photos__group');
-  const surfaceToggle = document.querySelector('[data-home-view-toggle]');
-  const surfaceModeKey = 'home-surface-mode';
-
-  if (track && group) {
-    const updateDistance = () => {
-      const width = group.getBoundingClientRect().width;
-      track.style.setProperty('--photos-distance', `${width}px`);
-    };
-
-    updateDistance();
-
-    if ('ResizeObserver' in window) {
-      const observer = new ResizeObserver(updateDistance);
-      observer.observe(group);
-    } else {
-      window.addEventListener('resize', updateDistance, { passive: true });
-    }
-  }
-
-  if (surfaceToggle) {
-    const readStoredMode = () => {
-      try {
-        return localStorage.getItem(surfaceModeKey) === 'traditional' ? 'traditional' : 'timeline';
-      } catch {
-        return 'timeline';
-      }
-    };
-
-    const writeStoredMode = (mode) => {
-      try {
-        localStorage.setItem(surfaceModeKey, mode);
-      } catch {
-        // Ignore storage failures and keep the toggle functional.
-      }
-    };
-
-    const applyMode = (mode) => {
-      const traditional = mode === 'traditional';
-      document.body.dataset.surfaceFrame = 'flat';
-      document.body.dataset.headerMode = traditional ? 'pinned' : 'peek';
-      document.body.dataset.headerReveal = traditional ? 'visible' : 'hidden';
-      surfaceToggle.setAttribute('aria-pressed', String(traditional));
-      surfaceToggle.textContent = traditional ? 'Timeline view' : 'Traditional view';
-      writeStoredMode(mode);
-    };
-
-    applyMode(readStoredMode());
-
-    surfaceToggle.addEventListener('click', () => {
-      const nextMode = document.body.dataset.surfaceFrame === 'framed' ? 'timeline' : 'traditional';
-      applyMode(nextMode);
-    });
-  }
+  document.body.dataset.surfaceFrame = 'flat';
 </script>

@@ -658,6 +658,13 @@ body[data-header-reveal='hidden'] .site-header::before {
 
 .site-header .header-secondary {
   padding-bottom: 0.45rem;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .site-header .header-secondary.is-open {
+    display: block;
+  }
 }
 
 .site-header .site-shell-row {
@@ -721,10 +728,16 @@ body[data-header-reveal='hidden'] .site-header::before {
 
 .site-header .header-secondary-group__items {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 0.5rem 0.72rem;
   min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.site-header .header-secondary-group__items::-webkit-scrollbar {
+  display: none;
 }
 
 /* AI cluster — visual capsule grouping */

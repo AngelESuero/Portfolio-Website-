@@ -1,0 +1,237 @@
+---
+import { getCollection } from 'astro:content';
+import EntryCard from '../../components/EntryCard.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  ARCHIVE_MEDIUMS,
+  getArchiveMediumHref,
+  getEntryDisplayMedium,
+  sortEntriesByDate
+} from '../../lib/archive-entries';
+import { formatLongArchiveUtcDate } from '../../lib/date-formatting';
+
+const allEntries = sortEntriesByDate(await getCollection('entries'));
+const entries = allEntries.filter((e) => e.data.medium === 'video');
+
+const videos = entries.filter((e) => e.data.ingest?.surface === 'videos');
+const streams = entries.filter((e) => e.data.ingest?.surface === 'streams');
+const shorts = entries.filter((e) => e.data.ingest?.surface === 'shorts');
+const other = entries.filter((e) => !e.data.ingest?.surface || !['videos','streams','shorts'].includes(e.data.ingest.surface));
+---
+<BaseLayout title="Video Archive — a_e.s_" theme="archive">
+  <section class="view-surface archive-video">
+    <header class="view-surface-header archive-video__header">
+      <p class="view-surface-kicker">Archive lane</p>
+      <h1>Video</h1>
+      <p class="archive-video__description">
+        Moving-image work filed into the archive: standalone uploads, streams, and shorts kept as a continuous channel record.
+      </p>
+      <div class="archive-video__meta font-archive">
+        <p>{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
+        <p>{videos.length} uploads · {streams.length} streams · {shorts.length} shorts</p>
+        {entries[0] && <p>Latest: {formatLongArchiveUtcDate(entries[0].data.date)}</p>}
+      </div>
+    </header>
+
+    <nav class="archive-video__browse font-archive" aria-label="Archive lane pages">
+      <a href="/archive" class="archive-video__browse-link">All archive</a>
+      {ARCHIVE_MEDIUMS.map((lane) => (
+        <a
+          href={getArchiveMediumHref(lane)}
+          class:list={['archive-video__browse-link', lane === 'video' && 'is-current']}
+          {...(lane === 'video' ? { 'aria-current': 'page' } : {})}
+        >
+          {getEntryDisplayMedium(lane)}
+        </a>
+      ))}
+    </nav>
+
+    <section class="archive-video-controls" aria-label="Video filters">
+      <div class="archive-video-controls__group">
+        <p class="archive-video-controls__label font-archive">Type</p>
+        <div class="archive-video-controls__buttons" role="group" aria-label="Filter by video type">
+          <button type="button" class="archive-filter font-archive is-active" data-surface="all" aria-pressed="true">
+            All ({entries.length})
+          </button>
+          {videos.length > 0 && (
+            <button type="button" class="archive-filter font-archive" data-surface="videos" aria-pressed="false">
+              Uploads ({videos.length})
+            </button>
+          )}
+          {streams.length > 0 && (
+            <button type="button" class="archive-filter font-archive" data-surface="streams" aria-pressed="false">
+              Streams ({streams.length})
+            </button>
+          )}
+          {shorts.length > 0 && (
+            <button type="button" class="archive-filter font-archive" data-surface="shorts" aria-pressed="false">
+              Shorts ({shorts.length})
+            </button>
+          )}
+        </div>
+      </div>
+    </section>
+
+    <div class="archive-results font-archive">
+      <p id="archive-results-count">{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
+    </div>
+
+    {entries.length === 0 ? (
+      <p class="archive-video__empty">No video entries yet.</p>
+    ) : (
+      <>
+        <ul class="archive-video__list" id="archive-video-list">
+          {entries.map((entry) => (
+            <li
+              class="archive-video__item"
+              data-surface={entry.data.ingest?.surface ?? 'other'}
+            >
+              <EntryCard entry={entry} />
+            </li>
+          ))}
+        </ul>
+        <p class="archive-video__empty" id="archive-video-empty" hidden>Nothing matches this filter.</p>
+      </>
+    )}
+  </section>
+
+  <script is:inline>
+    (() => {
+      const buttons = Array.from(document.querySelectorAll('[data-surface]'));
+      const filterButtons = buttons.filter((b) => b.tagName === 'BUTTON');
+      const items = Array.from(document.querySelectorAll('.archive-video__item'));
+      const resultsCount = document.getElementById('archive-results-count');
+      const emptyState = document.getElementById('archive-video-empty');
+
+      filterButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const surface = btn.getAttribute('data-surface') || 'all';
+
+          filterButtons.forEach((b) => {
+            const active = b.getAttribute('data-surface') === surface;
+            b.classList.toggle('is-active', active);
+            b.setAttribute('aria-pressed', String(active));
+          });
+
+          let count = 0;
+          items.forEach((item) => {
+            const itemSurface = item.getAttribute('data-surface') || 'other';
+            const visible = surface === 'all' || itemSurface === surface;
+            item.hidden = !visible;
+            if (visible) count++;
+          });
+
+          if (resultsCount) resultsCount.textContent = `${count} ${count === 1 ? 'entry' : 'entries'}`;
+          if (emptyState instanceof HTMLElement) emptyState.hidden = count !== 0;
+        });
+      });
+    })();
+  </script>
+</BaseLayout>
+
+<style>
+  .archive-video {
+    display: grid;
+    gap: 1.4rem;
+  }
+
+  .archive-video__description {
+    max-width: 64ch;
+    margin: 0;
+  }
+
+  .archive-video__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem 1rem;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .archive-video__meta p { margin: 0; }
+
+  .archive-video__browse {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .archive-video__browse-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.15rem;
+    padding: 0.4rem 0.74rem;
+    border-radius: 999px;
+    border: 1px solid var(--line2);
+    color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
+    text-decoration: none;
+    background: color-mix(in srgb, var(--tone-surface) 88%, transparent);
+  }
+
+  .archive-video__browse-link.is-current,
+  .archive-video__browse-link:hover,
+  .archive-video__browse-link:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
+    color: var(--tone-text);
+  }
+
+  .archive-video-controls {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem 1.05rem;
+    border: 1px solid var(--line2);
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.022), transparent 72%),
+      color-mix(in srgb, var(--tone-surface) 88%, transparent);
+  }
+
+  .archive-video-controls__group { display: grid; gap: 0.55rem; }
+
+  .archive-video-controls__label {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--tone-muted);
+  }
+
+  .archive-video-controls__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.48rem;
+  }
+
+  .archive-results {
+    color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .archive-results p { margin: 0; }
+
+  .archive-video__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .archive-video__item {
+    min-width: 0;
+    content-visibility: auto;
+    contain: layout style paint;
+    contain-intrinsic-size: 32rem;
+  }
+
+  .archive-video__empty {
+    margin: 0;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  }
+</style>

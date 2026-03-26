@@ -55,6 +55,14 @@ const aiGroup: NavItem[] = [
   { label: 'Survival Support', href: '/survival-support', color: 'ochre', tone: 'grounding' },
 ];
 
+const problemsNav: NavItem[] = [
+  { label: 'Newark', href: '/newark', color: 'ochre', tone: 'grounding' },
+];
+
+import youtubeData from '../data/youtube.json';
+const latestVideoId = youtubeData.items[0]?.videoId ?? '';
+const latestVideoTitle = youtubeData.items[0]?.title ?? 'Latest video';
+
 const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const currentView = Astro.url.searchParams.get('view') || '';
 const normalize = (path: string) => path.replace(/\/+$/, '') || '/';
@@ -72,8 +80,6 @@ const isActive = (item: NavItem) => {
 
   return true;
 };
-import youtubeData from '../data/youtube.json';
-const latestVideoId = youtubeData.items[0]?.videoId ?? '';
 ---
 
 <header class="site-header sticky top-0 z-50">
@@ -97,6 +103,7 @@ const latestVideoId = youtubeData.items[0]?.videoId ?? '';
       <button
         data-music-bar-header-toggle
         aria-label="Toggle music player"
+        title="Toggle music player"
         class="pill rounded px-3 py-1 text-sm"
         type="button"
       >
@@ -105,11 +112,22 @@ const latestVideoId = youtubeData.items[0]?.videoId ?? '';
       <button
         data-youtube-pip-trigger
         data-video-id={latestVideoId}
-        aria-label="Watch latest video"
+        aria-label={`Watch latest upload: ${latestVideoTitle}`}
+        title={`Latest upload: ${latestVideoTitle}`}
         class="pill rounded px-3 py-1 text-sm"
         type="button"
       >
         ▶
+      </button>
+      <button
+        id="secondary-nav-toggle"
+        aria-expanded="false"
+        aria-controls="header-secondary-nav"
+        title="More navigation"
+        class="pill rounded px-3 py-1 text-sm"
+        type="button"
+      >
+        <span class="secondary-nav-toggle__icon">⊞</span>
       </button>
       <button
         id="mobile-nav-toggle"
@@ -122,7 +140,7 @@ const latestVideoId = youtubeData.items[0]?.videoId ?? '';
       </button>
     </div>
   </div>
-  <div class="site-shell-row header-secondary hidden md:block">
+  <div class="site-shell-row header-secondary" id="header-secondary-nav" data-secondary-nav>
     <nav aria-label="Secondary navigation" class="header-secondary-nav">
       <div class="header-secondary-group">
         <p class="header-secondary-label">Elsewhere</p>
@@ -159,6 +177,23 @@ const latestVideoId = youtubeData.items[0]?.videoId ?? '';
         <p class="header-secondary-label">Practice</p>
         <div class="header-secondary-group__items">
           {focusNav.map((item) => (
+            <a
+              href={item.href}
+              class="header-link header-link--secondary text-sm no-underline"
+              style={`--link-accent:${getAccentSwatch(item.color)}`}
+              {...(item.color ? { 'data-color': item.color } : {})}
+              {...(item.tone ? { 'data-tone': item.tone } : {})}
+              {...(isActive(item) ? { 'aria-current': 'page' } : {})}
+            >
+              {item.label}
+            </a>
+          ))}
+        </div>
+      </div>
+      <div class="header-secondary-group header-secondary-group--problems">
+        <p class="header-secondary-label">Problems</p>
+        <div class="header-secondary-group__items">
+          {problemsNav.map((item) => (
             <a
               href={item.href}
               class="header-link header-link--secondary text-sm no-underline"
@@ -229,7 +264,54 @@ const latestVideoId = youtubeData.items[0]?.videoId ?? '';
             {item.label}
           </a>
         ))}
+        <p class="mobile-nav-label">Problems</p>
+        {problemsNav.map((item) => (
+          <a
+            href={item.href}
+            class="header-link mobile-nav-link header-link--secondary no-underline"
+            style={`--link-accent:${getAccentSwatch(item.color)}`}
+            {...(item.color ? { 'data-color': item.color } : {})}
+            {...(item.tone ? { 'data-tone': item.tone } : {})}
+            {...(isActive(item) ? { 'aria-current': 'page' } : {})}
+          >
+            {item.label}
+          </a>
+        ))}
       </div>
     </div>
   </nav>
 </header>
+
+<style>
+  #secondary-nav-toggle {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    #secondary-nav-toggle {
+      display: inline-flex;
+    }
+  }
+</style>
+
+<script>
+  const initSecondaryNav = () => {
+    const btn = document.getElementById('secondary-nav-toggle');
+    const nav = document.getElementById('header-secondary-nav');
+    if (!btn || !nav) return;
+
+    const STORAGE_KEY = 'secondary-nav-open';
+
+    const setOpen = (open) => {
+      nav.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', String(open));
+      btn.querySelector('.secondary-nav-toggle__icon').textContent = open ? '⊟' : '⊞';
+      sessionStorage.setItem(STORAGE_KEY, String(open));
+    };
+
+    setOpen(sessionStorage.getItem(STORAGE_KEY) === 'true');
+    btn.addEventListener('click', () => setOpen(!nav.classList.contains('is-open')));
+  };
+
+  document.addEventListener('astro:page-load', initSecondaryNav);
+  initSecondaryNav();
+</script>

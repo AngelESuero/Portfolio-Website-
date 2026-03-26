@@ -151,9 +151,7 @@ const outwardLabel = (link: PreparedLink): string => {
 };
 
 const allProjects = (await getCollection('projects')).sort(compareProjectsByRecency);
-const hiddenProjectSlugs = new Set(['newark-night-video-notes']);
-const visibleProjects = allProjects.filter((project) => !hiddenProjectSlugs.has(project.slug));
-const projectIndex = new Map(visibleProjects.map((project) => [project.slug, project]));
+const projectIndex = new Map(allProjects.map((project) => [project.slug, project]));
 const scoreLeadProject = (project: CollectionEntry<'projects'>) => {
   const timeline = resolveProjectTimeline(project.data);
   const notes = extractNotes(project.body);
@@ -165,12 +163,12 @@ const scoreLeadProject = (project: CollectionEntry<'projects'>) => {
 };
 
 const leadProject =
-  [...visibleProjects].sort((a, b) => {
+  [...allProjects].sort((a, b) => {
     const scoreDelta = scoreLeadProject(b) - scoreLeadProject(a);
     if (scoreDelta !== 0) return scoreDelta;
     return compareProjectsByRecency(a, b);
-  })[0] ?? visibleProjects[0];
-const remainingProjects = visibleProjects
+  })[0] ?? allProjects[0];
+const remainingProjects = allProjects
   .filter((project) => project.slug !== leadProject.slug)
   .sort((a, b) => {
     const featuredDelta = Number(b.data.featured) - Number(a.data.featured);
@@ -198,7 +196,7 @@ const inferRelatedProjects = (
   excludedSlugs: string[] = []
 ): RelatedProject[] => {
   const excluded = new Set([project.slug, ...excludedSlugs]);
-  return visibleProjects
+  return allProjects
     .filter((candidate) => !excluded.has(candidate.slug) && candidate.data.type === project.data.type)
     .sort((a, b) => {
       const featuredDelta = Number(b.data.featured) - Number(a.data.featured);

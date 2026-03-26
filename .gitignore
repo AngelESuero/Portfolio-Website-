@@ -5,6 +5,7 @@ dist
 
 # Local-only media assets (too large for git)
 public/images/work/art-of-survival/codex-photos/
+tmp/
 
 # Finder-style duplicate filenames
 * 2.astro

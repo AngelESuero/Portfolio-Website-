@@ -772,7 +772,7 @@ const activeEntry = requestedEntry ?? null;
 
   .theater-rail {
     position: sticky;
-    top: clamp(1rem, 4vw, 2.5rem);
+    top: calc(var(--site-header-size, 2.5rem) + 1rem);
     display: grid;
     gap: 1rem;
     align-content: start;
@@ -886,7 +886,7 @@ const activeEntry = requestedEntry ?? null;
     display: grid;
     gap: 1.1rem;
     position: sticky;
-    top: clamp(1rem, 4vw, 2.5rem);
+    top: calc(var(--site-header-size, 2.5rem) + 1rem);
     align-self: start;
   }
 
