@@ -103,11 +103,12 @@ const latestPost = matchedPosts[0] ?? null;
 const heroPrimaryStat = referenceDocs.length > 0
   ? { label: 'Sources', value: referenceDocs.length }
   : { label: 'Projects', value: matchedProjects.length };
+const hasHeroImages = Boolean(lane.heroImages?.length);
 ---
 
 <BaseLayout title={`${lane.label} — a_e.s_`} description={lane.description} theme="archive">
   <section class="view-surface focus-page" style={`--focus-accent:${lane.swatch}`}>
-    <header class="view-surface-header focus-hero">
+    <header class:list={['view-surface-header focus-hero', !hasHeroImages && 'focus-hero--compact']}>
       <div class="focus-hero__copy">
         <p class="view-surface-kicker">Practice lane</p>
         <h1>{lane.label}</h1>
@@ -116,7 +117,23 @@ const heroPrimaryStat = referenceDocs.length > 0
           <a href={lane.primaryLink.href} class="focus-hero__action">{lane.primaryLink.label}</a>
           {lane.secondaryLink && <a href={lane.secondaryLink.href} class="focus-hero__action focus-hero__action--secondary">{lane.secondaryLink.label}</a>}
         </div>
-        {lane.heroImages && lane.heroImages.length > 0 && (
+        {!hasHeroImages && (
+          <div class="focus-hero__stats focus-hero__stats--inline font-archive">
+            <div>
+              <span>{heroPrimaryStat.label}</span>
+              <strong>{heroPrimaryStat.value}</strong>
+            </div>
+            <div>
+              <span>Archive</span>
+              <strong>{matchedEntries.length}</strong>
+            </div>
+            <div>
+              <span>Posts</span>
+              <strong>{matchedPosts.length}</strong>
+            </div>
+          </div>
+        )}
+        {hasHeroImages && (
           <div class="focus-hero__gallery" aria-label={`${lane.label} visual highlights`}>
             {lane.heroImages.map((image, index) => (
               <figure class:list={['focus-hero__frame', index === 0 && 'is-featured']}>
@@ -127,20 +144,22 @@ const heroPrimaryStat = referenceDocs.length > 0
         )}
       </div>
 
-      <div class="focus-hero__stats font-archive">
-        <div>
-          <span>{heroPrimaryStat.label}</span>
-          <strong>{heroPrimaryStat.value}</strong>
+      {hasHeroImages && (
+        <div class="focus-hero__stats font-archive">
+          <div>
+            <span>{heroPrimaryStat.label}</span>
+            <strong>{heroPrimaryStat.value}</strong>
+          </div>
+          <div>
+            <span>Archive</span>
+            <strong>{matchedEntries.length}</strong>
+          </div>
+          <div>
+            <span>Posts</span>
+            <strong>{matchedPosts.length}</strong>
+          </div>
         </div>
-        <div>
-          <span>Archive</span>
-          <strong>{matchedEntries.length}</strong>
-        </div>
-        <div>
-          <span>Posts</span>
-          <strong>{matchedPosts.length}</strong>
-        </div>
-      </div>
+      )}
     </header>
 
     <nav class="focus-tabs font-archive" aria-label="Focus lanes">
@@ -324,7 +343,7 @@ const heroPrimaryStat = referenceDocs.length > 0
     display: grid;
     grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.58fr);
     gap: 1rem;
-    align-items: end;
+    align-items: start;
     position: relative;
     overflow: hidden;
     border: 1px solid color-mix(in srgb, var(--focus-accent) 18%, var(--line2));
@@ -339,6 +358,26 @@ const heroPrimaryStat = referenceDocs.length > 0
     display: grid;
     gap: 0.85rem;
     max-width: 62ch;
+  }
+
+  .focus-hero--compact {
+    grid-template-columns: 1fr;
+    gap: 1.05rem;
+  }
+
+  .focus-hero--compact .focus-hero__copy {
+    max-width: 72ch;
+  }
+
+  .focus-hero__stats--inline {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+    align-self: stretch;
+    margin-top: 0.2rem;
+  }
+
+  .focus-hero__stats--inline div {
+    min-height: 7.5rem;
   }
 
   .focus-hero__description {

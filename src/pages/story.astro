@@ -76,11 +76,11 @@ const entries = [
 ];
 ---
 
-<BaseLayout title="Story — Angel Suero" description="A biographical timeline of Angel Edras Suero — New Jersey to London to New York.">
+<BaseLayout title="Timeline — Angel Suero" description="A biographical timeline of Angel Edras Suero — New Jersey to London to New York.">
   <section class="story-page">
 
     <header class="story-header">
-      <h1>Angel Edras Suero</h1>
+      <h1>Timeline</h1>
       <p class="story-header__sub">New Jersey &rarr; London &rarr; New York</p>
     </header>
 
@@ -98,7 +98,6 @@ const entries = [
           </button>
           <div class="story-panel" role="region">
             <div class="story-panel__inner">
-              <span class="story-panel__badge">ai-written placeholder</span>
               {entry.body.map((p) => <p>{p}</p>)}
             </div>
           </div>
@@ -306,20 +305,6 @@ const entries = [
 
   .story-panel__inner p:last-child {
     margin-bottom: 0;
-  }
-
-  /* Badge */
-  .story-panel__badge {
-    display: inline-block;
-    font-size: 10px;
-    font-family: 'Helvetica Neue', 'Arial', sans-serif;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: color-mix(in srgb, var(--tone-muted) 70%, transparent);
-    border: 1px solid color-mix(in srgb, var(--tone-muted) 25%, transparent);
-    border-radius: 3px;
-    padding: 2px 7px;
-    margin-bottom: 12px;
   }
 
   /* ── Footer ── */

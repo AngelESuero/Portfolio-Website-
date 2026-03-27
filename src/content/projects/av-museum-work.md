@@ -1,5 +1,5 @@
 ---
-title: "AV / Museum Work"
+title: "Museum / AV Work"
 year: 2025
 type: "video"
 status: "Ongoing"
@@ -15,4 +15,3 @@ cover_image: "/images/nmoa-logo.png"
 cover_fit: "contain"
 description: "Installation context, projection studies, and museum-floor AV constraints held together as one work lane."
 ---
-

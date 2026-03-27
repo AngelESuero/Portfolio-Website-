@@ -773,10 +773,10 @@ body[data-header-reveal='hidden'] .site-header::before {
 
 .site-header .header-secondary-group--practice .header-secondary-label {
   font-size: 0.74rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-accent) 22%);
-  padding-top: 0;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: color-mix(in srgb, var(--tone-text) 58%, var(--tone-muted) 42%);
+  padding-top: 0.02rem;
 }
 
 .site-header .header-secondary-group--practice .header-secondary-group__items {

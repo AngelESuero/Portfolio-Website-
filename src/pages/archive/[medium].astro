@@ -24,7 +24,7 @@ const mediumDescriptions: Record<ArchiveMedium, string> = {
 };
 
 export async function getStaticPaths() {
-  return ARCHIVE_MEDIUMS.map((medium) => ({
+  return ARCHIVE_MEDIUMS.filter((medium) => medium !== 'video').map((medium) => ({
     params: { medium },
     props: { medium }
   }));

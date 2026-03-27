@@ -91,7 +91,7 @@ export const focusLanes: FocusLane[] = [
     stageNote: 'This lane leans toward installation and systems work right now more than literal construction footage.',
     primaryLink: {
       href: '/work/av-museum-work',
-      label: 'Open AV / Museum work'
+      label: 'Open Museum / AV work'
     },
     secondaryLink: {
       href: '/threads/av-museum-work',
@@ -163,11 +163,6 @@ export const focusLanes: FocusLane[] = [
       href: '/archive/video',
       label: 'Browse video archive'
     },
-    secondaryLink: {
-      href: '/work/gaming-clips-vault',
-      label: 'Open Gaming/Clips Vault'
-    },
-    projectSlugs: ['gaming-clips-vault'],
     projectKeywords: ['gaming', 'gameplay', 'clip'],
     entryMediums: ['video'],
     entryTags: ['gaming', 'destiny-2', 'sparking', 'sifu', 'dragon-ball', 'ranked', 'dbsz'],

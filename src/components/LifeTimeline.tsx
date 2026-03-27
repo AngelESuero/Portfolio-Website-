@@ -24,9 +24,7 @@ interface TimelineEntry {
   href?: string;
   hrefLabel?: string;
   external?: boolean;
-  placeholder?: boolean;
-  placeholderNote?: string;
-  /** AI-written narrative — shown in expandable panel, always badged */
+  /** Narrative prose shown in the expandable panel. */
   aiNarrative?: string[];
 }
 
@@ -132,8 +130,6 @@ const ENTRIES: TimelineEntry[] = [
     title: "Associate's Degree",
     shortDesc: 'Community college foundation — built the academic footing that led to Gallatin.',
     category: 'education',
-    placeholder: true,
-    placeholderNote: 'Entry reserved',
   },
   {
     id: 'gallatin',
@@ -334,11 +330,11 @@ const ENTRIES: TimelineEntry[] = [
   {
     id: 'survival-os',
     year: '2024',
-    title: 'Survival OS',
+    title: 'Survival',
     shortDesc: 'A survival-first blueprint mapping what keeps a human alive, and what AI could automate to protect survivability.',
     category: 'project',
     href: '/survival-os',
-    hrefLabel: 'Open OS →',
+    hrefLabel: 'Open model →',
   },
   {
     id: 'post-labor',
@@ -521,11 +517,11 @@ const STAGE_SHOWCASES: StageShowcase[] = [
     title: 'Current',
     ageRange: 'Ages 24+',
     yearRange: '2024–Now',
-    summary: 'Systems thinking and archive practice converge. Money & Wealth, AGI research, Survival OS, and building with AI.',
+    summary: 'Systems thinking and archive practice converge. Money & Wealth, AGI research, Survival, and building with AI.',
     accomplishments: [
       'Built Money & Wealth — a working essay and structural diagram about survival floors, wealth, and market coercion.',
       'Published the AGI Signals Timeline: a wave-based read of the AGI transition organized by signal type, not hype.',
-      'Developed Survival OS — a blueprint mapping what keeps a human alive and what AI could safely automate.',
+      'Developed Survival — a blueprint mapping what keeps a human alive and what AI could safely automate.',
       'Assembled a living public archive of music, video, and writing as an open record of process.',
       'Active AI and prompt engineering practice: building with Claude, researching accountability, keeping human judgment central.'
     ],
@@ -534,7 +530,7 @@ const STAGE_SHOWCASES: StageShowcase[] = [
     showcases: [
       { label: 'Money & Wealth', href: '/market-model', kind: 'ideas' },
       { label: 'AGI Signals', href: '/agi', kind: 'ideas' },
-      { label: 'Survival OS', href: '/survival-os', kind: 'ideas' },
+      { label: 'Survival', href: '/survival-os', kind: 'ideas' },
       { label: 'Post-Labor Economics', href: '/post-labor-economics', kind: 'ideas' },
       { label: 'Music archive', href: '/archive/music', kind: 'music' },
       { label: 'Now', href: '/now', kind: 'writing' }
@@ -590,6 +586,9 @@ export default function LifeTimeline({ variant = 'dark', layout = 'contained' }:
             .map((entryId) => ENTRY_LOOKUP.get(entryId))
             .filter((entry): entry is TimelineEntry => Boolean(entry))
             .map((entry) => entry.title);
+          const aiWrittenEntries = stage.featuredEntryIds
+            .map((entryId) => ENTRY_LOOKUP.get(entryId))
+            .filter((entry): entry is TimelineEntry => Boolean(entry?.aiNarrative?.length));
 
           return (
             <li
@@ -671,6 +670,33 @@ export default function LifeTimeline({ variant = 'dark', layout = 'contained' }:
                         ))}
                       </ul>
                     </div>
+
+                    {aiWrittenEntries.length ? (
+                      <div className="life-timeline__block">
+                        <p className="life-timeline__sectionLabel life-timeline__sectionLabel--ai">
+                          <span className="life-timeline__sectionLabelMark" aria-hidden="true">◌</span>
+                          AI-written notes
+                        </p>
+                        <div className="life-timeline__narratives">
+                          {aiWrittenEntries.map((entry) => (
+                            <article key={entry.id} className="life-timeline__narrative">
+                              <div className="life-timeline__narrativeHead">
+                                <span className="life-timeline__narrativeBadge">
+                                  <span aria-hidden="true">◌</span>
+                                  <span>AI-written</span>
+                                </span>
+                                <span className="life-timeline__narrativeTitle">{entry.title}</span>
+                              </div>
+                              <div className="life-timeline__narrativeBody">
+                                {entry.aiNarrative?.map((paragraph, narrativeIndex) => (
+                                  <p key={`${entry.id}-${narrativeIndex}`}>{paragraph}</p>
+                                ))}
+                              </div>
+                            </article>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
 
                     <div className="life-timeline__block">
                       <p className="life-timeline__sectionLabel">Showcases</p>

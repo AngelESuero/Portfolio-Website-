@@ -42,7 +42,7 @@ const mapRegions: MapRegion[] = [
   },
   {
     id: 'survival',
-    label: 'Survival OS',
+    label: 'Survival',
     color: '#6ba88c',
     route: '/survival-os',
     summary: '8 systems across three tiers: Keep Alive, Stabilize, Live. Built around real Newark conditions.',

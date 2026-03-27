@@ -92,7 +92,7 @@ const rooms: Room[] = [
         url: '/work'
       },
       {
-        title: 'AV / Museum Thread',
+        title: 'Museum / AV Thread',
         summary: 'Installation notes and AV constraints.',
         kind: 'native',
         url: '/threads/av-museum-work'

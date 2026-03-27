@@ -28,14 +28,21 @@ const primaryNav: NavItem[] = [
   { label: 'Contact', href: '/contact', color: 'white', tone: 'harmony' }
 ];
 
-const secondaryNav: NavItem[] = [
+const elsewhereNav: NavItem[] = [
   { label: 'Studio Notes', href: '/studio-notes', color: 'white', tone: 'contemplation' },
   { label: 'Collaborations', href: '/collaborations', color: 'ochre', tone: 'grounding' },
   { label: 'Theater', href: '/theater', color: 'red', tone: 'presence' },
-  { label: 'Map', href: '/map', color: 'blue', tone: 'presence' },
-  { label: 'Map #2', href: '/map?view=unfurling', color: 'white', tone: 'clarity', view: 'unfurling' },
+  { label: 'Maps', href: '/map', color: 'blue', tone: 'presence' },
+  { label: 'Research', href: '/agi', color: 'blue', tone: 'discernment' },
+  { label: 'Timeline', href: '/story', color: 'white', tone: 'presence' },
   { label: 'Genre Tree', href: '/genre-tree', color: 'ochre', tone: 'grounding' },
   { label: 'Resources', href: '/resources', color: 'white', tone: 'contemplation' }
+];
+
+const practiceSupplementNav: NavItem[] = [
+  { label: 'Video', href: '/archive/video', color: 'blue', tone: 'clarity' },
+  { label: 'Proposals', href: '/archive/proposal', color: 'white', tone: 'contemplation' },
+  { label: 'Museum / AV', href: '/threads/av-museum-work', color: 'ochre', tone: 'grounding' }
 ];
 
 const focusNav: NavItem[] = [
@@ -45,13 +52,13 @@ const focusNav: NavItem[] = [
     color: lane.navColor,
     tone: lane.navTone
   })),
+  ...practiceSupplementNav,
   { label: 'Career Search', href: '/rejections', color: 'red', tone: 'grounding' }
 ];
 
 const aiGroup: NavItem[] = [
   { label: 'AI', href: '/ai', color: 'blue', tone: 'discernment' },
-  { label: 'AI x Survival', href: '/survival-os', color: 'red', tone: 'grounding' },
-  { label: 'Survival Support', href: '/survival-support', color: 'ochre', tone: 'grounding' },
+  { label: 'Survival', href: '/survival-os', color: 'red', tone: 'grounding' },
 ];
 
 const problemsNav: NavItem[] = [
@@ -75,7 +82,7 @@ const isActive = (item: NavItem) => {
 
   if (target === '/map') {
     if (item.view) return currentView === item.view;
-    return currentView === '';
+    return true;
   }
 
   return true;
@@ -159,7 +166,7 @@ const isActive = (item: NavItem) => {
               </a>
             ))}
           </span>
-          {secondaryNav.map((item) => (
+          {elsewhereNav.map((item) => (
             <a
               href={item.href}
               class="header-link header-link--secondary text-sm no-underline"
@@ -239,7 +246,7 @@ const isActive = (item: NavItem) => {
             </a>
           ))}
         </div>
-        {secondaryNav.map((item) => (
+        {elsewhereNav.map((item) => (
           <a
             href={item.href}
             class="header-link mobile-nav-link header-link--secondary no-underline"

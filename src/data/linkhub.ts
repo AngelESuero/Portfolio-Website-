@@ -430,17 +430,10 @@ const LINK_HUB_CATEGORY_SEEDS: LinkHubCategory[] = [
       },
       {
         id: 'survival-os',
-        title: 'Survival OS',
+        title: 'Survival',
         url: '/survival-os',
         year: '2026',
         tag: 'Blueprint'
-      },
-      {
-        id: 'survival-support',
-        title: 'Survival Support',
-        url: '/survival-support',
-        year: '2026',
-        tag: 'Guide'
       }
     ]
   },

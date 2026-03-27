@@ -25,7 +25,7 @@ const xFallbackItems: XFallbackItem[] = [
     summary: "How the archive is structured and updated in public."
   },
   {
-    title: "Survival OS: current operating notes",
+    title: "Survival: current operating notes",
     url: "/survival-os",
     publishedAt: "2026-02-08T12:00:00.000Z",
     summary: "Framework updates for routines, systems, and project cadence."

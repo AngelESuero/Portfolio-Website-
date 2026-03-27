@@ -402,6 +402,18 @@
   color: var(--lt-link);
 }
 
+.life-timeline__sectionLabel--ai {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.life-timeline__sectionLabelMark {
+  font-size: 0.74rem;
+  line-height: 1;
+  opacity: 0.8;
+}
+
 .life-timeline__accomplishments {
   margin: 0;
   padding: 0;
@@ -414,6 +426,63 @@
   margin: 0;
   font-size: clamp(0.86rem, 0.98vw, 0.96rem);
   line-height: 1.6;
+  color: var(--lt-accomplishment-text);
+}
+
+.life-timeline__narratives {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.life-timeline__narrative {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.52rem 0.7rem 0.6rem;
+  border: 1px solid color-mix(in srgb, var(--lt-panel-border) 58%, transparent);
+  border-radius: 0.8rem;
+  background: color-mix(in srgb, var(--lt-entry-ring) 72%, transparent);
+}
+
+.life-timeline__narrativeHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.life-timeline__narrativeBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  min-height: 1.25rem;
+  padding: 0.08rem 0.42rem;
+  border: 1px solid color-mix(in srgb, var(--lt-badge-border) 88%, transparent);
+  border-radius: 999px;
+  font-size: 0.56rem;
+  font-family: 'Helvetica Neue', sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lt-badge-text);
+}
+
+.life-timeline__narrativeTitle {
+  font-size: 0.66rem;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lt-soft);
+}
+
+.life-timeline__narrativeBody {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.life-timeline__narrativeBody p {
+  margin: 0;
+  font-size: clamp(0.86rem, 0.98vw, 0.96rem);
+  line-height: 1.62;
   color: var(--lt-accomplishment-text);
 }
 
@@ -546,6 +615,10 @@
 
   .life-timeline__panelBody--left .life-timeline__badges {
     justify-content: flex-start;
+  }
+
+  .life-timeline__narrative {
+    padding-inline: 0.6rem;
   }
 
   .life-timeline__visuals {
