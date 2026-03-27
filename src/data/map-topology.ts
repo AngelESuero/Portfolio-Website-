@@ -104,10 +104,10 @@ export const MAP_REGIONS: MapRegion[] = [
           },
           {
             id: 'paradox-of-suffering',
-            label: 'Suffering',
+            label: 'Human Suffering',
             x: 0,
             y: 30,
-            detail: 'Pain becomes both a psychological problem and a route into deeper philosophical inquiry.',
+            detail: 'Human suffering becomes both a psychological problem and a route into deeper philosophical inquiry.',
             links: ['epicurean-happiness', 'consciousness-studies']
           }
         ]

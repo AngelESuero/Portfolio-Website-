@@ -722,8 +722,8 @@ body[data-header-reveal='hidden'] .site-header::before {
 }
 
 .site-header .header-secondary-group--practice {
-  align-items: start;
-  margin-top: 0.08rem;
+  align-items: center;
+  margin-top: 0;
 }
 
 .site-header .header-secondary-group__items {
@@ -772,11 +772,11 @@ body[data-header-reveal='hidden'] .site-header::before {
 }
 
 .site-header .header-secondary-group--practice .header-secondary-label {
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-accent) 30%);
-  padding-top: 0.02rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-accent) 22%);
+  padding-top: 0;
 }
 
 .site-header .header-secondary-group--practice .header-secondary-group__items {

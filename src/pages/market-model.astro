@@ -1,104 +1,227 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import MarketModel from '../components/MarketModel';
+
+type ReadingTrail = {
+  group: string;
+  title: string;
+  meta: string;
+  blurb: string;
+  href: string;
+};
+
+const readingTrail: ReadingTrail[] = [
+  {
+    group: 'George Shulman',
+    title: 'Shulman Essay.docx',
+    meta: 'Drive essay · 2020',
+    blurb: 'A theorizing-politics essay returning to Baldwin, whiteness, blackness, and power.',
+    href: 'https://drive.google.com/file/d/1IM69MjIbq7uhGmrefnDsZwcQBpVGxyqH',
+  },
+  {
+    group: 'George Shulman',
+    title: 'FNT - TP.docx',
+    meta: 'Companion draft · 2020',
+    blurb: 'A second draft keeping the same political knot in view from another angle.',
+    href: 'https://drive.google.com/file/d/1D7MgF1-1Sg3D6rhRr6v7H6e2AIP5SfqP',
+  },
+  {
+    group: 'Desert of the Real',
+    title: 'Desert of the Real Proposal',
+    meta: 'Early proposal',
+    blurb: 'The first rough framing for Marx, Bartleby, and refusal as a writing path.',
+    href: 'https://docs.google.com/document/d/16hLqb7IAXvXGW5VhHXiZydEc0Luqowc1_3xwjo8Vxtc',
+  },
+  {
+    group: 'Desert of the Real',
+    title: 'Intro Paragraph For Desert of the Real.docx',
+    meta: 'Draft opener',
+    blurb: 'The opening paragraph sketch before the essay settled into its final shape.',
+    href: 'https://docs.google.com/document/d/1RlJ1Gzdh1ohEi0hTIiMjHpGXf-IvsshT',
+  },
+  {
+    group: 'Desert of the Real',
+    title: 'Essay For Desert Of The Real.docx',
+    meta: 'Finished essay',
+    blurb: 'The completed Marx and Bartleby essay, kept here as a steady aside beside the model.',
+    href: 'https://drive.google.com/file/d/129D_8DSXKOWwACEDRzygo4ZntY-KNNwE',
+  },
+  {
+    group: 'Marx',
+    title: 'Chapter_13_Marx.pdf',
+    meta: 'Primary text shelf',
+    blurb: 'A source anchor for the way this page keeps reading money, labor, and refusal.',
+    href: 'https://drive.google.com/file/d/19Os1NCxqjub0L3a0ZhHjiGjDsw7vIFFr',
+  },
+];
 ---
 
 <BaseLayout
-  title="Market Model - a_e.s_"
-  description="A framework mapping all NAICS sectors into survival necessities versus personal desire."
+  title="Money & Wealth - a_e.s_"
+  description="An unfolding essay on money, wealth, survival, and the diagram that helps make the difference legible."
   theme="archive"
-  bodyClass="market-model-page"
+  bodyClass="money-wealth-page"
 >
-  <main class="market-model-shell">
-    <header class="market-model-hero">
-      <div>
-        <p class="market-model-hero__kicker">Elsewhere</p>
-        <h1>Market Model</h1>
-        <p class="market-model-hero__lede">
-          A survival floor requires a clear distinction between what people must access to live and what belongs to
-          preference, leisure, or market desire. This model maps the economy around that split.
+  <main class="money-wealth-shell">
+    <header class="money-wealth-hero">
+      <div class="money-wealth-hero__copy">
+        <p class="money-wealth-hero__kicker">Problem record</p>
+        <h1>Money & Wealth</h1>
+        <p class="money-wealth-hero__lede">
+          I keep coming back to the difference between needing money to live and having wealth as stored flexibility.
+          This page is me learning to understand that difference, and the diagram is the working map I keep returning
+          to while I do it.
         </p>
       </div>
 
-      <aside class="market-model-hero__card">
-        <p class="market-model-hero__card-label">Core claim</p>
+      <aside class="money-wealth-hero__card">
+        <p class="money-wealth-hero__card-label">Working position</p>
         <p>
-          If a person cannot live without a market, it should not be treated like an ordinary consumer choice.
+          Money is pressure. Wealth is time, insulation, and room to choose. If that distinction stays blurry, the
+          market starts pretending it is a moral system instead of a survival system.
         </p>
       </aside>
     </header>
 
-    <section class="market-model-stage">
-      <MarketModel client:load />
-    </section>
+    <section class="money-wealth-layout">
+      <div class="money-wealth-main">
+        <article class="money-wealth-block">
+          <p class="money-wealth-block__label">What I keep naming</p>
+          <h2>Money is not the same thing as wealth</h2>
+          <p>
+            Money moves through life as a medium for exchange. Wealth, by contrast, stores possibility. It is the
+            difference between a person who can keep choosing and a person who has to keep converting every hour into
+            survival.
+          </p>
+          <p>
+            When I name money and wealth as a problem, I am really naming the way they reorganize the rest of life:
+            housing, food, time, care, mobility, education, and the right not to be constantly at the mercy of a
+            market.
+          </p>
+        </article>
 
-    <section class="market-model-notes">
-      <article class="market-model-note">
-        <p class="market-model-note__label">How to read it</p>
-        <h2>Three bands, one question</h2>
-        <p>
-          The model separates the economy into directly subsidized survival markets, survival markets that are still
-          market-facing, and everything else that sits in the desire lane.
-        </p>
-      </article>
+        <article class="money-wealth-block">
+          <p class="money-wealth-block__label">Why the model exists</p>
+          <h2>Some markets should not be treated like ordinary choice</h2>
+          <p>
+            The diagram began as a way to separate survival from desire. I needed a way to say that housing,
+            food, utilities, healthcare, and transportation are not just categories in an economy. They are the floor
+            people stand on before preference even becomes meaningful.
+          </p>
+          <p>
+            That is why this page stays open instead of closing on a slogan. I am still learning how to read the line
+            between what keeps a person alive, what keeps a person resourced, and what simply belongs to the lane of
+            desire.
+          </p>
+        </article>
 
-      <article class="market-model-note">
-        <p class="market-model-note__label">Why it matters</p>
-        <h2>Not every market should carry the same burden</h2>
-        <p>
-          Housing, food, utilities, healthcare, and transportation are not optional categories. When they are treated
-          like ordinary purchases, the survival floor breaks first.
-        </p>
-      </article>
+        <article class="money-wealth-model">
+          <p class="money-wealth-block__label">Working diagram</p>
+          <h2>The working diagram sits inside the essay</h2>
+          <p>
+            I do not treat the diagram as a final answer. I treat it as a working draft that helps me stay honest
+            about where the survival floor begins, where the subsidy question changes shape, and where the rest of the
+            economy starts asking for preference signals.
+          </p>
 
-      <article class="market-model-note">
-        <p class="market-model-note__label">Use</p>
-        <h2>A policy and design lens</h2>
-        <p>
-          This is a framework for thinking about UBI, survival infrastructure, city systems, and what should be
-          collectively supported before the rest of the economy starts asking for preference signals.
-        </p>
-      </article>
+          <div class="money-wealth-model__frame">
+            <MarketModel client:load />
+          </div>
+
+          <p class="money-wealth-model__note">
+            The diagram stays here as part of the thought, not as decoration. It is one of the ways I keep reading
+            the difference between money, wealth, and the rest of the market without pretending the question is
+            finished.
+          </p>
+        </article>
+
+        <article class="money-wealth-block money-wealth-block--closing">
+          <p class="money-wealth-block__label">How the thought continues</p>
+          <h2>The page stays open on purpose</h2>
+          <p>
+            The reading trail beside this page is not a bibliography that closes the question. It is the set of notes
+            I keep returning to when I want the argument to stay alive. George Shulman keeps the political question
+            active. Marx keeps the labor question active. The Desert of the Real drafts keep the refusal question
+            active.
+          </p>
+          <p>
+            I want the page to feel like a thought continuing instead of a claim being polished shut. The point is
+            not to say the model is done. The point is to keep making it legible enough that I can keep learning from
+            it.
+          </p>
+        </article>
+      </div>
+
+      <aside class="money-wealth-shelf">
+        <div class="money-wealth-shelf__intro">
+          <p class="money-wealth-block__label">Asides</p>
+          <h2>Reading beside the model</h2>
+          <p>
+            These are the drafts and essays that sit next to the page while I work. They are not there to prove the
+            model. They are there to keep the thinking honest.
+          </p>
+        </div>
+
+        <div class="money-wealth-source-stack">
+          {readingTrail.map((item) => (
+            <article class="money-wealth-source">
+              <p class="money-wealth-source__group">{item.group}</p>
+              <h3>{item.title}</h3>
+              <p class="money-wealth-source__meta">{item.meta}</p>
+              <p class="money-wealth-source__blurb">{item.blurb}</p>
+              <a href={item.href} class="money-wealth-source__link" target="_blank" rel="noreferrer">
+                Open source
+              </a>
+            </article>
+          ))}
+        </div>
+      </aside>
     </section>
   </main>
 </BaseLayout>
 
 <style>
-  :global(body.market-model-page[data-theme='archive']) {
+  :global(body.money-wealth-page[data-theme='archive']) {
     background:
-      radial-gradient(44rem 26rem at 14% 0%, rgba(196, 158, 93, 0.14), transparent 72%),
-      radial-gradient(34rem 22rem at 86% 8%, rgba(116, 156, 188, 0.16), transparent 74%),
+      radial-gradient(40rem 26rem at 12% 0%, rgba(196, 158, 93, 0.16), transparent 72%),
+      radial-gradient(30rem 20rem at 88% 8%, rgba(116, 156, 188, 0.12), transparent 76%),
       linear-gradient(180deg, rgba(247, 242, 233, 0.98), rgba(236, 228, 214, 0.98));
   }
 
-  .market-model-shell {
-    width: min(1100px, calc(100vw - 2rem));
+  .money-wealth-shell {
+    width: min(1240px, calc(100vw - 2rem));
     margin: 0 auto;
-    padding: clamp(2rem, 4vw, 3.2rem) 0 clamp(3rem, 6vw, 4.6rem);
+    padding: clamp(1.8rem, 4vw, 3.2rem) 0 clamp(3rem, 6vw, 4.6rem);
     display: grid;
-    gap: 1.15rem;
+    gap: 1rem;
   }
 
-  .market-model-hero,
-  .market-model-stage,
-  .market-model-note {
+  .money-wealth-hero,
+  .money-wealth-block,
+  .money-wealth-model,
+  .money-wealth-shelf__intro,
+  .money-wealth-source {
     border: 1px solid rgba(198, 180, 151, 0.68);
     background: rgba(250, 245, 238, 0.92);
     border-radius: 1.35rem;
     box-shadow: 0 18px 34px rgba(110, 89, 61, 0.08);
   }
 
-  .market-model-hero {
+  .money-wealth-hero {
     display: grid;
-    grid-template-columns: minmax(0, 1.25fr) minmax(260px, 0.68fr);
+    grid-template-columns: minmax(0, 1.28fr) minmax(280px, 0.72fr);
     gap: 1rem;
-    padding: clamp(1.2rem, 2.5vw, 1.65rem);
-    align-items: stretch;
+    padding: clamp(1.2rem, 2.5vw, 1.7rem);
   }
 
-  .market-model-hero__kicker,
-  .market-model-hero__card-label,
-  .market-model-note__label {
+  .money-wealth-hero__copy {
+    min-width: 0;
+  }
+
+  .money-wealth-hero__kicker,
+  .money-wealth-hero__card-label,
+  .money-wealth-block__label,
+  .money-wealth-source__group {
     margin: 0;
     font-size: 0.72rem;
     letter-spacing: 0.18em;
@@ -106,8 +229,10 @@ import MarketModel from '../components/MarketModel';
     color: rgba(181, 136, 78, 0.94);
   }
 
-  .market-model-hero h1,
-  .market-model-note h2 {
+  .money-wealth-hero h1,
+  .money-wealth-block h2,
+  .money-wealth-shelf__intro h2,
+  .money-wealth-source h3 {
     margin: 0.45rem 0 0;
     font-family: var(--font-display, serif);
     letter-spacing: -0.04em;
@@ -115,52 +240,138 @@ import MarketModel from '../components/MarketModel';
     color: rgba(57, 42, 29, 0.98);
   }
 
-  .market-model-hero h1 {
-    font-size: clamp(2.4rem, 6vw, 4.3rem);
+  .money-wealth-hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.6rem);
   }
 
-  .market-model-note h2 {
-    font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+  .money-wealth-block h2,
+  .money-wealth-shelf__intro h2 {
+    font-size: clamp(1.35rem, 2.5vw, 1.75rem);
   }
 
-  .market-model-hero__lede,
-  .market-model-hero__card p,
-  .market-model-note p:last-child {
-    margin: 0.78rem 0 0;
+  .money-wealth-source h3 {
+    font-size: 1.18rem;
+  }
+
+  .money-wealth-hero__lede,
+  .money-wealth-hero__card p,
+  .money-wealth-block p,
+  .money-wealth-shelf__intro p,
+  .money-wealth-source__blurb,
+  .money-wealth-source__meta,
+  .money-wealth-model__note {
+    margin: 0.8rem 0 0;
     line-height: 1.72;
     color: rgba(73, 59, 47, 0.86);
   }
 
-  .market-model-hero__card {
+  .money-wealth-hero__card {
     padding: 1rem 1.05rem;
     border-radius: 1rem;
     background: rgba(243, 234, 220, 0.8);
     border: 1px solid rgba(198, 180, 151, 0.62);
   }
 
-  .market-model-stage {
-    padding: clamp(1.2rem, 2.8vw, 1.8rem);
-    overflow: hidden;
+  .money-wealth-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.68fr);
+    gap: 1rem;
+    align-items: start;
   }
 
-  .market-model-notes {
+  .money-wealth-main {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1rem;
   }
 
-  .market-model-note {
-    padding: 1rem 1rem 1.1rem;
+  .money-wealth-block,
+  .money-wealth-model {
+    padding: 1.1rem 1.15rem 1.2rem;
   }
 
-  @media (max-width: 900px) {
-    .market-model-hero,
-    .market-model-notes {
+  .money-wealth-block p:last-child,
+  .money-wealth-model__note,
+  .money-wealth-shelf__intro p:last-child,
+  .money-wealth-source__blurb {
+    margin-bottom: 0;
+  }
+
+  .money-wealth-model__frame {
+    margin-top: 1rem;
+    padding: clamp(0.95rem, 2vw, 1.35rem);
+    border-radius: 1.15rem;
+    border: 1px solid rgba(198, 180, 151, 0.6);
+    background: rgba(243, 234, 220, 0.74);
+    overflow: hidden;
+  }
+
+  .money-wealth-model__note {
+    margin-top: 1rem;
+  }
+
+  .money-wealth-shelf {
+    position: sticky;
+    top: clamp(1rem, 3vw, 1.5rem);
+    align-self: start;
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .money-wealth-shelf__intro,
+  .money-wealth-source {
+    padding: 1rem 1rem 1.05rem;
+  }
+
+  .money-wealth-source-stack {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .money-wealth-source {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .money-wealth-source__meta {
+    margin-top: 0;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(124, 102, 82, 0.78);
+  }
+
+  .money-wealth-source__link {
+    width: fit-content;
+    margin-top: 0.25rem;
+    font-size: 0.92rem;
+    color: rgba(121, 72, 28, 0.95);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(121, 72, 28, 0.24);
+    transition: border-color 140ms ease, color 140ms ease;
+  }
+
+  .money-wealth-source__link:hover,
+  .money-wealth-source__link:focus-visible {
+    color: rgba(89, 49, 13, 1);
+    border-color: rgba(89, 49, 13, 0.46);
+  }
+
+  @media (max-width: 960px) {
+    .money-wealth-hero,
+    .money-wealth-layout {
       grid-template-columns: 1fr;
+    }
+
+    .money-wealth-shelf {
+      position: static;
     }
   }
 
   @media (max-width: 600px) {
+    .money-wealth-shell {
+      width: min(100vw - 1rem, 1240px);
+    }
+
     :global(.mm-section-grid) {
       grid-template-columns: 1fr !important;
       gap: 0.5rem 0 !important;
@@ -168,6 +379,14 @@ import MarketModel from '../components/MarketModel';
 
     :global(.mm-survival-grid) {
       grid-template-columns: 1fr !important;
+    }
+
+    .money-wealth-hero,
+    .money-wealth-block,
+    .money-wealth-model,
+    .money-wealth-shelf__intro,
+    .money-wealth-source {
+      border-radius: 1.15rem;
     }
   }
 </style>

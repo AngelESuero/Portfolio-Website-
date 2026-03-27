@@ -316,11 +316,11 @@ const ENTRIES: TimelineEntry[] = [
   {
     id: 'market-model',
     year: '2024',
-    title: 'Market Model',
-    shortDesc: 'A structural diagram of how creative markets and economies of attention actually work.',
+    title: 'Money & Wealth',
+    shortDesc: 'A working essay on money, wealth, survival floors, and the diagram that keeps the question readable.',
     category: 'project',
     href: '/market-model',
-    hrefLabel: 'See model →',
+    hrefLabel: 'Read essay →',
   },
   {
     id: 'agi',
@@ -521,9 +521,9 @@ const STAGE_SHOWCASES: StageShowcase[] = [
     title: 'Current',
     ageRange: 'Ages 24+',
     yearRange: '2024–Now',
-    summary: 'Systems thinking and archive practice converge. Market Model, AGI research, Survival OS, and building with AI.',
+    summary: 'Systems thinking and archive practice converge. Money & Wealth, AGI research, Survival OS, and building with AI.',
     accomplishments: [
-      'Built the Market Model — a structural diagram of how creative economies and attention markets actually work.',
+      'Built Money & Wealth — a working essay and structural diagram about survival floors, wealth, and market coercion.',
       'Published the AGI Signals Timeline: a wave-based read of the AGI transition organized by signal type, not hype.',
       'Developed Survival OS — a blueprint mapping what keeps a human alive and what AI could safely automate.',
       'Assembled a living public archive of music, video, and writing as an open record of process.',
@@ -532,7 +532,7 @@ const STAGE_SHOWCASES: StageShowcase[] = [
     previewImages: ['/images/timeline-preview/download-5.jpg', '/images/timeline-preview/collage-6.jpg', '/images/timeline-preview/download-1.jpg'],
     featuredEntryIds: ['market-model', 'agi', 'survival-os', 'post-labor', 'archive', 'ai-work', 'now'],
     showcases: [
-      { label: 'Market Model', href: '/market-model', kind: 'ideas' },
+      { label: 'Money & Wealth', href: '/market-model', kind: 'ideas' },
       { label: 'AGI Signals', href: '/agi', kind: 'ideas' },
       { label: 'Survival OS', href: '/survival-os', kind: 'ideas' },
       { label: 'Post-Labor Economics', href: '/post-labor-economics', kind: 'ideas' },

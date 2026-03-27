@@ -202,6 +202,11 @@ const REGIONS: Region[] = [
         label: "Isha Kriya & Miracle of Mind",
         href: "https://drive.google.com/file/d/1BaMCQSwj6-P4cQY0ORDquw5iimu9RkpY",
         note: "A bridge between contemplative practice, apps, scale, and digital packaging."
+      },
+      {
+        label: "Human Suffering and Practice",
+        href: "/writing/human-suffering-and-practice",
+        note: "The draft note that names the problem directly and keeps the practice response in view."
       }
     ]
   },
@@ -1308,4 +1313,3 @@ export default function LifeMapSemanticOrb() {
     </div>
   );
 }
-
