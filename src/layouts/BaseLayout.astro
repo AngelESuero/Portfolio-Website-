@@ -653,8 +653,18 @@ const {
         if (!body || !header) return;
 
         const root = document.documentElement;
+        let headerHeight = header.getBoundingClientRect().height;
+        let lastReveal = body.dataset.headerReveal || 'visible';
+
+        const setHeaderReveal = (next) => {
+          if (next === lastReveal) return;
+          lastReveal = next;
+          body.dataset.headerReveal = next;
+        };
+
         const setHeaderSize = () => {
-          root.style.setProperty('--site-header-size', `${header.getBoundingClientRect().height}px`);
+          headerHeight = header.getBoundingClientRect().height;
+          root.style.setProperty('--site-header-size', `${headerHeight}px`);
         };
 
         setHeaderSize();
@@ -677,10 +687,9 @@ const {
 
         const syncHeaderReveal = () => {
           ticking = false;
-          setHeaderSize();
 
           if (!canAutoReveal()) {
-            body.dataset.headerReveal = 'hidden';
+            setHeaderReveal('hidden');
             lastY = window.scrollY;
             return;
           }
@@ -690,12 +699,12 @@ const {
           const nearTop = currentY <= 16;
           const scrollingDown = delta > 6;
           const scrollingUp = delta < -6;
-          const hideThreshold = Math.max(header.getBoundingClientRect().height * 0.65, 72);
+          const hideThreshold = Math.max(headerHeight * 0.65, 72);
 
           if (nearTop || scrollingUp) {
-            body.dataset.headerReveal = 'visible';
+            setHeaderReveal('visible');
           } else if (scrollingDown && currentY > hideThreshold) {
-            body.dataset.headerReveal = 'hidden';
+            setHeaderReveal('hidden');
           }
 
           lastY = currentY;
@@ -715,14 +724,14 @@ const {
 
         if (sensor) {
           sensor.addEventListener('pointerenter', () => {
-            if (canAutoReveal()) body.dataset.headerReveal = 'visible';
+            if (canAutoReveal()) setHeaderReveal('visible');
           });
         }
 
         document.addEventListener(
           'focusin',
           () => {
-            if (canAutoReveal()) body.dataset.headerReveal = 'visible';
+            if (canAutoReveal()) setHeaderReveal('visible');
           },
           true
         );

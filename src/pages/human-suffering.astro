@@ -1,0 +1,244 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('posts');
+const post = posts.find((entry) => entry.slug === 'human-suffering-and-practice');
+
+if (!post) {
+  throw new Error('Human suffering post not found.');
+}
+
+const { Content } = await post.render();
+
+const routeNames = [
+  'Susan Tarot',
+  'Julian Himself',
+  'Teal Swan',
+  'Eckhart Tolle',
+  'Mooji',
+  'Ram Dass',
+];
+---
+
+<BaseLayout
+  title="Human Suffering — Problems"
+  description={post.data.summary}
+  theme="survival"
+  bodyClass="human-suffering-page"
+>
+  <main class="human-suffering-shell">
+    <header class="human-suffering-hero">
+      <div class="human-suffering-hero__copy">
+        <p class="human-suffering-hero__kicker">Problem focus area</p>
+        <h1>Human Suffering</h1>
+        <p class="human-suffering-hero__lede">
+          This page keeps the question open: human suffering as the core problem, The Art of Survival as the
+          survival line it continues, and Isha Yoga as one possible response path rather than the final answer.
+        </p>
+        <div class="human-suffering-hero__links">
+          <a href="/work/the-art-of-survival">Connected work: The Art of Survival</a>
+          <a href="/writing/human-suffering-and-practice">Writing record</a>
+        </div>
+      </div>
+
+      <aside class="human-suffering-hero__card">
+        <p class="human-suffering-hero__card-label">Route</p>
+        <p class="human-suffering-hero__card-copy">
+          Isha Yoga stays in view as a potential practice-based response, held alongside the voices that preceded
+          this conclusion.
+        </p>
+        <ul class="human-suffering-hero__names" aria-label="Route names">
+          {routeNames.map((name) => <li>{name}</li>)}
+        </ul>
+      </aside>
+    </header>
+
+    <section class="human-suffering-layout">
+      <article class="human-suffering-essay reading-prose">
+        <Content />
+      </article>
+
+      <aside class="human-suffering-shelf">
+        <section class="human-suffering-shelf__card">
+          <p class="human-suffering-shelf__label">Connected work</p>
+          <h2>The Art of Survival</h2>
+          <p>
+            The survival thread this page extends from: biographical art, music, and isolation held as a record of
+            what survival felt like.
+          </p>
+          <a href="/work/the-art-of-survival">Open the work page</a>
+        </section>
+
+        <section class="human-suffering-shelf__card">
+          <p class="human-suffering-shelf__label">Practice note</p>
+          <h2>Isha Yoga stays in frame</h2>
+          <p>
+            The page is not saying the question is solved. It is saying the practice lane matters because the inner
+            condition can be trained, not just described.
+          </p>
+          <a href="https://apps.apple.com/us/app/miracle-of-mind-sadhguru/id6737795677" target="_blank" rel="noreferrer">
+            Miracle of Mind
+          </a>
+        </section>
+
+        <section class="human-suffering-shelf__card">
+          <p class="human-suffering-shelf__label">Writing record</p>
+          <h2>Human Suffering and Practice</h2>
+          <p>
+            The full note stays in the writing archive too, so the tab and the archive page point at the same
+            thought.
+          </p>
+          <a href="/writing/human-suffering-and-practice">Open the post</a>
+        </section>
+      </aside>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .human-suffering-shell {
+    display: grid;
+    gap: 1.4rem;
+  }
+
+  .human-suffering-hero {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.9fr);
+    align-items: stretch;
+    border: 1px solid color-mix(in srgb, var(--tone-sky) 18%, var(--line2));
+    border-radius: 1.4rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-surface-strong) 72%, transparent), color-mix(in srgb, var(--tone-surface) 56%, transparent)),
+      color-mix(in srgb, var(--tone-bg) 66%, black 34%);
+    padding: clamp(1.2rem, 3vw, 2rem);
+  }
+
+  .human-suffering-hero__copy,
+  .human-suffering-hero__card {
+    border-radius: 1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-line) 88%, transparent);
+    background: color-mix(in srgb, var(--tone-surface) 92%, transparent);
+    padding: 1rem 1.1rem;
+  }
+
+  .human-suffering-hero__kicker,
+  .human-suffering-shelf__label,
+  .human-suffering-hero__card-label {
+    margin: 0 0 0.65rem;
+    font-size: 0.74rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-accent) 78%, var(--tone-muted) 22%);
+  }
+
+  .human-suffering-hero h1 {
+    margin: 0;
+    font-size: clamp(2.2rem, 4vw, 4rem);
+    line-height: 0.96;
+    letter-spacing: -0.05em;
+  }
+
+  .human-suffering-hero__lede,
+  .human-suffering-hero__card-copy {
+    margin: 0.85rem 0 0;
+    color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
+    line-height: 1.68;
+    max-width: 70ch;
+  }
+
+  .human-suffering-hero__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+
+  .human-suffering-hero__links a,
+  .human-suffering-shelf__card a {
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 55%, transparent);
+  }
+
+  .human-suffering-hero__links a:hover,
+  .human-suffering-hero__links a:focus-visible,
+  .human-suffering-shelf__card a:hover,
+  .human-suffering-shelf__card a:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 90%, transparent);
+  }
+
+  .human-suffering-hero__names {
+    list-style: none;
+    padding: 0;
+    margin: 0.9rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .human-suffering-hero__names li {
+    border: 1px solid color-mix(in srgb, var(--tone-line) 80%, transparent);
+    border-radius: 999px;
+    padding: 0.28rem 0.55rem;
+    font-size: 0.72rem;
+    color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
+    background: color-mix(in srgb, var(--tone-bg) 24%, transparent);
+  }
+
+  .human-suffering-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(280px, 0.75fr);
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .human-suffering-essay,
+  .human-suffering-shelf__card {
+    border: 1px solid color-mix(in srgb, var(--tone-line) 82%, transparent);
+    border-radius: 1.15rem;
+    background: color-mix(in srgb, var(--tone-surface) 84%, transparent);
+    padding: clamp(1rem, 2.6vw, 1.6rem);
+  }
+
+  .human-suffering-essay {
+    line-height: 1.72;
+  }
+
+  .human-suffering-shelf {
+    display: grid;
+    gap: 0.85rem;
+    position: sticky;
+    top: 6.25rem;
+  }
+
+  .human-suffering-shelf__card h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    letter-spacing: -0.02em;
+  }
+
+  .human-suffering-shelf__card p {
+    margin: 0.7rem 0 0;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+    line-height: 1.66;
+  }
+
+  .human-suffering-shelf__card a {
+    display: inline-flex;
+    margin-top: 0.8rem;
+    width: fit-content;
+  }
+
+  @media (max-width: 920px) {
+    .human-suffering-hero,
+    .human-suffering-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .human-suffering-shelf {
+      position: static;
+    }
+  }
+</style>

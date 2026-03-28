@@ -381,26 +381,33 @@ I'm alive.`
   <div class="falling-line"></div>
 
   <script>
+    const line = document.querySelector('.falling-line');
+    let ticking = false;
+
     const updateLineHeight = () => {
       const pageHeight = document.documentElement.scrollHeight;
       document.documentElement.style.setProperty('--page-height', `${pageHeight}px`);
     };
 
     const syncLineWithScroll = () => {
-      const line = document.querySelector('.falling-line');
       if (!line) return;
+      ticking = false;
+      line.style.transform = `translate3d(-50%, ${window.scrollY}px, 0)`;
+    };
 
-      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const scrollProgress = scrollHeight > 0 ? window.scrollY / scrollHeight : 0;
-
-      // Position the line based on scroll progress
-      const scrollDistance = scrollProgress * (document.documentElement.scrollHeight - window.innerHeight);
-      line.style.transform = `translateX(-50%) translateY(${scrollDistance}px)`;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(syncLineWithScroll);
     };
 
     updateLineHeight();
-    window.addEventListener('resize', updateLineHeight);
-    window.addEventListener('scroll', syncLineWithScroll, { passive: true });
+    syncLineWithScroll();
+    window.addEventListener('resize', () => {
+      updateLineHeight();
+      onScroll();
+    }, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
   </script>
 </BaseLayout>
 
