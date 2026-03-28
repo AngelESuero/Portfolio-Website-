@@ -28,7 +28,7 @@ const primaryNav: NavItem[] = [
   { label: 'Contact', href: '/contact', color: 'white', tone: 'harmony' }
 ];
 
-const elsewhereNav: NavItem[] = [
+const structureNav: NavItem[] = [
   { label: 'Studio Notes', href: '/studio-notes', color: 'white', tone: 'contemplation' },
   { label: 'Collaborations', href: '/collaborations', color: 'ochre', tone: 'grounding' },
   { label: 'Theater', href: '/theater', color: 'red', tone: 'presence' },
@@ -151,7 +151,7 @@ const isActive = (item: NavItem) => {
   <div class="site-shell-row header-secondary" id="header-secondary-nav" data-secondary-nav>
     <nav aria-label="Secondary navigation" class="header-secondary-nav">
       <div class="header-secondary-group">
-        <p class="header-secondary-label">Elsewhere</p>
+        <p class="header-secondary-label">Structure</p>
         <div class="header-secondary-group__items">
           <span class="header-ai-group">
             {aiGroup.map((item) => (
@@ -167,7 +167,7 @@ const isActive = (item: NavItem) => {
               </a>
             ))}
           </span>
-          {elsewhereNav.map((item) => (
+          {structureNav.map((item) => (
             <a
               href={item.href}
               class="header-link header-link--secondary text-sm no-underline"
@@ -182,7 +182,7 @@ const isActive = (item: NavItem) => {
         </div>
       </div>
       <div class="header-secondary-group header-secondary-group--practice">
-        <p class="header-secondary-label">Practice</p>
+        <p class="header-secondary-label">Making</p>
         <div class="header-secondary-group__items">
           {focusNav.map((item) => (
             <a
@@ -232,7 +232,7 @@ const isActive = (item: NavItem) => {
         </a>
       ))}
       <div class="mobile-nav-section">
-        <p class="mobile-nav-label">Elsewhere</p>
+        <p class="mobile-nav-label">Structure</p>
         <div class="mobile-ai-group">
           {aiGroup.map((item) => (
             <a
@@ -247,7 +247,7 @@ const isActive = (item: NavItem) => {
             </a>
           ))}
         </div>
-        {elsewhereNav.map((item) => (
+        {structureNav.map((item) => (
           <a
             href={item.href}
             class="header-link mobile-nav-link header-link--secondary no-underline"
@@ -259,7 +259,7 @@ const isActive = (item: NavItem) => {
             {item.label}
           </a>
         ))}
-        <p class="mobile-nav-label">Practice</p>
+        <p class="mobile-nav-label">Making</p>
         {focusNav.map((item) => (
           <a
             href={item.href}

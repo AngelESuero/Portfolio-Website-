@@ -366,7 +366,7 @@ const ENTRIES: TimelineEntry[] = [
   {
     id: 'ai-work',
     year: '2025',
-    title: 'AI & Prompt Engineering Practice',
+    title: 'AI & Prompt Engineering',
     shortDesc: 'Building with Claude, researching AI accountability, developing prompt frameworks that keep human judgment in the loop.',
     category: 'project',
     href: '/ai',

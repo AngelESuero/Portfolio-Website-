@@ -143,7 +143,7 @@ const bundles = [
   {
     id: 'elsewhere',
     side: 'right' as const,
-    kicker: 'Elsewhere',
+    kicker: 'Structure',
     title: 'Other rooms',
     summary: `${elsewhereCards.length + 1} routes`,
     count: `${elsewhereCards.length + 1} links`,
@@ -624,6 +624,54 @@ const bundles = [
     .home-categories__bundle::before {
       left: 0.6rem;
       top: 0.88rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .home-categories {
+      padding-inline: 0.72rem;
+      margin-top: 0.2rem;
+    }
+
+    .home-categories__rail,
+    .home-categories__bundle::before {
+      display: none;
+    }
+
+    .home-categories__bundle {
+      grid-template-columns: 1fr;
+    }
+
+    .home-categories__summary--left,
+    .home-categories__summary--right,
+    .home-categories__panel--left,
+    .home-categories__panel--right {
+      grid-column: 1;
+      justify-self: stretch;
+      text-align: left;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .home-categories__summary {
+      width: 100%;
+    }
+
+    .home-categories__title {
+      font-size: 1rem;
+    }
+
+    .home-categories__body {
+      font-size: 0.92rem;
+    }
+
+    .home-categories__entryTitle {
+      font-size: 0.96rem;
+    }
+
+    .home-categories__bundle[open] .home-categories__panel {
+      margin-top: 0.36rem;
+      padding-top: 0.42rem;
     }
   }
 </style>
