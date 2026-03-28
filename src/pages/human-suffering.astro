@@ -11,14 +11,366 @@ if (!post) {
 
 const { Content } = await post.render();
 
-const routeNames = [
-  'Susan Tarot',
-  'Julian Himself',
-  'Teal Swan',
-  'Eckhart Tolle',
-  'Mooji',
-  'Ram Dass',
+const earlierStops = [
+  {
+    label: 'Teal Swan',
+    href: 'https://tealswan.com',
+    note: 'earlier stop',
+  },
+  {
+    label: 'Eckhart Tolle',
+    href: 'https://eckharttolle.com',
+    note: 'earlier stop',
+  },
+  {
+    label: 'Mooji',
+    href: 'https://mooji.org',
+    note: 'earlier stop',
+  },
+  {
+    label: 'Ram Dass',
+    href: 'https://www.ramdass.org',
+    note: 'earlier stop',
+  },
 ];
+
+const routeNames = ['Susan Tarot', 'Julian Himself'];
+
+const archiveTrail = [
+  {
+    label: 'The Art of Survival',
+    href: '/work/the-art-of-survival',
+    note: 'connected work',
+  },
+  {
+    label: 'The Sacrifice of Power',
+    href: '/writing/the-sacrifice-of-power',
+    note: 'archive essay',
+  },
+  {
+    label: 'Market Model',
+    href: '/market-model',
+    note: 'money / wealth model',
+  },
+];
+
+const notesTimeline = [
+  {
+    sortKey: '2021-03-22',
+    dateLabel: 'Mar 22, 2021',
+    phase: 'journal note',
+    folder: 'Notes',
+    title: 'We live our entire lives wrapped in fear',
+    excerpt:
+      'A bare thesis line, but an important one because it starts the trail early: we live our entire lives wrapped in fear.',
+  },
+  {
+    sortKey: '2022-02-04',
+    dateLabel: 'Feb 4, 2022',
+    phase: 'journal note',
+    folder: 'Notes',
+    title: 'What pains me is feeling like people don’t know that I exist. Damage…',
+    excerpt:
+      'The note ties the pain of not being known to family damage, silence, and the buildup of pressure in the chest.',
+  },
+  {
+    sortKey: '2022-03-23',
+    dateLabel: 'Mar 23, 2022',
+    phase: 'journal note',
+    folder: 'Notes',
+    title: 'A part of me never wants to get better',
+    excerpt:
+      'A revealing admission: part of me never wants to get better because then I would lose the negative feelings I use to validate what happened.',
+  },
+  {
+    sortKey: '2022-05-17',
+    dateLabel: 'May 17, 2022',
+    phase: 'practice turn',
+    folder: 'Notes',
+    title: 'LEARN HOW TO STAY GROUNDED IN FEELING',
+    excerpt:
+      'One of the early method notes: learn how to stay grounded in feeling, and communicate from a heart space.',
+  },
+  {
+    sortKey: '2022-05-18',
+    dateLabel: 'May 18, 2022',
+    phase: 'journal note',
+    folder: 'Notes',
+    title: 'I am scared to be alone.',
+    excerpt:
+      'A very short note, but it matters because it names the fear without hiding behind theory.',
+  },
+  {
+    sortKey: '2022-05-19',
+    dateLabel: 'May 19, 2022',
+    phase: 'journal note',
+    folder: 'Notes',
+    title: 'I am a traumatized individual who has a lot of scars. I lived in emotional…',
+    excerpt:
+      'This note names emotional terror, unprocessed grief, leaving home, and the realization that safety in the old family house is not coming back.',
+  },
+  {
+    sortKey: '2022-05-19b',
+    dateLabel: 'May 19, 2022',
+    phase: 'journal note',
+    folder: 'Notes',
+    title: 'I haven’t grieved',
+    excerpt:
+      'The grief list is plain: the end of high school, leaving home, and going to college.',
+  },
+  {
+    sortKey: '2022-06-27',
+    dateLabel: 'Jun 27, 2022',
+    phase: 'journal note',
+    folder: 'Notes',
+    title: 'I sacrifice myself because im scared to take up space. I am expecting…',
+    excerpt:
+      'A social wound note: I sacrifice myself because I am scared to take up space and expect rejection from love if I do.',
+  },
+  {
+    sortKey: '2023-04-04',
+    dateLabel: 'Apr 4, 2023',
+    phase: 'guide note',
+    folder: 'Spiritual Dictionary',
+    title: 'Going unconscious',
+    excerpt:
+      'Going unconscious is described as losing focus on what you are doing and who you are meant to become, then letting other people sway you without resistance.',
+  },
+  {
+    sortKey: '2023-04-19',
+    dateLabel: 'Apr 19, 2023',
+    phase: 'guide note',
+    folder: 'Spiritual Dictionary',
+    title: 'Karma - unconscious action that carries more life than your own level…',
+    excerpt:
+      'A compressed definition note: karma as unconscious action carrying more life than your present level of awareness can hold.',
+  },
+  {
+    sortKey: '2023-04-20',
+    dateLabel: 'Apr 20, 2023',
+    phase: 'journal note',
+    folder: 'WellBeing',
+    title: 'Around 2022,',
+    excerpt:
+      'I began arming myself with everything I had: books and knowledge, truly excruciatingly scared. I walked into the dark.',
+  },
+  {
+    sortKey: '2023-04-20b',
+    dateLabel: 'Apr 20, 2023',
+    phase: 'guide note',
+    folder: 'Spiritual Dictionary',
+    title: 'Tolle defines ego as:',
+    excerpt:
+      'Ego is defined here as the false self or current state of consciousness that blocks presence from shining through.',
+  },
+  {
+    sortKey: '2023-05-07',
+    dateLabel: 'May 7, 2023',
+    phase: 'practice turn',
+    folder: 'garbage',
+    title: 'Why i posted shoulders snippet 2',
+    excerpt:
+      'Pain gets brought up in many facets. It is healthier to let yourself flow. People do not have to be products of their situation, but once the situation shapes you, it becomes part of what you are working through.',
+  },
+  {
+    sortKey: '2023-05-13',
+    dateLabel: 'May 13, 2023',
+    phase: 'guide note',
+    folder: 'Union (Yoga)',
+    title: 'When I don’t do Sadhana, my internal emotional experience is more…',
+    excerpt:
+      'When I do not do Sadhana, my inner emotional experience gets plastered onto the outside world. The note ends by naming meditation or Upa Yoga as necessary for better wellbeing.',
+  },
+  {
+    sortKey: '2023-05-30',
+    dateLabel: 'May 30, 2023',
+    phase: 'guide note',
+    folder: 'WellBeing',
+    title: 'Art is not an outlet to direct your anger at people.',
+    excerpt:
+      'A short corrective note that keeps expression from turning into projection.',
+  },
+  {
+    sortKey: '2023-05-30b',
+    dateLabel: 'May 30, 2023',
+    phase: 'guide note',
+    folder: 'WellBeing',
+    title: 'Borrowing strength from dad(?)',
+    excerpt:
+      'Get a therapist. Direct your anger. Start boxing again. Rapping is your responsibility.',
+  },
+  {
+    sortKey: '2023-05-30c',
+    dateLabel: 'May 30, 2023',
+    phase: 'journal note',
+    folder: 'WellBeing',
+    title: 'Mixed intentions. I have mixed intentions about the world. Especially…',
+    excerpt:
+      'I have mixed intentions about the world, especially because people are not aligned to me, and that misalignment makes me feel terrible.',
+  },
+  {
+    sortKey: '2023-06-09',
+    dateLabel: 'Jun 9, 2023',
+    phase: 'practice turn',
+    folder: 'garbage',
+    title: 'Be neutral.',
+    excerpt:
+      'Try to understand. It is only two lines, but it reads like a compact correction against emotional overreaction.',
+  },
+  {
+    sortKey: '2023-07-04',
+    dateLabel: 'Jul 4, 2023',
+    phase: 'support note',
+    folder: 'WellBeing',
+    title: 'Benefits of living with mom',
+    excerpt:
+      'This one matters because it is practical: cheaper rent, food support, help with Mika, a quieter neighborhood, and emotional support by proximity.',
+  },
+  {
+    sortKey: '2023-07-30',
+    dateLabel: 'Jul 30, 2023',
+    phase: 'journal note',
+    folder: 'WellBeing',
+    title: 'When I try to act a certain way with intensity, the opposite comes…',
+    excerpt:
+      'When I try to force a way of being, the opposite comes out. The note ties that strain to fear, self-abuse, and the distance left by a father who was never really there.',
+  },
+  {
+    sortKey: '2023-07-30b',
+    dateLabel: 'Jul 30, 2023',
+    phase: 'journal note',
+    folder: 'WellBeing',
+    title: 'I just don’t feel like I belong anywhere. And maybe I should be more…',
+    excerpt:
+      'I do not feel like I belong anywhere, and there is still this residual pain in my body.',
+  },
+  {
+    sortKey: '2023-08-03',
+    dateLabel: 'Aug 3, 2023',
+    phase: 'journal note',
+    folder: 'Fear',
+    title: 'I get nervous about being alone and becoming miserable because of…',
+    excerpt:
+      'A blunt fear note: I get nervous about being alone and becoming miserable because of it. The note also says I am built for a family structure but still trying to grow into something more.',
+  },
+  {
+    sortKey: '2023-08-09',
+    dateLabel: 'Aug 9, 2023',
+    phase: 'practice turn',
+    folder: 'Growth',
+    title: 'To deal with and mitigate pain, I have to feel out and follow instructions…',
+    excerpt:
+      'To deal with and mitigate pain, I have to follow instructions at my own pace, probably slower for now.',
+  },
+  {
+    sortKey: '2023-08-10',
+    dateLabel: 'Aug 10, 2023',
+    phase: 'practice turn',
+    folder: 'Growth',
+    title: 'If you don’t know to look for something deeper than what you have…',
+    excerpt:
+      'If you do not know to look for something deeper than what you have experienced, you will keep chasing the same experiences, only more intensely.',
+  },
+  {
+    sortKey: '2023-08-11',
+    dateLabel: 'Aug 11, 2023',
+    phase: 'practice turn',
+    folder: 'Abilities',
+    title: 'The ability to look inward and redesign who I am inside.',
+    excerpt:
+      'A stripped-down ability note, but an important one: the ability to look inward and redesign who I am inside.',
+  },
+  {
+    sortKey: '2023-08-18',
+    dateLabel: 'Aug 18, 2023',
+    phase: 'guide note',
+    folder: 'Upa Yoga',
+    title: 'Directional Movement:',
+    excerpt:
+      'A body-first note: directional movement gives a sense of self back to the body and wakes the body up.',
+  },
+  {
+    sortKey: '2023-09-21',
+    dateLabel: 'Sep 21, 2023',
+    phase: 'practice turn',
+    folder: 'Abilities',
+    title: 'able to produce an inner state of being within myself. it just helps…',
+    excerpt:
+      'The note says it helps to get into a decent state of mind first, and that being outside should feel meditative and at peace.',
+  },
+  {
+    sortKey: '2023-09-23',
+    dateLabel: 'Sep 23, 2023',
+    phase: 'support note',
+    folder: 'Ways to give to myself',
+    title: 'Sleep',
+    excerpt:
+      'A care note that gets very plain very fast: sleep, eat well, laugh at yourself, and do not sacrifice your own energy just to please someone else.',
+  },
+  {
+    sortKey: '2023-11-06',
+    dateLabel: 'Nov 6, 2023',
+    phase: 'journal note',
+    folder: 'journal',
+    title: 'i often think i have to be a perfect person all the time.',
+    excerpt:
+      'Maybe I should not give so freely to the world. All I want is some peace of mind in knowing I deserve whatever I get, and that I can keep growing into the things I want to be doing.',
+  },
+  {
+    sortKey: '2024-01-05',
+    dateLabel: 'Jan 5, 2024',
+    phase: 'practice turn',
+    folder: 'Goals for 2024',
+    title: 'I want my mind to heal completely in a balanced and conscious manner…',
+    excerpt:
+      'A short goal note, but a revealing one: healing is named as something that has to happen in a balanced and conscious way.',
+  },
+  {
+    sortKey: '2024-02-07',
+    dateLabel: 'Feb 7, 2024',
+    phase: 'practice turn',
+    folder: 'Growth',
+    title: 'Breathe',
+    excerpt:
+      'A bare instruction stack: breathe, spread the shoulders, puff out the chest, and reset the stance under the hips.',
+  },
+  {
+    sortKey: '2024-09-30',
+    dateLabel: 'Sep 30, 2024',
+    phase: 'journal note',
+    folder: 'WellBeing',
+    title: 'Maybe,',
+    excerpt:
+      'A tiny note, but a useful one: maybe we are all looking for space to put everything we have inside.',
+  },
+  {
+    sortKey: '2025-04-29',
+    dateLabel: 'Apr 29, 2025',
+    phase: 'guide note',
+    folder: 'Sadghuru',
+    title: 'A Fully Fledged Life (Sadhguru’s Inner Engineering)',
+    excerpt:
+      'A fully fledged life is not about accumulating experience. It is about becoming the fullest expression of your existence through inward practice and inner engineering.',
+  },
+  {
+    sortKey: '2025-04-30',
+    dateLabel: 'Apr 30, 2025',
+    phase: 'guide note',
+    folder: 'Union (Yoga)',
+    title: 'Isha Kriya Projections Timeline',
+    excerpt:
+      'Isha Kriya is treated as a rational, minimal-cost daily practice whose psychological, physiological, and existential effects can be tracked over time.',
+  },
+  {
+    sortKey: '2025-05-12',
+    dateLabel: 'May 12, 2025',
+    phase: 'journal note',
+    folder: 'People In My Life',
+    title: 'Dad:',
+    excerpt:
+      'A later family note that names it directly: not feeling worthy or given enough attention, and realizing how often my father withheld the love I craved as a young person.',
+  },
+].sort((a, b) => a.sortKey.localeCompare(b.sortKey));
 ---
 
 <BaseLayout
@@ -45,18 +397,69 @@ const routeNames = [
       <aside class="human-suffering-hero__card">
         <p class="human-suffering-hero__card-label">Route</p>
         <p class="human-suffering-hero__card-copy">
-          Isha Yoga stays in view as a potential practice-based response, held alongside the voices that preceded
-          this conclusion.
+          Isha Yoga is the landing point. The other voices are earlier stops on the way there, not competing
+          destinations.
         </p>
-        <ul class="human-suffering-hero__names" aria-label="Route names">
-          {routeNames.map((name) => <li>{name}</li>)}
-        </ul>
+        <div class="human-suffering-hero__group">
+          <p class="human-suffering-hero__group-label">Earlier stops</p>
+          <ul class="human-suffering-hero__sites" aria-label="Verified influence sites">
+            {earlierStops.map((item) => (
+              <li>
+                <a href={item.href} target="_blank" rel="noreferrer">
+                  <span>{item.label}</span>
+                  <small>{item.note}</small>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div class="human-suffering-hero__group">
+          <p class="human-suffering-hero__group-label">Route names I came through</p>
+          <ul class="human-suffering-hero__names" aria-label="Route names">
+            {routeNames.map((name) => <li>{name}</li>)}
+          </ul>
+          <p class="human-suffering-hero__footnote">
+            I couldn’t verify stable official sites for those two without guessing, so I left them as route names.
+          </p>
+        </div>
+        <div class="human-suffering-hero__destination">
+          <p class="human-suffering-hero__group-label">Destination</p>
+          <a href="https://isha.sadhguru.org/us/en" target="_blank" rel="noreferrer">
+            Isha Yoga
+          </a>
+          <p>That is where the path resolves, after the listening and the naming.</p>
+        </div>
       </aside>
     </header>
 
     <section class="human-suffering-layout">
       <article class="human-suffering-essay reading-prose">
         <Content />
+
+        <section class="human-suffering-records" aria-labelledby="human-suffering-journal-title">
+          <div class="human-suffering-records__header">
+            <p class="human-suffering-records__kicker">Apple Notes timeline</p>
+            <h2 id="human-suffering-journal-title">Notes in timeline order</h2>
+            <p>
+              Earliest to latest, this is the route the page actually came through: conceptual notes, fear notes,
+              support notes, and practice notes all sitting in the order they appeared.
+            </p>
+          </div>
+
+          <div class="human-suffering-records__stack">
+            {notesTimeline.map((entry) => (
+              <article class="human-suffering-guide">
+                <div class="human-suffering-guide__meta">
+                  <p>{entry.dateLabel}</p>
+                  <span>{entry.phase}</span>
+                  <span>{entry.folder}</span>
+                </div>
+                <h3>{entry.title}</h3>
+                <p>{entry.excerpt}</p>
+              </article>
+            ))}
+          </div>
+        </section>
       </article>
 
       <aside class="human-suffering-shelf">
@@ -75,10 +478,13 @@ const routeNames = [
           <h2>Isha Yoga stays in frame</h2>
           <p>
             The page is not saying the question is solved. It is saying the practice lane matters because the inner
-            condition can be trained, not just described.
+            condition can be trained, and Isha Yoga is the place the route keeps pointing.
           </p>
           <a href="https://apps.apple.com/us/app/miracle-of-mind-sadhguru/id6737795677" target="_blank" rel="noreferrer">
             Miracle of Mind
+          </a>
+          <a href="https://isha.sadhguru.org/us/en" target="_blank" rel="noreferrer">
+            Open Isha Yoga
           </a>
         </section>
 
@@ -90,6 +496,22 @@ const routeNames = [
             thought.
           </p>
           <a href="/writing/human-suffering-and-practice">Open the post</a>
+        </section>
+
+        <section class="human-suffering-shelf__card">
+          <p class="human-suffering-shelf__label">Notes trail</p>
+          <h2>Entries beside the conclusion</h2>
+          <p>
+            These are the archive pieces I kept beside the thought while the page was taking shape.
+          </p>
+          <ul class="human-suffering-shelf__trail">
+            {archiveTrail.map((item) => (
+              <li>
+                <a href={item.href}>{item.label}</a>
+                <span>{item.note}</span>
+              </li>
+            ))}
+          </ul>
         </section>
       </aside>
     </section>
@@ -148,6 +570,18 @@ const routeNames = [
     max-width: 70ch;
   }
 
+  .human-suffering-hero__group {
+    margin-top: 0.95rem;
+  }
+
+  .human-suffering-hero__group-label {
+    margin: 0;
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-muted) 72%, var(--tone-accent) 28%);
+  }
+
   .human-suffering-hero__links {
     display: flex;
     flex-wrap: wrap;
@@ -187,6 +621,72 @@ const routeNames = [
     background: color-mix(in srgb, var(--tone-bg) 24%, transparent);
   }
 
+  .human-suffering-hero__sites {
+    list-style: none;
+    padding: 0;
+    margin: 0.6rem 0 0;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .human-suffering-hero__sites li {
+    margin: 0;
+  }
+
+  .human-suffering-hero__sites a {
+    display: grid;
+    gap: 0.1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-line) 72%, transparent);
+    border-radius: 0.85rem;
+    padding: 0.52rem 0.68rem;
+    background: color-mix(in srgb, var(--tone-bg) 20%, transparent);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .human-suffering-hero__sites a:hover,
+  .human-suffering-hero__sites a:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 50%, transparent);
+  }
+
+  .human-suffering-hero__sites small {
+    font-size: 0.7rem;
+    color: color-mix(in srgb, var(--tone-text) 58%, var(--tone-muted) 42%);
+  }
+
+  .human-suffering-hero__footnote {
+    margin: 0.6rem 0 0;
+    font-size: 0.82rem;
+    color: color-mix(in srgb, var(--tone-text) 68%, var(--tone-muted) 32%);
+    line-height: 1.55;
+  }
+
+  .human-suffering-hero__destination {
+    margin-top: 1rem;
+    border-top: 1px solid color-mix(in srgb, var(--tone-line) 66%, transparent);
+    padding-top: 0.95rem;
+  }
+
+  .human-suffering-hero__destination a {
+    display: inline-flex;
+    margin-top: 0.45rem;
+    font-weight: 700;
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 55%, transparent);
+  }
+
+  .human-suffering-hero__destination a:hover,
+  .human-suffering-hero__destination a:focus-visible {
+    border-color: color-mix(in srgb, var(--tone-accent) 90%, transparent);
+  }
+
+  .human-suffering-hero__destination p:last-child {
+    margin: 0.5rem 0 0;
+    color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+    line-height: 1.55;
+  }
+
   .human-suffering-layout {
     display: grid;
     grid-template-columns: minmax(0, 1.65fr) minmax(280px, 0.75fr);
@@ -204,6 +704,91 @@ const routeNames = [
 
   .human-suffering-essay {
     line-height: 1.72;
+  }
+
+  .human-suffering-records {
+    margin-top: 2rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid color-mix(in srgb, var(--tone-line) 62%, transparent);
+  }
+
+  .human-suffering-records__header h2 {
+    margin: 0.3rem 0 0;
+    font-size: clamp(1.3rem, 2.2vw, 1.8rem);
+    letter-spacing: -0.03em;
+  }
+
+  .human-suffering-records__header p:last-child {
+    margin: 0.7rem 0 0;
+    max-width: 62ch;
+    color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
+    line-height: 1.64;
+  }
+
+  .human-suffering-records__kicker {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-accent) 78%, var(--tone-muted) 22%);
+  }
+
+  .human-suffering-records__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+    margin-top: 1rem;
+  }
+
+  .human-suffering-records__stack {
+    display: grid;
+    gap: 0.7rem;
+    margin-top: 1rem;
+  }
+
+  .human-suffering-record,
+  .human-suffering-guide {
+    border-left: 2px solid color-mix(in srgb, var(--tone-accent) 52%, transparent);
+    padding: 0.15rem 0 0.15rem 1rem;
+  }
+
+  .human-suffering-record__meta,
+  .human-suffering-guide__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    align-items: center;
+    margin: 0;
+    font-size: 0.74rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-muted) 72%, var(--tone-accent) 28%);
+  }
+
+  .human-suffering-guide__meta p {
+    margin: 0;
+  }
+
+  .human-suffering-guide__meta span,
+  .human-suffering-record__meta span:last-child {
+    border: 1px solid color-mix(in srgb, var(--tone-line) 70%, transparent);
+    border-radius: 999px;
+    padding: 0.18rem 0.45rem;
+    background: color-mix(in srgb, var(--tone-bg) 18%, transparent);
+  }
+
+  .human-suffering-record h3,
+  .human-suffering-guide h3 {
+    margin: 0.45rem 0 0;
+    font-size: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .human-suffering-record p:last-child,
+  .human-suffering-guide p:last-child {
+    margin: 0.5rem 0 0;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+    line-height: 1.68;
   }
 
   .human-suffering-shelf {
@@ -231,9 +816,38 @@ const routeNames = [
     width: fit-content;
   }
 
+  .human-suffering-shelf__trail {
+    list-style: none;
+    padding: 0;
+    margin: 0.85rem 0 0;
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .human-suffering-shelf__trail li {
+    display: grid;
+    gap: 0.15rem;
+    padding-top: 0.55rem;
+    border-top: 1px solid color-mix(in srgb, var(--tone-line) 52%, transparent);
+  }
+
+  .human-suffering-shelf__trail a {
+    width: fit-content;
+    font-weight: 600;
+  }
+
+  .human-suffering-shelf__trail span {
+    font-size: 0.84rem;
+    color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  }
+
   @media (max-width: 920px) {
     .human-suffering-hero,
     .human-suffering-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .human-suffering-records__grid {
       grid-template-columns: 1fr;
     }
 
