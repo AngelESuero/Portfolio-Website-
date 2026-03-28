@@ -780,13 +780,28 @@ const hasHeroImages = Boolean(lane.heroImages?.length);
   }
 
   @media (max-width: 640px) {
+    .focus-tabs {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 0.15rem;
+    }
+
+    .focus-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
     .focus-hero__gallery {
       grid-template-columns: 1fr;
     }
 
     .focus-hero__frame img,
     .focus-hero__frame.is-featured img {
-      min-height: 14rem;
+      min-height: 12.5rem;
+    }
+
+    .focus-hero__stats strong {
+      font-size: 1.55rem;
     }
   }
 </style>

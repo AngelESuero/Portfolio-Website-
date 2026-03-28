@@ -1060,6 +1060,10 @@ html[data-surface-mode='viewer'] .header-lab-only {
     min-height: 38px;
   }
 
+  .site-header .header-actions [data-youtube-pip-trigger] {
+    display: none;
+  }
+
   #mobile-nav-toggle {
     padding-inline: 0.9rem;
     border-color: color-mix(in srgb, var(--tone-accent) 22%, var(--line2));
@@ -1118,9 +1122,9 @@ html[data-surface-mode='viewer'] .header-lab-only {
   color: var(--tone-muted);
 }
 
-.mobile-nav-link {
-  font-size: 0.98rem;
-}
+  .mobile-nav-link {
+    font-size: 0.98rem;
+  }
 
 .mobile-nav-section .header-link--secondary {
   min-height: 0;
@@ -2203,6 +2207,16 @@ html[data-surface-mode='lab'] .viewer-only-inline-flex {
 @media (max-width: 640px) {
   .view-surface {
     padding: 0.9rem;
+  }
+
+  .mobile-nav-inner {
+    padding-top: 0.3rem;
+    padding-bottom: 0.65rem;
+  }
+
+  .mobile-nav-section {
+    margin-top: 0.45rem;
+    padding-top: 0.5rem;
   }
 }
 

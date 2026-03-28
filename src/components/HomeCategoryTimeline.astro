@@ -657,16 +657,58 @@ const bundles = [
       width: 100%;
     }
 
+    .home-categories__kicker {
+      font-size: 0.66rem;
+      letter-spacing: 0.14em;
+    }
+
     .home-categories__title {
-      font-size: 1rem;
+      font-size: 0.95rem;
     }
 
     .home-categories__body {
-      font-size: 0.92rem;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      max-width: 30rem;
     }
 
     .home-categories__entryTitle {
       font-size: 0.96rem;
+    }
+
+    .home-categories__summaryText,
+    .home-categories__entryMeta,
+    .home-categories__signalMeta,
+    .home-categories__signalCopy {
+      font-size: 0.72rem;
+      line-height: 1.42;
+    }
+
+    .home-categories__summaryText,
+    .home-categories__entryMeta,
+    .home-categories__signalCopy {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      -webkit-line-clamp: 2;
+    }
+
+    .home-categories__entries {
+      gap: 0.24rem;
+    }
+
+    .home-categories__entry,
+    .home-categories__signal {
+      padding-top: 0.22rem;
+    }
+
+    .home-categories__chip,
+    .home-categories__stat,
+    .home-categories__button,
+    .home-categories__link {
+      min-height: 1.85rem;
+      padding: 0.3rem 0.55rem;
+      font-size: 0.76rem;
     }
 
     .home-categories__bundle[open] .home-categories__panel {
