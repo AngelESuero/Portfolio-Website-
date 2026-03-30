@@ -1,7 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import VoiceExcerpt from '../../components/VoiceExcerpt.astro';
 import { resolveProjectTimeline } from '../../data/linktree-timeline';
 import { getAllProjects } from '../../lib/site-collections';
+import { getContentVoiceExcerpt } from '../../lib/content-excerpts';
 
 export async function getStaticPaths() {
   const projects = await getAllProjects();
@@ -32,6 +34,7 @@ const projectLinks = Object.entries(project.data.links)
   .filter((entry): entry is { key: string; label: string; url: string; isExternal: boolean } => Boolean(entry));
 const projectMedia = Array.isArray(project.data.media) ? project.data.media : [];
 const isVideoMedia = (src: string) => /\.(mp4|mov|webm)$/i.test(src);
+const voiceExcerpt = getContentVoiceExcerpt(project, 220);
 
 const backdropImagePaths = project.data.photo_backdrop ? [
   "/images/work/art-of-survival/isolation.jpg",
@@ -70,6 +73,7 @@ const backdropCards = backdropImagePaths.map((src, idx) => ({
     <h1 class="mt-2 font-display text-4xl">{project.data.title}</h1>
     <p class="mt-1 text-zinc-600 dark:text-zinc-300">{timeline.yearLabel} · {project.data.status}</p>
     <img src={project.data.cover_image} alt={project.data.title} class="mt-6 h-72 w-full rounded object-cover" width="1200" height="288" />
+    <VoiceExcerpt text={voiceExcerpt} label="From the work" variant="feature" />
     <p class="mt-4">{project.data.description}</p>
     <div class="mt-4 flex flex-wrap gap-2">
       {project.data.tools.map((tool) => <span class="rounded border px-2 py-1 text-sm">{tool}</span>)}

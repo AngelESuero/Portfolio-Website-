@@ -1,4 +1,5 @@
 import type { CollectionEntry } from 'astro:content';
+import { getBodyText, getContentVoiceExcerpt, getTextExcerpt } from './content-excerpts';
 
 export type ArchiveEntry = CollectionEntry<'entries'>;
 export type ArchiveMedium = ArchiveEntry['data']['medium'];
@@ -55,31 +56,18 @@ export const getEntryDisplayStatus = (status: ArchiveEntry['data']['status']) =>
 
 export const shouldShowEntryStatus = (status: ArchiveEntry['data']['status']) => status !== 'published';
 
-const toBodyText = (value: string) =>
-  value
-    .replace(/\{\/\*[\s\S]*?\*\/\}/g, ' ')
-    .replace(/<!--[\s\S]*?-->/g, ' ')
-    .replace(/```[\s\S]*?```/g, ' ')
-    .replace(/`[^`]*`/g, ' ')
-    .replace(/!\[[^\]]*\]\([^)]+\)/g, ' ')
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-    .replace(/^#{1,6}\s+/gm, '')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/\*{1,3}([^*]+)\*{1,3}/g, '$1')
-    .replace(/_{1,3}([^_]+)_{1,3}/g, '$1')
-    .replace(/\s+/g, ' ')
-    .trim();
-
-export const getEntryBodyText = (entry: Pick<ArchiveEntry, 'body'>) => toBodyText(String(entry.body || ''));
+export const getEntryBodyText = (entry: Pick<ArchiveEntry, 'body'>) => getBodyText(String(entry.body || ''));
 
 export const entryHasBody = (entry: Pick<ArchiveEntry, 'body'>) => getEntryBodyText(entry).length > 0;
 
 export const getEntryFragment = (entry: Pick<ArchiveEntry, 'body'>, maxChars = 180) => {
   const text = getEntryBodyText(entry);
   if (!text) return '';
-  if (text.length <= maxChars) return text;
-  return `${text.slice(0, maxChars).trimEnd()}...`;
+  return getTextExcerpt(text, maxChars);
 };
+
+export const getEntryVoiceExcerpt = (entry: Pick<ArchiveEntry, 'body' | 'data'>, maxChars = 220) =>
+  getContentVoiceExcerpt(entry, maxChars);
 
 export const isAudioAsset = (src?: string, mimeType?: string) =>
   Boolean((mimeType && /^audio\//i.test(mimeType)) || (src && /\.(aac|flac|m4a|mp3|ogg|wav)$/i.test(src)));

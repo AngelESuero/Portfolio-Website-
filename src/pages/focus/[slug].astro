@@ -5,7 +5,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { focusLanes, focusLaneBySlug, type FocusLane, type FocusLaneSlug } from '../../data/focus-lanes';
 import { formatShortArchiveUtcDate } from '../../lib/date-formatting';
-import { sortEntriesByDate } from '../../lib/archive-entries';
+import { getEntryVoiceExcerpt, sortEntriesByDate } from '../../lib/archive-entries';
+import { getContentVoiceExcerpt } from '../../lib/content-excerpts';
 import { resolveProjectTimeline } from '../../data/linktree-timeline';
 import { getAllEntries, getAllPosts, getAllProjects } from '../../lib/site-collections';
 
@@ -33,7 +34,7 @@ const scoreEntry = (lane: FocusLane, entry: Entry) => {
   let score = 0;
   const slug = normalize(entry.slug);
   const tags = toWordSet(entry.data.tags);
-  const text = normalize([entry.data.title, entry.data.summary, entry.body, entry.slug].join(' '));
+  const text = normalize([entry.data.title, getEntryVoiceExcerpt(entry, 180), entry.body, entry.slug].join(' '));
 
   if (lane.entrySlugs?.map(normalize).includes(slug)) score += 120;
   if (lane.entryMediums?.includes(entry.data.medium)) score += 18;
@@ -49,7 +50,7 @@ const scoreEntry = (lane: FocusLane, entry: Entry) => {
 const scoreProject = (lane: FocusLane, project: Project) => {
   let score = 0;
   const slug = normalize(project.slug);
-  const text = normalize([project.data.title, project.data.description, project.body, project.data.role || ''].join(' '));
+  const text = normalize([project.data.title, getContentVoiceExcerpt(project, 180), project.body, project.data.role || ''].join(' '));
 
   if (lane.projectSlugs?.map(normalize).includes(slug)) score += 120;
   if (lane.projectTypes?.includes(project.data.type)) score += 16;
@@ -61,7 +62,7 @@ const scorePost = (lane: FocusLane, post: Post) => {
   let score = 0;
   const slug = normalize(post.slug);
   const tags = toWordSet(post.data.tags);
-  const text = normalize([post.data.title, post.data.summary, post.body, post.slug].join(' '));
+  const text = normalize([post.data.title, getContentVoiceExcerpt(post, 180), post.body, post.slug].join(' '));
 
   if (lane.postSlugs?.map(normalize).includes(slug)) score += 120;
 
@@ -313,7 +314,7 @@ const hasHeroImages = Boolean(lane.heroImages?.length);
                 <a href={`/writing/${post.slug}`} class="focus-post">
                   <p class="focus-post__meta font-archive">{formatShortArchiveUtcDate(post.data.date)}</p>
                   <h3>{post.data.title}</h3>
-                  <p>{post.data.summary}</p>
+                  <p>{getContentVoiceExcerpt(post, 180)}</p>
                 </a>
               ))}
             </div>

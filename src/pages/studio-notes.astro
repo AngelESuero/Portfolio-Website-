@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { formatLongUtcDate } from '../lib/date-formatting';
+import { getEntryVoiceExcerpt } from '../lib/archive-entries';
 import { getAllEntries } from '../lib/site-collections';
 
 const allEntries = await getAllEntries();
@@ -46,7 +47,7 @@ const mediumIcon: Record<string, string> = {
                 <time class="studio-note-date">{formatLongUtcDate(note.data.date)}</time>
               </header>
 
-              <p class="studio-note-summary">{note.data.summary}</p>
+              <p class="studio-note-summary">{getEntryVoiceExcerpt(note, 180)}</p>
 
               {note.data.tags && note.data.tags.length > 0 && (
                 <div class="studio-note-tags">

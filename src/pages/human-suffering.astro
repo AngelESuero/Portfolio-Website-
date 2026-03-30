@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getAllPosts } from '../lib/site-collections';
+import { getContentVoiceExcerpt } from '../lib/content-excerpts';
 
 const posts = await getAllPosts();
 const post = posts.find((entry) => entry.slug === 'human-suffering-and-practice');
@@ -679,7 +680,7 @@ const notesTimeline = [
 
 <BaseLayout
   title="Human Suffering — Problems"
-  description={post.data.summary}
+  description={getContentVoiceExcerpt(post, 180)}
   theme="survival"
   bodyClass="human-suffering-page"
 >

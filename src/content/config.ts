@@ -38,6 +38,7 @@ const projects = defineCollection({
     cover_image: z.string(),
     cover_fit: z.enum(['cover', 'contain']).optional(),
     description: z.string(),
+    voice: z.string().optional(),
     youtube_embed: z.string().optional(),
     photo_backdrop: z.boolean().optional()
   })
@@ -51,7 +52,8 @@ const posts = defineCollection({
     featured: z.boolean().default(false),
     ready: z.boolean().optional(),
     tags: z.array(z.string()),
-    summary: z.string()
+    summary: z.string(),
+    voice: z.string().optional()
   })
 });
 
@@ -65,6 +67,7 @@ const entries = defineCollection({
     status: z.enum(entryStatuses),
     tags: z.array(z.string()),
     summary: z.string(),
+    voice: z.string().optional(),
     external_url: z.string().url().optional(),
     related_entries: z.array(z.string()).optional(),
     audience: z.string().optional(),

@@ -1,9 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import VoiceExcerpt from '../../components/VoiceExcerpt.astro';
 import WritingWorkbench from '../../../app/components/WritingWorkbench';
 import { formatLongUtcDate, formatShortUtcDate } from '../../lib/date-formatting';
 import { isPostReady } from '../../lib/post-readiness';
 import { getEntryHref, sortEntriesByDate } from '../../lib/archive-entries';
+import { getContentVoiceExcerpt } from '../../lib/content-excerpts';
 import { getAllEntries, getAllPosts } from '../../lib/site-collections';
 
 const posts = (await getAllPosts()).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
@@ -24,6 +26,7 @@ const latestPublished = readyPosts.slice(0, 6).map((post) => ({
   href: `/writing/${post.slug}`,
   date: formatShortUtcDate(post.data.date),
   summary: post.data.summary,
+  voice: getContentVoiceExcerpt(post, 160),
   tags: post.data.tags
 }));
 
@@ -127,7 +130,7 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
               <a href={href}>{entry.data.title}</a>
             </h3>
 
-            <p class="writing-document-card__summary">{entry.data.summary}</p>
+            <VoiceExcerpt text={getContentVoiceExcerpt(entry, 170)} label="From the archive" variant="compact" />
 
             {entry.data.tags.length > 0 && (
               <div class="writing-tags">
@@ -216,7 +219,11 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
                     <h3 class="font-display text-2xl">
                       <a href={`/writing/${post.slug}`}>{post.data.title}</a>
                     </h3>
-                    <p>{postReady ? post.data.summary : 'This entry is still being shaped.'}</p>
+                    {postReady ? (
+                      <VoiceExcerpt text={getContentVoiceExcerpt(post, 170)} label="From the piece" variant="compact" />
+                    ) : (
+                      <p>This entry is still being shaped.</p>
+                    )}
                     <div class="writing-entry-row__footer">
                       <div class="writing-tags">
                         {post.data.tags.map((tag) => <span class="writing-tag">#{tag}</span>)}

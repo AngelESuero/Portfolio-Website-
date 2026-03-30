@@ -1,13 +1,14 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import EntryMediaBlock from './EntryMediaBlock.astro';
+import VoiceExcerpt from './VoiceExcerpt.astro';
 import {
   entryHasBody,
   getEntryDisplayMedium,
   getEntryDisplaySource,
   getEntryDisplayStatus,
-  getEntryFragment,
   getEntryHref,
+  getEntryVoiceExcerpt,
   shouldShowEntryStatus
 } from '../lib/archive-entries';
 import { formatShortArchiveUtcDate } from '../lib/date-formatting';
@@ -25,7 +26,13 @@ const sourceLabel = getEntryDisplaySource(entry.data.source);
 const statusLabel = getEntryDisplayStatus(entry.data.status);
 const showStatus = shouldShowEntryStatus(entry.data.status);
 const hasBody = entryHasBody(entry);
-const noteFragment = entry.data.medium === 'note' ? getEntryFragment(entry, 190) : '';
+const voiceExcerpt = getEntryVoiceExcerpt(entry, 190);
+const voiceLabel =
+  entry.data.medium === 'note'
+    ? 'From the note'
+    : entry.data.medium === 'writing'
+      ? 'From the piece'
+      : 'From the record';
 const thumbnail = typeof entry.data.thumbnail === 'string' ? entry.data.thumbnail.trim() : '';
 const externalUrl = typeof entry.data.external_url === 'string' ? entry.data.external_url.trim() : '';
 const externalProvider = externalUrl ? providerFromUrl(externalUrl) : null;
@@ -63,11 +70,7 @@ const showMediaBlock = entry.data.medium === 'music' || entry.data.medium === 'v
     showMediaBlock && <EntryMediaBlock entry={entry} compact={true} />
   )}
 
-  {entry.data.medium === 'note' ? (
-    <p class="entry-card__fragment">{noteFragment || entry.data.summary}</p>
-  ) : (
-    <p class="entry-card__summary">{entry.data.summary}</p>
-  )}
+  <VoiceExcerpt text={voiceExcerpt} label={voiceLabel} variant="compact" />
 
   <div class="entry-card__footer">
     <div class="entry-card__tags font-archive" aria-label="Entry tags">

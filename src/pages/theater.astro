@@ -11,6 +11,7 @@ import {
   getEntryDisplaySource,
   getEntryDisplayStatus,
   getEntryHref,
+  getEntryVoiceExcerpt,
   shouldShowEntryStatus,
   sortEntriesByDate
 } from '../lib/archive-entries';
@@ -35,6 +36,7 @@ const renderedPanels = await Promise.all(
   })
 );
 const activeEntry = requestedEntry ?? null;
+const activeEntryVoice = activeEntry ? getEntryVoiceExcerpt(activeEntry, 180) : '';
 ---
 
 <BaseLayout
@@ -60,7 +62,7 @@ const activeEntry = requestedEntry ?? null;
         <h1 data-theater-hero-title>{activeEntry ? activeEntry.data.title : 'Center stage for the archive.'}</h1>
         <p class="theater-hero__lede" data-theater-hero-summary>
           {activeEntry
-            ? activeEntry.data.summary
+            ? activeEntryVoice
             : 'Choose a record from the queue. The stage will load one entry at a time while the rest of the room stays quiet.'}
         </p>
         <div class="theater-hero__actions">
@@ -84,35 +86,38 @@ const activeEntry = requestedEntry ?? null;
           </div>
 
           <div class="theater-picker theater-picker--archive">
-            {renderedPanels.map(({ entry }) => (
-              <a
-                href={`?entry=${entry.slug}#stage`}
-                role="button"
-                class:list={['theater-picker__item', activeEntry && entry.slug === activeEntry.slug && 'is-active']}
-                data-theater-item
-                data-entry-slug={entry.slug}
-                data-entry-medium={getEntryDisplayMedium(entry.data.medium)}
-                data-entry-source={getEntryDisplaySource(entry.data.source)}
-                data-entry-status={shouldShowEntryStatus(entry.data.status) ? getEntryDisplayStatus(entry.data.status) : 'Published'}
-                data-entry-href={getEntryHref(entry)}
-                data-entry-title={entry.data.title}
-                data-entry-summary={entry.data.summary}
-                data-entry-date={formatShortArchiveUtcDate(entry.data.date)}
-                aria-pressed={activeEntry && entry.slug === activeEntry.slug ? 'true' : 'false'}
-                aria-controls={`theater-panel-${entry.slug}`}
-              >
-                <span class="theater-picker__top">
-                  <span class="theater-picker__pill">{getEntryDisplayMedium(entry.data.medium)}</span>
-                  <small class="theater-picker__source">
-                    {getEntryDisplaySource(entry.data.source)} · {formatShortArchiveUtcDate(entry.data.date)}
-                  </small>
-                </span>
-                <span class="theater-picker__body">
-                  <strong>{entry.data.title}</strong>
-                  <small>{entry.data.summary}</small>
-                </span>
-              </a>
-            ))}
+            {renderedPanels.map(({ entry }) => {
+              const entryVoice = getEntryVoiceExcerpt(entry, 150);
+              return (
+                <a
+                  href={`?entry=${entry.slug}#stage`}
+                  role="button"
+                  class:list={['theater-picker__item', activeEntry && entry.slug === activeEntry.slug && 'is-active']}
+                  data-theater-item
+                  data-entry-slug={entry.slug}
+                  data-entry-medium={getEntryDisplayMedium(entry.data.medium)}
+                  data-entry-source={getEntryDisplaySource(entry.data.source)}
+                  data-entry-status={shouldShowEntryStatus(entry.data.status) ? getEntryDisplayStatus(entry.data.status) : 'Published'}
+                  data-entry-href={getEntryHref(entry)}
+                  data-entry-title={entry.data.title}
+                  data-entry-summary={entryVoice}
+                  data-entry-date={formatShortArchiveUtcDate(entry.data.date)}
+                  aria-pressed={activeEntry && entry.slug === activeEntry.slug ? 'true' : 'false'}
+                  aria-controls={`theater-panel-${entry.slug}`}
+                >
+                  <span class="theater-picker__top">
+                    <span class="theater-picker__pill">{getEntryDisplayMedium(entry.data.medium)}</span>
+                    <small class="theater-picker__source">
+                      {getEntryDisplaySource(entry.data.source)} · {formatShortArchiveUtcDate(entry.data.date)}
+                    </small>
+                  </span>
+                  <span class="theater-picker__body">
+                    <strong>{entry.data.title}</strong>
+                    <small>{entryVoice}</small>
+                  </span>
+                </a>
+              );
+            })}
           </div>
         </aside>
 
@@ -172,7 +177,7 @@ const activeEntry = requestedEntry ?? null;
                     {showStatus ? <span class="theater-panel__status">{getEntryDisplayStatus(entry.data.status)}</span> : null}
                   </div>
 
-                  <p class="theater-panel__summary">{entry.data.summary}</p>
+                  <p class="theater-panel__summary">{getEntryVoiceExcerpt(entry, 180)}</p>
 
                   <div class="theater-panel__tags" aria-label="Entry tags">
                     {entry.data.tags.map((tag) => <span>#{tag}</span>)}

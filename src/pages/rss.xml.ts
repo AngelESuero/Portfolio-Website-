@@ -1,5 +1,6 @@
 import rss from '@astrojs/rss';
 import { getAllPosts } from '../lib/site-collections';
+import { getContentVoiceExcerpt } from '../lib/content-excerpts';
 
 export async function GET(context) {
   const posts = await getAllPosts();
@@ -10,7 +11,7 @@ export async function GET(context) {
     items: posts.map((post) => ({
       title: post.data.title,
       pubDate: post.data.date,
-      description: post.data.summary,
+      description: getContentVoiceExcerpt(post, 180),
       link: `/writing/${post.slug}/`
     }))
   });

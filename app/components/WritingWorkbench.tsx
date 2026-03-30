@@ -7,6 +7,7 @@ type PublishedEntry = {
   href: string;
   date: string;
   summary: string;
+  voice: string;
   tags: string[];
 };
 
@@ -521,7 +522,7 @@ export default function WritingWorkbench({
                     {entry.title}
                   </div>
                   <p className="mt-2 text-[0.82rem] leading-6" style={{ color: "var(--tone-muted)" }}>
-                    {entry.summary}
+                    {entry.voice || entry.summary}
                   </p>
                 </a>
               ))}

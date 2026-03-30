@@ -1,8 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import VoiceExcerpt from '../../components/VoiceExcerpt.astro';
 import { formatLongUtcDate } from '../../lib/date-formatting';
 import { isPostReady } from '../../lib/post-readiness';
 import { getAllPosts } from '../../lib/site-collections';
+import { getContentVoiceExcerpt } from '../../lib/content-excerpts';
 
 export async function getStaticPaths() {
   const posts = await getAllPosts();
@@ -16,6 +18,7 @@ const currentIndex = allPosts.findIndex((entry) => entry.slug === post.slug);
 const newerPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
 const olderPost = currentIndex >= 0 && currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
 const postReady = isPostReady(post);
+const voiceExcerpt = postReady ? getContentVoiceExcerpt(post, 220) : '';
 const wordCount = post.body ? post.body.trim().split(/\s+/).length : 0;
 const readingTime = Math.max(1, Math.round(wordCount / 200));
 ---
@@ -25,7 +28,7 @@ const readingTime = Math.max(1, Math.round(wordCount / 200));
     <header class="writing-entry-header">
       <p class="writing-entry-date">{formatLongUtcDate(post.data.date)}</p>
       <h1 class="font-display text-4xl md:text-5xl">{post.data.title}</h1>
-      {postReady && <p class="writing-entry-summary">{post.data.summary}</p>}
+      {postReady ? <VoiceExcerpt text={voiceExcerpt} label="From the piece" variant="feature" /> : <p class="writing-entry-summary">{post.data.summary}</p>}
       <div class="writing-entry-meta">
         {postReady && <p>{readingTime} min read</p>}
         <div class="writing-entry-tags" aria-label="Post tags">

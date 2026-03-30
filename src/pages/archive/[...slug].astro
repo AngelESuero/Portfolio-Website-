@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import ArchiveMusicEntryPlayer from '../../components/ArchiveMusicEntryPlayer.astro';
 import EntryMediaBlock from '../../components/EntryMediaBlock.astro';
+import VoiceExcerpt from '../../components/VoiceExcerpt.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import {
   getMusicManifestItemByEntryRef,
@@ -15,6 +16,7 @@ import {
   getEntryDisplaySource,
   getEntryDisplayStatus,
   getEntryHref,
+  getEntryVoiceExcerpt,
   shouldShowEntryStatus,
   sortEntriesByDate
 } from '../../lib/archive-entries';
@@ -39,6 +41,13 @@ const mediumLabel = getEntryDisplayMedium(entry.data.medium);
 const sourceLabel = getEntryDisplaySource(entry.data.source);
 const showStatus = shouldShowEntryStatus(entry.data.status);
 const statusLabel = getEntryDisplayStatus(entry.data.status);
+const voiceExcerpt = getEntryVoiceExcerpt(entry, 240);
+const voiceLabel =
+  entry.data.medium === 'note'
+    ? 'From the note'
+    : entry.data.medium === 'writing'
+      ? 'From the piece'
+      : 'From the record';
 const externalUrl = typeof entry.data.external_url === 'string' ? entry.data.external_url.trim() : '';
 const externalProvider = externalUrl ? providerFromUrl(externalUrl) : null;
 const externalLabel = externalUrl ? getLinkCtaLabel(externalUrl, externalProvider) : '';
@@ -74,7 +83,7 @@ const showFooterSourceLink = Boolean(externalUrl) && !showManifestMusicPlayer;
         <span>{sourceLabel}</span>
       </p>
       <h1 class="font-display text-4xl md:text-5xl">{entry.data.title}</h1>
-      <p class="archive-entry__summary">{entry.data.summary}</p>
+      <VoiceExcerpt text={voiceExcerpt} label={voiceLabel} variant="feature" />
 
       <div class="archive-entry__details">
         <div class="archive-entry__tags font-archive" aria-label="Entry tags">
