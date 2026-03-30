@@ -1,5 +1,5 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 import EntryCard from '../../components/EntryCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
@@ -7,6 +7,7 @@ import { focusLanes, focusLaneBySlug, type FocusLane, type FocusLaneSlug } from 
 import { formatShortArchiveUtcDate } from '../../lib/date-formatting';
 import { sortEntriesByDate } from '../../lib/archive-entries';
 import { resolveProjectTimeline } from '../../data/linktree-timeline';
+import { getAllEntries, getAllPosts, getAllProjects } from '../../lib/site-collections';
 
 type Entry = CollectionEntry<'entries'>;
 type Project = CollectionEntry<'projects'>;
@@ -87,9 +88,9 @@ export function getStaticPaths() {
 }
 
 const { lane } = Astro.props as { lane: FocusLane };
-const allEntries = sortEntriesByDate(await getCollection('entries'));
-const allProjects = [...(await getCollection('projects'))].sort(compareProjectsByRecency);
-const allPosts = [...(await getCollection('posts'))].sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const allEntries = sortEntriesByDate(await getAllEntries());
+const allProjects = [...(await getAllProjects())].sort(compareProjectsByRecency);
+const allPosts = [...(await getAllPosts())].sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const matchedProjects = rankMatches(allProjects, (project) => scoreProject(lane, project)).slice(0, 6);
 const matchedEntries = rankMatches(allEntries, (entry) => scoreEntry(lane, entry)).slice(0, 12);

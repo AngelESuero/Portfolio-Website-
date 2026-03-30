@@ -1,5 +1,4 @@
 ---
-import { getCollection } from 'astro:content';
 import EntryMediaBlock from '../components/EntryMediaBlock.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import profile from '../data/profile';
@@ -15,8 +14,9 @@ import {
   shouldShowEntryStatus,
   sortEntriesByDate
 } from '../lib/archive-entries';
+import { getAllEntries } from '../lib/site-collections';
 
-const archiveEntries = sortEntriesByDate(await getCollection('entries'));
+const archiveEntries = sortEntriesByDate(await getAllEntries());
 const requestedSlug = Astro.url.searchParams.get('entry') ?? '';
 const requestedEntry = archiveEntries.find((entry) => entry.slug === requestedSlug) ?? null;
 const featuredEntries = ARCHIVE_MEDIUMS
