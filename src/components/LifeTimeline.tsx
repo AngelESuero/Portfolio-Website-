@@ -4,7 +4,7 @@
  * A living, interactive map of Angel Suero's milestones.
  *
  * - Entries expand individually instead of hiding behind bundle categories.
- * - Narrative entries reveal the fuller draft prose already stored in the data.
+ * - Narrative entries keep the source text front and center.
  * - Work/project entries link directly into the portfolio.
  */
 
@@ -586,10 +586,6 @@ export default function LifeTimeline({ variant = 'dark', layout = 'contained' }:
             .map((entryId) => ENTRY_LOOKUP.get(entryId))
             .filter((entry): entry is TimelineEntry => Boolean(entry))
             .map((entry) => entry.title);
-          const aiWrittenEntries = stage.featuredEntryIds
-            .map((entryId) => ENTRY_LOOKUP.get(entryId))
-            .filter((entry): entry is TimelineEntry => Boolean(entry?.aiNarrative?.length));
-
           return (
             <li
               key={stage.id}
@@ -670,33 +666,6 @@ export default function LifeTimeline({ variant = 'dark', layout = 'contained' }:
                         ))}
                       </ul>
                     </div>
-
-                    {aiWrittenEntries.length ? (
-                      <div className="life-timeline__block">
-                        <p className="life-timeline__sectionLabel life-timeline__sectionLabel--ai">
-                          <span className="life-timeline__sectionLabelMark" aria-hidden="true">◌</span>
-                          AI-written notes
-                        </p>
-                        <div className="life-timeline__narratives">
-                          {aiWrittenEntries.map((entry) => (
-                            <article key={entry.id} className="life-timeline__narrative">
-                              <div className="life-timeline__narrativeHead">
-                                <span className="life-timeline__narrativeBadge">
-                                  <span aria-hidden="true">◌</span>
-                                  <span>AI-written</span>
-                                </span>
-                                <span className="life-timeline__narrativeTitle">{entry.title}</span>
-                              </div>
-                              <div className="life-timeline__narrativeBody">
-                                {entry.aiNarrative?.map((paragraph, narrativeIndex) => (
-                                  <p key={`${entry.id}-${narrativeIndex}`}>{paragraph}</p>
-                                ))}
-                              </div>
-                            </article>
-                          ))}
-                        </div>
-                      </div>
-                    ) : null}
 
                     <div className="life-timeline__block">
                       <p className="life-timeline__sectionLabel">Showcases</p>

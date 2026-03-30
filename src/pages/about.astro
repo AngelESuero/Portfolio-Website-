@@ -59,6 +59,9 @@ const emailTimelineHighlights = [
         This page stays focused on biography, timeline, and the email-derived record of support structures, school
         movement, and early self-definition.
       </p>
+      <div class="about-page__quote">
+        <p>"I was always anxious when discussing culture."</p>
+      </div>
       <div class="about-page__roles" aria-label="Focus areas">
         {profile.roles.map((role) => <span class="chip rounded-full px-3 py-1 text-xs sm:text-sm">{role}</span>)}
       </div>
@@ -82,8 +85,8 @@ const emailTimelineHighlights = [
         </div>
 
         <p class="about-page__archive-intro">
-          A research pass through the Gmail archive surfaced a more documentary timeline: identity formation,
-          educational mobility, and the support structures that helped move each stage forward.
+          A research pass through the Gmail archive surfaced identity formation, educational mobility, and the support
+          structures that helped move each stage forward.
         </p>
 
         <div class="about-page__doc-stage">
@@ -133,8 +136,8 @@ const emailTimelineHighlights = [
     <section class="about-page__panel about-page__present-frame">
       <p class="about-page__label">Still current</p>
       <p>
-        The throughline stays the same: Newark, study, music, archive practice, and a life record that stays tied to
-        actual documents instead of just portfolio claims.
+        Knowing this, I can finally see acculturation for what it is, both a gift and a curse. The throughline stays
+        the same: Newark, study, music, archive practice, and a life record tied to actual documents.
       </p>
     </section>
   </section>
@@ -174,6 +177,21 @@ const emailTimelineHighlights = [
   .about-page__context {
     margin-top: 0.7rem;
     color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .about-page__quote {
+    margin-top: 0.9rem;
+    max-width: 48ch;
+    padding: 0.85rem 1rem;
+    border-left: 2px solid color-mix(in srgb, var(--tone-accent) 34%, var(--line2));
+    border-radius: 0.85rem;
+    background: color-mix(in srgb, var(--tone-surface) 88%, transparent);
+  }
+
+  .about-page__quote p {
+    line-height: 1.55;
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+    font-style: italic;
   }
 
   .about-page__roles {
