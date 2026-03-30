@@ -1,6 +1,5 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { getCollection } from 'astro:content';
 import ArchiveMusicEntryPlayer from '../../components/ArchiveMusicEntryPlayer.astro';
 import EntryMediaBlock from '../../components/EntryMediaBlock.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -21,16 +20,17 @@ import {
 } from '../../lib/archive-entries';
 import { formatLongArchiveUtcDate } from '../../lib/date-formatting';
 import { getMusicEntryRef, resolveMusicManifestItems } from '../../lib/music-player';
+import { getAllEntries } from '../../lib/site-collections';
 import { getLinkCtaLabel, providerFromUrl } from '../../lib/embed-resolver';
 
 export async function getStaticPaths() {
-  const entries = await getCollection('entries');
+  const entries = await getAllEntries();
   return entries.map((entry) => ({ params: { slug: entry.slug }, props: { entry } }));
 }
 
 const { entry } = Astro.props as { entry: CollectionEntry<'entries'> };
 const { Content } = await entry.render();
-const allEntries = sortEntriesByDate(await getCollection('entries'));
+const allEntries = sortEntriesByDate(await getAllEntries());
 const relatedEntries = (entry.data.related_entries || [])
   .map((slug) => allEntries.find((item) => item.slug === slug))
   .filter(Boolean) as CollectionEntry<'entries'>[];

@@ -87,9 +87,13 @@ const emailTimelineHighlights = [
         </p>
 
         <div class="about-page__doc-stage">
-          <a class="about-page__doc-preview" href="/documents/angel-suero-email-timeline.pdf" target="_blank" rel="noreferrer">
-            <img src="/documents/previews/email-timeline-cover.png" alt="First page preview of the email-derived timeline PDF" loading="lazy" />
-          </a>
+          <div class="about-page__doc-preview about-page__doc-preview--text">
+            <p class="about-page__doc-kicker">Preview temporarily unavailable</p>
+            <p class="about-page__doc-copy">
+              The PDF link above remains available, but the thumbnail image was removed so the site can build and
+              preview reliably.
+            </p>
+          </div>
           <div class="about-page__doc-meta">
             <p class="about-page__doc-kicker">What it captures</p>
             <p class="about-page__doc-copy">
@@ -123,7 +127,7 @@ const emailTimelineHighlights = [
     </section>
 
     <section class="about-page__timeline-wrap">
-      <LifeTimeline client:load variant="light" />
+      <LifeTimeline client:only="react" variant="light" />
     </section>
 
     <section class="about-page__panel about-page__present-frame">
@@ -211,6 +215,13 @@ const emailTimelineHighlights = [
     overflow: hidden;
     background: color-mix(in srgb, var(--tone-surface) 84%, transparent);
     box-shadow: 0 14px 26px rgba(0, 0, 0, 0.08);
+  }
+
+  .about-page__doc-preview--text {
+    padding: 1rem;
+    display: grid;
+    gap: 0.55rem;
+    align-content: start;
   }
 
   .about-page__doc-preview img {

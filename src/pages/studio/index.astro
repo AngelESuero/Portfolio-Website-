@@ -1,11 +1,11 @@
 ---
-import { getCollection } from 'astro:content';
 import LaneChooser from '../../components/studio/LaneChooser.astro';
 import RelatedEntriesHelper from '../../components/studio/RelatedEntriesHelper.astro';
 import StudioShell from '../../components/studio/StudioShell.astro';
 import { sortEntriesByDate } from '../../lib/archive-entries';
+import { getAllEntries } from '../../lib/site-collections';
 
-const relatedEntryOptions = sortEntriesByDate(await getCollection('entries')).map((entry) => ({
+const relatedEntryOptions = sortEntriesByDate(await getAllEntries()).map((entry) => ({
   slug: entry.slug,
   title: entry.data.title
 }));

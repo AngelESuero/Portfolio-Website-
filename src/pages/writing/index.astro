@@ -1,15 +1,15 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
 import WritingWorkbench from '../../../app/components/WritingWorkbench';
 import { formatLongUtcDate, formatShortUtcDate } from '../../lib/date-formatting';
 import { isPostReady } from '../../lib/post-readiness';
 import { getEntryHref, sortEntriesByDate } from '../../lib/archive-entries';
+import { getAllEntries, getAllPosts } from '../../lib/site-collections';
 
-const posts = (await getCollection('posts')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const posts = (await getAllPosts()).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const readyPosts = posts.filter(isPostReady);
 const archiveWritingEntries = sortEntriesByDate(
-  (await getCollection('entries')).filter((entry) => (
+  (await getAllEntries()).filter((entry) => (
     entry.data.medium === 'writing' &&
     !entry.slug.startsWith('writing/_') &&
     entry.slug !== 'writing/test'
@@ -96,7 +96,7 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
   </section>
 
   <section class="writing-desk-shell">
-    <WritingWorkbench client:load published={latestPublished} totalPublished={readyPosts.length} />
+    <WritingWorkbench client:only="react" published={latestPublished} totalPublished={readyPosts.length} />
   </section>
 
   <section class="writing-documents" aria-labelledby="writing-documents-heading">

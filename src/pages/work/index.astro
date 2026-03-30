@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import featuredThreadsData from '../../data/featured_threads.json';
 import youtubeData from '../../data/youtube.json';
-import { getCollection, type CollectionEntry } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 import {
   getArchiveMediumHref,
   getEntryDisplayMedium,
@@ -11,6 +11,7 @@ import {
 } from '../../lib/archive-entries';
 import { formatShortUtcDate } from '../../lib/date-formatting';
 import { resolveProjectTimeline } from '../../data/linktree-timeline';
+import { getAllEntries, getAllProjects } from '../../lib/site-collections';
 
 type PreparedLink = {
   key: string;
@@ -150,7 +151,7 @@ const outwardLabel = (link: PreparedLink): string => {
   }
 };
 
-const allProjects = (await getCollection('projects')).sort(compareProjectsByRecency);
+const allProjects = (await getAllProjects()).sort(compareProjectsByRecency);
 const projectIndex = new Map(allProjects.map((project) => [project.slug, project]));
 const scoreLeadProject = (project: CollectionEntry<'projects'>) => {
   const timeline = resolveProjectTimeline(project.data);
@@ -314,7 +315,7 @@ const leadSignal = preparedProjects.find((project) => project.isLead) ?? prepare
 const defaultStatus =
   'Stay with one piece to let process, context, and adjacent work gather around it without leaving the page.';
 const featuredArchiveLanes = ['writing', 'image', 'music', 'video'] as const;
-const recentArchiveEntries = selectArchiveBridgeEntries(sortEntriesByDate(await getCollection('entries')));
+const recentArchiveEntries = selectArchiveBridgeEntries(sortEntriesByDate(await getAllEntries()));
 ---
 <BaseLayout title="Work — a_e.s_" theme="work">
   <section class="work-page">

@@ -1,5 +1,4 @@
 ---
-import { getCollection } from 'astro:content';
 import EntryCard from '../../components/EntryCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import {
@@ -11,8 +10,9 @@ import {
   sortEntriesByDate
 } from '../../lib/archive-entries';
 import { formatLongArchiveUtcDate } from '../../lib/date-formatting';
+import { getAllEntries } from '../../lib/site-collections';
 
-const entries = sortEntriesByDate(await getCollection('entries'));
+const entries = sortEntriesByDate(await getAllEntries());
 const mediums = ARCHIVE_MEDIUMS;
 const allTags = collectEntryTags(entries);
 const DEFAULT_VISIBLE_TAGS = 6;

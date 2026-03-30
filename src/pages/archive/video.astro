@@ -1,5 +1,4 @@
 ---
-import { getCollection } from 'astro:content';
 import EntryCard from '../../components/EntryCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import {
@@ -9,8 +8,9 @@ import {
   sortEntriesByDate
 } from '../../lib/archive-entries';
 import { formatLongArchiveUtcDate } from '../../lib/date-formatting';
+import { getAllEntries } from '../../lib/site-collections';
 
-const allEntries = sortEntriesByDate(await getCollection('entries'));
+const allEntries = sortEntriesByDate(await getAllEntries());
 const entries = allEntries.filter((e) => e.data.medium === 'video');
 
 const videos = entries.filter((e) => e.data.ingest?.surface === 'videos');

@@ -28,7 +28,6 @@ media:
   - src: "/media/work/scraps/scraps-dark-days-symptoms-no-context-demos-2023-2024/1znb8hTyWVM.mp4"
     alt: "Guilt70% / Regret30% reel."
     caption: "Guilt70% / Regret30% · Oct 2024"
-cover_image: "/images/scraps-cover.png"
+cover_image: "/images/scraps-cover.svg"
 description: "A later Scraps EP collecting rap demos from 2023–2024: dark-day notes, symptoms pieces, and no-context cuts kept in sequence instead of cleaned into something neater."
 ---
-

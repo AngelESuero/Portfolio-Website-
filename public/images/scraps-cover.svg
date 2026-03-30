@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1400" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#151016" />
+      <stop offset="50%" stop-color="#261922" />
+      <stop offset="100%" stop-color="#0e1015" />
+    </linearGradient>
+    <radialGradient id="warm" cx="0.32" cy="0.28" r="0.62">
+      <stop offset="0%" stop-color="#a64a3b" stop-opacity="0.34" />
+      <stop offset="60%" stop-color="#a64a3b" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#a64a3b" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="gold" cx="0.7" cy="0.68" r="0.55">
+      <stop offset="0%" stop-color="#b97a2d" stop-opacity="0.32" />
+      <stop offset="60%" stop-color="#b97a2d" stop-opacity="0.06" />
+      <stop offset="100%" stop-color="#b97a2d" stop-opacity="0" />
+    </radialGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" />
+      <feColorMatrix type="saturate" values="0" />
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 0.1" />
+      </feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="1400" height="1400" fill="url(#base)" />
+  <rect width="1400" height="1400" fill="url(#warm)" />
+  <rect width="1400" height="1400" fill="url(#gold)" />
+  <g opacity="0.3">
+    <path d="M180 1020 C330 760, 490 690, 730 520 S1160 380, 1250 260" fill="none" stroke="#ede3d1" stroke-opacity="0.18" stroke-width="18" stroke-linecap="round" />
+    <path d="M250 1180 C410 900, 560 830, 800 650 S1180 500, 1320 360" fill="none" stroke="#587a95" stroke-opacity="0.18" stroke-width="28" stroke-linecap="round" />
+    <circle cx="430" cy="480" r="220" fill="#b97a2d" opacity="0.08" />
+    <circle cx="1020" cy="860" r="260" fill="#a64a3b" opacity="0.08" />
+  </g>
+  <rect width="1400" height="1400" filter="url(#grain)" opacity="0.35" />
+</svg>

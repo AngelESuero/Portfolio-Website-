@@ -1,8 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
+import { getAllPosts } from '../lib/site-collections';
 
-const posts = await getCollection('posts');
+const posts = await getAllPosts();
 const post = posts.find((entry) => entry.slug === 'human-suffering-and-practice');
 
 if (!post) {

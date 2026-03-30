@@ -1,5 +1,4 @@
 ---
-import { getCollection } from 'astro:content';
 import EntryCard from '../../components/EntryCard.astro';
 import ArchiveMusicShelfPlayer from '../../components/ArchiveMusicShelfPlayer.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -12,6 +11,7 @@ import {
   sortEntriesByDate
 } from '../../lib/archive-entries';
 import { formatLongArchiveUtcDate } from '../../lib/date-formatting';
+import { getAllEntries } from '../../lib/site-collections';
 import { resolveMusicManifestItems } from '../../lib/music-player';
 
 const mediumDescriptions: Record<ArchiveMedium, string> = {
@@ -31,7 +31,7 @@ export async function getStaticPaths() {
 }
 
 const { medium } = Astro.props as { medium: ArchiveMedium };
-const allEntries = sortEntriesByDate(await getCollection('entries'));
+const allEntries = sortEntriesByDate(await getAllEntries());
 const entries = filterEntriesByMedium(allEntries, medium);
 const mediumLabel = getEntryDisplayMedium(medium);
 const musicPlayerItems = medium === 'music' ? resolveMusicManifestItems(allEntries) : [];

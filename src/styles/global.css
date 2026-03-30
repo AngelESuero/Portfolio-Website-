@@ -119,7 +119,7 @@
   --topic-highlight-alpha: 0.036;
   --topic-depth-alpha: 0.18;
   --topic-body-lift-alpha: 0.046;
-  --hallway-photo-url: url('/images/bg-station.jpg');
+  --hallway-photo-url: url('/images/bg-station.svg');
   --shell-gutter: clamp(24px, 3.8vw, 72px);
   --measure: clamp(1080px, 88vw, 1440px);
   --phi: 1.618;

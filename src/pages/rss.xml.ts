@@ -1,8 +1,8 @@
 import rss from '@astrojs/rss';
-import { getCollection } from 'astro:content';
+import { getAllPosts } from '../lib/site-collections';
 
 export async function GET(context) {
-  const posts = await getCollection('posts');
+  const posts = await getAllPosts();
   return rss({
     title: 'a_e.s_ Writing Feed',
     description: 'Writing and archive notes by a_e.s_',

@@ -1,9 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
 import { formatLongUtcDate } from '../lib/date-formatting';
+import { getAllEntries } from '../lib/site-collections';
 
-const allEntries = await getCollection('entries');
+const allEntries = await getAllEntries();
 const notes = allEntries
   .filter(e => e.data.medium === 'note')
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());

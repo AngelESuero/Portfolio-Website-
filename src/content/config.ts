@@ -1,5 +1,4 @@
 import { defineCollection, z } from 'astro:content';
-import '../data/music-manifest';
 
 const entryMediums = ['writing', 'music', 'video', 'image', 'note', 'proposal'] as const;
 const entrySources = ['substack', 'youtube', 'untitled', 'local-media', 'private-notes', 'manual', 'linktree'] as const;

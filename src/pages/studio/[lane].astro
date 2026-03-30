@@ -1,5 +1,4 @@
 ---
-import { getCollection } from 'astro:content';
 import MediaEntryForm from '../../components/studio/MediaEntryForm.astro';
 import NoteEntryForm from '../../components/studio/NoteEntryForm.astro';
 import ProposalEntryForm from '../../components/studio/ProposalEntryForm.astro';
@@ -8,6 +7,7 @@ import StudioShell from '../../components/studio/StudioShell.astro';
 import WritingEntryForm from '../../components/studio/WritingEntryForm.astro';
 import { sortEntriesByDate } from '../../lib/archive-entries';
 import { STUDIO_LANES, type StudioLane } from '../../lib/studio';
+import { getAllEntries } from '../../lib/site-collections';
 
 export async function getStaticPaths() {
   return STUDIO_LANES.map((lane) => ({
@@ -19,7 +19,7 @@ export async function getStaticPaths() {
 const { lane } = Astro.props as { lane: StudioLane };
 
 const laneConfig = STUDIO_LANES.find((item) => item.slug === lane) ?? STUDIO_LANES[0];
-const relatedEntryOptions = sortEntriesByDate(await getCollection('entries')).map((entry) => ({
+const relatedEntryOptions = sortEntriesByDate(await getAllEntries()).map((entry) => ({
   slug: entry.slug,
   title: entry.data.title
 }));
