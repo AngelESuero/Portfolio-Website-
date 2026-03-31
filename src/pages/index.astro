@@ -283,7 +283,7 @@ const timelinePreview = [
     justify-content: flex-end;
     gap: clamp(0.85rem, 2vw, 1.15rem);
     padding: clamp(1.1rem, 4vw, 4rem) clamp(0.25rem, 1.25vw, 0.75rem) clamp(0.9rem, 2vw, 1.75rem);
-    animation: home-rise 760ms var(--ease-emphasized, ease-out) both;
+    animation: home-rise 520ms var(--ease-emphasized, ease-out) both;
   }
 
   .home-hero__eyebrow {
@@ -401,7 +401,7 @@ const timelinePreview = [
     box-shadow:
       0 24px 60px rgba(0, 0, 0, 0.34),
       inset 0 1px 0 rgba(255, 255, 255, 0.03);
-    animation: home-rise 880ms 80ms var(--ease-emphasized, ease-out) both;
+    animation: home-rise 600ms 60ms var(--ease-emphasized, ease-out) both;
   }
 
   .home-hero__image {
@@ -409,14 +409,13 @@ const timelinePreview = [
     height: 100%;
     object-fit: cover;
     object-position: center 18%;
-    filter: saturate(0.94) contrast(1.04) brightness(0.92);
+    opacity: 0.98;
     transform: scale(1.01);
-    transition: transform 420ms ease, filter 420ms ease;
+    transition: transform 320ms ease;
   }
 
   .home-hero__figure:hover .home-hero__image {
     transform: scale(1.03);
-    filter: saturate(1) contrast(1.05) brightness(0.95);
   }
 
   .home-hero__figure-caption {
@@ -606,7 +605,7 @@ const timelinePreview = [
   }
 
   .home-timeline__details[open] .home-timeline__body {
-    animation: home-timeline-expand 220ms var(--ease-emphasized, ease-out) both;
+    animation: home-timeline-expand 160ms var(--ease-emphasized, ease-out) both;
   }
 
   .home-timeline__details[open] .home-timeline__summary {
@@ -922,14 +921,12 @@ const timelinePreview = [
   @keyframes home-rise {
     from {
       opacity: 0;
-      transform: translateY(1rem);
-      filter: blur(12px);
+      transform: translateY(0.55rem);
     }
 
     to {
       opacity: 1;
       transform: translateY(0);
-      filter: blur(0);
     }
   }
 
