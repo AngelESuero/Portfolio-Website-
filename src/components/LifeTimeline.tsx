@@ -8,7 +8,7 @@
  * - Work/project entries link directly into the portfolio.
  */
 
-import React, { useState } from 'react';
+import type { CSSProperties } from 'react';
 import './LifeTimeline.css';
 
 type Category = 'personal' | 'education' | 'work' | 'project';
@@ -544,7 +544,6 @@ type LifeTimelineProps = {
 };
 
 export default function LifeTimeline({ variant = 'dark', layout = 'contained' }: LifeTimelineProps) {
-  const [activeEntryId, setActiveEntryId] = useState<string | null>('youth');
   const isFullBleed = layout === 'fullBleed';
   const timelineStyle = {
     '--lt-text': variant === 'light' ? '#1a1a1a' : 'color-mix(in srgb, var(--tone-text) 94%, white 6%)',
@@ -573,15 +572,15 @@ export default function LifeTimeline({ variant = 'dark', layout = 'contained' }:
     '--lt-panel-side-padding': isFullBleed
       ? 'clamp(0.55rem, 1.15vw, 0.95rem)'
       : 'clamp(0.4rem, 1vw, 0.75rem)',
-  } as React.CSSProperties;
+  } as CSSProperties;
 
   return (
     <section className={`life-timeline life-timeline--${variant}`} aria-label="Life timeline" style={timelineStyle}>
       <ol className="life-timeline__list" role="list">
         {STAGE_SHOWCASES.map((stage, index) => {
-          const open = activeEntryId === stage.id;
           const titleSide = index % 2 === 0 ? 'left' : 'right';
           const detailSide = titleSide === 'left' ? 'right' : 'left';
+          const panelId = `life-timeline-panel-${stage.id}`;
           const featuredMoments = stage.featuredEntryIds
             .map((entryId) => ENTRY_LOOKUP.get(entryId))
             .filter((entry): entry is TimelineEntry => Boolean(entry))
@@ -589,107 +588,101 @@ export default function LifeTimeline({ variant = 'dark', layout = 'contained' }:
           return (
             <li
               key={stage.id}
-              className={`life-timeline__entry life-timeline__entry--${titleSide}${open ? ' is-active' : ''}`}
+              className={`life-timeline__entry life-timeline__entry--${titleSide}`}
             >
-              <button
-                type="button"
-                className="life-timeline__tick"
-                onClick={() => setActiveEntryId((current) => (current === stage.id ? null : stage.id))}
-                aria-expanded={open}
-                aria-controls={`life-timeline-panel-${stage.id}`}
-              >
-                <span className="life-timeline__side life-timeline__side--title">
-                  <span className="life-timeline__year">{stage.ageRange}</span>
-                  <span className="life-timeline__label">{stage.title}</span>
-                  <span className="life-timeline__meta">{stage.yearRange}</span>
-                  <span className="life-timeline__peek" aria-hidden="true">
-                    {stage.previewImages.slice(0, 2).map((src) => (
-                      <span
-                        key={`${stage.id}-${src}-peek`}
-                        className="life-timeline__peekImage"
-                        style={{ backgroundImage: `url('${src}')` }}
-                      />
-                    ))}
+              <details className="life-timeline__disclosure" name="life-timeline" open={index === 0}>
+                <summary className="life-timeline__tick" aria-controls={panelId}>
+                  <span className="life-timeline__side life-timeline__side--title">
+                    <span className="life-timeline__year">{stage.ageRange}</span>
+                    <span className="life-timeline__label">{stage.title}</span>
+                    <span className="life-timeline__meta">{stage.yearRange}</span>
                   </span>
-                </span>
-                <span className="life-timeline__center" aria-hidden="true">
-                  <span className="life-timeline__dot"></span>
-                </span>
-                <span className="life-timeline__side life-timeline__side--summary">
-                  <span className="life-timeline__summary">{stage.summary}</span>
-                  <span className={`life-timeline__tab${open ? ' is-open' : ''}`} aria-hidden="true">
-                    <span className="life-timeline__tabLabel">{open ? 'Hide showcase' : 'Open showcase'}</span>
-                    <span className="life-timeline__arrow">
-                      <svg viewBox="0 0 8 8">
-                        <polyline points="2,1 6,4 2,7" />
-                      </svg>
+                  <span className="life-timeline__center" aria-hidden="true">
+                    <span className="life-timeline__dot"></span>
+                  </span>
+                  <span className="life-timeline__side life-timeline__side--summary">
+                    <span className="life-timeline__summary">{stage.summary}</span>
+                    <span className="life-timeline__tab" aria-hidden="true">
+                      <span className="life-timeline__tabLabel">View details</span>
+                      <span className="life-timeline__arrow">
+                        <svg viewBox="0 0 8 8">
+                          <polyline points="2,1 6,4 2,7" />
+                        </svg>
+                      </span>
+                    </span>
+                    <span className="life-timeline__peek" aria-hidden="true">
+                      {stage.previewImages.slice(0, 3).map((src) => (
+                        <span
+                          key={`${stage.id}-${src}-peek`}
+                          className="life-timeline__peekImage"
+                          style={{ backgroundImage: `url('${src}')` }}
+                        />
+                      ))}
                     </span>
                   </span>
-                </span>
-              </button>
+                </summary>
 
-              <div
-                id={`life-timeline-panel-${stage.id}`}
-                className="life-timeline__panel"
-                aria-hidden={!open}
-              >
-                <div className="life-timeline__panelInner">
-                  <div className="life-timeline__panelAxis" aria-hidden="true"></div>
-                  <div className={`life-timeline__panelBody life-timeline__panelBody--${detailSide}`}>
-                    <div className="life-timeline__heroBlock">
-                      <div className="life-timeline__visuals" aria-hidden="true">
-                        {stage.previewImages.map((src, imageIndex) => (
-                          <span
-                            key={`${stage.id}-${src}`}
-                            className={`life-timeline__visual life-timeline__visual--${imageIndex + 1}`}
-                            style={{ backgroundImage: `url('${src}')` }}
-                          />
-                        ))}
-                      </div>
+                <div id={panelId} className={`life-timeline__panel life-timeline__panel--${detailSide}`}>
+                  <div className="life-timeline__panelInner">
+                    <div className="life-timeline__panelAxis" aria-hidden="true"></div>
+                    <div className="life-timeline__panelBody">
+                      <div className="life-timeline__heroBlock">
+                        <div className="life-timeline__visuals" aria-hidden="true">
+                          {stage.previewImages.map((src, imageIndex) => (
+                            <span
+                              key={`${stage.id}-${src}`}
+                              className={`life-timeline__visual life-timeline__visual--${imageIndex + 1}`}
+                              style={{ backgroundImage: `url('${src}')` }}
+                            />
+                          ))}
+                        </div>
 
-                      <div className="life-timeline__heroCopy">
-                        <p className="life-timeline__sectionLabel">Era frame</p>
-                        <p className="life-timeline__heroSummary">{stage.summary}</p>
-                        <div className="life-timeline__badges">
-                          <span className="life-timeline__badge life-timeline__badge--ghost">{stage.ageRange}</span>
-                          <span className="life-timeline__badge life-timeline__badge--ghost">{stage.yearRange}</span>
-                          <span className="life-timeline__badge">{stage.showcases.length} branches</span>
+                        <div className="life-timeline__heroCopy">
+                          <p className="life-timeline__sectionLabel">Era frame</p>
+                          <p className="life-timeline__heroSummary">{stage.summary}</p>
+                          <div className="life-timeline__badges">
+                            <span className="life-timeline__badge life-timeline__badge--ghost">{stage.ageRange}</span>
+                            <span className="life-timeline__badge life-timeline__badge--ghost">{stage.yearRange}</span>
+                            <span className="life-timeline__badge">{stage.showcases.length} branches</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="life-timeline__block">
-                      <p className="life-timeline__sectionLabel">Accomplishments</p>
-                      <ul className="life-timeline__accomplishments">
-                        {stage.accomplishments.map((item) => (
-                          <li key={item} className="life-timeline__accomplishment">{item}</li>
-                        ))}
-                      </ul>
-                    </div>
+                      <div className="life-timeline__contentGrid">
+                        <div className="life-timeline__block">
+                          <p className="life-timeline__sectionLabel">Accomplishments</p>
+                          <ul className="life-timeline__accomplishments">
+                            {stage.accomplishments.map((item) => (
+                              <li key={item} className="life-timeline__accomplishment">{item}</li>
+                            ))}
+                          </ul>
+                        </div>
 
-                    <div className="life-timeline__block">
-                      <p className="life-timeline__sectionLabel">Showcases</p>
-                      <div className="life-timeline__showcases">
-                        {stage.showcases.map((item) => (
-                          <a key={item.href} href={item.href} className="life-timeline__showcase">
-                            <span className="life-timeline__showcaseKind">{SHOWCASE_KIND_LABELS[item.kind]}</span>
-                            <span className="life-timeline__showcaseLabel">{item.label}</span>
-                          </a>
-                        ))}
-                      </div>
-                    </div>
+                        <div className="life-timeline__block life-timeline__block--showcases">
+                          <p className="life-timeline__sectionLabel">Showcases</p>
+                          <div className="life-timeline__showcases">
+                            {stage.showcases.map((item) => (
+                              <a key={item.href} href={item.href} className="life-timeline__showcase">
+                                <span className="life-timeline__showcaseKind">{SHOWCASE_KIND_LABELS[item.kind]}</span>
+                                <span className="life-timeline__showcaseLabel">{item.label}</span>
+                              </a>
+                            ))}
+                          </div>
+                        </div>
 
-                    <div className="life-timeline__block">
-                      <p className="life-timeline__sectionLabel">Featured moments</p>
-                      <div className="life-timeline__moments">
-                        {featuredMoments.map((moment) => (
-                          <span key={moment} className="life-timeline__moment">{moment}</span>
-                        ))}
+                        <div className="life-timeline__block life-timeline__block--moments">
+                          <p className="life-timeline__sectionLabel">Featured moments</p>
+                          <div className="life-timeline__moments">
+                            {featuredMoments.map((moment) => (
+                              <span key={moment} className="life-timeline__moment">{moment}</span>
+                            ))}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </details>
             </li>
           );
         })}

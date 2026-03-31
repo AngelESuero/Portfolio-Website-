@@ -276,8 +276,17 @@ const activeEntryVoice = activeEntry ? getEntryVoiceExcerpt(activeEntry, 180) : 
       const stageHeading = document.querySelector('[data-theater-stage-heading]');
       const stageCopy = document.querySelector('[data-theater-stage-copy]');
       const placeholder = document.querySelector('[data-theater-placeholder]');
+      const stageSection = document.getElementById('stage');
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const findSlug = (candidate) =>
         items.find((item) => item instanceof HTMLElement && item.dataset.entrySlug === candidate)?.dataset.entrySlug || null;
+      const scrollStageIntoView = () => {
+        if (!(stageSection instanceof HTMLElement)) return;
+        stageSection.scrollIntoView({
+          behavior: prefersReducedMotion ? 'auto' : 'smooth',
+          block: 'start',
+        });
+      };
       const clearSelection = () => {
         panels.forEach((panel) => {
           if (!(panel instanceof HTMLElement)) return;
@@ -463,6 +472,7 @@ const activeEntryVoice = activeEntry ? getEntryVoiceExcerpt(activeEntry, 180) : 
           const slug = item.dataset.entrySlug;
           if (!slug) return;
           setActive(slug, true);
+          scrollStageIntoView();
         });
       });
 
@@ -557,7 +567,7 @@ const activeEntryVoice = activeEntry ? getEntryVoiceExcerpt(activeEntry, 180) : 
     gap: clamp(2.4rem, 5vw, 4.5rem);
     width: min(100%, calc(var(--measure) + 8rem));
     margin-inline: auto;
-    padding-bottom: clamp(4rem, 8vw, 7rem);
+    padding-bottom: clamp(6rem, 10vw, 9rem);
   }
 
   .theater-shell::before {
@@ -752,6 +762,10 @@ const activeEntryVoice = activeEntry ? getEntryVoiceExcerpt(activeEntry, 180) : 
   .theater-stage,
   .theater-exit {
     padding-inline: clamp(1.1rem, 4vw, 3rem);
+  }
+
+  .theater-stage {
+    scroll-margin-top: calc(var(--site-header-size, 2.5rem) + 1rem);
   }
 
   .theater-stage__intro,
@@ -1164,6 +1178,11 @@ const activeEntryVoice = activeEntry ? getEntryVoiceExcerpt(activeEntry, 180) : 
     .theater-hero {
       min-height: auto;
       padding-top: clamp(4.75rem, 16vw, 6rem);
+    }
+
+    .theater-hero::before,
+    .theater-hero::after {
+      display: none;
     }
 
     .theater-hero h1 {
