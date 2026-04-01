@@ -679,20 +679,17 @@ const {
         let lastY = window.scrollY;
         let ticking = false;
 
-        const getStaticHeaderReveal = () => {
-          if (body.dataset.headerMode === 'hidden') return 'hidden';
-          if (body.dataset.headerMode === 'peek' && body.dataset.surfaceFrame === 'flat') return 'hidden';
-          return 'visible';
+        const canAutoReveal = () => {
+          if (body.dataset.headerMode === 'hidden') return false;
+          if (body.dataset.headerMode === 'peek' && body.dataset.surfaceFrame === 'flat') return false;
+          return true;
         };
-
-        const canAutoReveal = () =>
-          body.dataset.headerMode === 'peek' && body.dataset.surfaceFrame !== 'flat';
 
         const syncHeaderReveal = () => {
           ticking = false;
 
           if (!canAutoReveal()) {
-            setHeaderReveal(getStaticHeaderReveal());
+            setHeaderReveal('hidden');
             lastY = window.scrollY;
             return;
           }

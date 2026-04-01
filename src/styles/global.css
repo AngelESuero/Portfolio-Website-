@@ -600,6 +600,14 @@ body[data-header-mode='peek'] .header-peek-sensor {
     transform var(--motion-route) var(--ease-emphasized);
 }
 
+body[data-header-mode='pinned'] {
+  overflow-anchor: none;
+}
+
+html:has(body[data-header-mode='pinned']) {
+  overflow-anchor: none;
+}
+
 body[data-header-mode='peek'] .site-header {
   margin-bottom: calc(var(--site-header-size, 64px) * -1);
   will-change: transform, opacity;
