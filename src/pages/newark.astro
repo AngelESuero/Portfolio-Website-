@@ -1,10 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import NMOAProposalCircuit from '../components/NMOAProposalCircuit.tsx';
 ---
 
 <BaseLayout
   title="Newark — a_e.s_"
-  description="Problems I'm looking at in Newark: homelessness data, market shifts, and what the numbers say about the city's present."
+  description="Problems I'm looking at in Newark: homelessness data, market shifts, museum pressures, and what the numbers say about the city's present."
   theme="archive"
 >
 
@@ -283,6 +284,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <nav class="nwk-tabs" role="tablist" aria-label="Newark research tabs">
     <button class="nwk-tab is-active" role="tab" aria-selected="true"  aria-controls="tab-housing"  id="btn-housing">Housing &amp; Homelessness</button>
     <button class="nwk-tab"           role="tab" aria-selected="false" aria-controls="tab-markets"  id="btn-markets">Market Shifts</button>
+    <button class="nwk-tab"           role="tab" aria-selected="false" aria-controls="tab-museum"   id="btn-museum">Museum</button>
   </nav>
 
   <!-- ── Tab 1: Housing & Homelessness ──────── -->
@@ -453,6 +455,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
 
     <p class="nwk-source-note">Research from public development filings, leasing market reports, and press coverage. Separating real expansion from booster talk. Next pass: district-level breakdown.</p>
+  </div>
+
+  <!-- ── Tab 3: Museum ──────────────────────── -->
+  <div class="nwk-tab-panel" id="tab-museum" role="tabpanel" aria-labelledby="btn-museum">
+    <div class="nwk-lede">
+      <p class="nwk-lede__stat">The museum is part of Newark's problem field. <em>Funding, staffing, access, and public pull keep hitting each other.</em></p>
+      <p>
+        This tab folds the museum proposal circuit into the same problems view. It treats the Newark Museum of Art not as a separate
+        island, but as an institution shaped by the same pressure systems: money, labor, public energy, access, and hidden knowledge.
+      </p>
+    </div>
+
+    <NMOAProposalCircuit client:load />
   </div>
 
 </div>
