@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NMOAProposalEcosystem from '../../components/NMOAProposalEcosystem';
+---
+
+<BaseLayout
+  title="NMOA Proposal Ecosystem — a_e.s_"
+  description="Proposal notes rebuilt around what each document is doing."
+  theme="archive"
+  bodyClass="nmoa-proposal-ecosystem-page"
+  flatSurface={true}
+  forceThemeMode="light"
+  ambientEffects={false}
+  fullBleed={true}
+>
+  <NMOAProposalEcosystem client:load />
+</BaseLayout>
