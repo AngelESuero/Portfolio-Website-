@@ -4,8 +4,8 @@ import LifeTimeline from '../components/LifeTimeline';
 import profile from '../data/profile';
 
 const heroActions = [
-  { href: '#home-timeline', label: 'View timeline' },
-  { href: '/work', label: 'Work' },
+  { href: '#home-timeline', label: 'Open timeline' },
+  { href: '/work', label: 'Selected work' },
   { href: '/contact', label: 'Contact' },
 ] as const;
 
@@ -73,7 +73,7 @@ const timelinePreview = [
         <p class="home-hero__eyebrow">A Path Toward Life</p>
         <h1 id="home-hero-heading" class="home-hero__title">Angel Suero</h1>
         <p class="home-hero__lede">
-          Music, writing, visuals, and Newark held in one frame.
+          Music production, visual storytelling, and Newark-rooted community work in one frame.
         </p>
 
         <div class="home-hero__actions" aria-label="Primary routes">
@@ -100,15 +100,15 @@ const timelinePreview = [
       <figure class="home-hero__figure">
         <img
           class="home-hero__image"
-          src="/images/home-preview/download.jpg"
-          alt="Angel Suero under a bright streetlight at night"
+          src="/images/home-preview/download-7.jpg"
+          alt="Angel Suero smiling against a neutral wall"
           loading="eager"
           decoding="async"
           fetchpriority="high"
         />
         <figcaption class="home-hero__figure-caption">
           <span class="home-hero__figure-kicker">Present tense archive</span>
-          <span class="home-hero__figure-copy">Newark at night, with the work still unfolding.</span>
+          <span class="home-hero__figure-copy">A portrait of the archive, still in motion.</span>
         </figcaption>
       </figure>
     </section>
@@ -243,21 +243,22 @@ const timelinePreview = [
   .home-shell {
     display: grid;
     gap: clamp(1rem, 2.4vw, 1.75rem);
-    width: min(1360px, calc(100% - clamp(1rem, 3vw, 1.75rem) * 2));
-    margin: 0 auto;
-    padding: clamp(0.75rem, 1.6vw, 1.25rem) 0 clamp(1.5rem, 3vw, 2.25rem);
+    width: 100%;
+    margin: 0;
+    padding: 0 0 clamp(1.75rem, 4vw, 3rem);
   }
 
   .home-hero {
     position: relative;
     isolation: isolate;
     display: grid;
-    grid-template-columns: minmax(0, 0.94fr) minmax(0, 1.06fr);
-    gap: clamp(0.9rem, 2.1vw, 1.9rem);
-    align-items: stretch;
-    min-height: min(78svh, 50rem);
-    padding: clamp(0.85rem, 1.8vw, 1.25rem);
-    overflow: hidden;
+    align-items: end;
+    min-height: min(78svh, 52rem);
+    overflow: clip;
+    background:
+      radial-gradient(60rem 36rem at 72% 20%, rgba(227, 176, 98, 0.18), transparent 58%),
+      radial-gradient(40rem 26rem at 18% 16%, rgba(88, 122, 149, 0.12), transparent 62%),
+      linear-gradient(180deg, rgba(6, 8, 12, 0.98), rgba(5, 7, 11, 1));
   }
 
   .home-hero::before {
@@ -267,23 +268,36 @@ const timelinePreview = [
     z-index: 0;
     pointer-events: none;
     background:
-      radial-gradient(54rem 30rem at 20% 28%, rgba(228, 190, 131, 0.16), transparent 56%),
-      linear-gradient(180deg, rgba(5, 7, 11, 0.18), rgba(5, 7, 11, 0.48) 62%, rgba(5, 7, 11, 0.78));
+      linear-gradient(90deg, rgba(5, 7, 11, 0.84) 0%, rgba(5, 7, 11, 0.56) 30%, rgba(5, 7, 11, 0.08) 66%, rgba(5, 7, 11, 0.46) 100%),
+      linear-gradient(180deg, rgba(5, 7, 11, 0.04), rgba(5, 7, 11, 0.24) 58%, rgba(5, 7, 11, 0.8));
   }
 
-  .home-hero__copy,
+  .home-hero::after {
+    content: '';
+    position: absolute;
+    inset: -12% -28%;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(115deg, transparent 40%, rgba(255, 233, 194, 0.11) 50%, transparent 60%);
+    opacity: 0.7;
+    animation: home-hero-sweep 16s var(--ease-standard, ease-in-out) infinite alternate;
+  }
+
   .home-hero__figure {
     position: relative;
     z-index: 1;
   }
 
   .home-hero__copy {
+    position: relative;
+    z-index: 2;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     gap: clamp(0.85rem, 2vw, 1.15rem);
-    padding: clamp(1.1rem, 4vw, 4rem) clamp(0.25rem, 1.25vw, 0.75rem) clamp(0.9rem, 2vw, 1.75rem);
-    animation: home-rise 520ms var(--ease-emphasized, ease-out) both;
+    width: min(43rem, calc(100% - clamp(1rem, 4vw, 3rem)));
+    padding: clamp(1.25rem, 4.5vw, 3.75rem) clamp(1rem, 4vw, 3rem) clamp(1.2rem, 3vw, 2.25rem);
+    animation: home-hero-copy-enter 760ms var(--ease-emphasized, ease-out) both;
   }
 
   .home-hero__eyebrow {
@@ -293,33 +307,39 @@ const timelinePreview = [
     text-transform: uppercase;
     letter-spacing: 0.18em;
     color: rgba(234, 219, 196, 0.76);
+    animation: home-hero-copy-enter 620ms 40ms var(--ease-emphasized, ease-out) both;
   }
 
   .home-hero__title {
     margin: 0;
-    max-width: 8ch;
+    max-width: 6.4ch;
     font-family: var(--font-display, serif);
-    font-size: clamp(3.5rem, 8.8vw, 7.6rem);
-    line-height: 0.88;
-    letter-spacing: -0.06em;
+    font-size: clamp(4rem, 10vw, 8.6rem);
+    line-height: 0.84;
+    letter-spacing: -0.07em;
     text-wrap: balance;
     color: rgba(250, 245, 237, 0.98);
-    text-shadow: 0 18px 30px rgba(0, 0, 0, 0.32);
+    text-shadow:
+      0 18px 40px rgba(0, 0, 0, 0.36),
+      0 0 1px rgba(255, 255, 255, 0.04);
+    animation: home-hero-copy-enter 760ms 90ms var(--ease-emphasized, ease-out) both;
   }
 
   .home-hero__lede {
     margin: 0;
-    max-width: 30ch;
-    font-size: clamp(1.02rem, 1.55vw, 1.18rem);
+    max-width: 26ch;
+    font-size: clamp(1rem, 1.45vw, 1.12rem);
     line-height: 1.58;
     color: rgba(239, 230, 217, 0.82);
+    animation: home-hero-copy-enter 760ms 150ms var(--ease-emphasized, ease-out) both;
   }
 
   .home-hero__actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem;
-    margin-top: 0.15rem;
+    margin-top: 0;
+    animation: home-hero-copy-enter 760ms 210ms var(--ease-emphasized, ease-out) both;
   }
 
   .home-hero__action {
@@ -330,7 +350,9 @@ const timelinePreview = [
     padding: 0.68rem 1rem;
     border-radius: 999px;
     border: 1px solid rgba(236, 225, 208, 0.18);
-    background: rgba(255, 255, 255, 0.04);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
+      rgba(7, 11, 18, 0.38);
     color: rgba(248, 244, 236, 0.94);
     text-decoration: none;
     font-size: 0.88rem;
@@ -338,13 +360,16 @@ const timelinePreview = [
       transform 160ms ease,
       border-color 160ms ease,
       background 160ms ease,
-      color 160ms ease;
+      color 160ms ease,
+      box-shadow 160ms ease;
+    backdrop-filter: blur(12px);
   }
 
   .home-hero__action--primary {
     background: linear-gradient(180deg, rgba(225, 173, 103, 0.95), rgba(185, 122, 45, 0.9));
     color: #120d08;
     border-color: rgba(255, 215, 168, 0.32);
+    box-shadow: 0 14px 28px rgba(146, 92, 27, 0.22);
   }
 
   .home-hero__action:hover,
@@ -366,6 +391,7 @@ const timelinePreview = [
     gap: 0.85rem;
     margin: 0.35rem 0 0;
     padding: 0;
+    animation: home-hero-copy-enter 760ms 300ms var(--ease-emphasized, ease-out) both;
   }
 
   .home-hero__fact {
@@ -391,41 +417,74 @@ const timelinePreview = [
   }
 
   .home-hero__figure {
-    display: flex;
-    align-self: stretch;
-    min-height: 100%;
-    border-radius: 1.9rem;
-    overflow: hidden;
-    border: 1px solid rgba(236, 225, 208, 0.12);
-    background: rgba(10, 12, 18, 0.9);
-    box-shadow:
-      0 24px 60px rgba(0, 0, 0, 0.34),
-      inset 0 1px 0 rgba(255, 255, 255, 0.03);
-    animation: home-rise 600ms 60ms var(--ease-emphasized, ease-out) both;
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    overflow: clip;
+    border: 0;
+    background: rgba(10, 12, 18, 1);
+    box-shadow: none;
+    animation: home-hero-figure-enter 920ms 40ms var(--ease-emphasized, ease-out) both;
+  }
+
+  .home-hero__figure::before,
+  .home-hero__figure::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .home-hero__figure::before {
+    z-index: 1;
+    background:
+      linear-gradient(90deg, rgba(5, 7, 11, 0.86) 0%, rgba(5, 7, 11, 0.58) 24%, rgba(5, 7, 11, 0.06) 58%, rgba(5, 7, 11, 0.3) 100%),
+      linear-gradient(180deg, rgba(5, 7, 11, 0.03), rgba(5, 7, 11, 0.24) 68%, rgba(5, 7, 11, 0.78));
+  }
+
+  .home-hero__figure::after {
+    z-index: 2;
+    background:
+      radial-gradient(34rem 24rem at 78% 24%, rgba(255, 197, 132, 0.14), transparent 62%),
+      radial-gradient(28rem 18rem at 22% 72%, rgba(88, 122, 149, 0.12), transparent 66%);
+    mix-blend-mode: screen;
+    opacity: 0.75;
+    animation: home-hero-glow 18s ease-in-out infinite alternate;
   }
 
   .home-hero__image {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 18%;
+    object-position: center 28%;
     opacity: 0.98;
-    transform: scale(1.01);
-    transition: transform 320ms ease;
+    transform: scale(1.02);
+    filter: saturate(0.98) contrast(1.03) brightness(0.96);
+    transition:
+      transform 420ms var(--ease-emphasized, ease-out),
+      filter 420ms var(--ease-standard, ease-out);
   }
 
   .home-hero__figure:hover .home-hero__image {
-    transform: scale(1.03);
+    transform: scale(1.05);
+    filter: saturate(1) contrast(1.05) brightness(1);
   }
 
   .home-hero__figure-caption {
     position: absolute;
-    inset: auto 0 0 0;
+    right: clamp(1rem, 3vw, 2rem);
+    bottom: clamp(1rem, 3vw, 2rem);
+    left: auto;
+    width: min(22ch, 36%);
     display: grid;
     gap: 0.25rem;
-    padding: clamp(1rem, 2vw, 1.3rem);
-    background: linear-gradient(180deg, rgba(5, 7, 11, 0), rgba(5, 7, 11, 0.82) 52%, rgba(5, 7, 11, 0.98));
+    padding: 0;
+    background: none;
     color: rgba(247, 240, 230, 0.94);
+    text-align: right;
+    z-index: 3;
   }
 
   .home-hero__figure-kicker {
@@ -439,8 +498,8 @@ const timelinePreview = [
 
   .home-hero__figure-copy {
     margin: 0;
-    max-width: 18ch;
-    font-size: 0.92rem;
+    max-width: 22ch;
+    font-size: 0.9rem;
     line-height: 1.5;
   }
 
@@ -918,10 +977,10 @@ const timelinePreview = [
     filter: brightness(1.04);
   }
 
-  @keyframes home-rise {
+  @keyframes home-hero-copy-enter {
     from {
       opacity: 0;
-      transform: translateY(0.55rem);
+      transform: translateY(0.8rem);
     }
 
     to {
@@ -930,37 +989,69 @@ const timelinePreview = [
     }
   }
 
-  @media (max-width: 920px) {
-    .home-shell {
-      width: min(100%, calc(100% - 1rem));
+  @keyframes home-hero-figure-enter {
+    from {
+      opacity: 0;
+      transform: scale(1.02);
     }
 
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes home-hero-sweep {
+    from {
+      transform: translate3d(-8%, 0, 0);
+      opacity: 0.55;
+    }
+
+    to {
+      transform: translate3d(8%, 0, 0);
+      opacity: 0.8;
+    }
+  }
+
+  @keyframes home-hero-glow {
+    from {
+      transform: scale(0.98);
+      opacity: 0.55;
+    }
+
+    to {
+      transform: scale(1.02);
+      opacity: 0.88;
+    }
+  }
+
+  @media (max-width: 920px) {
     .home-hero {
-      grid-template-columns: 1fr;
-      min-height: auto;
+      min-height: min(82svh, 48rem);
     }
 
     .home-hero__copy {
-      padding: clamp(1rem, 5vw, 2rem) 0 0;
-      order: 1;
+      width: min(100%, 44rem);
+      padding: clamp(1.1rem, 4.5vw, 2.5rem) clamp(1rem, 4vw, 1.5rem) clamp(1.15rem, 4vw, 2rem);
     }
 
-    .home-hero__figure {
-      order: 0;
-      min-height: 32rem;
+    .home-hero__title {
+      max-width: 7ch;
+      font-size: clamp(3rem, 11vw, 5rem);
+    }
+
+    .home-hero__lede {
+      max-width: 28ch;
+    }
+
+    .home-hero__figure-caption {
+      right: clamp(0.9rem, 3vw, 1.25rem);
+      bottom: clamp(0.9rem, 3vw, 1.25rem);
+      width: min(24ch, 52%);
     }
 
     .home-hero__facts {
       grid-template-columns: 1fr;
-    }
-
-    .home-hero__actions {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .home-hero__action--primary {
-      grid-column: 1 / -1;
     }
 
     .home-section-head {
@@ -1014,34 +1105,107 @@ const timelinePreview = [
 
   @media (max-width: 640px) {
     .home-shell {
-      width: min(100%, calc(100% - 0.75rem));
-      padding-top: 0.5rem;
+      gap: 0.85rem;
+      padding-bottom: clamp(1.5rem, 5vw, 2.5rem);
     }
 
     .home-hero {
-      gap: 0.7rem;
-      padding: 0.55rem;
+      grid-template-rows: auto auto;
+      align-items: start;
+      min-height: auto;
+    }
+
+    .home-hero::before {
+      background:
+        linear-gradient(180deg, rgba(5, 7, 11, 0.78), rgba(5, 7, 11, 0.94)),
+        linear-gradient(90deg, rgba(5, 7, 11, 0.54) 0%, rgba(5, 7, 11, 0.2) 56%, rgba(5, 7, 11, 0.62) 100%);
+    }
+
+    .home-hero::after {
+      opacity: 0.24;
+    }
+
+    .home-hero__figure {
+      grid-row: 2;
+      position: relative;
+      inset: auto;
+      min-height: min(21rem, 46svh);
+      border-radius: 1.4rem;
     }
 
     .home-hero__copy {
-      padding: clamp(0.85rem, 4vw, 1.35rem) 0 0;
+      grid-row: 1;
+      position: relative;
+      z-index: 2;
+      width: min(calc(100% - 0.7rem), 38rem);
+      padding:
+        clamp(1rem, 4.5vw, 1.45rem)
+        clamp(0.95rem, 4vw, 1.1rem)
+        clamp(1.05rem, 4.5vw, 1.35rem);
       gap: 0.7rem;
+      background:
+        radial-gradient(120% 120% at 18% 0%, rgba(233, 187, 121, 0.08), transparent 45%),
+        linear-gradient(180deg, rgba(15, 18, 26, 0.98), rgba(11, 15, 22, 0.9));
+      border: 1px solid rgba(236, 225, 208, 0.08);
+      border-radius: 1.4rem;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.26);
+      backdrop-filter: blur(12px);
+    }
+
+    .home-hero__eyebrow {
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      color: rgba(244, 222, 189, 0.84);
     }
 
     .home-hero__title {
       max-width: none;
-      font-size: clamp(2.7rem, 15vw, 4rem);
+      font-size: clamp(2.55rem, 12vw, 3.8rem);
+      line-height: 0.86;
+      color: rgba(252, 246, 239, 0.99);
+      text-shadow: 0 3px 18px rgba(0, 0, 0, 0.48);
     }
 
     .home-hero__lede {
       max-width: 100%;
       font-size: 0.95rem;
       line-height: 1.5;
+      color: rgba(244, 237, 228, 0.86);
     }
 
-    .home-hero__figure {
-      min-height: 21rem;
-      border-radius: 1.35rem;
+    .home-hero__actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .home-hero__action--primary {
+      grid-column: 1 / -1;
+    }
+
+    .home-hero__action {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
+        rgba(9, 13, 20, 0.6);
+      border-color: rgba(236, 225, 208, 0.22);
+    }
+
+    .home-hero__action--primary {
+      background: linear-gradient(180deg, rgba(225, 173, 103, 0.98), rgba(185, 122, 45, 0.94));
+      color: #120d08;
+      border-color: rgba(255, 229, 194, 0.34);
+      box-shadow: 0 12px 24px rgba(146, 92, 27, 0.24);
+    }
+
+    .home-hero__figure-caption {
+      right: auto;
+      left: 0.85rem;
+      bottom: 0.85rem;
+      width: min(24ch, 70%);
+      text-align: left;
+    }
+
+    .home-hero__facts {
+      display: none;
     }
 
     .home-content {
@@ -1088,13 +1252,20 @@ const timelinePreview = [
 
   @media (prefers-reduced-motion: reduce) {
     .home-hero__copy,
-    .home-hero__figure {
+    .home-hero__figure,
+    .home-hero__figure::after,
+    .home-hero__eyebrow,
+    .home-hero__title,
+    .home-hero__lede,
+    .home-hero__actions,
+    .home-hero__facts {
       animation: none;
     }
 
     .home-route,
     .home-hero__action,
-    .home-hero__image {
+    .home-hero__image,
+    .home-hero::after {
       transition: none;
     }
   }
