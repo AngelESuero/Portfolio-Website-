@@ -553,21 +553,21 @@ function ChevronIcon({ open }: { open: boolean }) {
 
 function MetaPill({ children }: { children: ReactNode }) {
   return (
-    <div className="inline-flex items-center rounded-full border border-black/10 bg-white/85 px-2.5 py-1 text-[11px] text-neutral-700 shadow-sm">
+    <div className="inline-flex items-center rounded-full border border-black/10 bg-white/85 px-3 py-1 text-[12px] text-neutral-700 shadow-sm">
       {children}
     </div>
   );
 }
 
 function SectionLabel({ children }: { children: ReactNode }) {
-  return <div className="text-[11px] uppercase tracking-[0.18em] text-neutral-500">{children}</div>;
+  return <div className="text-[12px] uppercase tracking-[0.18em] text-neutral-500">{children}</div>;
 }
 
 function InfoBlock({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="space-y-2">
       <SectionLabel>{label}</SectionLabel>
-      <div className="text-sm leading-relaxed text-neutral-700">{children}</div>
+      <div className="text-[0.98rem] leading-7 text-neutral-700">{children}</div>
     </div>
   );
 }
@@ -577,20 +577,20 @@ function RootProblemCard({ problem, defaultOpen = false }: { problem: RootProble
   const panelId = `nmoa-root-${problem.id}`;
 
   return (
-    <div className={`rounded-[1.5rem] border p-4 shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all ${noteToneClasses(problem.tone)}`}>
+    <div className={`rounded-[1.5rem] border p-5 shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all ${noteToneClasses(problem.tone)}`}>
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-controls={panelId}
-        className="flex w-full items-start justify-between gap-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/15 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+        className="flex w-full items-start justify-between gap-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/15 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
       >
         <div className="min-w-0 space-y-2">
           <div className="flex flex-wrap items-center gap-2">
-            <div className="text-base font-semibold leading-snug text-neutral-900">{problem.title}</div>
+            <div className="text-[1.05rem] font-semibold leading-snug text-neutral-900 md:text-[1.1rem]">{problem.title}</div>
             <MetaPill>{problem.shortLabel}</MetaPill>
           </div>
-          <div className="text-sm leading-relaxed text-neutral-700">{problem.summary}</div>
+          <div className="max-w-2xl text-[0.98rem] leading-7 text-neutral-700">{problem.summary}</div>
         </div>
 
         <div className="mt-0.5 shrink-0 rounded-full border border-black/10 bg-white/80 p-1 text-neutral-700">
@@ -598,7 +598,7 @@ function RootProblemCard({ problem, defaultOpen = false }: { problem: RootProble
         </div>
       </button>
 
-      <div id={panelId} hidden={!open} className="mt-4 space-y-4 border-t border-black/10 pt-4">
+      <div id={panelId} hidden={!open} className="mt-5 space-y-4 border-t border-black/10 pt-5">
         <div className="space-y-2">
           <SectionLabel>How it runs through the museum</SectionLabel>
           <div className="flex flex-wrap gap-2">
@@ -628,8 +628,8 @@ function RootProblemSection({ problems }: { problems: RootProblem[] }) {
     <section className="space-y-4">
       <div className="space-y-2">
         <div className="text-xs uppercase tracking-[0.18em] text-neutral-500">Main pressures in the museum</div>
-        <h2 className="text-2xl font-semibold md:text-3xl">The museum as one interlacing circuit</h2>
-        <p className="max-w-4xl text-sm leading-relaxed text-neutral-600 md:text-base">
+        <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">The museum as one interlacing circuit</h2>
+        <p className="max-w-4xl text-[0.98rem] leading-7 text-neutral-600 md:text-base">
           These problems do not seem to sit separately. They behave more like one museum circuit: money pressure affects staffing,
           staffing affects public atmosphere, atmosphere affects return visits and support, support affects capacity, and capacity
           affects how much knowledge, care, and access the institution can sustain. The materials below are supporting pieces
@@ -637,7 +637,7 @@ function RootProblemSection({ problems }: { problems: RootProblem[] }) {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-5 2xl:grid-cols-2">
         {problems.map((problem) => (
           <RootProblemCard key={problem.id} problem={problem} />
         ))}
@@ -652,20 +652,20 @@ function StickyFoldout({ item, defaultOpen = false }: { item: ProposalItem; defa
 
   return (
     <div
-      className={`self-start rounded-[1.6rem] border p-4 shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all ${noteToneClasses(
+      className={`self-start rounded-[1.6rem] border p-5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all ${noteToneClasses(
         item.tone
-      )} ${tiltClass(item.tilt)}`}
+      )}`}
     >
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-controls={panelId}
-        className="flex w-full items-start justify-between gap-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/15 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+        className="flex w-full items-start justify-between gap-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/15 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
       >
         <div className="min-w-0 space-y-2">
-          <div className="text-base font-semibold leading-snug text-neutral-900">{item.title}</div>
-          <div className="text-sm leading-relaxed text-neutral-700">{item.summary}</div>
+          <div className="text-[1.05rem] font-semibold leading-snug text-neutral-900 md:text-[1.1rem]">{item.title}</div>
+          <div className="max-w-2xl text-[0.98rem] leading-7 text-neutral-700">{item.summary}</div>
         </div>
         <div className="mt-0.5 shrink-0 rounded-full border border-black/10 bg-white/80 p-1 text-neutral-700">
           <ChevronIcon open={open} />
@@ -677,7 +677,7 @@ function StickyFoldout({ item, defaultOpen = false }: { item: ProposalItem; defa
         <MetaPill>{item.maturityShort}</MetaPill>
       </div>
 
-      <div id={panelId} hidden={!open} className="mt-4 space-y-4 border-t border-black/10 pt-4">
+      <div id={panelId} hidden={!open} className="mt-5 space-y-4 border-t border-black/10 pt-5">
         <InfoBlock label="What it is">{item.whatItIs}</InfoBlock>
         <InfoBlock label="Problem addressed">{item.problemAddressed}</InfoBlock>
 
@@ -721,9 +721,9 @@ function ProposalSectionGroup({ eyebrow, title, items }: ProposalSectionData) {
     <section className="space-y-4">
       <div className="space-y-2">
         <div className="text-xs uppercase tracking-[0.18em] text-neutral-500">{eyebrow}</div>
-        <h2 className="text-2xl font-semibold md:text-3xl">{title}</h2>
+        <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">{title}</h2>
       </div>
-      <div className="grid items-start gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid items-start gap-5 2xl:grid-cols-2">
         {items.map((item) => (
           <StickyFoldout key={item.id} item={item} />
         ))}
