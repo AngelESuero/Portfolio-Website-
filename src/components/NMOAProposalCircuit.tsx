@@ -575,6 +575,8 @@ function InfoBlock({ label, children }: { label: string; children: ReactNode }) 
 function RootProblemCard({ problem, defaultOpen = false }: { problem: RootProblem; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen);
   const panelId = `nmoa-root-${problem.id}`;
+  const triggerClassName =
+    'flex w-full items-start justify-between gap-4 rounded-none border-0 p-0 text-left text-inherit shadow-none [background:none] [backdrop-filter:none] appearance-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/15 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent';
 
   return (
     <div className={`rounded-[1.5rem] border p-5 shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all ${noteToneClasses(problem.tone)}`}>
@@ -583,7 +585,7 @@ function RootProblemCard({ problem, defaultOpen = false }: { problem: RootProble
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-controls={panelId}
-        className="flex w-full items-start justify-between gap-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/15 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+        className={triggerClassName}
       >
         <div className="min-w-0 space-y-2">
           <div className="flex flex-wrap items-center gap-2">
@@ -649,6 +651,8 @@ function RootProblemSection({ problems }: { problems: RootProblem[] }) {
 function StickyFoldout({ item, defaultOpen = false }: { item: ProposalItem; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen);
   const panelId = `nmoa-proposal-${item.id}`;
+  const triggerClassName =
+    'flex w-full items-start justify-between gap-4 rounded-none border-0 p-0 text-left text-inherit shadow-none [background:none] [backdrop-filter:none] appearance-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/15 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent';
 
   return (
     <div
@@ -661,7 +665,7 @@ function StickyFoldout({ item, defaultOpen = false }: { item: ProposalItem; defa
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-controls={panelId}
-        className="flex w-full items-start justify-between gap-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/15 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+        className={triggerClassName}
       >
         <div className="min-w-0 space-y-2">
           <div className="text-[1.05rem] font-semibold leading-snug text-neutral-900 md:text-[1.1rem]">{item.title}</div>
