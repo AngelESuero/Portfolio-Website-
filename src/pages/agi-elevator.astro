@@ -6,6 +6,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   title="The AGI Elevator // Timeline Edition"
   description="Three-layer AGI framing: story, strategy, and system log."
   theme="agi"
+  bodyClass="agi-elevator-tiktok-page"
 >
   <section class="elevator">
     <header class="elevator__top">
@@ -240,6 +241,30 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 </BaseLayout>
 
 <style>
+  :global(body.agi-elevator-tiktok-page[data-theme='agi']) {
+    --tone-bg: #0a0910;
+    --tone-bg-deep: #04040a;
+    --tone-surface: rgba(18, 14, 26, 0.9);
+    --tone-surface-strong: rgba(11, 9, 18, 0.96);
+    --tone-text: rgba(244, 239, 255, 0.96);
+    --tone-muted: rgba(193, 182, 219, 0.78);
+    --tone-line: rgba(225, 111, 255, 0.24);
+    --line2: rgba(118, 245, 255, 0.18);
+    --tone-accent: #f452ff;
+    --tone-accent-glow: #8df9ff;
+    background:
+      radial-gradient(38rem 22rem at 14% 8%, rgba(244, 82, 255, 0.2), transparent 56%),
+      radial-gradient(42rem 24rem at 86% 10%, rgba(69, 242, 255, 0.18), transparent 58%),
+      linear-gradient(180deg, #120a1b 0%, #0b0a13 50%, #05040b 100%);
+  }
+
+  :global(body.agi-elevator-tiktok-page .site-overlay) {
+    background:
+      linear-gradient(to right, rgba(255, 255, 255, 0.03), transparent 26%),
+      linear-gradient(to left, rgba(255, 255, 255, 0.03), transparent 26%),
+      radial-gradient(44rem 26rem at 86% 4%, rgba(69, 242, 255, 0.12), transparent 64%);
+  }
+
   .elevator {
     display: grid;
     gap: 1rem;
@@ -289,7 +314,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .elevator__pill {
     border: 1px solid var(--line2);
     border-radius: 999px;
-    background: color-mix(in srgb, var(--tone-surface) 82%, transparent);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015)),
+      color-mix(in srgb, var(--tone-surface) 86%, transparent);
     color: var(--tone-text);
     padding: 0.42rem 0.78rem;
     font-size: 0.8rem;
@@ -303,13 +330,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   .elevator__pill.is-active {
-    background: rgba(215, 170, 47, 0.14);
-    border-color: rgba(215, 170, 47, 0.36);
-    color: var(--tone-accent-glow);
+    background: linear-gradient(135deg, rgba(244, 82, 255, 0.28), rgba(69, 242, 255, 0.24));
+    border-color: color-mix(in srgb, var(--tone-accent) 64%, var(--line2));
+    color: #f7f3ff;
+    box-shadow:
+      0 0 0 1px rgba(143, 249, 255, 0.24) inset,
+      0 10px 24px rgba(30, 11, 44, 0.34);
   }
 
   .elevator__panel {
     padding: 1rem;
+    border-radius: 16px;
+    border-color: color-mix(in srgb, var(--tone-accent) 34%, var(--line2));
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
+      color-mix(in srgb, var(--tone-surface) 90%, transparent);
+    box-shadow:
+      0 16px 30px rgba(0, 0, 0, 0.24),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
   }
 
   .elevator__panel-head {
@@ -336,6 +374,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .elevator__mini {
     padding: 0.85rem;
+    border-color: color-mix(in srgb, var(--tone-accent) 30%, var(--line2));
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+      color-mix(in srgb, var(--tone-surface-strong) 86%, transparent);
   }
 
   .elevator__timeline {

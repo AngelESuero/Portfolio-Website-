@@ -158,6 +158,7 @@ const liveReferences = [
   title="AGI Timeline // Sober Four-Wave Assessment"
   description="A sober four-wave AGI timeline with public, analyst, and engineer views."
   theme="agi"
+  bodyClass="agi-x-page"
 >
   <section class="agi-monitor" id="agi-monitor">
     <nav class="agi-nav sticky top-0 z-20 py-3">
@@ -531,3 +532,30 @@ const liveReferences = [
     })();
   </script>
 </BaseLayout>
+
+<style>
+  :global(body.agi-x-page[data-theme='agi']) {
+    --tone-bg: #080b10;
+    --tone-bg-deep: #03060a;
+    --tone-surface: rgba(12, 18, 24, 0.9);
+    --tone-surface-strong: rgba(8, 13, 18, 0.96);
+    --tone-text: rgba(236, 243, 252, 0.96);
+    --tone-muted: rgba(160, 179, 203, 0.78);
+    --tone-line: rgba(110, 151, 196, 0.24);
+    --line2: rgba(110, 151, 196, 0.14);
+    --tone-accent: #1d9bf0;
+    --tone-accent-glow: #87ccff;
+    background:
+      radial-gradient(52rem 28rem at 84% 6%, rgba(29, 155, 240, 0.16), transparent 58%),
+      radial-gradient(46rem 26rem at 18% 10%, rgba(56, 114, 168, 0.12), transparent 62%),
+      linear-gradient(180deg, #0a1018 0%, #070c13 48%, #03060a 100%);
+    color: var(--tone-text);
+  }
+
+  :global(body.agi-x-page .site-overlay) {
+    background:
+      linear-gradient(to right, rgba(255, 255, 255, 0.03), transparent 26%),
+      linear-gradient(to left, rgba(255, 255, 255, 0.03), transparent 26%),
+      radial-gradient(54rem 30rem at 84% 2%, rgba(29, 155, 240, 0.12), transparent 64%);
+  }
+</style>

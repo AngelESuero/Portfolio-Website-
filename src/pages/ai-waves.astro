@@ -7,8 +7,35 @@ import TransitionSignalChecklist from '../components/TransitionSignalChecklist.a
   title="Transition Signal Checklist - A Path Toward Life"
   description="Weekly tracker for whether AI-transition talk is becoming real movement."
   theme="agi"
+  bodyClass="ai-waves-x-page"
 >
   <main class="page-shell">
     <TransitionSignalChecklist />
   </main>
 </BaseLayout>
+
+<style>
+  :global(body.ai-waves-x-page[data-theme='agi']) {
+    --tone-bg: #090c11;
+    --tone-bg-deep: #04070b;
+    --tone-surface: rgba(12, 18, 25, 0.9);
+    --tone-surface-strong: rgba(8, 13, 19, 0.96);
+    --tone-text: rgba(236, 243, 252, 0.96);
+    --tone-muted: rgba(162, 181, 204, 0.78);
+    --tone-line: rgba(113, 152, 196, 0.24);
+    --line2: rgba(113, 152, 196, 0.15);
+    --tone-accent: #1d9bf0;
+    --tone-accent-glow: #8fd1ff;
+    background:
+      radial-gradient(48rem 24rem at 82% 5%, rgba(29, 155, 240, 0.16), transparent 60%),
+      radial-gradient(38rem 22rem at 14% 12%, rgba(75, 118, 170, 0.1), transparent 62%),
+      linear-gradient(180deg, #0a1119 0%, #070d14 52%, #04070b 100%);
+    color: var(--tone-text);
+  }
+
+  :global(body.ai-waves-x-page .site-overlay) {
+    background:
+      linear-gradient(to right, rgba(255, 255, 255, 0.03), transparent 28%),
+      linear-gradient(to left, rgba(255, 255, 255, 0.03), transparent 28%);
+  }
+</style>

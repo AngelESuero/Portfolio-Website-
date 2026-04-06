@@ -493,6 +493,8 @@ const activeEntryVoice = activeEntry ? getEntryVoiceExcerpt(activeEntry, 180) : 
     --tone-muted: rgba(213, 195, 174, 0.76);
     --tone-line: rgba(235, 215, 189, 0.13);
     --line2: rgba(235, 215, 189, 0.1);
+    --tone-accent: #ff3d2e;
+    --tone-accent-glow: #ffb4ae;
     --reading-plane: rgba(25, 18, 18, 0.9);
     --reading-plane-strong: rgba(16, 12, 12, 0.96);
     --reading-plane-line: rgba(235, 215, 189, 0.08);
@@ -759,6 +761,25 @@ const activeEntryVoice = activeEntry ? getEntryVoiceExcerpt(activeEntry, 180) : 
     border-color: rgba(244, 230, 204, 0.28);
   }
 
+  .theater-hero__actions a:first-child {
+    background: linear-gradient(180deg, rgba(255, 61, 46, 0.9), rgba(199, 33, 22, 0.88));
+    border-color: rgba(255, 145, 136, 0.62);
+    color: #fff6f4;
+    box-shadow: 0 16px 30px rgba(156, 24, 16, 0.34);
+  }
+
+  .theater-hero__actions a:first-child::before {
+    content: '▶';
+    margin-right: 0.42rem;
+    font-size: 0.72em;
+    transform: translateY(-1px);
+  }
+
+  .theater-hero__actions a:first-child:hover {
+    background: linear-gradient(180deg, rgba(255, 80, 66, 0.94), rgba(214, 39, 27, 0.92));
+    border-color: rgba(255, 181, 175, 0.74);
+  }
+
   .theater-stage,
   .theater-exit {
     padding-inline: clamp(1.1rem, 4vw, 3rem);
@@ -837,7 +858,7 @@ const activeEntryVoice = activeEntry ? getEntryVoiceExcerpt(activeEntry, 180) : 
     text-decoration: none;
     text-align: left;
     cursor: pointer;
-    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
   }
 
   .theater-picker__top {
@@ -856,10 +877,13 @@ const activeEntryVoice = activeEntry ? getEntryVoiceExcerpt(activeEntry, 180) : 
   .theater-picker__item:hover,
   .theater-picker__item.is-active {
     transform: translateY(-2px);
-    border-color: color-mix(in srgb, var(--theater-gold) 34%, var(--tone-line));
+    border-color: color-mix(in srgb, var(--tone-accent) 58%, var(--tone-line));
     background:
       linear-gradient(180deg, color-mix(in srgb, var(--theater-gold) 10%, rgba(255, 255, 255, 0.02)), rgba(255, 255, 255, 0.01)),
       color-mix(in srgb, var(--theater-gold) 12%, var(--tone-surface));
+    box-shadow:
+      0 12px 24px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(255, 61, 46, 0.24) inset;
   }
 
   .theater-picker__item strong {
@@ -898,7 +922,8 @@ const activeEntryVoice = activeEntry ? getEntryVoiceExcerpt(activeEntry, 180) : 
     font-size: 0.72rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(244, 230, 204, 0.74);
+    color: rgba(255, 218, 214, 0.88);
+    background: linear-gradient(135deg, rgba(255, 61, 46, 0.22), rgba(255, 91, 78, 0.12));
   }
 
   .theater-screening {
@@ -1058,12 +1083,20 @@ const activeEntryVoice = activeEntry ? getEntryVoiceExcerpt(activeEntry, 180) : 
   .theater-panel__footer a {
     width: fit-content;
     color: var(--tone-accent-glow);
-    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 42%, transparent);
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 42%, transparent);
+    border-radius: 999px;
+    padding: 0.32rem 0.74rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+      color-mix(in srgb, var(--tone-surface) 84%, transparent);
   }
 
   .theater-panel__footer a:hover,
   .theater-panel__footer a:focus-visible {
     border-color: color-mix(in srgb, var(--tone-accent) 74%, transparent);
+    background:
+      linear-gradient(180deg, rgba(255, 61, 46, 0.24), rgba(255, 61, 46, 0.1)),
+      color-mix(in srgb, var(--tone-surface) 84%, transparent);
   }
 
   .theater-rail--notes {
@@ -1128,7 +1161,10 @@ const activeEntryVoice = activeEntry ? getEntryVoiceExcerpt(activeEntry, 180) : 
     width: fit-content;
     color: var(--theater-gold);
     text-decoration: none;
-    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 38%, transparent);
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 38%, transparent);
+    border-radius: 999px;
+    padding: 0.3rem 0.64rem;
+    background: color-mix(in srgb, var(--tone-surface) 84%, transparent);
   }
 
   .theater-exit {

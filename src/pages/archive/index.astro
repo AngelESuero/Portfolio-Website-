@@ -31,7 +31,7 @@ const rankedTags = [
 const featuredTags = rankedTags.slice(0, DEFAULT_VISIBLE_TAGS);
 const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
 ---
-<BaseLayout title="Archive — a_e.s_" theme="archive">
+<BaseLayout title="Archive — a_e.s_" theme="archive" bodyClass="archive-ig-page">
   <section class="view-surface archive-page">
     <header class="view-surface-header archive-page__header">
       <p class="view-surface-kicker">Living archive</p>
@@ -211,6 +211,46 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
 </BaseLayout>
 
 <style>
+  :global(body.archive-ig-page[data-theme='archive']) {
+    --tone-bg: #12101a;
+    --tone-bg-deep: #09070f;
+    --tone-surface: rgba(25, 20, 36, 0.9);
+    --tone-surface-strong: rgba(17, 13, 27, 0.96);
+    --tone-text: rgba(244, 238, 255, 0.95);
+    --tone-muted: rgba(201, 189, 228, 0.78);
+    --tone-line: rgba(214, 181, 255, 0.2);
+    --line2: rgba(214, 181, 255, 0.14);
+    --tone-accent: #ff4f8b;
+    --tone-accent-glow: #ffd1e4;
+    --tone-sky: #7f8bff;
+    background:
+      radial-gradient(42rem 26rem at 16% 8%, rgba(255, 88, 155, 0.2), transparent 58%),
+      radial-gradient(50rem 26rem at 84% 6%, rgba(127, 139, 255, 0.18), transparent 60%),
+      radial-gradient(42rem 24rem at 50% 94%, rgba(246, 167, 96, 0.12), transparent 64%),
+      linear-gradient(180deg, #12101a 0%, #0d0b14 45%, #09070f 100%);
+  }
+
+  :global(body.archive-ig-page .site-overlay) {
+    background:
+      linear-gradient(to right, rgba(255, 255, 255, 0.04), transparent 28%),
+      linear-gradient(to left, rgba(255, 255, 255, 0.04), transparent 28%),
+      radial-gradient(60rem 30rem at 20% 2%, rgba(255, 88, 155, 0.1), transparent 62%),
+      radial-gradient(56rem 34rem at 80% 3%, rgba(127, 139, 255, 0.1), transparent 64%);
+  }
+
+  .archive-page__header {
+    position: relative;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--line2);
+    border-radius: 1.2rem;
+    background:
+      radial-gradient(110% 160% at 4% 0%, rgba(255, 88, 155, 0.12), transparent 56%),
+      linear-gradient(180deg, rgba(32, 25, 44, 0.84), rgba(17, 13, 27, 0.9));
+    box-shadow:
+      0 16px 34px rgba(0, 0, 0, 0.24),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
   .archive-page {
     display: grid;
     gap: 1.5rem;
@@ -248,17 +288,24 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
     min-height: 2.15rem;
     padding: 0.4rem 0.74rem;
     border-radius: 999px;
-    border: 1px solid var(--line2);
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 24%, var(--line2));
     color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
     text-decoration: none;
-    background: color-mix(in srgb, var(--tone-surface) 88%, transparent);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+      color-mix(in srgb, var(--tone-surface) 88%, transparent);
+    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
   }
 
   .archive-page__browse-link.is-current,
   .archive-page__browse-link:hover,
   .archive-page__browse-link:focus-visible {
-    border-color: color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
-    color: var(--tone-text);
+    border-color: color-mix(in srgb, var(--tone-accent) 56%, var(--line2));
+    color: #fff6fd;
+    transform: translateY(-1px);
+    background:
+      linear-gradient(135deg, rgba(255, 88, 155, 0.28), rgba(127, 139, 255, 0.26)),
+      color-mix(in srgb, var(--tone-surface) 88%, transparent);
   }
 
   .archive-controls {
@@ -385,14 +432,19 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
     padding: 0.36rem 0.74rem;
     font-size: 0.82rem;
     letter-spacing: 0.04em;
-    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+    transition: transform 140ms ease, border-color 180ms ease, background 180ms ease;
   }
 
   .archive-filter.is-active,
   .archive-filter:hover,
   .archive-filter:focus-visible {
-    border-color: color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
-    color: var(--tone-text);
+    border-color: color-mix(in srgb, var(--tone-accent) 52%, var(--line2));
+    color: #fff6fd;
+    transform: translateY(-1px);
+    background:
+      linear-gradient(135deg, rgba(255, 88, 155, 0.24), rgba(127, 139, 255, 0.22)),
+      color-mix(in srgb, var(--tone-surface) 88%, transparent);
   }
 
   .archive-results {
@@ -407,7 +459,7 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
     margin: 0;
     padding: 0;
     display: grid;
-    gap: 1rem;
+    gap: 1.05rem;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
 
@@ -419,6 +471,44 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
 
   .archive-item {
     min-width: 0;
+    transition: transform 200ms ease;
+  }
+
+  :global(body.archive-ig-page .archive-list .entry-card) {
+    border-radius: 1.25rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 24%, var(--line2));
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
+      color-mix(in srgb, var(--tone-surface) 88%, transparent);
+    box-shadow:
+      0 16px 36px rgba(0, 0, 0, 0.24),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+  }
+
+  :global(body.archive-ig-page .archive-list .entry-card:hover) {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--tone-accent) 56%, var(--line2));
+    box-shadow:
+      0 24px 44px rgba(0, 0, 0, 0.28),
+      0 0 0 1px rgba(255, 88, 155, 0.24) inset;
+  }
+
+  :global(body.archive-ig-page .archive-list .entry-card__status) {
+    border-color: color-mix(in srgb, var(--tone-accent) 48%, var(--line2));
+    color: #fff2f8;
+    background:
+      linear-gradient(135deg, rgba(255, 88, 155, 0.24), rgba(127, 139, 255, 0.22));
+  }
+
+  :global(body.archive-ig-page .archive-list .entry-card__tags span) {
+    border-color: color-mix(in srgb, var(--tone-accent) 36%, var(--line2));
+    background: color-mix(in srgb, var(--tone-surface-strong) 74%, transparent);
+  }
+
+  :global(body.archive-ig-page .archive-list .entry-card__link) {
+    color: #ffd8ea;
+    border-bottom-color: color-mix(in srgb, var(--tone-accent) 72%, transparent);
   }
 
   .archive-empty {

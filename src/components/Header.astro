@@ -220,25 +220,13 @@ const isActive = (item: NavItem) => {
   </div>
   <nav id="mobile-nav" aria-label="Mobile navigation" class="mobile-nav md:hidden" hidden>
     <div class="site-shell-row mobile-nav-inner">
-      {primaryNav.map((item) => (
-        <a
-          href={item.href}
-          class="header-link mobile-nav-link no-underline"
-          style={`--link-accent:${getAccentSwatch(item.color)}`}
-          {...(item.color ? { 'data-color': item.color } : {})}
-          {...(item.tone ? { 'data-tone': item.tone } : {})}
-          {...(isActive(item) ? { 'aria-current': 'page' } : {})}
-        >
-          {item.label}
-        </a>
-      ))}
-      <div class="mobile-nav-section">
-        <p class="mobile-nav-label">Structure</p>
-        <div class="mobile-ai-group">
-          {aiGroup.map((item) => (
+      <section class="mobile-nav-group mobile-nav-group--core">
+        <p class="mobile-nav-label">Core</p>
+        <div class="mobile-nav-card-grid">
+          {primaryNav.map((item) => (
             <a
               href={item.href}
-              class="header-link mobile-nav-link header-link--secondary no-underline"
+              class="header-link mobile-nav-link mobile-nav-card no-underline"
               style={`--link-accent:${getAccentSwatch(item.color)}`}
               {...(item.color ? { 'data-color': item.color } : {})}
               {...(item.tone ? { 'data-tone': item.tone } : {})}
@@ -248,45 +236,73 @@ const isActive = (item: NavItem) => {
             </a>
           ))}
         </div>
-        {structureNav.map((item) => (
-          <a
-            href={item.href}
-            class="header-link mobile-nav-link header-link--secondary no-underline"
-            style={`--link-accent:${getAccentSwatch(item.color)}`}
-            {...(item.color ? { 'data-color': item.color } : {})}
-            {...(item.tone ? { 'data-tone': item.tone } : {})}
-            {...(isActive(item) ? { 'aria-current': 'page' } : {})}
-          >
-            {item.label}
-          </a>
-        ))}
+      </section>
+
+      <section class="mobile-nav-group">
+        <p class="mobile-nav-label">Structure</p>
+        <div class="mobile-nav-card-grid">
+          {aiGroup.map((item) => (
+            <a
+              href={item.href}
+              class="header-link mobile-nav-link mobile-nav-card no-underline"
+              style={`--link-accent:${getAccentSwatch(item.color)}`}
+              {...(item.color ? { 'data-color': item.color } : {})}
+              {...(item.tone ? { 'data-tone': item.tone } : {})}
+              {...(isActive(item) ? { 'aria-current': 'page' } : {})}
+            >
+              {item.label}
+            </a>
+          ))}
+          {structureNav.map((item) => (
+            <a
+              href={item.href}
+              class="header-link mobile-nav-link mobile-nav-card no-underline"
+              style={`--link-accent:${getAccentSwatch(item.color)}`}
+              {...(item.color ? { 'data-color': item.color } : {})}
+              {...(item.tone ? { 'data-tone': item.tone } : {})}
+              {...(isActive(item) ? { 'aria-current': 'page' } : {})}
+            >
+              {item.label}
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="mobile-nav-group">
         <p class="mobile-nav-label">Making</p>
-        {focusNav.map((item) => (
-          <a
-            href={item.href}
-            class="header-link mobile-nav-link header-link--secondary no-underline"
-            style={`--link-accent:${getAccentSwatch(item.color)}`}
-            {...(item.color ? { 'data-color': item.color } : {})}
-            {...(item.tone ? { 'data-tone': item.tone } : {})}
-            {...(isActive(item) ? { 'aria-current': 'page' } : {})}
-          >
-            {item.label}
-          </a>
-        ))}
+        <div class="mobile-nav-card-grid">
+          {focusNav.map((item) => (
+            <a
+              href={item.href}
+              class="header-link mobile-nav-link mobile-nav-card no-underline"
+              style={`--link-accent:${getAccentSwatch(item.color)}`}
+              {...(item.color ? { 'data-color': item.color } : {})}
+              {...(item.tone ? { 'data-tone': item.tone } : {})}
+              {...(isActive(item) ? { 'aria-current': 'page' } : {})}
+            >
+              {item.label}
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="mobile-nav-group">
         <p class="mobile-nav-label">Problems</p>
-        {problemsNav.map((item) => (
-          <a
-            href={item.href}
-            class="header-link mobile-nav-link header-link--secondary no-underline"
-            style={`--link-accent:${getAccentSwatch(item.color)}`}
-            {...(item.color ? { 'data-color': item.color } : {})}
-            {...(item.tone ? { 'data-tone': item.tone } : {})}
-            {...(isActive(item) ? { 'aria-current': 'page' } : {})}
-          >
-            {item.label}
-          </a>
-        ))}
-      </div>
+        <div class="mobile-nav-card-grid">
+          {problemsNav.map((item) => (
+            <a
+              href={item.href}
+              class="header-link mobile-nav-link mobile-nav-card no-underline"
+              style={`--link-accent:${getAccentSwatch(item.color)}`}
+              {...(item.color ? { 'data-color': item.color } : {})}
+              {...(item.tone ? { 'data-tone': item.tone } : {})}
+              {...(isActive(item) ? { 'aria-current': 'page' } : {})}
+            >
+              {item.label}
+            </a>
+          ))}
+        </div>
+      </section>
     </div>
   </nav>
 </header>

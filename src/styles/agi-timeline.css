@@ -5,6 +5,46 @@
   --agi-wave-4: #f08ab7;
 }
 
+body.agi-x-page .agi-monitor {
+  border-radius: 18px;
+  border-color: color-mix(in srgb, var(--tone-accent) 28%, var(--line));
+  background:
+    radial-gradient(circle at top, color-mix(in srgb, var(--tone-accent) 14%, transparent), transparent 48%),
+    color-mix(in srgb, var(--tone-surface-strong) 90%, transparent);
+}
+
+body.agi-x-page .agi-nav {
+  backdrop-filter: blur(14px);
+  border-bottom-color: color-mix(in srgb, var(--tone-accent) 26%, var(--line));
+}
+
+body.agi-x-page .level-switcher {
+  border-radius: 999px;
+  border-color: color-mix(in srgb, var(--tone-accent) 34%, var(--line));
+  background: color-mix(in srgb, var(--tone-surface) 74%, transparent);
+}
+
+body.agi-x-page .level-btn {
+  border: 1px solid color-mix(in srgb, var(--tone-accent) 26%, transparent);
+  border-radius: 999px;
+  min-height: 2.2rem;
+  padding-inline: 0.88rem;
+}
+
+body.agi-x-page .level-btn.active {
+  border-color: color-mix(in srgb, var(--tone-accent) 56%, transparent);
+  background: color-mix(in srgb, var(--tone-accent) 24%, transparent);
+}
+
+body.agi-x-page .summary-stat,
+body.agi-x-page .wave-card,
+body.agi-x-page .analyst-section,
+body.agi-x-page .supplementary-feed,
+body.agi-x-page .chain-step {
+  border-color: color-mix(in srgb, var(--tone-accent) 24%, var(--line));
+  border-radius: 16px;
+}
+
 .agi-monitor {
   --agi-transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid var(--line);
@@ -377,6 +417,20 @@
   color: var(--tone-accent-glow);
   text-decoration: none;
   border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 42%, transparent);
+}
+
+body.agi-x-page .wave-link,
+body.agi-x-page .analyst-footer a,
+body.agi-x-page .reference-list a {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border: 1px solid color-mix(in srgb, var(--tone-accent) 44%, transparent);
+  border-radius: 999px;
+  padding: 0.28rem 0.68rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+    color-mix(in srgb, var(--tone-surface) 84%, transparent);
 }
 
 .panel-meta {

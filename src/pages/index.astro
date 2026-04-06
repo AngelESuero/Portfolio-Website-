@@ -15,31 +15,286 @@ const heroFacts = [
   { label: 'Mode', value: profile.mottos[0] },
 ] as const;
 
+const geometricPortraits = [
+  {
+    src: '/images/home-preview/download-7.jpg',
+    alt: 'Angel Suero smiling in a neutral portrait setup',
+    shape: 'arch',
+  },
+  {
+    src: '/images/home-preview/download-5.jpg',
+    alt: 'Angel Suero in a warm portrait with soft side light',
+    shape: 'circle',
+  },
+  {
+    src: '/images/home-preview/download-3.jpg',
+    alt: 'Angel Suero portrait with a calm direct gaze',
+    shape: 'diamond',
+  },
+  {
+    src: '/images/home-preview/download-2.jpg',
+    alt: 'Angel Suero portrait in bright indoor lighting',
+    shape: 'ticket',
+  },
+  {
+    src: '/images/home-preview/download-1.jpg',
+    alt: 'Angel Suero portrait with relaxed expression',
+    shape: 'slant',
+  },
+] as const;
+
 const homeRoutes = [
   {
     href: '/work',
     title: 'Work',
+    group: 'Core sections',
+    cue: null,
     description: 'Selected projects, systems, and outcomes.',
   },
   {
     href: '/writing',
     title: 'Writing',
-    description: 'Essays, notes, and source voice.',
+    group: 'Core sections',
+    cue: 'Substack',
+    description: 'Essays, notes, and longform source voice.',
   },
   {
     href: '/archive',
     title: 'Archive',
-    description: 'Music, video, and process fragments.',
+    group: 'Core sections',
+    cue: 'Instagram',
+    description: 'Visual archive, process fragments, and field footage.',
+  },
+  {
+    href: '/music',
+    title: 'Music',
+    group: 'Core sections',
+    cue: 'Spotify',
+    description: 'Releases, sessions, and production direction.',
+  },
+  {
+    href: '/theater',
+    title: 'Theater',
+    group: 'Core sections',
+    cue: 'YouTube',
+    description: 'Performances, staging, and rehearsal documentation.',
+  },
+  {
+    href: '/newark',
+    title: 'Newark',
+    group: 'Core sections',
+    cue: 'Instagram',
+    description: 'Local fragments, civic texture, and neighborhood context.',
+  },
+  {
+    href: '/studio',
+    title: 'Studio',
+    group: 'Core sections',
+    cue: 'YouTube',
+    description: 'Behind-the-scenes making process and working methods.',
+  },
+  {
+    href: '/resources',
+    title: 'Resources',
+    group: 'Core sections',
+    cue: 'LinkedIn',
+    description: 'References, tools, and supporting material.',
+  },
+  {
+    href: '/ai',
+    title: 'AI',
+    group: 'Research & AI',
+    cue: 'YouTube',
+    description: 'Applied AI work, notes, and public experiments.',
+  },
+  {
+    href: '/agi',
+    title: 'AGI',
+    group: 'Research & AI',
+    cue: 'X',
+    description: 'AGI framing, governance stakes, and scenario writing.',
+  },
+  {
+    href: '/market-model',
+    title: 'Market Model',
+    group: 'Research & AI',
+    cue: 'Substack',
+    description: 'Economic modeling drafts and argument scaffolds.',
+  },
+  {
+    href: '/post-labor-economics',
+    title: 'Post-Labor Economics',
+    group: 'Research & AI',
+    cue: 'Substack',
+    description: 'Post-labor structures, assumptions, and pressure tests.',
+  },
+  {
+    href: '/human-suffering',
+    title: 'Human Suffering',
+    group: 'Research & AI',
+    cue: 'Substack',
+    description: 'Care-first framing for ethics, systems, and practice.',
+  },
+  {
+    href: '/environmental-weight-of-ai',
+    title: 'Environmental Weight',
+    group: 'Research & AI',
+    cue: 'Substack',
+    description: 'Energy, extraction, and environmental tradeoff accounting.',
+  },
+  {
+    href: '/ai-waves',
+    title: 'AI Waves',
+    group: 'Research & AI',
+    cue: 'X',
+    description: 'Real-time signal tracking and short-form response.',
+  },
+  {
+    href: '/agi-elevator',
+    title: 'AGI Elevator',
+    group: 'Research & AI',
+    cue: 'TikTok',
+    description: 'Fast explainers for non-technical audiences.',
+  },
+  {
+    href: '/survival-os',
+    title: 'Survival',
+    group: 'Tools & trackers',
+    cue: 'YouTube',
+    description: 'Survival systems, operating assumptions, and routines.',
+  },
+  {
+    href: '/genre-tree',
+    title: 'Genre Tree',
+    group: 'Tools & trackers',
+    cue: 'YouTube',
+    description: 'Genre mapping and narrative topology.',
+  },
+  {
+    href: '/chess',
+    title: 'Chess',
+    group: 'Tools & trackers',
+    cue: 'YouTube',
+    description: 'Pattern training and positional thinking archive.',
+  },
+  {
+    href: '/meditation-tracker',
+    title: 'Meditation',
+    group: 'Tools & trackers',
+    cue: 'Substack',
+    description: 'Practice logs and reflection cadence.',
+  },
+  {
+    href: '/map',
+    title: 'Map',
+    group: 'Tools & trackers',
+    cue: 'Instagram',
+    description: 'Location-based orientation and movement snapshots.',
+  },
+  {
+    href: '/studio-notes',
+    title: 'Studio Notes',
+    group: 'Tools & trackers',
+    cue: 'Substack',
+    description: 'Ongoing logs from active production cycles.',
   },
   {
     href: '/about',
     title: 'About',
-    description: 'Context and continuity.',
+    group: 'Identity',
+    cue: 'LinkedIn',
+    description: 'Who this work is for and how it is held together.',
+  },
+  {
+    href: '/story',
+    title: 'Story',
+    group: 'Identity',
+    cue: 'Substack',
+    description: 'Life timeline and formative sequence.',
+  },
+  {
+    href: '/press-kit',
+    title: 'Press Kit',
+    group: 'Identity',
+    cue: 'LinkedIn',
+    description: 'Public bio, assets, and interview-ready references.',
   },
   {
     href: '/contact',
     title: 'Contact',
-    description: 'Commissions, collaborations, direct notes.',
+    group: 'Identity',
+    cue: 'LinkedIn',
+    description: 'Commissions, collaborations, and direct notes.',
+  },
+  {
+    href: '/rejections',
+    title: 'Rejections',
+    group: 'Identity',
+    cue: 'LinkedIn',
+    description: 'Process record, outcomes, and transparent iteration.',
+  },
+  {
+    href: '/collaborations',
+    title: 'Collaborations',
+    group: 'Identity',
+    cue: 'LinkedIn',
+    description: 'Open tracks, active partners, and project asks.',
+  },
+  {
+    href: '/soundcloud',
+    title: 'SoundCloud',
+    group: 'Distribution',
+    cue: 'SoundCloud',
+    description: 'Demos, sketches, and early audio ideas.',
+  },
+  {
+    href: '/youtube',
+    title: 'YouTube',
+    group: 'Distribution',
+    cue: 'YouTube',
+    description: 'Video essays, performances, and studio process.',
+  },
+  {
+    href: '/instagram',
+    title: 'Instagram',
+    group: 'Distribution',
+    cue: 'Instagram',
+    description: 'Visual archive, Newark fragments, and daily signals.',
+  },
+  {
+    href: '/tiktok',
+    title: 'TikTok',
+    group: 'Distribution',
+    cue: 'TikTok',
+    description: 'Short-form cuts and narrative fragments.',
+  },
+  {
+    href: '/twitch',
+    title: 'Twitch',
+    group: 'Distribution',
+    cue: 'Twitch',
+    description: 'Live sessions and audience-facing process.',
+  },
+  {
+    href: '/x',
+    title: 'X',
+    group: 'Distribution',
+    cue: 'X',
+    description: 'Live signal updates and concise commentary.',
+  },
+  {
+    href: '/substack',
+    title: 'Substack',
+    group: 'Distribution',
+    cue: 'Substack',
+    description: 'Longform writing and editorial threads.',
+  },
+  {
+    href: '/discord',
+    title: 'Discord',
+    group: 'Distribution',
+    cue: 'Discord',
+    description: 'Community layer and shared working room.',
   },
 ] as const;
 
@@ -70,9 +325,9 @@ const timelinePreview = [
   <div class="home-shell">
     <section class="home-hero" aria-labelledby="home-hero-heading">
       <div class="home-hero__copy">
-        <p class="home-hero__eyebrow">A Path Toward Life</p>
+        <p class="home-hero__eyebrow">aes's path toward life</p>
         <h1 id="home-hero-heading" class="home-hero__title">Angel Suero</h1>
-        <p class="home-hero__lede">
+        <p class="home-hero__lede home-read-cue">
           Music production, visual storytelling, and Newark-rooted community work in one frame.
         </p>
 
@@ -100,7 +355,7 @@ const timelinePreview = [
       <figure class="home-hero__figure">
         <img
           class="home-hero__image"
-          src="/images/home-preview/download-7.jpg"
+          src="/images/timeline-preview/download-7.jpg"
           alt="Angel Suero smiling against a neutral wall"
           loading="eager"
           decoding="async"
@@ -108,9 +363,37 @@ const timelinePreview = [
         />
         <figcaption class="home-hero__figure-caption">
           <span class="home-hero__figure-kicker">Present tense archive</span>
-          <span class="home-hero__figure-copy">A portrait of the archive, still in motion.</span>
+          <span class="home-hero__figure-copy home-read-cue home-read-cue--inline">A portrait of the archive, still in motion.</span>
         </figcaption>
       </figure>
+    </section>
+
+    <section class="home-portraits" aria-labelledby="home-portraits-heading">
+      <div class="home-portraits__head">
+        <p class="home-portraits__kicker">Visual language</p>
+        <h2 id="home-portraits-heading" class="home-portraits__title">
+          One subject, multiple geometric frames.
+        </h2>
+        <p class="home-portraits__lede home-read-cue">
+          Each card keeps the same person in view while changing structure, silhouette, and rhythm.
+        </p>
+      </div>
+
+      <ul class="home-portraits__grid" role="list">
+        {geometricPortraits.map((portrait, index) => (
+          <li class={`home-portrait-card home-portrait-card--${portrait.shape}`}>
+            <figure class="home-portrait-card__figure">
+              <img
+                src={portrait.src}
+                alt={portrait.alt}
+                loading={index === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+                class="home-portrait-card__image"
+              />
+            </figure>
+          </li>
+        ))}
+      </ul>
     </section>
 
     <section class="home-timeline" aria-labelledby="home-timeline-heading" id="home-timeline">
@@ -121,7 +404,7 @@ const timelinePreview = [
             <h2 id="home-timeline-heading" class="home-timeline__title">
               Open an era. See what came out of it.
             </h2>
-            <p class="home-timeline__lede">
+            <p class="home-timeline__lede home-read-cue">
               A compact view first. Expand for the full sequence, context, and branches.
             </p>
           </div>
@@ -158,18 +441,63 @@ const timelinePreview = [
           <div class="home-section-head__stack">
             <p class="home-section-head__kicker">Site index</p>
             <h2 id="home-routes-heading" class="home-section-head__title">
-              The rest of the site, in five routes.
+              Full route rail.
             </h2>
           </div>
-          <p class="home-section-head__aside">Start wherever you need to.</p>
+          <p class="home-section-head__aside home-read-cue home-read-cue--inline">Every major room is listed as its own card.</p>
+        </div>
+
+        <div class="home-route-model" aria-label="How to read route cards">
+          <p class="home-route-model__label">Card model</p>
+          <div class="home-route-model__grid">
+            <div class="home-route-model__preview" role="img" aria-label="Sample card with labeled parts">
+              <span class="home-route-model__pin home-route-model__pin--meta">A</span>
+              <span class="home-route-model__pin home-route-model__pin--title">B</span>
+              <span class="home-route-model__pin home-route-model__pin--desc">C</span>
+              <span class="home-route-model__pin home-route-model__pin--cta">D</span>
+
+              <div class="home-route-model__meta">
+                <span class="home-route__group">Research & AI</span>
+                <span class="home-route__platform">YouTube</span>
+              </div>
+              <p class="home-route-model__title">AI</p>
+              <p class="home-route-model__desc">
+                Applied AI work, notes, and public experiments.
+              </p>
+              <p class="home-route-model__cta">Open →</p>
+            </div>
+
+            <ul class="home-route-model__keys" role="list">
+              <li>
+                <span class="home-route-model__key-dot">A</span>
+                Tags = room group + platform cue
+              </li>
+              <li>
+                <span class="home-route-model__key-dot">B</span>
+                Title = the room name
+              </li>
+              <li>
+                <span class="home-route-model__key-dot">C</span>
+                Description = what to expect before opening
+              </li>
+              <li>
+                <span class="home-route-model__key-dot">D</span>
+                Open = direct route into that room
+              </li>
+            </ul>
+          </div>
         </div>
 
         <ul class="home-routes__list" role="list">
           {homeRoutes.map((route) => (
             <li class="home-route__item">
               <a class="home-route" href={route.href}>
+                <span class="home-route__meta">
+                  <span class="home-route__group">{route.group}</span>
+                  {route.cue ? <span class="home-route__platform">{route.cue}</span> : null}
+                </span>
                 <span class="home-route__title">{route.title}</span>
-                <span class="home-route__description">{route.description}</span>
+                <span class="home-route__description home-read-cue">{route.description}</span>
                 <span class="home-route__arrow" aria-hidden="true">Open →</span>
               </a>
             </li>
@@ -184,7 +512,7 @@ const timelinePreview = [
             <h2 id="home-pledge-heading" class="home-pledge__title">
               AI Accountability Pledge
             </h2>
-            <p class="home-pledge__lede">
+            <p class="home-pledge__lede home-read-cue">
               Transparent use. Human judgment. Labor dignity. Environmental honesty.
             </p>
             <a class="home-pledge__action" href="/ai-accountability-pledge">
@@ -201,7 +529,7 @@ const timelinePreview = [
               {aiPledgeCommitments.map((commitment, index) => (
                 <li class="home-pledge__item">
                   <span class="home-pledge__item-num">{String(index + 1).padStart(2, '0')}</span>
-                  <span class="home-pledge__item-text">{commitment}</span>
+                  <span class="home-pledge__item-text home-read-cue">{commitment}</span>
                 </li>
               ))}
             </ol>
@@ -220,6 +548,7 @@ const timelinePreview = [
       linear-gradient(180deg, rgba(7, 10, 16, 0.98), rgba(6, 8, 12, 1));
     background-color: #06080c;
     color: rgba(245, 239, 230, 0.96);
+    overflow-x: hidden;
   }
 
   :global(body.home-page .page-shell) {
@@ -248,6 +577,36 @@ const timelinePreview = [
     padding: 0 0 clamp(1.75rem, 4vw, 3rem);
   }
 
+  .home-read-cue {
+    position: relative;
+    padding-inline-start: 0.86rem;
+    border-inline-start: 1px solid rgba(236, 225, 208, 0.22);
+  }
+
+  .home-read-cue::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0.66em;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(240, 205, 153, 0.86);
+    box-shadow:
+      0 0 0 2px rgba(240, 205, 153, 0.16),
+      0 0 12px rgba(240, 205, 153, 0.22);
+    transform: translate(-58%, -50%);
+  }
+
+  .home-read-cue--inline {
+    display: inline-block;
+    padding-inline-start: 0.66rem;
+  }
+
+  .home-read-cue--inline::before {
+    top: 50%;
+  }
+
   .home-hero {
     position: relative;
     isolation: isolate;
@@ -268,8 +627,8 @@ const timelinePreview = [
     z-index: 0;
     pointer-events: none;
     background:
-      linear-gradient(90deg, rgba(5, 7, 11, 0.84) 0%, rgba(5, 7, 11, 0.56) 30%, rgba(5, 7, 11, 0.08) 66%, rgba(5, 7, 11, 0.46) 100%),
-      linear-gradient(180deg, rgba(5, 7, 11, 0.04), rgba(5, 7, 11, 0.24) 58%, rgba(5, 7, 11, 0.8));
+      linear-gradient(90deg, rgba(5, 7, 11, 0.56) 0%, rgba(5, 7, 11, 0.32) 30%, rgba(5, 7, 11, 0.04) 66%, rgba(5, 7, 11, 0.24) 100%),
+      linear-gradient(180deg, rgba(5, 7, 11, 0.01), rgba(5, 7, 11, 0.14) 58%, rgba(5, 7, 11, 0.44));
   }
 
   .home-hero::after {
@@ -438,17 +797,18 @@ const timelinePreview = [
   .home-hero__figure::before {
     z-index: 1;
     background:
-      linear-gradient(90deg, rgba(5, 7, 11, 0.86) 0%, rgba(5, 7, 11, 0.58) 24%, rgba(5, 7, 11, 0.06) 58%, rgba(5, 7, 11, 0.3) 100%),
-      linear-gradient(180deg, rgba(5, 7, 11, 0.03), rgba(5, 7, 11, 0.24) 68%, rgba(5, 7, 11, 0.78));
+      linear-gradient(90deg, rgba(5, 7, 11, 0.46) 0%, rgba(5, 7, 11, 0.24) 24%, rgba(5, 7, 11, 0.02) 58%, rgba(5, 7, 11, 0.1) 100%),
+      linear-gradient(180deg, rgba(5, 7, 11, 0.01), rgba(5, 7, 11, 0.08) 68%, rgba(5, 7, 11, 0.28));
   }
 
   .home-hero__figure::after {
     z-index: 2;
     background:
+      radial-gradient(26rem 18rem at 48% 34%, rgba(255, 228, 191, 0.18), transparent 60%),
       radial-gradient(34rem 24rem at 78% 24%, rgba(255, 197, 132, 0.14), transparent 62%),
       radial-gradient(28rem 18rem at 22% 72%, rgba(88, 122, 149, 0.12), transparent 66%);
     mix-blend-mode: screen;
-    opacity: 0.75;
+    opacity: 0.72;
     animation: home-hero-glow 18s ease-in-out infinite alternate;
   }
 
@@ -461,7 +821,7 @@ const timelinePreview = [
     object-position: center 28%;
     opacity: 0.98;
     transform: scale(1.02);
-    filter: saturate(0.98) contrast(1.03) brightness(0.96);
+    filter: saturate(1.03) contrast(1.06) brightness(1.08);
     transition:
       transform 420ms var(--ease-emphasized, ease-out),
       filter 420ms var(--ease-standard, ease-out);
@@ -469,7 +829,7 @@ const timelinePreview = [
 
   .home-hero__figure:hover .home-hero__image {
     transform: scale(1.05);
-    filter: saturate(1) contrast(1.05) brightness(1);
+    filter: saturate(1.05) contrast(1.07) brightness(1.12);
   }
 
   .home-hero__figure-caption {
@@ -501,6 +861,128 @@ const timelinePreview = [
     max-width: 22ch;
     font-size: 0.9rem;
     line-height: 1.5;
+  }
+
+  .home-portraits {
+    width: min(1180px, calc(100% - clamp(1rem, 3.2vw, 2.6rem) * 2));
+    margin: 0 auto;
+    display: grid;
+    gap: clamp(0.8rem, 2vw, 1.25rem);
+  }
+
+  .home-portraits__head {
+    display: grid;
+    gap: 0.36rem;
+    max-width: 58ch;
+  }
+
+  .home-portraits__kicker {
+    margin: 0;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(233, 219, 197, 0.66);
+  }
+
+  .home-portraits__title {
+    margin: 0;
+    font-family: var(--font-display, serif);
+    font-size: clamp(1.35rem, 2.5vw, 2.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    color: rgba(248, 244, 237, 0.97);
+    text-wrap: balance;
+  }
+
+  .home-portraits__lede {
+    margin: 0;
+    max-width: 40ch;
+    font-size: clamp(0.9rem, 1.12vw, 1rem);
+    line-height: 1.5;
+    color: rgba(231, 221, 206, 0.76);
+  }
+
+  .home-portraits__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(0.5rem, 1.5vw, 0.95rem);
+    align-items: end;
+  }
+
+  .home-portrait-card {
+    margin: 0;
+    min-width: 0;
+  }
+
+  .home-portrait-card__figure {
+    margin: 0;
+    border: 1px solid rgba(236, 225, 208, 0.16);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)),
+      rgba(9, 13, 20, 0.78);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      0 10px 24px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+  }
+
+  .home-portrait-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 28%;
+    display: block;
+    filter: saturate(1.02) contrast(1.03) brightness(1.04);
+    transition: transform 260ms ease;
+  }
+
+  .home-portrait-card:hover .home-portrait-card__image,
+  .home-portrait-card:focus-within .home-portrait-card__image {
+    transform: scale(1.04);
+  }
+
+  .home-portrait-card--arch .home-portrait-card__figure {
+    border-radius: 46% 46% 1rem 1rem / 18% 18% 1rem 1rem;
+  }
+
+  .home-portrait-card--circle .home-portrait-card__figure {
+    border-radius: 999px;
+    aspect-ratio: 1;
+    align-self: center;
+  }
+
+  .home-portrait-card--diamond .home-portrait-card__figure {
+    border-radius: 1rem;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    aspect-ratio: 1;
+  }
+
+  .home-portrait-card--ticket .home-portrait-card__figure {
+    border-radius: 1rem;
+    clip-path: polygon(
+      0 10%,
+      6% 10%,
+      6% 0,
+      94% 0,
+      94% 10%,
+      100% 10%,
+      100% 90%,
+      94% 90%,
+      94% 100%,
+      6% 100%,
+      6% 90%,
+      0 90%
+    );
+  }
+
+  .home-portrait-card--slant .home-portrait-card__figure {
+    border-radius: 1rem;
+    clip-path: polygon(8% 0, 100% 0, 92% 100%, 0 100%);
   }
 
   .home-timeline {
@@ -710,14 +1192,31 @@ const timelinePreview = [
   }
 
   .home-content {
-    width: min(1040px, 100%);
+    width: 100%;
+    max-width: none;
     margin: 0 auto;
-    padding: clamp(1.75rem, 4vw, 3rem) 0 clamp(3rem, 6vw, 4.5rem);
+    padding:
+      clamp(1.75rem, 4vw, 3rem)
+      clamp(1rem, 3.2vw, 2.6rem)
+      clamp(3rem, 6vw, 4.5rem);
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: stretch;
     gap: clamp(2rem, 4vw, 3.25rem);
   }
 
+  .home-routes {
+    position: relative;
+    width: 100dvw;
+    margin-inline: calc(50% - 50dvw);
+    padding-inline: clamp(1rem, 3.2vw, 2.6rem);
+    max-width: none;
+    justify-self: stretch;
+  }
+
   .home-section-head {
+    width: min(1180px, 100%);
+    margin-inline: auto;
     display: flex;
     align-items: baseline;
     justify-content: space-between;
@@ -759,49 +1258,275 @@ const timelinePreview = [
     text-align: right;
   }
 
-  .home-routes__list {
+  .home-route-model {
+    width: min(1180px, 100%);
+    max-width: 1180px;
+    margin: 0 auto 0.95rem;
+    padding: 0.92rem 0.98rem;
+    border: 1px solid rgba(236, 225, 208, 0.16);
+    border-radius: 14px;
+    background:
+      radial-gradient(120% 140% at 0% 0%, rgba(225, 173, 103, 0.08), transparent 54%),
+      rgba(9, 13, 20, 0.62);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.03),
+      0 12px 24px rgba(0, 0, 0, 0.14);
+    display: grid;
+    gap: 0.72rem;
+  }
+
+  .home-route-model__label {
+    margin: 0;
+    font-size: 0.66rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: rgba(233, 219, 197, 0.68);
+  }
+
+  .home-route-model__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: 0.82rem;
+    align-items: start;
+  }
+
+  .home-route-model__preview {
+    position: relative;
+    border: 1px solid rgba(236, 225, 208, 0.16);
+    border-radius: 12px;
+    padding: 0.64rem 0.72rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)),
+      rgba(8, 12, 18, 0.72);
+    display: grid;
+    gap: 0.34rem;
+    min-height: 146px;
+  }
+
+  .home-route-model__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.32rem;
+    align-items: center;
+    min-width: 0;
+    padding-right: 1.6rem;
+  }
+
+  .home-route-model__title {
+    margin: 0;
+    font-family: var(--font-display, serif);
+    font-size: 1.18rem;
+    line-height: 1.1;
+    color: rgba(249, 244, 238, 0.98);
+  }
+
+  .home-route-model__desc {
+    margin: 0;
+    max-width: 36ch;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    color: rgba(231, 221, 206, 0.74);
+    padding-right: 1.6rem;
+  }
+
+  .home-route-model__cta {
+    margin: 0;
+    font-size: 0.7rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: rgba(255, 224, 183, 0.92);
+    font-weight: 600;
+  }
+
+  .home-route-model__pin {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.58rem;
+    font-weight: 700;
+    color: #120d08;
+    background: rgba(240, 205, 153, 0.94);
+    box-shadow:
+      0 0 0 2px rgba(240, 205, 153, 0.18),
+      0 6px 14px rgba(0, 0, 0, 0.25);
+  }
+
+  .home-route-model__pin--meta {
+    top: 0.52rem;
+    right: 0.52rem;
+  }
+
+  .home-route-model__pin--title {
+    top: 2.5rem;
+    right: 0.52rem;
+  }
+
+  .home-route-model__pin--desc {
+    top: 4.28rem;
+    right: 0.52rem;
+  }
+
+  .home-route-model__pin--cta {
+    bottom: 0.62rem;
+    right: 0.52rem;
+  }
+
+  .home-route-model__keys {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
+    gap: 0.42rem;
+    font-size: 0.77rem;
+    line-height: 1.4;
+    color: rgba(236, 226, 210, 0.82);
+  }
+
+  .home-route-model__keys li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.42rem;
+    align-items: start;
+  }
+
+  .home-route-model__key-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.58rem;
+    font-weight: 700;
+    color: #120d08;
+    background: rgba(240, 205, 153, 0.94);
+    transform: translateY(1px);
+  }
+
+  .home-routes__list {
+    list-style: none;
+    margin: 0 auto;
+    max-width: 1180px;
+    padding: 0 0 0 1.2rem;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0.6rem;
+    position: relative;
+  }
+
+  .home-routes__list::before {
+    content: '';
+    position: absolute;
+    left: 0.42rem;
+    top: 0.3rem;
+    bottom: 0.3rem;
+    width: 1px;
+    background: linear-gradient(180deg, rgba(236, 225, 208, 0.26), rgba(236, 225, 208, 0.08));
   }
 
   .home-route__item {
     margin: 0;
+    position: relative;
+    width: 100%;
+  }
+
+  .home-route__item::before {
+    content: '';
+    position: absolute;
+    left: -0.96rem;
+    top: 1.2rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(240, 205, 153, 0.85);
+    box-shadow:
+      0 0 0 3px rgba(240, 205, 153, 0.12),
+      0 0 14px rgba(240, 205, 153, 0.22);
   }
 
   .home-route {
     display: grid;
+    width: 100%;
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
+      'meta arrow'
       'title arrow'
       'description arrow';
-    gap: 0.3rem 1rem;
-    padding: 1rem 0;
-    border-top: 1px solid rgba(236, 225, 208, 0.12);
+    gap: 0.28rem 0.9rem;
+    padding: 0.82rem 0.95rem;
+    border: 1px solid rgba(236, 225, 208, 0.16);
+    border-radius: 14px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)),
+      rgba(9, 13, 20, 0.66);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.03),
+      0 10px 26px rgba(0, 0, 0, 0.14);
     color: inherit;
     text-decoration: none;
     transition:
-      transform 150ms ease,
-      border-color 150ms ease,
-      color 150ms ease;
-  }
-
-  .home-route__item:last-child .home-route {
-    border-bottom: 1px solid rgba(236, 225, 208, 0.12);
+      transform 180ms ease,
+      border-color 180ms ease,
+      color 180ms ease,
+      box-shadow 180ms ease;
   }
 
   .home-route:hover,
   .home-route:focus-visible {
-    transform: translateX(2px);
+    transform: translateX(2px) translateY(-1px);
+    border-color: rgba(240, 205, 153, 0.42);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      0 14px 30px rgba(0, 0, 0, 0.2);
     color: #fff7ee;
+  }
+
+  .home-route__meta {
+    grid-area: meta;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+
+  .home-route__group,
+  .home-route__platform {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.28rem;
+    padding: 0.12rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .home-route__group {
+    color: rgba(238, 226, 207, 0.76);
+    background: rgba(236, 225, 208, 0.1);
+    border: 1px solid rgba(236, 225, 208, 0.16);
+  }
+
+  .home-route__platform {
+    color: rgba(255, 225, 178, 0.94);
+    background: rgba(185, 122, 45, 0.2);
+    border: 1px solid rgba(240, 205, 153, 0.34);
   }
 
   .home-route__title {
     grid-area: title;
     font-family: var(--font-display, serif);
-    font-size: clamp(1.15rem, 2vw, 1.45rem);
-    line-height: 1.18;
+    font-size: clamp(1.08rem, 1.8vw, 1.32rem);
+    line-height: 1.12;
     color: rgba(249, 244, 238, 0.98);
     transition: color 150ms ease;
   }
@@ -813,16 +1538,19 @@ const timelinePreview = [
 
   .home-route__description {
     grid-area: description;
-    max-width: 44ch;
-    font-size: 0.9rem;
-    line-height: 1.55;
+    max-width: 52ch;
+    font-size: 0.82rem;
+    line-height: 1.45;
     color: rgba(231, 221, 206, 0.72);
   }
 
   .home-route__arrow {
     grid-area: arrow;
-    align-self: start;
-    font-size: 0.85rem;
+    align-self: center;
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
     color: rgba(240, 205, 153, 0.82);
     transition: transform 150ms ease, color 150ms ease;
   }
@@ -1059,9 +1787,25 @@ const timelinePreview = [
       align-items: flex-start;
     }
 
+    .home-portraits__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .home-portrait-card--diamond {
+      order: 4;
+    }
+
+    .home-portrait-card--ticket {
+      order: 5;
+    }
+
     .home-section-head__aside {
       text-align: left;
       justify-content: flex-start;
+    }
+
+    .home-route-model__grid {
+      grid-template-columns: 1fr;
     }
 
     .home-timeline__summary {
@@ -1117,8 +1861,8 @@ const timelinePreview = [
 
     .home-hero::before {
       background:
-        linear-gradient(180deg, rgba(5, 7, 11, 0.78), rgba(5, 7, 11, 0.94)),
-        linear-gradient(90deg, rgba(5, 7, 11, 0.54) 0%, rgba(5, 7, 11, 0.2) 56%, rgba(5, 7, 11, 0.62) 100%);
+        linear-gradient(180deg, rgba(5, 7, 11, 0.66), rgba(5, 7, 11, 0.82)),
+        linear-gradient(90deg, rgba(5, 7, 11, 0.42) 0%, rgba(5, 7, 11, 0.14) 56%, rgba(5, 7, 11, 0.46) 100%);
     }
 
     .home-hero::after {
@@ -1209,24 +1953,121 @@ const timelinePreview = [
     }
 
     .home-content {
-      width: min(100%, calc(100% - 0.8rem));
+      width: 100%;
       padding-top: 1rem;
+      padding-inline: 0.5rem;
       gap: 1.5rem;
     }
 
+    .home-portraits {
+      width: min(100%, calc(100% - 0.5rem));
+      gap: 0.7rem;
+    }
+
+    .home-portraits__title {
+      font-size: clamp(1.2rem, 6.2vw, 1.55rem);
+    }
+
+    .home-portraits__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.46rem;
+    }
+
+    .home-portrait-card--diamond .home-portrait-card__figure,
+    .home-portrait-card--circle .home-portrait-card__figure {
+      aspect-ratio: 1 / 1;
+    }
+
+    .home-read-cue {
+      padding-inline-start: 0.72rem;
+    }
+
+    .home-read-cue::before {
+      width: 5px;
+      height: 5px;
+    }
+
+    .home-read-cue--inline {
+      padding-inline-start: 0.58rem;
+    }
+
+    .home-routes__list {
+      padding-left: 1rem;
+      gap: 0.52rem;
+    }
+
+    .home-route-model {
+      padding: 0.78rem 0.74rem;
+      gap: 0.6rem;
+    }
+
+    .home-route-model__preview {
+      padding: 0.56rem 0.62rem;
+      min-height: 136px;
+      border-radius: 10px;
+    }
+
+    .home-route-model__title {
+      font-size: 1.02rem;
+    }
+
+    .home-route-model__desc {
+      font-size: 0.74rem;
+      line-height: 1.35;
+      padding-right: 1.45rem;
+    }
+
+    .home-route-model__keys {
+      font-size: 0.73rem;
+      gap: 0.34rem;
+    }
+
+    .home-route-model__key-dot,
+    .home-route-model__pin {
+      width: 16px;
+      height: 16px;
+      font-size: 0.54rem;
+    }
+
+    .home-routes__list::before {
+      left: 0.36rem;
+    }
+
+    .home-route__item::before {
+      left: -0.78rem;
+      top: 1.05rem;
+      width: 7px;
+      height: 7px;
+    }
+
     .home-route {
-      gap: 0.2rem 0.75rem;
-      padding: 0.85rem 0;
+      gap: 0.24rem 0.65rem;
+      padding: 0.74rem 0.76rem;
+      border-radius: 12px;
+    }
+
+    .home-route__meta {
+      gap: 0.34rem;
+    }
+
+    .home-route__group,
+    .home-route__platform {
+      font-size: 0.58rem;
+      letter-spacing: 0.09em;
     }
 
     .home-route__title {
-      font-size: clamp(1.02rem, 5vw, 1.22rem);
+      font-size: clamp(0.98rem, 4.6vw, 1.12rem);
     }
 
     .home-route__description {
       max-width: 100%;
-      font-size: 0.86rem;
-      line-height: 1.45;
+      font-size: 0.78rem;
+      line-height: 1.4;
+    }
+
+    .home-route__arrow {
+      font-size: 0.66rem;
     }
 
     .home-pledge__quote {

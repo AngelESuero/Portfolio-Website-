@@ -294,29 +294,34 @@ const referenceLinks = [
 
 <style>
   :global(html body.music-page[data-theme='archive']) {
-    --tone-bg: #d7c8b4;
-    --tone-bg-deep: #c4b29d;
-    --tone-surface: rgba(239, 229, 214, 0.95);
-    --tone-surface-strong: rgba(227, 215, 199, 0.975);
-    --tone-line: rgba(112, 88, 57, 0.2);
-    --line2: rgba(112, 88, 57, 0.16);
+    --tone-text: rgba(236, 244, 238, 0.95);
+    --tone-muted: rgba(176, 198, 184, 0.78);
+    --tone-bg: #0b120f;
+    --tone-bg-deep: #060a08;
+    --tone-surface: rgba(15, 24, 19, 0.92);
+    --tone-surface-strong: rgba(10, 18, 13, 0.96);
+    --tone-line: rgba(120, 153, 132, 0.2);
+    --line2: rgba(120, 153, 132, 0.14);
+    --tone-accent: #1db954;
+    --tone-accent-glow: #7ef6a6;
     background:
-      radial-gradient(42rem 24rem at 50% 0%, rgba(255, 237, 205, 0.28), transparent 50%),
-      linear-gradient(180deg, #e1d3c0 0%, #d5c6b2 46%, #cbbca6 100%);
+      radial-gradient(42rem 24rem at 50% 0%, rgba(29, 185, 84, 0.2), transparent 54%),
+      radial-gradient(36rem 20rem at 84% 6%, rgba(75, 119, 89, 0.16), transparent 60%),
+      linear-gradient(180deg, #101813 0%, #0b120f 48%, #060a08 100%);
   }
 
   :global(html body.music-page .site-overlay) {
     background:
-      linear-gradient(to right, rgba(255, 246, 232, 0.08), transparent 28%),
-      linear-gradient(to left, rgba(111, 87, 53, 0.06), transparent 40%),
-      radial-gradient(1100px 700px at 18% 2%, rgb(var(--accent-rgb) / 0.028), transparent 64%),
-      radial-gradient(1100px 700px at 84% 4%, rgb(var(--cursor-rgb) / 0.022), transparent 66%),
-      linear-gradient(180deg, rgba(244, 235, 221, 0.06), rgba(219, 205, 185, 0.1) 48%, rgba(199, 183, 159, 0.12));
+      linear-gradient(to right, rgba(255, 255, 255, 0.03), transparent 28%),
+      linear-gradient(to left, rgba(255, 255, 255, 0.02), transparent 40%),
+      radial-gradient(1100px 700px at 18% 2%, rgba(29, 185, 84, 0.12), transparent 64%),
+      radial-gradient(1100px 700px at 84% 4%, rgba(74, 119, 89, 0.1), transparent 66%);
   }
 
   .music-page__shell {
     display: grid;
     gap: clamp(1.2rem, 2.4vw, 1.9rem);
+    color: var(--tone-text);
   }
 
   .music-hero,
@@ -326,11 +331,11 @@ const referenceLinks = [
     border: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
     border-radius: 1.4rem;
     background:
-      linear-gradient(180deg, rgba(247, 240, 231, 0.92), rgba(234, 224, 210, 0.94)),
-      radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--tone-accent) 7%, transparent), transparent 56%);
+      linear-gradient(180deg, rgba(20, 31, 24, 0.88), rgba(10, 17, 13, 0.94)),
+      radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--tone-accent) 14%, transparent), transparent 56%);
     box-shadow:
-      0 18px 40px rgba(102, 81, 45, 0.09),
-      0 1px 0 rgba(255, 255, 255, 0.62) inset;
+      0 18px 40px rgba(0, 0, 0, 0.24),
+      0 1px 0 rgba(255, 255, 255, 0.07) inset;
   }
 
   .music-hero {
@@ -365,6 +370,7 @@ const referenceLinks = [
   .music-hero h1 {
     font-size: clamp(2.4rem, 7vw, 4.4rem);
     line-height: 0.95;
+    color: var(--tone-text);
   }
 
   .music-hero__lede {
@@ -383,11 +389,19 @@ const referenceLinks = [
 
   .music-hero__nav a,
   .music-footer__links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: fit-content;
     color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
     text-decoration: none;
-    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 28%, transparent);
-    padding-bottom: 0.1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 36%, transparent);
+    border-radius: 999px;
+    padding: 0.35rem 0.74rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01)),
+      color-mix(in srgb, var(--tone-surface) 86%, transparent);
+    transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
   }
 
   .music-hero__nav a:hover,
@@ -399,7 +413,11 @@ const referenceLinks = [
   .music-audio-row__handoff-actions a:hover,
   .music-audio-row__handoff-actions a:focus-visible {
     color: var(--tone-accent-glow);
-    border-color: color-mix(in srgb, var(--tone-accent) 64%, transparent);
+    border-color: color-mix(in srgb, var(--tone-accent) 72%, transparent);
+    transform: translateY(-1px);
+    background:
+      linear-gradient(180deg, rgba(29, 185, 84, 0.2), rgba(29, 185, 84, 0.08)),
+      color-mix(in srgb, var(--tone-surface) 88%, transparent);
   }
 
   .music-section {
@@ -416,6 +434,15 @@ const referenceLinks = [
   .music-section__head h2 {
     font-size: clamp(1.15rem, 2vw, 1.55rem);
     line-height: 1.1;
+    color: var(--tone-text);
+  }
+
+  .music-section__head h2::before {
+    content: '●';
+    display: inline-block;
+    margin-right: 0.42rem;
+    color: color-mix(in srgb, var(--tone-accent) 80%, white 20%);
+    transform: translateY(-1px);
   }
 
   .music-video-grid {
@@ -432,8 +459,15 @@ const referenceLinks = [
     border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
     border-radius: 1rem;
     background:
-      linear-gradient(180deg, rgba(249, 243, 235, 0.8), rgba(236, 227, 214, 0.92));
-    box-shadow: 0 14px 28px rgba(102, 81, 45, 0.06);
+      linear-gradient(180deg, rgba(18, 28, 22, 0.84), rgba(9, 16, 12, 0.92));
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.24);
+    transition: transform 190ms ease, border-color 190ms ease, box-shadow 190ms ease;
+  }
+
+  .music-video:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--tone-accent) 44%, var(--line2));
+    box-shadow: 0 20px 34px rgba(0, 0, 0, 0.28);
   }
 
   .music-video__meta {
@@ -449,6 +483,7 @@ const referenceLinks = [
   .music-video h3 {
     font-size: 0.95rem;
     line-height: 1.25;
+    color: var(--tone-text);
   }
 
   .music-video video {
@@ -477,8 +512,15 @@ const referenceLinks = [
     border: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
     border-radius: 1rem;
     background:
-      linear-gradient(180deg, rgba(249, 243, 235, 0.82), rgba(235, 225, 212, 0.94));
-    box-shadow: 0 14px 30px rgba(102, 81, 45, 0.06);
+      linear-gradient(180deg, rgba(18, 28, 22, 0.84), rgba(9, 16, 12, 0.92));
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
+    transition: transform 190ms ease, border-color 190ms ease, box-shadow 190ms ease;
+  }
+
+  .music-audio-row:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--tone-accent) 44%, var(--line2));
+    box-shadow: 0 20px 36px rgba(0, 0, 0, 0.3);
   }
 
   .music-audio-row__source {
@@ -526,11 +568,18 @@ const referenceLinks = [
 
   .music-audio-row__detail a,
   .music-audio-row__handoff-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: fit-content;
     color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
     text-decoration: none;
-    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 28%, transparent);
-    padding-bottom: 0.1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 36%, transparent);
+    border-radius: 999px;
+    padding: 0.24rem 0.62rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+      color-mix(in srgb, var(--tone-surface) 86%, transparent);
   }
 
   .music-audio-row__fallback {
@@ -567,8 +616,8 @@ const referenceLinks = [
     overflow: hidden;
     border: 1px solid color-mix(in srgb, var(--tone-accent) 10%, var(--line2));
     border-radius: 1rem;
-    background: color-mix(in srgb, var(--tone-surface) 92%, transparent);
-    box-shadow: 0 14px 26px rgba(102, 81, 45, 0.06);
+    background: color-mix(in srgb, var(--tone-surface-strong) 94%, transparent);
+    box-shadow: 0 14px 26px rgba(0, 0, 0, 0.2);
   }
 
   .music-photo img {

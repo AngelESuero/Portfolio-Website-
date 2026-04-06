@@ -292,10 +292,28 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
 
 <style>
   :global(body.writing-workbench-page[data-theme='writing']) {
+    --tone-bg: #f5f2ea;
+    --tone-bg-deep: #ece7dc;
+    --tone-surface: rgba(255, 253, 248, 0.96);
+    --tone-surface-strong: rgba(255, 255, 252, 0.99);
+    --tone-text: rgba(28, 25, 22, 0.98);
+    --tone-muted: rgba(77, 68, 59, 0.86);
+    --tone-line: rgba(122, 101, 77, 0.2);
+    --line2: rgba(122, 101, 77, 0.16);
+    --tone-accent: #ff6719;
+    --tone-accent-glow: #cb4f13;
     background:
-      radial-gradient(42rem 24rem at 12% 8%, color-mix(in srgb, var(--tone-accent) 14%, transparent), transparent 72%),
-      radial-gradient(38rem 20rem at 88% 10%, color-mix(in srgb, var(--tone-sky) 12%, transparent), transparent 74%),
-      linear-gradient(180deg, color-mix(in srgb, var(--tone-bg-deep) 92%, black), var(--tone-bg));
+      radial-gradient(40rem 22rem at 12% 7%, rgba(255, 124, 51, 0.12), transparent 70%),
+      radial-gradient(34rem 18rem at 88% 10%, rgba(225, 196, 143, 0.11), transparent 72%),
+      linear-gradient(180deg, #f8f4eb 0%, #f2ede2 42%, #ece6da 100%);
+    color: var(--tone-text);
+  }
+
+  :global(body.writing-workbench-page .site-overlay) {
+    background:
+      linear-gradient(to right, rgba(255, 255, 255, 0.07), transparent 26%),
+      linear-gradient(to left, rgba(119, 92, 62, 0.04), transparent 38%),
+      radial-gradient(54rem 30rem at 18% 4%, rgba(255, 124, 51, 0.08), transparent 66%);
   }
 
   .writing-page-header,
@@ -315,6 +333,10 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
     align-items: end;
   }
 
+  .writing-page-header__copy {
+    max-width: 72ch;
+  }
+
   .writing-page-header__kicker {
     margin: 0 0 0.45rem;
     font-size: 0.72rem;
@@ -323,11 +345,21 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
     color: var(--tone-accent-glow);
   }
 
+  .writing-page-header h1,
+  .writing-documents h2,
+  .writing-archive h2,
+  .writing-document-card h3,
+  .writing-entry-row h3 {
+    font-family: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+    letter-spacing: -0.02em;
+  }
+
   .writing-page-header__dek {
     margin: 0.85rem 0 0;
     max-width: 62ch;
+    font-size: 1.02rem;
     color: var(--tone-muted);
-    line-height: 1.7;
+    line-height: 1.78;
   }
 
   .writing-page-header__meta {
@@ -335,9 +367,11 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
     flex-wrap: wrap;
     gap: 0.55rem 1rem;
     padding: 0.95rem 1rem;
-    border: 1px solid var(--line2);
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 24%, var(--line2));
     border-radius: 1rem;
-    background: color-mix(in srgb, var(--tone-surface) 82%, transparent);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.2)),
+      color-mix(in srgb, var(--tone-surface) 88%, transparent);
     font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -404,12 +438,15 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
   }
 
   .writing-document-card {
-    border: 1px solid var(--line2);
-    border-radius: 1.1rem;
-    background: color-mix(in srgb, var(--tone-surface) 90%, transparent);
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
+    border-radius: 0.95rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.24)),
+      color-mix(in srgb, var(--tone-surface) 92%, transparent);
     padding: 1rem;
     display: grid;
     gap: 0.85rem;
+    box-shadow: 0 14px 28px rgba(72, 59, 45, 0.08);
   }
 
   .writing-document-card__meta {
@@ -432,7 +469,7 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
   .writing-document-card__note {
     margin: 0;
     color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
-    line-height: 1.65;
+    line-height: 1.72;
   }
 
   .writing-document-card__actions {
@@ -518,21 +555,27 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
 
   .writing-filter {
     appearance: none;
-    border: 1px solid var(--line2);
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 22%, var(--line2));
     border-radius: 999px;
-    background: color-mix(in srgb, var(--tone-surface) 84%, transparent);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.3)),
+      color-mix(in srgb, var(--tone-surface) 88%, transparent);
     color: var(--tone-muted);
     padding: 0.45rem 0.75rem;
     font-size: 0.72rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     cursor: pointer;
+    transition: transform 140ms ease, border-color 160ms ease, background 160ms ease;
   }
 
   .writing-filter.is-active {
-    border-color: color-mix(in srgb, var(--tone-accent) 38%, var(--line2));
-    background: color-mix(in srgb, var(--tone-accent) 12%, transparent);
-    color: var(--tone-accent-glow);
+    border-color: color-mix(in srgb, var(--tone-accent) 66%, var(--line2));
+    background:
+      linear-gradient(180deg, rgba(255, 198, 165, 0.7), rgba(255, 173, 128, 0.4)),
+      color-mix(in srgb, var(--tone-surface) 88%, transparent);
+    color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-accent) 28%);
+    transform: translateY(-1px);
   }
 
   .writing-results {
@@ -553,14 +596,15 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
     display: grid;
     gap: 0.9rem;
     padding: 1rem;
-    border: 1px solid var(--line2);
-    border-radius: 1.1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
+    border-radius: 0.95rem;
     background:
       linear-gradient(
         180deg,
-        color-mix(in srgb, var(--tone-surface-strong) 76%, transparent),
-        color-mix(in srgb, var(--tone-surface) 66%, transparent)
+        rgba(255, 255, 255, 0.74),
+        rgba(255, 255, 255, 0.24)
       );
+    box-shadow: 0 14px 30px rgba(72, 59, 45, 0.09);
   }
 
   .writing-entry-row__meta {
@@ -602,8 +646,8 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
 
   .writing-entry-row__body > p {
     color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
-    line-height: 1.65;
-    max-width: 64ch;
+    line-height: 1.78;
+    max-width: 68ch;
   }
 
   .writing-entry-row__footer {
@@ -624,10 +668,10 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
     display: inline-flex;
     padding: 0.22rem 0.48rem;
     border-radius: 999px;
-    border: 1px solid var(--line2);
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 20%, var(--line2));
     font-size: 0.72rem;
     color: var(--tone-muted);
-    background: color-mix(in srgb, var(--tone-surface) 84%, transparent);
+    background: color-mix(in srgb, var(--tone-surface-strong) 70%, transparent);
   }
 
   .writing-read-link {
