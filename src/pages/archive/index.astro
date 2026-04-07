@@ -40,6 +40,7 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
         Entries, fragments, notes, demos, releases, and proposals kept in one public record. New things tend to land
         here first; some later gather into work.
       </p>
+      <p class="archive-page__cue">Instagram cue: visual-first scan, then open the full record.</p>
       <div class="archive-page__meta font-archive">
         <p>{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
         <p>{mediums.length} mediums</p>
@@ -258,6 +259,22 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
 
   .archive-page__description {
     max-width: 68ch;
+  }
+
+  .archive-page__cue {
+    margin: 0;
+    width: fit-content;
+    max-width: 58ch;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 32%, var(--line2));
+    border-radius: 999px;
+    padding: 0.32rem 0.68rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+    background:
+      linear-gradient(135deg, rgba(255, 88, 155, 0.2), rgba(127, 139, 255, 0.18)),
+      color-mix(in srgb, var(--tone-surface) 86%, transparent);
   }
 
   .archive-page__meta {
@@ -509,6 +526,20 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
   :global(body.archive-ig-page .archive-list .entry-card__link) {
     color: #ffd8ea;
     border-bottom-color: color-mix(in srgb, var(--tone-accent) 72%, transparent);
+  }
+
+  :global(body.archive-ig-page .archive-list .entry-card[data-medium='video'] .entry-card__thumbnail),
+  :global(body.archive-ig-page .archive-list .entry-card[data-medium='image'] .entry-card__thumbnail) {
+    position: relative;
+    border: none;
+    padding: 1px;
+    background:
+      linear-gradient(135deg, rgba(255, 88, 155, 0.7), rgba(127, 139, 255, 0.62), rgba(246, 167, 96, 0.62));
+  }
+
+  :global(body.archive-ig-page .archive-list .entry-card[data-medium='video'] .entry-card__thumbnail img),
+  :global(body.archive-ig-page .archive-list .entry-card[data-medium='image'] .entry-card__thumbnail img) {
+    border-radius: calc(0.95rem - 1px);
   }
 
   .archive-empty {

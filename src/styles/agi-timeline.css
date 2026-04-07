@@ -36,6 +36,14 @@ body.agi-x-page .level-btn.active {
   background: color-mix(in srgb, var(--tone-accent) 24%, transparent);
 }
 
+body.agi-x-page .agi-nav__cue {
+  margin: 0.22rem 0 0;
+  font-size: 0.67rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+}
+
 body.agi-x-page .summary-stat,
 body.agi-x-page .wave-card,
 body.agi-x-page .analyst-section,
@@ -429,8 +437,41 @@ body.agi-x-page .reference-list a {
   border-radius: 999px;
   padding: 0.28rem 0.68rem;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
-    color-mix(in srgb, var(--tone-surface) 84%, transparent);
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+      color-mix(in srgb, var(--tone-surface) 84%, transparent);
+}
+
+body.agi-x-page .wave-beat,
+body.agi-x-page .analyst-card,
+body.agi-x-page .supplementary-item,
+body.agi-x-page .tech-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 170ms ease, border-color 170ms ease, box-shadow 170ms ease;
+}
+
+body.agi-x-page .wave-beat::before,
+body.agi-x-page .analyst-card::before,
+body.agi-x-page .supplementary-item::before,
+body.agi-x-page .tech-card::before {
+  content: '';
+  position: absolute;
+  top: 0.75rem;
+  bottom: 0.75rem;
+  left: 0.46rem;
+  width: 2px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--wave-accent) 66%, transparent);
+  opacity: 0.72;
+}
+
+body.agi-x-page .wave-beat:hover,
+body.agi-x-page .analyst-card:hover,
+body.agi-x-page .supplementary-item:hover,
+body.agi-x-page .tech-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--tone-accent) 46%, var(--line));
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.22);
 }
 
 .panel-meta {

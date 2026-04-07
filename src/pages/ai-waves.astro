@@ -36,6 +36,13 @@ import TransitionSignalChecklist from '../components/TransitionSignalChecklist.a
   :global(body.ai-waves-x-page .site-overlay) {
     background:
       linear-gradient(to right, rgba(255, 255, 255, 0.03), transparent 28%),
-      linear-gradient(to left, rgba(255, 255, 255, 0.03), transparent 28%);
+      linear-gradient(to left, rgba(255, 255, 255, 0.03), transparent 28%),
+      repeating-linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.012) 0,
+        rgba(255, 255, 255, 0.012) 1px,
+        transparent 1px,
+        transparent 28px
+      );
   }
 </style>

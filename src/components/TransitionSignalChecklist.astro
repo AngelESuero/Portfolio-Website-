@@ -14,6 +14,7 @@ const scoringChoices = [0, 1, 2, 3] as const;
       <p class="view-surface-kicker">Weekly tracker</p>
       <h1>Transition Signal Checklist</h1>
       <p class="tsc-dek">A restrained weekly read on whether AI-transition talk is becoming real movement.</p>
+      <p class="tsc-platform-cue">X cue: short checkpoints, weekly receipts, and lane-by-lane signal tracking.</p>
     </div>
 
     <section class="card tsc-overall-card" aria-live="polite">
@@ -642,6 +643,21 @@ const scoringChoices = [0, 1, 2, 3] as const;
       color-mix(in srgb, var(--tone-surface) 88%, transparent);
   }
 
+  :global(body.ai-waves-x-page) .tsc-platform-cue {
+    margin: 0.72rem 0 0;
+    width: fit-content;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 34%, var(--tone-line));
+    border-radius: 999px;
+    padding: 0.28rem 0.66rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+    background:
+      linear-gradient(180deg, rgba(29, 155, 240, 0.18), rgba(29, 155, 240, 0.04)),
+      transparent;
+  }
+
   .tsc-root {
     display: grid;
     gap: 1rem;
@@ -661,6 +677,7 @@ const scoringChoices = [0, 1, 2, 3] as const;
   }
 
   .tsc-dek,
+  .tsc-platform-cue,
   .tsc-context-list,
   .tsc-lane-description,
   .tsc-lane-summary-text {

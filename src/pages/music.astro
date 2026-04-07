@@ -147,6 +147,13 @@ const referenceLinks = [
   { href: MUSIC_URLS.untitledMyFirstBeatTape, label: 'Untitled' },
   { href: VIDEO_URLS.everydayLifeVideo, label: 'Everyday Life video' }
 ];
+
+const rotationQueue = [
+  { title: 'SCRAPS After Heartbreaks', cue: 'archive cut' },
+  { title: 'Now Listening (Vol 4)', cue: 'playlist' },
+  { title: 'Queries (The Beat Tape)', cue: 'untitled lane' },
+  { title: 'Volume 4', cue: 'soundcloud set' }
+];
 ---
 
 <BaseLayout
@@ -169,9 +176,17 @@ const referenceLinks = [
         <a href="#listen">Listen</a>
         <a href="#browse">Browse</a>
       </nav>
+      <ul class="music-hero__queue" aria-label="Current listening rotation">
+        {rotationQueue.map((item) => (
+          <li>
+            <span>{item.title}</span>
+            <small>{item.cue}</small>
+          </li>
+        ))}
+      </ul>
     </header>
 
-    <section class="music-section" id="watch" aria-labelledby="music-watch-heading">
+    <section class="music-section music-section--watch" id="watch" aria-labelledby="music-watch-heading">
       <div class="music-section__head">
         <p class="music-section__kicker">Watch</p>
         <h2 id="music-watch-heading">Moving clips</h2>
@@ -194,7 +209,7 @@ const referenceLinks = [
       </div>
     </section>
 
-    <section class="music-section" id="listen" aria-labelledby="music-listen-heading">
+    <section class="music-section music-section--listen" id="listen" aria-labelledby="music-listen-heading">
       <div class="music-section__head">
         <p class="music-section__kicker">Listen</p>
         <h2 id="music-listen-heading">Audio bites</h2>
@@ -262,7 +277,7 @@ const referenceLinks = [
       </div>
     </section>
 
-    <section class="music-section" id="browse" aria-labelledby="music-browse-heading">
+    <section class="music-section music-section--browse" id="browse" aria-labelledby="music-browse-heading">
       <div class="music-section__head">
         <p class="music-section__kicker">Browse</p>
         <h2 id="music-browse-heading">Photos that keep the ear open</h2>
@@ -387,6 +402,39 @@ const referenceLinks = [
     padding-top: 0.15rem;
   }
 
+  .music-hero__queue {
+    margin: 0.35rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.42rem;
+  }
+
+  .music-hero__queue li {
+    display: grid;
+    gap: 0.1rem;
+    padding: 0.45rem 0.6rem;
+    border-radius: 0.8rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 22%, var(--line2));
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+      color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
+  }
+
+  .music-hero__queue li span {
+    font-size: 0.82rem;
+    line-height: 1.3;
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  }
+
+  .music-hero__queue li small {
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: color-mix(in srgb, var(--tone-accent) 82%, white 18%);
+  }
+
   .music-hero__nav a,
   .music-footer__links a {
     display: inline-flex;
@@ -443,6 +491,18 @@ const referenceLinks = [
     margin-right: 0.42rem;
     color: color-mix(in srgb, var(--tone-accent) 80%, white 20%);
     transform: translateY(-1px);
+  }
+
+  .music-section--watch .music-section__head h2::before {
+    color: #ff6b66;
+  }
+
+  .music-section--listen .music-section__head h2::before {
+    color: #2adf72;
+  }
+
+  .music-section--browse .music-section__head h2::before {
+    color: #a9b7ff;
   }
 
   .music-video-grid {
@@ -525,10 +585,16 @@ const referenceLinks = [
 
   .music-audio-row__source {
     margin: 0;
-    font-size: 0.7rem;
+    display: inline-flex;
+    width: fit-content;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 30%, transparent);
+    border-radius: 999px;
+    padding: 0.18rem 0.48rem;
+    font-size: 0.66rem;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+    background: color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
   }
 
   .music-audio-row__note {
@@ -649,6 +715,10 @@ const referenceLinks = [
   }
 
   @media (max-width: 760px) {
+    .music-hero__queue {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .music-photo-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }

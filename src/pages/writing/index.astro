@@ -87,6 +87,7 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
         This page is now built like a working surface first. Draft in the desk, save each note straight to your computer,
         and keep the published archive below.
       </p>
+      <p class="writing-page-header__cue">Substack cue: readable measure, editorial rhythm, longform first.</p>
     </div>
 
     <div class="writing-page-header__meta">
@@ -362,6 +363,21 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
     line-height: 1.78;
   }
 
+  .writing-page-header__cue {
+    margin: 0.75rem 0 0;
+    width: fit-content;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
+    border-radius: 999px;
+    padding: 0.32rem 0.72rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.35)),
+      color-mix(in srgb, var(--tone-surface) 84%, transparent);
+  }
+
   .writing-page-header__meta {
     display: flex;
     flex-wrap: wrap;
@@ -438,6 +454,7 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
   }
 
   .writing-document-card {
+    position: relative;
     border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
     border-radius: 0.95rem;
     background:
@@ -447,6 +464,18 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
     display: grid;
     gap: 0.85rem;
     box-shadow: 0 14px 28px rgba(72, 59, 45, 0.08);
+  }
+
+  .writing-document-card::before {
+    content: '';
+    position: absolute;
+    left: 0.62rem;
+    top: 0.62rem;
+    bottom: 0.62rem;
+    width: 2px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--tone-accent) 64%, transparent);
+    opacity: 0.72;
   }
 
   .writing-document-card__meta {
@@ -593,6 +622,7 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
   }
 
   .writing-entry-row {
+    position: relative;
     display: grid;
     gap: 0.9rem;
     padding: 1rem;
@@ -605,6 +635,25 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
         rgba(255, 255, 255, 0.24)
       );
     box-shadow: 0 14px 30px rgba(72, 59, 45, 0.09);
+    transition: border-color 170ms ease, transform 170ms ease, box-shadow 170ms ease;
+  }
+
+  .writing-entry-row::before {
+    content: '';
+    position: absolute;
+    left: 0.58rem;
+    top: 0.72rem;
+    bottom: 0.72rem;
+    width: 2px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--tone-accent) 58%, transparent);
+    opacity: 0.66;
+  }
+
+  .writing-entry-row:hover {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--tone-accent) 44%, var(--line2));
+    box-shadow: 0 20px 36px rgba(72, 59, 45, 0.12);
   }
 
   .writing-entry-row__meta {
@@ -632,6 +681,7 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
   .writing-entry-row__body {
     display: grid;
     gap: 0.55rem;
+    padding-left: 0.2rem;
   }
 
   .writing-entry-row__body h3,
