@@ -1,0 +1,274 @@
+---
+type ResumeRoute = 'writing' | 'archive' | 'music' | 'theater';
+
+interface Props {
+  current: ResumeRoute;
+  heading?: string;
+  className?: string;
+}
+
+const { current, heading = 'Resume where you paused', className = '' } = Astro.props as Props;
+
+const routes: Array<{ id: ResumeRoute; label: string; href: string }> = [
+  { id: 'writing', label: 'Writing', href: '/writing' },
+  { id: 'archive', label: 'Archive', href: '/archive' },
+  { id: 'music', label: 'Music', href: '/music' },
+  { id: 'theater', label: 'Theater', href: '/theater' }
+];
+
+const visibleRoutes = routes.filter((route) => route.id !== current);
+---
+
+<section class:list={['cross-resume', className]} data-cross-resume data-current-route={current} aria-labelledby="cross-resume-heading">
+  <header class="cross-resume__head">
+    <p class="cross-resume__kicker">Revisit paths</p>
+    <h2 id="cross-resume-heading">{heading}</h2>
+    <p>Each route remembers your last context and restores it when available.</p>
+  </header>
+
+  <ul class="cross-resume__grid">
+    {visibleRoutes.map((route) => (
+      <li>
+        <a href={route.href} data-resume-target={route.id} data-resume-state="default">
+          <span class="cross-resume__label">{route.label}</span>
+          <small data-resume-detail>Open {route.label.toLowerCase()} overview.</small>
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <script is:inline>
+    (() => {
+      const sections = Array.from(document.querySelectorAll('[data-cross-resume]')).filter(
+        (node) => node instanceof HTMLElement
+      );
+      if (!sections.length) return;
+
+      const mediumLabels = {
+        writing: 'Writing',
+        music: 'Music',
+        image: 'Image',
+        note: 'Note',
+        proposal: 'Proposal',
+        video: 'Video'
+      };
+      const libraryLabels = {
+        recent: 'Recent archive drops',
+        scraps: 'Scraps and rough cuts',
+        tapes: 'Tape and set containers'
+      };
+      const validSlug = (value) =>
+        typeof value === 'string' && /^[a-z0-9-]+$/i.test(value) ? value : '';
+      const parseJson = (value) => {
+        try {
+          return JSON.parse(value);
+        } catch {
+          return null;
+        }
+      };
+
+      const readStoredState = () => {
+        try {
+          const writingTag = window.localStorage.getItem('writing-tag-filter') || '';
+          const archiveFilters = parseJson(window.localStorage.getItem('archive-filter-state') || '{}') || {};
+          const musicLibrary = window.localStorage.getItem('music-library-view-v1') || '';
+          const theaterEntry = validSlug(window.localStorage.getItem('theater-last-entry-v1') || '');
+          return {
+            writingTag: writingTag && writingTag !== 'all' ? writingTag : '',
+            archiveMedium:
+              typeof archiveFilters.medium === 'string' && archiveFilters.medium !== 'all'
+                ? archiveFilters.medium
+                : '',
+            archiveTag:
+              typeof archiveFilters.tag === 'string' && archiveFilters.tag !== 'all'
+                ? archiveFilters.tag
+                : '',
+            musicLibrary: musicLibrary && musicLibrary !== 'all' ? musicLibrary : '',
+            theaterEntry
+          };
+        } catch {
+          return {
+            writingTag: '',
+            archiveMedium: '',
+            archiveTag: '',
+            musicLibrary: '',
+            theaterEntry: ''
+          };
+        }
+      };
+
+      const state = readStoredState();
+
+      const buildResume = (target) => {
+        if (target === 'writing') {
+          if (state.writingTag) {
+            return {
+              href: `/writing?tag=${encodeURIComponent(state.writingTag)}`,
+              detail: `Resume writing on #${state.writingTag}.`,
+              restored: true
+            };
+          }
+          return { href: '/writing', detail: 'Open writing overview.', restored: false };
+        }
+
+        if (target === 'archive') {
+          const params = new URLSearchParams();
+          if (state.archiveMedium) params.set('medium', state.archiveMedium);
+          if (state.archiveTag) params.set('tag', state.archiveTag);
+
+          if (params.toString()) {
+            const pieces = [];
+            if (state.archiveMedium) {
+              pieces.push(mediumLabels[state.archiveMedium] || state.archiveMedium);
+            }
+            if (state.archiveTag) {
+              pieces.push(`#${state.archiveTag}`);
+            }
+            return {
+              href: `/archive?${params.toString()}`,
+              detail: `Resume archive in ${pieces.join(' + ')}.`,
+              restored: true
+            };
+          }
+          return { href: '/archive', detail: 'Open archive overview.', restored: false };
+        }
+
+        if (target === 'music') {
+          if (state.musicLibrary) {
+            return {
+              href: `/music?library=${encodeURIComponent(state.musicLibrary)}`,
+              detail: `Resume music in ${libraryLabels[state.musicLibrary] || state.musicLibrary}.`,
+              restored: true
+            };
+          }
+          return { href: '/music', detail: 'Open music overview.', restored: false };
+        }
+
+        if (target === 'theater') {
+          if (state.theaterEntry) {
+            return {
+              href: `/theater?entry=${encodeURIComponent(state.theaterEntry)}#stage`,
+              detail: 'Resume theater with your last selected queue card.',
+              restored: true
+            };
+          }
+          return { href: '/theater', detail: 'Open theater overview.', restored: false };
+        }
+
+        return { href: '/', detail: 'Open home.', restored: false };
+      };
+
+      sections.forEach((section) => {
+        const links = Array.from(section.querySelectorAll('[data-resume-target]')).filter(
+          (node) => node instanceof HTMLAnchorElement
+        );
+        links.forEach((link) => {
+          const target = link.dataset.resumeTarget || '';
+          const detailNode = link.querySelector('[data-resume-detail]');
+          const next = buildResume(target);
+          link.href = next.href;
+          link.dataset.resumeState = next.restored ? 'restored' : 'default';
+          if (detailNode instanceof HTMLElement) {
+            detailNode.textContent = next.detail;
+          }
+        });
+      });
+    })();
+  </script>
+</section>
+
+<style>
+  .cross-resume {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
+    border-radius: 1.15rem;
+    padding: 0.95rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015)),
+      color-mix(in srgb, var(--tone-surface) 90%, transparent);
+    box-shadow:
+      0 14px 26px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  .cross-resume__head {
+    display: grid;
+    gap: 0.28rem;
+  }
+
+  .cross-resume__head h2,
+  .cross-resume__head p {
+    margin: 0;
+  }
+
+  .cross-resume__head h2 {
+    font-size: clamp(1.05rem, 1.8vw, 1.34rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .cross-resume__head > p {
+    font-size: 0.9rem;
+    line-height: 1.58;
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  }
+
+  .cross-resume__kicker {
+    margin: 0;
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: color-mix(in srgb, var(--tone-accent) 72%, var(--tone-text) 28%);
+  }
+
+  .cross-resume__grid {
+    list-style: none;
+    margin: 0.82rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.52rem;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  }
+
+  .cross-resume__grid li {
+    min-width: 0;
+  }
+
+  .cross-resume__grid a {
+    display: grid;
+    gap: 0.18rem;
+    text-decoration: none;
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 16%, var(--line2));
+    border-radius: 0.86rem;
+    padding: 0.6rem 0.66rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.01)),
+      color-mix(in srgb, var(--tone-surface-strong) 90%, transparent);
+    transition: transform 150ms ease, border-color 150ms ease, background 150ms ease;
+  }
+
+  .cross-resume__grid a:hover,
+  .cross-resume__grid a:focus-visible {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--tone-accent) 46%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-accent) 18%, transparent), transparent 70%),
+      color-mix(in srgb, var(--tone-surface-strong) 92%, transparent);
+  }
+
+  .cross-resume__grid a[data-resume-state='restored'] {
+    border-color: color-mix(in srgb, var(--tone-accent) 44%, var(--line2));
+  }
+
+  .cross-resume__label {
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.32;
+  }
+
+  .cross-resume__grid small {
+    font-size: 0.8rem;
+    line-height: 1.46;
+    color: color-mix(in srgb, var(--tone-text) 74%, var(--tone-muted) 26%);
+  }
+</style>

@@ -152,6 +152,29 @@ const liveReferences = [
     tag: 'Theory'
   }
 ] as const;
+const parseTimestamp = (value: string | null | undefined) => {
+  if (!value) return 0;
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.valueOf()) ? 0 : parsed.valueOf();
+};
+const itemsByFreshness = [...items].sort((left, right) => parseTimestamp(right.publishedAt) - parseTimestamp(left.publishedAt));
+const currentSignals = itemsByFreshness.filter((item) => item.kind === 'signal').slice(0, 6);
+const majorShifts = itemsByFreshness
+  .filter((item) => item.kind === 'thesis' || item.confidence === 'high')
+  .slice(0, 6);
+const backgroundContext = waveEntries
+  .map(({ wave, items: waveItems }) => {
+    const thesis = waveItems.find((item) => item.kind === 'thesis') ?? waveItems[0];
+    if (!thesis) return null;
+    return {
+      waveId: wave.id,
+      waveTitle: wave.title,
+      headline: thesis.headline,
+      summary: thesis.public?.summary || thesis.summary || ''
+    };
+  })
+  .filter((item): item is { waveId: string; waveTitle: string; headline: string; summary: string } => Boolean(item));
+const analystDomainOptions = ['all', ...new Set(items.map((item) => String(item.domain || '')).filter(Boolean))];
 ---
 
 <BaseLayout
@@ -215,7 +238,7 @@ const liveReferences = [
         <div class="wave-stack">
           {waveEntries.map(({ wave, items: waveItems }) => {
             return (
-              <article class="wave-card" data-wave={wave.id}>
+              <article class="wave-card" data-wave={wave.id} id={`wave-${wave.id}`}>
                 <div class="wave-range">
                   <div class="wave-range-track"></div>
                   <div class="wave-range-fill" style={buildWaveRangeStyle(wave)}></div>
@@ -270,6 +293,89 @@ const liveReferences = [
           </p>
         </header>
 
+        <section class="signal-desk" aria-labelledby="signal-desk-heading">
+          <header class="section-header">
+            <div>
+              <p class="wave-kicker">Monitoring desk</p>
+              <h3 id="signal-desk-heading">Current signals, major shifts, and background context</h3>
+            </div>
+            <p>Manual lanes instead of a velocity feed.</p>
+          </header>
+          <div class="signal-desk__grid">
+            <article class="signal-desk__lane">
+              <h4>Current signals</h4>
+              <ul>
+                {currentSignals.map((item) => (
+                  <li>
+                    <a href={item.url} target={item.url.startsWith('/') ? undefined : '_blank'} rel={item.url.startsWith('/') ? undefined : 'noreferrer'}>
+                      {item.headline}
+                    </a>
+                    <span>{formatDate(item.publishedAt)}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+            <article class="signal-desk__lane">
+              <h4>Major shifts</h4>
+              <ul>
+                {majorShifts.map((item) => (
+                  <li>
+                    <a href={item.url} target={item.url.startsWith('/') ? undefined : '_blank'} rel={item.url.startsWith('/') ? undefined : 'noreferrer'}>
+                      {item.headline}
+                    </a>
+                    <span>{domainLabels[item.domain]} · {confidenceLabels[item.confidence]}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+            <article class="signal-desk__lane">
+              <h4>Background context</h4>
+              <ul>
+                {backgroundContext.map((item) => (
+                  <li>
+                    <a href={`#analyst-wave-${item.waveId}`}>{item.waveTitle}</a>
+                    <span>{item.headline}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="analyst-controls" aria-label="Analyst lane filters">
+          <div class="chip-row">
+            <button type="button" class="chip analyst-filter is-active" data-analyst-filter="kind" data-analyst-value="all" aria-pressed="true">All entries</button>
+            <button type="button" class="chip analyst-filter" data-analyst-filter="kind" data-analyst-value="signal" aria-pressed="false">Signals</button>
+            <button type="button" class="chip analyst-filter" data-analyst-filter="kind" data-analyst-value="thesis" aria-pressed="false">Theses</button>
+          </div>
+          <div class="chip-row">
+            {analystDomainOptions.map((domain) => (
+              <button
+                type="button"
+                class:list={['chip', 'analyst-filter', domain === 'all' && 'is-active']}
+                data-analyst-filter="domain"
+                data-analyst-value={domain}
+                aria-pressed={domain === 'all' ? 'true' : 'false'}
+              >
+                {domain === 'all' ? 'All lanes' : domainLabels[domain] ?? domain}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section class="saved-signal-lane" aria-labelledby="saved-signal-heading">
+          <header class="section-header">
+            <div>
+              <p class="wave-kicker">Saved context</p>
+              <h3 id="saved-signal-heading">Bookmarked signals and theses</h3>
+            </div>
+            <p>Manual, local, and durable on this device.</p>
+          </header>
+          <ol class="saved-signal-list" id="saved-signal-list">
+            <li class="saved-signal-empty">No saved signals yet.</li>
+          </ol>
+        </section>
+
         <section class="supplementary-feed" aria-labelledby="live-reference-heading">
           <header class="section-header">
             <div>
@@ -300,7 +406,7 @@ const liveReferences = [
 
         {waveEntries.map(({ wave, items: waveItems }) => {
           return (
-            <section class="analyst-section" data-wave={wave.id}>
+            <section class="analyst-section" data-wave={wave.id} id={`analyst-wave-${wave.id}`}>
               <header class="section-header">
                 <div>
                   <p class="wave-kicker">{wave.timebox}</p>
@@ -309,12 +415,33 @@ const liveReferences = [
                 <p>{wave.analystFocus}</p>
               </header>
 
-              <div class="analyst-grid">
-                {waveItems.map((item) => (
-                  <article class="analyst-card" data-kind={item.kind} data-confidence={item.confidence}>
+                <div class="analyst-grid">
+                  {waveItems.map((item) => (
+                  <article
+                    class="analyst-card"
+                    data-kind={item.kind}
+                    data-confidence={item.confidence}
+                    data-domain={item.domain}
+                    data-signal-id={`${wave.id}:${item.id || item.headline}`}
+                  >
                     <div class="analyst-card-topline">
                       <span>{item.timingLabel ?? String(item.year)}</span>
-                      <span class="freshness-badge">{getFreshnessLabel(item.publishedAt)}</span>
+                      <div class="analyst-card-actions">
+                        <span class="freshness-badge">{getFreshnessLabel(item.publishedAt)}</span>
+                        <button
+                          type="button"
+                          class="analyst-save-button"
+                          data-save-signal={`${wave.id}:${item.id || item.headline}`}
+                          data-save-title={item.headline}
+                          data-save-url={item.url}
+                          data-save-domain-label={domainLabels[item.domain] ?? item.domain}
+                          data-save-wave-title={wave.title}
+                          data-save-date-label={formatDate(item.publishedAt)}
+                          aria-pressed="false"
+                        >
+                          Save
+                        </button>
+                      </div>
                     </div>
                     <h4>{item.headline}</h4>
                     <div class="chip-row">
@@ -479,6 +606,7 @@ const liveReferences = [
   <script is:inline>
     (() => {
       const MODE_KEY = 'agi-view-mode';
+      const SAVED_SIGNALS_KEY = 'agi-saved-signals-v1';
       const root = document.getElementById('agi-monitor');
       if (!root) return;
 
@@ -500,6 +628,13 @@ const liveReferences = [
         try {
           localStorage.setItem(MODE_KEY, mode);
         } catch {}
+        const url = new URL(window.location.href);
+        if (mode === 'public') {
+          url.searchParams.delete('view');
+        } else {
+          url.searchParams.set('view', mode);
+        }
+        window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
       };
 
       document.querySelectorAll('.level-btn').forEach((button) => {
@@ -523,12 +658,179 @@ const liveReferences = [
         if (event.key === 'e' || event.key === 'E') setMode('engineer');
       });
 
+      const analystCards = Array.from(document.querySelectorAll('.analyst-card'));
+      const analystSections = Array.from(document.querySelectorAll('.analyst-section'));
+      const analystFilterButtons = Array.from(document.querySelectorAll('.analyst-filter'));
+      const saveSignalButtons = Array.from(document.querySelectorAll('[data-save-signal]'));
+      const savedSignalList = document.getElementById('saved-signal-list');
+      let analystFilters = { kind: 'all', domain: 'all' };
+      const escapeHtml = (value) =>
+        String(value || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      const readSavedSignals = () => {
+        try {
+          const parsed = JSON.parse(window.localStorage.getItem(SAVED_SIGNALS_KEY) || '[]');
+          if (!Array.isArray(parsed)) return [];
+          return parsed.filter((item) => item && typeof item.id === 'string' && typeof item.title === 'string');
+        } catch {
+          return [];
+        }
+      };
+      let savedSignals = readSavedSignals();
+      let savedSignalIds = new Set(savedSignals.map((item) => item.id));
+      const writeSavedSignals = () => {
+        try {
+          window.localStorage.setItem(SAVED_SIGNALS_KEY, JSON.stringify(savedSignals));
+        } catch {}
+      };
+      const setSaveButtonState = (button, isSaved) => {
+        if (!(button instanceof HTMLButtonElement)) return;
+        button.classList.toggle('is-saved', isSaved);
+        button.setAttribute('aria-pressed', String(isSaved));
+        button.textContent = isSaved ? 'Saved' : 'Save';
+        const card = button.closest('.analyst-card');
+        if (card instanceof HTMLElement) card.classList.toggle('is-saved', isSaved);
+      };
+      const syncSaveButtons = () => {
+        saveSignalButtons.forEach((button) => {
+          if (!(button instanceof HTMLButtonElement)) return;
+          const id = button.dataset.saveSignal || '';
+          setSaveButtonState(button, id ? savedSignalIds.has(id) : false);
+        });
+      };
+      const renderSavedSignals = () => {
+        if (!(savedSignalList instanceof HTMLOListElement)) return;
+        if (savedSignals.length === 0) {
+          savedSignalList.innerHTML = '<li class="saved-signal-empty">No saved signals yet.</li>';
+          return;
+        }
+
+        savedSignalList.innerHTML = savedSignals
+          .map((signal) => {
+            const href = String(signal.url || '').trim();
+            const external = /^https?:\/\//i.test(href);
+            return `
+              <li class="saved-signal-item">
+                <div>
+                  <p class="saved-signal-item__meta">${escapeHtml(signal.domain)} · ${escapeHtml(signal.wave)} · ${escapeHtml(signal.date)}</p>
+                  <a href="${escapeHtml(href)}"${external ? ' target="_blank" rel="noreferrer"' : ''}>${escapeHtml(signal.title)}</a>
+                </div>
+                <button type="button" class="saved-signal-remove" data-remove-signal="${escapeHtml(signal.id)}">Remove</button>
+              </li>
+            `;
+          })
+          .join('');
+      };
+      const syncAnalystButtons = () => {
+        analystFilterButtons.forEach((button) => {
+          if (!(button instanceof HTMLButtonElement)) return;
+          const filter = button.dataset.analystFilter;
+          const value = button.dataset.analystValue || 'all';
+          const active = filter && analystFilters[filter] === value;
+          button.classList.toggle('is-active', Boolean(active));
+          button.setAttribute('aria-pressed', String(Boolean(active)));
+        });
+      };
+      const applyAnalystFilters = () => {
+        analystCards.forEach((card) => {
+          if (!(card instanceof HTMLElement)) return;
+          const kind = card.dataset.kind || 'signal';
+          const domain = card.dataset.domain || '';
+          const kindMatch = analystFilters.kind === 'all' || kind === analystFilters.kind;
+          const domainMatch = analystFilters.domain === 'all' || domain === analystFilters.domain;
+          card.hidden = !(kindMatch && domainMatch);
+        });
+
+        analystSections.forEach((section) => {
+          if (!(section instanceof HTMLElement)) return;
+          const sectionCards = Array.from(section.querySelectorAll('.analyst-card'));
+          const hasVisible = sectionCards.some((card) => !(card instanceof HTMLElement) ? false : !card.hidden);
+          section.hidden = !hasVisible;
+        });
+      };
+
+      analystFilterButtons.forEach((button) => {
+        if (!(button instanceof HTMLButtonElement)) return;
+        button.addEventListener('click', () => {
+          const filter = button.dataset.analystFilter;
+          const value = button.dataset.analystValue || 'all';
+          if (!filter || !(filter in analystFilters)) return;
+          analystFilters = {
+            ...analystFilters,
+            [filter]: value
+          };
+          syncAnalystButtons();
+          applyAnalystFilters();
+        });
+      });
+
+      saveSignalButtons.forEach((button) => {
+        if (!(button instanceof HTMLButtonElement)) return;
+        button.addEventListener('click', () => {
+          const id = button.dataset.saveSignal || '';
+          if (!id) return;
+
+          if (savedSignalIds.has(id)) {
+            savedSignals = savedSignals.filter((item) => item.id !== id);
+            savedSignalIds.delete(id);
+          } else {
+            savedSignals = [
+              {
+                id,
+                title: button.dataset.saveTitle || 'Untitled signal',
+                url: button.dataset.saveUrl || '#',
+                domain: button.dataset.saveDomainLabel || 'Uncategorized',
+                wave: button.dataset.saveWaveTitle || 'Unknown wave',
+                date: button.dataset.saveDateLabel || 'Undated'
+              },
+              ...savedSignals.filter((item) => item.id !== id)
+            ];
+            savedSignalIds.add(id);
+          }
+
+          writeSavedSignals();
+          syncSaveButtons();
+          renderSavedSignals();
+        });
+      });
+
+      if (savedSignalList instanceof HTMLOListElement) {
+        savedSignalList.addEventListener('click', (event) => {
+          const target = event.target;
+          if (!(target instanceof HTMLElement)) return;
+          const removeButton = target.closest('[data-remove-signal]');
+          if (!(removeButton instanceof HTMLButtonElement)) return;
+          const id = removeButton.dataset.removeSignal || '';
+          if (!id) return;
+
+          savedSignals = savedSignals.filter((item) => item.id !== id);
+          savedSignalIds.delete(id);
+          writeSavedSignals();
+          syncSaveButtons();
+          renderSavedSignals();
+        });
+      }
+
       let initialMode = 'public';
+      const queryMode = new URLSearchParams(window.location.search).get('view');
+      if (queryMode && validModes.includes(queryMode)) {
+        initialMode = queryMode;
+      }
       try {
-        const saved = localStorage.getItem(MODE_KEY);
-        if (saved && validModes.includes(saved)) initialMode = saved;
+        if (!queryMode) {
+          const saved = localStorage.getItem(MODE_KEY);
+          if (saved && validModes.includes(saved)) initialMode = saved;
+        }
       } catch {}
 
+      syncAnalystButtons();
+      syncSaveButtons();
+      renderSavedSignals();
+      applyAnalystFilters();
       setMode(initialMode);
     })();
   </script>
@@ -558,5 +860,75 @@ const liveReferences = [
       linear-gradient(to right, rgba(255, 255, 255, 0.03), transparent 26%),
       linear-gradient(to left, rgba(255, 255, 255, 0.03), transparent 26%),
       radial-gradient(54rem 30rem at 84% 2%, rgba(29, 155, 240, 0.12), transparent 64%);
+  }
+
+  .signal-desk {
+    margin-bottom: 1rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 24%, var(--line2));
+    border-radius: 1rem;
+    padding: 0.95rem 1rem;
+    background:
+      linear-gradient(180deg, rgba(29, 155, 240, 0.12), rgba(29, 155, 240, 0.02)),
+      color-mix(in srgb, var(--tone-surface) 88%, transparent);
+  }
+
+  .signal-desk__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 0.75rem;
+  }
+
+  .signal-desk__lane {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 16%, var(--line2));
+    border-radius: 0.82rem;
+    padding: 0.65rem 0.7rem;
+    background: color-mix(in srgb, var(--tone-surface-strong) 76%, transparent);
+  }
+
+  .signal-desk__lane h4 {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.35;
+  }
+
+  .signal-desk__lane ul {
+    margin: 0.55rem 0 0;
+    padding-left: 1rem;
+    display: grid;
+    gap: 0.36rem;
+  }
+
+  .signal-desk__lane li {
+    display: grid;
+    gap: 0.14rem;
+  }
+
+  .signal-desk__lane li a {
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+    text-decoration: none;
+  }
+
+  .signal-desk__lane li span {
+    font-size: 0.8rem;
+    color: color-mix(in srgb, var(--tone-text) 68%, var(--tone-muted) 32%);
+  }
+
+  .analyst-controls {
+    margin-bottom: 1rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .analyst-filter {
+    cursor: pointer;
+    transition: border-color 160ms ease, background 160ms ease, transform 140ms ease;
+  }
+
+  .analyst-filter.is-active {
+    border-color: color-mix(in srgb, var(--tone-accent) 68%, var(--line2));
+    background:
+      linear-gradient(180deg, rgba(29, 155, 240, 0.26), rgba(29, 155, 240, 0.1)),
+      color-mix(in srgb, var(--tone-surface-strong) 80%, transparent);
+    transform: translateY(-1px);
   }
 </style>

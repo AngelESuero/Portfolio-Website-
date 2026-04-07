@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import VoiceExcerpt from '../../components/VoiceExcerpt.astro';
+import CrossRouteResume from '../../components/CrossRouteResume.astro';
 import WritingWorkbench from '../../../app/components/WritingWorkbench';
 import { formatLongUtcDate, formatShortUtcDate } from '../../lib/date-formatting';
 import { isPostReady } from '../../lib/post-readiness';
@@ -29,6 +30,34 @@ const latestPublished = readyPosts.slice(0, 6).map((post) => ({
   voice: getContentVoiceExcerpt(post, 160),
   tags: post.data.tags
 }));
+const publicationLead = readyPosts[0] ?? posts[0] ?? null;
+const publicationLeadReady = publicationLead ? isPostReady(publicationLead) : false;
+const publicationLeadExcerpt = publicationLead
+  ? publicationLeadReady
+    ? getContentVoiceExcerpt(publicationLead, 240)
+    : publicationLead.data.summary
+  : '';
+const latestRun = (readyPosts.length > 1 ? readyPosts.slice(1, 6) : posts.slice(1, 6)).map((post) => ({
+  title: post.data.title,
+  href: `/writing/${post.slug}`,
+  date: formatShortUtcDate(post.data.date),
+  ready: isPostReady(post)
+}));
+const threadGroups = allTags
+  .map((tag) => {
+    const matches = readyPosts.filter((post) => post.data.tags.map((value) => value.trim().toLowerCase()).includes(tag));
+    return {
+      tag,
+      count: matches.length,
+      posts: matches.slice(0, 3).map((post) => ({
+        title: post.data.title,
+        href: `/writing/${post.slug}`
+      }))
+    };
+  })
+  .filter((group) => group.count > 1)
+  .sort((left, right) => right.count - left.count || left.tag.localeCompare(right.tag))
+  .slice(0, 4);
 
 const getGoogleDocPreviewUrl = (value: string): string | null => {
   try {
@@ -102,6 +131,61 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
   <section class="writing-desk-shell">
     <WritingWorkbench client:only="react" published={latestPublished} totalPublished={readyPosts.length} />
   </section>
+
+  {publicationLead && (
+    <section class="writing-publication" aria-labelledby="writing-publication-heading">
+      <article class="writing-publication__lead">
+        <p class="writing-publication__kicker">Lead piece</p>
+        <h2 id="writing-publication-heading" class="font-display text-3xl">
+          <a href={`/writing/${publicationLead.slug}`}>{publicationLead.data.title}</a>
+        </h2>
+        <p class="writing-publication__summary">{publicationLeadExcerpt}</p>
+        <div class="writing-publication__actions">
+          <a href={`/writing/${publicationLead.slug}`}>{publicationLeadReady ? 'Read lead piece' : 'Open draft entry'}</a>
+          <a href="/writing#writing-list">Open full publication archive</a>
+        </div>
+      </article>
+
+      <aside class="writing-publication__rail">
+        <section class="writing-publication__latest" aria-label="Latest writing sequence">
+          <p class="writing-publication__kicker">Latest run</p>
+          {latestRun.length === 0 ? (
+            <p class="writing-publication__empty">No adjacent entries yet.</p>
+          ) : (
+            <ol class="writing-publication__latest-list">
+              {latestRun.map((post) => (
+                <li>
+                  <a href={post.href}>{post.title}</a>
+                  <span>{post.date} · {post.ready ? 'Published' : 'Draft'}</span>
+                </li>
+              ))}
+            </ol>
+          )}
+        </section>
+
+        {threadGroups.length > 0 && (
+          <section class="writing-publication__threads" aria-label="Threads and series">
+            <p class="writing-publication__kicker">Threads</p>
+            <div class="writing-publication__thread-list">
+              {threadGroups.map((group) => (
+                <article class="writing-publication__thread">
+                  <header>
+                    <button type="button" class="writing-thread-jump" data-target-filter={group.tag}>#{group.tag}</button>
+                    <span>{group.count} pieces</span>
+                  </header>
+                  <ul>
+                    {group.posts.map((post) => (
+                      <li><a href={post.href}>{post.title}</a></li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+      </aside>
+    </section>
+  )}
 
   <section class="writing-documents" aria-labelledby="writing-documents-heading">
     <div class="writing-documents__header">
@@ -246,8 +330,11 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
     )}
   </section>
 
+  <CrossRouteResume current="writing" className="writing-resume" heading="Continue from your other routes" />
+
   <script is:inline>
     (() => {
+      const FILTER_KEY = 'writing-tag-filter';
       const filterButtons = Array.from(document.querySelectorAll('.writing-filter'));
       const items = Array.from(document.querySelectorAll('.writing-item'));
       const emptyState = document.getElementById('writing-empty-state');
@@ -255,6 +342,13 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
       if (!filterButtons.length || !items.length || !results) return;
 
       const label = (count) => `${count} ${count === 1 ? 'entry' : 'entries'}`;
+      const validFilters = new Set(
+        filterButtons
+          .map((button) => button.getAttribute('data-filter') || 'all')
+          .filter(Boolean)
+      );
+      const resolveFilter = (candidate) =>
+        candidate && validFilters.has(candidate) ? candidate : 'all';
 
       const setActive = (activeFilter) => {
         filterButtons.forEach((candidate) => {
@@ -262,6 +356,22 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
           candidate.classList.toggle('is-active', active);
           candidate.setAttribute('aria-pressed', String(active));
         });
+      };
+
+      const syncQuery = (filter) => {
+        const url = new URL(window.location.href);
+        if (filter === 'all') {
+          url.searchParams.delete('tag');
+        } else {
+          url.searchParams.set('tag', filter);
+        }
+        window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+      };
+
+      const persistFilter = (filter) => {
+        try {
+          window.localStorage.setItem(FILTER_KEY, filter);
+        } catch {}
       };
 
       const applyFilter = (filter) => {
@@ -276,23 +386,49 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
         results.textContent = label(visibleCount);
         if (emptyState) emptyState.hidden = visibleCount !== 0;
       };
+      const setFilter = (filter) => {
+        const nextFilter = resolveFilter(filter || 'all');
+        setActive(nextFilter);
+        applyFilter(nextFilter);
+        persistFilter(nextFilter);
+        syncQuery(nextFilter);
+      };
 
       filterButtons.forEach((button) => {
         button.addEventListener('click', () => {
-          const filter = button.getAttribute('data-filter') || 'all';
-          setActive(filter);
-          applyFilter(filter);
+          setFilter(button.getAttribute('data-filter') || 'all');
         });
       });
 
-      setActive('all');
-      applyFilter('all');
+      document.querySelectorAll('[data-target-filter]').forEach((button) => {
+        if (!(button instanceof HTMLButtonElement)) return;
+        button.addEventListener('click', () => {
+          const nextFilter = button.getAttribute('data-target-filter') || 'all';
+          setFilter(nextFilter);
+          const target = document.getElementById('writing-list');
+          if (target instanceof HTMLElement) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+
+      let initialFilter = resolveFilter(new URLSearchParams(window.location.search).get('tag') || '');
+      if (initialFilter === 'all') {
+        try {
+          initialFilter = resolveFilter(window.localStorage.getItem(FILTER_KEY) || '');
+        } catch {}
+      }
+      setFilter(initialFilter);
     })();
   </script>
 </BaseLayout>
 
 <style>
   :global(body.writing-workbench-page[data-theme='writing']) {
+    color: var(--tone-text);
+  }
+
+  :global(.light body.writing-workbench-page[data-theme='writing']) {
     --tone-bg: #f5f2ea;
     --tone-bg-deep: #ece7dc;
     --tone-surface: rgba(255, 253, 248, 0.96);
@@ -307,24 +443,45 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
       radial-gradient(40rem 22rem at 12% 7%, rgba(255, 124, 51, 0.12), transparent 70%),
       radial-gradient(34rem 18rem at 88% 10%, rgba(225, 196, 143, 0.11), transparent 72%),
       linear-gradient(180deg, #f8f4eb 0%, #f2ede2 42%, #ece6da 100%);
-    color: var(--tone-text);
+  }
+
+  :global(.dark body.writing-workbench-page[data-theme='writing']) {
+    --tone-bg: #151210;
+    --tone-bg-deep: #0f0c0a;
+    --tone-surface: rgba(32, 27, 23, 0.94);
+    --tone-surface-strong: rgba(40, 33, 27, 0.98);
+    --tone-text: rgba(246, 238, 229, 0.97);
+    --tone-muted: rgba(217, 199, 177, 0.9);
+    --tone-line: rgba(226, 196, 156, 0.22);
+    --line2: rgba(226, 196, 156, 0.16);
+    --tone-accent: #cf8a49;
+    --tone-accent-glow: #f0bc84;
+    background:
+      radial-gradient(40rem 24rem at 12% 6%, rgba(207, 138, 73, 0.2), transparent 72%),
+      radial-gradient(34rem 18rem at 88% 8%, rgba(121, 92, 55, 0.2), transparent 72%),
+      linear-gradient(180deg, #14110f 0%, #120f0d 45%, #0f0c0a 100%);
   }
 
   :global(body.writing-workbench-page .site-overlay) {
     background:
-      linear-gradient(to right, rgba(255, 255, 255, 0.07), transparent 26%),
-      linear-gradient(to left, rgba(119, 92, 62, 0.04), transparent 38%),
-      radial-gradient(54rem 30rem at 18% 4%, rgba(255, 124, 51, 0.08), transparent 66%);
+      linear-gradient(to right, rgba(255, 255, 255, 0.06), transparent 26%),
+      linear-gradient(to left, rgba(119, 92, 62, 0.08), transparent 38%),
+      radial-gradient(54rem 30rem at 18% 4%, rgba(255, 124, 51, 0.1), transparent 66%);
   }
 
   .writing-page-header,
   .writing-desk-shell,
   .writing-documents,
-  .writing-archive {
-    max-width: 1440px;
+  .writing-archive,
+  .writing-resume {
+    max-width: 1320px;
     margin: 0 auto;
     padding-left: 1.25rem;
     padding-right: 1.25rem;
+  }
+
+  .writing-resume {
+    margin-top: 1.1rem;
   }
 
   .writing-page-header {
@@ -336,13 +493,19 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
 
   .writing-page-header__copy {
     max-width: 72ch;
+    padding: 1rem 1.05rem;
+    border-radius: 1.15rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 16%, var(--line2));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone-surface) 80%, transparent), color-mix(in srgb, var(--tone-surface) 58%, transparent));
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
   }
 
   .writing-page-header__kicker {
     margin: 0 0 0.45rem;
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     text-transform: uppercase;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.12em;
     color: var(--tone-accent-glow);
   }
 
@@ -353,13 +516,14 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
   .writing-entry-row h3 {
     font-family: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
     letter-spacing: -0.02em;
+    color: color-mix(in srgb, var(--tone-text) 92%, var(--tone-muted) 8%);
   }
 
   .writing-page-header__dek {
     margin: 0.85rem 0 0;
     max-width: 62ch;
     font-size: 1.02rem;
-    color: var(--tone-muted);
+    color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
     line-height: 1.78;
   }
 
@@ -369,9 +533,9 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
     border: 1px solid color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
     border-radius: 999px;
     padding: 0.32rem 0.72rem;
-    font-size: 0.72rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    letter-spacing: 0.03em;
     color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
     background:
       linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.35)),
@@ -388,10 +552,10 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
     background:
       linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.2)),
       color-mix(in srgb, var(--tone-surface) 88%, transparent);
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+    font-size: 0.84rem;
+    letter-spacing: 0.02em;
+    line-height: 1.45;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
   }
 
   .writing-page-header__meta p,
@@ -400,9 +564,9 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
   }
 
   .writing-page-header__meta a {
-    color: var(--tone-accent-glow);
+    color: color-mix(in srgb, var(--tone-accent-glow) 72%, white 28%);
     text-decoration: none;
-    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 50%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 72%, transparent);
   }
 
   .writing-desk-shell {
@@ -418,6 +582,131 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
     margin-top: clamp(1.6rem, 3vw, 2.4rem);
   }
 
+  .writing-publication {
+    margin-top: clamp(1.4rem, 2.8vw, 2.2rem);
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .writing-publication__lead,
+  .writing-publication__latest,
+  .writing-publication__threads {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 16%, var(--line2));
+    border-radius: 0.95rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.2)),
+      color-mix(in srgb, var(--tone-surface) 92%, transparent);
+    padding: 0.95rem 1rem;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
+  }
+
+  .writing-publication__kicker {
+    margin: 0;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  }
+
+  .writing-publication__lead h2 {
+    margin: 0.42rem 0 0;
+  }
+
+  .writing-publication__lead h2 a {
+    text-decoration: none;
+    color: color-mix(in srgb, var(--tone-text) 94%, var(--tone-muted) 6%);
+  }
+
+  .writing-publication__summary {
+    margin: 0.72rem 0 0;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+    line-height: 1.72;
+    max-width: 64ch;
+  }
+
+  .writing-publication__actions {
+    margin-top: 0.72rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem 1rem;
+  }
+
+  .writing-publication__actions a,
+  .writing-publication__latest-list a,
+  .writing-publication__thread a {
+    text-decoration: none;
+    color: var(--tone-accent-glow);
+  }
+
+  .writing-publication__actions a {
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 48%, transparent);
+  }
+
+  .writing-publication__latest-list {
+    margin: 0.72rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .writing-publication__latest-list li {
+    display: grid;
+    gap: 0.18rem;
+  }
+
+  .writing-publication__latest-list li span {
+    font-size: 0.82rem;
+    color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  }
+
+  .writing-publication__thread-list {
+    margin-top: 0.72rem;
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .writing-publication__thread {
+    border: 1px solid var(--line2);
+    border-radius: 0.78rem;
+    padding: 0.58rem 0.62rem;
+    background: color-mix(in srgb, var(--tone-surface-strong) 62%, transparent);
+  }
+
+  .writing-publication__thread header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .writing-publication__thread header span {
+    font-size: 0.8rem;
+    color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  }
+
+  .writing-thread-jump {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: var(--tone-accent-glow);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .writing-publication__thread ul {
+    margin: 0.45rem 0 0;
+    padding-left: 1rem;
+    display: grid;
+    gap: 0.28rem;
+  }
+
+  .writing-publication__empty {
+    margin: 0.62rem 0 0;
+    color: var(--tone-muted);
+  }
+
   .writing-documents__header {
     display: grid;
     gap: 1rem;
@@ -426,9 +715,9 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
 
   .writing-documents__kicker {
     margin: 0;
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     text-transform: uppercase;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.12em;
     color: var(--tone-accent-glow);
   }
 
@@ -436,7 +725,8 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
     margin: 0.6rem 0 0;
     max-width: 62ch;
     color: var(--tone-muted);
-    line-height: 1.7;
+    line-height: 1.76;
+    font-size: 1.01rem;
   }
 
   .writing-documents__browse {
@@ -488,9 +778,8 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
   .writing-document-card__meta p,
   .writing-document-card__meta span {
     margin: 0;
-    font-size: 0.76rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
     color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
   }
 
@@ -553,9 +842,9 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
 
   .writing-archive__kicker {
     margin: 0;
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     text-transform: uppercase;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.12em;
     color: var(--tone-accent-glow);
   }
 
@@ -563,6 +852,8 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
     margin: 0.6rem 0 0;
     max-width: 60ch;
     color: var(--tone-muted);
+    line-height: 1.74;
+    font-size: 1.01rem;
   }
 
   .writing-archive__controls {
@@ -591,9 +882,8 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
       color-mix(in srgb, var(--tone-surface) 88%, transparent);
     color: var(--tone-muted);
     padding: 0.45rem 0.75rem;
-    font-size: 0.72rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
     cursor: pointer;
     transition: transform 140ms ease, border-color 160ms ease, background 160ms ease;
   }
@@ -661,9 +951,8 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
     flex-wrap: wrap;
     gap: 0.6rem;
     align-items: center;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
     color: var(--tone-muted);
   }
 
@@ -719,7 +1008,7 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
     padding: 0.22rem 0.48rem;
     border-radius: 999px;
     border: 1px solid color-mix(in srgb, var(--tone-accent) 20%, var(--line2));
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     color: var(--tone-muted);
     background: color-mix(in srgb, var(--tone-surface-strong) 70%, transparent);
   }
@@ -744,6 +1033,16 @@ const archiveDocuments = archiveWritingEntries.map((entry) => ({
 
     .writing-archive__header {
       grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
+    }
+
+    .writing-publication {
+      grid-template-columns: minmax(0, 1.3fr) minmax(16rem, 0.9fr);
+      align-items: start;
+    }
+
+    .writing-publication__rail {
+      display: grid;
+      gap: 0.85rem;
     }
 
     .writing-entry-row {

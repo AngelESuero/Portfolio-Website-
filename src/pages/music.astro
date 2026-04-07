@@ -1,7 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import CrossRouteResume from '../components/CrossRouteResume.astro';
 import profile from '../data/profile';
 import { MUSIC_URLS, SOCIAL_URLS, VIDEO_URLS } from '../data/site-refs';
+import { getAllEntries } from '../lib/site-collections';
+import { getEntryHref, sortEntriesByDate } from '../lib/archive-entries';
 
 const spotifyVol4EmbedUrl = 'https://open.spotify.com/embed/playlist/1aeafuJB347VmKXu4jvaTO';
 const soundcloudVol4Url = 'https://soundcloud.com/aesuero/sets/volume-4-angel-sueros-top-50';
@@ -154,6 +157,68 @@ const rotationQueue = [
   { title: 'Queries (The Beat Tape)', cue: 'untitled lane' },
   { title: 'Volume 4', cue: 'soundcloud set' }
 ];
+const musicEntries = sortEntriesByDate((await getAllEntries()).filter((entry) => entry.data.medium === 'music'));
+const featuredListeningEntry = musicEntries[0] ?? null;
+const fallbackFeaturedSummary = 'Open this first for the latest archive-facing listening context.';
+const shelfDefinitions = [
+  {
+    id: 'recent',
+    title: 'Recent archive drops',
+    note: 'Newest entries, in release order.',
+    items: musicEntries.slice(0, 5)
+  },
+  {
+    id: 'scraps',
+    title: 'Scraps and rough cuts',
+    note: 'Loose records that keep texture and process visible.',
+    items: musicEntries.filter((entry) => `${entry.slug} ${entry.data.title}`.toLowerCase().includes('scraps')).slice(0, 5)
+  },
+  {
+    id: 'tapes',
+    title: 'Tape and set containers',
+    note: 'Longer run structures for replay, sequencing, and return.',
+    items: musicEntries
+      .filter((entry) => /(tape|volume|queries)/i.test(`${entry.slug} ${entry.data.title}`))
+      .slice(0, 5)
+  }
+].filter((shelf) => shelf.items.length > 0);
+
+const getFeaturedMetaFromEntry = (entry: (typeof musicEntries)[number] | null, fallbackSummary = fallbackFeaturedSummary) => {
+  if (!entry) {
+    return {
+      title: 'The music archive is still being assembled.',
+      summary: 'No archive entries are available yet.',
+      href: '/archive/music',
+      cta: 'Open full music archive'
+    };
+  }
+
+  return {
+    title: entry.data.title,
+    summary: entry.data.summary || fallbackSummary,
+    href: getEntryHref(entry),
+    cta: 'Open featured entry'
+  };
+};
+
+const defaultFeaturedMeta = getFeaturedMetaFromEntry(featuredListeningEntry);
+const libraryViewData = {
+  all: {
+    label: 'All containers',
+    summary: 'Viewing every shelf in the library.',
+    featured: defaultFeaturedMeta
+  },
+  ...Object.fromEntries(
+    shelfDefinitions.map((shelf) => [
+      shelf.id,
+      {
+        label: shelf.title,
+        summary: `Viewing ${shelf.title.toLowerCase()}.`,
+        featured: getFeaturedMetaFromEntry(shelf.items[0] ?? featuredListeningEntry, shelf.note)
+      }
+    ])
+  )
+};
 ---
 
 <BaseLayout
@@ -172,6 +237,7 @@ const rotationQueue = [
         exists.
       </p>
       <nav class="music-hero__nav" aria-label="Jump to media sections">
+        <a href="#library">Library</a>
         <a href="#watch">Watch</a>
         <a href="#listen">Listen</a>
         <a href="#browse">Browse</a>
@@ -185,6 +251,62 @@ const rotationQueue = [
         ))}
       </ul>
     </header>
+
+    <section class="music-section music-section--library" id="library" aria-labelledby="music-library-heading">
+      <div class="music-section__head">
+        <p class="music-section__kicker">Library</p>
+        <h2 id="music-library-heading">Curated listening containers</h2>
+      </div>
+
+      <nav class="music-library__filters" aria-label="Choose a library container">
+        <button type="button" class="music-library-filter is-active" data-library-view="all" aria-pressed="true">
+          All containers
+        </button>
+        {shelfDefinitions.map((shelf) => (
+          <button type="button" class="music-library-filter" data-library-view={shelf.id} aria-pressed="false">
+            {shelf.title}
+          </button>
+        ))}
+      </nav>
+      <p class="music-library__state" data-library-state>Viewing every shelf in the library.</p>
+
+      <div class="music-library">
+        <article class="music-library__featured" data-library-featured>
+          <p class="music-library__label">Current entry point</p>
+          {featuredListeningEntry ? (
+            <>
+              <h3 data-library-featured-title>{defaultFeaturedMeta.title}</h3>
+              <p data-library-featured-summary>{defaultFeaturedMeta.summary}</p>
+              <div class="music-library__actions">
+                <a href={defaultFeaturedMeta.href} data-library-featured-primary>{defaultFeaturedMeta.cta}</a>
+                <a href="/archive/music">Open full music archive</a>
+              </div>
+            </>
+          ) : (
+            <p>The music archive is still being assembled.</p>
+          )}
+        </article>
+
+        <div class="music-library__shelves">
+          {shelfDefinitions.map((shelf) => (
+            <article class="music-shelf" data-library-shelf={shelf.id}>
+              <header>
+                <h3>{shelf.title}</h3>
+                <p>{shelf.note}</p>
+              </header>
+              <ol>
+                {shelf.items.map((entry) => (
+                  <li>
+                    <a href={getEntryHref(entry)}>{entry.data.title}</a>
+                    <span>{entry.data.date.toISOString().slice(0, 10)}</span>
+                  </li>
+                ))}
+              </ol>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
 
     <section class="music-section music-section--watch" id="watch" aria-labelledby="music-watch-heading">
       <div class="music-section__head">
@@ -216,8 +338,8 @@ const rotationQueue = [
       </div>
 
       <div class="music-audio-stack">
-        {audioBites.map((item) => (
-          <article class="music-audio-row">
+        {audioBites.map((item, index) => (
+          <article class="music-audio-row" id={`listen-${index + 1}`}>
             <div class="music-audio-row__meta">
               <p class="music-audio-row__source">{item.source}</p>
               <h3>{item.title}</h3>
@@ -272,6 +394,13 @@ const rotationQueue = [
                 </div>
               </div>
             )}
+            <div class="music-audio-row__sequence">
+              <span>Track {index + 1} of {audioBites.length}</span>
+              <div>
+                {index > 0 && <a href={`#listen-${index}`}>Previous</a>}
+                {index < audioBites.length - 1 && <a href={`#listen-${index + 2}`}>Next</a>}
+              </div>
+            </div>
           </article>
         ))}
       </div>
@@ -292,6 +421,8 @@ const rotationQueue = [
       </div>
     </section>
 
+    <CrossRouteResume current="music" className="music-resume" heading="Resume your other creative lanes" />
+
     <footer class="music-footer">
       <p class="music-footer__copy">
         Open sources and reference lanes:
@@ -305,6 +436,119 @@ const rotationQueue = [
       </div>
     </footer>
   </main>
+
+  <script
+    id="music-library-view-data"
+    type="application/json"
+    set:html={JSON.stringify(libraryViewData)}
+  ></script>
+  <script is:inline>
+    (() => {
+      const STORAGE_KEY = 'music-library-view-v1';
+      const dataNode = document.getElementById('music-library-view-data');
+      if (!(dataNode instanceof HTMLScriptElement)) return;
+
+      let viewData = {};
+      try {
+        viewData = JSON.parse(dataNode.textContent || '{}');
+      } catch {
+        viewData = {};
+      }
+
+      const validViews = Object.keys(viewData);
+      if (!validViews.length) return;
+
+      const buttons = Array.from(document.querySelectorAll('[data-library-view]')).filter(
+        (node) => node instanceof HTMLButtonElement
+      );
+      const shelves = Array.from(document.querySelectorAll('[data-library-shelf]')).filter(
+        (node) => node instanceof HTMLElement
+      );
+      const stateNode = document.querySelector('[data-library-state]');
+      const featuredTitle = document.querySelector('[data-library-featured-title]');
+      const featuredSummary = document.querySelector('[data-library-featured-summary]');
+      const featuredPrimary = document.querySelector('[data-library-featured-primary]');
+
+      const isValidView = (value) => typeof value === 'string' && validViews.includes(value);
+
+      const syncQuery = (view) => {
+        const url = new URL(window.location.href);
+        if (view === 'all') {
+          url.searchParams.delete('library');
+        } else {
+          url.searchParams.set('library', view);
+        }
+        history.replaceState({ library: view }, '', url);
+      };
+
+      const persistView = (view) => {
+        try {
+          window.localStorage.setItem(STORAGE_KEY, view);
+        } catch {
+          // Ignore storage issues and keep UI functional.
+        }
+      };
+
+      const setView = (view, options = {}) => {
+        const { sync = true, persist = true } = options;
+        const nextView = isValidView(view) ? view : 'all';
+        const nextData = viewData[nextView] || viewData.all || null;
+
+        buttons.forEach((button) => {
+          const active = button.dataset.libraryView === nextView;
+          button.classList.toggle('is-active', active);
+          button.setAttribute('aria-pressed', String(active));
+        });
+
+        shelves.forEach((shelf) => {
+          const shelfId = shelf.dataset.libraryShelf || '';
+          shelf.hidden = nextView !== 'all' && shelfId !== nextView;
+        });
+
+        if (stateNode instanceof HTMLElement && nextData && typeof nextData.summary === 'string') {
+          stateNode.textContent = nextData.summary;
+        }
+
+        const nextFeatured = nextData && typeof nextData === 'object' ? nextData.featured : null;
+        if (featuredTitle instanceof HTMLElement && nextFeatured && typeof nextFeatured.title === 'string') {
+          featuredTitle.textContent = nextFeatured.title;
+        }
+        if (featuredSummary instanceof HTMLElement && nextFeatured && typeof nextFeatured.summary === 'string') {
+          featuredSummary.textContent = nextFeatured.summary;
+        }
+        if (featuredPrimary instanceof HTMLAnchorElement && nextFeatured && typeof nextFeatured.href === 'string') {
+          featuredPrimary.href = nextFeatured.href;
+          featuredPrimary.textContent =
+            typeof nextFeatured.cta === 'string' && nextFeatured.cta.trim().length > 0
+              ? nextFeatured.cta
+              : 'Open featured entry';
+        }
+
+        if (sync) syncQuery(nextView);
+        if (persist) persistView(nextView);
+      };
+
+      buttons.forEach((button) => {
+        button.addEventListener('click', () => {
+          setView(button.dataset.libraryView || 'all');
+        });
+      });
+
+      const queryView = new URLSearchParams(window.location.search).get('library') || '';
+      let initialView = isValidView(queryView) ? queryView : '';
+
+      if (!initialView) {
+        try {
+          const saved = window.localStorage.getItem(STORAGE_KEY) || '';
+          if (isValidView(saved)) initialView = saved;
+        } catch {
+          // ignore storage read issues
+        }
+      }
+
+      setView(initialView || 'all', { sync: true, persist: false });
+    })();
+  </script>
 </BaseLayout>
 
 <style>
@@ -369,9 +613,9 @@ const rotationQueue = [
 
   .music-hero__eyebrow,
   .music-section__kicker {
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.09em;
     color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
   }
 
@@ -384,14 +628,15 @@ const rotationQueue = [
 
   .music-hero h1 {
     font-size: clamp(2.4rem, 7vw, 4.4rem);
-    line-height: 0.95;
+    line-height: 1.02;
     color: var(--tone-text);
   }
 
   .music-hero__lede {
     max-width: 52ch;
     margin: 0;
-    line-height: 1.7;
+    line-height: 1.76;
+    font-size: 1.01rem;
     color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
   }
 
@@ -423,15 +668,14 @@ const rotationQueue = [
   }
 
   .music-hero__queue li span {
-    font-size: 0.82rem;
-    line-height: 1.3;
+    font-size: 0.88rem;
+    line-height: 1.4;
     color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
   }
 
   .music-hero__queue li small {
-    font-size: 0.66rem;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
+    font-size: 0.74rem;
+    letter-spacing: 0.03em;
     color: color-mix(in srgb, var(--tone-accent) 82%, white 18%);
   }
 
@@ -474,6 +718,145 @@ const rotationQueue = [
     padding: clamp(1.1rem, 2vw, 1.4rem);
   }
 
+  .music-library {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .music-library__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .music-library-filter {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 26%, transparent);
+    border-radius: 999px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+      color-mix(in srgb, var(--tone-surface) 88%, transparent);
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+    font-size: 0.82rem;
+    line-height: 1.25;
+    padding: 0.38rem 0.74rem;
+    cursor: pointer;
+    transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+  }
+
+  .music-library-filter:hover,
+  .music-library-filter:focus-visible,
+  .music-library-filter.is-active {
+    color: var(--tone-accent-glow);
+    border-color: color-mix(in srgb, var(--tone-accent) 64%, transparent);
+    transform: translateY(-1px);
+    background:
+      linear-gradient(180deg, rgba(29, 185, 84, 0.2), rgba(29, 185, 84, 0.08)),
+      color-mix(in srgb, var(--tone-surface) 88%, transparent);
+  }
+
+  .music-library__state {
+    margin: 0;
+    font-size: 0.84rem;
+    line-height: 1.45;
+    color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+  }
+
+  .music-library__featured {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 20%, var(--line2));
+    border-radius: 1rem;
+    padding: 0.92rem 0.98rem;
+    background:
+      linear-gradient(180deg, rgba(29, 185, 84, 0.16), rgba(29, 185, 84, 0.04)),
+      color-mix(in srgb, var(--tone-surface-strong) 90%, transparent);
+  }
+
+  .music-library__label {
+    margin: 0;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  }
+
+  .music-library__featured h3 {
+    margin: 0.4rem 0 0;
+    font-size: 1.18rem;
+    line-height: 1.35;
+  }
+
+  .music-library__featured p {
+    margin: 0.58rem 0 0;
+    line-height: 1.66;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .music-library__actions {
+    margin-top: 0.7rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 0.9rem;
+  }
+
+  .music-library__actions a {
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 45%, transparent);
+  }
+
+  .music-library__shelves {
+    display: grid;
+    gap: 0.72rem;
+  }
+
+  .music-shelf {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
+    border-radius: 0.95rem;
+    padding: 0.75rem 0.8rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.01)),
+      color-mix(in srgb, var(--tone-surface-strong) 90%, transparent);
+  }
+
+  .music-shelf[hidden] {
+    display: none;
+  }
+
+  .music-shelf header h3 {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.32;
+  }
+
+  .music-shelf header p {
+    margin: 0.28rem 0 0;
+    font-size: 0.9rem;
+    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  }
+
+  .music-shelf ol {
+    margin: 0.58rem 0 0;
+    padding-left: 1.12rem;
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .music-shelf li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.6rem;
+    align-items: baseline;
+  }
+
+  .music-shelf li a {
+    color: color-mix(in srgb, var(--tone-text) 92%, var(--tone-muted) 8%);
+    text-decoration: none;
+  }
+
+  .music-shelf li span {
+    font-size: 0.78rem;
+    color: color-mix(in srgb, var(--tone-text) 68%, var(--tone-muted) 32%);
+  }
+
   .music-section__head {
     display: grid;
     gap: 0.28rem;
@@ -481,7 +864,7 @@ const rotationQueue = [
 
   .music-section__head h2 {
     font-size: clamp(1.15rem, 2vw, 1.55rem);
-    line-height: 1.1;
+    line-height: 1.24;
     color: var(--tone-text);
   }
 
@@ -534,15 +917,14 @@ const rotationQueue = [
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-size: 0.76rem;
+    letter-spacing: 0.04em;
     color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
   }
 
   .music-video h3 {
-    font-size: 0.95rem;
-    line-height: 1.25;
+    font-size: 1.03rem;
+    line-height: 1.36;
     color: var(--tone-text);
   }
 
@@ -556,7 +938,7 @@ const rotationQueue = [
 
   .music-video p {
     margin: 0;
-    line-height: 1.55;
+    line-height: 1.64;
     color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
   }
 
@@ -590,16 +972,16 @@ const rotationQueue = [
     border: 1px solid color-mix(in srgb, var(--tone-accent) 30%, transparent);
     border-radius: 999px;
     padding: 0.18rem 0.48rem;
-    font-size: 0.66rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
     color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
     background: color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
   }
 
   .music-audio-row__note {
     margin: 0.25rem 0 0;
-    line-height: 1.55;
+    line-height: 1.64;
+    font-size: 0.97rem;
     color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
   }
 
@@ -628,7 +1010,8 @@ const rotationQueue = [
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem 1rem;
-    font-size: 0.78rem;
+    font-size: 0.84rem;
+    line-height: 1.45;
     color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
   }
 
@@ -661,7 +1044,8 @@ const rotationQueue = [
 
   .music-audio-row__fallback p {
     margin: 0;
-    line-height: 1.6;
+    line-height: 1.68;
+    font-size: 0.95rem;
     color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
   }
 
@@ -669,6 +1053,29 @@ const rotationQueue = [
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem 1rem;
+  }
+
+  .music-audio-row__sequence {
+    border-top: 1px solid color-mix(in srgb, var(--tone-accent) 12%, var(--line2));
+    padding-top: 0.55rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+    color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  }
+
+  .music-audio-row__sequence div {
+    display: flex;
+    gap: 0.42rem;
+  }
+
+  .music-audio-row__sequence a {
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 45%, transparent);
   }
 
   .music-photo-grid {
@@ -708,10 +1115,30 @@ const rotationQueue = [
     padding: 1rem 1.2rem 1.1rem;
   }
 
+  .music-resume {
+    margin-top: -0.2rem;
+  }
+
+  .music-footer__copy {
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
   .music-footer__links {
     display: flex;
     flex-wrap: wrap;
     gap: 0.55rem 1rem;
+  }
+
+  @media (min-width: 980px) {
+    .music-library {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
+      align-items: start;
+    }
+
+    .music-library__shelves {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @media (max-width: 760px) {

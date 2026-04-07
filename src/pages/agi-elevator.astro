@@ -23,6 +23,28 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </header>
 
+    <section class="card elevator__sequence" aria-label="Authored chapter sequence">
+      <div class="elevator__sequence-head">
+        <p class="elevator__kicker">Chapter run</p>
+        <p class="elevator__sequence-count">
+          Step <span data-sequence-index>1</span> / <span data-sequence-total>3</span>
+        </p>
+      </div>
+      <h2 data-sequence-title>Story mode</h2>
+      <p class="elevator__muted" data-sequence-summary>
+        Start with a single public frame, then deepen into strategy and system constraints.
+      </p>
+      <div class="elevator__sequence-controls">
+        <button id="btn-prev-mode" type="button" class="elevator__sequence-button">Previous chapter</button>
+        <button id="btn-next-mode" type="button" class="elevator__sequence-button">Next chapter</button>
+      </div>
+      <ol class="elevator__sequence-map" aria-label="Chapter map">
+        <li><button type="button" data-sequence-target="story" class="is-active">Story</button></li>
+        <li><button type="button" data-sequence-target="strategy">Strategy</button></li>
+        <li><button type="button" data-sequence-target="syslog">System Log</button></li>
+      </ol>
+    </section>
+
     <section class="card elevator__panel">
       <div class="elevator__panel-head">
         <div>
@@ -148,6 +170,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
       </article>
     </section>
+
+    <section class="card elevator__continuation" aria-labelledby="elevator-continuation-heading">
+      <p class="elevator__kicker">Continue through the archive</p>
+      <h2 id="elevator-continuation-heading">Keep the focused chapter, keep the wider context nearby.</h2>
+      <p class="elevator__muted">This run stays one chapter at a time, but the adjacent monitoring and archive lanes remain open.</p>
+      <div class="elevator__continuation-links">
+        <a href="/agi">Open AGI timeline</a>
+        <a href="/ai-waves">Open AI waves checklist</a>
+        <a href="/archive">Open full archive</a>
+      </div>
+    </section>
   </section>
 
   <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -164,6 +197,31 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         syslog: document.getElementById('btn-syslog')
       };
       const subtitle = document.getElementById('subtitle');
+      const modeOrder = ['story', 'strategy', 'syslog'];
+      const modeSummaries = {
+        story: {
+          title: 'Story mode',
+          summary: 'One clear narrative pass from surprise to infrastructure.'
+        },
+        strategy: {
+          title: 'Strategy mode',
+          summary: 'Operational phases and timing windows for planning, not hype.'
+        },
+        syslog: {
+          title: 'System log mode',
+          summary: 'Milestones, bottlenecks, and timestamped constraint tracking.'
+        }
+      };
+      const sequenceIndexNode = document.querySelector('[data-sequence-index]');
+      const sequenceTotalNode = document.querySelector('[data-sequence-total]');
+      const sequenceTitleNode = document.querySelector('[data-sequence-title]');
+      const sequenceSummaryNode = document.querySelector('[data-sequence-summary]');
+      const previousModeButton = document.getElementById('btn-prev-mode');
+      const nextModeButton = document.getElementById('btn-next-mode');
+      const sequenceMapButtons = Array.from(document.querySelectorAll('[data-sequence-target]'));
+
+      const getCurrentMode = () =>
+        modeOrder.find((mode) => buttons[mode]?.classList.contains('is-active')) || 'story';
 
       function setMode(mode) {
         localStorage.setItem('agiElevatorMode', mode);
@@ -185,11 +243,54 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 ? 'Timeline mode: Strategic Roadmap'
                 : 'Timeline mode: System Log';
         }
+
+        const stepIndex = Math.max(0, modeOrder.indexOf(mode));
+        const modeMeta = modeSummaries[mode] || modeSummaries.story;
+        if (sequenceIndexNode) sequenceIndexNode.textContent = String(stepIndex + 1);
+        if (sequenceTotalNode) sequenceTotalNode.textContent = String(modeOrder.length);
+        if (sequenceTitleNode) sequenceTitleNode.textContent = modeMeta.title;
+        if (sequenceSummaryNode) sequenceSummaryNode.textContent = modeMeta.summary;
+        if (previousModeButton instanceof HTMLButtonElement) previousModeButton.disabled = stepIndex <= 0;
+        if (nextModeButton instanceof HTMLButtonElement) nextModeButton.disabled = stepIndex >= modeOrder.length - 1;
+        sequenceMapButtons.forEach((button) => {
+          if (!(button instanceof HTMLButtonElement)) return;
+          const active = button.dataset.sequenceTarget === mode;
+          button.classList.toggle('is-active', active);
+          button.setAttribute('aria-current', active ? 'step' : 'false');
+        });
+        const url = new URL(window.location.href);
+        if (mode === 'story') {
+          url.searchParams.delete('chapter');
+        } else {
+          url.searchParams.set('chapter', mode);
+        }
+        window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
       }
 
       buttons.story?.addEventListener('click', () => setMode('story'));
       buttons.strategy?.addEventListener('click', () => setMode('strategy'));
       buttons.syslog?.addEventListener('click', () => setMode('syslog'));
+
+      previousModeButton?.addEventListener('click', () => {
+        const currentMode = getCurrentMode();
+        const nextIndex = Math.max(0, modeOrder.indexOf(currentMode) - 1);
+        setMode(modeOrder[nextIndex]);
+      });
+
+      nextModeButton?.addEventListener('click', () => {
+        const currentMode = getCurrentMode();
+        const nextIndex = Math.min(modeOrder.length - 1, modeOrder.indexOf(currentMode) + 1);
+        setMode(modeOrder[nextIndex]);
+      });
+
+      sequenceMapButtons.forEach((button) => {
+        if (!(button instanceof HTMLButtonElement)) return;
+        button.addEventListener('click', () => {
+          const target = button.dataset.sequenceTarget;
+          if (!target || !modeOrder.includes(target)) return;
+          setMode(target);
+        });
+      });
 
       function initChart() {
         if (!window.Chart) return;
@@ -235,8 +336,33 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         if (tries < 20) window.setTimeout(boot, 120);
       };
 
-      setMode(localStorage.getItem('agiElevatorMode') || 'story');
+      const queryMode = new URLSearchParams(window.location.search).get('chapter');
+      const storedMode = localStorage.getItem('agiElevatorMode');
+      const initialMode =
+        (queryMode && modeOrder.includes(queryMode) && queryMode)
+        || (storedMode && modeOrder.includes(storedMode) && storedMode)
+        || 'story';
+      setMode(initialMode);
       boot();
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+        const target = event.target;
+        if (
+          target instanceof HTMLElement &&
+          (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName))
+        ) {
+          return;
+        }
+        const currentMode = getCurrentMode();
+        const currentIndex = modeOrder.indexOf(currentMode);
+        if (event.key === 'ArrowRight' && currentIndex < modeOrder.length - 1) {
+          setMode(modeOrder[currentIndex + 1]);
+        }
+        if (event.key === 'ArrowLeft' && currentIndex > 0) {
+          setMode(modeOrder[currentIndex - 1]);
+        }
+      });
     })();
   </script>
 </BaseLayout>
@@ -291,8 +417,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .elevator__kicker {
     margin: 0;
     color: var(--tone-muted);
-    font-size: 0.72rem;
-    letter-spacing: 0.12em;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
@@ -300,6 +426,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .elevator__muted {
     margin: 0.35rem 0 0;
     color: var(--tone-muted);
+    line-height: 1.68;
+    font-size: 0.98rem;
   }
 
   .elevator__cue {
@@ -308,9 +436,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     border: 1px solid color-mix(in srgb, var(--tone-accent) 36%, var(--line2));
     border-radius: 999px;
     padding: 0.28rem 0.66rem;
-    font-size: 0.68rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    font-size: 0.76rem;
+    line-height: 1.42;
+    letter-spacing: 0.03em;
     color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
     background:
       linear-gradient(135deg, rgba(244, 82, 255, 0.22), rgba(69, 242, 255, 0.18)),
@@ -318,7 +446,91 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   .elevator__small {
-    font-size: 0.85rem;
+    font-size: 0.92rem;
+  }
+
+  .elevator__sequence {
+    padding: 0.95rem 1rem;
+    border-radius: 16px;
+    border-color: color-mix(in srgb, var(--tone-accent) 38%, var(--line2));
+    background:
+      linear-gradient(180deg, rgba(244, 82, 255, 0.14), rgba(69, 242, 255, 0.07)),
+      color-mix(in srgb, var(--tone-surface) 90%, transparent);
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .elevator__sequence-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+  }
+
+  .elevator__sequence-count {
+    margin: 0;
+    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+    font-size: 0.86rem;
+    letter-spacing: 0.04em;
+  }
+
+  .elevator__sequence h2 {
+    margin: 0;
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+  }
+
+  .elevator__sequence-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .elevator__sequence-button {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 34%, var(--line2));
+    border-radius: 999px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01)),
+      color-mix(in srgb, var(--tone-surface-strong) 84%, transparent);
+    color: var(--tone-text);
+    font: inherit;
+    padding: 0.38rem 0.72rem;
+    cursor: pointer;
+  }
+
+  .elevator__sequence-button:disabled {
+    opacity: 0.42;
+    cursor: not-allowed;
+  }
+
+  .elevator__sequence-map {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .elevator__sequence-map button {
+    width: 100%;
+    border: 1px solid var(--line2);
+    border-radius: 0.72rem;
+    background: color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+    font: inherit;
+    font-size: 0.84rem;
+    line-height: 1.3;
+    padding: 0.38rem 0.52rem;
+    cursor: pointer;
+  }
+
+  .elevator__sequence-map button.is-active {
+    border-color: color-mix(in srgb, var(--tone-accent) 64%, var(--line2));
+    color: #f7f3ff;
+    background:
+      linear-gradient(135deg, rgba(244, 82, 255, 0.3), rgba(69, 242, 255, 0.24)),
+      color-mix(in srgb, var(--tone-surface-strong) 86%, transparent);
   }
 
   .elevator__modes {
@@ -335,7 +547,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       color-mix(in srgb, var(--tone-surface) 86%, transparent);
     color: var(--tone-text);
     padding: 0.42rem 0.78rem;
-    font-size: 0.8rem;
+    font-size: 0.86rem;
+    line-height: 1.3;
     cursor: pointer;
     transition: border-color 160ms ease, background-color 160ms ease, transform 120ms ease;
   }
@@ -442,7 +655,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     display: flex;
     justify-content: space-between;
     gap: 0.65rem;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
 
   .elevator__bar {
@@ -480,6 +693,39 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .elevator__log p {
     margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.52;
+  }
+
+  .elevator__continuation {
+    padding: 1rem;
+    border-radius: 16px;
+    border-color: color-mix(in srgb, var(--tone-accent) 32%, var(--line2));
+    display: grid;
+    gap: 0.7rem;
+  }
+
+  .elevator__continuation h2 {
+    font-size: clamp(1.05rem, 1.9vw, 1.35rem);
+    line-height: 1.35;
+  }
+
+  .elevator__continuation-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .elevator__continuation-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 34%, var(--line2));
+    border-radius: 999px;
+    padding: 0.36rem 0.72rem;
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+    text-decoration: none;
+    background: color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
   }
 
   .is-hidden {
@@ -489,6 +735,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   @media (max-width: 900px) {
     .elevator__grid--2,
     .elevator__grid--3 {
+      grid-template-columns: 1fr;
+    }
+
+    .elevator__sequence-map {
       grid-template-columns: 1fr;
     }
   }

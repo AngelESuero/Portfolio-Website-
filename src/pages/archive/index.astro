@@ -1,10 +1,12 @@
 ---
 import EntryCard from '../../components/EntryCard.astro';
+import CrossRouteResume from '../../components/CrossRouteResume.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import {
   ARCHIVE_MEDIUMS,
   collectEntryTags,
   getArchiveMediumHref,
+  getEntryHref,
   getEntryDisplayMedium,
   normalizeEntryTag,
   sortEntriesByDate
@@ -30,6 +32,26 @@ const rankedTags = [
 ].map(([tag]) => tag);
 const featuredTags = rankedTags.slice(0, DEFAULT_VISIBLE_TAGS);
 const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
+const mediumHighlights = mediums
+  .map((medium) => ({
+    medium,
+    entry: entries.find((entry) => entry.data.medium === medium) ?? null
+  }))
+  .filter((item): item is { medium: typeof mediums[number]; entry: (typeof entries)[number] } => Boolean(item.entry));
+const pinnedCollections = tagCounts
+  .filter(([tag, count]) => !mediumTagSet.has(tag as typeof mediums[number]) && count > 1)
+  .slice(0, 5)
+  .map(([tag, count]) => ({
+    tag,
+    count,
+    sample: entries
+      .filter((entry) => entry.data.tags.map(normalizeEntryTag).includes(tag))
+      .slice(0, 2)
+      .map((entry) => ({
+        title: entry.data.title,
+        href: getEntryHref(entry)
+      }))
+  }));
 ---
 <BaseLayout title="Archive — a_e.s_" theme="archive" bodyClass="archive-ig-page">
   <section class="view-surface archive-page">
@@ -56,6 +78,48 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
         </a>
       ))}
     </nav>
+
+    <section class="archive-highlights" aria-label="Archive browse highlights">
+      <article class="archive-highlight-card archive-highlight-card--medium">
+        <header class="archive-highlight-card__head">
+          <p class="archive-controls__label font-archive">Medium lanes</p>
+          <span>Profile-style overview</span>
+        </header>
+        <div class="archive-highlight-card__body">
+          {mediumHighlights.map(({ medium, entry }) => (
+            <button type="button" class="archive-highlight-medium" data-collection-medium={medium}>
+              <span>{getEntryDisplayMedium(medium)}</span>
+              <strong>{entry.data.title}</strong>
+              <small>{formatLongArchiveUtcDate(entry.data.date)}</small>
+            </button>
+          ))}
+        </div>
+      </article>
+
+      {pinnedCollections.length > 0 && (
+        <article class="archive-highlight-card archive-highlight-card--collections">
+          <header class="archive-highlight-card__head">
+            <p class="archive-controls__label font-archive">Pinned collections</p>
+            <span>Calm highlight sets</span>
+          </header>
+          <div class="archive-highlight-card__body archive-highlight-card__body--collections">
+            {pinnedCollections.map((collection) => (
+              <section class="archive-collection">
+                <header>
+                  <button type="button" data-collection-tag={collection.tag}>#{collection.tag}</button>
+                  <span>{collection.count} entries</span>
+                </header>
+                <ul>
+                  {collection.sample.map((item) => (
+                    <li><a href={item.href}>{item.title}</a></li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+        </article>
+      )}
+    </section>
 
     <section class="archive-controls" aria-label="Archive filters">
       <div class="archive-controls__group">
@@ -136,10 +200,13 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
         <p class="archive-empty" id="archive-empty-state" hidden>Nothing matches this filter yet.</p>
       </>
     )}
+
+    <CrossRouteResume current="archive" className="archive-resume" heading="Resume your other sections" />
   </section>
 
   <script is:inline>
     (() => {
+      const FILTER_KEY = 'archive-filter-state';
       const buttons = Array.from(document.querySelectorAll('.archive-filter'));
       const items = Array.from(document.querySelectorAll('.archive-item'));
       const resultsCount = document.getElementById('archive-results-count');
@@ -147,6 +214,20 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
       const tagToggle = document.getElementById('archive-tag-toggle');
       let activeMedium = 'all';
       let activeTag = 'all';
+      const validByGroup = {
+        medium: new Set(
+          buttons
+            .filter((button) => button instanceof HTMLButtonElement && button.dataset.filterGroup === 'medium')
+            .map((button) => button.dataset.filterValue || 'all')
+        ),
+        tag: new Set(
+          buttons
+            .filter((button) => button instanceof HTMLButtonElement && button.dataset.filterGroup === 'tag')
+            .map((button) => button.dataset.filterValue || 'all')
+        )
+      };
+      const resolveFilter = (group, candidate) =>
+        candidate && validByGroup[group].has(candidate) ? candidate : 'all';
 
       const updateGroupState = (group, value) => {
         buttons
@@ -182,6 +263,50 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
           emptyState.hidden = visibleCount !== 0;
         }
       };
+      const persistState = () => {
+        try {
+          window.localStorage.setItem(
+            FILTER_KEY,
+            JSON.stringify({ medium: activeMedium, tag: activeTag })
+          );
+        } catch {}
+      };
+      const syncQuery = () => {
+        const url = new URL(window.location.href);
+        if (activeMedium === 'all') {
+          url.searchParams.delete('medium');
+        } else {
+          url.searchParams.set('medium', activeMedium);
+        }
+        if (activeTag === 'all') {
+          url.searchParams.delete('tag');
+        } else {
+          url.searchParams.set('tag', activeTag);
+        }
+        window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+      };
+      const applyState = () => {
+        if (tagToggle instanceof HTMLDetailsElement) {
+          tagToggle.open = activeTag !== 'all';
+        }
+        render();
+        persistState();
+        syncQuery();
+      };
+      const scrollToResults = () => {
+        const list = document.getElementById('archive-list');
+        if (list instanceof HTMLElement) {
+          list.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      };
+      const setMedium = (value) => {
+        activeMedium = resolveFilter('medium', value || 'all');
+        updateGroupState('medium', activeMedium);
+      };
+      const setTag = (value) => {
+        activeTag = resolveFilter('tag', value || 'all');
+        updateGroupState('tag', activeTag);
+      };
 
       buttons.forEach((button) => {
         if (!(button instanceof HTMLButtonElement)) return;
@@ -189,24 +314,55 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
         button.addEventListener('click', () => {
           const group = button.dataset.filterGroup;
           const value = button.dataset.filterValue || 'all';
-          if (group === 'medium') activeMedium = value;
-          if (group === 'tag') activeTag = value;
-          if (group) updateGroupState(group, value);
-          render();
+          if (group === 'medium') setMedium(value);
+          if (group === 'tag') setTag(value);
+          applyState();
+        });
+      });
+
+      document.querySelectorAll('[data-collection-medium]').forEach((button) => {
+        if (!(button instanceof HTMLButtonElement)) return;
+        button.addEventListener('click', () => {
+          setMedium(button.dataset.collectionMedium || 'all');
+          setTag('all');
+          applyState();
+          scrollToResults();
+        });
+      });
+
+      document.querySelectorAll('[data-collection-tag]').forEach((button) => {
+        if (!(button instanceof HTMLButtonElement)) return;
+        button.addEventListener('click', () => {
+          if (tagToggle instanceof HTMLDetailsElement) tagToggle.open = true;
+          setTag(button.dataset.collectionTag || 'all');
+          setMedium('all');
+          applyState();
+          scrollToResults();
         });
       });
 
       if (tagToggle instanceof HTMLDetailsElement) {
         tagToggle.addEventListener('toggle', () => {
           if (!tagToggle.open && activeTag !== 'all') {
-            activeTag = 'all';
-            updateGroupState('tag', 'all');
-            render();
+            setTag('all');
+            applyState();
           }
         });
       }
 
-      render();
+      const params = new URLSearchParams(window.location.search);
+      let initialMedium = resolveFilter('medium', params.get('medium') || '');
+      let initialTag = resolveFilter('tag', params.get('tag') || '');
+      if (initialMedium === 'all' && initialTag === 'all') {
+        try {
+          const saved = JSON.parse(window.localStorage.getItem(FILTER_KEY) || '{}');
+          initialMedium = resolveFilter('medium', saved.medium || '');
+          initialTag = resolveFilter('tag', saved.tag || '');
+        } catch {}
+      }
+      setMedium(initialMedium);
+      setTag(initialTag);
+      applyState();
     })();
   </script>
 </BaseLayout>
@@ -257,8 +413,15 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
     gap: 1.5rem;
   }
 
+  .archive-resume {
+    margin-top: 0.2rem;
+  }
+
   .archive-page__description {
     max-width: 68ch;
+    font-size: 1.02rem;
+    line-height: 1.72;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
   }
 
   .archive-page__cue {
@@ -268,10 +431,10 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
     border: 1px solid color-mix(in srgb, var(--tone-accent) 32%, var(--line2));
     border-radius: 999px;
     padding: 0.32rem 0.68rem;
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+    font-size: 0.78rem;
+    line-height: 1.42;
+    letter-spacing: 0.03em;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
     background:
       linear-gradient(135deg, rgba(255, 88, 155, 0.2), rgba(127, 139, 255, 0.18)),
       color-mix(in srgb, var(--tone-surface) 86%, transparent);
@@ -282,9 +445,8 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
     flex-wrap: wrap;
     gap: 0.7rem 1rem;
     color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
-    font-size: 0.82rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    font-size: 0.86rem;
+    letter-spacing: 0.02em;
   }
 
   .archive-page__meta p,
@@ -296,6 +458,110 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+  }
+
+  .archive-highlights {
+    display: grid;
+    gap: 0.82rem;
+  }
+
+  .archive-highlight-card {
+    border: 1px solid var(--line2);
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+      color-mix(in srgb, var(--tone-surface) 90%, transparent);
+    padding: 0.88rem 0.95rem;
+  }
+
+  .archive-highlight-card__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+
+  .archive-highlight-card__head span {
+    font-size: 0.8rem;
+    color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  }
+
+  .archive-highlight-card__body {
+    margin-top: 0.62rem;
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .archive-highlight-medium {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 24%, var(--line2));
+    border-radius: 0.78rem;
+    background: color-mix(in srgb, var(--tone-surface-strong) 70%, transparent);
+    text-align: left;
+    display: grid;
+    gap: 0.14rem;
+    padding: 0.52rem 0.58rem;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .archive-highlight-medium span {
+    font-size: 0.78rem;
+    color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+  }
+
+  .archive-highlight-medium strong {
+    font-size: 0.94rem;
+    line-height: 1.36;
+  }
+
+  .archive-highlight-medium small {
+    font-size: 0.78rem;
+    color: color-mix(in srgb, var(--tone-text) 68%, var(--tone-muted) 32%);
+  }
+
+  .archive-highlight-card__body--collections {
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  }
+
+  .archive-collection {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
+    border-radius: 0.75rem;
+    padding: 0.55rem 0.6rem;
+    background: color-mix(in srgb, var(--tone-surface-strong) 72%, transparent);
+  }
+
+  .archive-collection header {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.4rem;
+    align-items: baseline;
+  }
+
+  .archive-collection header button {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--tone-accent-glow);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .archive-collection header span {
+    font-size: 0.78rem;
+    color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  }
+
+  .archive-collection ul {
+    margin: 0.48rem 0 0;
+    padding-left: 1rem;
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .archive-collection a {
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+    text-decoration: none;
   }
 
   .archive-page__browse-link {
@@ -362,9 +628,8 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
     width: fit-content;
     cursor: pointer;
     list-style: none;
-    font-size: 0.74rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
     color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
   }
 
@@ -393,9 +658,8 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
 
   .archive-controls__label {
     margin: 0;
-    font-size: 0.72rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-size: 0.76rem;
+    letter-spacing: 0.06em;
     color: var(--tone-muted);
   }
 
@@ -430,9 +694,8 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
     cursor: pointer;
     list-style: none;
     color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
-    font-size: 0.74rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
   }
 
   .archive-controls__more-toggle::-webkit-details-marker {
@@ -447,8 +710,10 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
   .archive-filter {
     border-radius: 999px;
     padding: 0.36rem 0.74rem;
-    font-size: 0.82rem;
-    letter-spacing: 0.04em;
+    font-size: 0.86rem;
+    letter-spacing: 0.02em;
+    font-weight: 500;
+    line-height: 1.3;
     color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
     transition: transform 140ms ease, border-color 180ms ease, background 180ms ease;
   }
@@ -466,9 +731,8 @@ const secondaryTags = allTags.filter((tag) => !featuredTags.includes(tag));
 
   .archive-results {
     color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    font-size: 0.84rem;
+    letter-spacing: 0.02em;
   }
 
   .archive-list {

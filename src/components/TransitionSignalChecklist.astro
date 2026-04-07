@@ -74,6 +74,7 @@ const scoringChoices = [0, 1, 2, 3] as const;
       </div>
 
       <div class="tsc-actions">
+        <button type="button" id="tsc-set-reference" class="pill tsc-reference-button">Set current week as reference</button>
         <button type="button" id="tsc-reset-week" class="pill tsc-reset-button">Reset this week</button>
       </div>
     </section>
@@ -84,6 +85,24 @@ const scoringChoices = [0, 1, 2, 3] as const;
       <ul class="tsc-context-list">
         {TRANSITION_SIGNAL_BACKBONE.map((item) => <li>{item}</li>)}
       </ul>
+    </section>
+
+    <section class="view-surface tsc-history" aria-label="Saved context and weekly references">
+      <div class="tsc-history__head">
+        <div>
+          <p class="view-surface-kicker">Saved context</p>
+          <h2>Weekly receipts and reference weeks</h2>
+        </div>
+        <p class="tsc-history__reference" data-reference-label>Reference week: none</p>
+      </div>
+
+      <div class="tsc-history__actions">
+        <button type="button" id="tsc-load-reference" class="pill tsc-history-button">Load reference week</button>
+      </div>
+
+      <ol class="tsc-history__list" id="tsc-history-list">
+        <li class="tsc-history__empty">No saved weeks yet.</li>
+      </ol>
     </section>
   </div>
 
@@ -185,6 +204,10 @@ const scoringChoices = [0, 1, 2, 3] as const;
       const periodInput = root.querySelector('#tsc-period');
       const noteInput = root.querySelector('#tsc-note');
       const resetButton = root.querySelector('#tsc-reset-week');
+      const setReferenceButton = root.querySelector('#tsc-set-reference');
+      const loadReferenceButton = root.querySelector('#tsc-load-reference');
+      const historyList = root.querySelector('#tsc-history-list');
+      const referenceLabelNode = root.querySelector('[data-reference-label]');
       const overallPositiveNode = root.querySelector('[data-overall-positive]');
       const overallCounterNode = root.querySelector('[data-overall-counter]');
       const overallNetNode = root.querySelector('[data-overall-net]');
@@ -241,6 +264,12 @@ const scoringChoices = [0, 1, 2, 3] as const;
         return new Date(year, month - 1, day);
       };
 
+      const isValidPeriod = (value) => {
+        const parsed = parseDate(value);
+        if (!parsed) return false;
+        return toDateKey(parsed) === value;
+      };
+
       const formatPeriod = (value) => {
         const parsed = parseDate(value);
         return parsed ? dateFormatter.format(parsed) : value;
@@ -282,18 +311,27 @@ const scoringChoices = [0, 1, 2, 3] as const;
         return base;
       };
 
+      const sanitizeStore = (candidate) => {
+        const base = { records: {}, referencePeriod: null };
+        if (!candidate || typeof candidate !== 'object') return base;
+        if (candidate.records && typeof candidate.records === 'object') {
+          base.records = candidate.records;
+        }
+        if (typeof candidate.referencePeriod === 'string' && candidate.referencePeriod.trim().length > 0) {
+          base.referencePeriod = candidate.referencePeriod;
+        }
+        return base;
+      };
+
       const readStore = () => {
         try {
           const raw = window.localStorage.getItem(STORAGE_KEY);
-          if (!raw) return { records: {} };
+          if (!raw) return sanitizeStore(null);
           const parsed = JSON.parse(raw);
-          if (!parsed || typeof parsed !== 'object' || typeof parsed.records !== 'object') {
-            return { records: {} };
-          }
-          return parsed;
+          return sanitizeStore(parsed);
         } catch {
           storageAvailable = false;
-          return { records: {} };
+          return sanitizeStore(null);
         }
       };
 
@@ -310,11 +348,29 @@ const scoringChoices = [0, 1, 2, 3] as const;
         record.note.trim().length > 0 || itemIds.some((id) => clampScore(record.scores[id]) > 0);
 
       let store = readStore();
-      let currentPeriod = toDateKey(getWeekStart());
+      if (store.referencePeriod && !store.records[store.referencePeriod]) {
+        store = {
+          ...store,
+          referencePeriod: null
+        };
+        writeStore(store);
+      }
+      const syncPeriodQuery = (period) => {
+        const url = new URL(window.location.href);
+        url.searchParams.set('week', period);
+        history.replaceState({ week: period }, '', url);
+      };
+
+      const readPeriodFromQuery = () => {
+        const period = new URLSearchParams(window.location.search).get('week') || '';
+        return isValidPeriod(period) ? period : '';
+      };
+
+      let currentPeriod = readPeriodFromQuery() || toDateKey(getWeekStart());
       let currentRecord = sanitizeRecord(currentPeriod, store.records[currentPeriod]);
 
-      const getLaneMetrics = (lane) => {
-        const values = lane.items.map((item) => clampScore(currentRecord.scores[item.id]));
+      const getLaneMetrics = (lane, record = currentRecord) => {
+        const values = lane.items.map((item) => clampScore(record.scores[item.id]));
         const total = values.reduce((sum, value) => sum + value, 0);
         const max = lane.items.length * 3;
         const ratio = max > 0 ? total / max : 0;
@@ -445,6 +501,49 @@ const scoringChoices = [0, 1, 2, 3] as const;
         return 'Private movement and institutional response are still thin.';
       };
 
+      const getRecordTotals = (record) => {
+        const metricsByLane = {};
+        lanes.forEach((lane) => {
+          metricsByLane[lane.id] = getLaneMetrics(lane, record);
+        });
+
+        const positiveLanes = lanes.filter((lane) => lane.kind !== 'counter');
+        const counterLanes = lanes.filter((lane) => lane.kind === 'counter');
+        const positiveTotal = positiveLanes.reduce(
+          (sum, lane) => sum + (metricsByLane[lane.id]?.total || 0),
+          0
+        );
+        const positiveMax = positiveLanes.reduce(
+          (sum, lane) => sum + (metricsByLane[lane.id]?.max || 0),
+          0
+        );
+        const counterTotal = counterLanes.reduce(
+          (sum, lane) => sum + (metricsByLane[lane.id]?.total || 0),
+          0
+        );
+        const net = positiveTotal - counterTotal;
+        const overallState = buildOverallState(net, positiveMax);
+        const overallSummary = buildOverallSummary(metricsByLane, overallState);
+
+        return {
+          metricsByLane,
+          positiveTotal,
+          positiveMax,
+          counterTotal,
+          net,
+          overallState,
+          overallSummary
+        };
+      };
+
+      const formatNet = (value) => `${value > 0 ? '+' : ''}${value}`;
+
+      const trimInline = (value) => {
+        const compact = String(value || '').trim().replace(/\s+/g, ' ');
+        if (!compact) return '';
+        return compact.length > 118 ? `${compact.slice(0, 115)}…` : compact;
+      };
+
       const renderSavedAt = () => {
         if (!(savedAtNode instanceof HTMLElement)) return;
         if (!storageAvailable) {
@@ -475,10 +574,17 @@ const scoringChoices = [0, 1, 2, 3] as const;
       };
 
       const renderLanes = () => {
-        const metricsByLane = {};
+        const {
+          metricsByLane,
+          positiveTotal,
+          counterTotal,
+          net,
+          overallState,
+          overallSummary
+        } = getRecordTotals(currentRecord);
+
         lanes.forEach((lane) => {
-          const metrics = getLaneMetrics(lane);
-          metricsByLane[lane.id] = metrics;
+          const metrics = metricsByLane[lane.id];
           const state =
             lane.kind === 'counter'
               ? getCounterLaneState(metrics.ratio)
@@ -501,29 +607,88 @@ const scoringChoices = [0, 1, 2, 3] as const;
           }
         });
 
-        const positiveLanes = lanes.filter((lane) => lane.kind !== 'counter');
-        const counterLanes = lanes.filter((lane) => lane.kind === 'counter');
-        const positiveTotal = positiveLanes.reduce(
-          (sum, lane) => sum + (metricsByLane[lane.id]?.total || 0),
-          0
-        );
-        const positiveMax = positiveLanes.reduce(
-          (sum, lane) => sum + (metricsByLane[lane.id]?.max || 0),
-          0
-        );
-        const counterTotal = counterLanes.reduce(
-          (sum, lane) => sum + (metricsByLane[lane.id]?.total || 0),
-          0
-        );
-        const net = positiveTotal - counterTotal;
-        const overallState = buildOverallState(net, positiveMax);
-        const overallSummary = buildOverallSummary(metricsByLane, overallState);
-
         if (overallPositiveNode instanceof HTMLElement) overallPositiveNode.textContent = String(positiveTotal);
         if (overallCounterNode instanceof HTMLElement) overallCounterNode.textContent = String(counterTotal);
         if (overallNetNode instanceof HTMLElement) overallNetNode.textContent = String(net);
         if (overallStateNode instanceof HTMLElement) overallStateNode.textContent = overallState;
         if (overallSummaryNode instanceof HTMLElement) overallSummaryNode.textContent = overallSummary;
+      };
+
+      const renderHistory = () => {
+        const referencePeriod =
+          typeof store.referencePeriod === 'string' && store.referencePeriod.trim().length > 0
+            ? store.referencePeriod
+            : null;
+
+        if (referenceLabelNode instanceof HTMLElement) {
+          referenceLabelNode.textContent = referencePeriod
+            ? `Reference week: ${formatPeriod(referencePeriod)}`
+            : 'Reference week: none';
+        }
+
+        if (setReferenceButton instanceof HTMLButtonElement) {
+          const isReference = referencePeriod === currentPeriod;
+          setReferenceButton.disabled = !hasMeaningfulData(currentRecord);
+          setReferenceButton.textContent = isReference
+            ? 'Current week is reference'
+            : 'Set current week as reference';
+        }
+
+        if (loadReferenceButton instanceof HTMLButtonElement) {
+          loadReferenceButton.disabled = !referencePeriod;
+        }
+
+        if (!(historyList instanceof HTMLOListElement)) return;
+
+        const historyPeriods = Object.entries(store.records)
+          .map(([period, record]) => ({
+            period,
+            record: sanitizeRecord(period, record)
+          }))
+          .filter(({ record }) => hasMeaningfulData(record))
+          .sort((left, right) => {
+            const rightDate = parseDate(right.period);
+            const leftDate = parseDate(left.period);
+            return (rightDate?.valueOf() || 0) - (leftDate?.valueOf() || 0);
+          })
+          .slice(0, 8);
+
+        if (historyPeriods.length === 0) {
+          historyList.innerHTML = '<li class="tsc-history__empty">No saved weeks yet.</li>';
+          return;
+        }
+
+        historyList.innerHTML = '';
+
+        historyPeriods.forEach(({ period, record }) => {
+          const totals = getRecordTotals(record);
+          const item = document.createElement('li');
+          item.className = 'tsc-history__item';
+          if (period === currentPeriod) item.classList.add('is-current');
+          if (referencePeriod === period) item.classList.add('is-reference');
+
+          const periodButton = document.createElement('button');
+          periodButton.type = 'button';
+          periodButton.className = 'tsc-history__period';
+          periodButton.dataset.period = period;
+          periodButton.textContent = formatPeriod(period);
+
+          const metrics = document.createElement('p');
+          metrics.className = 'tsc-history__metrics';
+          metrics.textContent = `Net ${formatNet(totals.net)} · ${totals.overallState}`;
+
+          item.append(periodButton, metrics);
+
+          const note = trimInline(record.note);
+          if (note) {
+            const noteNode = document.createElement('p');
+            noteNode.className = 'tsc-history__note';
+            noteNode.textContent = note;
+            item.append(noteNode);
+          }
+
+          historyList.append(item);
+        });
       };
 
       const renderAll = () => {
@@ -533,6 +698,7 @@ const scoringChoices = [0, 1, 2, 3] as const;
         renderButtons();
         renderLanes();
         renderSavedAt();
+        renderHistory();
       };
 
       const persistCurrentRecord = () => {
@@ -548,6 +714,7 @@ const scoringChoices = [0, 1, 2, 3] as const;
       const switchPeriod = (nextPeriod) => {
         currentPeriod = nextPeriod || toDateKey(getWeekStart());
         currentRecord = sanitizeRecord(currentPeriod, store.records[currentPeriod]);
+        syncPeriodQuery(currentPeriod);
         renderAll();
       };
 
@@ -568,7 +735,8 @@ const scoringChoices = [0, 1, 2, 3] as const;
       });
 
       periodInput.addEventListener('change', () => {
-        const nextPeriod = periodInput.value || toDateKey(getWeekStart());
+        const parsed = parseDate(periodInput.value);
+        const nextPeriod = parsed ? toDateKey(parsed) : toDateKey(getWeekStart());
         switchPeriod(nextPeriod);
       });
 
@@ -588,12 +756,47 @@ const scoringChoices = [0, 1, 2, 3] as const;
           if (!confirmed) return;
         }
         delete store.records[currentPeriod];
+        if (store.referencePeriod === currentPeriod) {
+          store.referencePeriod = null;
+        }
         writeStore(store);
         currentRecord = createBlankRecord(currentPeriod);
         renderAll();
       });
 
-      renderAll();
+      setReferenceButton?.addEventListener('click', () => {
+        if (!hasMeaningfulData(currentRecord)) return;
+        store.referencePeriod = currentPeriod;
+        writeStore(store);
+        renderAll();
+      });
+
+      loadReferenceButton?.addEventListener('click', () => {
+        if (!store.referencePeriod) return;
+        switchPeriod(store.referencePeriod);
+      });
+
+      historyList?.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        const periodButton = target.closest('[data-period]');
+        if (!(periodButton instanceof HTMLButtonElement)) return;
+        const period = periodButton.dataset.period;
+        if (!period) return;
+        switchPeriod(period);
+      });
+
+      window.addEventListener('popstate', () => {
+        const periodFromQuery = readPeriodFromQuery();
+        const nextPeriod = periodFromQuery || toDateKey(getWeekStart());
+        if (nextPeriod !== currentPeriod) {
+          currentPeriod = nextPeriod;
+          currentRecord = sanitizeRecord(currentPeriod, store.records[currentPeriod]);
+          renderAll();
+        }
+      });
+
+      switchPeriod(currentPeriod);
     })();
   </script>
 </section>
@@ -649,9 +852,9 @@ const scoringChoices = [0, 1, 2, 3] as const;
     border: 1px solid color-mix(in srgb, var(--tone-accent) 34%, var(--tone-line));
     border-radius: 999px;
     padding: 0.28rem 0.66rem;
-    font-size: 0.68rem;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
+    font-size: 0.76rem;
+    line-height: 1.42;
+    letter-spacing: 0.03em;
     color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
     background:
       linear-gradient(180deg, rgba(29, 155, 240, 0.18), rgba(29, 155, 240, 0.04)),
@@ -687,6 +890,8 @@ const scoringChoices = [0, 1, 2, 3] as const;
   .tsc-dek {
     margin: 0.75rem 0 0;
     max-width: 48rem;
+    font-size: 1.01rem;
+    line-height: 1.72;
   }
 
   .tsc-overall-card {
@@ -698,8 +903,8 @@ const scoringChoices = [0, 1, 2, 3] as const;
 
   .tsc-label {
     margin: 0;
-    font-size: 0.72rem;
-    letter-spacing: 0.12em;
+    font-size: 0.78rem;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
     color: var(--tone-muted);
   }
@@ -746,8 +951,8 @@ const scoringChoices = [0, 1, 2, 3] as const;
   }
 
   .tsc-field-label {
-    font-size: 0.78rem;
-    letter-spacing: 0.12em;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--tone-muted);
   }
@@ -764,7 +969,8 @@ const scoringChoices = [0, 1, 2, 3] as const;
 
   .tsc-field-note {
     color: var(--tone-muted);
-    font-size: 0.86rem;
+    font-size: 0.92rem;
+    line-height: 1.58;
   }
 
   .tsc-stats {
@@ -801,7 +1007,8 @@ const scoringChoices = [0, 1, 2, 3] as const;
 
   .tsc-scale-item p {
     margin: 0.35rem 0 0;
-    font-size: 0.86rem;
+    font-size: 0.9rem;
+    line-height: 1.56;
     color: var(--tone-muted);
   }
 
@@ -819,12 +1026,108 @@ const scoringChoices = [0, 1, 2, 3] as const;
 
   .tsc-actions {
     display: flex;
+    gap: 0.55rem;
+    flex-wrap: wrap;
     justify-content: flex-end;
   }
 
+  .tsc-reference-button,
   .tsc-reset-button {
     border-radius: 999px;
     padding: 0.6rem 1rem;
+  }
+
+  .tsc-history {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .tsc-history__head {
+    display: grid;
+    gap: 0.42rem;
+  }
+
+  .tsc-history__head h2 {
+    margin: 0;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: clamp(1.15rem, 2vw, 1.45rem);
+  }
+
+  .tsc-history__reference {
+    margin: 0;
+    color: var(--tone-muted);
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  .tsc-history__actions {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .tsc-history-button {
+    border-radius: 999px;
+    padding: 0.5rem 0.92rem;
+  }
+
+  .tsc-history__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .tsc-history__item {
+    border: 1px solid var(--tone-line);
+    border-radius: 0.86rem;
+    padding: 0.66rem 0.72rem;
+    background: color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .tsc-history__item.is-current {
+    border-color: color-mix(in srgb, var(--tone-accent) 44%, var(--tone-line));
+  }
+
+  .tsc-history__item.is-reference {
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--tone-accent) 35%, transparent) inset;
+  }
+
+  .tsc-history__period {
+    justify-self: flex-start;
+    border: none;
+    background: transparent;
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+    font: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--tone-accent) 42%, transparent);
+    text-underline-offset: 0.16rem;
+  }
+
+  .tsc-history__period:hover,
+  .tsc-history__period:focus-visible {
+    color: var(--tone-accent-glow);
+  }
+
+  .tsc-history__metrics,
+  .tsc-history__note,
+  .tsc-history__empty {
+    margin: 0;
+    color: var(--tone-muted);
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+
+  .tsc-history__empty {
+    border: 1px dashed var(--tone-line);
+    border-radius: 0.86rem;
+    padding: 0.72rem 0.74rem;
+    background: color-mix(in srgb, var(--tone-surface-strong) 82%, transparent);
   }
 
   .tsc-context-list {
@@ -876,8 +1179,8 @@ const scoringChoices = [0, 1, 2, 3] as const;
 
   .tsc-lane-kicker {
     color: var(--tone-muted);
-    font-size: 0.72rem;
-    letter-spacing: 0.12em;
+    font-size: 0.78rem;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
   }
 
@@ -888,7 +1191,8 @@ const scoringChoices = [0, 1, 2, 3] as const;
   .tsc-lane-summary-text {
     margin-top: 0.5rem;
     max-width: 56rem;
-    font-size: 0.95rem;
+    font-size: 0.98rem;
+    line-height: 1.66;
   }
 
   .tsc-lane-meta {
@@ -909,7 +1213,7 @@ const scoringChoices = [0, 1, 2, 3] as const;
     border: 1px solid var(--tone-line);
     background: color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
     padding: 0.4rem 0.75rem;
-    font-size: 0.86rem;
+    font-size: 0.9rem;
     line-height: 1;
   }
 
@@ -957,7 +1261,8 @@ const scoringChoices = [0, 1, 2, 3] as const;
 
   .tsc-item-help {
     color: var(--tone-muted);
-    font-size: 0.88rem;
+    font-size: 0.92rem;
+    line-height: 1.56;
   }
 
   .tsc-score-group {
@@ -1020,6 +1325,10 @@ const scoringChoices = [0, 1, 2, 3] as const;
     display: none;
   }
 
+  .tsc-root--embed .tsc-history {
+    display: none;
+  }
+
   .tsc-root--embed .tsc-hero,
   .tsc-root--embed .tsc-top-grid {
     gap: 0.75rem;
@@ -1032,6 +1341,10 @@ const scoringChoices = [0, 1, 2, 3] as const;
 
     .tsc-top-grid {
       grid-template-columns: minmax(0, 1.4fr) minmax(17rem, 0.9fr);
+    }
+
+    .tsc-history {
+      grid-column: 1 / -1;
     }
 
     .tsc-control-row {
@@ -1062,7 +1375,16 @@ const scoringChoices = [0, 1, 2, 3] as const;
       justify-content: stretch;
     }
 
+    .tsc-reference-button,
     .tsc-reset-button {
+      width: 100%;
+    }
+
+    .tsc-history__actions {
+      justify-content: stretch;
+    }
+
+    .tsc-history-button {
       width: 100%;
     }
   }

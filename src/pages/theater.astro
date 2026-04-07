@@ -1,5 +1,6 @@
 ---
 import EntryMediaBlock from '../components/EntryMediaBlock.astro';
+import CrossRouteResume from '../components/CrossRouteResume.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import profile from '../data/profile';
 import { formatLongArchiveUtcDate, formatShortArchiveUtcDate } from '../lib/date-formatting';
@@ -42,6 +43,13 @@ const theaterQuickStats = [
   { label: 'Medium lanes', value: String(featuredEntries.length) },
   { label: 'Total archive', value: String(archiveEntries.length) }
 ];
+const theaterShelves = ARCHIVE_MEDIUMS
+  .map((medium) => ({
+    medium,
+    label: getEntryDisplayMedium(medium),
+    items: stageEntries.filter((entry) => entry.data.medium === medium).slice(0, 4)
+  }))
+  .filter((shelf) => shelf.items.length > 0);
 ---
 
 <BaseLayout
@@ -145,6 +153,14 @@ const theaterQuickStats = [
                 {activeEntry ? 'Click a record from the queue to change the projection.' : 'The screen stays empty until a record is chosen.'}
               </span>
             </div>
+            <div class="theater-screening__controls" aria-label="Queue navigation">
+              <button type="button" class="theater-screening__button" data-theater-prev>
+                Previous in queue
+              </button>
+              <button type="button" class="theater-screening__button" data-theater-next>
+                Next in queue
+              </button>
+            </div>
           </div>
 
           <div class="theater-screen" aria-live="polite">
@@ -171,6 +187,10 @@ const theaterQuickStats = [
             {renderedPanels.map(({ entry, Content }) => {
               const showStatus = shouldShowEntryStatus(entry.data.status);
               const isActive = Boolean(activeEntry && entry.slug === activeEntry.slug);
+              const sameMedium = stageEntries.filter((candidate) => candidate.data.medium === entry.data.medium);
+              const mediumIndex = sameMedium.findIndex((candidate) => candidate.slug === entry.slug);
+              const previousInLane = mediumIndex > 0 ? sameMedium[mediumIndex - 1] : null;
+              const nextInLane = mediumIndex >= 0 && mediumIndex < sameMedium.length - 1 ? sameMedium[mediumIndex + 1] : null;
 
               return (
                 <article
@@ -210,6 +230,16 @@ const theaterQuickStats = [
                   <a href={getArchiveMediumHref(entry.data.medium)}>
                     Browse {getEntryDisplayMedium(entry.data.medium).toLowerCase()}
                   </a>
+                  {previousInLane && (
+                    <a href={`?entry=${previousInLane.slug}#stage`}>
+                      Previous in {getEntryDisplayMedium(entry.data.medium).toLowerCase()}
+                    </a>
+                  )}
+                  {nextInLane && (
+                    <a href={`?entry=${nextInLane.slug}#stage`}>
+                      Next in {getEntryDisplayMedium(entry.data.medium).toLowerCase()}
+                    </a>
+                  )}
                 </footer>
               </article>
               );
@@ -261,6 +291,35 @@ const theaterQuickStats = [
       </div>
     </section>
 
+    <section class="theater-shelves" aria-labelledby="theater-shelves-heading">
+      <header class="theater-shelves__head">
+        <p class="theater-stage__eyebrow">Program shelves</p>
+        <h2 id="theater-shelves-heading">Grouped runs for deliberate viewing</h2>
+      </header>
+      <div class="theater-shelves__grid">
+        {theaterShelves.map((shelf) => (
+          <article class="theater-shelf">
+            <header>
+              <h3>{shelf.label}</h3>
+              <a href={getArchiveMediumHref(shelf.medium)}>Open lane archive</a>
+            </header>
+            <ol>
+              {shelf.items.map((item) => (
+                <li>
+                  <a href={`?entry=${item.slug}#stage`}>{item.data.title}</a>
+                  <span>{formatShortArchiveUtcDate(item.data.date)}</span>
+                </li>
+              ))}
+            </ol>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="theater-resume-wrap" aria-label="Cross-route resume paths">
+      <CrossRouteResume current="theater" className="theater-resume" heading="Resume your other lanes" />
+    </section>
+
     <section class="theater-exit" aria-labelledby="theater-exit-heading">
       <p>The room stays open.</p>
       <h2 id="theater-exit-heading">Move back to the archive or out to the rest of the site.</h2>
@@ -290,9 +349,39 @@ const theaterQuickStats = [
       const stageCopy = document.querySelector('[data-theater-stage-copy]');
       const placeholder = document.querySelector('[data-theater-placeholder]');
       const stageSection = document.getElementById('stage');
+      const previousButton = document.querySelector('[data-theater-prev]');
+      const nextButton = document.querySelector('[data-theater-next]');
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const STORAGE_KEY = 'theater-last-entry-v1';
+      const saveLastEntry = (slug) => {
+        try {
+          window.localStorage.setItem(STORAGE_KEY, slug);
+        } catch {
+          // Ignore storage write issues and keep theater functional.
+        }
+      };
+      const readLastEntry = () => {
+        try {
+          return window.localStorage.getItem(STORAGE_KEY) || '';
+        } catch {
+          return '';
+        }
+      };
       const findSlug = (candidate) =>
         items.find((item) => item instanceof HTMLElement && item.dataset.entrySlug === candidate)?.dataset.entrySlug || null;
+      const getIndexForSlug = (slug) =>
+        items.findIndex((item) => item instanceof HTMLElement && item.dataset.entrySlug === slug);
+      const updateQueueControls = (activeSlug) => {
+        if (!(previousButton instanceof HTMLButtonElement) || !(nextButton instanceof HTMLButtonElement)) return;
+        const activeIndex = activeSlug ? getIndexForSlug(activeSlug) : -1;
+        if (activeIndex < 0) {
+          previousButton.disabled = items.length === 0;
+          nextButton.disabled = items.length === 0;
+          return;
+        }
+        previousButton.disabled = activeIndex <= 0;
+        nextButton.disabled = activeIndex >= items.length - 1;
+      };
       const scrollStageIntoView = () => {
         if (!(stageSection instanceof HTMLElement)) return;
         stageSection.scrollIntoView({
@@ -371,6 +460,8 @@ const theaterQuickStats = [
         if (stageCopy instanceof HTMLElement) {
           stageCopy.textContent = 'The screen stays empty until a record is chosen.';
         }
+
+        updateQueueControls(null);
       };
 
       if (!items.length || !panels.length) {
@@ -389,6 +480,8 @@ const theaterQuickStats = [
           }
           return;
         }
+
+        saveLastEntry(nextSlug);
 
         panels.forEach((panel) => {
           if (!(panel instanceof HTMLElement)) return;
@@ -474,9 +567,13 @@ const theaterQuickStats = [
           url.searchParams.set('entry', nextSlug);
           history.replaceState({ entry: nextSlug }, '', url);
         }
+
+        updateQueueControls(nextSlug);
       };
 
-      setActive(new URL(window.location.href).searchParams.get('entry'), false, true);
+      const requested = new URL(window.location.href).searchParams.get('entry');
+      const initialSlug = findSlug(requested || '') || findSlug(readLastEntry()) || null;
+      setActive(initialSlug, false, true);
 
       items.forEach((item) => {
         if (!(item instanceof HTMLAnchorElement)) return;
@@ -492,6 +589,30 @@ const theaterQuickStats = [
       window.addEventListener('popstate', () => {
         setActive(new URL(window.location.href).searchParams.get('entry'), false, true);
       });
+
+      const stepQueue = (direction) => {
+        const activeItem = items.find((item) => item instanceof HTMLElement && item.classList.contains('is-active'));
+        const activeSlug = activeItem instanceof HTMLElement ? activeItem.dataset.entrySlug || '' : '';
+        const activeIndex = activeSlug ? getIndexForSlug(activeSlug) : -1;
+        let targetIndex = activeIndex + direction;
+        if (activeIndex < 0) {
+          targetIndex = direction >= 0 ? 0 : items.length - 1;
+        }
+        if (targetIndex < 0 || targetIndex >= items.length) return;
+        const targetItem = items[targetIndex];
+        if (!(targetItem instanceof HTMLElement)) return;
+        const targetSlug = targetItem.dataset.entrySlug;
+        if (!targetSlug) return;
+        setActive(targetSlug, true);
+        scrollStageIntoView();
+      };
+
+      if (previousButton instanceof HTMLButtonElement) {
+        previousButton.addEventListener('click', () => stepQueue(-1));
+      }
+      if (nextButton instanceof HTMLButtonElement) {
+        nextButton.addEventListener('click', () => stepQueue(1));
+      }
     })();
   </script>
 </BaseLayout>
@@ -682,10 +803,9 @@ const theaterQuickStats = [
     align-items: center;
     justify-content: center;
     gap: 0.55rem;
-    color: rgba(244, 230, 204, 0.66);
-    font-size: 0.76rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    color: rgba(244, 230, 204, 0.72);
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
   }
 
   .theater-hero__facts span:not(:first-child)::before {
@@ -700,8 +820,8 @@ const theaterQuickStats = [
   .theater-screening__marquee p,
   .theater-exit p {
     margin: 0;
-    font-size: 0.72rem;
-    letter-spacing: 0.22em;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: rgba(244, 230, 204, 0.62);
   }
@@ -713,13 +833,13 @@ const theaterQuickStats = [
     margin: 0;
     font-weight: 600;
     letter-spacing: -0.04em;
-    line-height: 0.96;
+    line-height: 1.04;
     text-wrap: balance;
   }
 
   .theater-hero h1 {
     font-size: clamp(3rem, 7vw, 6rem);
-    max-width: 14ch;
+    max-width: 16ch;
     margin-inline: auto;
   }
 
@@ -734,7 +854,8 @@ const theaterQuickStats = [
   .theater-hero__lede {
     max-width: 39rem;
     margin-inline: auto;
-    font-size: 1.02rem;
+    font-size: 1.08rem;
+    line-height: 1.76;
   }
 
   .theater-hero__stats {
@@ -762,14 +883,14 @@ const theaterQuickStats = [
   }
 
   .theater-hero__stats li span {
-    font-size: 0.64rem;
+    font-size: 0.72rem;
     text-transform: uppercase;
-    letter-spacing: 0.11em;
+    letter-spacing: 0.08em;
     color: rgba(244, 230, 204, 0.7);
   }
 
   .theater-hero__stats li strong {
-    font-size: 0.95rem;
+    font-size: 1.02rem;
     color: rgba(255, 242, 230, 0.95);
   }
 
@@ -847,9 +968,92 @@ const theaterQuickStats = [
     text-align: center;
   }
 
+  .theater-shelves {
+    padding-inline: clamp(1.1rem, 4vw, 3rem);
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .theater-resume-wrap {
+    padding-inline: clamp(1.1rem, 4vw, 3rem);
+  }
+
+  .theater-shelves__head {
+    display: grid;
+    gap: 0.4rem;
+    max-width: 56rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .theater-shelves__head h2 {
+    margin: 0;
+    font-size: clamp(1.3rem, 2.3vw, 1.8rem);
+    line-height: 1.2;
+  }
+
+  .theater-shelves__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 0.8rem;
+  }
+
+  .theater-shelf {
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 16%, var(--line2));
+    border-radius: 1rem;
+    padding: 0.8rem 0.85rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+      color-mix(in srgb, var(--tone-surface-strong) 92%, transparent);
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.22);
+  }
+
+  .theater-shelf header {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.55rem;
+    align-items: baseline;
+  }
+
+  .theater-shelf header h3 {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.32;
+  }
+
+  .theater-shelf header a {
+    color: var(--tone-accent-glow);
+    text-decoration: none;
+    font-size: 0.8rem;
+  }
+
+  .theater-shelf ol {
+    margin: 0.58rem 0 0;
+    padding-left: 1rem;
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .theater-shelf li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.6rem;
+    align-items: baseline;
+  }
+
+  .theater-shelf li a {
+    color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+    text-decoration: none;
+  }
+
+  .theater-shelf li span {
+    font-size: 0.8rem;
+    color: color-mix(in srgb, var(--tone-text) 68%, var(--tone-muted) 32%);
+  }
+
   .theater-stage__intro h2,
   .theater-exit h2 {
-    font-size: clamp(1.45rem, 2.5vw, 2.2rem);
+    font-size: clamp(1.55rem, 2.7vw, 2.3rem);
   }
 
   .theater-room {
@@ -916,7 +1120,7 @@ const theaterQuickStats = [
     position: absolute;
     right: 0.78rem;
     top: 0.74rem;
-    font-size: 0.7rem;
+    font-size: 0.78rem;
     color: rgba(255, 178, 172, 0.55);
     transition: color 180ms ease;
   }
@@ -952,15 +1156,15 @@ const theaterQuickStats = [
   }
 
   .theater-picker__item strong {
-    font-size: 1rem;
-    line-height: 1.28;
+    font-size: 1.04rem;
+    line-height: 1.36;
     color: var(--theater-cream);
   }
 
   .theater-picker__item small,
   .theater-picker__source {
-    color: rgba(244, 230, 204, 0.56);
-    line-height: 1.45;
+    color: rgba(244, 230, 204, 0.66);
+    line-height: 1.52;
   }
 
   .theater-picker__body small {
@@ -971,9 +1175,8 @@ const theaterQuickStats = [
   }
 
   .theater-picker__source {
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
   }
 
   .theater-picker__pill {
@@ -984,8 +1187,8 @@ const theaterQuickStats = [
     border: 1px solid color-mix(in srgb, var(--tone-line) 88%, rgba(255, 255, 255, 0.03));
     border-radius: 999px;
     padding: 0.35rem 0.7rem;
-    font-size: 0.72rem;
-    letter-spacing: 0.12em;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: rgba(255, 218, 214, 0.88);
     background: linear-gradient(135deg, rgba(255, 61, 46, 0.22), rgba(255, 91, 78, 0.12));
@@ -1006,15 +1209,52 @@ const theaterQuickStats = [
     padding-inline: 0.2rem;
   }
 
+  .theater-screening__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .theater-screening__button {
+    appearance: none;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 30%, var(--line2));
+    border-radius: 999px;
+    padding: 0.36rem 0.74rem;
+    font-size: 0.8rem;
+    line-height: 1.3;
+    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015)),
+      color-mix(in srgb, var(--tone-surface) 84%, transparent);
+    cursor: pointer;
+    transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+  }
+
+  .theater-screening__button:hover,
+  .theater-screening__button:focus-visible {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--tone-accent) 56%, var(--line2));
+    background:
+      linear-gradient(180deg, rgba(255, 61, 46, 0.2), rgba(255, 61, 46, 0.08)),
+      color-mix(in srgb, var(--tone-surface) 88%, transparent);
+  }
+
+  .theater-screening__button:disabled {
+    opacity: 0.46;
+    cursor: not-allowed;
+    transform: none;
+  }
+
   .theater-screening__marquee h2 {
-    font-size: clamp(1.2rem, 2vw, 1.8rem);
-    max-width: 18ch;
+    font-size: clamp(1.3rem, 2.1vw, 1.9rem);
+    max-width: 21ch;
   }
 
   .theater-screening__marquee span {
     color: rgba(244, 230, 204, 0.62);
-    font-size: 0.88rem;
-    line-height: 1.55;
+    font-size: 0.94rem;
+    line-height: 1.62;
   }
 
   .theater-screen {
@@ -1070,9 +1310,8 @@ const theaterQuickStats = [
     display: flex;
     flex-wrap: wrap;
     gap: 0.45rem;
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
     color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
   }
 
@@ -1093,15 +1332,15 @@ const theaterQuickStats = [
     margin: 0;
     font-size: clamp(1.85rem, 3vw, 2.7rem);
     letter-spacing: -0.04em;
-    line-height: 1.02;
+    line-height: 1.08;
   }
 
   .theater-panel__status {
     border: 1px solid color-mix(in srgb, var(--tone-accent) 16%, var(--line2));
     border-radius: 999px;
     padding: 0.18rem 0.5rem;
-    font-size: 0.66rem;
-    letter-spacing: 0.08em;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     color: color-mix(in srgb, var(--tone-text) 74%, var(--tone-muted) 26%);
     background: color-mix(in srgb, var(--tone-surface-strong) 52%, transparent);
@@ -1124,7 +1363,7 @@ const theaterQuickStats = [
     border: 1px solid var(--line2);
     border-radius: 999px;
     padding: 0.22rem 0.52rem;
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
     background: color-mix(in srgb, var(--tone-surface) 85%, transparent);
   }
@@ -1175,8 +1414,8 @@ const theaterQuickStats = [
 
   .theater-notes__eyebrow {
     margin: 0;
-    font-size: 0.72rem;
-    letter-spacing: 0.16em;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: rgba(244, 230, 204, 0.56);
   }
@@ -1206,8 +1445,8 @@ const theaterQuickStats = [
   }
 
   .theater-notes__stack span {
-    font-size: 0.72rem;
-    letter-spacing: 0.12em;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: rgba(244, 230, 204, 0.56);
   }
