@@ -1,0 +1,845 @@
+.life-timeline {
+  width: var(--lt-width, auto);
+  max-width: var(--lt-max-width, 1080px);
+  margin: var(--lt-margin, 0 auto);
+  padding: var(--lt-padding, 0 clamp(1rem, 2.4vw, 1.75rem));
+  color: var(--lt-text);
+}
+
+.life-timeline__list {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.life-timeline__list::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: calc(-1 * var(--lt-top-extend, 0px));
+  bottom: 0;
+  width: 1px;
+  background: var(--lt-line);
+  transform: translateX(-0.5px);
+}
+
+.life-timeline__entry {
+  position: relative;
+  padding: clamp(0.32rem, 0.8vw, 0.55rem) 0 clamp(0.58rem, 1.25vw, 0.95rem);
+}
+
+.life-timeline__entry::before {
+  content: '';
+  position: absolute;
+  left: calc(50% - 7px);
+  top: clamp(1.08rem, 1.8vw, 1.3rem);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--lt-node);
+  border: 2px solid color-mix(in srgb, var(--lt-entry-ring) 92%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--lt-link) 10%, transparent);
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  z-index: 1;
+}
+
+.life-timeline__entry:hover::before,
+.life-timeline__entry:has(.life-timeline__disclosure[open])::before {
+  background: var(--lt-node-active);
+  transform: scale(1.15);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--lt-link) 18%, transparent),
+    0 0 0 7px color-mix(in srgb, var(--lt-link) 7%, transparent);
+}
+
+.life-timeline__disclosure {
+  display: block;
+}
+
+.life-timeline__disclosure > summary {
+  list-style: none;
+}
+
+.life-timeline__disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+
+.life-timeline__tick {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(2.2rem, 3vw, 3rem) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(0.7rem, 1.35vw, 1rem);
+  width: 100%;
+  padding: clamp(0.9rem, 1.7vw, 1.2rem) 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+}
+
+.life-timeline__tick:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--lt-link) 85%, transparent);
+  outline-offset: 4px;
+  border-radius: 1rem;
+}
+
+.life-timeline__side {
+  display: grid;
+  gap: 0.18rem;
+  min-width: 0;
+  min-height: var(--lt-side-min-height, auto);
+  padding: var(--lt-side-padding, 0);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.life-timeline__side--title {
+  align-content: start;
+}
+
+.life-timeline__side--summary {
+  align-content: start;
+  padding-top: clamp(0.15rem, 0.5vw, 0.3rem);
+}
+
+.life-timeline__peek {
+  display: inline-flex;
+  gap: 0.45rem;
+  margin-top: 0.62rem;
+  flex-wrap: wrap;
+}
+
+.life-timeline__peekImage {
+  width: 3.15rem;
+  height: 3.72rem;
+  border-radius: 0.6rem;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid color-mix(in srgb, var(--lt-panel-border) 66%, transparent);
+  opacity: 0.78;
+  filter: saturate(0.86) brightness(0.9);
+  transition: opacity 0.2s ease, filter 0.2s ease, transform 0.2s ease;
+}
+
+.life-timeline__entry--left .life-timeline__side--title {
+  grid-column: 1;
+  justify-items: end;
+  text-align: right;
+  padding-right: clamp(0.4rem, 1vw, 0.75rem);
+}
+
+.life-timeline__entry--left .life-timeline__side--summary {
+  grid-column: 3;
+  text-align: left;
+  padding-left: clamp(0.3rem, 0.9vw, 0.7rem);
+}
+
+.life-timeline__entry--right .life-timeline__side--title {
+  grid-column: 3;
+  text-align: left;
+  padding-left: clamp(0.4rem, 1vw, 0.75rem);
+}
+
+.life-timeline__entry--right .life-timeline__side--summary {
+  grid-column: 1;
+  justify-items: end;
+  text-align: right;
+  padding-right: clamp(0.3rem, 0.9vw, 0.7rem);
+}
+
+.life-timeline__center {
+  grid-column: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: clamp(0.62rem, 1vw, 0.82rem);
+}
+
+.life-timeline__dot {
+  width: 0.24rem;
+  height: 0.24rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--lt-node-active) 78%, transparent);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--lt-node-active) 10%, transparent);
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.life-timeline__year {
+  font-size: 0.74rem;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lt-soft);
+  transition: color 0.2s ease;
+}
+
+.life-timeline__label {
+  font-size: clamp(1.26rem, 2.05vw, 1.88rem);
+  font-family: var(--font-display, Georgia, serif);
+  font-weight: 600;
+  line-height: 1.12;
+  color: var(--lt-text);
+  transition: color 0.2s ease;
+  text-wrap: balance;
+}
+
+.life-timeline__meta {
+  font-size: 0.65rem;
+  font-family: 'Helvetica Neue', sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lt-soft);
+}
+
+.life-timeline__summary {
+  max-width: 31rem;
+  font-size: clamp(1.05rem, 1.22vw, 1.2rem);
+  line-height: 1.6;
+  color: var(--lt-summary-text);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.life-timeline__entry:hover .life-timeline__year,
+.life-timeline__entry:has(.life-timeline__disclosure[open]) .life-timeline__year,
+.life-timeline__entry:hover .life-timeline__label,
+.life-timeline__entry:has(.life-timeline__disclosure[open]) .life-timeline__label,
+.life-timeline__entry:hover .life-timeline__peekImage,
+.life-timeline__entry:has(.life-timeline__disclosure[open]) .life-timeline__peekImage {
+  color: var(--lt-text);
+}
+
+.life-timeline__entry:hover .life-timeline__peekImage,
+.life-timeline__entry:has(.life-timeline__disclosure[open]) .life-timeline__peekImage {
+  opacity: 0.98;
+  filter: saturate(0.96) brightness(0.98);
+  transform: translateY(-1px);
+}
+
+.life-timeline__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: fit-content;
+  margin-top: 0.28rem;
+  padding: 0.08rem 0 0.14rem;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--lt-panel-border) 68%, transparent);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--lt-soft);
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.life-timeline__tabLabel {
+  font-size: 0.7rem;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.life-timeline__entry:hover .life-timeline__tab,
+.life-timeline__entry:has(.life-timeline__disclosure[open]) .life-timeline__tab {
+  color: var(--lt-link);
+  border-color: color-mix(in srgb, var(--lt-link) 35%, var(--lt-panel-border));
+  background: transparent;
+}
+
+.life-timeline__arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.72rem;
+  height: 0.72rem;
+  opacity: 0.68;
+  transition: opacity 0.2s ease, transform 0.25s ease;
+}
+
+.life-timeline__entry:hover .life-timeline__arrow,
+.life-timeline__entry:has(.life-timeline__disclosure[open]) .life-timeline__arrow,
+.life-timeline__entry:hover .life-timeline__dot,
+.life-timeline__entry:has(.life-timeline__disclosure[open]) .life-timeline__dot {
+  opacity: 1;
+}
+
+.life-timeline__entry:has(.life-timeline__disclosure[open]) .life-timeline__arrow {
+  transform: rotate(90deg);
+}
+
+.life-timeline__entry:hover .life-timeline__dot,
+.life-timeline__entry:has(.life-timeline__disclosure[open]) .life-timeline__dot {
+  transform: scale(1);
+}
+
+.life-timeline__arrow svg {
+  width: 0.5rem;
+  height: 0.5rem;
+  fill: none;
+  stroke: var(--lt-text);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.life-timeline__panel {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition:
+    max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s ease;
+}
+
+.life-timeline__disclosure[open] .life-timeline__panel {
+  max-height: 1600px;
+  opacity: 1;
+}
+
+.life-timeline__panelInner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(2.2rem, 3vw, 3rem) minmax(0, 1fr);
+  gap: clamp(0.85rem, 1.8vw, 1.35rem);
+  padding: 0 0 clamp(0.9rem, 1.5vw, 1.35rem);
+}
+
+.life-timeline__panelAxis {
+  grid-column: 2;
+}
+
+.life-timeline__panelBody {
+  display: grid;
+  gap: 1rem;
+  padding-top: 0.95rem;
+  padding-bottom: var(--lt-panel-body-padding-bottom, 0);
+  max-width: var(--lt-panel-max-width, 27rem);
+  min-height: var(--lt-panel-min-height, auto);
+  border: 1px solid color-mix(in srgb, var(--lt-panel-border) 64%, transparent);
+  border-radius: 1.55rem;
+  background:
+    radial-gradient(120% 110% at 50% 0%, color-mix(in srgb, var(--lt-link) 8%, transparent), transparent 56%),
+    linear-gradient(180deg, color-mix(in srgb, var(--lt-entry-ring) 56%, transparent), color-mix(in srgb, var(--lt-entry-ring) 24%, transparent));
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.12);
+  backdrop-filter: none;
+}
+
+.life-timeline__panel--left .life-timeline__panelBody {
+  grid-column: 1;
+  justify-self: end;
+  text-align: right;
+  padding-right: var(--lt-panel-side-padding, clamp(0.4rem, 1vw, 0.75rem));
+  padding-left: 0;
+}
+
+.life-timeline__panel--right .life-timeline__panelBody {
+  grid-column: 3;
+  padding-left: var(--lt-panel-side-padding, clamp(0.4rem, 1vw, 0.75rem));
+  padding-right: 0;
+}
+
+.life-timeline__disclosure[open] .life-timeline__panelBody {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: min(100%, 72rem);
+  max-width: none;
+  padding: clamp(1.1rem, 2.1vw, 1.6rem);
+  border-color: color-mix(in srgb, var(--lt-link) 18%, var(--lt-panel-border));
+  background:
+    radial-gradient(120% 120% at 50% 0%, color-mix(in srgb, var(--lt-link) 12%, transparent), transparent 58%),
+    radial-gradient(75% 60% at 50% 12%, rgba(88, 122, 149, 0.08), transparent 62%),
+    linear-gradient(180deg, color-mix(in srgb, var(--lt-entry-ring) 68%, transparent), color-mix(in srgb, var(--lt-entry-ring) 28%, transparent));
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
+}
+
+.life-timeline__disclosure[open] .life-timeline__panel--left .life-timeline__panelBody,
+.life-timeline__disclosure[open] .life-timeline__panel--right .life-timeline__panelBody {
+  justify-self: center;
+  text-align: left;
+  padding-left: clamp(0.95rem, 1.8vw, 1.35rem);
+  padding-right: clamp(0.95rem, 1.8vw, 1.35rem);
+}
+
+.life-timeline__disclosure[open] .life-timeline__badges {
+  justify-content: flex-start;
+}
+
+.life-timeline__heroBlock {
+  grid-column: 1 / -1;
+  display: grid;
+  align-items: start;
+  gap: 1rem;
+}
+
+.life-timeline__contentGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 1.15rem 1.1rem;
+  grid-auto-flow: row dense;
+  align-items: start;
+}
+
+.life-timeline__visuals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.life-timeline__visual {
+  display: block;
+  min-height: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 0.8rem;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid color-mix(in srgb, var(--lt-panel-border) 70%, transparent);
+  opacity: 0.94;
+  filter: saturate(0.95) brightness(0.94);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+}
+
+.life-timeline__visual--1 {
+  grid-column: 1;
+}
+
+.life-timeline__visual--2 {
+  grid-column: 2;
+}
+
+.life-timeline__visual--3 {
+  grid-column: 3;
+}
+
+.life-timeline__heroCopy {
+  display: grid;
+  gap: 0.66rem;
+}
+
+.life-timeline__heroSummary {
+  margin: 0;
+  font-size: clamp(1.14rem, 1.33vw, 1.32rem);
+  line-height: 1.64;
+  color: var(--lt-hero-text);
+}
+
+.life-timeline__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.life-timeline__panel--left .life-timeline__badges {
+  justify-content: flex-end;
+}
+
+.life-timeline__badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.55rem;
+  padding: 0.12rem 0.58rem;
+  border: 1px solid var(--lt-badge-border);
+  border-radius: 999px;
+  font-size: 0.64rem;
+  font-family: 'Helvetica Neue', sans-serif;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--lt-badge-text);
+}
+
+.life-timeline__badge--ghost {
+  opacity: 0.9;
+}
+
+.life-timeline__block {
+  display: grid;
+  gap: 0.58rem;
+  min-width: 0;
+}
+
+.life-timeline__sectionLabel {
+  margin: 0;
+  font-size: 0.72rem;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lt-link);
+}
+
+.life-timeline__sectionLabel--ai {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.life-timeline__sectionLabelMark {
+  font-size: 0.74rem;
+  line-height: 1;
+  opacity: 0.8;
+}
+
+.life-timeline__accomplishments {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.68rem;
+}
+
+.life-timeline__accomplishment {
+  margin: 0;
+  font-size: clamp(1.02rem, 1.12vw, 1.14rem);
+  line-height: 1.7;
+  color: var(--lt-accomplishment-text);
+}
+
+.life-timeline__narratives {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.life-timeline__narrative {
+  display: grid;
+  gap: 0.38rem;
+  padding: 0.58rem 0.8rem 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--lt-panel-border) 58%, transparent);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--lt-entry-ring) 72%, transparent);
+}
+
+.life-timeline__narrativeHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.life-timeline__narrativeBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  min-height: 1.25rem;
+  padding: 0.08rem 0.42rem;
+  border: 1px solid color-mix(in srgb, var(--lt-badge-border) 88%, transparent);
+  border-radius: 999px;
+  font-size: 0.56rem;
+  font-family: 'Helvetica Neue', sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lt-badge-text);
+}
+
+.life-timeline__narrativeTitle {
+  font-size: 0.66rem;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lt-soft);
+}
+
+.life-timeline__narrativeBody {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.life-timeline__narrativeBody p {
+  margin: 0;
+  font-size: clamp(0.9rem, 1vw, 1rem);
+  line-height: 1.68;
+  color: var(--lt-accomplishment-text);
+}
+
+.life-timeline__showcases {
+  display: grid;
+  gap: 0.38rem;
+}
+
+.life-timeline__block--moments {
+  padding-top: 0.1rem;
+}
+
+.life-timeline__block--accomplishments {
+  grid-column: span 2;
+}
+
+.life-timeline__block--showcases,
+.life-timeline__block--moments {
+  min-width: 0;
+}
+
+.life-timeline__showcase {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: 0.72rem;
+  padding: 0.62rem 0 0.58rem;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--lt-panel-border) 58%, transparent);
+  border-radius: 0;
+  background: transparent;
+  text-decoration: none;
+  transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+}
+
+.life-timeline__showcase:hover {
+  transform: translateX(2px);
+  border-color: color-mix(in srgb, var(--lt-link) 34%, var(--lt-panel-border));
+  background: transparent;
+}
+
+.life-timeline__showcaseKind {
+  font-size: 0.68rem;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--lt-soft);
+}
+
+.life-timeline__showcaseLabel {
+  font-size: clamp(1.04rem, 1.14vw, 1.16rem);
+  line-height: 1.42;
+  color: var(--lt-text);
+}
+
+.life-timeline__moments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.life-timeline__moment {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.55rem;
+  padding: 0.16rem 0.58rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--lt-badge-border) 92%, transparent);
+  color: var(--lt-badge-text);
+  font-size: 0.7rem;
+  font-family: 'Helvetica Neue', sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.life-timeline__link {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  min-height: 1.65rem;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--lt-panel-border);
+  font-size: 0.6rem;
+  font-family: 'Helvetica Neue', sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lt-link);
+  text-decoration: none;
+}
+
+.life-timeline__link:hover {
+  color: var(--lt-text);
+  border-bottom-color: var(--lt-link);
+}
+
+@media (min-width: 721px) {
+  .life-timeline__heroBlock {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 1.15rem 1.5rem;
+    align-items: start;
+  }
+
+  .life-timeline__visuals {
+    grid-column: 2;
+    justify-self: end;
+    width: min(100%, 28rem);
+  }
+
+  .life-timeline__heroCopy {
+    grid-column: 1;
+    max-width: 30rem;
+    padding-top: 0.12rem;
+  }
+
+  .life-timeline__contentGrid {
+    grid-template-columns: minmax(0, 1.2fr) repeat(2, minmax(16rem, 0.8fr));
+    gap: 1.15rem 1.1rem;
+  }
+
+  .life-timeline__block--accomplishments {
+    grid-column: 1;
+  }
+
+  .life-timeline__block--showcases {
+    grid-column: 2;
+  }
+
+  .life-timeline__block--moments {
+    grid-column: 3;
+  }
+}
+
+@media (max-width: 720px) {
+  .life-timeline {
+    padding-inline: 1rem;
+  }
+
+  .life-timeline__list::before {
+    left: 0.95rem;
+    transform: none;
+  }
+
+  .life-timeline__entry::before {
+    left: 0.6rem;
+    top: 1.12rem;
+  }
+
+  .life-timeline__tick,
+  .life-timeline__panelInner {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+
+  .life-timeline__center,
+  .life-timeline__panelAxis {
+    display: none;
+  }
+
+  .life-timeline__side--title,
+  .life-timeline__side--summary,
+  .life-timeline__entry--left .life-timeline__side--title,
+  .life-timeline__entry--left .life-timeline__side--summary,
+  .life-timeline__entry--right .life-timeline__side--title,
+  .life-timeline__entry--right .life-timeline__side--summary,
+  .life-timeline__panel--left .life-timeline__panelBody,
+  .life-timeline__panel--right .life-timeline__panelBody {
+    grid-column: 1;
+    justify-items: start;
+    justify-self: stretch;
+    text-align: left;
+    max-width: none;
+    padding-left: 1.85rem;
+    padding-right: 0;
+    min-height: auto;
+  }
+
+  .life-timeline__arrow {
+    margin-top: 0;
+  }
+
+  .life-timeline__panel--left .life-timeline__badges {
+    justify-content: flex-start;
+  }
+
+  .life-timeline__disclosure[open] .life-timeline__panelBody {
+    width: 100%;
+    padding: 0.85rem 0.8rem;
+  }
+
+  .life-timeline__disclosure[open] .life-timeline__panel--left .life-timeline__panelBody,
+  .life-timeline__disclosure[open] .life-timeline__panel--right .life-timeline__panelBody {
+    padding-left: 0.95rem;
+    padding-right: 0.95rem;
+  }
+
+  .life-timeline__narrative {
+    padding-inline: 0.6rem;
+  }
+
+  .life-timeline__visuals {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto;
+    gap: 0.45rem;
+  }
+
+  .life-timeline__visual--1,
+  .life-timeline__visual--2,
+  .life-timeline__visual--3 {
+    grid-column: auto;
+    grid-row: auto;
+    border-radius: 0.75rem;
+    transform: none;
+    aspect-ratio: 1 / 1.12;
+  }
+
+  .life-timeline__visual--1 {
+    min-height: 0;
+    grid-column: 1 / -1;
+    aspect-ratio: 16 / 10;
+  }
+
+  .life-timeline__heroBlock {
+    gap: 0.8rem;
+  }
+
+  .life-timeline__heroCopy {
+    gap: 0.5rem;
+  }
+
+  .life-timeline__heroSummary {
+    font-size: clamp(1rem, 4.9vw, 1.14rem);
+    line-height: 1.55;
+  }
+
+  .life-timeline__badges {
+    gap: 0.35rem;
+  }
+
+  .life-timeline__badge {
+    min-height: 1.45rem;
+    padding: 0.1rem 0.5rem;
+    font-size: 0.6rem;
+  }
+
+  .life-timeline__contentGrid {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .life-timeline__block--moments {
+    grid-column: auto;
+  }
+
+  .life-timeline__block--accomplishments {
+    grid-column: auto;
+  }
+
+  .life-timeline__block--showcases {
+    grid-column: auto;
+  }
+
+  .life-timeline__peek {
+    justify-content: flex-start;
+  }
+
+  .life-timeline__block {
+    gap: 0.45rem;
+  }
+
+  .life-timeline__accomplishment {
+    font-size: clamp(0.95rem, 4vw, 1.02rem);
+    line-height: 1.62;
+  }
+
+  .life-timeline__showcaseLabel {
+    font-size: clamp(0.95rem, 4vw, 1.06rem);
+  }
+
+  .life-timeline__moments {
+    gap: 0.35rem;
+  }
+
+  .life-timeline__moment {
+    padding: 0.14rem 0.5rem;
+    font-size: 0.64rem;
+  }
+}

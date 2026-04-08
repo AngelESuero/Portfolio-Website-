@@ -1,0 +1,21 @@
+---
+interface Props {
+  id: string;
+  defaultVisible?: boolean;
+  class?: string;
+}
+
+const { id, defaultVisible = false, class: className } = Astro.props;
+---
+
+<div
+  class:list={['tab-panel', className]}
+  id={`panel-${id}`}
+  data-tab-panel={id}
+  role="tabpanel"
+  aria-labelledby={`tab-${id}`}
+  hidden={!defaultVisible}
+  aria-hidden={!defaultVisible ? 'true' : 'false'}
+>
+  <slot />
+</div>

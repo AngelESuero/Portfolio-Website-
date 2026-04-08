@@ -1,0 +1,59 @@
+---
+interface Props {
+  text: string;
+  label?: string;
+  variant?: 'compact' | 'feature';
+}
+
+const { text, label, variant = 'compact' } = Astro.props as Props;
+const trimmedText = text.trim();
+---
+
+{trimmedText && (
+  <blockquote class:list={['voice-excerpt', `voice-excerpt--${variant}`]}>
+    <p class="voice-excerpt__text">{trimmedText}</p>
+    {label && <p class="voice-excerpt__label">{label}</p>}
+  </blockquote>
+)}
+
+<style>
+  .voice-excerpt {
+    margin: 0;
+    display: grid;
+    gap: 0.55rem;
+    padding: 0.95rem 0 0.85rem 1rem;
+    border-left: 2px solid color-mix(in srgb, var(--tone-accent) 34%, var(--line2));
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--tone-accent) 7%, transparent),
+      transparent 60%
+    );
+    border-radius: 0.8rem;
+  }
+
+  .voice-excerpt__text {
+    margin: 0;
+    color: color-mix(in srgb, var(--tone-text) 93%, var(--tone-muted) 7%);
+    line-height: 1.65;
+  }
+
+  .voice-excerpt__label {
+    margin: 0;
+    font-size: 0.7rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  }
+
+  .voice-excerpt--compact .voice-excerpt__text {
+    font-size: 0.96rem;
+  }
+
+  .voice-excerpt--feature {
+    padding: 1.05rem 0 0.95rem 1rem;
+  }
+
+  .voice-excerpt--feature .voice-excerpt__text {
+    font-size: clamp(1.02rem, 1.65vw, 1.18rem);
+  }
+</style>

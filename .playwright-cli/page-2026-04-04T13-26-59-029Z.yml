@@ -1,0 +1,173 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Aes's Path Toward Life" [ref=e4] [cursor=pointer]:
+        - /url: /
+      - navigation "Main navigation" [ref=e5]:
+        - link "Home" [ref=e6] [cursor=pointer]:
+          - /url: /
+        - link "Work" [ref=e7] [cursor=pointer]:
+          - /url: /work
+        - link "Theater" [ref=e8] [cursor=pointer]:
+          - /url: /theater
+        - link "Archive" [ref=e9] [cursor=pointer]:
+          - /url: /archive
+        - link "About" [ref=e10] [cursor=pointer]:
+          - /url: /about
+        - link "Contact" [ref=e11] [cursor=pointer]:
+          - /url: /contact
+      - group "Homepage index mode" [ref=e13]:
+        - button "Standard" [pressed] [ref=e14] [cursor=pointer]
+        - button "Advanced" [ref=e15] [cursor=pointer]
+  - generic [ref=e16]:
+    - main [ref=e17]:
+      - generic [ref=e19]:
+        - region "Angel Suero" [ref=e20]:
+          - generic [ref=e21]:
+            - paragraph [ref=e22]: A Path Toward Life
+            - heading "Angel Suero" [level=1] [ref=e23]
+            - paragraph [ref=e24]: Music production, visual storytelling, and Newark-rooted community work in one frame.
+            - generic "Primary routes" [ref=e25]:
+              - link "Browse all" [ref=e26] [cursor=pointer]:
+                - /url: "#all-pages"
+              - link "Selected work" [ref=e27] [cursor=pointer]:
+                - /url: /work
+              - link "Contact" [ref=e28] [cursor=pointer]:
+                - /url: /contact
+            - generic "Quick context" [ref=e29]:
+              - generic [ref=e30]:
+                - term [ref=e31]: Base
+                - definition [ref=e32]: Newark, NJ
+              - generic [ref=e33]:
+                - term [ref=e34]: Practice
+                - definition [ref=e35]: Music Producer / Visual Storyteller / Community Builder
+              - generic [ref=e36]:
+                - term [ref=e37]: Mode
+                - definition [ref=e38]: Archive the process
+          - figure "Present tense archive A portrait of the archive, still in motion." [ref=e39]:
+            - img "Angel Suero smiling against a neutral wall" [ref=e40]
+            - generic [ref=e41]:
+              - generic [ref=e42]: Present tense archive
+              - generic [ref=e43]: A portrait of the archive, still in motion.
+        - region "Choose a chamber." [ref=e44]:
+          - generic [ref=e45]:
+            - generic [ref=e47]:
+              - paragraph [ref=e48]: Every page
+              - heading "Choose a chamber." [level=2] [ref=e49]
+            - generic [ref=e50]:
+              - generic [ref=e51]:
+                - paragraph [ref=e52]: Core sections
+                - paragraph [ref=e53]:
+                  - generic [ref=e54]: 11 rooms
+                  - generic [ref=e55]: Standard field
+              - list [ref=e56]:
+                - listitem [ref=e57]:
+                  - button "Portfolio 01 Work Selected projects, systems, and outcomes." [ref=e58] [cursor=pointer]:
+                    - generic [ref=e59]:
+                      - generic [ref=e60]: Portfolio
+                      - generic [ref=e61]: "01"
+                    - generic [ref=e62]: Work
+                    - generic [ref=e63]: Selected projects, systems, and outcomes.
+                    - generic [ref=e64]: Open ↗
+                - listitem [ref=e65]:
+                  - button "Text 02 Writing Essays, notes, and source voice." [ref=e66] [cursor=pointer]:
+                    - generic [ref=e67]:
+                      - generic [ref=e68]: Text
+                      - generic [ref=e69]: "02"
+                    - generic [ref=e70]: Writing
+                    - generic [ref=e71]: Essays, notes, and source voice.
+                    - generic [ref=e72]: Open ↗
+                - listitem [ref=e73]:
+                  - button "Media 03 Archive Video, audio, and process fragments." [ref=e74] [cursor=pointer]:
+                    - generic [ref=e75]:
+                      - generic [ref=e76]: Media
+                      - generic [ref=e77]: "03"
+                    - generic [ref=e78]: Archive
+                    - generic [ref=e79]: Video, audio, and process fragments.
+                    - generic [ref=e80]: Open ↗
+                - listitem [ref=e81]:
+                  - button "Sound 04 Music Productions, releases, and sessions." [ref=e82] [cursor=pointer]:
+                    - generic [ref=e83]:
+                      - generic [ref=e84]: Sound
+                      - generic [ref=e85]: "04"
+                    - generic [ref=e86]: Music
+                    - generic [ref=e87]: Productions, releases, and sessions.
+                    - generic [ref=e88]: Open ↗
+                - listitem [ref=e89]:
+                  - button "Performance 05 Theater Stage work and performance." [ref=e90] [cursor=pointer]:
+                    - generic [ref=e91]:
+                      - generic [ref=e92]: Performance
+                      - generic [ref=e93]: "05"
+                    - generic [ref=e94]: Theater
+                    - generic [ref=e95]: Stage work and performance.
+                    - generic [ref=e96]: Open ↗
+                - listitem [ref=e97]:
+                  - button "Civic 06 Newark Community work and civic output." [ref=e98] [cursor=pointer]:
+                    - generic [ref=e99]:
+                      - generic [ref=e100]: Civic
+                      - generic [ref=e101]: "06"
+                    - generic [ref=e102]: Newark
+                    - generic [ref=e103]: Community work and civic output.
+                    - generic [ref=e104]: Open ↗
+                - listitem [ref=e105]:
+                  - button "Practice 07 Focus Discipline and attention practice." [ref=e106] [cursor=pointer]:
+                    - generic [ref=e107]:
+                      - generic [ref=e108]: Practice
+                      - generic [ref=e109]: "07"
+                    - generic [ref=e110]: Focus
+                    - generic [ref=e111]: Discipline and attention practice.
+                    - generic [ref=e112]: Open ↗
+                - listitem [ref=e113]:
+                  - button "Process 08 Studio Studio sessions and process." [ref=e114] [cursor=pointer]:
+                    - generic [ref=e115]:
+                      - generic [ref=e116]: Process
+                      - generic [ref=e117]: "08"
+                    - generic [ref=e118]: Studio
+                    - generic [ref=e119]: Studio sessions and process.
+                    - generic [ref=e120]: Open ↗
+                - listitem [ref=e121]:
+                  - button "Space 09 Room Rooms and spatial work." [ref=e122] [cursor=pointer]:
+                    - generic [ref=e123]:
+                      - generic [ref=e124]: Space
+                      - generic [ref=e125]: "09"
+                    - generic [ref=e126]: Room
+                    - generic [ref=e127]: Rooms and spatial work.
+                    - generic [ref=e128]: Open ↗
+                - listitem [ref=e129]:
+                  - button "Reference 10 Resources Resource collection." [ref=e130] [cursor=pointer]:
+                    - generic [ref=e131]:
+                      - generic [ref=e132]: Reference
+                      - generic [ref=e133]: "10"
+                    - generic [ref=e134]: Resources
+                    - generic [ref=e135]: Resource collection.
+                    - generic [ref=e136]: Open ↗
+                - listitem [ref=e137]:
+                  - button "Platforms 11 Social Platform overview." [ref=e138] [cursor=pointer]:
+                    - generic [ref=e139]:
+                      - generic [ref=e140]: Platforms
+                      - generic [ref=e141]: "11"
+                    - generic [ref=e142]: Social
+                    - generic [ref=e143]: Platform overview.
+                    - generic [ref=e144]: Open ↗
+        - text: 01 Browser 02 Signals 03 Flow
+    - contentinfo [ref=e145]:
+      - paragraph [ref=e147]: © 2026 Angel Suero. Timeline/archive in progress.
+  - generic "Music player" [ref=e148]:
+    - button "Toggle music player" [ref=e149] [cursor=pointer]:
+      - generic [ref=e150]: ♫
+      - generic: My First Beat Tape
+  - generic [ref=e153]:
+    - button "Menu" [ref=e154]:
+      - img [ref=e156]
+      - generic: Menu
+    - button "Inspect" [ref=e160]:
+      - img [ref=e162]
+      - generic: Inspect
+    - button "Audit" [ref=e164]:
+      - generic [ref=e165]:
+        - img [ref=e166]
+        - img [ref=e169]
+      - generic: Audit
+    - button "Settings" [ref=e172]:
+      - img [ref=e174]
+      - generic: Settings

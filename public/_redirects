@@ -1,0 +1,6 @@
+/social /distribution 301
+/social/* /distribution 301
+/room/social /distribution 301
+/discord /distribution 301
+/link-hub /distribution 301
+/elsewhere /distribution 301

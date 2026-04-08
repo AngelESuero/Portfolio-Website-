@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#07090d" />
+      <stop offset="45%" stop-color="#11161d" />
+      <stop offset="100%" stop-color="#050609" />
+    </linearGradient>
+    <radialGradient id="warmGlow" cx="0.38" cy="0.23" r="0.58">
+      <stop offset="0%" stop-color="#b97a2d" stop-opacity="0.34" />
+      <stop offset="58%" stop-color="#b97a2d" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#b97a2d" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="coolGlow" cx="0.78" cy="0.3" r="0.52">
+      <stop offset="0%" stop-color="#587a95" stop-opacity="0.22" />
+      <stop offset="62%" stop-color="#587a95" stop-opacity="0.06" />
+      <stop offset="100%" stop-color="#587a95" stop-opacity="0" />
+    </radialGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch" />
+      <feColorMatrix type="saturate" values="0" />
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 0.08" />
+      </feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)" />
+  <rect width="1600" height="900" fill="url(#warmGlow)" />
+  <rect width="1600" height="900" fill="url(#coolGlow)" />
+  <g opacity="0.26">
+    <circle cx="280" cy="720" r="220" fill="#b97a2d" opacity="0.08" />
+    <circle cx="1240" cy="650" r="260" fill="#587a95" opacity="0.08" />
+    <circle cx="840" cy="180" r="150" fill="#ede3d1" opacity="0.04" />
+  </g>
+  <rect width="1600" height="900" filter="url(#grain)" opacity="0.28" />
+</svg>

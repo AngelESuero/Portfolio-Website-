@@ -1,0 +1,176 @@
+---
+export interface Tab {
+  id: string;
+  label: string;
+  defaultActive?: boolean;
+}
+
+interface Props {
+  section: string;
+  title: string;
+  tabs: Tab[];
+  class?: string;
+}
+
+const { section, title, tabs, class: className } = Astro.props;
+const defaultTab = tabs.find((t) => t.defaultActive)?.id ?? tabs[0]?.id ?? '';
+---
+
+<div class:list={['section-shell', className]} data-section={section} data-active-tab={defaultTab}>
+  <nav class="section-shell__nav" aria-label={`${title} sections`}>
+    <div class="section-shell__nav-inner">
+      <span class="section-shell__label">{title}</span>
+      <div class="section-shell__tabs" role="tablist" aria-label={`${title} tabs`}>
+        {tabs.map((tab) => (
+          <button
+            class:list={['section-shell__tab', { 'is-active': tab.id === defaultTab }]}
+            role="tab"
+            aria-selected={tab.id === defaultTab ? 'true' : 'false'}
+            aria-controls={`panel-${tab.id}`}
+            data-tab={tab.id}
+            type="button"
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  </nav>
+
+  <div class="section-shell__body">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .section-shell {
+    display: grid;
+    gap: 0;
+  }
+
+  .section-shell__nav {
+    position: sticky;
+    top: var(--header-height, 3.75rem);
+    z-index: 40;
+    background: color-mix(in srgb, var(--tone-surface, var(--tone-bg)) 95%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--tone-line);
+  }
+
+  .section-shell__nav-inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: min(1200px, calc(100% - clamp(1rem, 4vw, 3rem) * 2));
+    margin: 0 auto;
+    padding: 0.55rem 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .section-shell__nav-inner::-webkit-scrollbar {
+    display: none;
+  }
+
+  .section-shell__label {
+    flex-shrink: 0;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--tone-accent);
+    padding-right: 0.75rem;
+    border-right: 1px solid var(--tone-line);
+  }
+
+  .section-shell__tabs {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .section-shell__tab {
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--platform-ui-radius, 999px);
+    border: 1px solid transparent;
+    background: transparent;
+    color: color-mix(in srgb, var(--tone-text) 52%, transparent);
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+      color 120ms ease,
+      background 120ms ease,
+      border-color 120ms ease;
+    white-space: nowrap;
+  }
+
+  .section-shell__tab:hover {
+    color: var(--tone-text);
+    background: var(--tone-surface-strong);
+  }
+
+  .section-shell__tab.is-active,
+  .section-shell__tab[aria-selected="true"] {
+    color: var(--tone-text);
+    background: var(--tone-surface-strong);
+    border-color: var(--tone-line);
+  }
+
+  .section-shell__body {
+    min-height: 0;
+  }
+</style>
+
+<script>
+  const initSectionShell = (shell: HTMLElement) => {
+    if (shell.dataset.shellReady === 'true') return;
+    shell.dataset.shellReady = 'true';
+
+    const section = shell.dataset.section ?? '';
+    const STORAGE_KEY = section ? `section-tab-${section}` : null;
+
+    const tabs = shell.querySelectorAll<HTMLButtonElement>('.section-shell__tab');
+    const panels = shell.querySelectorAll<HTMLElement>('[data-tab-panel]');
+
+    const activate = (id: string) => {
+      shell.dataset.activeTab = id;
+
+      tabs.forEach((tab) => {
+        const active = tab.dataset.tab === id;
+        tab.classList.toggle('is-active', active);
+        tab.setAttribute('aria-selected', String(active));
+      });
+
+      panels.forEach((panel) => {
+        const active = panel.dataset.tabPanel === id;
+        panel.hidden = !active;
+        panel.setAttribute('aria-hidden', String(!active));
+      });
+
+      if (STORAGE_KEY) sessionStorage.setItem(STORAGE_KEY, id);
+    };
+
+    // Restore saved tab
+    const saved = STORAGE_KEY ? sessionStorage.getItem(STORAGE_KEY) : null;
+    const initial = saved && [...tabs].some((t) => t.dataset.tab === saved)
+      ? saved
+      : shell.dataset.activeTab ?? tabs[0]?.dataset.tab ?? '';
+
+    if (initial) activate(initial);
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        if (tab.dataset.tab) activate(tab.dataset.tab);
+      });
+    });
+  };
+
+  const attachShells = () => {
+    document.querySelectorAll<HTMLElement>('.section-shell').forEach(initSectionShell);
+  };
+
+  document.addEventListener('astro:page-load', attachShells);
+  attachShells();
+</script>

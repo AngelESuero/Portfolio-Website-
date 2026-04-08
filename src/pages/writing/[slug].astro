@@ -17,6 +17,17 @@ const allPosts = (await getAllPosts()).sort((a, b) => b.data.date.valueOf() - a.
 const currentIndex = allPosts.findIndex((entry) => entry.slug === post.slug);
 const newerPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
 const olderPost = currentIndex >= 0 && currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+const currentTags = new Set(post.data.tags.map((tag) => tag.trim().toLowerCase()).filter(Boolean));
+const relatedPosts = allPosts
+  .filter((entry) => entry.slug !== post.slug)
+  .map((entry) => {
+    const sharedTags = entry.data.tags.filter((tag) => currentTags.has(tag.trim().toLowerCase())).length;
+    return { entry, sharedTags };
+  })
+  .filter((candidate) => candidate.sharedTags > 0)
+  .sort((left, right) => right.sharedTags - left.sharedTags || right.entry.data.date.valueOf() - left.entry.data.date.valueOf())
+  .slice(0, 3)
+  .map((candidate) => candidate.entry);
 const postReady = isPostReady(post);
 const voiceExcerpt = postReady ? getContentVoiceExcerpt(post, 220) : '';
 const wordCount = post.body ? post.body.trim().split(/\s+/).length : 0;
@@ -43,6 +54,16 @@ const readingTime = Math.max(1, Math.round(wordCount / 200));
 
     <footer class="writing-entry-footer">
       <a href="/rss.xml" class="writing-entry-rss">Follow via RSS</a>
+      {relatedPosts.length > 0 && (
+        <section class="writing-entry-related" aria-label="Related pieces">
+          <p>Continue this thread</p>
+          <ul>
+            {relatedPosts.map((related) => (
+              <li><a href={`/writing/${related.slug}`}>{related.data.title}</a></li>
+            ))}
+          </ul>
+        </section>
+      )}
       <nav class="writing-entry-nav" aria-label="Adjacent posts">
         {newerPost && (
           <a href={`/writing/${newerPost.slug}`} class="writing-entry-nav-link">
@@ -173,6 +194,33 @@ const readingTime = Math.max(1, Math.round(wordCount / 200));
   .writing-entry-rss:hover,
   .writing-entry-rss:focus-visible {
     border-color: color-mix(in srgb, var(--tone-accent) 85%, transparent);
+  }
+
+  .writing-entry-related {
+    border: 1px solid var(--line2);
+    border-radius: 0.8rem;
+    background: color-mix(in srgb, var(--tone-surface) 84%, transparent);
+    padding: 0.75rem 0.8rem;
+  }
+
+  .writing-entry-related p {
+    margin: 0;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: color-mix(in srgb, var(--tone-text) 74%, var(--tone-muted) 26%);
+  }
+
+  .writing-entry-related ul {
+    margin: 0.6rem 0 0;
+    padding-left: 1rem;
+    display: grid;
+    gap: 0.36rem;
+  }
+
+  .writing-entry-related a {
+    color: var(--tone-accent-glow);
+    text-decoration: none;
   }
 
   .writing-entry-nav {

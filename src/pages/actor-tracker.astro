@@ -1,0 +1,1369 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const repCategories = [
+  {
+    slug: 'voice',
+    label: 'Voice + breath',
+    cue: 'Warm-ups, diction, breath support, resonance.'
+  },
+  {
+    slug: 'scene',
+    label: 'Scene work',
+    cue: 'Objectives, listening, beat changes, partner reads.'
+  },
+  {
+    slug: 'monologue',
+    label: 'Monologue reps',
+    cue: 'Memorization, precision, emotional turns.'
+  },
+  {
+    slug: 'camera',
+    label: 'On-camera',
+    cue: 'Slate practice, self-tapes, eyeline control.'
+  },
+  {
+    slug: 'movement',
+    label: 'Movement',
+    cue: 'Body availability, posture, rhythm, presence.'
+  },
+  {
+    slug: 'outreach',
+    label: 'Submissions',
+    cue: 'Casting sites, outreach, follow-up, keeping the line warm.'
+  }
+] as const;
+
+const materialCards = [
+  {
+    slug: 'headshots',
+    label: 'Headshots',
+    detail: 'Images that match how you look right now.'
+  },
+  {
+    slug: 'resume',
+    label: 'Resume',
+    detail: 'Credits, training, special skills, and clean formatting.'
+  },
+  {
+    slug: 'reel',
+    label: 'Reel',
+    detail: 'Short proof of tone, presence, and range.'
+  },
+  {
+    slug: 'slate',
+    label: 'Slate',
+    detail: 'Fast, clear delivery that sounds like a real person.'
+  },
+  {
+    slug: 'monologue-bank',
+    label: 'Monologue bank',
+    detail: 'A small stack of pieces that are truly available in the body.'
+  },
+  {
+    slug: 'tape-setup',
+    label: 'Self-tape setup',
+    detail: 'Lighting, framing, sound, background, turnaround speed.'
+  }
+] as const;
+
+const radarTracks = [
+  {
+    slug: 'student-films',
+    label: 'Student films',
+    detail: 'High-rep room for footage, scene practice, and new collaborators.'
+  },
+  {
+    slug: 'indie-shorts',
+    label: 'Indie shorts',
+    detail: 'Character-first work where emotional specificity matters.'
+  },
+  {
+    slug: 'theater',
+    label: 'Theater auditions',
+    detail: 'Live-room presence, projection, and stamina.'
+  },
+  {
+    slug: 'commercial',
+    label: 'Commercial / branded',
+    detail: 'Ease, speed, redirectability, clean slate energy.'
+  },
+  {
+    slug: 'music-video',
+    label: 'Music video / performance',
+    detail: 'Image-led work where presence carries the frame.'
+  },
+  {
+    slug: 'collaborators',
+    label: 'Local collaborators',
+    detail: 'Writers, directors, scene partners, and people to build with.'
+  }
+] as const;
+
+const focusModes = [
+  {
+    slug: 'grounded-drama',
+    label: 'Grounded drama',
+    cue: 'Underplay. Listen hard. Let the stakes live in the body before they live in the voice.'
+  },
+  {
+    slug: 'pressure',
+    label: 'Pressure + volatility',
+    cue: 'Hold pressure without flattening into one note. Keep the turn available.'
+  },
+  {
+    slug: 'intimacy',
+    label: 'Intimacy + tenderness',
+    cue: 'Let softness read clearly without apologizing for it.'
+  },
+  {
+    slug: 'charisma',
+    label: 'Music-adjacent charisma',
+    cue: 'Magnetism, rhythm, stillness, and image-conscious control.'
+  },
+  {
+    slug: 'live-room',
+    label: 'Live-room energy',
+    cue: 'Fill the room without overselling. Presence first, pushing second.'
+  }
+] as const;
+---
+
+<BaseLayout
+  title="Actor Tracker — A Path Toward Life"
+  description="A live acting tracker for reps, materials, casting radar, and the next beat of the work."
+  theme="archive"
+  bodyClass="actor-tracker-page"
+  fullBleed={true}
+  ambientEffects={false}
+>
+  <main class="actor-shell">
+    <section class="actor-hero">
+      <div class="actor-hero__copy">
+        <p class="actor-kicker">Actor tracking route</p>
+        <h1>Keep the acting lane warm.</h1>
+        <p class="actor-hero__lede">
+          A working room for reps, materials, casting radar, and whatever the next honest beat of the actor lane needs.
+        </p>
+
+        <div class="actor-hero__actions">
+          <a href="#weekly-reps" class="actor-action actor-action--primary">Open reps</a>
+          <a href="/focus/acting" class="actor-action">Acting lane</a>
+          <a href="/theater" class="actor-action">Theater</a>
+        </div>
+      </div>
+
+      <div class="actor-marquee">
+        <div class="actor-marquee__row">
+          <span>Week of</span>
+          <strong id="actorWeekLabel">This week</strong>
+        </div>
+
+        <dl class="actor-scoreboard">
+          <div class="actor-scoreboard__item">
+            <dt>Weekly reps</dt>
+            <dd id="actorWeeklyTotal">0</dd>
+          </div>
+          <div class="actor-scoreboard__item">
+            <dt>Materials ready</dt>
+            <dd id="actorMaterialsReady">0 / 6</dd>
+          </div>
+          <div class="actor-scoreboard__item">
+            <dt>Live radar</dt>
+            <dd id="actorRadarLive">0 / 6</dd>
+          </div>
+        </dl>
+
+        <div class="actor-readiness">
+          <div class="actor-readiness__topline">
+            <span>Readiness</span>
+            <strong id="actorReadinessValue">0%</strong>
+          </div>
+          <div class="actor-readiness__track" aria-hidden="true">
+            <span id="actorReadinessFill" class="actor-readiness__fill"></span>
+          </div>
+          <p id="actorReadinessNote" class="actor-readiness__note">
+            Start somewhere small. The tracker will build around the work.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="actor-grid">
+      <section class="actor-panel actor-panel--reps" id="weekly-reps">
+        <div class="actor-panel__head">
+          <div>
+            <p class="actor-panel__eyebrow">Call sheet</p>
+            <h2>Weekly reps</h2>
+          </div>
+          <p class="actor-panel__aside">One plus is one honest rep. Keep the wheel moving.</p>
+        </div>
+
+        <div class="actor-reps">
+          {
+            repCategories.map((category) => (
+              <article class="actor-rep-card" data-rep-card={category.slug}>
+                <div class="actor-rep-card__top">
+                  <div>
+                    <p>{category.label}</p>
+                    <span>{category.cue}</span>
+                  </div>
+                  <strong data-rep-count={category.slug}>0</strong>
+                </div>
+
+                <div class="actor-rep-card__meter" aria-hidden="true">
+                  <span data-rep-meter={category.slug}></span>
+                </div>
+
+                <div class="actor-stepper">
+                  <button type="button" class="actor-stepper__button" data-rep-minus={category.slug} aria-label={`Remove one ${category.label} rep`}>
+                    −
+                  </button>
+                  <button type="button" class="actor-stepper__button actor-stepper__button--primary" data-rep-plus={category.slug} aria-label={`Add one ${category.label} rep`}>
+                    +
+                  </button>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="actor-panel actor-panel--materials" id="materials">
+        <div class="actor-panel__head">
+          <div>
+            <p class="actor-panel__eyebrow">House package</p>
+            <h2>Materials board</h2>
+          </div>
+          <p class="actor-panel__aside">Tap a card to cycle: cold → warming → ready.</p>
+        </div>
+
+        <div class="actor-state-grid">
+          {
+            materialCards.map((item) => (
+              <button type="button" class="actor-state-card" data-material={item.slug}>
+                <span class="actor-state-card__label">{item.label}</span>
+                <span class="actor-state-card__status" data-material-status={item.slug}>Cold</span>
+                <small>{item.detail}</small>
+              </button>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="actor-panel actor-panel--radar" id="radar">
+        <div class="actor-panel__head">
+          <div>
+            <p class="actor-panel__eyebrow">Casting radar</p>
+            <h2>Where the lane is looking</h2>
+          </div>
+          <p class="actor-panel__aside">Tap a card to cycle: quiet → pursuing → live.</p>
+        </div>
+
+        <div class="actor-state-grid actor-state-grid--radar">
+          {
+            radarTracks.map((item) => (
+              <button type="button" class="actor-state-card actor-state-card--radar" data-radar={item.slug}>
+                <span class="actor-state-card__label">{item.label}</span>
+                <span class="actor-state-card__status" data-radar-status={item.slug}>Quiet</span>
+                <small>{item.detail}</small>
+              </button>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="actor-panel actor-panel--focus" id="focus-mode">
+        <div class="actor-panel__head">
+          <div>
+            <p class="actor-panel__eyebrow">North star</p>
+            <h2>Current mode</h2>
+          </div>
+          <p class="actor-panel__aside">Pick the flavor of work you want the next reps to sharpen.</p>
+        </div>
+
+        <div class="actor-focus">
+          <div class="actor-focus__chips" role="list" aria-label="Current acting mode">
+            {
+              focusModes.map((mode) => (
+                <button type="button" class="actor-focus__chip" data-focus-mode={mode.slug}>
+                  {mode.label}
+                </button>
+              ))
+            }
+          </div>
+
+          <p id="actorFocusCue" class="actor-focus__cue">
+            Underplay. Listen hard. Let the stakes live in the body before they live in the voice.
+          </p>
+
+          <div class="actor-notes">
+            <label class="actor-note-field">
+              <span>North star note</span>
+              <textarea id="actorNorthStar" rows="4" placeholder="What kind of actor are you training toward right now?"></textarea>
+            </label>
+
+            <label class="actor-note-field">
+              <span>Scene / monologue bank</span>
+              <textarea id="actorSceneBank" rows="5" placeholder="Pieces, scenes, songs, or sides you want active in the body."></textarea>
+            </label>
+
+            <label class="actor-note-field">
+              <span>Next beat</span>
+              <textarea id="actorNextBeat" rows="4" placeholder="The smallest next move that would make the lane more real this week."></textarea>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section class="actor-panel actor-panel--timeline" id="timeline">
+        <div class="actor-panel__head">
+          <div>
+            <p class="actor-panel__eyebrow">Momentum</p>
+            <h2>Eight-week pulse</h2>
+          </div>
+          <p class="actor-panel__aside">This builds from weekly reps, so the graph only changes when the work changes.</p>
+        </div>
+
+        <div id="actorHistoryBars" class="actor-history" aria-label="Eight week acting rep history"></div>
+        <p id="actorHistorySummary" class="actor-history__summary">
+          No reps logged yet. Start the week and the pulse will appear here.
+        </p>
+      </section>
+    </section>
+  </main>
+</BaseLayout>
+
+<script is:inline define:vars={{ repCategories, materialCards, radarTracks, focusModes }}>
+  (() => {
+    const STORAGE_KEY = 'actor-tracker-v1';
+    const MATERIAL_STATES = ['cold', 'warming', 'ready'];
+    const RADAR_STATES = ['quiet', 'pursuing', 'live'];
+    const MATERIAL_LABELS = {
+      cold: 'Cold',
+      warming: 'Warming',
+      ready: 'Ready'
+    };
+    const RADAR_LABELS = {
+      quiet: 'Quiet',
+      pursuing: 'Pursuing',
+      live: 'Live'
+    };
+    const MATERIAL_DEFAULTS = Object.fromEntries(
+      materialCards.map((item, index) => [item.slug, index < 2 ? 'warming' : 'cold'])
+    );
+    const RADAR_DEFAULTS = Object.fromEntries(
+      radarTracks.map((item, index) => [item.slug, index < 2 ? 'pursuing' : 'quiet'])
+    );
+    const DEFAULT_STATE = {
+      weekly: {},
+      materials: MATERIAL_DEFAULTS,
+      radar: RADAR_DEFAULTS,
+      focusMode: focusModes[0]?.slug ?? '',
+      notes: {
+        northStar: 'Make the actor lane undeniable through reps, not theory.',
+        sceneBank: '',
+        nextBeat: ''
+      }
+    };
+
+    let state = loadState();
+
+    const repCountNodes = Object.fromEntries(
+      repCategories.map((item) => [item.slug, document.querySelector(`[data-rep-count="${item.slug}"]`)])
+    );
+    const repMeterNodes = Object.fromEntries(
+      repCategories.map((item) => [item.slug, document.querySelector(`[data-rep-meter="${item.slug}"]`)])
+    );
+    const repCardNodes = Object.fromEntries(
+      repCategories.map((item) => [item.slug, document.querySelector(`[data-rep-card="${item.slug}"]`)])
+    );
+    const materialStatusNodes = Object.fromEntries(
+      materialCards.map((item) => [item.slug, document.querySelector(`[data-material-status="${item.slug}"]`)])
+    );
+    const radarStatusNodes = Object.fromEntries(
+      radarTracks.map((item) => [item.slug, document.querySelector(`[data-radar-status="${item.slug}"]`)])
+    );
+    const historyBars = document.getElementById('actorHistoryBars');
+    const historySummary = document.getElementById('actorHistorySummary');
+    const weekLabel = document.getElementById('actorWeekLabel');
+    const weeklyTotal = document.getElementById('actorWeeklyTotal');
+    const materialsReady = document.getElementById('actorMaterialsReady');
+    const radarLive = document.getElementById('actorRadarLive');
+    const readinessValue = document.getElementById('actorReadinessValue');
+    const readinessFill = document.getElementById('actorReadinessFill');
+    const readinessNote = document.getElementById('actorReadinessNote');
+    const focusCue = document.getElementById('actorFocusCue');
+    const northStarInput = document.getElementById('actorNorthStar');
+    const sceneBankInput = document.getElementById('actorSceneBank');
+    const nextBeatInput = document.getElementById('actorNextBeat');
+
+    function cloneDefaultState() {
+      return JSON.parse(JSON.stringify(DEFAULT_STATE));
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return cloneDefaultState();
+
+        const parsed = JSON.parse(raw);
+        const next = cloneDefaultState();
+        next.weekly = parsed && typeof parsed.weekly === 'object' ? parsed.weekly : {};
+        next.materials = {
+          ...next.materials,
+          ...(parsed && typeof parsed.materials === 'object' ? parsed.materials : {})
+        };
+        next.radar = {
+          ...next.radar,
+          ...(parsed && typeof parsed.radar === 'object' ? parsed.radar : {})
+        };
+        next.focusMode = focusModes.some((mode) => mode.slug === parsed?.focusMode)
+          ? parsed.focusMode
+          : next.focusMode;
+        next.notes = {
+          ...next.notes,
+          ...(parsed && typeof parsed.notes === 'object' ? parsed.notes : {})
+        };
+        return next;
+      } catch {
+        return cloneDefaultState();
+      }
+    }
+
+    function persistState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function getStartOfWeek(date = new Date()) {
+      const next = new Date(date);
+      const day = next.getDay();
+      const offset = day === 0 ? -6 : 1 - day;
+      next.setDate(next.getDate() + offset);
+      next.setHours(0, 0, 0, 0);
+      return next;
+    }
+
+    function toWeekKey(date = new Date()) {
+      const start = getStartOfWeek(date);
+      const year = start.getFullYear();
+      const month = String(start.getMonth() + 1).padStart(2, '0');
+      const day = String(start.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function fromWeekKey(value) {
+      const [year, month, day] = String(value || '').split('-').map((entry) => Number.parseInt(entry, 10));
+      if ([year, month, day].some((entry) => Number.isNaN(entry))) {
+        return getStartOfWeek();
+      }
+      return new Date(year, month - 1, day);
+    }
+
+    function formatWeekLabel(date) {
+      return new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+        day: 'numeric'
+      }).format(date);
+    }
+
+    function ensureWeek(key = toWeekKey()) {
+      if (!state.weekly[key] || typeof state.weekly[key] !== 'object') {
+        state.weekly[key] = {};
+      }
+      return state.weekly[key];
+    }
+
+    function getCurrentWeekMap() {
+      return ensureWeek(toWeekKey());
+    }
+
+    function sumWeek(values) {
+      return Object.values(values || {}).reduce((total, value) => {
+        const count = Number(value) || 0;
+        return total + Math.max(0, count);
+      }, 0);
+    }
+
+    function countStates(values, target) {
+      return Object.values(values || {}).filter((value) => value === target).length;
+    }
+
+    function countWeightedRadar(values) {
+      return Object.values(values || {}).reduce((total, value) => {
+        if (value === 'live') return total + 1;
+        if (value === 'pursuing') return total + 0.6;
+        return total;
+      }, 0);
+    }
+
+    function cycleValue(list, current) {
+      const index = Math.max(0, list.indexOf(current));
+      return list[(index + 1) % list.length];
+    }
+
+    function updateRep(slug, delta) {
+      const week = ensureWeek(toWeekKey());
+      const current = Math.max(0, Number(week[slug]) || 0);
+      const next = Math.max(0, current + delta);
+      week[slug] = next;
+      persistState();
+      render();
+    }
+
+    function getReadiness() {
+      const weeklyCount = sumWeek(getCurrentWeekMap());
+      const readyMaterialsCount = countStates(state.materials, 'ready');
+      const weightedRadar = countWeightedRadar(state.radar);
+      const repScore = Math.min(weeklyCount / 12, 1);
+      const materialScore = readyMaterialsCount / materialCards.length;
+      const radarScore = Math.min(weightedRadar / radarTracks.length, 1);
+      const score = Math.round((repScore * 0.45 + materialScore * 0.35 + radarScore * 0.2) * 100);
+
+      let note = 'Start with one rep, one warm contact, and one piece of package work.';
+      if (score >= 80) {
+        note = 'The lane is hot. Keep it honest and turn the heat into tape, rooms, or outreach.';
+      } else if (score >= 55) {
+        note = 'The lane is warming. Stay consistent long enough for the work to start compounding.';
+      } else if (score >= 30) {
+        note = 'The structure is forming. Materials or reps need a little more regular heat.';
+      }
+
+      return { score, note };
+    }
+
+    function getHistory(count = 8) {
+      const items = [];
+      const start = getStartOfWeek();
+
+      for (let offset = count - 1; offset >= 0; offset -= 1) {
+        const date = new Date(start);
+        date.setDate(start.getDate() - offset * 7);
+        const key = toWeekKey(date);
+        items.push({
+          key,
+          date: getStartOfWeek(date),
+          total: sumWeek(state.weekly[key] || {})
+        });
+      }
+
+      return items;
+    }
+
+    function renderOverview() {
+      const currentWeek = getCurrentWeekMap();
+      const repTotal = sumWeek(currentWeek);
+      const readyCount = countStates(state.materials, 'ready');
+      const liveCount = countStates(state.radar, 'live');
+      const readiness = getReadiness();
+
+      if (weekLabel) weekLabel.textContent = formatWeekLabel(getStartOfWeek());
+      if (weeklyTotal) weeklyTotal.textContent = String(repTotal);
+      if (materialsReady) materialsReady.textContent = `${readyCount} / ${materialCards.length}`;
+      if (radarLive) radarLive.textContent = `${liveCount} / ${radarTracks.length}`;
+      if (readinessValue) readinessValue.textContent = `${readiness.score}%`;
+      if (readinessFill) readinessFill.style.width = `${readiness.score}%`;
+      if (readinessNote) readinessNote.textContent = readiness.note;
+    }
+
+    function renderReps() {
+      const week = getCurrentWeekMap();
+
+      repCategories.forEach((item) => {
+        const count = Math.max(0, Number(week[item.slug]) || 0);
+        const countNode = repCountNodes[item.slug];
+        const meterNode = repMeterNodes[item.slug];
+        const cardNode = repCardNodes[item.slug];
+        if (countNode) countNode.textContent = String(count);
+        if (meterNode) meterNode.style.width = `${Math.min(100, count * 20)}%`;
+        if (cardNode) {
+          cardNode.dataset.active = count > 0 ? 'true' : 'false';
+          cardNode.dataset.hot = count >= 4 ? 'true' : 'false';
+        }
+      });
+    }
+
+    function renderMaterials() {
+      materialCards.forEach((item) => {
+        const value = MATERIAL_STATES.includes(state.materials[item.slug]) ? state.materials[item.slug] : 'cold';
+        const node = document.querySelector(`[data-material="${item.slug}"]`);
+        const statusNode = materialStatusNodes[item.slug];
+        if (node) node.dataset.state = value;
+        if (statusNode) statusNode.textContent = MATERIAL_LABELS[value];
+      });
+    }
+
+    function renderRadar() {
+      radarTracks.forEach((item) => {
+        const value = RADAR_STATES.includes(state.radar[item.slug]) ? state.radar[item.slug] : 'quiet';
+        const node = document.querySelector(`[data-radar="${item.slug}"]`);
+        const statusNode = radarStatusNodes[item.slug];
+        if (node) node.dataset.state = value;
+        if (statusNode) statusNode.textContent = RADAR_LABELS[value];
+      });
+    }
+
+    function renderFocusMode() {
+      const activeMode = focusModes.find((mode) => mode.slug === state.focusMode) || focusModes[0];
+      document.querySelectorAll('[data-focus-mode]').forEach((node) => {
+        const isActive = node.getAttribute('data-focus-mode') === activeMode.slug;
+        node.classList.toggle('is-active', isActive);
+        node.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+      if (focusCue) focusCue.textContent = activeMode?.cue || '';
+    }
+
+    function renderNotes() {
+      if (northStarInput) northStarInput.value = state.notes.northStar || '';
+      if (sceneBankInput) sceneBankInput.value = state.notes.sceneBank || '';
+      if (nextBeatInput) nextBeatInput.value = state.notes.nextBeat || '';
+    }
+
+    function renderHistory() {
+      if (!historyBars || !historySummary) return;
+
+      const history = getHistory();
+      const maxTotal = Math.max(1, ...history.map((item) => item.total));
+      historyBars.innerHTML = '';
+
+      history.forEach((item) => {
+        const column = document.createElement('div');
+        column.className = 'actor-history__bar';
+        column.dataset.active = item.total > 0 ? 'true' : 'false';
+        const height = item.total > 0 ? Math.max(14, Math.round((item.total / maxTotal) * 100)) : 8;
+        column.innerHTML = `
+          <span class="actor-history__count">${item.total}</span>
+          <span class="actor-history__column" style="height:${height}%"></span>
+          <span class="actor-history__label">${formatWeekLabel(item.date)}</span>
+        `;
+        historyBars.appendChild(column);
+      });
+
+      const totalAcrossHistory = history.reduce((total, item) => total + item.total, 0);
+      const hottestWeek = history.reduce(
+        (best, item) => (item.total > best.total ? item : best),
+        history[0] || { total: 0, date: getStartOfWeek() }
+      );
+
+      historySummary.textContent = totalAcrossHistory
+        ? `Last 8 weeks: ${totalAcrossHistory} reps total. Peak week started ${formatWeekLabel(hottestWeek.date)} with ${hottestWeek.total} reps.`
+        : 'No reps logged yet. Start the week and the pulse will appear here.';
+    }
+
+    function render() {
+      renderOverview();
+      renderReps();
+      renderMaterials();
+      renderRadar();
+      renderFocusMode();
+      renderHistory();
+    }
+
+    document.querySelectorAll('[data-rep-plus]').forEach((node) => {
+      node.addEventListener('click', () => {
+        const slug = node.getAttribute('data-rep-plus');
+        if (!slug) return;
+        updateRep(slug, 1);
+      });
+    });
+
+    document.querySelectorAll('[data-rep-minus]').forEach((node) => {
+      node.addEventListener('click', () => {
+        const slug = node.getAttribute('data-rep-minus');
+        if (!slug) return;
+        updateRep(slug, -1);
+      });
+    });
+
+    document.querySelectorAll('[data-material]').forEach((node) => {
+      node.addEventListener('click', () => {
+        const slug = node.getAttribute('data-material');
+        if (!slug) return;
+        state.materials[slug] = cycleValue(MATERIAL_STATES, state.materials[slug]);
+        persistState();
+        render();
+      });
+    });
+
+    document.querySelectorAll('[data-radar]').forEach((node) => {
+      node.addEventListener('click', () => {
+        const slug = node.getAttribute('data-radar');
+        if (!slug) return;
+        state.radar[slug] = cycleValue(RADAR_STATES, state.radar[slug]);
+        persistState();
+        render();
+      });
+    });
+
+    document.querySelectorAll('[data-focus-mode]').forEach((node) => {
+      node.addEventListener('click', () => {
+        const slug = node.getAttribute('data-focus-mode');
+        if (!slug) return;
+        state.focusMode = slug;
+        persistState();
+        render();
+      });
+    });
+
+    if (northStarInput) {
+      northStarInput.addEventListener('input', () => {
+        state.notes.northStar = northStarInput.value;
+        persistState();
+      });
+    }
+
+    if (sceneBankInput) {
+      sceneBankInput.addEventListener('input', () => {
+        state.notes.sceneBank = sceneBankInput.value;
+        persistState();
+      });
+    }
+
+    if (nextBeatInput) {
+      nextBeatInput.addEventListener('input', () => {
+        state.notes.nextBeat = nextBeatInput.value;
+        persistState();
+      });
+    }
+
+    renderNotes();
+    render();
+  })();
+</script>
+
+<style>
+  :global(html body.actor-tracker-page[data-theme='archive']) {
+    background:
+      radial-gradient(72rem 40rem at 18% 10%, rgba(183, 94, 66, 0.24), transparent 54%),
+      radial-gradient(56rem 30rem at 82% 14%, rgba(215, 171, 103, 0.18), transparent 58%),
+      linear-gradient(180deg, #120c0d 0%, #080708 100%);
+  }
+
+  :global(body.actor-tracker-page .site-content-stage) {
+    padding-bottom: 4rem;
+  }
+
+  .actor-shell {
+    --actor-red: #b45e47;
+    --actor-gold: #c9a46a;
+    --actor-cream: #f3e8d6;
+    --actor-panel: rgba(19, 13, 14, 0.86);
+    --actor-line: rgba(243, 232, 214, 0.12);
+    --actor-soft: rgba(243, 232, 214, 0.62);
+    width: min(1180px, calc(100vw - 2rem));
+    margin: 0 auto;
+    padding: clamp(1.25rem, 3vw, 2.5rem) 0 clamp(3rem, 5vw, 5rem);
+  }
+
+  .actor-hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.95fr);
+    gap: 1.25rem;
+    padding: clamp(1.4rem, 2.4vw, 2rem);
+    border: 1px solid var(--actor-line);
+    border-radius: 30px;
+    overflow: hidden;
+    background:
+      linear-gradient(135deg, rgba(180, 94, 71, 0.18), transparent 34%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0)),
+      var(--actor-panel);
+    box-shadow: 0 24px 90px rgba(0, 0, 0, 0.28);
+  }
+
+  .actor-hero::before,
+  .actor-hero::after {
+    content: '';
+    position: absolute;
+    inset: auto;
+    pointer-events: none;
+  }
+
+  .actor-hero::before {
+    top: -10%;
+    right: -5%;
+    width: 20rem;
+    height: 20rem;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(201, 164, 106, 0.24) 0%, rgba(201, 164, 106, 0) 70%);
+    filter: blur(14px);
+  }
+
+  .actor-hero::after {
+    left: 1.5rem;
+    right: 1.5rem;
+    bottom: 1.25rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(243, 232, 214, 0.26), transparent);
+  }
+
+  .actor-kicker,
+  .actor-panel__eyebrow {
+    margin: 0 0 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--actor-gold);
+  }
+
+  .actor-hero h1,
+  .actor-panel h2 {
+    margin: 0;
+    color: var(--actor-cream);
+    line-height: 0.96;
+    letter-spacing: -0.04em;
+  }
+
+  .actor-hero h1 {
+    max-width: 10ch;
+    font-size: clamp(3rem, 7vw, 5.7rem);
+  }
+
+  .actor-hero__lede,
+  .actor-panel__aside,
+  .actor-readiness__note,
+  .actor-focus__cue,
+  .actor-history__summary,
+  .actor-state-card small,
+  .actor-rep-card__top span {
+    color: var(--actor-soft);
+  }
+
+  .actor-hero__lede {
+    max-width: 44rem;
+    margin: 1rem 0 0;
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .actor-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.3rem;
+  }
+
+  .actor-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: 0.72rem 1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(243, 232, 214, 0.14);
+    color: var(--actor-cream);
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.03);
+    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+  }
+
+  .actor-action:hover,
+  .actor-action:focus-visible {
+    transform: translateY(-1px);
+    border-color: rgba(201, 164, 106, 0.48);
+    background: rgba(201, 164, 106, 0.08);
+  }
+
+  .actor-action--primary {
+    background: linear-gradient(180deg, rgba(180, 94, 71, 0.28), rgba(180, 94, 71, 0.12));
+    border-color: rgba(201, 164, 106, 0.34);
+  }
+
+  .actor-marquee {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+    padding: 1rem;
+    border-radius: 24px;
+    border: 1px solid rgba(243, 232, 214, 0.1);
+    background:
+      linear-gradient(180deg, rgba(201, 164, 106, 0.08), rgba(201, 164, 106, 0)),
+      rgba(6, 6, 7, 0.34);
+  }
+
+  .actor-marquee__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--actor-soft);
+  }
+
+  .actor-marquee__row strong {
+    color: var(--actor-cream);
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+  }
+
+  .actor-scoreboard {
+    display: grid;
+    gap: 0.8rem;
+    margin: 0;
+  }
+
+  .actor-scoreboard__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 0.8rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(243, 232, 214, 0.08);
+  }
+
+  .actor-scoreboard__item dt {
+    margin: 0;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--actor-soft);
+  }
+
+  .actor-scoreboard__item dd {
+    margin: 0;
+    color: var(--actor-cream);
+    font-size: clamp(1.2rem, 2vw, 1.7rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+  }
+
+  .actor-readiness {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .actor-readiness__topline {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--actor-soft);
+  }
+
+  .actor-readiness__topline strong {
+    color: var(--actor-gold);
+  }
+
+  .actor-readiness__track {
+    height: 0.72rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .actor-readiness__fill {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--actor-red), var(--actor-gold));
+    transition: width 220ms ease;
+  }
+
+  .actor-readiness__note {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
+
+  .actor-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .actor-panel {
+    padding: 1.2rem;
+    border-radius: 24px;
+    border: 1px solid var(--actor-line);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0)),
+      rgba(14, 10, 11, 0.9);
+  }
+
+  .actor-panel--reps,
+  .actor-panel--focus,
+  .actor-panel--timeline {
+    grid-column: 1 / -1;
+  }
+
+  .actor-panel__head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: end;
+    margin-bottom: 1rem;
+  }
+
+  .actor-panel h2 {
+    font-size: clamp(1.9rem, 4vw, 2.8rem);
+  }
+
+  .actor-panel__aside {
+    max-width: 30rem;
+    margin: 0;
+    text-align: right;
+    font-size: 0.94rem;
+    line-height: 1.6;
+  }
+
+  .actor-reps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+
+  .actor-rep-card {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1rem;
+    border-radius: 20px;
+    border: 1px solid rgba(243, 232, 214, 0.08);
+    background:
+      linear-gradient(180deg, rgba(180, 94, 71, 0.04), rgba(180, 94, 71, 0)),
+      rgba(255, 255, 255, 0.02);
+    transition: border-color 180ms ease, transform 180ms ease, background 180ms ease;
+  }
+
+  .actor-rep-card[data-active='true'] {
+    border-color: rgba(201, 164, 106, 0.26);
+    background:
+      linear-gradient(180deg, rgba(180, 94, 71, 0.12), rgba(180, 94, 71, 0)),
+      rgba(255, 255, 255, 0.03);
+  }
+
+  .actor-rep-card[data-hot='true'] {
+    box-shadow: inset 0 0 0 1px rgba(201, 164, 106, 0.18);
+  }
+
+  .actor-rep-card__top {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .actor-rep-card__top p,
+  .actor-state-card__label {
+    margin: 0;
+    color: var(--actor-cream);
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .actor-rep-card__top span {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+
+  .actor-rep-card__top strong {
+    min-width: 2.3rem;
+    text-align: right;
+    color: var(--actor-gold);
+    font-size: clamp(1.7rem, 3vw, 2.25rem);
+    line-height: 1;
+    letter-spacing: -0.05em;
+  }
+
+  .actor-rep-card__meter {
+    height: 0.55rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .actor-rep-card__meter span {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, rgba(180, 94, 71, 0.94), rgba(201, 164, 106, 0.94));
+    transition: width 180ms ease;
+  }
+
+  .actor-stepper {
+    display: flex;
+    gap: 0.65rem;
+  }
+
+  .actor-stepper__button {
+    flex: 1;
+    min-height: 2.8rem;
+    border: 1px solid rgba(243, 232, 214, 0.12);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--actor-cream);
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+  }
+
+  .actor-stepper__button:hover,
+  .actor-stepper__button:focus-visible,
+  .actor-state-card:hover,
+  .actor-state-card:focus-visible,
+  .actor-focus__chip:hover,
+  .actor-focus__chip:focus-visible {
+    transform: translateY(-1px);
+    border-color: rgba(201, 164, 106, 0.42);
+    background: rgba(201, 164, 106, 0.08);
+  }
+
+  .actor-stepper__button--primary {
+    background: linear-gradient(180deg, rgba(180, 94, 71, 0.2), rgba(180, 94, 71, 0.08));
+  }
+
+  .actor-state-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+
+  .actor-state-card {
+    display: grid;
+    gap: 0.45rem;
+    text-align: left;
+    width: 100%;
+    padding: 1rem;
+    border-radius: 18px;
+    border: 1px solid rgba(243, 232, 214, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+    cursor: pointer;
+    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+  }
+
+  .actor-state-card small {
+    font-size: 0.86rem;
+    line-height: 1.55;
+  }
+
+  .actor-state-card__status {
+    display: inline-flex;
+    width: fit-content;
+    padding: 0.28rem 0.62rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .actor-state-card[data-state='cold'] .actor-state-card__status,
+  .actor-state-card[data-state='quiet'] .actor-state-card__status {
+    background: rgba(120, 144, 173, 0.14);
+    color: #aac0d8;
+  }
+
+  .actor-state-card[data-state='warming'] .actor-state-card__status,
+  .actor-state-card[data-state='pursuing'] .actor-state-card__status {
+    background: rgba(201, 164, 106, 0.14);
+    color: #dfc28f;
+  }
+
+  .actor-state-card[data-state='ready'] .actor-state-card__status,
+  .actor-state-card[data-state='live'] .actor-state-card__status {
+    background: rgba(180, 94, 71, 0.18);
+    color: #f1b298;
+  }
+
+  .actor-state-card[data-state='ready'],
+  .actor-state-card[data-state='live'] {
+    border-color: rgba(180, 94, 71, 0.3);
+    background:
+      linear-gradient(180deg, rgba(180, 94, 71, 0.12), rgba(180, 94, 71, 0)),
+      rgba(255, 255, 255, 0.025);
+  }
+
+  .actor-focus {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .actor-focus__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+  }
+
+  .actor-focus__chip {
+    min-height: 2.75rem;
+    padding: 0.68rem 0.95rem;
+    border-radius: 999px;
+    border: 1px solid rgba(243, 232, 214, 0.12);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--actor-cream);
+    cursor: pointer;
+    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+  }
+
+  .actor-focus__chip.is-active {
+    border-color: rgba(201, 164, 106, 0.42);
+    background: linear-gradient(180deg, rgba(201, 164, 106, 0.16), rgba(201, 164, 106, 0.06));
+  }
+
+  .actor-focus__cue {
+    margin: 0;
+    max-width: 64ch;
+    font-size: 0.98rem;
+    line-height: 1.7;
+  }
+
+  .actor-notes {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+
+  .actor-note-field {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .actor-note-field span {
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--actor-gold);
+  }
+
+  .actor-note-field textarea {
+    width: 100%;
+    min-height: 100%;
+    padding: 0.9rem 1rem;
+    border-radius: 18px;
+    border: 1px solid rgba(243, 232, 214, 0.12);
+    background: rgba(6, 6, 7, 0.36);
+    color: var(--actor-cream);
+    font: inherit;
+    line-height: 1.6;
+    resize: vertical;
+  }
+
+  .actor-note-field textarea::placeholder {
+    color: rgba(243, 232, 214, 0.36);
+  }
+
+  .actor-note-field textarea:focus-visible {
+    outline: 1px solid rgba(201, 164, 106, 0.34);
+    border-color: rgba(201, 164, 106, 0.34);
+  }
+
+  .actor-history {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 0.7rem;
+    align-items: end;
+    min-height: 16rem;
+    padding: 0.25rem 0 0.35rem;
+  }
+
+  .actor-history__bar {
+    display: grid;
+    gap: 0.55rem;
+    justify-items: center;
+    height: 100%;
+  }
+
+  .actor-history__count,
+  .actor-history__label {
+    font-size: 0.76rem;
+    color: var(--actor-soft);
+  }
+
+  .actor-history__column {
+    display: block;
+    width: 100%;
+    min-height: 0.5rem;
+    align-self: end;
+    border-radius: 999px 999px 10px 10px;
+    background: linear-gradient(180deg, rgba(201, 164, 106, 0.94), rgba(180, 94, 71, 0.54));
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.24);
+  }
+
+  .actor-history__bar[data-active='false'] .actor-history__column {
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: none;
+  }
+
+  .actor-history__summary {
+    margin: 0.9rem 0 0;
+    font-size: 0.94rem;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 980px) {
+    .actor-hero,
+    .actor-grid,
+    .actor-notes {
+      grid-template-columns: 1fr;
+    }
+
+    .actor-panel__head {
+      align-items: start;
+      flex-direction: column;
+    }
+
+    .actor-panel__aside {
+      max-width: none;
+      text-align: left;
+    }
+
+    .actor-reps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 720px) {
+    .actor-shell {
+      width: min(100vw - 1rem, 100%);
+    }
+
+    .actor-hero {
+      padding: 1rem;
+      border-radius: 24px;
+    }
+
+    .actor-hero h1 {
+      font-size: clamp(2.6rem, 14vw, 4rem);
+    }
+
+    .actor-panel,
+    .actor-marquee {
+      padding: 1rem;
+      border-radius: 20px;
+    }
+
+    .actor-reps,
+    .actor-state-grid,
+    .actor-history {
+      grid-template-columns: 1fr;
+    }
+
+    .actor-history {
+      min-height: 0;
+    }
+
+    .actor-history__bar {
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .actor-history__column {
+      width: 100%;
+      min-height: 0.85rem;
+      height: 0.85rem !important;
+      border-radius: 999px;
+    }
+  }
+</style>

@@ -1,0 +1,136 @@
+{
+  "$ref": "#/definitions/projects",
+  "definitions": {
+    "projects": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "year": {
+          "type": "number"
+        },
+        "timeline_order": {
+          "type": "number"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "music",
+            "video",
+            "writing",
+            "civic"
+          ]
+        },
+        "status": {
+          "type": "string"
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "links": {
+          "type": "object",
+          "properties": {
+            "confluence": {
+              "type": "string"
+            },
+            "github": {
+              "type": "string"
+            },
+            "linktree": {
+              "type": "string"
+            },
+            "youtube": {
+              "type": "string"
+            },
+            "instagram": {
+              "type": "string"
+            },
+            "untitled": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "featured": {
+          "type": "boolean",
+          "default": false
+        },
+        "leadPriority": {
+          "type": "number"
+        },
+        "role": {
+          "type": "string"
+        },
+        "relatedProjects": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "relatedThread": {
+          "type": "string"
+        },
+        "media": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "src": {
+                "type": "string"
+              },
+              "alt": {
+                "type": "string"
+              },
+              "caption": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "src",
+              "alt"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "cover_image": {
+          "type": "string"
+        },
+        "cover_fit": {
+          "type": "string",
+          "enum": [
+            "cover",
+            "contain"
+          ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "youtube_embed": {
+          "type": "string"
+        },
+        "photo_backdrop": {
+          "type": "boolean"
+        },
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "year",
+        "type",
+        "status",
+        "tools",
+        "links",
+        "cover_image",
+        "description"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

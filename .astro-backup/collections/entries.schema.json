@@ -1,0 +1,191 @@
+{
+  "$ref": "#/definitions/entries",
+  "definitions": {
+    "entries": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "date": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "format": "date"
+            },
+            {
+              "type": "integer",
+              "format": "unix-time"
+            }
+          ]
+        },
+        "medium": {
+          "type": "string",
+          "enum": [
+            "writing",
+            "music",
+            "video",
+            "image",
+            "note",
+            "proposal"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "substack",
+            "youtube",
+            "untitled",
+            "local-media",
+            "private-notes",
+            "manual",
+            "linktree"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "raw",
+            "withheld",
+            "in-progress",
+            "published",
+            "featured"
+          ]
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "summary": {
+          "type": "string"
+        },
+        "external_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "related_entries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "audience": {
+          "type": "string"
+        },
+        "institution": {
+          "type": "string"
+        },
+        "proposal_status": {
+          "type": "string"
+        },
+        "place": {
+          "type": "string"
+        },
+        "ask": {
+          "type": "string"
+        },
+        "asset": {
+          "type": "object",
+          "properties": {
+            "src": {
+              "type": "string"
+            },
+            "alt": {
+              "type": "string"
+            },
+            "poster": {
+              "type": "string"
+            },
+            "caption": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "src"
+          ],
+          "additionalProperties": false
+        },
+        "asset_type": {
+          "type": "string",
+          "enum": [
+            "audio",
+            "video",
+            "image"
+          ]
+        },
+        "original_filename": {
+          "type": "string"
+        },
+        "mime_type": {
+          "type": "string"
+        },
+        "file_size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "upload_source": {
+          "type": "string",
+          "enum": [
+            "r2",
+            "external"
+          ]
+        },
+        "thumbnail": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "string"
+        },
+        "ingest": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "manual",
+                "rss",
+                "local",
+                "channel"
+              ]
+            },
+            "rss_url": {
+              "type": "string",
+              "format": "uri"
+            },
+            "catalog_url": {
+              "type": "string",
+              "format": "uri"
+            },
+            "surface": {
+              "type": "string"
+            },
+            "source_id": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "date",
+        "medium",
+        "source",
+        "status",
+        "tags",
+        "summary"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
