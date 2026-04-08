@@ -2,6 +2,7 @@
 import EntryCard from '../../components/EntryCard.astro';
 import CrossRouteResume from '../../components/CrossRouteResume.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import igManifest from '../../data/ig.json';
 import {
   ARCHIVE_MEDIUMS,
   collectEntryTags,
@@ -52,6 +53,9 @@ const pinnedCollections = tagCounts
         href: getEntryHref(entry)
       }))
   }));
+const storyPhotos = (Array.isArray(igManifest) ? igManifest : []).filter(
+  (item) => typeof item?.src === 'string' && /\.(jpe?g|png|webp|avif)$/i.test(item.src)
+);
 ---
 <BaseLayout title="Archive — a_e.s_" theme="archive" bodyClass="archive-ig-page">
   <section class="view-surface archive-page">
@@ -120,6 +124,26 @@ const pinnedCollections = tagCounts
         </article>
       )}
     </section>
+
+    {storyPhotos.length > 0 && (
+      <section class="archive-stories" aria-label="Instagram stories preview rail">
+        <header class="archive-stories__head">
+          <div>
+            <p class="archive-controls__label font-archive">Instagram stories</p>
+            <h2>Curated strip from your local stories archive</h2>
+          </div>
+          <a href="/instagram" class="archive-stories__link">Open full stories archive</a>
+        </header>
+        <div class="archive-stories__track">
+          {storyPhotos.map((item) => (
+            <a href="/instagram" class="archive-story-card">
+              <img src={item.src} alt={item.caption || `Instagram story item from ${item.date || 'local archive'}`} loading="lazy" decoding="async" />
+              <span>{item.date || 'Story'}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
 
     <section class="archive-controls" aria-label="Archive filters">
       <div class="archive-controls__group">
@@ -458,6 +482,73 @@ const pinnedCollections = tagCounts
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+  }
+
+  .archive-stories {
+    border: 1px solid var(--line2);
+    border-radius: 1.05rem;
+    padding: 0.9rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)),
+      color-mix(in srgb, var(--tone-surface) 90%, transparent);
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .archive-stories__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+  }
+
+  .archive-stories__head h2 {
+    margin: 0.14rem 0 0;
+    font-size: clamp(1rem, 2.3vw, 1.24rem);
+    letter-spacing: -0.01em;
+    color: color-mix(in srgb, var(--tone-text) 92%, var(--tone-muted) 8%);
+  }
+
+  .archive-stories__link {
+    font-size: 0.84rem;
+    text-decoration: none;
+    color: #ffe3ef;
+    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 64%, transparent);
+  }
+
+  .archive-stories__track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(8rem, 9.8rem);
+    gap: 0.62rem;
+    overflow-x: auto;
+    padding-bottom: 0.18rem;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--tone-accent) 40%, transparent) transparent;
+  }
+
+  .archive-story-card {
+    display: grid;
+    gap: 0.38rem;
+    text-decoration: none;
+    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  }
+
+  .archive-story-card img {
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    object-fit: cover;
+    border-radius: 0.78rem;
+    border: 1px solid color-mix(in srgb, var(--tone-accent) 32%, var(--line2));
+    background: color-mix(in srgb, var(--tone-surface-strong) 80%, transparent);
+  }
+
+  .archive-story-card span {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
   }
 
   .archive-highlights {
