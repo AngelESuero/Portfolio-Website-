@@ -1,68 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/pages/post-labor-economics.css';
 ---
 
 <BaseLayout title="Post-Labor Economics — a_e.s_" description="A visual systems model of automation, labor displacement, and the demand crisis driving new economic agency beyond wages alone." theme="archive">
 
-  <style>
-    .ple-wrap {
-      --ple-accent: #c4965a;
-      --ple-accent-soft: rgba(196,150,90,0.12);
-      --ple-line: rgba(196,150,90,0.22);
-    }
-    .ple-hero {
-      position: relative;
-      overflow: hidden;
-      border: 1px solid var(--ple-line);
-      border-radius: 20px;
-      background: color-mix(in srgb, var(--tone-surface) 80%, var(--ple-accent-soft));
-      padding: clamp(1.2rem, 3vw, 2rem);
-      margin-bottom: 1.6rem;
-    }
-    .ple-kicker { font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ple-accent); font-weight: 700; margin: 0 0 0.6rem; }
-    .ple-hero h1 { margin: 0; font-size: clamp(2rem, 4vw, 3.4rem); line-height: 0.98; letter-spacing: -0.04em; }
-    .ple-hero p { margin: 0.9rem 0 0; max-width: 72ch; color: var(--tone-muted); line-height: 1.6; }
-    .ple-watermark { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; user-select: none; overflow: hidden; }
-    .ple-watermark span { font-size: clamp(4rem, 14vw, 9rem); font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(196,150,90,0.06); white-space: nowrap; transform: rotate(-8deg); }
-
-    .ple-main { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 1.2rem; align-items: start; }
-
-    .ple-card { border: 1px solid var(--ple-line); border-radius: 16px; background: var(--tone-surface); padding: 1.2rem; margin-bottom: 1.1rem; }
-    .ple-card:last-child { margin-bottom: 0; }
-    .ple-card h2 { font-size: 1rem; letter-spacing: -0.02em; margin: 0 0 1rem; }
-
-    .ple-flow { display: grid; gap: 0.6rem; }
-    .ple-node { border: 1px solid var(--ple-line); border-radius: 12px; background: color-mix(in srgb, var(--tone-surface) 70%, var(--tone-bg) 30%); padding: 0.75rem 1rem; font-weight: 600; text-align: center; font-size: 0.95rem; }
-    .ple-node small { display: block; margin-top: 0.3rem; font-size: 0.8rem; font-weight: 400; color: var(--tone-muted); line-height: 1.35; }
-    .ple-arrow { text-align: center; color: var(--ple-accent); font-size: 1.2rem; line-height: 1; margin: -0.1rem 0; }
-
-    .ple-stakeholders { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-    .ple-stake { border: 1px solid var(--ple-line); border-radius: 12px; padding: 0.9rem; background: color-mix(in srgb, var(--tone-surface) 60%, var(--tone-bg) 40%); }
-    .ple-stake h3 { margin: 0 0 0.4rem; font-size: 0.92rem; }
-    .ple-stake p { margin: 0; color: var(--tone-muted); font-size: 0.82rem; line-height: 1.5; }
-
-    .ple-contradiction { border: 1px dashed var(--ple-accent); border-radius: 14px; background: var(--ple-accent-soft); padding: 1rem 1.1rem; margin-bottom: 1.1rem; }
-    .ple-contradiction strong { display: block; margin-bottom: 0.5rem; color: var(--ple-accent); letter-spacing: 0.03em; text-transform: uppercase; font-size: 0.72rem; }
-    .ple-contradiction p { margin: 0; font-size: 0.88rem; line-height: 1.55; }
-
-    .ple-mix { display: grid; gap: 0.75rem; }
-    .ple-mix-group-label { font-weight: 700; font-size: 0.84rem; margin: 0 0 0.55rem; }
-    .ple-bar-row { display: grid; grid-template-columns: 72px 1fr 32px; gap: 0.6rem; align-items: center; font-size: 0.82rem; }
-    .ple-bar-track { height: 14px; background: color-mix(in srgb, var(--tone-bg) 70%, var(--ple-accent-soft)); border-radius: 999px; overflow: hidden; border: 1px solid var(--ple-line); }
-    .ple-bar-fill { height: 100%; border-radius: 999px; }
-    .ple-bar-fill.wages    { background: linear-gradient(90deg, #8d6733, #c39b62); }
-    .ple-bar-fill.property { background: linear-gradient(90deg, #bda98a, #d7c5ab); }
-    .ple-bar-fill.transfer { background: linear-gradient(90deg, #8a826f, #b3a891); }
-    .ple-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--ple-line), transparent); margin: 0.9rem 0; }
-
-    .ple-agency { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; margin-bottom: 0.9rem; }
-    .ple-pill { border: 1px solid var(--ple-line); border-radius: 999px; padding: 0.7rem 0.5rem; text-align: center; font-weight: 700; font-size: 0.8rem; background: color-mix(in srgb, var(--tone-surface) 70%, var(--tone-bg) 30%); }
-
-    .ple-source-note { border-top: 1px solid var(--ple-line); padding-top: 1rem; margin-top: 1.8rem; color: var(--tone-muted); font-size: 0.78rem; line-height: 1.6; }
-
-    @media (max-width: 800px) { .ple-main { grid-template-columns: 1fr; } .ple-stakeholders, .ple-agency { grid-template-columns: 1fr 1fr; } }
-    @media (max-width: 520px) { .ple-stakeholders { grid-template-columns: 1fr; } .ple-agency { grid-template-columns: 1fr; } .ple-bar-row { grid-template-columns: 60px 1fr 26px; } }
-  </style>
 
   <div class="ple-wrap">
     <section class="ple-hero">

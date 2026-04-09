@@ -1,0 +1,108 @@
+/* Extracted from src/pages/chess.astro */
+
+.chess-page {
+  max-width: 64rem;
+  margin: 0 auto;
+}
+
+.chess-kicker {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  color: var(--tone-muted);
+}
+
+.chess-header h1 {
+  margin: 0.35rem 0 0.68rem;
+  font-size: clamp(2rem, 4.4vw, 3rem);
+  line-height: 1.08;
+}
+
+.chess-dek,
+.chess-meta {
+  margin: 0.42rem 0 0;
+  color: var(--tone-muted);
+}
+
+.chess-meta a {
+  color: var(--tone-accent-glow);
+}
+
+.chess-note {
+  margin-top: 0.92rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  padding: 0.72rem;
+  color: var(--tone-muted);
+}
+
+.chess-current {
+  margin-top: 0.92rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.72rem;
+}
+
+.chess-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  padding: 0.8rem;
+}
+
+.chess-card p {
+  margin: 0;
+  color: var(--tone-muted);
+  font-size: 0.86rem;
+}
+
+.chess-card strong {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.chess-history {
+  margin-top: 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  padding: 0.82rem;
+}
+
+.chess-history h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.chess-history ul {
+  margin: 0.8rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.52rem;
+}
+
+.chess-history li {
+  border: 1px solid var(--line2);
+  border-radius: 12px;
+  padding: 0.56rem 0.64rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+  align-items: center;
+}
+
+.chess-history .date {
+  min-width: 7.4rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  color: var(--tone-muted);
+}
+
+.chess-empty {
+  margin: 0.72rem 0 0;
+  color: var(--tone-muted);
+}

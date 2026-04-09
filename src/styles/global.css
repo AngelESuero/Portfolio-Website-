@@ -97,6 +97,8 @@
   --tone-cosmic: #5b2d8f;
   --tone-cosmic-bright: #8b5cf6;
   --tone-cosmic-glow: #c4b5fd;
+  --font-body: "Recursive", system-ui, sans-serif;
+  --font-display: "Recursive", system-ui, sans-serif;
   --accent-1: var(--tone-accent);
   --accent-2: var(--tone-sky);
   --accent-3: var(--tone-cosmic);
@@ -279,79 +281,12 @@ body {
   }
 }
 
-body[data-theme='archive'] {
+body[data-theme] {
   --tone-accent: #b97a2d;
   --tone-accent-bright: #d1913d;
   --tone-accent-glow: #e7b36d;
   --tone-sky: #587a95;
   --tone-sky-bright: #7fa3bf;
-}
-
-body[data-theme='hub'] {
-  --tone-accent: #bc7f31;
-  --tone-accent-bright: #d49544;
-  --tone-accent-glow: #eaba78;
-  --tone-sky: #5b7d98;
-  --tone-sky-bright: #7fa3bf;
-}
-
-body[data-theme='social'] {
-  --tone-accent: #b67d35;
-  --tone-accent-bright: #cf9146;
-  --tone-accent-glow: #e5b77a;
-  --tone-sky: #597f8f;
-  --tone-sky-bright: #7fa3bf;
-}
-
-body[data-theme='agi'] {
-  --tone-accent: #b1732b;
-  --tone-accent-bright: #ca893d;
-  --tone-accent-glow: #e1ae6c;
-  --tone-sky: #547691;
-  --tone-sky-bright: #7fa3bf;
-}
-
-body[data-theme='survival'] {
-  --tone-accent: #aa6b34;
-  --tone-accent-bright: #c47c48;
-  --tone-accent-glow: #dea67a;
-  --tone-sky: #557987;
-  --tone-sky-bright: #7fa3bf;
-}
-
-body[data-theme='threads'] {
-  --tone-accent: #b47a31;
-  --tone-accent-bright: #cd8f43;
-  --tone-accent-glow: #e7b974;
-  --tone-sky: #5c7e97;
-  --tone-sky-bright: #7fa3bf;
-}
-
-body[data-theme='writing'] {
-  --tone-accent: #ba8040;
-  --tone-accent-bright: #d39653;
-  --tone-accent-glow: #eabf84;
-  --tone-sky: #5d7f9b;
-  --tone-sky-bright: #7fa3bf;
-}
-
-body[data-theme='work'] {
-  --tone-accent: #b27632;
-  --tone-accent-bright: #ca8a43;
-  --tone-accent-glow: #e2b372;
-  --tone-sky: #597c8d;
-  --tone-sky-bright: #7fa3bf;
-}
-
-body[data-theme='contact'] {
-  --tone-accent: #b98546;
-  --tone-accent-bright: #d69c5a;
-  --tone-accent-glow: #ecc58d;
-  --tone-sky: #5f8097;
-  --tone-sky-bright: #7fa3bf;
-}
-
-body[data-theme] {
   --accent-1: var(--tone-accent);
   --accent-2: var(--tone-sky);
   --accent2: var(--accent-2);
@@ -366,78 +301,14 @@ body[data-theme] {
   --reading-plane-strong: rgba(228, 216, 201, 0.965);
   --reading-plane-line: rgba(110, 89, 62, 0.15);
   --reading-plane-shadow: 0 24px 64px rgba(92, 73, 43, 0.14);
-}
-
-.light body[data-theme='archive'] {
+  --tone-sky: #4b6a82;
+  --tone-sky-bright: #6f90a8;
   --tone-accent: #a56c28;
   --tone-accent-bright: #c18333;
   --tone-accent-glow: #e2b577;
-  --tone-sky: #4b6a82;
-  --tone-sky-bright: #6f90a8;
-}
-
-.light body[data-theme='hub'] {
-  --tone-accent: #a96f2a;
-  --tone-accent-bright: #c78735;
-  --tone-accent-glow: #e5b97a;
-  --tone-sky: #4b6a82;
-  --tone-sky-bright: #6f90a8;
-}
-
-.light body[data-theme='social'] {
-  --tone-accent: #a16e33;
-  --tone-accent-bright: #bc803f;
-  --tone-accent-glow: #dcaa77;
-  --tone-sky: #4b6a82;
-  --tone-sky-bright: #6f90a8;
-}
-
-.light body[data-theme='agi'] {
-  --tone-accent: #9e6627;
-  --tone-accent-bright: #b87a35;
-  --tone-accent-glow: #d8a76b;
-  --tone-sky: #4b6a82;
-  --tone-sky-bright: #6f90a8;
-}
-
-.light body[data-theme='survival'] {
-  --tone-accent: #975f30;
-  --tone-accent-bright: #b16f3f;
-  --tone-accent-glow: #d29a6f;
-  --tone-sky: #4b6a82;
-  --tone-sky-bright: #6f90a8;
-}
-
-.light body[data-theme='threads'] {
-  --tone-accent: #a26a2a;
-  --tone-accent-bright: #be813c;
-  --tone-accent-glow: #dcaf73;
-  --tone-sky: #4b6a82;
-  --tone-sky-bright: #6f90a8;
-}
-
-.light body[data-theme='writing'] {
-  --tone-accent: #a87539;
-  --tone-accent-bright: #c68a49;
-  --tone-accent-glow: #e1b67d;
-  --tone-sky: #4b6a82;
-  --tone-sky-bright: #6f90a8;
-}
-
-.light body[data-theme='work'] {
-  --tone-accent: #9f672d;
-  --tone-accent-bright: #b97c3b;
-  --tone-accent-glow: #d8a76f;
-  --tone-sky: #4b6a82;
-  --tone-sky-bright: #6f90a8;
-}
-
-.light body[data-theme='contact'] {
-  --tone-accent: #a97940;
-  --tone-accent-bright: #c88f4f;
-  --tone-accent-glow: #e4bc83;
-  --tone-sky: #4b6a82;
-  --tone-sky-bright: #6f90a8;
+  --accent-1: var(--tone-accent);
+  --accent-2: var(--tone-sky);
+  --accent2: var(--accent-2);
 }
 
 body {
@@ -1666,7 +1537,7 @@ html[data-surface-mode='lab'] .viewer-only-inline-flex {
 .view-surface-header h1 {
   margin-top: 0.35rem;
   font-size: clamp(1.4rem, 2.1vw, 1.92rem);
-  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-family: var(--font-display);
 }
 
 .view-surface-header > p:last-child {
@@ -2131,7 +2002,7 @@ html[data-surface-mode='lab'] .viewer-only-inline-flex {
 
   .mobile-toc-title {
     margin: 0.85rem 0 0.65rem;
-    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-family: var(--font-display);
     font-size: 0.98rem;
     letter-spacing: 0.01em;
     color: rgba(241, 247, 255, 0.96);
@@ -2172,7 +2043,7 @@ html[data-surface-mode='lab'] .viewer-only-inline-flex {
 
   .mobile-story-section h2 {
     margin: 0;
-    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-family: var(--font-display);
     font-size: clamp(1.22rem, 5.1vw, 1.7rem);
     letter-spacing: -0.015em;
     line-height: 1.2;

@@ -1,0 +1,195 @@
+/* Extracted from src/pages/story.astro */
+
+.story-page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: clamp(3rem, 8vw, 5rem) clamp(1.25rem, 5vw, 2.5rem) clamp(4rem, 10vw, 7rem);
+}
+
+/* ── Header ── */
+.story-header {
+  text-align: center;
+  margin-bottom: clamp(3rem, 8vw, 5rem);
+}
+
+.story-header h1 {
+  font-size: 12px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--tone-muted);
+  margin: 0;
+}
+
+.story-header__sub {
+  font-size: 11px;
+  font-family: var(--font-body);
+  color: color-mix(in srgb, var(--tone-muted) 70%, transparent);
+  letter-spacing: 0.1em;
+  margin: 6px 0 0;
+}
+
+/* ── Timeline ── */
+.story-timeline {
+  position: relative;
+}
+
+/* Vertical line */
+.story-timeline::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--line2);
+}
+
+/* ── Entry ── */
+.story-entry {
+  position: relative;
+  padding-left: 32px;
+}
+
+/* ── Tick (button) ── */
+.story-tick {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 18px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+  position: relative;
+}
+
+/* Dot on the line */
+.story-tick::before {
+  content: '';
+  position: absolute;
+  left: -37px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--tone-muted) 60%, transparent);
+  border: 2px solid var(--tone-bg, transparent);
+  transition: background 0.2s, transform 0.2s;
+  flex-shrink: 0;
+}
+
+.story-entry.is-open .story-tick::before,
+.story-tick:hover::before {
+  background: var(--tone-accent-glow);
+  transform: scale(1.15);
+}
+
+.story-tick__year {
+  font-size: 11px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--tone-muted) 80%, transparent);
+  min-width: 80px;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+
+.story-entry.is-open .story-tick__year,
+.story-tick:hover .story-tick__year {
+  color: var(--tone-accent-glow);
+}
+
+.story-tick__label {
+  font-size: 15px;
+  color: color-mix(in srgb, var(--tone-text) 75%, var(--tone-muted) 25%);
+  transition: color 0.2s;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.story-entry.is-open .story-tick__label,
+.story-tick:hover .story-tick__label {
+  color: var(--tone-text);
+}
+
+/* Arrow */
+.story-tick__arrow {
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.25s;
+  flex-shrink: 0;
+  color: var(--tone-text);
+}
+
+.story-tick__arrow svg {
+  width: 8px;
+  height: 8px;
+}
+
+.story-tick:hover .story-tick__arrow,
+.story-entry.is-open .story-tick__arrow {
+  opacity: 1;
+}
+
+.story-entry.is-open .story-tick__arrow {
+  transform: rotate(90deg);
+}
+
+/* ── Panel ── */
+.story-panel {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.3s ease;
+  opacity: 0;
+}
+
+.story-entry.is-open .story-panel {
+  max-height: 800px;
+  opacity: 1;
+}
+
+.story-panel__inner {
+  padding: 0 0 28px 96px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
+}
+
+.story-panel__inner p {
+  margin: 0 0 14px;
+}
+
+.story-panel__inner p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Footer ── */
+.story-footer {
+  text-align: center;
+  margin-top: 60px;
+  font-size: 11px;
+  font-family: var(--font-body);
+  letter-spacing: 0.12em;
+  color: color-mix(in srgb, var(--tone-muted) 50%, transparent);
+}
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+  .story-panel__inner {
+    padding-left: 0;
+  }
+
+  .story-tick__year {
+    min-width: 64px;
+  }
+}

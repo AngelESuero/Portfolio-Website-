@@ -1,54 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/pages/ai.css';
 ---
 
 <BaseLayout title="AI — a_e.s_" description="One place for AGI tracking, wave analysis, environmental impact, post-labor economics, and civic AI accountability." theme="archive">
 
-  <style>
-    .ai-hub-hero {
-      border: 1px solid var(--tone-line);
-      border-radius: 16px;
-      background: linear-gradient(135deg, rgba(123,231,255,0.06), rgba(242,184,75,0.06));
-      padding: clamp(1.2rem, 3vw, 2rem);
-      margin-bottom: 2rem;
-    }
-    .ai-hub-kicker { font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--tone-accent); font-weight: 700; margin: 0 0 0.5rem; }
-    .ai-hub-hero h1 { margin: 0; font-size: clamp(1.8rem, 3.5vw, 2.8rem); letter-spacing: -0.03em; line-height: 1.05; }
-    .ai-hub-hero p { margin: 0.85rem 0 0; max-width: 68ch; color: var(--tone-muted); line-height: 1.6; }
-
-    .ai-subnav { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.2rem; }
-    .ai-subnav a { border: 1px solid var(--tone-line); border-radius: 999px; padding: 0.38rem 0.9rem; font-size: 0.8rem; color: var(--tone-muted); text-decoration: none; transition: color 140ms, border-color 140ms; }
-    .ai-subnav a:hover, .ai-subnav a:focus-visible { color: var(--tone-accent-glow); border-color: color-mix(in srgb, var(--tone-accent) 40%, var(--tone-line)); }
-
-    .ai-section-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.2rem; margin-bottom: 2.4rem; }
-    .ai-card { border: 1px solid var(--tone-line); border-radius: 14px; background: var(--tone-surface); padding: 1.3rem; display: flex; flex-direction: column; gap: 0.6rem; transition: border-color 160ms, transform 160ms; text-decoration: none; color: inherit; }
-    .ai-card:hover { border-color: color-mix(in srgb, var(--tone-accent) 35%, var(--tone-line)); transform: translateY(-2px); }
-    .ai-card-tag { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tone-accent); font-weight: 700; }
-    .ai-card h2 { margin: 0; font-size: 1.15rem; letter-spacing: -0.02em; line-height: 1.2; }
-    .ai-card p { margin: 0; font-size: 0.85rem; color: var(--tone-muted); line-height: 1.55; flex: 1; }
-    .ai-card-link { font-size: 0.82rem; color: var(--tone-accent-glow); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 45%, transparent); align-self: flex-start; margin-top: 0.2rem; }
-
-    .ai-waves-section { border: 1px solid var(--tone-line); border-radius: 14px; background: var(--tone-surface); padding: 1.4rem; margin-bottom: 2.2rem; }
-    .ai-waves-section h2 { font-size: 1.1rem; letter-spacing: -0.02em; margin: 0 0 0.4rem; }
-    .ai-waves-section > p { color: var(--tone-muted); font-size: 0.86rem; margin: 0 0 1.2rem; max-width: 70ch; line-height: 1.55; }
-    .ai-waves-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.9rem; }
-    .ai-wave-item { border: 1px solid var(--tone-line); border-radius: 12px; padding: 1rem; background: color-mix(in srgb, var(--tone-bg) 60%, var(--tone-surface) 40%); }
-    .ai-wave-item h3 { font-size: 0.9rem; margin: 0 0 0.3rem; color: var(--tone-accent-glow); }
-    .ai-wave-item .wave-years { font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tone-muted); margin: 0 0 0.55rem; }
-    .ai-wave-item p { margin: 0; font-size: 0.82rem; color: var(--tone-muted); line-height: 1.5; }
-
-    .ai-theory-section { border: 1px solid var(--tone-line); border-radius: 14px; background: var(--tone-surface); padding: 1.4rem; margin-bottom: 2.2rem; }
-    .ai-theory-section h2 { font-size: 1.1rem; letter-spacing: -0.02em; margin: 0 0 0.4rem; }
-    .ai-theory-section > p { color: var(--tone-muted); font-size: 0.86rem; margin: 0 0 1rem; line-height: 1.5; }
-    .ai-theory-links { display: grid; gap: 0.7rem; }
-    .ai-theory-link { display: flex; align-items: flex-start; gap: 0.75rem; border: 1px solid var(--tone-line); border-radius: 12px; padding: 0.85rem 1rem; text-decoration: none; color: inherit; background: color-mix(in srgb, var(--tone-bg) 60%, var(--tone-surface) 40%); transition: border-color 140ms; }
-    .ai-theory-link:hover { border-color: color-mix(in srgb, var(--tone-accent) 35%, var(--tone-line)); }
-    .ai-theory-link-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 0.1rem; }
-    .ai-theory-link-text strong { display: block; font-size: 0.9rem; margin-bottom: 0.2rem; }
-    .ai-theory-link-text span { font-size: 0.78rem; color: var(--tone-muted); }
-
-    @media (max-width: 600px) { .ai-section-grid, .ai-waves-grid { grid-template-columns: 1fr; } }
-  </style>
 
   <section class="ai-hub-hero">
     <p class="ai-hub-kicker">AI Area</p>

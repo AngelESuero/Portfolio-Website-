@@ -173,7 +173,7 @@
 
 .life-timeline__year {
   font-size: 0.74rem;
-  font-family: 'Helvetica Neue', sans-serif;
+  font-family: var(--font-body);
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -183,7 +183,7 @@
 
 .life-timeline__label {
   font-size: clamp(1.26rem, 2.05vw, 1.88rem);
-  font-family: var(--font-display, Georgia, serif);
+  font-family: var(--font-display);
   font-weight: 600;
   line-height: 1.12;
   color: var(--lt-text);
@@ -193,7 +193,7 @@
 
 .life-timeline__meta {
   font-size: 0.65rem;
-  font-family: 'Helvetica Neue', sans-serif;
+  font-family: var(--font-body);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--lt-soft);
@@ -243,7 +243,7 @@
 
 .life-timeline__tabLabel {
   font-size: 0.7rem;
-  font-family: 'Helvetica Neue', sans-serif;
+  font-family: var(--font-body);
   font-weight: 600;
   letter-spacing: 0.11em;
   text-transform: uppercase;
@@ -449,7 +449,7 @@
   border: 1px solid var(--lt-badge-border);
   border-radius: 999px;
   font-size: 0.64rem;
-  font-family: 'Helvetica Neue', sans-serif;
+  font-family: var(--font-body);
   letter-spacing: 0.11em;
   text-transform: uppercase;
   color: var(--lt-badge-text);
@@ -468,7 +468,7 @@
 .life-timeline__sectionLabel {
   margin: 0;
   font-size: 0.72rem;
-  font-family: 'Helvetica Neue', sans-serif;
+  font-family: var(--font-body);
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -532,7 +532,7 @@
   border: 1px solid color-mix(in srgb, var(--lt-badge-border) 88%, transparent);
   border-radius: 999px;
   font-size: 0.56rem;
-  font-family: 'Helvetica Neue', sans-serif;
+  font-family: var(--font-body);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--lt-badge-text);
@@ -540,7 +540,7 @@
 
 .life-timeline__narrativeTitle {
   font-size: 0.66rem;
-  font-family: 'Helvetica Neue', sans-serif;
+  font-family: var(--font-body);
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -599,7 +599,7 @@
 
 .life-timeline__showcaseKind {
   font-size: 0.68rem;
-  font-family: 'Helvetica Neue', sans-serif;
+  font-family: var(--font-body);
   font-weight: 700;
   letter-spacing: 0.13em;
   text-transform: uppercase;
@@ -627,7 +627,7 @@
   border: 1px solid color-mix(in srgb, var(--lt-badge-border) 92%, transparent);
   color: var(--lt-badge-text);
   font-size: 0.7rem;
-  font-family: 'Helvetica Neue', sans-serif;
+  font-family: var(--font-body);
   letter-spacing: 0.08em;
 }
 
@@ -639,7 +639,7 @@
   padding-bottom: 2px;
   border-bottom: 1px solid var(--lt-panel-border);
   font-size: 0.6rem;
-  font-family: 'Helvetica Neue', sans-serif;
+  font-family: var(--font-body);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--lt-link);

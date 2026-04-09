@@ -1,0 +1,77 @@
+/* Extracted from src/pages/work/[slug].astro */
+
+.slug-photo-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  clip-path: polygon(0 40%, 100% 40%, 100% 100%, 0 100%);
+}
+
+.work-entry {
+  position: relative;
+  isolation: isolate;
+  z-index: 10;
+}
+
+.work-entry::before {
+  content: '';
+  position: absolute;
+  inset: -0.95rem -1rem -1rem;
+  z-index: -1;
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--tone-surface) 12%, transparent);
+  pointer-events: none;
+}
+
+.project-media {
+  margin-top: 2rem;
+}
+
+.project-media__eyebrow {
+  margin: 0 0 0.75rem;
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+}
+
+.project-media__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+}
+
+.project-media__item {
+  margin: 0;
+}
+
+.project-media__item img,
+.project-media__item video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 14px;
+}
+
+.project-media__item video {
+  background: color-mix(in srgb, var(--tone-surface) 82%, black 18%);
+}
+
+.project-media__item figcaption {
+  margin-top: 0.45rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+}
+
+@media (max-width: 480px) {
+  .project-media__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

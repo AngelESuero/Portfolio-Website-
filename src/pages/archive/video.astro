@@ -9,6 +9,7 @@ import {
 } from '../../lib/archive-entries';
 import { formatLongArchiveUtcDate } from '../../lib/date-formatting';
 import { getAllEntries } from '../../lib/site-collections';
+import '../../styles/pages/archive/video.css';
 
 const allEntries = sortEntriesByDate(await getAllEntries());
 const entries = allEntries.filter((e) => e.data.medium === 'video');
@@ -129,109 +130,3 @@ const other = entries.filter((e) => !e.data.ingest?.surface || !['videos','strea
   </script>
 </BaseLayout>
 
-<style>
-  .archive-video {
-    display: grid;
-    gap: 1.4rem;
-  }
-
-  .archive-video__description {
-    max-width: 64ch;
-    margin: 0;
-  }
-
-  .archive-video__meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.7rem 1rem;
-    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
-    font-size: 0.82rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-
-  .archive-video__meta p { margin: 0; }
-
-  .archive-video__browse {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .archive-video__browse-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 2.15rem;
-    padding: 0.4rem 0.74rem;
-    border-radius: 999px;
-    border: 1px solid var(--line2);
-    color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
-    text-decoration: none;
-    background: color-mix(in srgb, var(--tone-surface) 88%, transparent);
-  }
-
-  .archive-video__browse-link.is-current,
-  .archive-video__browse-link:hover,
-  .archive-video__browse-link:focus-visible {
-    border-color: color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
-    color: var(--tone-text);
-  }
-
-  .archive-video-controls {
-    display: grid;
-    gap: 1rem;
-    padding: 1rem 1.05rem;
-    border: 1px solid var(--line2);
-    border-radius: 1rem;
-    background:
-      linear-gradient(180deg, rgba(255,255,255,0.022), transparent 72%),
-      color-mix(in srgb, var(--tone-surface) 88%, transparent);
-  }
-
-  .archive-video-controls__group { display: grid; gap: 0.55rem; }
-
-  .archive-video-controls__label {
-    margin: 0;
-    font-size: 0.72rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--tone-muted);
-  }
-
-  .archive-video-controls__buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.48rem;
-  }
-
-  .archive-results {
-    color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-
-  .archive-results p { margin: 0; }
-
-  .archive-video__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  }
-
-  .archive-video__item {
-    min-width: 0;
-    content-visibility: auto;
-    contain: layout style paint;
-    contain-intrinsic-size: 32rem;
-  }
-
-  .archive-video__empty {
-    margin: 0;
-    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
-  }
-</style>

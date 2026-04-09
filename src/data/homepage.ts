@@ -6,39 +6,6 @@ export const heroActions = [
   { href: '/contact', label: 'Contact' },
 ] as const;
 
-export const geometricPortraits = [
-  {
-    src: '/images/site-selects/march-20-portrait.png',
-    alt: 'Angel Suero in a neutral portrait with soft indoor lighting',
-    shape: 'arch',
-    focus: '50% 26%',
-  },
-  {
-    src: '/images/site-selects/march-1-car-portrait.png',
-    alt: 'Angel Suero in a car portrait, looking forward',
-    shape: 'circle',
-    focus: '50% 30%',
-  },
-  {
-    src: '/images/home-collage/download-1.png',
-    alt: 'Angel Suero outdoors at dusk in a layered jacket',
-    shape: 'diamond',
-    focus: '50% 34%',
-  },
-  {
-    src: '/images/home-collage/download-7.png',
-    alt: 'Angel Suero smiling in a relaxed blue-shirt portrait',
-    shape: 'ticket',
-    focus: '50% 30%',
-  },
-  {
-    src: '/images/home-collage/download.png',
-    alt: 'Angel Suero under evening street light with headphones',
-    shape: 'slant',
-    focus: '50% 34%',
-  },
-] as const;
-
 export const homeRoutes = [
   {
     href: '/work',

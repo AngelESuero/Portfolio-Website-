@@ -5,7 +5,6 @@ import profile from '../data/profile';
 import '../styles/homepage.css';
 import {
   aiPledgeCommitments,
-  geometricPortraits,
   heroActions,
   homeRoutes,
   timelinePreview,
@@ -72,26 +71,6 @@ const heroFacts = [
           <span class="home-hero__figure-kicker">Present tense archive</span>
           <span class="home-hero__figure-copy home-read-cue home-read-cue--inline">A portrait of the archive, still in motion.</span>
         </figcaption>
-
-        <div class="home-hero__collage" aria-label="Geometric portrait collage">
-          <p class="home-hero__collage-label">Visual language</p>
-          <ul class="home-hero__collage-grid" role="list">
-            {geometricPortraits.map((portrait, index) => (
-              <li class={`home-portrait-card home-portrait-card--${portrait.shape}`}>
-                <figure class="home-portrait-card__figure">
-                  <img
-                    src={portrait.src}
-                    alt={portrait.alt}
-                    loading={index === 0 ? 'eager' : 'lazy'}
-                    decoding="async"
-                    class="home-portrait-card__image"
-                    style={`--portrait-focus:${portrait.focus};`}
-                  />
-                </figure>
-              </li>
-            ))}
-          </ul>
-        </div>
       </figure>
     </section>
 

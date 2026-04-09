@@ -5,6 +5,7 @@ import agiFeedData from '../data/agi-timeline.json';
 import '../styles/agi-timeline.css';
 import { getLinkCtaLabel, providerFromUrl } from '../lib/embed-resolver';
 import { formatFreshnessLabel } from '../lib/freshness';
+import '../styles/pages/agi.css';
 
 interface SupplementaryFeedItem {
   title: string;
@@ -836,99 +837,3 @@ const analystDomainOptions = ['all', ...new Set(items.map((item) => String(item.
   </script>
 </BaseLayout>
 
-<style>
-  :global(body.agi-x-page[data-theme='agi']) {
-    --tone-bg: #080b10;
-    --tone-bg-deep: #03060a;
-    --tone-surface: rgba(12, 18, 24, 0.9);
-    --tone-surface-strong: rgba(8, 13, 18, 0.96);
-    --tone-text: rgba(236, 243, 252, 0.96);
-    --tone-muted: rgba(160, 179, 203, 0.78);
-    --tone-line: rgba(110, 151, 196, 0.24);
-    --line2: rgba(110, 151, 196, 0.14);
-    --tone-accent: #1d9bf0;
-    --tone-accent-glow: #87ccff;
-    background:
-      radial-gradient(52rem 28rem at 84% 6%, rgba(29, 155, 240, 0.16), transparent 58%),
-      radial-gradient(46rem 26rem at 18% 10%, rgba(56, 114, 168, 0.12), transparent 62%),
-      linear-gradient(180deg, #0a1018 0%, #070c13 48%, #03060a 100%);
-    color: var(--tone-text);
-  }
-
-  :global(body.agi-x-page .site-overlay) {
-    background:
-      linear-gradient(to right, rgba(255, 255, 255, 0.03), transparent 26%),
-      linear-gradient(to left, rgba(255, 255, 255, 0.03), transparent 26%),
-      radial-gradient(54rem 30rem at 84% 2%, rgba(29, 155, 240, 0.12), transparent 64%);
-  }
-
-  .signal-desk {
-    margin-bottom: 1rem;
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 24%, var(--line2));
-    border-radius: 1rem;
-    padding: 0.95rem 1rem;
-    background:
-      linear-gradient(180deg, rgba(29, 155, 240, 0.12), rgba(29, 155, 240, 0.02)),
-      color-mix(in srgb, var(--tone-surface) 88%, transparent);
-  }
-
-  .signal-desk__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-    gap: 0.75rem;
-  }
-
-  .signal-desk__lane {
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 16%, var(--line2));
-    border-radius: 0.82rem;
-    padding: 0.65rem 0.7rem;
-    background: color-mix(in srgb, var(--tone-surface-strong) 76%, transparent);
-  }
-
-  .signal-desk__lane h4 {
-    margin: 0;
-    font-size: 0.92rem;
-    line-height: 1.35;
-  }
-
-  .signal-desk__lane ul {
-    margin: 0.55rem 0 0;
-    padding-left: 1rem;
-    display: grid;
-    gap: 0.36rem;
-  }
-
-  .signal-desk__lane li {
-    display: grid;
-    gap: 0.14rem;
-  }
-
-  .signal-desk__lane li a {
-    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
-    text-decoration: none;
-  }
-
-  .signal-desk__lane li span {
-    font-size: 0.8rem;
-    color: color-mix(in srgb, var(--tone-text) 68%, var(--tone-muted) 32%);
-  }
-
-  .analyst-controls {
-    margin-bottom: 1rem;
-    display: grid;
-    gap: 0.5rem;
-  }
-
-  .analyst-filter {
-    cursor: pointer;
-    transition: border-color 160ms ease, background 160ms ease, transform 140ms ease;
-  }
-
-  .analyst-filter.is-active {
-    border-color: color-mix(in srgb, var(--tone-accent) 68%, var(--line2));
-    background:
-      linear-gradient(180deg, rgba(29, 155, 240, 0.26), rgba(29, 155, 240, 0.1)),
-      color-mix(in srgb, var(--tone-surface-strong) 80%, transparent);
-    transform: translateY(-1px);
-  }
-</style>

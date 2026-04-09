@@ -2,7 +2,8 @@
 import EntryCard from '../../components/EntryCard.astro';
 import CrossRouteResume from '../../components/CrossRouteResume.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import igManifest from '../../data/ig.json';
+import { readdirSync } from 'node:fs';
+import { join } from 'node:path';
 import {
   ARCHIVE_MEDIUMS,
   collectEntryTags,
@@ -14,6 +15,7 @@ import {
 } from '../../lib/archive-entries';
 import { formatLongArchiveUtcDate } from '../../lib/date-formatting';
 import { getAllEntries } from '../../lib/site-collections';
+import '../../styles/pages/archive/index.css';
 
 const entries = sortEntriesByDate(await getAllEntries());
 const mediums = ARCHIVE_MEDIUMS;
@@ -53,9 +55,37 @@ const pinnedCollections = tagCounts
         href: getEntryHref(entry)
       }))
   }));
-const storyPhotos = (Array.isArray(igManifest) ? igManifest : []).filter(
-  (item) => typeof item?.src === 'string' && /\.(jpe?g|png|webp|avif)$/i.test(item.src)
-);
+
+type PhotoRailItem = {
+  src: string;
+  label: string;
+  alt: string;
+};
+
+const photoDirectory = join(process.cwd(), 'public/photos');
+const photoFilesByStem = new Map<string, string>();
+
+for (const fileName of readdirSync(photoDirectory)) {
+  if (!/\.(jpe?g|png|webp|avif)$/i.test(fileName)) continue;
+
+  const stem = fileName.replace(/\.[^.]+$/, '');
+  if (stem.startsWith('download-1') || stem.startsWith('download-7')) continue;
+
+  const existing = photoFilesByStem.get(stem);
+  const isJpeg = /\.jpe?g$/i.test(fileName);
+  const existingIsJpeg = existing ? /\.jpe?g$/i.test(existing) : false;
+  if (!existing || (isJpeg && !existingIsJpeg)) {
+    photoFilesByStem.set(stem, fileName);
+  }
+}
+
+const photoRailItems: PhotoRailItem[] = [...photoFilesByStem.entries()]
+  .sort(([left], [right]) => left.localeCompare(right, 'en', { numeric: true }))
+  .map(([stem, fileName], index) => ({
+    src: `/photos/${fileName}`,
+    label: `Photo ${String(index + 1).padStart(2, '0')}`,
+    alt: `${stem.replace(/[-_]+/g, ' ')} — local Codex photo`
+  }));
 ---
 <BaseLayout title="Archive — a_e.s_" theme="archive" bodyClass="archive-ig-page">
   <section class="view-surface archive-page">
@@ -125,20 +155,20 @@ const storyPhotos = (Array.isArray(igManifest) ? igManifest : []).filter(
       )}
     </section>
 
-    {storyPhotos.length > 0 && (
-      <section class="archive-stories" aria-label="Instagram stories preview rail">
+    {photoRailItems.length > 0 && (
+      <section class="archive-stories" aria-label="Codex photo preview rail">
         <header class="archive-stories__head">
           <div>
-            <p class="archive-controls__label font-archive">Instagram stories</p>
-            <h2>Curated strip from your local stories archive</h2>
+            <p class="archive-controls__label font-archive">Codex photos</p>
+            <h2>Curated strip from the local photo folder</h2>
           </div>
-          <a href="/instagram" class="archive-stories__link">Open full stories archive</a>
+          <a href="/instagram" class="archive-stories__link">Open full photo archive</a>
         </header>
         <div class="archive-stories__track">
-          {storyPhotos.map((item) => (
-            <a href="/instagram" class="archive-story-card">
-              <img src={item.src} alt={item.caption || `Instagram story item from ${item.date || 'local archive'}`} loading="lazy" decoding="async" />
-              <span>{item.date || 'Story'}</span>
+          {photoRailItems.map((item) => (
+            <a href="/instagram" class="archive-story-card" title={item.alt}>
+              <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
+              <span>{item.label}</span>
             </a>
           ))}
         </div>
@@ -390,515 +420,3 @@ const storyPhotos = (Array.isArray(igManifest) ? igManifest : []).filter(
     })();
   </script>
 </BaseLayout>
-
-<style>
-  :global(body.archive-ig-page[data-theme='archive']) {
-    --tone-bg: #12101a;
-    --tone-bg-deep: #09070f;
-    --tone-surface: rgba(25, 20, 36, 0.9);
-    --tone-surface-strong: rgba(17, 13, 27, 0.96);
-    --tone-text: rgba(244, 238, 255, 0.95);
-    --tone-muted: rgba(201, 189, 228, 0.78);
-    --tone-line: rgba(214, 181, 255, 0.2);
-    --line2: rgba(214, 181, 255, 0.14);
-    --tone-accent: #ff4f8b;
-    --tone-accent-glow: #ffd1e4;
-    --tone-sky: #7f8bff;
-    background:
-      radial-gradient(42rem 26rem at 16% 8%, rgba(255, 88, 155, 0.2), transparent 58%),
-      radial-gradient(50rem 26rem at 84% 6%, rgba(127, 139, 255, 0.18), transparent 60%),
-      radial-gradient(42rem 24rem at 50% 94%, rgba(246, 167, 96, 0.12), transparent 64%),
-      linear-gradient(180deg, #12101a 0%, #0d0b14 45%, #09070f 100%);
-  }
-
-  :global(body.archive-ig-page .site-overlay) {
-    background:
-      linear-gradient(to right, rgba(255, 255, 255, 0.04), transparent 28%),
-      linear-gradient(to left, rgba(255, 255, 255, 0.04), transparent 28%),
-      radial-gradient(60rem 30rem at 20% 2%, rgba(255, 88, 155, 0.1), transparent 62%),
-      radial-gradient(56rem 34rem at 80% 3%, rgba(127, 139, 255, 0.1), transparent 64%);
-  }
-
-  .archive-page__header {
-    position: relative;
-    padding: 1rem 1.1rem;
-    border: 1px solid var(--line2);
-    border-radius: 1.2rem;
-    background:
-      radial-gradient(110% 160% at 4% 0%, rgba(255, 88, 155, 0.12), transparent 56%),
-      linear-gradient(180deg, rgba(32, 25, 44, 0.84), rgba(17, 13, 27, 0.9));
-    box-shadow:
-      0 16px 34px rgba(0, 0, 0, 0.24),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  }
-
-  .archive-page {
-    display: grid;
-    gap: 1.5rem;
-  }
-
-  .archive-resume {
-    margin-top: 0.2rem;
-  }
-
-  .archive-page__description {
-    max-width: 68ch;
-    font-size: 1.02rem;
-    line-height: 1.72;
-    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
-  }
-
-  .archive-page__cue {
-    margin: 0;
-    width: fit-content;
-    max-width: 58ch;
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 32%, var(--line2));
-    border-radius: 999px;
-    padding: 0.32rem 0.68rem;
-    font-size: 0.78rem;
-    line-height: 1.42;
-    letter-spacing: 0.03em;
-    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
-    background:
-      linear-gradient(135deg, rgba(255, 88, 155, 0.2), rgba(127, 139, 255, 0.18)),
-      color-mix(in srgb, var(--tone-surface) 86%, transparent);
-  }
-
-  .archive-page__meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.7rem 1rem;
-    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
-    font-size: 0.86rem;
-    letter-spacing: 0.02em;
-  }
-
-  .archive-page__meta p,
-  .archive-results p {
-    margin: 0;
-  }
-
-  .archive-page__browse {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .archive-stories {
-    border: 1px solid var(--line2);
-    border-radius: 1.05rem;
-    padding: 0.9rem;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)),
-      color-mix(in srgb, var(--tone-surface) 90%, transparent);
-    display: grid;
-    gap: 0.75rem;
-  }
-
-  .archive-stories__head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 0.65rem;
-    flex-wrap: wrap;
-  }
-
-  .archive-stories__head h2 {
-    margin: 0.14rem 0 0;
-    font-size: clamp(1rem, 2.3vw, 1.24rem);
-    letter-spacing: -0.01em;
-    color: color-mix(in srgb, var(--tone-text) 92%, var(--tone-muted) 8%);
-  }
-
-  .archive-stories__link {
-    font-size: 0.84rem;
-    text-decoration: none;
-    color: #ffe3ef;
-    border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 64%, transparent);
-  }
-
-  .archive-stories__track {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(8rem, 9.8rem);
-    gap: 0.62rem;
-    overflow-x: auto;
-    padding-bottom: 0.18rem;
-    scrollbar-width: thin;
-    scrollbar-color: color-mix(in srgb, var(--tone-accent) 40%, transparent) transparent;
-  }
-
-  .archive-story-card {
-    display: grid;
-    gap: 0.38rem;
-    text-decoration: none;
-    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
-  }
-
-  .archive-story-card img {
-    width: 100%;
-    aspect-ratio: 9 / 16;
-    object-fit: cover;
-    border-radius: 0.78rem;
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 32%, var(--line2));
-    background: color-mix(in srgb, var(--tone-surface-strong) 80%, transparent);
-  }
-
-  .archive-story-card span {
-    font-size: 0.72rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
-  }
-
-  .archive-highlights {
-    display: grid;
-    gap: 0.82rem;
-  }
-
-  .archive-highlight-card {
-    border: 1px solid var(--line2);
-    border-radius: 1rem;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
-      color-mix(in srgb, var(--tone-surface) 90%, transparent);
-    padding: 0.88rem 0.95rem;
-  }
-
-  .archive-highlight-card__head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 0.6rem;
-  }
-
-  .archive-highlight-card__head span {
-    font-size: 0.8rem;
-    color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
-  }
-
-  .archive-highlight-card__body {
-    margin-top: 0.62rem;
-    display: grid;
-    gap: 0.55rem;
-  }
-
-  .archive-highlight-medium {
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 24%, var(--line2));
-    border-radius: 0.78rem;
-    background: color-mix(in srgb, var(--tone-surface-strong) 70%, transparent);
-    text-align: left;
-    display: grid;
-    gap: 0.14rem;
-    padding: 0.52rem 0.58rem;
-    color: inherit;
-    font: inherit;
-    cursor: pointer;
-  }
-
-  .archive-highlight-medium span {
-    font-size: 0.78rem;
-    color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
-  }
-
-  .archive-highlight-medium strong {
-    font-size: 0.94rem;
-    line-height: 1.36;
-  }
-
-  .archive-highlight-medium small {
-    font-size: 0.78rem;
-    color: color-mix(in srgb, var(--tone-text) 68%, var(--tone-muted) 32%);
-  }
-
-  .archive-highlight-card__body--collections {
-    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-  }
-
-  .archive-collection {
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 18%, var(--line2));
-    border-radius: 0.75rem;
-    padding: 0.55rem 0.6rem;
-    background: color-mix(in srgb, var(--tone-surface-strong) 72%, transparent);
-  }
-
-  .archive-collection header {
-    display: flex;
-    justify-content: space-between;
-    gap: 0.4rem;
-    align-items: baseline;
-  }
-
-  .archive-collection header button {
-    border: 0;
-    padding: 0;
-    background: transparent;
-    color: var(--tone-accent-glow);
-    font: inherit;
-    cursor: pointer;
-  }
-
-  .archive-collection header span {
-    font-size: 0.78rem;
-    color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
-  }
-
-  .archive-collection ul {
-    margin: 0.48rem 0 0;
-    padding-left: 1rem;
-    display: grid;
-    gap: 0.3rem;
-  }
-
-  .archive-collection a {
-    color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
-    text-decoration: none;
-  }
-
-  .archive-page__browse-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 2.15rem;
-    padding: 0.4rem 0.74rem;
-    border-radius: 999px;
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 24%, var(--line2));
-    color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
-    text-decoration: none;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
-      color-mix(in srgb, var(--tone-surface) 88%, transparent);
-    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
-  }
-
-  .archive-page__browse-link.is-current,
-  .archive-page__browse-link:hover,
-  .archive-page__browse-link:focus-visible {
-    border-color: color-mix(in srgb, var(--tone-accent) 56%, var(--line2));
-    color: #fff6fd;
-    transform: translateY(-1px);
-    background:
-      linear-gradient(135deg, rgba(255, 88, 155, 0.28), rgba(127, 139, 255, 0.26)),
-      color-mix(in srgb, var(--tone-surface) 88%, transparent);
-  }
-
-  .archive-controls {
-    display: grid;
-    gap: 1rem;
-    padding: 1rem 1.05rem;
-    border: 1px solid var(--line2);
-    border-radius: 1rem;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.022), transparent 72%),
-      color-mix(in srgb, var(--tone-surface) 88%, transparent);
-  }
-
-  .archive-controls__group {
-    display: grid;
-    gap: 0.55rem;
-  }
-
-  .archive-controls__group--secondary {
-    gap: 0.7rem;
-  }
-
-  .archive-controls__group--tags {
-    margin-top: 0.72rem;
-  }
-
-  .archive-controls__toggle {
-    border-top: 1px solid var(--line2);
-    padding-top: 0.72rem;
-  }
-
-  .archive-controls__toggle[open] {
-    padding-bottom: 0.04rem;
-  }
-
-  .archive-controls__toggle-summary {
-    width: fit-content;
-    cursor: pointer;
-    list-style: none;
-    font-size: 0.8rem;
-    letter-spacing: 0.03em;
-    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
-  }
-
-  .archive-controls__toggle-summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .archive-controls__toggle-summary:hover,
-  .archive-controls__toggle-summary:focus-visible {
-    color: var(--tone-text);
-  }
-
-  .archive-controls__toggle-label--hide,
-  .archive-controls__toggle[open] .archive-controls__toggle-label--show {
-    display: none;
-  }
-
-  .archive-controls__toggle[open] .archive-controls__toggle-label--hide {
-    display: inline;
-  }
-
-  .archive-controls__heading {
-    display: grid;
-    gap: 0.22rem;
-  }
-
-  .archive-controls__label {
-    margin: 0;
-    font-size: 0.76rem;
-    letter-spacing: 0.06em;
-    color: var(--tone-muted);
-  }
-
-  .archive-controls__note {
-    margin: 0;
-    font-size: 0.86rem;
-    line-height: 1.42;
-    color: color-mix(in srgb, var(--tone-text) 74%, var(--tone-muted) 26%);
-  }
-
-  .archive-controls__buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.48rem;
-  }
-
-  .archive-controls__buttons--secondary {
-    padding-top: 0.62rem;
-  }
-
-  .archive-controls__more {
-    border-top: 1px solid var(--line2);
-    padding-top: 0.68rem;
-  }
-
-  .archive-controls__more[open] {
-    padding-bottom: 0.08rem;
-  }
-
-  .archive-controls__more-toggle {
-    width: fit-content;
-    cursor: pointer;
-    list-style: none;
-    color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
-    font-size: 0.8rem;
-    letter-spacing: 0.03em;
-  }
-
-  .archive-controls__more-toggle::-webkit-details-marker {
-    display: none;
-  }
-
-  .archive-controls__more-toggle:hover,
-  .archive-controls__more-toggle:focus-visible {
-    color: var(--tone-text);
-  }
-
-  .archive-filter {
-    border-radius: 999px;
-    padding: 0.36rem 0.74rem;
-    font-size: 0.86rem;
-    letter-spacing: 0.02em;
-    font-weight: 500;
-    line-height: 1.3;
-    color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
-    transition: transform 140ms ease, border-color 180ms ease, background 180ms ease;
-  }
-
-  .archive-filter.is-active,
-  .archive-filter:hover,
-  .archive-filter:focus-visible {
-    border-color: color-mix(in srgb, var(--tone-accent) 52%, var(--line2));
-    color: #fff6fd;
-    transform: translateY(-1px);
-    background:
-      linear-gradient(135deg, rgba(255, 88, 155, 0.24), rgba(127, 139, 255, 0.22)),
-      color-mix(in srgb, var(--tone-surface) 88%, transparent);
-  }
-
-  .archive-results {
-    color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
-    font-size: 0.84rem;
-    letter-spacing: 0.02em;
-  }
-
-  .archive-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 1.05rem;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  }
-
-  .archive-item {
-    content-visibility: auto;
-    contain: layout style paint;
-    contain-intrinsic-size: 32rem;
-  }
-
-  .archive-item {
-    min-width: 0;
-    transition: transform 200ms ease;
-  }
-
-  :global(body.archive-ig-page .archive-list .entry-card) {
-    border-radius: 1.25rem;
-    border: 1px solid color-mix(in srgb, var(--tone-accent) 24%, var(--line2));
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
-      color-mix(in srgb, var(--tone-surface) 88%, transparent);
-    box-shadow:
-      0 16px 36px rgba(0, 0, 0, 0.24),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
-  }
-
-  :global(body.archive-ig-page .archive-list .entry-card:hover) {
-    transform: translateY(-2px);
-    border-color: color-mix(in srgb, var(--tone-accent) 56%, var(--line2));
-    box-shadow:
-      0 24px 44px rgba(0, 0, 0, 0.28),
-      0 0 0 1px rgba(255, 88, 155, 0.24) inset;
-  }
-
-  :global(body.archive-ig-page .archive-list .entry-card__status) {
-    border-color: color-mix(in srgb, var(--tone-accent) 48%, var(--line2));
-    color: #fff2f8;
-    background:
-      linear-gradient(135deg, rgba(255, 88, 155, 0.24), rgba(127, 139, 255, 0.22));
-  }
-
-  :global(body.archive-ig-page .archive-list .entry-card__tags span) {
-    border-color: color-mix(in srgb, var(--tone-accent) 36%, var(--line2));
-    background: color-mix(in srgb, var(--tone-surface-strong) 74%, transparent);
-  }
-
-  :global(body.archive-ig-page .archive-list .entry-card__link) {
-    color: #ffd8ea;
-    border-bottom-color: color-mix(in srgb, var(--tone-accent) 72%, transparent);
-  }
-
-  :global(body.archive-ig-page .archive-list .entry-card[data-medium='video'] .entry-card__thumbnail),
-  :global(body.archive-ig-page .archive-list .entry-card[data-medium='image'] .entry-card__thumbnail) {
-    position: relative;
-    border: none;
-    padding: 1px;
-    background:
-      linear-gradient(135deg, rgba(255, 88, 155, 0.7), rgba(127, 139, 255, 0.62), rgba(246, 167, 96, 0.62));
-  }
-
-  :global(body.archive-ig-page .archive-list .entry-card[data-medium='video'] .entry-card__thumbnail img),
-  :global(body.archive-ig-page .archive-list .entry-card[data-medium='image'] .entry-card__thumbnail img) {
-    border-radius: calc(0.95rem - 1px);
-  }
-
-  .archive-empty {
-    margin: 0;
-    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
-  }
-</style>

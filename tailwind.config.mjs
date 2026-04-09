@@ -13,8 +13,8 @@ export default {
         accent: '#d7aa2f'
       },
       fontFamily: {
-        display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
-        body: ['"Inter"', 'system-ui', 'sans-serif'],
+        display: ['"Recursive"', 'system-ui', 'sans-serif'],
+        body: ['"Recursive"', 'system-ui', 'sans-serif'],
         recursive: ['"Recursive"', 'system-ui', 'sans-serif']
       }
     }

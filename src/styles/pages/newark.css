@@ -1,0 +1,261 @@
+/* Extracted from src/pages/newark.astro */
+
+.nwk-wrap {
+  --nwk-accent: var(--tone-accent);
+  --nwk-accent-soft: color-mix(in srgb, var(--tone-accent) 10%, transparent);
+  --nwk-line: color-mix(in srgb, var(--tone-accent) 18%, var(--tone-line));
+  --nwk-expand: var(--tone-sky);
+  --nwk-expand-soft: color-mix(in srgb, var(--tone-sky) 10%, transparent);
+  --nwk-recede: var(--tone-cosmic);
+  --nwk-recede-soft: color-mix(in srgb, var(--tone-cosmic) 10%, transparent);
+}
+
+.nwk-hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--nwk-line);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--tone-surface) 80%, var(--nwk-accent-soft));
+  padding: clamp(1.2rem, 3vw, 2rem);
+  margin-bottom: 1.6rem;
+}
+.nwk-watermark {
+  position: absolute; inset: 0; display: flex; align-items: center;
+  justify-content: center; pointer-events: none; user-select: none; overflow: hidden;
+}
+.nwk-watermark span {
+  font-size: clamp(4rem, 14vw, 9rem); font-weight: 800; letter-spacing: 0.12em;
+  text-transform: uppercase; color: rgba(179,106,58,0.06); white-space: nowrap;
+  transform: rotate(-6deg);
+}
+.nwk-kicker { font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--nwk-accent); font-weight: 700; margin: 0 0 0.6rem; }
+.nwk-hero h1 { margin: 0; font-size: clamp(2rem, 4vw, 3.4rem); line-height: 0.98; letter-spacing: -0.04em; }
+.nwk-hero p { margin: 0.9rem 0 0; max-width: 72ch; color: var(--tone-muted); line-height: 1.6; }
+
+/* ── Tabs ─────────────────────────────────── */
+.nwk-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.4rem; flex-wrap: wrap; }
+.nwk-tab {
+  padding: 0.42rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--nwk-line);
+  background: color-mix(in srgb, var(--tone-surface) 88%, transparent);
+  color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
+  font-size: 0.84rem;
+  cursor: pointer;
+  transition: border-color 120ms ease, color 120ms ease;
+}
+.nwk-tab.is-active,
+.nwk-tab:hover {
+  border-color: color-mix(in srgb, var(--nwk-accent) 40%, var(--nwk-line));
+  color: var(--tone-text);
+}
+.nwk-tab-panel { display: none; }
+.nwk-tab-panel.is-active { display: block; }
+
+/* ── Cards ────────────────────────────────── */
+.nwk-card {
+  border: 1px solid var(--nwk-line);
+  border-radius: 16px;
+  background: var(--tone-surface);
+  padding: 1.2rem 1.3rem;
+  margin-bottom: 1.1rem;
+}
+.nwk-card:last-child { margin-bottom: 0; }
+.nwk-card h2 {
+  font-size: 1rem; letter-spacing: -0.02em; margin: 0 0 1rem;
+  color: var(--tone-text);
+}
+.nwk-card h3 {
+  font-size: 0.88rem; font-weight: 700; margin: 0 0 0.4rem;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--nwk-accent);
+}
+
+/* ── Stats ────────────────────────────────── */
+.nwk-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.1rem;
+}
+.nwk-stat {
+  border: 1px solid var(--nwk-line);
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  background: color-mix(in srgb, var(--tone-surface) 60%, var(--tone-bg) 40%);
+  text-align: center;
+}
+.nwk-stat__num {
+  display: block;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--nwk-accent);
+  line-height: 1;
+}
+.nwk-stat__label {
+  display: block;
+  font-size: 0.76rem;
+  color: var(--tone-muted);
+  margin-top: 0.3rem;
+  line-height: 1.4;
+}
+
+/* ── Disparity bars ───────────────────────── */
+.nwk-bars { display: grid; gap: 0.75rem; }
+.nwk-bar-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 40px;
+  gap: 0.6rem;
+  align-items: center;
+  font-size: 0.82rem;
+}
+.nwk-bar-track {
+  height: 14px;
+  background: color-mix(in srgb, var(--tone-bg) 70%, var(--nwk-accent-soft));
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--nwk-line);
+}
+.nwk-bar-fill { height: 100%; border-radius: 999px; }
+.nwk-bar-fill.homeless  { background: linear-gradient(90deg, var(--tone-accent), var(--tone-accent-glow)); }
+.nwk-bar-fill.county    { background: linear-gradient(90deg, var(--tone-sky), var(--tone-sky-bright)); }
+.nwk-bar-fill.poverty   { background: linear-gradient(90deg, var(--tone-cosmic), var(--tone-cosmic-glow)); }
+.nwk-bar-section-label { font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--tone-muted); margin: 0.8rem 0 0.4rem; }
+
+/* ── Income sources ───────────────────────── */
+.nwk-income-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.6rem;
+}
+.nwk-income-item {
+  border: 1px solid var(--nwk-line);
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+  background: color-mix(in srgb, var(--tone-surface) 60%, var(--tone-bg) 40%);
+}
+.nwk-income-item__pct {
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--nwk-accent);
+  line-height: 1;
+}
+.nwk-income-item__label {
+  font-size: 0.76rem;
+  color: var(--tone-muted);
+  margin-top: 0.25rem;
+  line-height: 1.35;
+}
+
+/* ── Causes ───────────────────────────────── */
+.nwk-causes { display: grid; gap: 0.6rem; }
+.nwk-cause-row {
+  display: grid;
+  grid-template-columns: 1fr 48px;
+  gap: 0.6rem;
+  align-items: center;
+  font-size: 0.84rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--nwk-line);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--tone-surface) 60%, var(--tone-bg) 40%);
+}
+.nwk-cause-pct { font-weight: 800; text-align: right; color: var(--nwk-accent); font-size: 0.95rem; }
+
+/* ── Lede ─────────────────────────────────── */
+.nwk-lede {
+  padding: 1.4rem 0 1.6rem;
+}
+.nwk-lede__stat {
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.08;
+  margin: 0 0 0.75rem;
+  color: var(--tone-text);
+}
+.nwk-lede__stat em {
+  color: var(--nwk-accent);
+  font-style: normal;
+}
+.nwk-lede p:not(.nwk-lede__stat) {
+  margin: 0;
+  font-size: 1.04rem;
+  line-height: 1.65;
+  max-width: 68ch;
+  color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+}
+
+/* ── Callout ──────────────────────────────── */
+.nwk-callout {
+  border: 1px dashed var(--nwk-accent);
+  border-radius: 14px;
+  background: var(--nwk-accent-soft);
+  padding: 1rem 1.1rem;
+  margin-bottom: 1.1rem;
+}
+.nwk-callout strong {
+  display: block; margin-bottom: 0.5rem; color: var(--nwk-accent);
+  letter-spacing: 0.03em; text-transform: uppercase; font-size: 0.72rem;
+}
+.nwk-callout p { margin: 0; font-size: 0.88rem; line-height: 1.6; }
+
+/* ── Market signals ───────────────────────── */
+.nwk-signals { display: grid; gap: 0.75rem; }
+.nwk-signal {
+  border: 1px solid var(--nwk-line);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  background: color-mix(in srgb, var(--tone-surface) 60%, var(--tone-bg) 40%);
+}
+.nwk-signal__header { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.5rem; }
+.nwk-signal__tag {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.2rem 0.55rem; border-radius: 999px;
+}
+.nwk-signal__tag.expanding {
+  background: var(--nwk-expand-soft);
+  color: var(--nwk-expand);
+  border: 1px solid rgba(74,140,106,0.3);
+}
+.nwk-signal__tag.receding {
+  background: var(--nwk-recede-soft);
+  color: var(--nwk-recede);
+  border: 1px solid rgba(140,74,74,0.3);
+}
+.nwk-signal h3 { margin: 0; font-size: 0.95rem; font-weight: 700; letter-spacing: -0.01em; }
+.nwk-signal p { margin: 0.4rem 0 0; font-size: 0.84rem; color: var(--tone-muted); line-height: 1.55; }
+
+.nwk-source-note {
+  border-top: 1px solid var(--nwk-line);
+  padding-top: 1rem;
+  margin-top: 1.8rem;
+  color: var(--tone-muted);
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+.nwk-source-note a { color: var(--nwk-accent); }
+
+/* ── Path grid ────────────────────────────── */
+.nwk-path-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  margin-bottom: 0.8rem;
+}
+.nwk-path-col h3 {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--tone-muted);
+  margin: 0 0 0.7rem;
+}
+
+@media (max-width: 600px) {
+  .nwk-path-grid { grid-template-columns: 1fr; }
+  .nwk-bar-row { grid-template-columns: 100px 1fr 36px; }
+  .nwk-stats { grid-template-columns: 1fr 1fr; }
+}

@@ -1,0 +1,123 @@
+/* Extracted from src/pages/ai-accountability-pledge.astro */
+
+.pledge-page {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  max-width: 68ch;
+}
+
+.pledge-header {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.pledge-kicker {
+  margin: 0;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--tone-accent-glow);
+}
+
+.pledge-intro {
+  margin: 0;
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  max-width: 58ch;
+}
+
+.pledge-section-title {
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  margin: 0 0 0.8rem;
+}
+
+.pledge-blockquote {
+  margin: 0;
+  padding: 1rem 1.2rem;
+  border-left: 3px solid var(--tone-accent-glow);
+  background: color-mix(in srgb, var(--tone-surface-strong) 60%, transparent);
+  border-radius: 0 calc(var(--radius) * 0.5) calc(var(--radius) * 0.5) 0;
+  color: color-mix(in srgb, var(--tone-text) 92%, var(--tone-muted) 8%);
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.pledge-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.pledge-item {
+  border: 1px solid var(--line2);
+  border-radius: calc(var(--radius) * var(--space-scale));
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--tone-surface-strong) 76%, transparent),
+    color-mix(in srgb, var(--tone-surface) 66%, transparent)
+  );
+  padding: clamp(0.9rem, 2.2vw, 1.15rem);
+}
+
+.pledge-item-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.pledge-item-num {
+  font-size: 0.72rem;
+  color: var(--tone-accent-glow);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.pledge-item h3 {
+  margin: 0;
+  font-size: clamp(0.95rem, 2vw, 1.08rem);
+}
+
+.pledge-item p {
+  margin: 0.55rem 0 0;
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.pledge-body {
+  margin: 0 0 0.8rem;
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  line-height: 1.6;
+}
+
+.pledge-closing {
+  margin-top: 1rem;
+  font-style: italic;
+  color: var(--tone-text);
+}
+
+.pledge-footer {
+  padding-top: 1rem;
+  border-top: 1px solid var(--line2);
+}
+
+.pledge-footer p {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--tone-muted);
+}
+
+.pledge-footer a {
+  color: var(--tone-accent-glow);
+  text-decoration: none;
+}
+
+.pledge-footer a:hover {
+  text-decoration: underline;
+}
+
+.pledge-principle-section {
+  display: grid;
+  gap: 0.6rem;
+}

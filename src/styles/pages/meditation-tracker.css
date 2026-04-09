@@ -1,0 +1,283 @@
+/* Extracted from src/pages/meditation-tracker.astro */
+
+.tracker-page {
+  width: min(760px, calc(100vw - 2rem));
+  margin: 0 auto;
+  padding: 1.3rem 0 2.8rem;
+}
+
+.tracker-shell {
+  display: grid;
+  gap: 1rem;
+}
+
+.tracker-card {
+  border-radius: 1.7rem;
+  border: 1px solid var(--tone-line);
+  padding: 1.2rem;
+  background: color-mix(in srgb, var(--tone-surface) 88%, transparent);
+  box-shadow: var(--reading-plane-shadow);
+}
+
+.tracker-card--timer {
+  background:
+    radial-gradient(90% 130% at 14% -10%, rgb(var(--accent-rgb) / 0.18), transparent 58%),
+    linear-gradient(180deg, color-mix(in srgb, var(--tone-surface-strong) 94%, transparent), color-mix(in srgb, var(--tone-bg-deep) 88%, transparent));
+}
+
+.tracker-card--streak {
+  background: linear-gradient(120deg, color-mix(in srgb, var(--tone-accent) 16%, var(--tone-surface)), color-mix(in srgb, var(--tone-cosmic) 16%, var(--tone-surface)) 38%, color-mix(in srgb, var(--tone-sky) 14%, var(--tone-surface)));
+}
+
+.tracker-card--mood {
+  background: linear-gradient(120deg, color-mix(in srgb, var(--tone-cosmic) 22%, var(--tone-surface)), color-mix(in srgb, var(--tone-accent) 14%, var(--tone-surface)) 44%, color-mix(in srgb, var(--tone-sky) 18%, var(--tone-surface)));
+}
+
+.tracker-card--stats {
+  background:
+    radial-gradient(120% 90% at 4% -20%, rgb(var(--cursor-rgb) / 0.18), transparent 62%),
+    linear-gradient(180deg, color-mix(in srgb, var(--tone-sky) 18%, var(--tone-surface)), color-mix(in srgb, var(--tone-bg-deep) 88%, transparent));
+}
+
+.tracker-card--timeline {
+  background:
+    radial-gradient(100% 70% at 100% 0%, rgb(var(--accent-rgb) / 0.16), transparent 70%),
+    linear-gradient(160deg, color-mix(in srgb, var(--tone-sky) 20%, var(--tone-surface)), color-mix(in srgb, var(--tone-cosmic) 18%, var(--tone-surface)));
+}
+
+.tracker-kicker {
+  margin: 0;
+  font-size: 0.87rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+}
+
+.tracker-minute-picker {
+  margin-top: 0.8rem;
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.2rem;
+}
+
+.tracker-chip {
+  border: 1px solid var(--tone-line);
+  background: color-mix(in srgb, var(--tone-surface) 88%, transparent);
+  color: var(--tone-text);
+  border-radius: 999px;
+  min-width: 3.1rem;
+  padding: 0.46rem 0.8rem;
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: all 180ms ease;
+}
+
+.tracker-chip.is-active {
+  background: color-mix(in srgb, var(--tone-accent) 12%, var(--tone-surface));
+  color: var(--tone-text);
+  border-color: color-mix(in srgb, var(--tone-accent) 42%, var(--tone-line));
+}
+
+.tracker-boom {
+  margin-top: 0.95rem;
+  width: 100%;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.9rem 1rem 1rem;
+  background: linear-gradient(180deg, var(--tone-accent-bright), var(--tone-accent));
+  color: var(--tone-text);
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 5vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  box-shadow: 0 16px 30px rgb(var(--accent-rgb) / 0.24);
+}
+
+.tracker-message {
+  margin: 0.68rem 0 0;
+  font-size: 0.9rem;
+  color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
+}
+
+.tracker-streak-row {
+  margin-top: 0.55rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.tracker-streak-count {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 7vw, 3rem);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.tracker-streak-note {
+  margin: 0;
+  max-width: 12rem;
+  text-align: right;
+  font-size: 1.07rem;
+  color: var(--tone-text);
+  line-height: 1.3;
+}
+
+.tracker-mood-title {
+  margin: 0.4rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 6vw, 2.25rem);
+  line-height: 1.08;
+}
+
+.tracker-mood-pills {
+  margin-top: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.tracker-pill {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  padding: 0.44rem 0.8rem;
+  font-size: 0.87rem;
+  transition: all 180ms ease;
+}
+
+.tracker-pill.is-active {
+  background: color-mix(in srgb, var(--tone-accent) 12%, var(--tone-surface));
+  color: var(--tone-text);
+  border-color: color-mix(in srgb, var(--tone-accent) 42%, var(--tone-line));
+}
+
+.tracker-mood-today {
+  margin: 0.65rem 0 0;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.tracker-mood-value {
+  color: var(--tone-text);
+  font-weight: 600;
+  margin-left: 0.32rem;
+}
+
+.tracker-total {
+  margin: 0.4rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.3rem, 8vw, 3.8rem);
+  line-height: 1;
+  font-weight: 700;
+}
+
+.tracker-total-unit {
+  font-size: 0.63em;
+  margin-left: 0.34rem;
+  color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  font-weight: 500;
+}
+
+.tracker-level-row {
+  margin-top: 0.92rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.tracker-level-track {
+  flex: 1;
+  height: 0.65rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tone-surface) 88%, transparent);
+  overflow: hidden;
+}
+
+.tracker-level-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--tone-accent), var(--tone-sky-bright));
+  transition: width 240ms ease;
+}
+
+.tracker-level-label {
+  margin: 0;
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
+}
+
+.tracker-sessions {
+  margin: 0.6rem 0 0;
+  color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  font-size: 0.9rem;
+}
+
+.tracker-timeline-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.tracker-timeline-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.tracker-range-controls {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.tracker-range {
+  border: 1px solid var(--tone-line);
+  background: color-mix(in srgb, var(--tone-surface) 88%, transparent);
+  color: var(--tone-text);
+  border-radius: 999px;
+  padding: 0.26rem 0.68rem;
+  font-size: 0.74rem;
+  line-height: 1.2;
+}
+
+.tracker-range.is-active {
+  background: color-mix(in srgb, var(--tone-accent) 12%, var(--tone-surface));
+  color: var(--tone-text);
+  border-color: color-mix(in srgb, var(--tone-accent) 42%, var(--tone-line));
+}
+
+.tracker-chart {
+  margin-top: 0.8rem;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.tracker-summary {
+  margin: 0.28rem 0 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.87rem;
+}
+
+@media (max-width: 640px) {
+  .tracker-page {
+    width: min(760px, calc(100vw - 1rem));
+    padding-top: 0.6rem;
+  }
+
+  .tracker-card {
+    border-radius: 1.45rem;
+    padding: 1rem;
+  }
+
+  .tracker-streak-note {
+    max-width: 9rem;
+    font-size: 0.92rem;
+  }
+}

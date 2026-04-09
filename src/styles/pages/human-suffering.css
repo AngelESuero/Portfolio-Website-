@@ -1,0 +1,615 @@
+/* Extracted from src/pages/human-suffering.astro */
+
+body.human-suffering-page[data-theme='survival'] {
+  background:
+    radial-gradient(70rem 46rem at 16% 6%, rgba(176, 111, 46, 0.2), transparent 58%),
+    radial-gradient(58rem 34rem at 84% 12%, rgba(85, 121, 135, 0.16), transparent 62%),
+    linear-gradient(180deg, rgba(10, 11, 13, 0.98), rgba(8, 9, 12, 1));
+}
+
+body.human-suffering-page .site-content-stage {
+  background: transparent;
+}
+
+body.human-suffering-page .page-shell {
+  padding-top: 0;
+}
+
+.human-suffering-shell {
+  position: relative;
+  width: min(1360px, calc(100vw - clamp(1rem, 2vw, 1.6rem) * 2));
+  margin: 0 auto;
+  padding: clamp(0.8rem, 1.6vw, 1.2rem) 0 clamp(3rem, 6vw, 4.8rem);
+  display: grid;
+  gap: clamp(1rem, 2.4vw, 1.8rem);
+  isolation: isolate;
+}
+
+.human-suffering-shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 22% 14%, rgba(225, 181, 119, 0.07), transparent 28%),
+    radial-gradient(circle at 78% 18%, rgba(117, 150, 173, 0.06), transparent 26%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(237, 227, 209, 0.03) 0 1px,
+      transparent 1px 72px
+    ),
+    repeating-linear-gradient(
+      180deg,
+      rgba(237, 227, 209, 0.022) 0 1px,
+      transparent 1px 72px
+    );
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.human-suffering-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(320px, 0.82fr);
+  gap: clamp(1rem, 2vw, 1.4rem);
+  align-items: stretch;
+  min-height: min(84svh, 900px);
+  padding: clamp(1rem, 2.4vw, 1.5rem);
+  border: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--tone-line));
+  border-radius: 2rem;
+  background:
+    radial-gradient(circle at 22% 20%, rgba(225, 181, 119, 0.16), transparent 34%),
+    radial-gradient(circle at 78% 20%, rgba(85, 121, 135, 0.14), transparent 32%),
+    linear-gradient(180deg, color-mix(in srgb, var(--tone-surface-strong) 68%, transparent), color-mix(in srgb, var(--tone-surface) 52%, transparent)),
+    color-mix(in srgb, var(--tone-bg) 70%, black 30%);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+  position: relative;
+}
+
+.human-suffering-hero::before,
+.human-suffering-hero::after,
+.human-suffering-route::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.human-suffering-hero::before {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(229, 183, 122, 0.14), transparent 28%),
+    radial-gradient(circle at 82% 28%, rgba(102, 138, 156, 0.12), transparent 30%),
+    linear-gradient(120deg, transparent 0%, rgba(237, 227, 209, 0.02) 44%, transparent 68%);
+  mix-blend-mode: screen;
+  opacity: 0.7;
+  animation: human-suffering-drift 18s ease-in-out infinite alternate;
+}
+
+.human-suffering-hero::after {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 14%),
+    linear-gradient(90deg, rgba(237, 227, 209, 0.06), transparent 12%, transparent 88%, rgba(237, 227, 209, 0.05));
+  opacity: 0.55;
+}
+
+.human-suffering-route::before {
+  background:
+    radial-gradient(circle at 50% 14%, rgba(225, 181, 119, 0.18), transparent 18%),
+    radial-gradient(circle at 50% 72%, rgba(85, 121, 135, 0.18), transparent 22%),
+    linear-gradient(180deg, rgba(237, 227, 209, 0.03), transparent 22%, transparent 80%, rgba(237, 227, 209, 0.04));
+  opacity: 0.65;
+}
+
+.human-suffering-hero__copy,
+.human-suffering-route {
+  position: relative;
+  z-index: 1;
+  border: 1px solid color-mix(in srgb, var(--tone-line) 82%, transparent);
+  background: color-mix(in srgb, var(--tone-surface-strong) 78%, transparent);
+  border-radius: 1.45rem;
+  overflow: hidden;
+}
+
+.human-suffering-hero__copy {
+  display: grid;
+  align-content: start;
+  gap: 0.95rem;
+  padding: clamp(1rem, 2.3vw, 1.45rem);
+  animation: human-suffering-rise 720ms var(--ease-emphasized) both;
+}
+
+.human-suffering-route {
+  display: grid;
+  align-content: start;
+  gap: 0;
+  padding: clamp(1rem, 2vw, 1.35rem);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  animation: human-suffering-rise 760ms 80ms var(--ease-emphasized) both;
+}
+
+.human-suffering-hero__kicker,
+.human-suffering-route__label,
+.human-suffering-reading__kicker,
+.human-suffering-ledger__kicker,
+.human-suffering-context__label {
+  margin: 0 0 0.65rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--tone-accent-glow) 78%, var(--tone-muted) 22%);
+}
+
+.human-suffering-hero h1 {
+  margin: 0;
+  font-size: clamp(3rem, 7vw, 6.1rem);
+  line-height: 0.88;
+  letter-spacing: -0.07em;
+  max-width: 7ch;
+}
+
+.human-suffering-hero__lede {
+  margin: 0;
+  max-width: 38ch;
+  font-size: clamp(1.02rem, 1.28vw, 1.14rem);
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+}
+
+.human-suffering-hero__voice {
+  margin: 0;
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.35rem 0 0.35rem 1rem;
+  border-left: 2px solid color-mix(in srgb, var(--tone-accent) 48%, var(--tone-line));
+}
+
+.human-suffering-hero__voice p {
+  margin: 0;
+  max-width: 44ch;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+  line-height: 1.6;
+  letter-spacing: -0.02em;
+  color: color-mix(in srgb, var(--tone-text) 94%, var(--tone-muted) 6%);
+}
+
+.human-suffering-hero__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin-top: 0.1rem;
+}
+
+.human-suffering-hero__voice footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.75rem;
+  color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.human-suffering-hero__voice footer span + span::before {
+  content: '•';
+  margin-right: 0.75rem;
+  color: color-mix(in srgb, var(--tone-accent) 55%, var(--tone-muted) 45%);
+}
+
+.human-suffering-hero__links a,
+.human-suffering-route__destination,
+.human-suffering-context a,
+.human-suffering-ledger a {
+  color: var(--tone-accent-glow);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 42%, transparent);
+}
+
+.human-suffering-hero__links a:hover,
+.human-suffering-hero__links a:focus-visible,
+.human-suffering-route__destination:hover,
+.human-suffering-route__destination:focus-visible,
+.human-suffering-context a:hover,
+.human-suffering-context a:focus-visible,
+.human-suffering-ledger a:hover,
+.human-suffering-ledger a:focus-visible {
+  border-bottom-color: color-mix(in srgb, var(--tone-accent) 90%, transparent);
+}
+
+.human-suffering-route__intro {
+  display: grid;
+  gap: 0.3rem;
+  padding-bottom: 0.95rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--tone-line) 80%, transparent);
+}
+
+.human-suffering-route__lede {
+  margin: 0;
+  max-width: 26ch;
+  font-size: 1.02rem;
+  line-height: 1.65;
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+}
+
+.human-suffering-route__section {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.95rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--tone-line) 68%, transparent);
+}
+
+.human-suffering-route__section:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.human-suffering-route__section-label {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--tone-muted) 72%, var(--tone-accent) 28%);
+}
+
+.human-suffering-route__sites {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.human-suffering-route__sites li + li {
+  border-top: 1px solid color-mix(in srgb, var(--tone-line) 62%, transparent);
+}
+
+.human-suffering-route__sites a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.55rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.human-suffering-route__sites span {
+  font-weight: 600;
+  color: color-mix(in srgb, var(--tone-text) 94%, var(--tone-muted) 6%);
+}
+
+.human-suffering-route__sites small {
+  flex: none;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: color-mix(in srgb, var(--tone-text) 60%, var(--tone-muted) 40%);
+}
+
+.human-suffering-route__section--destination {
+  gap: 0.45rem;
+}
+
+.human-suffering-route__destination {
+  display: inline-flex;
+  width: fit-content;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.6vw, 1.9rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.human-suffering-route__support {
+  margin: 0;
+  max-width: 32ch;
+  line-height: 1.65;
+  color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
+}
+
+.human-suffering-route__keywords {
+  margin: 0;
+  max-width: 28ch;
+  line-height: 1.7;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+}
+
+.human-suffering-reading {
+  display: grid;
+  gap: 1rem;
+  padding-top: 0.2rem;
+}
+
+.human-suffering-reading__intro,
+.human-suffering-ledger__intro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.25rem;
+}
+
+.human-suffering-reading__intro > div,
+.human-suffering-ledger__intro > div {
+  display: grid;
+  gap: 0.3rem;
+  max-width: 62ch;
+}
+
+.human-suffering-reading__intro h2,
+.human-suffering-ledger__intro h2 {
+  margin: 0;
+  font-size: clamp(1.45rem, 2.3vw, 2.1rem);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+
+.human-suffering-reading__intro p,
+.human-suffering-ledger__intro p {
+  margin: 0;
+  color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  line-height: 1.65;
+}
+
+.human-suffering-reading__count,
+.human-suffering-ledger__count,
+.human-suffering-ledger__group-count {
+  margin: 0;
+  flex: none;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--tone-text) 60%, var(--tone-muted) 40%);
+}
+
+.human-suffering-reading__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.28fr) minmax(280px, 0.72fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.human-suffering-essay {
+  padding: clamp(0.25rem, 1vw, 0.6rem) 0.2rem 0.2rem 0;
+}
+
+.human-suffering-context {
+  display: grid;
+  gap: 0;
+  position: sticky;
+  top: 6rem;
+  border: 1px solid color-mix(in srgb, var(--tone-line) 82%, transparent);
+  border-radius: 1.5rem;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--tone-surface-strong) 70%, transparent), color-mix(in srgb, var(--tone-surface) 55%, transparent)),
+    color-mix(in srgb, var(--tone-bg) 72%, black 28%);
+  overflow: hidden;
+  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.14);
+}
+
+.human-suffering-context__section {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1rem 1rem 1.05rem;
+}
+
+.human-suffering-context__section + .human-suffering-context__section {
+  border-top: 1px solid color-mix(in srgb, var(--tone-line) 70%, transparent);
+}
+
+.human-suffering-context__section h3 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.18;
+  letter-spacing: -0.03em;
+}
+
+.human-suffering-context__section p {
+  margin: 0;
+  color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  line-height: 1.65;
+}
+
+.human-suffering-context__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 0.9rem;
+}
+
+.human-suffering-context__trail {
+  list-style: none;
+  padding: 0;
+  margin: 0.25rem 0 0;
+  display: grid;
+}
+
+.human-suffering-context__trail li {
+  display: grid;
+  gap: 0.15rem;
+  padding-top: 0.7rem;
+}
+
+.human-suffering-context__trail li + li {
+  border-top: 1px solid color-mix(in srgb, var(--tone-line) 64%, transparent);
+}
+
+.human-suffering-context__trail a {
+  width: fit-content;
+  font-weight: 600;
+}
+
+.human-suffering-context__trail span {
+  font-size: 0.84rem;
+  color: color-mix(in srgb, var(--tone-text) 68%, var(--tone-muted) 32%);
+}
+
+.human-suffering-ledger {
+  display: grid;
+  gap: 1rem;
+  padding-top: 0.25rem;
+}
+
+.human-suffering-ledger__groups {
+  display: grid;
+  gap: 1.2rem;
+}
+
+.human-suffering-ledger__group {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.human-suffering-ledger__group-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid color-mix(in srgb, var(--tone-line) 68%, transparent);
+}
+
+.human-suffering-ledger__year {
+  margin: 0;
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  font-family: var(--font-display);
+  letter-spacing: -0.03em;
+}
+
+.human-suffering-ledger__group-count {
+  text-align: right;
+}
+
+.human-suffering-ledger__rail {
+  display: grid;
+  gap: 0;
+}
+
+.human-suffering-ledger__entry {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(11rem, 12rem) minmax(0, 1fr);
+  gap: clamp(0.85rem, 2vw, 1.4rem);
+  padding: 0.9rem 0 0.95rem 1.05rem;
+  border-top: 1px solid color-mix(in srgb, var(--tone-line) 56%, transparent);
+  transition:
+    transform var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard);
+}
+
+.human-suffering-ledger__entry::before {
+  content: '';
+  position: absolute;
+  left: 0.1rem;
+  top: 1.15rem;
+  width: 0.52rem;
+  height: 0.52rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tone-accent) 58%, var(--tone-sky) 42%);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--tone-accent) 12%, transparent);
+}
+
+.human-suffering-ledger__entry:hover {
+  transform: translateX(0.15rem);
+  background: color-mix(in srgb, var(--tone-accent) 4%, transparent);
+}
+
+.human-suffering-ledger__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: start;
+  gap: 0.35rem;
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--tone-muted) 72%, var(--tone-accent) 28%);
+}
+
+.human-suffering-ledger__meta p {
+  margin: 0;
+}
+
+.human-suffering-ledger__meta span {
+  border: 1px solid color-mix(in srgb, var(--tone-line) 66%, transparent);
+  border-radius: 999px;
+  padding: 0.16rem 0.45rem;
+  background: color-mix(in srgb, var(--tone-bg) 20%, transparent);
+}
+
+.human-suffering-ledger__body h3 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.human-suffering-ledger__body p {
+  margin: 0.48rem 0 0;
+  color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  line-height: 1.68;
+}
+
+@keyframes human-suffering-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes human-suffering-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -8px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .human-suffering-hero,
+  .human-suffering-route,
+  .human-suffering-hero::before {
+    animation: none;
+  }
+
+  .human-suffering-ledger__entry {
+    transition: none;
+  }
+}
+
+@media (max-width: 1100px) {
+  .human-suffering-hero,
+  .human-suffering-reading__layout,
+  .human-suffering-ledger__entry {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 920px) {
+  .human-suffering-hero,
+  .human-suffering-reading__layout,
+  .human-suffering-ledger__entry {
+    min-height: auto;
+  }
+
+  .human-suffering-context {
+    position: static;
+  }
+
+  .human-suffering-route__sites a {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
+  }
+
+  .human-suffering-ledger__entry {
+    padding-left: 0.95rem;
+  }
+}

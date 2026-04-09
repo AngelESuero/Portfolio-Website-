@@ -1,0 +1,117 @@
+/* Extracted from src/pages/resources.astro */
+
+.resources-main {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 1.35rem 1rem 2.75rem;
+}
+
+.resources-header {
+  margin-bottom: 1.45rem;
+  max-width: 54ch;
+}
+
+.resources-eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tone-muted);
+  margin: 0 0 0.75rem;
+}
+
+.resources-title {
+  font-size: clamp(1.65rem, 3.2vw, 2.35rem);
+  line-height: 1.1;
+  margin: 0 0 1rem;
+  color: var(--tone-text);
+}
+
+.resources-subtitle {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--tone-muted);
+  margin: 0;
+}
+
+.resources-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0;
+}
+
+.resources-item {
+  display: grid;
+  grid-template-columns: minmax(1.35rem, 1.6rem) minmax(0, 1fr);
+  gap: 0.82rem;
+  padding: 0.82rem 0;
+  border-top: 1px solid color-mix(in srgb, var(--tone-accent) 8%, var(--tone-line));
+}
+
+.resources-item:last-child {
+  border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 8%, var(--tone-line));
+}
+
+@media (min-width: 640px) {
+  .resources-item {
+    gap: 0.95rem;
+    padding: 0.92rem 0;
+  }
+  .resources-file-link {
+    display: inline;
+    width: auto;
+  }
+}
+
+.resources-number {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--tone-accent);
+  min-width: 1.5rem;
+  flex-shrink: 0;
+}
+
+.resources-content {
+  display: grid;
+  gap: 0.22rem;
+}
+
+.resources-label {
+  font-size: 0.94rem;
+  font-weight: 600;
+  color: var(--tone-text);
+}
+
+.resources-desc {
+  font-size: 0.82rem;
+  color: var(--tone-muted);
+  line-height: 1.5;
+}
+
+.resources-files {
+  list-style: none;
+  padding: 0;
+  margin: 0.25rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.75rem;
+}
+
+.resources-file-link {
+  display: inline;
+  width: auto;
+  font-size: 0.74rem;
+  color: color-mix(in srgb, var(--tone-accent) 88%, var(--tone-text) 12%);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 42%, transparent);
+  padding-bottom: 2px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.resources-file-link:hover {
+  color: var(--tone-text);
+  border-color: color-mix(in srgb, var(--tone-accent) 72%, transparent);
+}

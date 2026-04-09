@@ -13,6 +13,7 @@ import {
 import { formatLongArchiveUtcDate } from '../../lib/date-formatting';
 import { getAllEntries } from '../../lib/site-collections';
 import { resolveMusicManifestItems } from '../../lib/music-player';
+import '../../styles/pages/archive/[medium].css';
 
 const mediumDescriptions: Record<ArchiveMedium, string> = {
   writing: 'Essays, fragments, and archive-native text entries held in one running lane.',
@@ -77,75 +78,3 @@ const musicPlayerItems = medium === 'music' ? resolveMusicManifestItems(allEntri
   </section>
 </BaseLayout>
 
-<style>
-  .archive-medium {
-    display: grid;
-    gap: 1.4rem;
-  }
-
-  .archive-medium__description {
-    max-width: 64ch;
-    margin: 0;
-  }
-
-  .archive-medium__meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.7rem 1rem;
-    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
-    font-size: 0.82rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-
-  .archive-medium__meta p,
-  .archive-medium__empty {
-    margin: 0;
-  }
-
-  .archive-medium__browse {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .archive-medium__browse-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 2.15rem;
-    padding: 0.4rem 0.74rem;
-    border-radius: 999px;
-    border: 1px solid var(--line2);
-    color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
-    text-decoration: none;
-    background: color-mix(in srgb, var(--tone-surface) 88%, transparent);
-  }
-
-  .archive-medium__browse-link.is-current,
-  .archive-medium__browse-link:hover,
-  .archive-medium__browse-link:focus-visible {
-    border-color: color-mix(in srgb, var(--tone-accent) 28%, var(--line2));
-    color: var(--tone-text);
-  }
-
-  .archive-medium__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  }
-
-  .archive-medium__list li {
-    min-width: 0;
-    content-visibility: auto;
-    contain: layout style paint;
-    contain-intrinsic-size: 32rem;
-  }
-
-  .archive-medium__empty {
-    color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
-  }
-</style>
