@@ -74,6 +74,11 @@ const {
   waveLabels,
 } = Astro.props as Props;
 
+const archiveDateFormatter = new Intl.DateTimeFormat('en-US', {
+  month: 'short',
+  day: 'numeric',
+});
+
 const projects = [...allProjects]
   .sort((a, b) => (Number(b.data.year ?? 0) - Number(a.data.year ?? 0)))
   .slice(0, 3);
@@ -82,6 +87,15 @@ const writing = [...recentWriting].slice(0, 3);
 const archive = [...recentEntries].slice(0, 3);
 const signals = [...recentSignals].slice(0, 3);
 const music = [...recentMusic].slice(0, 3);
+const contactCard: ElsewhereCard = {
+  href: '/contact',
+  label: 'Contact',
+  description: 'Reach out, collaborate, or correspond.',
+};
+const elsewhereEntries = [...elsewhereCards, contactCard];
+
+const getEntrySlug = (slug: string) => slug.split('/').pop() ?? slug;
+const formatArchiveDate = (value?: string) => archiveDateFormatter.format(new Date(value ?? Date.now()));
 
 const bundles = [
   {
@@ -154,7 +168,7 @@ const bundles = [
 <section class="home-categories" aria-label="Homepage categories">
   <div class="home-categories__rail" aria-hidden="true"></div>
   <ol class="home-categories__list" role="list">
-    {bundles.map((bundle, index) => (
+    {bundles.map((bundle) => (
       <li class="home-categories__item" data-side={bundle.side}>
         <details class="home-categories__bundle">
           <summary class={`home-categories__summary home-categories__summary--${bundle.side}`}>
@@ -198,7 +212,7 @@ const bundles = [
                 <ul class="home-categories__entries">
                   {writing.map((entry) => (
                     <li class="home-categories__entry">
-                      <a href={`/archive/writing/${entry.slug.split('/').pop()}`} class="home-categories__entryLink">
+                      <a href={`/archive/writing/${getEntrySlug(entry.slug)}`} class="home-categories__entryLink">
                         <span class="home-categories__entryTitle">{entry.data.title}</span>
                         {entry.data.summary && <span class="home-categories__entryMeta">{entry.data.summary}</span>}
                       </a>
@@ -221,10 +235,10 @@ const bundles = [
                 <ul class="home-categories__entries">
                   {archive.map((entry) => (
                     <li class="home-categories__entry">
-                      <a href={`/archive/${entry.data.medium}/${entry.slug.split('/').pop()}`} class="home-categories__entryLink">
+                      <a href={`/archive/${entry.data.medium}/${getEntrySlug(entry.slug)}`} class="home-categories__entryLink">
                         <span class="home-categories__entryTitle">{entry.data.title}</span>
                         <span class="home-categories__entryMeta">
-                          {mediumIcon[entry.data.medium ?? ''] ?? '·'} {entry.data.medium} · {new Date(entry.data.date ?? Date.now()).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                          {mediumIcon[entry.data.medium ?? ''] ?? '·'} {entry.data.medium} · {formatArchiveDate(entry.data.date)}
                         </span>
                       </a>
                     </li>
@@ -278,7 +292,7 @@ const bundles = [
                 <ul class="home-categories__entries">
                   {music.map((entry) => (
                     <li class="home-categories__entry">
-                      <a href={`/archive/music/${entry.slug.split('/').pop()}`} class="home-categories__entryLink">
+                      <a href={`/archive/music/${getEntrySlug(entry.slug)}`} class="home-categories__entryLink">
                         <span class="home-categories__entryTitle">{entry.data.title}</span>
                         <span class="home-categories__entryMeta">{entry.data.summary ?? 'Music archive entry'}</span>
                       </a>
@@ -297,7 +311,7 @@ const bundles = [
             {bundle.id === 'elsewhere' && (
               <>
                 <ul class="home-categories__entries">
-                  {[...elsewhereCards, { href: '/contact', label: 'Contact', description: 'Reach out, collaborate, or correspond.' }].map((card) => (
+                  {elsewhereEntries.map((card) => (
                     <li class="home-categories__entry">
                       <a href={card.href} class="home-categories__entryLink">
                         <span class="home-categories__entryTitle">{card.label}</span>
