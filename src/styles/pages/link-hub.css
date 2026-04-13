@@ -15,7 +15,7 @@
 .hub-kicker {
   margin: 0;
   text-transform: uppercase;
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   letter-spacing: 0.14em;
   color: var(--tone-muted);
 }
@@ -57,7 +57,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.64rem;
+  font-size: 0.72rem;
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.06);
 }
@@ -181,8 +181,8 @@
 
 .hub-latest-status {
   margin: 0.6rem 0 0;
-  color: var(--tone-muted);
-  font-size: 0.8rem;
+  color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
+  font-size: 0.84rem;
 }
 
 .hub-latest ul {
@@ -217,8 +217,8 @@
 }
 
 .hub-latest span {
-  color: var(--tone-muted);
-  font-size: 0.75rem;
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  font-size: 0.8rem;
 }
 
 @media (max-width: 860px) {

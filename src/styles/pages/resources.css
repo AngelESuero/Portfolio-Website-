@@ -66,7 +66,7 @@
 }
 
 .resources-number {
-  font-size: 0.68rem;
+  font-size: 0.74rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   color: var(--tone-accent);
@@ -86,9 +86,9 @@
 }
 
 .resources-desc {
-  font-size: 0.82rem;
-  color: var(--tone-muted);
-  line-height: 1.5;
+  font-size: 0.86rem;
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  line-height: 1.56;
 }
 
 .resources-files {
@@ -103,7 +103,7 @@
 .resources-file-link {
   display: inline;
   width: auto;
-  font-size: 0.74rem;
+  font-size: 0.8rem;
   color: color-mix(in srgb, var(--tone-accent) 88%, var(--tone-text) 12%);
   text-decoration: none;
   border-bottom: 1px solid color-mix(in srgb, var(--tone-accent) 42%, transparent);

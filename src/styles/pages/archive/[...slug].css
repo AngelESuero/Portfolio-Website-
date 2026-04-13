@@ -51,13 +51,13 @@
   font-size: 0.76rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
 }
 
 .archive-entry__meta span:not(:first-child)::before {
   content: '·';
   margin-right: 0.5rem;
-  color: color-mix(in srgb, var(--tone-text) 44%, var(--tone-muted) 56%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
 }
 
 .archive-entry__header h1 {
@@ -136,7 +136,7 @@
   font-size: 0.76rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
 }
 
 .archive-entry__related-links {

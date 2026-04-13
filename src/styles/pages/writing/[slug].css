@@ -36,7 +36,7 @@
 
 .writing-entry-date {
   margin: 0;
-  color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-size: 0.78rem;
@@ -66,7 +66,7 @@
   font-size: 0.77rem;
   text-transform: uppercase;
   letter-spacing: 0.09em;
-  color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
 }
 
 .writing-entry-tags {
@@ -127,7 +127,7 @@
   font-size: 0.82rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: color-mix(in srgb, var(--tone-text) 74%, var(--tone-muted) 26%);
+  color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
 }
 
 .writing-entry-related ul {

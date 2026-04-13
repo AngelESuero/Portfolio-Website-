@@ -212,7 +212,7 @@
 }
 .nwk-signal__header { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.5rem; }
 .nwk-signal__tag {
-  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
   padding: 0.2rem 0.55rem; border-radius: 999px;
 }
 .nwk-signal__tag.expanding {

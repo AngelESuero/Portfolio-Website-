@@ -185,7 +185,7 @@ body.human-suffering-page .page-shell {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.4rem 0.75rem;
-  color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
   font-size: 0.7rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -194,7 +194,7 @@ body.human-suffering-page .page-shell {
 .human-suffering-hero__voice footer span + span::before {
   content: '•';
   margin-right: 0.75rem;
-  color: color-mix(in srgb, var(--tone-accent) 55%, var(--tone-muted) 45%);
+  color: color-mix(in srgb, var(--tone-accent) 72%, var(--tone-muted) 28%);
 }
 
 .human-suffering-hero__links a,
@@ -284,7 +284,7 @@ body.human-suffering-page .page-shell {
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: color-mix(in srgb, var(--tone-text) 60%, var(--tone-muted) 40%);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .human-suffering-route__section--destination {
@@ -350,7 +350,7 @@ body.human-suffering-page .page-shell {
 .human-suffering-reading__intro p,
 .human-suffering-ledger__intro p {
   margin: 0;
-  color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
   line-height: 1.65;
 }
 
@@ -362,7 +362,7 @@ body.human-suffering-page .page-shell {
   font-size: 0.72rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tone-text) 60%, var(--tone-muted) 40%);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .human-suffering-reading__layout {
@@ -443,7 +443,7 @@ body.human-suffering-page .page-shell {
 
 .human-suffering-context__trail span {
   font-size: 0.84rem;
-  color: color-mix(in srgb, var(--tone-text) 68%, var(--tone-muted) 32%);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .human-suffering-ledger {

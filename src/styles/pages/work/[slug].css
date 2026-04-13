@@ -37,7 +37,7 @@
   font-size: 0.76rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
 }
 
 .project-media__grid {
@@ -67,7 +67,7 @@
   margin-top: 0.45rem;
   font-size: 0.82rem;
   line-height: 1.4;
-  color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
 }
 
 @media (max-width: 480px) {

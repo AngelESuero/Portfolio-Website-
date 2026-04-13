@@ -55,7 +55,7 @@ html body.music-page .site-overlay {
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.09em;
-  color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
 }
 
 .music-hero h1,
@@ -197,7 +197,7 @@ html body.music-page .site-overlay {
   margin: 0;
   font-size: 0.84rem;
   line-height: 1.45;
-  color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
 }
 
 .music-library__featured {
@@ -214,7 +214,7 @@ html body.music-page .site-overlay {
   font-size: 0.78rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
 }
 
 .music-library__featured h3 {
@@ -269,7 +269,7 @@ html body.music-page .site-overlay {
 .music-shelf header p {
   margin: 0.28rem 0 0;
   font-size: 0.9rem;
-  color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
 }
 
 .music-shelf ol {
@@ -293,7 +293,7 @@ html body.music-page .site-overlay {
 
 .music-shelf li span {
   font-size: 0.78rem;
-  color: color-mix(in srgb, var(--tone-text) 68%, var(--tone-muted) 32%);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .music-section__head {
@@ -358,7 +358,7 @@ html body.music-page .site-overlay {
   gap: 1rem;
   font-size: 0.76rem;
   letter-spacing: 0.04em;
-  color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
 }
 
 .music-video h3 {
@@ -413,7 +413,7 @@ html body.music-page .site-overlay {
   padding: 0.18rem 0.48rem;
   font-size: 0.74rem;
   letter-spacing: 0.04em;
-  color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
   background: color-mix(in srgb, var(--tone-surface-strong) 88%, transparent);
 }
 
@@ -503,7 +503,7 @@ html body.music-page .site-overlay {
   gap: 0.7rem;
   flex-wrap: wrap;
   font-size: 0.82rem;
-  color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
 }
 
 .music-audio-row__sequence div {

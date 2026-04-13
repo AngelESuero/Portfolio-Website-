@@ -125,7 +125,7 @@
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
 }
 
 .focus-hero__stats strong {
@@ -188,7 +188,7 @@
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .focus-rail__list {
@@ -259,7 +259,7 @@
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .focus-projects,
@@ -305,7 +305,7 @@
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .focus-post p {
@@ -337,7 +337,7 @@
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .focus-reference__meta p,
@@ -368,7 +368,7 @@
   background: color-mix(in srgb, var(--tone-surface) 88%, transparent);
   font-size: 0.72rem;
   letter-spacing: 0.04em;
-  color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
 }
 
 .focus-reference__actions {

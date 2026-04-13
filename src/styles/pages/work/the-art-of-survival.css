@@ -9,7 +9,7 @@
 .back-link {
   font-size: 0.85rem;
   text-decoration: underline;
-  opacity: 0.7;
+  opacity: 0.86;
 }
 
 .survival-title {
@@ -22,7 +22,7 @@
 
 .survival-meta {
   font-size: 0.85rem;
-  color: color-mix(in srgb, var(--tone-text) 58%, var(--tone-muted) 42%);
+  color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
   margin: 0 0 1.5rem;
 }
 
@@ -64,7 +64,7 @@
 
 .layer-key--self       { border-color: var(--tone-accent); color: var(--tone-accent); }
 .layer-key--confidence { border-color: var(--tone-sky); color: var(--tone-sky); }
-.layer-key--community  { border-color: var(--tone-text); color: color-mix(in srgb, var(--tone-text) 74%, var(--tone-muted) 26%); }
+.layer-key--community  { border-color: var(--tone-text); color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%); }
 .layer-key--love       { border-color: var(--tone-cosmic); color: var(--tone-cosmic); }
 
 /* ── Pieces container ── */
@@ -79,7 +79,7 @@
   font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tone-text) 40%, var(--tone-muted) 60%);
+  color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
   font-weight: 400;
 }
 
@@ -93,7 +93,7 @@
 
 .piece__layer-tag {
   display: inline-block;
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 0.2rem 0.6rem;
@@ -105,7 +105,7 @@
 
 .piece__layer-tag--self       { border-color: color-mix(in srgb, var(--tone-accent) 20%, transparent); color: var(--tone-accent); background: color-mix(in srgb, var(--tone-accent) 10%, transparent); }
 .piece__layer-tag--confidence { border-color: color-mix(in srgb, var(--tone-sky) 20%, transparent); color: var(--tone-sky); background: color-mix(in srgb, var(--tone-sky) 10%, transparent); }
-.piece__layer-tag--community  { border-color: color-mix(in srgb, var(--tone-text) 18%, transparent); color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%); background: color-mix(in srgb, var(--tone-text) 8%, transparent); }
+.piece__layer-tag--community  { border-color: color-mix(in srgb, var(--tone-text) 18%, transparent); color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%); background: color-mix(in srgb, var(--tone-text) 8%, transparent); }
 .piece__layer-tag--love       { border-color: color-mix(in srgb, var(--tone-cosmic) 20%, transparent); color: var(--tone-cosmic); background: color-mix(in srgb, var(--tone-cosmic) 10%, transparent); }
 
 /* ── Title-only / gap pieces ── */
@@ -115,18 +115,18 @@
   gap: 0.75rem;
   padding: 1.5rem 0;
   border-top: 1px solid color-mix(in srgb, var(--tone-surface) 30%, transparent);
-  opacity: 0.5;
+  opacity: 0.72;
 }
 
 .piece__gap-number {
   font-size: 0.75rem;
-  color: color-mix(in srgb, var(--tone-text) 40%, var(--tone-muted) 60%);
+  color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
 }
 
 .piece__gap-title {
   font-size: 1rem;
   font-style: italic;
-  color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .piece__gap-video {
@@ -342,7 +342,7 @@
 
 .outro__credit {
   font-size: 0.85rem;
-  color: color-mix(in srgb, var(--tone-text) 55%, var(--tone-muted) 45%);
+  color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
   margin: 0;
 }
 

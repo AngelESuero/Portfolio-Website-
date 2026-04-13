@@ -158,7 +158,7 @@ body.theater-page .site-content-stage::before {
   border: 1px solid rgba(244, 230, 204, 0.12);
   border-radius: 999px;
   padding: 0.38rem 0.72rem;
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: rgba(244, 230, 204, 0.74);
@@ -416,7 +416,7 @@ body.theater-page .site-content-stage::before {
 
 .theater-shelf li span {
   font-size: 0.8rem;
-  color: color-mix(in srgb, var(--tone-text) 68%, var(--tone-muted) 32%);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .theater-stage__intro h2,
@@ -680,13 +680,13 @@ body.theater-page .site-content-stage::before {
   gap: 0.45rem;
   font-size: 0.78rem;
   letter-spacing: 0.04em;
-  color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
 }
 
 .theater-panel__meta span:not(:first-child)::before {
   content: '·';
   margin-right: 0.45rem;
-  color: color-mix(in srgb, var(--tone-text) 44%, var(--tone-muted) 56%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
 }
 
 .theater-panel__heading {
@@ -710,7 +710,7 @@ body.theater-page .site-content-stage::before {
   font-size: 0.72rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tone-text) 74%, var(--tone-muted) 26%);
+  color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
   background: color-mix(in srgb, var(--tone-surface-strong) 52%, transparent);
 }
 

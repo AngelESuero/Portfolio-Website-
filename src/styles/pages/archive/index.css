@@ -153,7 +153,7 @@ body.archive-ig-page .site-overlay {
   font-size: 0.72rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
 }
 
 .archive-highlights {
@@ -179,7 +179,7 @@ body.archive-ig-page .site-overlay {
 
 .archive-highlight-card__head span {
   font-size: 0.8rem;
-  color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .archive-highlight-card__body {
@@ -203,7 +203,7 @@ body.archive-ig-page .site-overlay {
 
 .archive-highlight-medium span {
   font-size: 0.78rem;
-  color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
 }
 
 .archive-highlight-medium strong {
@@ -213,7 +213,7 @@ body.archive-ig-page .site-overlay {
 
 .archive-highlight-medium small {
   font-size: 0.78rem;
-  color: color-mix(in srgb, var(--tone-text) 68%, var(--tone-muted) 32%);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .archive-highlight-card__body--collections {
@@ -245,7 +245,7 @@ body.archive-ig-page .site-overlay {
 
 .archive-collection header span {
   font-size: 0.78rem;
-  color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .archive-collection ul {
@@ -326,7 +326,7 @@ body.archive-ig-page .site-overlay {
   list-style: none;
   font-size: 0.8rem;
   letter-spacing: 0.03em;
-  color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
 }
 
 .archive-controls__toggle-summary::-webkit-details-marker {
@@ -363,7 +363,7 @@ body.archive-ig-page .site-overlay {
   margin: 0;
   font-size: 0.86rem;
   line-height: 1.42;
-  color: color-mix(in srgb, var(--tone-text) 74%, var(--tone-muted) 26%);
+  color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
 }
 
 .archive-controls__buttons {
@@ -389,7 +389,7 @@ body.archive-ig-page .site-overlay {
   width: fit-content;
   cursor: pointer;
   list-style: none;
-  color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
   font-size: 0.8rem;
   letter-spacing: 0.03em;
 }
@@ -426,7 +426,7 @@ body.archive-ig-page .site-overlay {
 }
 
 .archive-results {
-  color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
   font-size: 0.84rem;
   letter-spacing: 0.02em;
 }

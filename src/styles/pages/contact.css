@@ -157,7 +157,7 @@ body.contact-page[data-theme='contact'] {
 
 .contact-form span {
   font-size: 0.8rem;
-  color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
 }
 
 .contact-form input,

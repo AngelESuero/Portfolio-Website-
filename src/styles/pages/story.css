@@ -13,7 +13,7 @@
 }
 
 .story-header h1 {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-family: var(--font-body);
   font-weight: 400;
   letter-spacing: 0.22em;
@@ -23,9 +23,9 @@
 }
 
 .story-header__sub {
-  font-size: 11px;
+  font-size: 0.72rem;
   font-family: var(--font-body);
-  color: color-mix(in srgb, var(--tone-muted) 70%, transparent);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
   letter-spacing: 0.1em;
   margin: 6px 0 0;
 }
@@ -88,12 +88,12 @@
 }
 
 .story-tick__year {
-  font-size: 11px;
+  font-size: 0.72rem;
   font-family: var(--font-body);
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tone-muted) 80%, transparent);
+  color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
   min-width: 80px;
   flex-shrink: 0;
   transition: color 0.2s;
@@ -105,8 +105,8 @@
 }
 
 .story-tick__label {
-  font-size: 15px;
-  color: color-mix(in srgb, var(--tone-text) 75%, var(--tone-muted) 25%);
+  font-size: 0.98rem;
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
   transition: color 0.2s;
   line-height: 1.4;
   flex: 1;
@@ -160,9 +160,9 @@
 
 .story-panel__inner {
   padding: 0 0 28px 96px;
-  font-size: 15px;
+  font-size: 0.98rem;
   line-height: 1.8;
-  color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
+  color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
 }
 
 .story-panel__inner p {
@@ -177,10 +177,10 @@
 .story-footer {
   text-align: center;
   margin-top: 60px;
-  font-size: 11px;
+  font-size: 0.72rem;
   font-family: var(--font-body);
   letter-spacing: 0.12em;
-  color: color-mix(in srgb, var(--tone-muted) 50%, transparent);
+  color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
 }
 
 /* ── Mobile ── */

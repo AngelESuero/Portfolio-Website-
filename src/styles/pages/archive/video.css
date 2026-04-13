@@ -76,7 +76,7 @@
 }
 
 .archive-results {
-  color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;

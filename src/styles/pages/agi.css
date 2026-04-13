@@ -63,7 +63,7 @@ body.agi-x-page .site-overlay {
 
 .signal-desk__lane li span {
   font-size: 0.8rem;
-  color: color-mix(in srgb, var(--tone-text) 68%, var(--tone-muted) 32%);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .analyst-controls {

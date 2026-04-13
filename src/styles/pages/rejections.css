@@ -12,11 +12,11 @@
 
 .rej-eyebrow {
   margin: 0 0 0.5rem;
-  font-size: 0.7rem;
+  font-size: 0.74rem;
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(230, 214, 191, 0.55);
+  color: rgba(230, 214, 191, 0.7);
 }
 
 .rej-title {
@@ -34,7 +34,7 @@
   margin: 0;
   font-size: clamp(0.95rem, 1.2vw, 1.02rem);
   line-height: 1.62;
-  color: rgba(236, 227, 214, 0.78);
+  color: rgba(236, 227, 214, 0.84);
 }
 
 .rej-link-row {
@@ -50,7 +50,7 @@
   border-radius: 999px;
   border: 1px solid rgba(230, 214, 191, 0.16);
   padding: 0.48rem 0.82rem;
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   color: rgba(245, 239, 229, 0.92);
@@ -108,11 +108,11 @@
 .rej-section-label,
 .rej-disclosure__summary {
   margin: 0;
-  font-size: 0.64rem;
+  font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(230, 214, 191, 0.48);
+  color: rgba(230, 214, 191, 0.62);
 }
 
 .rej-section-title {
@@ -129,7 +129,7 @@
   margin: 0;
   font-size: 0.84rem;
   line-height: 1.6;
-  color: rgba(236, 227, 214, 0.72);
+  color: rgba(236, 227, 214, 0.8);
 }
 
 .rej-section-note {
@@ -161,11 +161,11 @@
 .rej-stat__label {
   display: block;
   margin-top: 0.35rem;
-  font-size: 0.65rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(230, 214, 191, 0.48);
+  color: rgba(230, 214, 191, 0.62);
 }
 
 .rej-ledger__note {
@@ -187,11 +187,11 @@
 
 .rej-table thead th {
   padding: 0.5rem 0.75rem 0.6rem;
-  font-size: 0.62rem;
+  font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(230, 214, 191, 0.5);
+  color: rgba(230, 214, 191, 0.64);
   text-align: left;
   border-bottom: 1px solid rgba(230, 214, 191, 0.1);
 }
@@ -214,8 +214,8 @@
 
 .rej-td--date {
   white-space: nowrap;
-  color: rgba(230, 214, 191, 0.5) !important;
-  font-size: 0.74rem;
+  color: rgba(230, 214, 191, 0.62) !important;
+  font-size: 0.76rem;
   font-variant-numeric: tabular-nums;
 }
 
@@ -227,8 +227,8 @@
 
 .rej-td--account {
   min-width: 11rem;
-  color: rgba(236, 227, 214, 0.72) !important;
-  font-size: 0.77rem;
+  color: rgba(236, 227, 214, 0.8) !important;
+  font-size: 0.8rem;
   word-break: break-word;
 }
 
@@ -237,8 +237,8 @@
 }
 
 .rej-td--outcome {
-  color: rgba(230, 214, 191, 0.5) !important;
-  font-size: 0.78rem;
+  color: rgba(230, 214, 191, 0.64) !important;
+  font-size: 0.8rem;
   line-height: 1.55;
 }
 

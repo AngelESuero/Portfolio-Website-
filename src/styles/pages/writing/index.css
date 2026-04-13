@@ -69,7 +69,7 @@ body.writing-workbench-page .site-overlay {
   margin: 0.85rem 0 0;
   max-width: 62ch;
   font-size: 1.02rem;
-  color: color-mix(in srgb, var(--tone-text) 76%, var(--tone-muted) 24%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
   line-height: 1.78;
 }
 
@@ -82,7 +82,7 @@ body.writing-workbench-page .site-overlay {
   font-size: 0.8rem;
   line-height: 1.4;
   letter-spacing: 0.03em;
-  color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.35)),
     color-mix(in srgb, var(--tone-surface) 84%, transparent);
@@ -151,7 +151,7 @@ body.writing-workbench-page .site-overlay {
   font-size: 0.78rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .writing-publication__lead h2 {
@@ -203,7 +203,7 @@ body.writing-workbench-page .site-overlay {
 
 .writing-publication__latest-list li span {
   font-size: 0.82rem;
-  color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .writing-publication__thread-list {
@@ -228,7 +228,7 @@ body.writing-workbench-page .site-overlay {
 
 .writing-publication__thread header span {
   font-size: 0.8rem;
-  color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .writing-thread-jump {
@@ -326,7 +326,7 @@ body.writing-workbench-page .site-overlay {
   margin: 0;
   font-size: 0.82rem;
   letter-spacing: 0.02em;
-  color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
 }
 
 .writing-document-card__summary,

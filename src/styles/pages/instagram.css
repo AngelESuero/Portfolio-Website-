@@ -50,7 +50,7 @@
   text-transform: uppercase;
   letter-spacing: 0.15em;
   font-size: 0.72rem;
-  color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .ig-hero h1 {

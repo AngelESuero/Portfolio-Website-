@@ -70,7 +70,7 @@
   --paper: rgba(38, 33, 28, 0.86);
   --line: rgba(237, 227, 209, 0.12);
   --text: rgba(248, 242, 234, 0.98);
-  --muted: rgba(224, 210, 193, 0.82);
+  --muted: rgba(224, 210, 193, 0.88);
   --neon: #587a95;
   --amber: #b97a2d;
   --accent: var(--amber);
@@ -150,7 +150,7 @@
   --focus-zoom-duration: 0ms;
   --size-gutter: var(--shell-gutter);
   --size-pad-y: clamp(2.35rem, 4.6vw, 4.6rem);
-  --content-leading: 1.74;
+  --content-leading: 1.78;
 }
 
 html[data-size='compact'] {
@@ -192,7 +192,7 @@ body {
   --paper: rgba(245, 237, 226, 0.96);
   --line: rgba(110, 89, 62, 0.18);
   --text: rgba(43, 35, 27, 0.985);
-  --muted: rgba(73, 57, 39, 0.92);
+  --muted: rgba(73, 57, 39, 0.96);
   --neon: #4b6a82;
   --amber: #a56c28;
   --accent: var(--amber);
@@ -240,7 +240,7 @@ body {
     --paper: rgba(245, 237, 226, 0.96);
     --line: rgba(110, 89, 62, 0.18);
     --text: rgba(43, 35, 27, 0.985);
-    --muted: rgba(73, 57, 39, 0.92);
+    --muted: rgba(73, 57, 39, 0.96);
     --neon: #4b6a82;
     --amber: #a56c28;
     --accent: var(--amber);
@@ -297,7 +297,7 @@ body[data-theme] {
   --tone-bg-deep: #ccbba5;
   --tone-surface: rgba(242, 232, 219, 0.97);
   --tone-surface-strong: rgba(230, 219, 205, 0.985);
-  --reading-plane: rgba(238, 227, 214, 0.92);
+  --reading-plane: rgba(238, 227, 214, 0.95);
   --reading-plane-strong: rgba(228, 216, 201, 0.965);
   --reading-plane-line: rgba(110, 89, 62, 0.15);
   --reading-plane-shadow: 0 24px 64px rgba(92, 73, 43, 0.14);
@@ -355,12 +355,12 @@ main :where(p, li) {
 
 main :where(p, li, blockquote) {
   max-inline-size: 68ch;
-  color: color-mix(in srgb, var(--tone-text) 92%, var(--tone-muted) 8%);
+  color: color-mix(in srgb, var(--tone-text) 95%, var(--tone-muted) 5%);
   text-wrap: pretty;
 }
 
 main :where(h1, h2, h3, h4) {
-  line-height: 1.16;
+  line-height: 1.12;
   letter-spacing: -0.01em;
   text-wrap: balance;
 }
@@ -1890,7 +1890,7 @@ html[data-surface-mode='lab'] .viewer-only-inline-flex {
 @media (max-width: 860px) {
   :root {
     --shell-gutter: clamp(16px, 4.2vw, 24px);
-    --content-leading: 1.67;
+    --content-leading: 1.7;
   }
 
   .view-surface {

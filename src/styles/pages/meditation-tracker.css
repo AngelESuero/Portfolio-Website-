@@ -50,7 +50,7 @@
   font-size: 0.87rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tone-text) 78%, var(--tone-muted) 22%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
 }
 
 .tracker-minute-picker {
@@ -178,7 +178,7 @@
 .tracker-total-unit {
   font-size: 0.63em;
   margin-left: 0.34rem;
-  color: color-mix(in srgb, var(--tone-text) 72%, var(--tone-muted) 28%);
+  color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
   font-weight: 500;
 }
 
@@ -213,7 +213,7 @@
 
 .tracker-sessions {
   margin: 0.6rem 0 0;
-  color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
   font-size: 0.9rem;
 }
 
