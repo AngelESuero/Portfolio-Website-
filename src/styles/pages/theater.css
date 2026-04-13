@@ -15,6 +15,33 @@ html body.theater-page[data-theme='archive'] {
     linear-gradient(180deg, var(--tone-bg-deep), var(--tone-bg) 48%, var(--tone-bg-deep));
 }
 
+.light body.theater-page[data-theme='archive'] .theater-hero__eyebrow,
+.light body.theater-page[data-theme='archive'] .theater-stage__eyebrow,
+.light body.theater-page[data-theme='archive'] .theater-rail__head p,
+.light body.theater-page[data-theme='archive'] .theater-screening__marquee p,
+.light body.theater-page[data-theme='archive'] .theater-exit p {
+  color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+}
+
+.light body.theater-page[data-theme='archive'] .theater-hero__facts,
+.light body.theater-page[data-theme='archive'] .theater-picker__item small,
+.light body.theater-page[data-theme='archive'] .theater-picker__source,
+.light body.theater-page[data-theme='archive'] .theater-screening__marquee span,
+.light body.theater-page[data-theme='archive'] .theater-notes__eyebrow,
+.light body.theater-page[data-theme='archive'] .theater-notes__stack span {
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+}
+
+.light body.theater-page[data-theme='archive'] .theater-hero__facts span:not(:first-child)::before {
+  color: color-mix(in srgb, var(--tone-text) 70%, var(--tone-muted) 30%);
+}
+
+.light body.theater-page[data-theme='archive'] .theater-panel {
+  --tone-text: rgba(255, 246, 234, 0.98);
+  --tone-muted: rgba(244, 230, 204, 0.82);
+  color: var(--tone-text);
+}
+
 html body.theater-page .site-overlay {
   background:
     linear-gradient(to right, rgba(0, 0, 0, 0.18), transparent 26%),
@@ -45,7 +72,7 @@ body.theater-page .site-content-stage::before {
 
 .light body.theater-page .site-header .header-brand,
 .light body.theater-page .site-header nav a {
-  color: var(--tone-text) !important;
+  color: rgba(255, 244, 230, 0.94) !important;
 }
 
 .light body.theater-page .site-header .header-link {
@@ -54,7 +81,7 @@ body.theater-page .site-content-stage::before {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     0 0 0 1px rgba(255, 255, 255, 0.02);
-  color: color-mix(in srgb, var(--tone-text) 84%, var(--link-accent, var(--tone-accent)) 16%);
+  color: rgba(255, 244, 230, 0.9);
 }
 
 .light body.theater-page .site-header .header-link:hover,
@@ -62,7 +89,7 @@ body.theater-page .site-content-stage::before {
 .light body.theater-page .site-header .header-link[aria-current='page'] {
   border-color: color-mix(in srgb, var(--link-accent, var(--tone-accent)) 44%, rgba(255, 244, 223, 0.1));
   background: linear-gradient(180deg, rgba(56, 40, 37, 0.94), rgba(35, 25, 23, 0.82));
-  color: color-mix(in srgb, var(--link-accent, var(--tone-accent)) 58%, var(--tone-text) 42%);
+  color: rgba(255, 248, 240, 0.98);
 }
 
 .theater-shell {
@@ -171,15 +198,16 @@ body.theater-page .site-content-stage::before {
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
-  color: rgba(244, 230, 204, 0.72);
+  color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
   font-size: 0.82rem;
   letter-spacing: 0.04em;
+  line-height: 1.4;
 }
 
 .theater-hero__facts span:not(:first-child)::before {
   content: '•';
   margin-right: 0.55rem;
-  color: rgba(244, 230, 204, 0.34);
+  color: color-mix(in srgb, var(--tone-text) 68%, var(--tone-muted) 32%);
 }
 
 .theater-hero__eyebrow,
@@ -191,7 +219,7 @@ body.theater-page .site-content-stage::before {
   font-size: 0.78rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(244, 230, 204, 0.62);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .theater-hero h1,
@@ -302,7 +330,7 @@ body.theater-page .site-content-stage::before {
 .theater-hero__actions a:first-child {
   background: linear-gradient(180deg, var(--tone-accent-bright), var(--tone-accent));
   border-color: color-mix(in srgb, var(--tone-accent) 64%, var(--line2));
-  color: var(--tone-text);
+  color: rgba(30, 19, 15, 0.98);
   box-shadow: 0 16px 30px color-mix(in srgb, var(--tone-accent) 24%, transparent);
 }
 
@@ -531,7 +559,7 @@ body.theater-page .site-content-stage::before {
 
 .theater-picker__item small,
 .theater-picker__source {
-  color: rgba(244, 230, 204, 0.66);
+  color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
   line-height: 1.52;
 }
 
@@ -620,7 +648,7 @@ body.theater-page .site-content-stage::before {
 }
 
 .theater-screening__marquee span {
-  color: rgba(244, 230, 204, 0.62);
+  color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
   font-size: 0.94rem;
   line-height: 1.62;
 }
@@ -666,6 +694,11 @@ body.theater-page .site-content-stage::before {
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.03),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --theater-cream: rgba(255, 246, 234, 0.98);
+  --theater-copy: rgba(244, 230, 204, 0.82);
+  --tone-text: var(--theater-cream);
+  --tone-muted: var(--theater-copy);
+  color: var(--theater-cream);
 }
 
 .theater-panel__header {
@@ -785,7 +818,7 @@ body.theater-page .site-content-stage::before {
   font-size: 0.78rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(244, 230, 204, 0.56);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .theater-notes__title {
@@ -816,7 +849,7 @@ body.theater-page .site-content-stage::before {
   font-size: 0.78rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(244, 230, 204, 0.56);
+  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 
 .theater-notes__stack strong {
