@@ -1,7 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NMOAProposalCircuit from '../components/NMOAProposalCircuit.tsx';
+import NewarkLaneShell from '../components/NewarkLaneShell.astro';
+import { newarkLaneBySlug, newarkLanes } from '../data/newark-lanes';
 import '../styles/pages/newark.css';
+
+const housingLane = newarkLaneBySlug.housing;
+const marketLane = newarkLaneBySlug.markets;
+const museumLane = newarkLaneBySlug.museum;
 ---
 
 <BaseLayout
@@ -9,231 +15,258 @@ import '../styles/pages/newark.css';
   description="Problems I'm looking at in Newark: homelessness data, market shifts, museum pressures, and what the numbers say about the city's present."
   theme="archive"
 >
+  <div class="nwk-wrap">
+    <section class="nwk-hero">
+      <div class="nwk-watermark" aria-hidden="true"><span>NEWARK</span></div>
+      <div style="position:relative;z-index:1;">
+        <p class="nwk-kicker">Problems I'm looking at</p>
+        <h1>Newark</h1>
+      </div>
+    </section>
 
+    <nav class="nwk-tabs" role="tablist" aria-label="Newark research tabs">
+      {newarkLanes.map((lane, index) => (
+        <button
+          type="button"
+          class:list={['nwk-tab', index === 0 && 'is-active']}
+          role="tab"
+          aria-selected={index === 0 ? 'true' : 'false'}
+          aria-controls={`tab-${lane.slug}`}
+          id={`btn-${lane.slug}`}
+        >
+          {lane.tabLabel}
+        </button>
+      ))}
+    </nav>
 
-<div class="nwk-wrap">
-
-  <section class="nwk-hero">
-    <div class="nwk-watermark" aria-hidden="true"><span>NEWARK</span></div>
-    <div style="position:relative;z-index:1;">
-      <p class="nwk-kicker">Problems I'm looking at</p>
-      <h1>Newark</h1>
-    </div>
-  </section>
-
-  <nav class="nwk-tabs" role="tablist" aria-label="Newark research tabs">
-    <button class="nwk-tab is-active" role="tab" aria-selected="true"  aria-controls="tab-housing"  id="btn-housing">Housing &amp; Homelessness</button>
-    <button class="nwk-tab"           role="tab" aria-selected="false" aria-controls="tab-museum"   id="btn-museum">Museum / NMOA</button>
-    <button class="nwk-tab"           role="tab" aria-selected="false" aria-controls="tab-markets"  id="btn-markets">Market Shifts</button>
-  </nav>
-
-  <!-- ── Tab 1: Housing & Homelessness ──────── -->
-  <div class="nwk-tab-panel is-active" id="tab-housing" role="tabpanel" aria-labelledby="btn-housing">
-
-    <div class="nwk-lede">
-      <p class="nwk-lede__stat">Most people losing housing in Newark <em>weren't sleeping outside the week before.</em></p>
-      <p>They were on someone's couch. The most common reported cause of homelessness here isn't addiction or mental illness — it's being asked to leave a shared residence. 24% said that. Another 21% were evicted. Most had no income when it happened. The 2025 Essex/Newark count found 2,291 unhoused people, roughly 84% from Newark.</p>
-    </div>
-
-    <div class="nwk-stats">
-      <div class="nwk-stat"><span class="nwk-stat__num">2,291</span><span class="nwk-stat__label">people counted, Essex Co. 2025</span></div>
-      <div class="nwk-stat"><span class="nwk-stat__num">51%</span><span class="nwk-stat__label">had zero income when counted</span></div>
-      <div class="nwk-stat"><span class="nwk-stat__num">24%</span><span class="nwk-stat__label">asked to leave a shared home</span></div>
-      <div class="nwk-stat"><span class="nwk-stat__num">31.6%</span><span class="nwk-stat__label">were living with family/friends before</span></div>
-    </div>
-
-    <article class="nwk-card">
-      <h2>The path in</h2>
-      <div class="nwk-path-grid">
-        <div class="nwk-path-col">
-          <h3>Where they were living before</h3>
-          <div class="nwk-causes">
-            <div class="nwk-cause-row"><span>With family or friends</span><span class="nwk-cause-pct">31.6%</span></div>
-            <div class="nwk-cause-row"><span>Emergency shelter</span><span class="nwk-cause-pct">21.4%</span></div>
-            <div class="nwk-cause-row"><span>Permanent housing</span><span class="nwk-cause-pct">14.2%</span></div>
-            <div class="nwk-cause-row"><span>Places not meant for habitation</span><span class="nwk-cause-pct">12.9%</span></div>
-          </div>
+    <!-- ── Tab 1: Housing & Homelessness ──────── -->
+    <div class="nwk-tab-panel is-active" id="tab-housing" role="tabpanel" aria-labelledby="btn-housing">
+      <NewarkLaneShell lane={housingLane}>
+        <div class="nwk-stats">
+          <div class="nwk-stat"><span class="nwk-stat__num">2,291</span><span class="nwk-stat__label">people counted, Essex Co. 2025</span></div>
+          <div class="nwk-stat"><span class="nwk-stat__num">51%</span><span class="nwk-stat__label">had zero income when counted</span></div>
+          <div class="nwk-stat"><span class="nwk-stat__num">24%</span><span class="nwk-stat__label">asked to leave a shared home</span></div>
+          <div class="nwk-stat"><span class="nwk-stat__num">31.6%</span><span class="nwk-stat__label">were living with family/friends before</span></div>
         </div>
-        <div class="nwk-path-col">
-          <h3>What pushed them out</h3>
-          <div class="nwk-causes">
-            <div class="nwk-cause-row"><span>Asked to leave shared residence</span><span class="nwk-cause-pct">24%</span></div>
-            <div class="nwk-cause-row"><span>Eviction or risk of eviction</span><span class="nwk-cause-pct">21%</span></div>
-            <div class="nwk-cause-row"><span>Loss or reduction of job income</span><span class="nwk-cause-pct">13%</span></div>
+
+        <article class="nwk-card">
+          <h2>The path in</h2>
+          <div class="nwk-path-grid">
+            <div class="nwk-path-col">
+              <h3>Where they were living before</h3>
+              <div class="nwk-causes">
+                <div class="nwk-cause-row"><span>With family or friends</span><span class="nwk-cause-pct">31.6%</span></div>
+                <div class="nwk-cause-row"><span>Emergency shelter</span><span class="nwk-cause-pct">21.4%</span></div>
+                <div class="nwk-cause-row"><span>Permanent housing</span><span class="nwk-cause-pct">14.2%</span></div>
+                <div class="nwk-cause-row"><span>Places not meant for habitation</span><span class="nwk-cause-pct">12.9%</span></div>
+              </div>
+            </div>
+            <div class="nwk-path-col">
+              <h3>What pushed them out</h3>
+              <div class="nwk-causes">
+                <div class="nwk-cause-row"><span>Asked to leave shared residence</span><span class="nwk-cause-pct">24%</span></div>
+                <div class="nwk-cause-row"><span>Eviction or risk of eviction</span><span class="nwk-cause-pct">21%</span></div>
+                <div class="nwk-cause-row"><span>Loss or reduction of job income</span><span class="nwk-cause-pct">13%</span></div>
+              </div>
+            </div>
           </div>
+          <p class="nwk-card__note">Prior living situation from 2022 Essex PIT; causes from 2025 count. The dominant story is informal housing -> asked to leave -> street.</p>
+        </article>
+
+        <article class="nwk-card">
+          <h2>Economic situation when counted</h2>
+          <div class="nwk-income-grid">
+            <div class="nwk-income-item"><div class="nwk-income-item__pct">51%</div><div class="nwk-income-item__label">No income at all</div></div>
+            <div class="nwk-income-item"><div class="nwk-income-item__pct">13%</div><div class="nwk-income-item__label">Earned / work income</div></div>
+            <div class="nwk-income-item"><div class="nwk-income-item__pct">13%</div><div class="nwk-income-item__label">General Assistance</div></div>
+            <div class="nwk-income-item"><div class="nwk-income-item__pct">10%</div><div class="nwk-income-item__label">SSI</div></div>
+            <div class="nwk-income-item"><div class="nwk-income-item__pct">56%</div><div class="nwk-income-item__label">On Medicaid</div></div>
+            <div class="nwk-income-item"><div class="nwk-income-item__pct">44%</div><div class="nwk-income-item__label">On SNAP</div></div>
+          </div>
+          <p class="nwk-card__note">These are not people who fell from stable middle-class lives. The data does not show a former class background - but it shows people who were already in economically fragile, doubled-up situations before losing housing entirely.</p>
+        </article>
+
+        <article class="nwk-card">
+          <h2>Who it falls on</h2>
+          <p class="nwk-bar-section-label nwk-bar-section-label--tight">Share of homeless population</p>
+          <div class="nwk-bars">
+            <div class="nwk-bar-row"><span>Black / African Am.</span><div class="nwk-bar-track"><div class="nwk-bar-fill homeless" style="width:71%"></div></div><span>71%</span></div>
+            <div class="nwk-bar-row"><span>Hispanic / Latino</span><div class="nwk-bar-track"><div class="nwk-bar-fill homeless" style="width:17%"></div></div><span>17%</span></div>
+            <div class="nwk-bar-row"><span>White</span><div class="nwk-bar-track"><div class="nwk-bar-fill homeless" style="width:8%"></div></div><span>8%</span></div>
+          </div>
+          <p class="nwk-bar-section-label">vs. Essex County population</p>
+          <div class="nwk-bars">
+            <div class="nwk-bar-row"><span>Black / African Am.</span><div class="nwk-bar-track"><div class="nwk-bar-fill county" style="width:40%"></div></div><span>40%</span></div>
+            <div class="nwk-bar-row"><span>White</span><div class="nwk-bar-track"><div class="nwk-bar-fill county" style="width:39%"></div></div><span>39%</span></div>
+          </div>
+          <p class="nwk-card__note">Black residents are 40% of the county and 49% of its poverty population - but 71% of the homeless population. The gap is bigger than poverty alone explains. The report says racial disparity in homelessness is stronger than poverty as a predictor.</p>
+        </article>
+
+        <p class="nwk-source-note">
+          Data: <a href="https://monarchhousing.org/wp-content/uploads/2025/07/PIT-Report-2025-Essex.pdf" target="_blank" rel="noopener">Monarch Housing Associates — NJ 2025 Point-in-Time Count, Essex County</a> ·
+          <a href="https://monarchhousing.org/wp-content/uploads/2024/10/Essex-PIT-Report-2024.pdf" target="_blank" rel="noopener">2024 PIT Count</a>.
+          Newark made up 1,922 of the 2,291 people whose municipality was recorded (~84%). Essex race/income data is the best public proxy for Newark but not a perfect city-only table.
+          Next pass: age, family status, disability, Newark vs. East Orange / Irvington / rest of Essex.
+        </p>
+      </NewarkLaneShell>
+    </div>
+
+    <!-- ── Tab 2: Market Shifts ────────────────── -->
+    <div class="nwk-tab-panel" id="tab-markets" role="tabpanel" aria-labelledby="btn-markets" hidden>
+      <NewarkLaneShell lane={marketLane}>
+        <article class="nwk-card">
+          <h2>Expanding</h2>
+          <div class="nwk-signals">
+            <div class="nwk-signal">
+              <div class="nwk-signal__header">
+                <span class="nwk-signal__tag expanding">Expanding</span>
+                <h3>Film / TV production infrastructure</h3>
+              </div>
+              <p>Lionsgate Newark broke ground December 2025 - ~$125M, 12 acres, soundstages, production offices, set-building. Newark is pairing it with local film-job training. Cleanest new growth lane in the city.</p>
+            </div>
+
+            <div class="nwk-signal">
+              <div class="nwk-signal__header">
+                <span class="nwk-signal__tag expanding">Expanding</span>
+                <h3>Mixed-use residential and adaptive reuse</h3>
+              </div>
+              <p>Capital is moving toward housing-heavy redevelopment. Penn Plaza East: up to 1,000 units + retail. 10 Park Place: office converted to 196 affordable units with ground-floor commercial. The market is repricing older inventory as housing, not office.</p>
+            </div>
+
+            <div class="nwk-signal">
+              <div class="nwk-signal__header">
+                <span class="nwk-signal__tag expanding">Expanding</span>
+                <h3>Port / logistics / distribution</h3>
+              </div>
+              <p>Port of NY/NJ hit 8.7M TEUs in 2024 - double-digit cargo growth over 2023. NJ industrial leasing in 2025 concentrated in the Turnpike/port corridor, especially modern Class A space. Not new, but still real.</p>
+            </div>
+
+            <div class="nwk-signal">
+              <div class="nwk-signal__header">
+                <span class="nwk-signal__tag expanding">Expanding</span>
+                <h3>Downtown street-level retail</h3>
+              </div>
+              <p>Grocery, service, and experience retail tied to mixed-use - not mall anchors. Hahne &amp; Co. completed full retail lease-up of ~30,000 sq ft. Demand is real where it is attached to residential density.</p>
+            </div>
+
+            <div class="nwk-signal">
+              <div class="nwk-signal__header">
+                <span class="nwk-signal__tag expanding">Expanding</span>
+                <h3>Broadband and digital infrastructure</h3>
+              </div>
+              <p>Newark Fiber already serves 85 non-city buildings, ~27,000 residents, ~25 new commercial customers per year. A real buildout, not a promise.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="nwk-card">
+          <h2>Softening</h2>
+          <div class="nwk-signals">
+            <div class="nwk-signal">
+              <div class="nwk-signal__header">
+                <span class="nwk-signal__tag receding">Receding</span>
+                <h3>Older commodity office space</h3>
+              </div>
+              <p>19.5% vacancy in Q4 2025 even with positive absorption. Demand is concentrating in better buildings only. Older inventory is getting converted to housing - the market has decided it is not office anymore.</p>
+            </div>
+
+            <div class="nwk-signal">
+              <div class="nwk-signal__header">
+                <span class="nwk-signal__tag receding">Receding</span>
+                <h3>Spec warehouse</h3>
+              </div>
+              <p>Port logistics still matter, but the easy-growth phase cooled. NJ industrial vacancy hit 8.9%, 2025 net absorption was negative, vacant new deliveries and sublease space are piling up.</p>
+            </div>
+
+            <div class="nwk-signal">
+              <div class="nwk-signal__header">
+                <span class="nwk-signal__tag receding">Receding</span>
+                <h3>Anchor / department-store retail</h3>
+              </div>
+              <p>Already over. Hahne's success is as a repurposed mixed-use property - not a return to the old format. Newark's retail wins are attached to residential density, not anchor stores.</p>
+            </div>
+          </div>
+        </article>
+
+        <div class="nwk-callout">
+          <strong>Not yet confirmed</strong>
+          <p>Life sciences looks more like a New Jersey-wide story than a Newark-specific wave. Next pass: district-level breakdown - Downtown, Ironbound, South Ward, airport/port zone.</p>
         </div>
-      </div>
-      <p style="font-size:0.78rem;color:var(--tone-muted);margin:0.8rem 0 0;line-height:1.5;">Prior living situation from 2022 Essex PIT; causes from 2025 count. The dominant story is informal housing → asked to leave → street.</p>
-    </article>
 
-    <article class="nwk-card">
-      <h2>Economic situation when counted</h2>
-      <div class="nwk-income-grid">
-        <div class="nwk-income-item"><div class="nwk-income-item__pct">51%</div><div class="nwk-income-item__label">No income at all</div></div>
-        <div class="nwk-income-item"><div class="nwk-income-item__pct">13%</div><div class="nwk-income-item__label">Earned / work income</div></div>
-        <div class="nwk-income-item"><div class="nwk-income-item__pct">13%</div><div class="nwk-income-item__label">General Assistance</div></div>
-        <div class="nwk-income-item"><div class="nwk-income-item__pct">10%</div><div class="nwk-income-item__label">SSI</div></div>
-        <div class="nwk-income-item"><div class="nwk-income-item__pct">56%</div><div class="nwk-income-item__label">On Medicaid</div></div>
-        <div class="nwk-income-item"><div class="nwk-income-item__pct">44%</div><div class="nwk-income-item__label">On SNAP</div></div>
-      </div>
-      <p style="font-size:0.82rem;color:var(--tone-muted);margin:1rem 0 0;line-height:1.55;">These aren't people who fell from stable middle-class lives. The data doesn't show a "former class background" — but it shows people who were already in economically fragile, doubled-up situations before losing housing entirely.</p>
-    </article>
+        <p class="nwk-source-note">Research from public development filings, leasing market reports, and press coverage. Separating real expansion from booster talk. Next pass: district-level breakdown.</p>
+      </NewarkLaneShell>
+    </div>
 
-    <article class="nwk-card">
-      <h2>Who it falls on</h2>
-      <p class="nwk-bar-section-label" style="margin-top:0;">Share of homeless population</p>
-      <div class="nwk-bars">
-        <div class="nwk-bar-row"><span>Black / African Am.</span><div class="nwk-bar-track"><div class="nwk-bar-fill homeless" style="width:71%"></div></div><span>71%</span></div>
-        <div class="nwk-bar-row"><span>Hispanic / Latino</span><div class="nwk-bar-track"><div class="nwk-bar-fill homeless" style="width:17%"></div></div><span>17%</span></div>
-        <div class="nwk-bar-row"><span>White</span><div class="nwk-bar-track"><div class="nwk-bar-fill homeless" style="width:8%"></div></div><span>8%</span></div>
-      </div>
-      <p class="nwk-bar-section-label">vs. Essex County population</p>
-      <div class="nwk-bars">
-        <div class="nwk-bar-row"><span>Black / African Am.</span><div class="nwk-bar-track"><div class="nwk-bar-fill county" style="width:40%"></div></div><span>40%</span></div>
-        <div class="nwk-bar-row"><span>White</span><div class="nwk-bar-track"><div class="nwk-bar-fill county" style="width:39%"></div></div><span>39%</span></div>
-      </div>
-      <p style="font-size:0.82rem;color:var(--tone-muted);margin:1rem 0 0;line-height:1.55;">Black residents are 40% of the county and 49% of its poverty population — but 71% of the homeless population. The gap is bigger than poverty alone explains. The report says racial disparity in homelessness is stronger than poverty as a predictor.</p>
-    </article>
-
-    <p class="nwk-source-note">
-      Data: <a href="https://monarchhousing.org/wp-content/uploads/2025/07/PIT-Report-2025-Essex.pdf" target="_blank" rel="noopener">Monarch Housing Associates — NJ 2025 Point-in-Time Count, Essex County</a> ·
-      <a href="https://monarchhousing.org/wp-content/uploads/2024/10/Essex-PIT-Report-2024.pdf" target="_blank" rel="noopener">2024 PIT Count</a>.
-      Newark made up 1,922 of the 2,291 people whose municipality was recorded (~84%). Essex race/income data is the best public proxy for Newark but not a perfect city-only table.
-      Next pass: age, family status, disability, Newark vs. East Orange / Irvington / rest of Essex.
-    </p>
+    <!-- ── Tab 3: Museum ──────────────────────── -->
+    <div class="nwk-tab-panel" id="tab-museum" role="tabpanel" aria-labelledby="btn-museum" hidden>
+      <NewarkLaneShell lane={museumLane}>
+        <NMOAProposalCircuit client:load />
+      </NewarkLaneShell>
+    </div>
   </div>
 
-  <!-- ── Tab 2: Market Shifts ────────────────── -->
-  <div class="nwk-tab-panel" id="tab-markets" role="tabpanel" aria-labelledby="btn-markets">
+  <script is:inline>
+    (() => {
+      const tabs = Array.from(document.querySelectorAll('.nwk-tab'));
+      const panels = Array.from(document.querySelectorAll('.nwk-tab-panel'));
 
-    <div class="nwk-lede">
-      <p class="nwk-lede__stat">Newark is attracting real investment. <em>The question is who it's being built for.</em></p>
-      <p>A $125M film studio broke ground in December 2025. Port cargo hit double-digit growth. Premium residential is filling space that office buildings won't. Capital is moving into the city — but the people showing up in the homelessness count aren't in the plans for what's being built. The city is being repositioned around them, not for them.</p>
-    </div>
-
-    <article class="nwk-card">
-      <h2>Expanding</h2>
-      <div class="nwk-signals">
-
-        <div class="nwk-signal">
-          <div class="nwk-signal__header">
-            <span class="nwk-signal__tag expanding">Expanding</span>
-            <h3>Film / TV production infrastructure</h3>
-          </div>
-          <p>Lionsgate Newark broke ground December 2025 — ~$125M, 12 acres, soundstages, production offices, set-building. Newark is pairing it with local film-job training. Cleanest new growth lane in the city.</p>
-        </div>
-
-        <div class="nwk-signal">
-          <div class="nwk-signal__header">
-            <span class="nwk-signal__tag expanding">Expanding</span>
-            <h3>Mixed-use residential and adaptive reuse</h3>
-          </div>
-          <p>Capital is moving toward housing-heavy redevelopment. Penn Plaza East: up to 1,000 units + retail. 10 Park Place: office converted to 196 affordable units with ground-floor commercial. The market is repricing older inventory as housing, not office.</p>
-        </div>
-
-        <div class="nwk-signal">
-          <div class="nwk-signal__header">
-            <span class="nwk-signal__tag expanding">Expanding</span>
-            <h3>Port / logistics / distribution</h3>
-          </div>
-          <p>Port of NY/NJ hit 8.7M TEUs in 2024 — double-digit cargo growth over 2023. NJ industrial leasing in 2025 concentrated in the Turnpike/port corridor, especially modern Class A space. Not new, but still real.</p>
-        </div>
-
-        <div class="nwk-signal">
-          <div class="nwk-signal__header">
-            <span class="nwk-signal__tag expanding">Expanding</span>
-            <h3>Downtown street-level retail</h3>
-          </div>
-          <p>Grocery, service, and experience retail tied to mixed-use — not mall anchors. Hahne &amp; Co. completed full retail lease-up of ~30,000 sq ft. Demand is real where it's attached to residential density.</p>
-        </div>
-
-        <div class="nwk-signal">
-          <div class="nwk-signal__header">
-            <span class="nwk-signal__tag expanding">Expanding</span>
-            <h3>Broadband and digital infrastructure</h3>
-          </div>
-          <p>Newark Fiber already serves 85 non-city buildings, ~27,000 residents, ~25 new commercial customers per year. A real buildout, not a promise.</p>
-        </div>
-
-      </div>
-    </article>
-
-    <article class="nwk-card">
-      <h2>Softening</h2>
-      <div class="nwk-signals">
-
-        <div class="nwk-signal">
-          <div class="nwk-signal__header">
-            <span class="nwk-signal__tag receding">Receding</span>
-            <h3>Older commodity office space</h3>
-          </div>
-          <p>19.5% vacancy in Q4 2025 even with positive absorption. Demand is concentrating in better buildings only. Older inventory is getting converted to housing — the market has decided it's not office anymore.</p>
-        </div>
-
-        <div class="nwk-signal">
-          <div class="nwk-signal__header">
-            <span class="nwk-signal__tag receding">Receding</span>
-            <h3>Spec warehouse</h3>
-          </div>
-          <p>Port logistics still matter, but the easy-growth phase cooled. NJ industrial vacancy hit 8.9%, 2025 net absorption was negative, vacant new deliveries and sublease space are piling up.</p>
-        </div>
-
-        <div class="nwk-signal">
-          <div class="nwk-signal__header">
-            <span class="nwk-signal__tag receding">Receding</span>
-            <h3>Anchor / department-store retail</h3>
-          </div>
-          <p>Already over. Hahne's success is as a repurposed mixed-use property — not a return to the old format. Newark's retail wins are attached to residential density, not anchor stores.</p>
-        </div>
-
-      </div>
-    </article>
-
-    <div class="nwk-callout">
-      <strong>Not yet confirmed</strong>
-      <p>Life sciences looks more like a New Jersey-wide story than a Newark-specific wave. Next pass: district-level breakdown — Downtown, Ironbound, South Ward, airport/port zone.</p>
-    </div>
-
-    <p class="nwk-source-note">Research from public development filings, leasing market reports, and press coverage. Separating real expansion from booster talk. Next pass: district-level breakdown.</p>
-  </div>
-
-  <!-- ── Tab 3: Museum ──────────────────────── -->
-  <div class="nwk-tab-panel" id="tab-museum" role="tabpanel" aria-labelledby="btn-museum">
-    <div class="nwk-lede">
-      <p class="nwk-lede__stat">The museum is part of Newark's problem field. <em>Funding, staffing, access, and public pull keep hitting each other.</em></p>
-      <p>
-        This tab folds the museum proposal circuit into the same problems view. It treats the Newark Museum of Art not as a separate
-        island, but as an institution shaped by the same pressure systems: money, labor, public energy, access, and hidden knowledge.
-      </p>
-    </div>
-
-    <NMOAProposalCircuit client:load />
-  </div>
-
-</div>
-
-<script is:inline>
-  (() => {
-    const tabs = Array.from(document.querySelectorAll('.nwk-tab'));
-    const panels = Array.from(document.querySelectorAll('.nwk-tab-panel'));
-
-    tabs.forEach((tab) => {
-      tab.addEventListener('click', () => {
+      const activateTab = (tab, { focus = false } = {}) => {
         const target = tab.getAttribute('aria-controls');
 
-        tabs.forEach((t) => {
-          t.classList.remove('is-active');
-          t.setAttribute('aria-selected', 'false');
+        tabs.forEach((item) => {
+          const isSelected = item === tab;
+          item.classList.toggle('is-active', isSelected);
+          item.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+          item.setAttribute('tabindex', isSelected ? '0' : '-1');
         });
-        panels.forEach((p) => p.classList.remove('is-active'));
 
-        tab.classList.add('is-active');
-        tab.setAttribute('aria-selected', 'true');
-        const panel = document.getElementById(target);
-        if (panel) panel.classList.add('is-active');
+        panels.forEach((panel) => {
+          const isSelected = panel.id === target;
+          panel.classList.toggle('is-active', isSelected);
+          if (isSelected) {
+            panel.removeAttribute('hidden');
+          } else {
+            panel.setAttribute('hidden', '');
+          }
+        });
+
+        if (focus) {
+          tab.focus();
+        }
+      };
+
+      tabs.forEach((tab, index) => {
+        tab.setAttribute('tabindex', index === 0 ? '0' : '-1');
+        tab.addEventListener('click', () => activateTab(tab));
+        tab.addEventListener('keydown', (event) => {
+          const currentIndex = tabs.indexOf(tab);
+
+          if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+            event.preventDefault();
+            const nextTab = tabs[(currentIndex + 1) % tabs.length];
+            activateTab(nextTab, { focus: true });
+            return;
+          }
+
+          if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+            event.preventDefault();
+            const previousTab = tabs[(currentIndex - 1 + tabs.length) % tabs.length];
+            activateTab(previousTab, { focus: true });
+            return;
+          }
+
+          if (event.key === 'Home') {
+            event.preventDefault();
+            activateTab(tabs[0], { focus: true });
+            return;
+          }
+
+          if (event.key === 'End') {
+            event.preventDefault();
+            activateTab(tabs[tabs.length - 1], { focus: true });
+          }
+        });
       });
-    });
-  })();
-</script>
-
+    })();
+  </script>
 </BaseLayout>
