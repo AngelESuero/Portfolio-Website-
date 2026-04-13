@@ -2,6 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EmbedCard from '../components/EmbedCard.astro';
 import { LINK_HUB_CATEGORIES, LINK_HUB_ICONS } from '../data/linkhub';
+import LinkHubLaneShell from '../components/LinkHubLaneShell.astro';
+import { LINK_HUB_LANES } from '../data/linkhub-lanes';
 import '../styles/pages/link-hub.css';
 
 const ACCENT_SWATCHES: Record<string, string> = {
@@ -25,7 +27,7 @@ const categoryColors = Object.fromEntries(LINK_HUB_CATEGORIES.map((category) => 
 
 <BaseLayout
   title="Link Hub — a_e.s_"
-  description="Timeline-style link hub with category tabs and embeddable links."
+  description="Timeline-style link hub with category lanes, tabs, and embeddable links."
   theme="hub"
 >
   <section class="hub-page">
@@ -49,6 +51,8 @@ const categoryColors = Object.fromEntries(LINK_HUB_CATEGORIES.map((category) => 
         <button
           type="button"
           role="tab"
+          id={`hub-tab-${category.id}`}
+          aria-controls={`hub-panel-${category.id}`}
           style={`--hub-accent:${getAccentSwatch(category.color)}`}
           data-hub-tab={category.id}
           data-color={category.color}
@@ -63,45 +67,55 @@ const categoryColors = Object.fromEntries(LINK_HUB_CATEGORIES.map((category) => 
     {LINK_HUB_CATEGORIES.map((category, index) => (
       <section
         class:list={['hub-panel', index === 0 && 'is-active']}
+        id={`hub-panel-${category.id}`}
+        role="tabpanel"
+        aria-labelledby={`hub-tab-${category.id}`}
         style={`--hub-accent:${getAccentSwatch(category.color)}`}
         data-hub-panel={category.id}
         aria-label={`${category.label} links`}
       >
-        <div class="hub-subtabs" role="tablist" aria-label={`${category.label} links`}>
-          {category.items.map((item, itemIndex) => (
-            <button
-              type="button"
-              role="tab"
-              style={`--hub-accent:${getAccentSwatch(category.color)}`}
-              data-hub-link-tab={item.id}
-              data-hub-link-category={category.id}
-              data-color={category.color}
-              aria-selected={itemIndex === 0 ? 'true' : 'false'}
-              class:list={[itemIndex === 0 && 'is-active']}
-            >
-              {item.title}
-            </button>
-          ))}
-        </div>
-
-        {category.items.map((item, itemIndex) => (
-          <div
-            class:list={['hub-link-panel', itemIndex === 0 && 'is-active']}
-            data-hub-link-panel={item.id}
-            data-hub-link-category={category.id}
-            aria-label={`${item.title} panel`}
-          >
-            <EmbedCard item={item} />
-
-            {category.id === 'writing' && item.id === 'substack' && (
-              <aside class="hub-latest" data-substack-latest>
-                <h3>Latest Substack posts</h3>
-                <p class="hub-latest-status" data-substack-status>Loading latest entries…</p>
-                <ul data-substack-list></ul>
-              </aside>
-            )}
+        <LinkHubLaneShell lane={LINK_HUB_LANES[category.id]}>
+          <div class="hub-subtabs" role="tablist" aria-label={`${category.label} links`}>
+            {category.items.map((item, itemIndex) => (
+              <button
+                type="button"
+                role="tab"
+                id={`hub-link-tab-${category.id}-${item.id}`}
+                aria-controls={`hub-link-panel-${category.id}-${item.id}`}
+                style={`--hub-accent:${getAccentSwatch(category.color)}`}
+                data-hub-link-tab={item.id}
+                data-hub-link-category={category.id}
+                data-color={category.color}
+                aria-selected={itemIndex === 0 ? 'true' : 'false'}
+                class:list={[itemIndex === 0 && 'is-active']}
+              >
+                {item.title}
+              </button>
+            ))}
           </div>
-        ))}
+
+          {category.items.map((item, itemIndex) => (
+            <div
+              class:list={['hub-link-panel', itemIndex === 0 && 'is-active']}
+              id={`hub-link-panel-${category.id}-${item.id}`}
+              role="tabpanel"
+              aria-labelledby={`hub-link-tab-${category.id}-${item.id}`}
+              data-hub-link-panel={item.id}
+              data-hub-link-category={category.id}
+              aria-label={`${item.title} panel`}
+            >
+              <EmbedCard item={item} />
+
+              {category.id === 'writing' && item.id === 'substack' && (
+                <aside class="hub-latest" data-substack-latest>
+                  <h3>Latest Substack posts</h3>
+                  <p class="hub-latest-status" data-substack-status>Loading latest entries...</p>
+                  <ul data-substack-list></ul>
+                </aside>
+              )}
+            </div>
+          ))}
+        </LinkHubLaneShell>
       </section>
     ))}
   </section>
@@ -115,7 +129,7 @@ const categoryColors = Object.fromEntries(LINK_HUB_CATEGORIES.map((category) => 
       const categoryState = { ...(defaultItems || {}) };
       const resolveCategoryColor = (categoryId) => categoryColors?.[categoryId] || 'blue';
 
-      const setActiveLink = (categoryId, itemId, syncAccent = true) => {
+      const setActiveLink = (categoryId, itemId, syncAccent = true, focus = false) => {
         const linkTabs = Array.from(document.querySelectorAll(`[data-hub-link-category="${categoryId}"][data-hub-link-tab]`));
         const linkPanels = Array.from(document.querySelectorAll(`[data-hub-link-category="${categoryId}"][data-hub-link-panel]`));
         let activeColor = resolveCategoryColor(categoryId);
@@ -124,52 +138,141 @@ const categoryColors = Object.fromEntries(LINK_HUB_CATEGORIES.map((category) => 
           const active = tab.getAttribute('data-hub-link-tab') === itemId;
           tab.classList.toggle('is-active', active);
           tab.setAttribute('aria-selected', String(active));
+          tab.setAttribute('tabindex', active ? '0' : '-1');
           if (active) activeColor = tab.getAttribute('data-color') || activeColor;
         });
 
         linkPanels.forEach((panel) => {
           const active = panel.getAttribute('data-hub-link-panel') === itemId;
           panel.classList.toggle('is-active', active);
+          if (active) {
+            panel.removeAttribute('hidden');
+          } else {
+            panel.setAttribute('hidden', '');
+          }
         });
 
         categoryState[categoryId] = itemId;
         if (syncAccent) window.__setSiteAccent?.(activeColor, { animate: true, duration: 250 });
+        if (focus) {
+          const activeTab = linkTabs.find((tab) => tab.getAttribute('data-hub-link-tab') === itemId);
+          activeTab?.focus();
+        }
       };
 
-      const setActiveCategory = (categoryId, syncAccent = true) => {
+      const setActiveCategory = (categoryId, syncAccent = true, focus = false) => {
         if (!Array.isArray(categoryIds) || !categoryIds.includes(categoryId)) return;
 
         tabs.forEach((tab) => {
           const active = tab.getAttribute('data-hub-tab') === categoryId;
           tab.classList.toggle('is-active', active);
           tab.setAttribute('aria-selected', String(active));
+          tab.setAttribute('tabindex', active ? '0' : '-1');
         });
 
         panels.forEach((panel) => {
           const active = panel.getAttribute('data-hub-panel') === categoryId;
           panel.classList.toggle('is-active', active);
+          if (active) {
+            panel.removeAttribute('hidden');
+          } else {
+            panel.setAttribute('hidden', '');
+          }
         });
 
         if (syncAccent) window.__setSiteAccent?.(resolveCategoryColor(categoryId), { animate: true, duration: 250 });
 
         const itemId = categoryState[categoryId];
         if (itemId) setActiveLink(categoryId, itemId, false);
+        if (focus) {
+          const activeTab = tabs.find((tab) => tab.getAttribute('data-hub-tab') === categoryId);
+          activeTab?.focus();
+        }
       };
 
-      tabs.forEach((tab) => {
+      tabs.forEach((tab, index) => {
+        tab.setAttribute('tabindex', index === 0 ? '0' : '-1');
         tab.addEventListener('click', () => {
           const categoryId = tab.getAttribute('data-hub-tab');
           if (categoryId) setActiveCategory(categoryId);
         });
+        tab.addEventListener('keydown', (event) => {
+          const currentIndex = tabs.indexOf(tab);
+          if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+            event.preventDefault();
+            const nextTab = tabs[(currentIndex + 1) % tabs.length];
+            const nextCategoryId = nextTab.getAttribute('data-hub-tab');
+            if (nextCategoryId) setActiveCategory(nextCategoryId, true, true);
+            return;
+          }
+          if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+            event.preventDefault();
+            const previousTab = tabs[(currentIndex - 1 + tabs.length) % tabs.length];
+            const previousCategoryId = previousTab.getAttribute('data-hub-tab');
+            if (previousCategoryId) setActiveCategory(previousCategoryId, true, true);
+            return;
+          }
+          if (event.key === 'Home') {
+            event.preventDefault();
+            const firstCategoryId = tabs[0]?.getAttribute('data-hub-tab');
+            if (firstCategoryId) setActiveCategory(firstCategoryId, true, true);
+            return;
+          }
+          if (event.key === 'End') {
+            event.preventDefault();
+            const lastCategoryId = tabs[tabs.length - 1]?.getAttribute('data-hub-tab');
+            if (lastCategoryId) setActiveCategory(lastCategoryId, true, true);
+          }
+        });
       });
 
       const allLinkTabs = Array.from(document.querySelectorAll('[data-hub-link-tab]'));
-      allLinkTabs.forEach((tab) => {
+      allLinkTabs.forEach((tab, index) => {
+        tab.setAttribute('tabindex', index === 0 ? '0' : '-1');
         tab.addEventListener('click', () => {
           const categoryId = tab.getAttribute('data-hub-link-category');
           const itemId = tab.getAttribute('data-hub-link-tab');
           if (!categoryId || !itemId) return;
           setActiveLink(categoryId, itemId);
+        });
+        tab.addEventListener('keydown', (event) => {
+          const categoryId = tab.getAttribute('data-hub-link-category');
+          const itemId = tab.getAttribute('data-hub-link-tab');
+          if (!categoryId || !itemId) return;
+
+          const groupTabs = Array.from(
+            document.querySelectorAll(`[data-hub-link-category="${categoryId}"][data-hub-link-tab]`)
+          );
+          const currentIndex = groupTabs.indexOf(tab);
+
+          if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+            event.preventDefault();
+            const nextTab = groupTabs[(currentIndex + 1) % groupTabs.length];
+            const nextItemId = nextTab.getAttribute('data-hub-link-tab');
+            if (nextItemId) setActiveLink(categoryId, nextItemId, true, true);
+            return;
+          }
+
+          if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+            event.preventDefault();
+            const previousTab = groupTabs[(currentIndex - 1 + groupTabs.length) % groupTabs.length];
+            const previousItemId = previousTab.getAttribute('data-hub-link-tab');
+            if (previousItemId) setActiveLink(categoryId, previousItemId, true, true);
+            return;
+          }
+
+          if (event.key === 'Home') {
+            event.preventDefault();
+            const firstItemId = groupTabs[0]?.getAttribute('data-hub-link-tab');
+            if (firstItemId) setActiveLink(categoryId, firstItemId, true, true);
+            return;
+          }
+
+          if (event.key === 'End') {
+            event.preventDefault();
+            const lastItemId = groupTabs[groupTabs.length - 1]?.getAttribute('data-hub-link-tab');
+            if (lastItemId) setActiveLink(categoryId, lastItemId, true, true);
+          }
         });
       });
 
@@ -235,4 +338,3 @@ const categoryColors = Object.fromEntries(LINK_HUB_CATEGORIES.map((category) => 
     })();
   </script>
 </BaseLayout>
-

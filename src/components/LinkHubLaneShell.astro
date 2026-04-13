@@ -1,0 +1,49 @@
+---
+import type { LinkHubLaneConfig } from '../data/linkhub-lanes';
+
+type Props = {
+  lane: LinkHubLaneConfig;
+};
+
+const { lane } = Astro.props as Props;
+---
+
+<section class="hub-lane-shell" data-hub-lane={lane.id}>
+  <header class="hub-lane-shell__head">
+    <p class="hub-lane-shell__kicker">Working lane</p>
+    <h2>{lane.label}</h2>
+    <p class="hub-lane-shell__lead">{lane.lead}</p>
+    <p class="hub-lane-shell__summary">{lane.summary}</p>
+  </header>
+
+  <div class="hub-lane-shell__body">
+    <aside class="hub-lane-notes" aria-label={`${lane.label} expanded thoughts`}>
+      <p class="hub-lane-notes__label">Expanded thoughts</p>
+      <div class="hub-lane-notes__stack">
+        {lane.notes.map((note, index) => (
+          <details class:list={['hub-thought', (note.open ?? index === 0) && 'is-open']} open={note.open ?? index === 0}>
+            <summary class="hub-thought__summary">
+              <span class="hub-thought__text">
+                <span class="hub-thought__title">{note.title}</span>
+                <span class="hub-thought__summary-copy">{note.summary}</span>
+              </span>
+              <span class="hub-thought__indicator" aria-hidden="true"></span>
+            </summary>
+            <div class="hub-thought__body">
+              <p>{note.body}</p>
+              {note.points?.length ? (
+                <ul class="hub-thought__points">
+                  {note.points.map((point) => <li>{point}</li>)}
+                </ul>
+              ) : null}
+            </div>
+          </details>
+        ))}
+      </div>
+    </aside>
+
+    <div class="hub-lane-shell__stream">
+      <slot />
+    </div>
+  </div>
+</section>
