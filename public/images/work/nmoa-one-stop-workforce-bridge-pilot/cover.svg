@@ -1,0 +1,69 @@
+<svg width="1600" height="1200" viewBox="0 0 1600 1200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">NMOA Workforce Bridge Cover</title>
+  <desc id="desc">A bridge motif connecting youth work-experience pathways to museum departments.</desc>
+  <defs>
+    <linearGradient id="bg" x1="110" y1="110" x2="1490" y2="1090" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#EDF1F5"/>
+      <stop offset="0.52" stop-color="#E2D8CB"/>
+      <stop offset="1" stop-color="#D3C0AB"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="180" y1="140" x2="730" y2="1060" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1F2430"/>
+      <stop offset="1" stop-color="#364353"/>
+    </linearGradient>
+    <linearGradient id="bridge" x1="820" y1="350" x2="1380" y2="780" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5F7280"/>
+      <stop offset="1" stop-color="#B88A57"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1098 602) rotate(90) scale(340 340)">
+      <stop offset="0" stop-color="#7F96A7" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#7F96A7" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#1C232D" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="1200" fill="url(#bg)"/>
+  <rect x="88" y="92" width="1424" height="1016" rx="44" fill="#EFE6DB" filter="url(#shadow)"/>
+  <rect x="88" y="92" width="1424" height="1016" rx="44" fill="none" stroke="#9B8164" stroke-opacity="0.3" stroke-width="2"/>
+
+  <rect x="150" y="150" width="560" height="900" rx="38" fill="url(#panel)"/>
+  <rect x="150" y="150" width="560" height="900" rx="38" fill="none" stroke="#9DB0BF" stroke-opacity="0.2" stroke-width="2"/>
+
+  <circle cx="1100" cy="600" r="250" fill="url(#glow)"/>
+  <path d="M820 798C910 760 980 682 1046 610C1118 530 1190 478 1280 430" stroke="url(#bridge)" stroke-width="14" stroke-linecap="round"/>
+  <path d="M800 828C894 776 972 696 1044 616C1114 540 1196 478 1300 422" stroke="#F1E8DB" stroke-opacity="0.54" stroke-width="6" stroke-linecap="round"/>
+  <path d="M858 736V864" stroke="url(#bridge)" stroke-width="10" stroke-linecap="round"/>
+  <path d="M986 672V820" stroke="url(#bridge)" stroke-width="10" stroke-linecap="round"/>
+  <path d="M1110 604V748" stroke="url(#bridge)" stroke-width="10" stroke-linecap="round"/>
+  <path d="M1234 532V676" stroke="url(#bridge)" stroke-width="10" stroke-linecap="round"/>
+  <path d="M1358 462V620" stroke="url(#bridge)" stroke-width="10" stroke-linecap="round"/>
+
+  <g fill="#F6EEE3" fill-opacity="0.96" stroke="#22303B" stroke-opacity="0.18" stroke-width="2">
+    <circle cx="820" cy="798" r="42"/>
+    <circle cx="858" cy="736" r="28"/>
+    <circle cx="986" cy="672" r="28"/>
+    <circle cx="1110" cy="604" r="28"/>
+    <circle cx="1234" cy="532" r="28"/>
+    <circle cx="1358" cy="462" r="28"/>
+    <circle cx="1300" cy="422" r="42"/>
+  </g>
+
+  <g font-family="Inter, system-ui, sans-serif" fill="#F8F2E8">
+    <text x="204" y="266" font-size="82" font-weight="650" letter-spacing="-0.05em">NMOA</text>
+    <text x="204" y="336" font-size="34" font-weight="500" letter-spacing="0.18em" opacity="0.82">WORKFORCE BRIDGE</text>
+    <text x="204" y="424" font-size="24" font-weight="400" opacity="0.82">youth one stop pilot</text>
+    <text x="204" y="474" font-size="24" font-weight="400" opacity="0.82">shadow / learn / contribute</text>
+  </g>
+
+  <g font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="500" letter-spacing="0.06em" fill="#F8F2E8" opacity="0.82">
+    <text x="776" y="790" text-anchor="end">Youth</text>
+    <text x="1450" y="456">Museum</text>
+    <text x="858" y="700" text-anchor="middle">Entry</text>
+    <text x="986" y="636" text-anchor="middle">Learn</text>
+    <text x="1110" y="568" text-anchor="middle">Work</text>
+    <text x="1234" y="496" text-anchor="middle">Guide</text>
+    <text x="1358" y="426" text-anchor="middle">Path</text>
+  </g>
+</svg>

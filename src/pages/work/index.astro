@@ -85,6 +85,37 @@ const compareProjectsByRecency = (a: CollectionEntry<'projects'>, b: CollectionE
   return a.data.title.localeCompare(b.data.title);
 };
 
+const normalizeProjectSignature = (project: CollectionEntry<'projects'>) =>
+  [
+    project.data.title.trim().toLowerCase().replace(/\s+/g, ' '),
+    project.data.year,
+    project.data.type,
+    project.data.description.trim().toLowerCase().replace(/\s+/g, ' '),
+    project.data.cover_image.trim().toLowerCase()
+  ].join('|');
+
+const hasDuplicateSuffix = (slug: string) => /-\d+$/.test(slug);
+
+const dedupeProjects = (projects: CollectionEntry<'projects'>[]) => {
+  const seen = new Map<string, CollectionEntry<'projects'>>();
+
+  for (const project of projects) {
+    const signature = normalizeProjectSignature(project);
+    const existing = seen.get(signature);
+
+    if (!existing) {
+      seen.set(signature, project);
+      continue;
+    }
+
+    if (hasDuplicateSuffix(existing.slug) && !hasDuplicateSuffix(project.slug)) {
+      seen.set(signature, project);
+    }
+  }
+
+  return [...seen.values()];
+};
+
 const selectArchiveBridgeEntries = (entries: CollectionEntry<'entries'>[]) => {
   const laneSet = new Set<string>(featuredArchiveLanes);
   const selected: CollectionEntry<'entries'>[] = [];
@@ -140,7 +171,7 @@ const outwardLabel = (link: PreparedLink): string => {
   }
 };
 
-const allProjects = (await getAllProjects()).sort(compareProjectsByRecency);
+const allProjects = dedupeProjects(await getAllProjects()).sort(compareProjectsByRecency);
 const projectIndex = new Map(allProjects.map((project) => [project.slug, project]));
 const scoreLeadProject = (project: CollectionEntry<'projects'>) => {
   const timeline = resolveProjectTimeline(project.data);
@@ -674,4 +705,3 @@ const recentArchiveEntries = selectArchiveBridgeEntries(sortEntriesByDate(await 
     });
   })();
 </script>
-

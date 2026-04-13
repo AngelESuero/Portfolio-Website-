@@ -1,0 +1,74 @@
+<svg width="1600" height="1200" viewBox="0 0 1600 1200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Gallery Host Plus Proposal Cover</title>
+  <desc id="desc">A warm institutional diagram showing growth from within through mentorship and care.</desc>
+  <defs>
+    <linearGradient id="bg" x1="90" y1="120" x2="1510" y2="1080" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F4E9DE"/>
+      <stop offset="0.5" stop-color="#E8DBC9"/>
+      <stop offset="1" stop-color="#D8C5AE"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="160" y1="140" x2="690" y2="1040" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#30261F"/>
+      <stop offset="1" stop-color="#4B3A30"/>
+    </linearGradient>
+    <linearGradient id="bridge" x1="760" y1="340" x2="1410" y2="880" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8D6A52"/>
+      <stop offset="1" stop-color="#C28F5D"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1120 620) rotate(90) scale(340 340)">
+      <stop offset="0" stop-color="#D3A56B" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#D3A56B" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#2D1F15" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="1200" fill="url(#bg)"/>
+  <rect x="88" y="92" width="1424" height="1016" rx="44" fill="#EFE4D6" filter="url(#shadow)"/>
+  <rect x="88" y="92" width="1424" height="1016" rx="44" fill="none" stroke="#B58A60" stroke-opacity="0.32" stroke-width="2"/>
+
+  <rect x="150" y="150" width="560" height="900" rx="38" fill="url(#panel)"/>
+  <rect x="150" y="150" width="560" height="900" rx="38" fill="none" stroke="#D6B38A" stroke-opacity="0.24" stroke-width="2"/>
+
+  <circle cx="1090" cy="622" r="250" fill="url(#glow)"/>
+  <circle cx="1110" cy="622" r="122" fill="#F6EADF" fill-opacity="0.18"/>
+  <circle cx="1110" cy="622" r="82" fill="#F6EADF" fill-opacity="0.86"/>
+  <circle cx="1110" cy="622" r="22" fill="#30261F"/>
+
+  <path d="M1110 540V360" stroke="url(#bridge)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M1110 704V884" stroke="url(#bridge)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M1058 622H842" stroke="url(#bridge)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M1162 622H1378" stroke="url(#bridge)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M1080 564 962 450" stroke="url(#bridge)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M1140 680 1260 798" stroke="url(#bridge)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M1080 680 962 798" stroke="url(#bridge)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M1140 564 1260 448" stroke="url(#bridge)" stroke-width="8" stroke-linecap="round"/>
+
+  <g fill="#F8F0E7" fill-opacity="0.95" stroke="#2A201A" stroke-opacity="0.2" stroke-width="2">
+    <circle cx="842" cy="622" r="46"/>
+    <circle cx="1378" cy="622" r="46"/>
+    <circle cx="962" cy="450" r="40"/>
+    <circle cx="1260" cy="448" r="40"/>
+    <circle cx="962" cy="798" r="40"/>
+    <circle cx="1260" cy="798" r="40"/>
+    <circle cx="1110" cy="360" r="40"/>
+    <circle cx="1110" cy="884" r="40"/>
+  </g>
+
+  <g font-family="Inter, system-ui, sans-serif" fill="#F8F0E7">
+    <text x="204" y="268" font-size="88" font-weight="650" letter-spacing="-0.05em">GH+</text>
+    <text x="204" y="336" font-size="34" font-weight="500" letter-spacing="0.18em" opacity="0.82">GALLERY HOST PLUS</text>
+    <text x="204" y="424" font-size="24" font-weight="400" opacity="0.82">growth from within</text>
+    <text x="204" y="474" font-size="24" font-weight="400" opacity="0.82">care / mentorship / cross-training</text>
+  </g>
+
+  <g font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="500" letter-spacing="0.06em" fill="#F8F0E7" opacity="0.82">
+    <text x="770" y="622" text-anchor="end">Hosts</text>
+    <text x="1450" y="622">Departments</text>
+    <text x="962" y="396" text-anchor="middle">Mentor</text>
+    <text x="1260" y="392" text-anchor="middle">AV</text>
+    <text x="962" y="862" text-anchor="middle">Care</text>
+    <text x="1260" y="854" text-anchor="middle">Growth</text>
+  </g>
+</svg>

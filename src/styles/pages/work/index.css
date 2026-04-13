@@ -39,17 +39,20 @@
   line-height: 0.96;
   letter-spacing: -0.03em;
   max-width: 12ch;
+  font-weight: 600;
 }
 
 .work-intro__lede {
   max-width: 40rem;
   font-size: clamp(1rem, 1.5vw, 1.14rem);
-  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  color: color-mix(in srgb, var(--tone-text) 94%, var(--tone-muted) 6%);
+  line-height: 1.62;
 }
 
 .work-intro__signal {
   max-width: 42rem;
-  color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  line-height: 1.62;
 }
 
 .work-intro__signal a {
@@ -98,11 +101,13 @@
   font-size: clamp(1.35rem, 2.3vw, 1.7rem);
   line-height: 1.02;
   letter-spacing: -0.02em;
+  font-weight: 600;
 }
 
 .work-archive-bridge__copy {
-  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
   max-width: 42rem;
+  line-height: 1.62;
 }
 
 .work-archive-bridge__links {
@@ -120,7 +125,7 @@
   border-radius: 999px;
   border: 1px solid var(--line2);
   background: color-mix(in srgb, var(--tone-surface) 86%, transparent);
-  color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
   text-decoration: none;
 }
 
@@ -163,14 +168,14 @@
 
 .work-archive-bridge__recent span {
   font-size: 0.96rem;
-  color: color-mix(in srgb, var(--tone-text) 92%, var(--tone-muted) 8%);
+  color: color-mix(in srgb, var(--tone-text) 95%, var(--tone-muted) 5%);
 }
 
 .work-archive-bridge__recent small {
   font-size: 0.74rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
 }
 
 .work-field {
@@ -188,10 +193,12 @@
   font-family: var(--font-display);
   font-size: 1.2rem;
   letter-spacing: 0.01em;
+  font-weight: 600;
 }
 
 .work-field__status {
-  color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  line-height: 1.55;
 }
 
 .work-field__list {
@@ -214,7 +221,7 @@
 }
 
 .work-chamber {
-  opacity: 0.84;
+  opacity: 0.91;
   border: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--line2));
   border-radius: 1.45rem;
   background:
@@ -274,7 +281,8 @@
   font-size: 0.72rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  font-weight: 500;
 }
 
 .work-chamber__lead-badge {
@@ -294,6 +302,7 @@
   line-height: 1;
   letter-spacing: -0.02em;
   max-width: 15ch;
+  font-weight: 600;
 }
 
 .work-field__entry[data-leading='true'] .work-chamber__title,
@@ -303,7 +312,8 @@
 
 .work-chamber__description {
   max-width: 42rem;
-  color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
+  color: color-mix(in srgb, var(--tone-text) 94%, var(--tone-muted) 6%);
+  line-height: 1.62;
 }
 
 .work-chamber__prompt {
@@ -311,7 +321,7 @@
   align-items: center;
   gap: 0.4rem;
   font-size: 0.85rem;
-  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  color: color-mix(in srgb, var(--tone-text) 94%, var(--tone-muted) 6%);
 }
 
 .work-chamber__prompt::after {
@@ -360,7 +370,7 @@
 }
 
 .work-field[data-has-selection='true'] .work-chamber[data-selected='false'] {
-  opacity: 0.64;
+  opacity: 0.74;
   filter: saturate(0.9) grayscale(0.04);
 }
 
@@ -406,18 +416,20 @@
   font-size: 0.73rem;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: color-mix(in srgb, var(--tone-text) 86%, var(--tone-muted) 14%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  font-weight: 600;
 }
 
 .work-chamber__detail-copy p {
   max-width: 42rem;
-  color: color-mix(in srgb, var(--tone-text) 89%, var(--tone-muted) 11%);
+  color: color-mix(in srgb, var(--tone-text) 94%, var(--tone-muted) 6%);
+  line-height: 1.65;
 }
 
 .work-chamber__detail-copy p:nth-of-type(2) {
   font-size: 1.02rem;
   line-height: 1.72;
-  color: color-mix(in srgb, var(--tone-text) 94%, var(--tone-muted) 6%);
+  color: color-mix(in srgb, var(--tone-text) 97%, var(--tone-muted) 3%);
 }
 
 .work-chamber__facts {
@@ -439,7 +451,7 @@
 
 .work-chamber__facts dd {
   margin-top: 0;
-  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  color: color-mix(in srgb, var(--tone-text) 94%, var(--tone-muted) 6%);
 }
 
 .work-chamber__detail-aside {
@@ -462,7 +474,8 @@
 .work-chamber__group-copy,
 .work-chamber__thread-note {
   margin: 0;
-  color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  line-height: 1.6;
 }
 
 .work-chamber__thread-note {
@@ -485,7 +498,7 @@
 
 .work-chamber__list a,
 .work-chamber__thread-link {
-  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
+  color: color-mix(in srgb, var(--tone-text) 94%, var(--tone-muted) 6%);
   text-decoration: none;
   display: inline-flex;
   flex-wrap: wrap;
@@ -502,7 +515,7 @@
 
 .work-chamber__list small {
   font-size: 0.78rem;
-  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
 }
 
 .work-chamber__continuation {
@@ -561,7 +574,7 @@
 }
 
 .work-chamber__quiet-link {
-  color: color-mix(in srgb, var(--tone-text) 82%, var(--tone-muted) 18%);
+  color: color-mix(in srgb, var(--tone-text) 88%, var(--tone-muted) 12%);
   text-decoration: underline;
   text-decoration-color: color-mix(in srgb, var(--tone-accent) 32%, transparent);
   text-underline-offset: 0.14em;
@@ -692,6 +705,7 @@
   font-size: clamp(1.2rem, 2vw, 1.55rem);
   letter-spacing: -0.02em;
   line-height: 1;
+  font-weight: 600;
 }
 
 .work-yt-recent__all {
@@ -756,7 +770,7 @@
   padding: 0 0.75rem;
   font-size: 0.88rem;
   line-height: 1.4;
-  color: color-mix(in srgb, var(--tone-text) 92%, var(--tone-muted) 8%);
+  color: color-mix(in srgb, var(--tone-text) 95%, var(--tone-muted) 5%);
 }
 
 .work-yt-card__date {
@@ -765,7 +779,7 @@
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
+  color: color-mix(in srgb, var(--tone-text) 90%, var(--tone-muted) 10%);
 }
 
 @media (prefers-reduced-motion: reduce) {
