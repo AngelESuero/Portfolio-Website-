@@ -1,0 +1,49 @@
+---
+import type { IdeaSection } from '../data/ideas-catalogue';
+
+type Props = {
+  lane: IdeaSection;
+};
+
+const { lane } = Astro.props as Props;
+---
+
+<section class="ideas-lane-shell" data-ideas-section id={lane.id} aria-label={`${lane.label} ideas lane`}>
+  <header class="ideas-lane-shell__head">
+    <p class="ideas-lane-shell__kicker">Working lane</p>
+    <h2>{lane.label}</h2>
+    <p class="ideas-lane-shell__lead">{lane.lead}</p>
+    <p class="ideas-lane-shell__summary">{lane.summary}</p>
+  </header>
+
+  <div class="ideas-lane-shell__body">
+    <aside class="ideas-lane-notes" aria-label={`${lane.label} expanded thoughts`}>
+      <p class="ideas-lane-notes__label">Expanded thoughts</p>
+      <div class="ideas-lane-notes__stack">
+        {lane.notes.map((note, index) => (
+          <details class:list={['ideas-thought', (note.open ?? index === 0) && 'is-open']} open={note.open ?? index === 0}>
+            <summary class="ideas-thought__summary">
+              <span class="ideas-thought__text">
+                <span class="ideas-thought__title">{note.title}</span>
+                <span class="ideas-thought__summary-copy">{note.summary}</span>
+              </span>
+              <span class="ideas-thought__indicator" aria-hidden="true"></span>
+            </summary>
+            <div class="ideas-thought__body">
+              <p>{note.body}</p>
+              {note.points?.length ? (
+                <ul class="ideas-thought__points">
+                  {note.points.map((point) => <li>{point}</li>)}
+                </ul>
+              ) : null}
+            </div>
+          </details>
+        ))}
+      </div>
+    </aside>
+
+    <div class="ideas-lane-shell__stream">
+      <slot />
+    </div>
+  </div>
+</section>

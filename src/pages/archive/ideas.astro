@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CrossRouteResume from '../../components/CrossRouteResume.astro';
+import IdeasLaneShell from '../../components/IdeasLaneShell.astro';
 import {
   IDEA_LANES,
   IDEA_SECTIONS,
@@ -16,7 +17,7 @@ const totalCards = IDEA_SECTIONS.reduce((sum, section) => sum + section.cards.le
 
 <BaseLayout
   title="Ideas Catalogue — a_e.s_"
-  description="A structured idea section for product notes, civic proposals, cultural critique, and speculative thinking."
+  description="A structured idea section for product notes, civic proposals, cultural critique, and speculative thinking, now arranged as expandable lanes."
   theme="archive"
   bodyClass="archive-ideas-page"
   forceThemeMode="dark"
@@ -26,11 +27,11 @@ const totalCards = IDEA_SECTIONS.reduce((sum, section) => sum + section.cards.le
   <section class="ideas-page">
     <header class="ideas-hero">
       <div class="ideas-hero__copy">
-        <p class="ideas-kicker">Idea section</p>
+        <p class="ideas-kicker">Idea lanes</p>
         <h1>Ideas Catalogue</h1>
         <p class="ideas-dek">
-          A working catalogue of product, civic, cultural, and speculative ideas from the X archive, grouped as a
-          reading surface instead of a raw feed.
+          A working catalogue of product, civic, cultural, and speculative ideas from the X archive, grouped as
+          expandable lanes instead of a raw feed.
         </p>
         <div class="ideas-meta">
           <p>{IDEA_SOURCE.source} / {IDEA_SOURCE.handle}</p>
@@ -79,7 +80,7 @@ const totalCards = IDEA_SECTIONS.reduce((sum, section) => sum + section.cards.le
         </section>
 
         <section class="ideas-panel">
-          <p class="ideas-panel__label">Four lanes</p>
+          <p class="ideas-panel__label">Core through-lines</p>
           <div class="ideas-lane-list">
             {IDEA_LANES.map((lane) => (
               <article class="ideas-lane">
@@ -126,15 +127,7 @@ const totalCards = IDEA_SECTIONS.reduce((sum, section) => sum + section.cards.le
         </section>
 
         {IDEA_SECTIONS.map((section) => (
-          <section class="ideas-section" id={section.id} data-ideas-section data-section-label={section.label}>
-            <header class="ideas-section__head">
-              <div>
-                <p class="ideas-section__kicker">Section</p>
-                <h2>{section.label}</h2>
-              </div>
-              <p class="ideas-section__summary">{section.summary}</p>
-            </header>
-
+          <IdeasLaneShell lane={section}>
             <div class="ideas-card-grid">
               {section.cards.map((card) => (
                 <article class="idea-card" data-idea-card>
@@ -144,7 +137,7 @@ const totalCards = IDEA_SECTIONS.reduce((sum, section) => sum + section.cards.le
                 </article>
               ))}
             </div>
-          </section>
+          </IdeasLaneShell>
         ))}
 
         <p class="ideas-empty" data-ideas-empty hidden>
