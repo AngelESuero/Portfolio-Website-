@@ -1,42 +1,113 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { xArchiveEntries, xArchiveMeta } from '../data/x-archive';
 import '../styles/pages/x.css';
 
-const reservedNotes = [
-  'Selected tweets and people I actually want to keep near the surface.',
-  'A possible X shell rendered inside the app later, if that still makes sense.',
-  'A place for the feed layer once it earns its keep.'
-];
+const formatDate = (value: string): string => {
+  const date = new Date(value);
+  if (Number.isNaN(date.valueOf())) return value;
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  }).format(date);
+};
+
+const formatArchiveStamp = (value: string): string => {
+  const date = new Date(value);
+  if (Number.isNaN(date.valueOf())) return value;
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZoneName: 'short'
+  }).format(date);
+};
+
+const newestEntry = xArchiveEntries[0];
+const oldestEntry = xArchiveEntries[xArchiveEntries.length - 1];
+const archiveRange =
+  newestEntry && oldestEntry ? `${formatDate(newestEntry.publishedAt)} to ${formatDate(oldestEntry.publishedAt)}` : '';
+const archiveSize = xArchiveMeta.estimatedSizeMb.toLocaleString('en-US');
 ---
 
 <BaseLayout
-  title="X - Reserved"
-  description="A reserved X lane for later feed curation and app-level rendering."
+  title="X — Archive"
+  description="A verbatim slice of Angel's X archive, rendered as a readable timeline."
   theme="archive"
   bodyClass="x-page"
   flatSurface={true}
 >
   <main class="x-page__shell">
-    <header class="x-page__header">
-      <p class="x-page__eyebrow">Reserved lane</p>
+    <header class="x-page__hero">
+      <p class="x-page__eyebrow">Archive lane</p>
       <h1>X</h1>
       <p class="x-page__lede">
-        This lane is parked for later. When it opens, it can become a filtered stream for tweets, people, and notes
-        I want to keep close without turning the site into a feed zoo.
+        This page keeps the archive in the voice it was written. No paraphrase, no feed gloss, just the original
+        posts as a readable timeline slice.
       </p>
+
+      <div class="x-page__meta-grid" aria-label="Archive details">
+        <div class="x-page__meta-card">
+          <p class="x-page__meta-label">Handle</p>
+          <p class="x-page__meta-value">{xArchiveMeta.handle}</p>
+        </div>
+        <div class="x-page__meta-card">
+          <p class="x-page__meta-label">Date generated</p>
+          <p class="x-page__meta-value">{formatArchiveStamp(xArchiveMeta.generatedAt)}</p>
+        </div>
+        <div class="x-page__meta-card">
+          <p class="x-page__meta-label">Estimated size</p>
+          <p class="x-page__meta-value">{archiveSize} MB</p>
+        </div>
+        <div class="x-page__meta-card">
+          <p class="x-page__meta-label">Span shown</p>
+          <p class="x-page__meta-value">{archiveRange}</p>
+        </div>
+        <div class="x-page__meta-card">
+          <p class="x-page__meta-label">Entries shown</p>
+          <p class="x-page__meta-value">{xArchiveEntries.length}</p>
+        </div>
+      </div>
     </header>
 
-    <section class="x-page__notes" aria-label="What lives here later">
-      <p class="x-page__label">Waiting list</p>
-      <ul class="x-page__list">
-        {reservedNotes.map((note) => <li>{note}</li>)}
-      </ul>
+    <section class="x-page__section" aria-labelledby="x-page-archive-heading">
+      <div class="x-page__section-head">
+        <p class="x-page__section-kicker">Verbatim slice</p>
+        <h2 id="x-page-archive-heading">Recent entries</h2>
+        <p class="x-page__section-note">
+          The export starts broad, but this page keeps the first slice readable while preserving each post exactly as
+          it landed in the archive.
+        </p>
+      </div>
+
+      <ol class="x-page__archive-list">
+        {xArchiveEntries.map((entry) => (
+          <li class="x-page__entry">
+            <div class="x-page__entry-top">
+              <time class="x-page__entry-date" datetime={entry.publishedAt}>
+                {formatDate(entry.publishedAt)}
+              </time>
+              <span class="x-page__entry-id">ID{entry.id}</span>
+            </div>
+
+            <p class="x-page__entry-text">{entry.text}</p>
+
+            <a class="x-page__entry-link" href={entry.url} target="_blank" rel="noopener">
+              View on X
+            </a>
+          </li>
+        ))}
+      </ol>
     </section>
 
-    <p class="x-page__footnote">
-      For now, it stays quiet. Later it can point at the real X stream, a custom embed, or something more like an OS
-      layer.
-    </p>
+    <footer class="x-page__footer">
+      <p>
+        Source: {xArchiveMeta.sourceLabel} · {xArchiveMeta.handle} · verbatim excerpt kept readable for the site.
+      </p>
+      <a href="/social/x">Open the social feed view</a>
+    </footer>
   </main>
 </BaseLayout>
-

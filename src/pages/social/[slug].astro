@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import SocialFeedPage from '../../components/SocialFeedPage.astro';
 import socialConfig from '../../data/social';
 import igManifest from '../../data/ig.json';
-import xFallbackItems from '../../data/x-fallback';
+import { xArchiveFeedItems } from '../../data/x-archive';
 import type { SocialConfigItem } from '../../data/social';
 
 export function getStaticPaths() {
@@ -33,7 +33,7 @@ const formatDate = (value: string): string => {
 };
 const xManualItems =
   config.slug === 'x'
-    ? xFallbackItems
+    ? xArchiveFeedItems
         .map((item) => ({
           title: String(item?.title || '').trim(),
           url: String(item?.url || '').trim(),

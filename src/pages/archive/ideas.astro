@@ -1,0 +1,253 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CrossRouteResume from '../../components/CrossRouteResume.astro';
+import {
+  IDEA_LANES,
+  IDEA_SECTIONS,
+  IDEA_SOURCE,
+  IDEA_STATS,
+  IDEA_THROUGH_LINE,
+  IDEA_VALUES
+} from '../../data/ideas-catalogue';
+import '../../styles/pages/archive/ideas.css';
+
+const totalCards = IDEA_SECTIONS.reduce((sum, section) => sum + section.cards.length, 0);
+---
+
+<BaseLayout
+  title="Ideas Catalogue — a_e.s_"
+  description="A structured idea section for product notes, civic proposals, cultural critique, and speculative thinking."
+  theme="archive"
+  bodyClass="archive-ideas-page"
+  forceThemeMode="dark"
+  flatSurface={true}
+  ambientEffects={false}
+>
+  <section class="ideas-page">
+    <header class="ideas-hero">
+      <div class="ideas-hero__copy">
+        <p class="ideas-kicker">Idea section</p>
+        <h1>Ideas Catalogue</h1>
+        <p class="ideas-dek">
+          A working catalogue of product, civic, cultural, and speculative ideas from the X archive, grouped as a
+          reading surface instead of a raw feed.
+        </p>
+        <div class="ideas-meta">
+          <p>{IDEA_SOURCE.source} / {IDEA_SOURCE.handle}</p>
+          <p>{IDEA_SOURCE.generatedAt}</p>
+          <p>{IDEA_SECTIONS.length} sections / {totalCards} clusters</p>
+        </div>
+      </div>
+
+      <div class="ideas-hero__actions" aria-label="Ideas page actions">
+        <a href="/archive">Back to archive</a>
+        <a href="#overview">Jump to overview</a>
+      </div>
+    </header>
+
+    <nav class="ideas-tabs" aria-label="Idea sections">
+      {IDEA_SECTIONS.map((section, index) => (
+        <a
+          href={`#${section.id}`}
+          class:list={['ideas-tab', index === 0 && 'is-active']}
+          data-idea-tab={section.id}
+          aria-current={index === 0 ? 'page' : undefined}
+        >
+          <span>{section.label}</span>
+          <small>{section.cards.length}</small>
+        </a>
+      ))}
+    </nav>
+
+    <div class="ideas-layout">
+      <aside class="ideas-sidebar" aria-label="Ideas overview">
+        <section class="ideas-panel">
+          <p class="ideas-panel__label">Quick read</p>
+          <div class="ideas-stats">
+            {IDEA_STATS.map((stat) => (
+              <div class="ideas-stat">
+                <span>{stat.label}</span>
+                <strong>{stat.value}</strong>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="ideas-panel">
+          <p class="ideas-panel__label">Through line</p>
+          <p class="ideas-throughline">{IDEA_THROUGH_LINE}</p>
+        </section>
+
+        <section class="ideas-panel">
+          <p class="ideas-panel__label">Four lanes</p>
+          <div class="ideas-lane-list">
+            {IDEA_LANES.map((lane) => (
+              <article class="ideas-lane">
+                <h2>{lane.title}</h2>
+                <p>{lane.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      </aside>
+
+      <main class="ideas-main">
+        <div class="ideas-search">
+          <label class="ideas-search__label" for="ideas-search-input">Search ideas</label>
+          <input
+            id="ideas-search-input"
+            type="search"
+            placeholder="Filter by lane, topic, or phrase..."
+            autocomplete="off"
+            data-ideas-search
+          />
+        </div>
+
+        <section class="ideas-overview" id="overview">
+          <header class="ideas-overview__head">
+            <div>
+              <p class="ideas-section__kicker">Overview</p>
+              <h2>Core values and reading frame</h2>
+            </div>
+            <p>
+              This section turns the archive into an idea map: first the values, then the lanes, then the specific
+              clusters underneath.
+            </p>
+          </header>
+
+          <div class="ideas-values-grid">
+            {IDEA_VALUES.map((value) => (
+              <article class="ideas-value-card">
+                <h3>{value.title}</h3>
+                <p>{value.against}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {IDEA_SECTIONS.map((section) => (
+          <section class="ideas-section" id={section.id} data-ideas-section data-section-label={section.label}>
+            <header class="ideas-section__head">
+              <div>
+                <p class="ideas-section__kicker">Section</p>
+                <h2>{section.label}</h2>
+              </div>
+              <p class="ideas-section__summary">{section.summary}</p>
+            </header>
+
+            <div class="ideas-card-grid">
+              {section.cards.map((card) => (
+                <article class="idea-card" data-idea-card>
+                  {card.badge && <p class="idea-card__badge">{card.badge}</p>}
+                  <h3>{card.title}</h3>
+                  <p>{card.body}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+        ))}
+
+        <p class="ideas-empty" data-ideas-empty hidden>
+          No ideas match this search yet.
+        </p>
+
+        <CrossRouteResume current="archive" className="ideas-resume" heading="Resume your other sections" />
+      </main>
+    </div>
+  </section>
+
+  <script is:inline>
+    (() => {
+      const root = document.querySelector('.ideas-page');
+      if (!(root instanceof HTMLElement)) return;
+
+      const search = root.querySelector('[data-ideas-search]');
+      const tabs = Array.from(root.querySelectorAll('[data-idea-tab]')).filter((node) => node instanceof HTMLAnchorElement);
+      const sections = Array.from(root.querySelectorAll('[data-ideas-section]')).filter((node) => node instanceof HTMLElement);
+      const emptyState = root.querySelector('[data-ideas-empty]');
+
+      const setActiveTab = (sectionId) => {
+        tabs.forEach((tab) => {
+          const active = tab.dataset.ideaTab === sectionId;
+          tab.classList.toggle('is-active', active);
+          if (active) {
+            tab.setAttribute('aria-current', 'page');
+          } else {
+            tab.removeAttribute('aria-current');
+          }
+        });
+      };
+
+      const syncFirstVisibleSection = () => {
+        const firstVisible = sections.find((section) => !section.hidden);
+        if (firstVisible?.id) {
+          setActiveTab(firstVisible.id);
+        }
+      };
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries
+            .filter((entry) => entry.isIntersecting && entry.target instanceof HTMLElement && !entry.target.hidden)
+            .sort((left, right) => right.intersectionRatio - left.intersectionRatio);
+
+          if (!visible.length) return;
+          const sectionId = visible[0].target.id;
+          if (sectionId) setActiveTab(sectionId);
+        },
+        {
+          rootMargin: '-34% 0px -52% 0px',
+          threshold: [0.12, 0.28, 0.5, 0.75]
+        }
+      );
+
+      sections.forEach((section) => observer.observe(section));
+
+      const applySearch = () => {
+        const query = search instanceof HTMLInputElement ? search.value.trim().toLowerCase() : '';
+        let visibleCards = 0;
+
+        sections.forEach((section) => {
+          const cards = Array.from(section.querySelectorAll('[data-idea-card]')).filter(
+            (node) => node instanceof HTMLElement
+          );
+          let sectionVisible = 0;
+
+          cards.forEach((card) => {
+            const text = card.textContent?.toLowerCase() || '';
+            const visible = !query || text.includes(query);
+            card.hidden = !visible;
+            if (visible) sectionVisible += 1;
+          });
+
+          section.hidden = sectionVisible === 0;
+          visibleCards += sectionVisible;
+        });
+
+        if (emptyState instanceof HTMLElement) {
+          emptyState.hidden = visibleCards !== 0;
+        }
+
+        if (query) {
+          syncFirstVisibleSection();
+        } else if (sections.length) {
+          setActiveTab(sections[0].id);
+        }
+      };
+
+      if (search instanceof HTMLInputElement) {
+        search.addEventListener('input', applySearch);
+      }
+
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const targetId = tab.dataset.ideaTab;
+          if (!targetId) return;
+          setActiveTab(targetId);
+        });
+      });
+
+      applySearch();
+    })();
+  </script>
+</BaseLayout>
