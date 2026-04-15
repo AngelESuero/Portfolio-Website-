@@ -21,6 +21,18 @@ export interface IdeaLane {
   body: string;
 }
 
+export interface IdeaRouteTarget {
+  label: string;
+  href: string;
+  note: string;
+}
+
+export interface IdeaBridgeStep {
+  title: string;
+  href: string;
+  summary: string;
+}
+
 export interface IdeaCard {
   title: string;
   body: string;
@@ -38,7 +50,7 @@ export interface IdeaSection {
 
 export const IDEA_SOURCE = {
   handle: '@a_e_s_4',
-  generatedAt: 'April 14, 2026',
+  generatedAt: 'April 15, 2026',
   source: 'X / Twitter'
 } as const;
 
@@ -46,11 +58,193 @@ export const IDEA_STATS: IdeaMetric[] = [
   { label: 'Sections', value: '8' },
   { label: 'Clusters', value: '48' },
   { label: 'Source', value: IDEA_SOURCE.source },
-  { label: 'Status', value: 'Lane pass' }
+  { label: 'Status', value: 'Bridge pass' }
 ];
 
 export const IDEA_THROUGH_LINE =
   'How do we build lives, tools, cultures, and systems that help people become more whole rather than more fragmented?';
+
+export const IDEA_BRIDGE: IdeaBridgeStep[] = [
+  {
+    title: 'Raw record',
+    href: '/x',
+    summary: 'Verbatim source material stays intact on the X archive page.'
+  },
+  {
+    title: 'Catalogue',
+    href: '/archive/ideas',
+    summary: 'The archive is clustered into major idea families and route targets.'
+  },
+  {
+    title: 'Authored theory',
+    href: '/archive/writing/from-archive-clusters-to-authored-rooms',
+    summary: 'The bridge note explains how clusters become essays, notes, and interpretation.'
+  },
+  {
+    title: 'Built work',
+    href: '/work',
+    summary: 'Only the ideas with enough shape become prototypes, systems, or cases.'
+  }
+];
+
+export const IDEA_ROUTE_TARGETS: Record<IdeaSection['id'], IdeaRouteTarget[]> = {
+  product: [
+    {
+      label: 'Portability portal',
+      href: '/archive/proposal/ai-data-portability-portal',
+      note: 'Turn the product question into a user-rights proposal.'
+    },
+    {
+      label: 'Calmer surfaces',
+      href: '/archive/proposal/calmer-social-surfaces',
+      note: 'Make the social layer less brittle and more steerable.'
+    },
+    {
+      label: 'Writing',
+      href: '/archive/writing/from-archive-clusters-to-authored-rooms',
+      note: 'Carry the product reading into a bridge note.'
+    },
+    {
+      label: 'Work',
+      href: '/work',
+      note: 'Promote only the clusters that can become a system.'
+    }
+  ],
+  aipolicy: [
+    {
+      label: 'Ambassador pilot',
+      href: '/archive/proposal/ai-ambassador-program',
+      note: 'Turn trust infrastructure into a small pilot.'
+    },
+    {
+      label: 'Portability',
+      href: '/archive/proposal/ai-data-portability-portal',
+      note: 'Let people carry context between systems.'
+    },
+    {
+      label: 'Distress handoff',
+      href: '/archive/proposal/ai-distress-escalation-path',
+      note: 'Keep high-risk chats from pretending to be self-sufficient.'
+    },
+    {
+      label: 'Archive bridge essay',
+      href: '/archive/writing/ai-policy-as-public-infrastructure',
+      note: 'Connect policy, care, and transition into one argument.'
+    }
+  ],
+  governance: [
+    {
+      label: 'Life-aligned writing',
+      href: '/archive/writing/government-should-be-aligned-with-life',
+      note: 'Keep governance tied to living conditions.'
+    },
+    {
+      label: 'Waiting note',
+      href: '/archive/note/waiting-is-a-policy-choice',
+      note: 'Treat delay itself as a governance decision.'
+    },
+    {
+      label: 'Reactive systems note',
+      href: '/archive/note/on-reactive-systems',
+      note: 'Track the escalation pattern at the source.'
+    },
+    {
+      label: 'Human suffering',
+      href: '/human-suffering',
+      note: 'Keep the care-first reading visible.'
+    }
+  ],
+  culture: [
+    {
+      label: 'Writing',
+      href: '/writing',
+      note: 'Move interpretation into longform prose.'
+    },
+    {
+      label: 'Music',
+      href: '/music',
+      note: 'Promote sonic clusters when they become release-facing.'
+    },
+    {
+      label: 'Theater',
+      href: '/theater',
+      note: 'Route staged ideas into performance.'
+    }
+  ],
+  consciousness: [
+    {
+      label: 'Practice note',
+      href: '/archive/note/practicing-kriya',
+      note: 'Keep routine and inner work grounded.'
+    },
+    {
+      label: 'Stillness note',
+      href: '/archive/note/stillness-as-infrastructure',
+      note: 'Treat steadiness as part of the public record.'
+    },
+    {
+      label: 'Writing',
+      href: '/archive/writing/the-art-of-survival',
+      note: 'Move practice into a public frame.'
+    },
+    {
+      label: 'Meditation tracker',
+      href: '/meditation-tracker',
+      note: 'Link the theory back to an actual routine.'
+    }
+  ],
+  techphil: [
+    {
+      label: 'AI policy essay',
+      href: '/archive/writing/ai-policy-as-public-infrastructure',
+      note: 'Make the systems argument legible.'
+    },
+    {
+      label: 'AI hub',
+      href: '/ai',
+      note: 'Route the systems questions back to the AI family.'
+    },
+    {
+      label: 'Work',
+      href: '/work',
+      note: 'Promote only the ideas with product or infrastructure weight.'
+    }
+  ],
+  self: [
+    {
+      label: 'Writing',
+      href: '/writing',
+      note: 'Shape the self-reading into public prose.'
+    },
+    {
+      label: 'Story',
+      href: '/story',
+      note: 'Use the life timeline as the source frame.'
+    },
+    {
+      label: 'About',
+      href: '/about',
+      note: 'Anchor the positioning in the public intro.'
+    }
+  ],
+  speculative: [
+    {
+      label: 'Writing',
+      href: '/writing',
+      note: 'Keep the thought experiment visible as prose.'
+    },
+    {
+      label: 'AGI monitor',
+      href: '/agi',
+      note: 'Attach AI-forward questions to the timeline view.'
+    },
+    {
+      label: 'Archive note',
+      href: '/archive/note',
+      note: 'Store the hypothesis before it gets overfit.'
+    }
+  ]
+};
 
 export const IDEA_VALUES: IdeaValue[] = [
   {

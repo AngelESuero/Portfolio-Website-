@@ -1,0 +1,48 @@
+---
+title: "AI Distress Escalation Path"
+date: 2026-04-15
+medium: proposal
+source: manual
+status: in-progress
+tags: ["proposal", "ai", "support", "safety", "care", "escalation", "mental-health"]
+summary: "A safety protocol that routes high-risk conversations toward human support instead of pretending the model can hold everything."
+voice: "The right response to distress is not more confidence. It is a clearer handoff."
+audience: "AI product teams, support orgs, and care partners"
+institution: "Care and safety protocol"
+proposal_status: "Safety draft"
+ask: "Create a visible handoff path for crisis language, panic, or self-harm risk."
+related_entries:
+  - writing/ai-policy-as-public-infrastructure
+  - writing/government-should-be-aligned-with-life
+  - note/on-reactive-systems
+---
+
+If a chat crosses into panic, self-harm, abuse, or another high-risk state, the product should stop pretending it can hold everything by itself.
+
+## Scope
+
+This is not therapy. It is a handoff path.
+
+The system should make it obvious when it is no longer the right place to continue alone. That means clear language, visible options, and a route to a human support channel when needed.
+
+## What the path does
+
+The path should:
+
+- detect high-risk language or signals
+- pause confident-sounding output
+- show the user that a handoff is happening
+- offer human support resources or emergency guidance where appropriate
+- keep the user in control of whether they continue or exit
+
+## What it should not do
+
+It should not diagnose people, improvise therapy, or imply that a model can replace a trained human in a crisis.
+
+It should also avoid hiding behind vague "safety" language. If a system is out of depth, say so directly and route the user to help.
+
+## Failure modes to plan for
+
+The difficult cases are the ones where the model is almost right but not quite.
+
+False positives can frustrate users. False negatives can leave people alone when they should not be. The design needs review, logging, and constant refinement so the handoff is usable instead of theatrical.

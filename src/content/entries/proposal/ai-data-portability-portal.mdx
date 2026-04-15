@@ -1,0 +1,53 @@
+---
+title: "AI Data Portability Portal"
+date: 2026-04-15
+medium: proposal
+source: manual
+status: in-progress
+tags: ["proposal", "ai", "data-portability", "privacy", "interoperability", "consent", "agency"]
+summary: "A consent-first export and import layer that lets people carry their memory, preferences, and files between AI systems."
+voice: "If the user cannot carry their memory, the platform owns the relationship."
+audience: "AI users, product teams, and consumer advocates"
+institution: "Interoperability and consent"
+proposal_status: "Draft standard"
+ask: "Define a human-readable, consent-first way to export and import AI context across platforms."
+related_entries:
+  - writing/ai-policy-as-public-infrastructure
+  - writing/from-archive-clusters-to-authored-rooms
+---
+
+If people cannot move their context, they get locked into whichever platform happened to capture them first.
+
+## What moves
+
+The portal should make the important parts legible and portable:
+
+- chat history
+- memory and preferences
+- uploaded files and attachments
+- safety settings
+- contact or routing preferences
+
+Not every field should move by default. Some material should be opt-in, some should be redacted, and some should never be copied without a direct user choice.
+
+## What the portal needs
+
+The portal is not just an export button. It needs a manifest.
+
+That means a user can see:
+
+- what is being exported
+- where it came from
+- what the receiving system can actually read
+- what was skipped
+- how to revoke or clear the handoff later
+
+## Start narrow
+
+The first version does not need to solve the whole market. It only needs to prove that two systems can exchange user-owned context without making the person rebuild their memory from scratch.
+
+Start with one export format, one import flow, and one review screen. Then test whether the transfer still feels clear when a user is tired, rushed, or unsure.
+
+## What this is not
+
+This is not a universal identity system and not a hidden synchronization layer. It is a user-rights layer for moving context with consent.

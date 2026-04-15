@@ -29,6 +29,13 @@ export const homeRoutes = [
     description: 'Visual archive, process fragments, and field footage.',
   },
   {
+    href: '/archive/ideas',
+    title: 'Ideas Catalogue',
+    group: 'Core sections',
+    cue: 'X',
+    description: 'Structured extraction of the X archive, routed into writing, AI, and work.',
+  },
+  {
     href: '/music',
     title: 'Music',
     group: 'Core sections',

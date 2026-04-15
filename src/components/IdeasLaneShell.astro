@@ -1,11 +1,12 @@
 ---
-import type { IdeaSection } from '../data/ideas-catalogue';
+import { IDEA_ROUTE_TARGETS, type IdeaSection } from '../data/ideas-catalogue';
 
 type Props = {
   lane: IdeaSection;
 };
 
 const { lane } = Astro.props as Props;
+const routeTargets = IDEA_ROUTE_TARGETS[lane.id] ?? [];
 ---
 
 <section class="ideas-lane-shell" data-ideas-section id={lane.id} aria-label={`${lane.label} ideas lane`}>
@@ -14,6 +15,20 @@ const { lane } = Astro.props as Props;
     <h2>{lane.label}</h2>
     <p class="ideas-lane-shell__lead">{lane.lead}</p>
     <p class="ideas-lane-shell__summary">{lane.summary}</p>
+
+    {routeTargets.length > 0 && (
+      <div class="ideas-lane-shell__routes" aria-label={`${lane.label} promotion targets`}>
+        <p class="ideas-lane-shell__routes-label">Promotes to</p>
+        <div class="ideas-lane-shell__routes-list">
+          {routeTargets.map((route) => (
+            <a class="ideas-lane-shell__route" href={route.href}>
+              <span>{route.label}</span>
+              <small>{route.note}</small>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
   </header>
 
   <div class="ideas-lane-shell__body">

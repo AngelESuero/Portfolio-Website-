@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import CrossRouteResume from '../../components/CrossRouteResume.astro';
 import IdeasLaneShell from '../../components/IdeasLaneShell.astro';
 import {
+  IDEA_BRIDGE,
   IDEA_LANES,
   IDEA_SECTIONS,
   IDEA_SOURCE,
@@ -31,7 +32,7 @@ const totalCards = IDEA_SECTIONS.reduce((sum, section) => sum + section.cards.le
         <h1>Ideas Catalogue</h1>
         <p class="ideas-dek">
           A working catalogue of product, civic, cultural, and speculative ideas from the X archive, grouped as
-          expandable lanes instead of a raw feed.
+          expandable lanes and routed toward the rooms they should eventually become.
         </p>
         <div class="ideas-meta">
           <p>{IDEA_SOURCE.source} / {IDEA_SOURCE.handle}</p>
@@ -45,6 +46,26 @@ const totalCards = IDEA_SECTIONS.reduce((sum, section) => sum + section.cards.le
         <a href="#overview">Jump to overview</a>
       </div>
     </header>
+
+    <section class="ideas-bridge" aria-labelledby="ideas-bridge-heading">
+      <div class="ideas-bridge__head">
+        <p class="ideas-panel__label">Bridge object</p>
+        <h2 id="ideas-bridge-heading">Raw record to authored work</h2>
+        <p>
+          The archive stays split on purpose. Raw X posts remain on <a href="/x">/x</a>, this catalogue condenses
+          them into clusters, and the strongest ideas then move into writing, AI, or work.
+        </p>
+      </div>
+
+      <div class="ideas-bridge__grid">
+        {IDEA_BRIDGE.map((step) => (
+          <a href={step.href} class="ideas-bridge__step">
+            <strong>{step.title}</strong>
+            <span>{step.summary}</span>
+          </a>
+        ))}
+      </div>
+    </section>
 
     <nav class="ideas-tabs" aria-label="Idea sections">
       {IDEA_SECTIONS.map((section, index) => (
