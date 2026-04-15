@@ -1,6 +1,8 @@
 ---
 import EntryCard from '../../components/EntryCard.astro';
+import ArchiveVideoLaneShell from '../../components/ArchiveVideoLaneShell.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { CollectionEntry } from 'astro:content';
 import {
   ARCHIVE_MEDIUMS,
   getArchiveMediumHref,
@@ -9,27 +11,56 @@ import {
 } from '../../lib/archive-entries';
 import { formatLongArchiveUtcDate } from '../../lib/date-formatting';
 import { getAllEntries } from '../../lib/site-collections';
+import { ARCHIVE_VIDEO_LANES, type ArchiveVideoLaneId } from '../../data/archive-video-lanes';
 import '../../styles/pages/archive/video.css';
 
 const allEntries = sortEntriesByDate(await getAllEntries());
 const entries = allEntries.filter((e) => e.data.medium === 'video');
+type ArchiveVideoEntry = CollectionEntry<'entries'>;
 
-const videos = entries.filter((e) => e.data.ingest?.surface === 'videos');
-const streams = entries.filter((e) => e.data.ingest?.surface === 'streams');
-const shorts = entries.filter((e) => e.data.ingest?.surface === 'shorts');
-const other = entries.filter((e) => !e.data.ingest?.surface || !['videos','streams','shorts'].includes(e.data.ingest.surface));
+const laneEntriesById: Record<ArchiveVideoLaneId, ArchiveVideoEntry[]> = {
+  videos: [],
+  streams: [],
+  shorts: [],
+  other: []
+};
+
+for (const entry of entries) {
+  const surface = entry.data.ingest?.surface;
+  const laneId: ArchiveVideoLaneId =
+    surface === 'videos' || surface === 'streams' || surface === 'shorts' ? surface : 'other';
+  laneEntriesById[laneId].push(entry);
+}
+
+const videoLaneGroups = ARCHIVE_VIDEO_LANES.map((lane) => ({
+  lane,
+  entries: laneEntriesById[lane.id]
+})).filter((group) => group.entries.length > 0);
+
+const uploads = laneEntriesById.videos;
+const streams = laneEntriesById.streams;
+const shorts = laneEntriesById.shorts;
+const other = laneEntriesById.other;
 ---
-<BaseLayout title="Video Archive — a_e.s_" theme="archive">
+<BaseLayout
+  title="Video Archive — a_e.s_"
+  theme="archive"
+  bodyClass="archive-video-page"
+  forceThemeMode="dark"
+  flatSurface={true}
+  ambientEffects={false}
+>
   <section class="view-surface archive-video">
     <header class="view-surface-header archive-video__header">
       <p class="view-surface-kicker">Archive lane</p>
       <h1>Video</h1>
       <p class="archive-video__description">
-        Moving-image work filed into the archive: standalone uploads, streams, and shorts kept as a continuous channel record.
+        Moving-image work filed into the archive and arranged as expandable lanes for uploads, streams, shorts, and edge cases.
       </p>
       <div class="archive-video__meta font-archive">
         <p>{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
-        <p>{videos.length} uploads · {streams.length} streams · {shorts.length} shorts</p>
+        <p>{uploads.length} uploads · {streams.length} streams · {shorts.length} shorts{other.length > 0 ? ` · ${other.length} other` : ''}</p>
+        <p>{videoLaneGroups.length} surface lanes</p>
         {entries[0] && <p>Latest: {formatLongArchiveUtcDate(entries[0].data.date)}</p>}
       </div>
     </header>
@@ -54,9 +85,9 @@ const other = entries.filter((e) => !e.data.ingest?.surface || !['videos','strea
           <button type="button" class="archive-filter font-archive is-active" data-surface="all" aria-pressed="true">
             All ({entries.length})
           </button>
-          {videos.length > 0 && (
+          {uploads.length > 0 && (
             <button type="button" class="archive-filter font-archive" data-surface="videos" aria-pressed="false">
-              Uploads ({videos.length})
+              Uploads ({uploads.length})
             </button>
           )}
           {streams.length > 0 && (
@@ -69,6 +100,11 @@ const other = entries.filter((e) => !e.data.ingest?.surface || !['videos','strea
               Shorts ({shorts.length})
             </button>
           )}
+          {other.length > 0 && (
+            <button type="button" class="archive-filter font-archive" data-surface="other" aria-pressed="false">
+              Other ({other.length})
+            </button>
+          )}
         </div>
       </div>
     </section>
@@ -77,32 +113,54 @@ const other = entries.filter((e) => !e.data.ingest?.surface || !['videos','strea
       <p id="archive-results-count">{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
     </div>
 
-    {entries.length === 0 ? (
+    {videoLaneGroups.length === 0 ? (
       <p class="archive-video__empty">No video entries yet.</p>
     ) : (
-      <>
-        <ul class="archive-video__list" id="archive-video-list">
-          {entries.map((entry) => (
-            <li
-              class="archive-video__item"
-              data-surface={entry.data.ingest?.surface ?? 'other'}
-            >
-              <EntryCard entry={entry} />
-            </li>
-          ))}
-        </ul>
-        <p class="archive-video__empty" id="archive-video-empty" hidden>Nothing matches this filter.</p>
-      </>
+      <div class="archive-video__lanes">
+        {videoLaneGroups.map(({ lane, entries: laneEntries }) => (
+          <ArchiveVideoLaneShell lane={lane} count={laneEntries.length}>
+            <ul class="archive-video__list archive-video__list--lane" role="list">
+              {laneEntries.map((entry) => (
+                <li
+                  class="archive-video__item"
+                  data-surface={lane.id}
+                >
+                  <EntryCard entry={entry} />
+                </li>
+              ))}
+            </ul>
+          </ArchiveVideoLaneShell>
+        ))}
+      </div>
     )}
+    <p class="archive-video__empty" id="archive-video-empty" hidden>Nothing matches this filter.</p>
   </section>
 
   <script is:inline>
     (() => {
-      const buttons = Array.from(document.querySelectorAll('[data-surface]'));
-      const filterButtons = buttons.filter((b) => b.tagName === 'BUTTON');
-      const items = Array.from(document.querySelectorAll('.archive-video__item'));
-      const resultsCount = document.getElementById('archive-results-count');
-      const emptyState = document.getElementById('archive-video-empty');
+      const root = document.querySelector('.archive-video');
+      if (!(root instanceof HTMLElement)) return;
+
+      const filterButtons = Array.from(root.querySelectorAll('.archive-filter[data-surface]')).filter(
+        (button) => button instanceof HTMLButtonElement
+      );
+      const items = Array.from(root.querySelectorAll('.archive-video__item')).filter(
+        (item) => item instanceof HTMLElement
+      );
+      const laneShells = Array.from(root.querySelectorAll('[data-archive-video-lane]')).filter(
+        (lane) => lane instanceof HTMLElement
+      );
+      const resultsCount = root.querySelector('#archive-results-count');
+      const emptyState = root.querySelector('#archive-video-empty');
+
+      const syncLaneVisibility = () => {
+        laneShells.forEach((lane) => {
+          const visible = Array.from(lane.querySelectorAll('.archive-video__item')).some(
+            (item) => item instanceof HTMLElement && !item.hidden
+          );
+          lane.hidden = !visible;
+        });
+      };
 
       filterButtons.forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -122,11 +180,14 @@ const other = entries.filter((e) => !e.data.ingest?.surface || !['videos','strea
             if (visible) count++;
           });
 
+          syncLaneVisibility();
+
           if (resultsCount) resultsCount.textContent = `${count} ${count === 1 ? 'entry' : 'entries'}`;
           if (emptyState instanceof HTMLElement) emptyState.hidden = count !== 0;
         });
       });
+
+      syncLaneVisibility();
     })();
   </script>
 </BaseLayout>
-

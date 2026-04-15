@@ -1,0 +1,54 @@
+---
+import type { ArchiveVideoLaneConfig } from '../data/archive-video-lanes';
+
+type Props = {
+  lane: ArchiveVideoLaneConfig;
+  count: number;
+};
+
+const { lane, count } = Astro.props as Props;
+const headingId = `archive-video-lane-${lane.id}`;
+---
+
+<section class="archive-video-lane" data-archive-video-lane={lane.id} aria-labelledby={headingId}>
+  <header class="archive-video-lane__head">
+    <p class="archive-video-lane__kicker">Archive lane</p>
+    <div class="archive-video-lane__title-row">
+      <h2 id={headingId}>{lane.label}</h2>
+      <span class="archive-video-lane__count">{count} entries</span>
+    </div>
+    <p class="archive-video-lane__lead">{lane.lead}</p>
+    <p class="archive-video-lane__summary">{lane.summary}</p>
+  </header>
+
+  <div class="archive-video-lane__body">
+    <aside class="archive-video-lane__notes" aria-label={`${lane.label} expanded thoughts`}>
+      <p class="archive-video-lane__label">Expanded thoughts</p>
+      <div class="archive-video-lane__stack">
+        {lane.notes.map((note, index) => (
+          <details class:list={['archive-video-thought', (note.open ?? index === 0) && 'is-open']} open={note.open ?? index === 0}>
+            <summary class="archive-video-thought__summary">
+              <span class="archive-video-thought__text">
+                <span class="archive-video-thought__title">{note.title}</span>
+                <span class="archive-video-thought__summary-copy">{note.summary}</span>
+              </span>
+              <span class="archive-video-thought__indicator" aria-hidden="true"></span>
+            </summary>
+            <div class="archive-video-thought__body">
+              <p>{note.body}</p>
+              {note.points?.length ? (
+                <ul class="archive-video-thought__points">
+                  {note.points.map((point) => <li>{point}</li>)}
+                </ul>
+              ) : null}
+            </div>
+          </details>
+        ))}
+      </div>
+    </aside>
+
+    <div class="archive-video-lane__stream">
+      <slot />
+    </div>
+  </div>
+</section>
