@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Are You Alligned With Your Life Test</title>
+  <style>
+    :root {
+      --page: #ffffff;
+      --bg: #eef3f9;
+      --ink: #172033;
+      --muted: #667085;
+      --line: #c8d1de;
+      --soft: #f7f9fc;
+      --band: #213b61;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #eef3f9 0%, #e8edf6 100%);
+      color: var(--ink);
+    }
+
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      background: rgba(248, 250, 252, 0.94);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(23, 32, 51, 0.08);
+    }
+
+    .toolbar h1 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .toolbar p {
+      margin: 2px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .toolbar-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 1px solid rgba(23, 32, 51, 0.12);
+      background: white;
+      color: var(--ink);
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .shell {
+      display: flex;
+      justify-content: center;
+      padding: 28px 16px 60px;
+    }
+
+    .document {
+      width: 100%;
+      max-width: 920px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .page {
+      width: 100%;
+      background: var(--page);
+      border-radius: 22px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+      padding: 42px 44px;
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      page-break-after: always;
+      break-after: page;
+    }
+
+    .cover-title {
+      text-align: center;
+      margin: 18px 0 8px;
+      font-size: 32px;
+      line-height: 1.15;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .cover-subtitle {
+      text-align: center;
+      max-width: 620px;
+      margin: 0 auto 28px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .identity-grid,
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .field,
+    .summary-item {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: white;
+      padding: 12px 14px;
+    }
+
+    .label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      border: none;
+      outline: none;
+      resize: vertical;
+      font: inherit;
+      color: var(--ink);
+      background: transparent;
+      padding: 0;
+    }
+
+    input[type="text"] {
+      min-height: 24px;
+      font-size: 14px;
+    }
+
+    textarea {
+      min-height: 96px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .info-box {
+      border: 1px solid var(--line);
+      background: var(--soft);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .info-box ul {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 10px;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .section-band {
+      background: var(--band);
+      color: white;
+      border-radius: 16px;
+      padding: 13px 16px;
+      margin-bottom: 12px;
+    }
+
+    .section-band h2 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .category-note {
+      margin: 0 0 16px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .rating-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--soft);
+      margin-bottom: 18px;
+    }
+
+    .rating-label {
+      font-size: 13px;
+      font-weight: 700;
+      margin-right: 8px;
+    }
+
+    .rating-option {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    .prompts {
+      display: grid;
+      gap: 14px;
+    }
+
+    .prompt-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px 16px;
+      background: white;
+    }
+
+    .prompt-card h3 {
+      margin: 0 0 6px;
+      font-size: 15px;
+      line-height: 1.35;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .prompt-card p {
+      margin: 0 0 10px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .prompt-card textarea {
+      min-height: 88px;
+    }
+
+    .summary-item textarea {
+      min-height: 72px;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 18px;
+    }
+
+    .source-box {
+      margin-top: 12px;
+      border: 1px dashed #bfd0e7;
+      background: #f8fbff;
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+
+    .source-box h4 {
+      margin: 0 0 6px;
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #415a77;
+    }
+
+    .source-box p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #526077;
+    }
+
+    @media (max-width: 768px) {
+      .page {
+        padding: 24px 20px;
+        border-radius: 18px;
+      }
+
+      .cover-title {
+        font-size: 26px;
+      }
+
+      .identity-grid,
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      body { background: white; }
+      .toolbar { display: none !important; }
+      .shell { padding: 0; }
+      .document { max-width: none; gap: 0; }
+      .page {
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
+        margin: 0;
+        width: auto;
+        min-height: 10.2in;
+        padding: 0.45in 0.5in;
+      }
+      @page { size: letter; margin: 0.35in; }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <div>
+      <h1>Are You Alligned With Your Life Test</h1>
+      <p>Previewable worksheet in canvas. Use print to turn it into a PDF.</p>
+    </div>
+    <div class="toolbar-actions">
+      <button id="printBtn" type="button">Print / Save as PDF</button>
+      <button id="expandBtn" type="button">Expand all fields</button>
+    </div>
+  </div>
+
+  <div class="shell">
+    <div class="document" id="documentRoot"></div>
+  </div>
+
+  <script>
+    const categories = [
+      { name: "Resources", whatItCovers: "money, tools, housing, food, access, material stability, and practical support" },
+      { name: "Well-Being", whatItCovers: "inner balance, rest, health, sleep, nervous-system steadiness, and emotional clarity" },
+      { name: "Growth", whatItCovers: "learning, discernment, skill, self-development, and spiritual or intellectual depth" },
+      { name: "Work", whatItCovers: "employment, labor structure, usefulness, career direction, and continuity" },
+      { name: "Creativity", whatItCovers: "music, writing, image, design, expression, process, and truthful output" },
+      { name: "Activity", whatItCovers: "movement, execution, practice, physical follow-through, and getting things done" },
+      { name: "Relationships", whatItCovers: "connection, trust, communication, warmth, boundaries, and intimacy" },
+      { name: "Order", whatItCovers: "structure, organization, systems, records, naming, boundaries, and digital hygiene" },
+      { name: "Society", whatItCovers: "ethics, institutions, public life, community, collective impact, and civic responsibility" }
+    ];
+
+    const prompts = [
+      { title: "1. What is this category for in my life?", hint: "Write the role this area is meant to play. What should it protect, support, or make possible?", key: "purpose" },
+      { title: "2. What does alignment look like here?", hint: "Describe the patterns, behaviors, tools, and conditions that would show this part of your life is working well.", key: "alignment" },
+      { title: "3. What does misalignment look like here?", hint: "Name the drift, confusion, avoidance, compromise, or self-betrayal pattern that shows up when this area is off.", key: "misalignment" },
+      { title: "4. What is my minimum viable standard right now?", hint: "Be honest about current constraints. What counts as good enough for this season without pretending it is your ideal?", key: "minimum" },
+      { title: "5. What is my higher standard over time?", hint: "Describe the fuller version of alignment you want to move toward as your resources, structure, or capacity improve.", key: "higher" },
+      { title: "6. What review question best tests this category?", hint: "Write one short question that would quickly reveal whether you are living this category in a way that matches your values.", key: "review" },
+      { title: "7. Notes, contradictions, or patterns I notice", hint: "Use this space for anything that became clearer while answering.", key: "notes" }
+    ];
+
+    const coverData = {
+      name: "Angel — assistant read",
+      date: "April 6, 2026",
+      season: "Stability before expansion / transitional rebuild / values ahead of infrastructure",
+      retest: "July 6, 2026"
+    };
+
+    const responses = [
+      {
+        rating: 3,
+        purpose: "To support stability, dignity, food, housing, debt reduction, credit repair, better tools, and enough margin to make cleaner decisions. This seems to be the base layer that determines how much of the rest of life can actually breathe.",
+        alignment: "Resources would feel more aligned if you had a stable income floor around your living-wage target, better food access, cleaner housing options, less debt pressure, and enough margin to choose tools because they fit your values instead of because they are merely available.",
+        misalignment: "Misalignment here looks like survival constantly shrinking choice. It looks like depending on systems you do not really respect because you have no buffer, and having material instability quietly distort work, relationships, health, and creative output.",
+        minimum: "Keep the essentials working. Keep income coming in. Reduce damage. Treat your Google-heavy and convenience-heavy stack as scaffolding rather than identity or endorsement. Protect the sequence you already named for yourself: food and material stability, debt reduction, credit repair, apartment stability, then broader growth.",
+        higher: "A stronger version would include a stable income floor around your living-wage target, better housing in the right area, better food, a more privacy-respecting and local-first stack, reduced debt stress, and enough room to build toward the longer-term $100K active-plus-passive architecture.",
+        review: "Do my resources support the life I want, or only help me survive inside systems I do not believe in?",
+        notes: "This seems partially aligned rather than deeply aligned. Your values are clearer than your current infrastructure. The gap looks financial and structural more than philosophical.",
+        source: "Based on prior conversations about stability before expansion, debt reduction, credit repair, food access, housing, the living-wage target around $52K, the longer-term $100K active-plus-passive goal, the wish for a 30-hour-week structure, and your current privacy-tooling compromise."
+      },
+      {
+        rating: 3,
+        purpose: "To build inner stability, steadiness, health, and the kind of balance that lets the mind become a tool rather than a source of distress.",
+        alignment: "Alignment here would look like meditation staying central, better sleep, lower agitation, more consistent exercise, better food, and a life whose rhythms do not keep your nervous system in quiet strain.",
+        misalignment: "Misalignment looks like overstimulation, digital noise, retreat, low-grade stress, survival pressure, and outer instability constantly leaking into your inner atmosphere.",
+        minimum: "Protect meditation. Reduce obvious sources of agitation. Preserve some mental and physical breathing room even when life is constrained.",
+        higher: "A fuller version would be a daily life where food, movement, exercise, rest, meditation, and material conditions reinforce one another instead of competing. It would resemble the inner stability you often reference from Sadhguru.",
+        review: "Does the way I live leave me more balanced, or more disturbed?",
+        notes: "You care about this category very seriously. The main issue does not seem to be indifference; it seems to be that outer pressure still reaches too far into it.",
+        source: "Based on prior conversations about balance above all, meditation as central, your wish for the mind to function as a tool instead of a source of distress, and your desire for more supportive physical conditions."
+      },
+      {
+        rating: 4,
+        purpose: "To become more capable, more conscious, less confused, and more able to integrate spiritual, technical, intellectual, and practical knowledge into actual life.",
+        alignment: "Alignment here would mean learning that changes your discernment, your skill, your spiritual depth, and your ability to act. AI, research, philosophy, and yogic frameworks would sharpen you rather than replace you.",
+        misalignment: "Misalignment looks like staying in architecture, analysis, and theory without enough conversion into lived capability. It also looks like borrowed language outrunning embodiment.",
+        minimum: "Keep using tools as support rather than authority. Keep your spiritual practice touching daily life. Let learning affect behavior, not just thinking.",
+        higher: "A stronger version would include deeper discipline, clearer mentorship, stronger applied skill, and a tighter integration of consciousness work with actual material competence.",
+        review: "Am I becoming more capable, or just more informed?",
+        notes: "This looks strong in intention and structure. The weak spot is not seriousness; it is the ongoing need to turn insight into more embodied and repeatable application.",
+        source: "Based on prior conversations about Sadhguru, consciousness, discernment, the integrity-insight-inspiration triad, your interest in AI and post-labor futures, and your recurring tension between insight and embodiment."
+      },
+      {
+        rating: 3,
+        purpose: "To create continuity, income, usefulness, and trajectory without allowing employment systems to define your worth or swallow the larger life you are trying to build.",
+        alignment: "Alignment here would mean work that supports stability, protects creative output and spiritual practice, and moves you toward roles that fit your hybrid creative, technical, civic, and human-centered strengths.",
+        misalignment: "Misalignment looks like remaining in roles out of inertia, attachment, fear, or lack of alternatives while the structure quietly drains energy from the life you actually want.",
+        minimum: "Keep the current structure working. Stay professional. Keep applying and building strategically so the current job remains infrastructure, not destiny.",
+        higher: "A higher standard would be a role that meets your income floor, gives you more autonomy, and fits the person you are actually becoming rather than the role you had to accept.",
+        review: "Is my work helping me build a life, or only helping me remain employable?",
+        notes: "This category feels transitional. The current setup works more as survival infrastructure than as a true fit.",
+        source: "Based on prior conversations about the Newark Museum role not being the long-term destination, your income floor and living-wage targets, your work model of entry/continuity/transition, and your hybrid creative-technical career strategy."
+      },
+      {
+        rating: 4,
+        purpose: "To make truthful, informative, lived work and preserve it as a meaningful archive rather than letting it collapse into disposable content.",
+        alignment: "Alignment here would mean your music, writing, archive, and site stay close to truth, that the work remains a good experience for you first, and that your archive keeps continuity over time.",
+        misalignment: "Misalignment looks like platforms dictating value, timing, and form. It looks like the work getting optimized for circulation, exposure, or reaction instead of sincerity and depth.",
+        minimum: "Protect drafts. Keep versions. Maintain the site and archive. Share selectively instead of impulsively.",
+        higher: "A stronger version would be a cleaner creative ecosystem with better storage, better release pathways, a stronger public presence on your own terms, and eventually more income tied to the work.",
+        review: "Are my creative systems protecting the work, or reducing it to content?",
+        notes: "This seems very aligned in principle. The larger gap is infrastructure and rhythm, not the underlying values of the work itself.",
+        source: "Based on your stated definition of art as transparent, truthful, and informative, along with conversations about your living archive, portfolio site, writing, music, and your resistance to flattening the work into disposable content."
+      },
+      {
+        rating: 3,
+        purpose: "To turn thought into movement: practice, execution, physical action, follow-through, and proof that ideas are actually entering life.",
+        alignment: "Alignment here would mean publishing, applying, exercising, improving the site, practicing voice, refining your skills, and keeping momentum tangible in both body and work.",
+        misalignment: "Misalignment looks like hovering in planning, searching, structuring, and comparing without enough embodied action. Retreat and delay become pattern rather than exception.",
+        minimum: "Keep a small but real action rhythm: one concrete move, one application, one practice block, one physical action, one piece of execution.",
+        higher: "A higher standard would be a life where consistent action is natural enough that you trust your own follow-through even under pressure.",
+        review: "Does this part of my life move me into action, or keep me in abstraction?",
+        notes: "You are clearly capable of action. The difficulty seems to be maintaining momentum when pressure, uncertainty, or survival drag starts taking over.",
+        source: "Based on prior conversations about practice, execution, physical development, your recurring interest in embodied follow-through, interviews feeling more intimidating in concept than reality, and your AV and build interests."
+      },
+      {
+        rating: 3,
+        purpose: "To support warmth, sincerity, privacy, trust, family connection, healthy romance, and non-extractive contact.",
+        alignment: "Alignment here would mean clear communication, respected boundaries, real privacy, honest care, and closeness that grows from reality rather than from emotional urgency or platform-shaped access.",
+        misalignment: "Misalignment looks like fantasy, scattered digital contact, reaching outward when the actual task is inward, or trying to create stable intimacy from unstable conditions.",
+        minimum: "Respect boundaries. Stay sincere. Protect what should stay private. Let connection grow from reality rather than from need or compulsion.",
+        higher: "A stronger version would include a stable, warm, private, sincere romantic relationship and stronger family and community ties built from steadiness instead of lack.",
+        review: "Do my habits support real relationship, or just constant contact?",
+        notes: "This category feels value-aligned but materially constrained. The desire for depth is real; the environment for living it fully still seems underbuilt.",
+        source: "Based on prior conversations about sincerity, privacy, boundaries, family dynamics involving your parents and your dad's influence, the choice not to reach out to Ana, and your desire for connection that is warm, genuine, and non-extractive."
+      },
+      {
+        rating: 4,
+        purpose: "To create architecture: naming, records, systems, categories, backups, permissions, and structures that make life more legible and less vulnerable.",
+        alignment: "Alignment here would mean your structures genuinely reduce confusion, protect agency, and help you act. Even imperfect tools would be used intentionally rather than passively.",
+        misalignment: "Misalignment looks like structures becoming too abstract to live, systems becoming more meaningful to think about than to use, or convenience quietly becoming dependency.",
+        minimum: "Keep things named, tracked, structured, and reviewable. Even if the tools are imperfect, the architecture can still be clearer than the surrounding systems.",
+        higher: "A higher standard would include stronger local-first storage, better backups, tighter account hygiene, less platform dependency, and systems that reduce friction without increasing abstraction.",
+        review: "Does my order reduce confusion and vulnerability, or multiply them?",
+        notes: "This seems like one of your strongest conceptual categories. The challenge is keeping it practical and not letting the model become more elegant than daily life.",
+        source: "Based on your organizational model across versions, your habit of building frameworks and categories, your rolling lists and structural thinking, and prior conversations about privacy, least privilege, and the risk of a system becoming more meaningful to think about than to live."
+      },
+      {
+        rating: 4,
+        purpose: "To relate consciously to institutions, ethics, public systems, museums, AI, labor, and the kind of world you want to help build.",
+        alignment: "Alignment here would mean participating with awareness, pushing for more human and accountable systems, and turning your ethical concerns into real proposals, structures, and public thinking.",
+        misalignment: "Misalignment looks like adapting so completely to extractive systems that your standards become decorative, or staying only in critique without building anything concrete.",
+        minimum: "Use compromised systems only as needed, remain conscious of the compromise, and keep expressing your civic and ethical thinking in practical forms.",
+        higher: "A stronger version would be you actually shaping institutions, proposals, and infrastructures that embody your standards rather than only responding to the ones already here.",
+        review: "Does my participation strengthen the kind of society I believe in?",
+        notes: "This category seems strongly aligned in values and direction. The implementation is still early, but it is already more real than abstract because of your proposals and your human-first systems thinking.",
+        source: "Based on your museum proposals, AI accountability thinking, AI Ambassador Program framing, human-first social and economic questions, civic orientation, and repeated interest in more ethical institutions, AI futures, and public structures."
+      }
+    ];
+
+    const summaryData = {
+      strongest: "Growth, Creativity, Society, with Order close behind",
+      weakest: "Resources, Work, Activity, with Well-Being strained by spillover from Resources",
+      tolerating: "A survival-based tool stack, a job structure that is more infrastructure than destination, outer instability leaking into inner life, and a gap between how clear the values are and how supported the daily conditions are.",
+      repairFirst: "Resources and work structure first, because they seem to affect the rest of the system most directly.",
+      honesty: "That the values are ahead of the material conditions, that the mismatch is real, and that some of the most painful tension comes from seeing clearly without yet having enough structural support to live everything the way you want.",
+      nextAction: "Keep building a more stable resource base while protecting the practices and creative systems that already reflect the deeper life you want.",
+      closing: "This assistant-read version suggests a life that is strongly aligned in values, fairly aligned in awareness, and only partially aligned in material structure. The strongest parts of the system seem to be your ethical direction, creative truth, civic seriousness, structural intelligence, and appetite for real growth. The most strained parts seem to be resources, work fit, activity consistency, and the practical conditions required for steadier follow-through. The central pattern still looks like this: your standards are ahead of your current infrastructure. That is not failure, but it is a real tension. A second pattern also stands out: you do not seem directionless. You seem under-supported. The deepest issue may be less about not knowing what matters and more about building conditions strong enough to let what matters become daily life.",
+      source: "Summary based on the full pattern across prior conversations: stability before expansion, balance above all, truthful art, privacy and non-extractive systems, the Newark Museum role as temporary infrastructure, family and relationship reflections, the organizational model across versions, and the repeated tension between clear values and constrained material conditions."
+    };
+
+    const root = document.getElementById('documentRoot');
+
+    function createCoverPage() {
+      const page = document.createElement('section');
+      page.className = 'page';
+      page.innerHTML = `
+        <h1 class="cover-title">Are You Alligned With Your Life Test</h1>
+        <p class="cover-subtitle">A reflective worksheet for checking whether your daily life is aligned with the life you actually want to live.</p>
+        <div class="identity-grid">
+          <label class="field"><span class="label">Name</span><input type="text" value="${coverData.name}" /></label>
+          <label class="field"><span class="label">Date</span><input type="text" value="${coverData.date}" /></label>
+          <label class="field"><span class="label">Current season of life</span><input type="text" value="${coverData.season}" /></label>
+          <label class="field"><span class="label">Retest date</span><input type="text" value="${coverData.retest}" /></label>
+        </div>
+        <div class="info-box"><ul>
+          <li><strong>How to use it:</strong> Answer each category honestly. Do not aim to sound good. Aim to see clearly.</li>
+          <li><strong>Rating guide:</strong> 1 = deeply misaligned, 2 = strained, 3 = mixed, 4 = mostly aligned, 5 = strongly aligned.</li>
+          <li><strong>Suggested pace:</strong> Complete it in one sitting, or take one category per day and revisit it monthly or quarterly.</li>
+        </ul></div>
+        <div class="info-box"><ul>
+          <li>Use the prompts to define what each part of life is for, what alignment looks like, what drift looks like, what is honestly good enough for now, what a higher standard would be, and what question best tests whether you are living it.</li>
+          <li>This is not a purity test. It is a clarity test.</li>
+        </ul></div>
+        <div class="info-box"><ul>
+          <li><strong>Note:</strong> This version is an assistant-generated interpretation based on prior conversations, not a claim to your final wording or perfect self-understanding.</li>
+          <li>Edit anything that feels off. The point is to give you something substantial to react to.</li>
+          <li><strong>Source method:</strong> Each category includes a short note showing the main conversation threads that informed the read.</li>
+        </ul></div>
+        <p class="footer-note">Canvas preview version — use Print / Save as PDF when you want the document as a PDF.</p>
+      `;
+      return page;
+    }
+
+    function createRatingGroup(index, score) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'rating-row';
+      wrapper.innerHTML = '<span class="rating-label">Self-rating</span>';
+      for (let value = 1; value <= 5; value += 1) {
+        const label = document.createElement('label');
+        label.className = 'rating-option';
+        label.innerHTML = `<input type="radio" name="rating-${index}" value="${value}" ${value === score ? 'checked' : ''} /> ${value}`;
+        wrapper.appendChild(label);
+      }
+      return wrapper;
+    }
+
+    function createCategoryPage(category, index) {
+      const page = document.createElement('section');
+      page.className = 'page';
+      const answerSet = responses[index];
+
+      const band = document.createElement('div');
+      band.className = 'section-band';
+      band.innerHTML = `<h2>${index + 1}. ${category.name}</h2>`;
+      page.appendChild(band);
+
+      const note = document.createElement('p');
+      note.className = 'category-note';
+      note.innerHTML = `<strong>This category covers:</strong> ${category.whatItCovers}.`;
+      page.appendChild(note);
+      page.appendChild(createRatingGroup(index, answerSet.rating));
+
+      const promptsWrap = document.createElement('div');
+      promptsWrap.className = 'prompts';
+      prompts.forEach((prompt) => {
+        const card = document.createElement('div');
+        card.className = 'prompt-card';
+        card.innerHTML = `<h3>${prompt.title}</h3><p>${prompt.hint}</p><textarea>${answerSet[prompt.key] || ''}</textarea>`;
+        promptsWrap.appendChild(card);
+      });
+      page.appendChild(promptsWrap);
+
+      const sourceBox = document.createElement('div');
+      sourceBox.className = 'source-box';
+      sourceBox.innerHTML = `<h4>Source note</h4><p>${answerSet.source}</p>`;
+      page.appendChild(sourceBox);
+      return page;
+    }
+
+    function createFinalReflectionPage() {
+      const page = document.createElement('section');
+      page.className = 'page';
+      page.innerHTML = `
+        <div class="section-band"><h2>Final Reflection</h2></div>
+        <p class="category-note">After you complete all nine categories, step back and look for patterns rather than isolated answers.</p>
+        <div class="summary-grid">
+          <label class="summary-item"><span class="label">My three strongest categories</span><textarea>${summaryData.strongest}</textarea></label>
+          <label class="summary-item"><span class="label">My three weakest categories</span><textarea>${summaryData.weakest}</textarea></label>
+          <label class="summary-item"><span class="label">What I am tolerating right now</span><textarea>${summaryData.tolerating}</textarea></label>
+          <label class="summary-item"><span class="label">What needs repair first</span><textarea>${summaryData.repairFirst}</textarea></label>
+          <label class="summary-item"><span class="label">What I do not want to keep lying to myself about</span><textarea>${summaryData.honesty}</textarea></label>
+          <label class="summary-item"><span class="label">One next action that would increase alignment</span><textarea>${summaryData.nextAction}</textarea></label>
+        </div>
+        <div class="prompt-card"><h3>Closing note to myself</h3><p>Write a brief summary of what this test showed you.</p><textarea style="min-height: 160px">${summaryData.closing}</textarea></div>
+        <div class="source-box"><h4>Source note</h4><p>${summaryData.source}</p></div>
+      `;
+      return page;
+    }
+
+    function renderDocument() {
+      root.innerHTML = '';
+      root.appendChild(createCoverPage());
+      categories.forEach((category, index) => root.appendChild(createCategoryPage(category, index)));
+      root.appendChild(createFinalReflectionPage());
+    }
+
+    function expandAllFields() {
+      document.querySelectorAll('textarea').forEach((textarea) => {
+        textarea.style.minHeight = `${Math.max(textarea.scrollHeight + 20, 140)}px`;
+      });
+    }
+
+    renderDocument();
+    document.getElementById('printBtn').addEventListener('click', () => window.print());
+    document.getElementById('expandBtn').addEventListener('click', expandAllFields);
+    requestAnimationFrame(expandAllFields);
+  </script>
+</body>
+</html>
