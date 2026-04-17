@@ -61,14 +61,14 @@ const aiGroup: NavItem[] = [
   { label: 'Survival', href: '/survival-os', color: 'red', tone: 'grounding' },
 ];
 
-const problemsNav: NavItem[] = [
-  { label: 'Newark', href: '/newark', color: 'ochre', tone: 'grounding' },
-  { label: 'Poverty', href: '/newark', color: 'ochre', tone: 'grounding' },
+const povertyNav: NavItem = { label: 'Poverty', href: '/newark', color: 'ochre', tone: 'grounding' };
+
+const povertyBranchNav: NavItem[] = [
   { label: 'Job Hunting', href: '/rejections', color: 'red', tone: 'grounding' },
   { label: 'AI Accountability', href: '/ai-accountability-pledge', color: 'blue', tone: 'discernment' },
   { label: 'Museum', href: '/work/nmoa-proposal-circuit', color: 'blue', tone: 'clarity' },
   { label: 'Human Suffering', href: '/human-suffering', color: 'red', tone: 'presence' },
-  { label: 'Money & Wealth', href: '/market-model', color: 'blue', tone: 'clarity' },
+  { label: 'Money & Wealth', href: '/market-model', color: 'blue', tone: 'clarity' }
 ];
 
 import youtubeData from '../data/youtube.json';
@@ -204,19 +204,35 @@ const isActive = (item: NavItem) => {
       </div>
       <div class="header-secondary-group header-secondary-group--problems">
         <p class="header-secondary-label">Problems</p>
-        <div class="header-secondary-group__items">
-          {problemsNav.map((item) => (
+        <div class="header-secondary-group__items header-secondary-group__items--problem-tree">
+          <div class="header-problem-tree">
             <a
-              href={item.href}
-              class="header-link header-link--secondary text-sm no-underline"
-              style={`--link-accent:${getAccentSwatch(item.color)}`}
-              {...(item.color ? { 'data-color': item.color } : {})}
-              {...(item.tone ? { 'data-tone': item.tone } : {})}
-              {...(isActive(item) ? { 'aria-current': 'page' } : {})}
+              href={povertyNav.href}
+              class="header-link header-link--secondary header-problem-tree__root text-sm no-underline"
+              style={`--link-accent:${getAccentSwatch(povertyNav.color)}`}
+              {...(povertyNav.color ? { 'data-color': povertyNav.color } : {})}
+              {...(povertyNav.tone ? { 'data-tone': povertyNav.tone } : {})}
+              {...(isActive(povertyNav) ? { 'aria-current': 'page' } : {})}
             >
-              {item.label}
+              {povertyNav.label}
             </a>
-          ))}
+            <div class="header-problem-tree__bubble" role="group" aria-label="Branches from poverty">
+              <div class="header-problem-tree__children">
+                {povertyBranchNav.map((item) => (
+                  <a
+                    href={item.href}
+                    class="header-link header-link--secondary header-problem-tree__child text-sm no-underline"
+                    style={`--link-accent:${getAccentSwatch(item.color)}`}
+                    {...(item.color ? { 'data-color': item.color } : {})}
+                    {...(item.tone ? { 'data-tone': item.tone } : {})}
+                    {...(isActive(item) ? { 'aria-current': 'page' } : {})}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </nav>
@@ -291,19 +307,33 @@ const isActive = (item: NavItem) => {
 
       <section class="mobile-nav-group">
         <p class="mobile-nav-label">Problems</p>
-        <div class="mobile-nav-card-grid">
-          {problemsNav.map((item) => (
-            <a
-              href={item.href}
-              class="header-link mobile-nav-link mobile-nav-card no-underline"
-              style={`--link-accent:${getAccentSwatch(item.color)}`}
-              {...(item.color ? { 'data-color': item.color } : {})}
-              {...(item.tone ? { 'data-tone': item.tone } : {})}
-              {...(isActive(item) ? { 'aria-current': 'page' } : {})}
-            >
-              {item.label}
-            </a>
-          ))}
+        <div class="header-problem-tree header-problem-tree--mobile">
+          <a
+            href={povertyNav.href}
+            class="header-link mobile-nav-link mobile-nav-card header-problem-tree__root no-underline"
+            style={`--link-accent:${getAccentSwatch(povertyNav.color)}`}
+            {...(povertyNav.color ? { 'data-color': povertyNav.color } : {})}
+            {...(povertyNav.tone ? { 'data-tone': povertyNav.tone } : {})}
+            {...(isActive(povertyNav) ? { 'aria-current': 'page' } : {})}
+          >
+            {povertyNav.label}
+          </a>
+          <div class="header-problem-tree__bubble header-problem-tree__bubble--mobile" role="group" aria-label="Branches from poverty">
+            <div class="header-problem-tree__children header-problem-tree__children--mobile">
+              {povertyBranchNav.map((item) => (
+                <a
+                  href={item.href}
+                  class="header-link mobile-nav-link mobile-nav-card header-problem-tree__child no-underline"
+                  style={`--link-accent:${getAccentSwatch(item.color)}`}
+                  {...(item.color ? { 'data-color': item.color } : {})}
+                  {...(item.tone ? { 'data-tone': item.tone } : {})}
+                  {...(isActive(item) ? { 'aria-current': 'page' } : {})}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
     </div>
