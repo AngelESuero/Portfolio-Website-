@@ -120,25 +120,38 @@ body.home-page .site-content-stage::before {
 
 .home-hero__eyebrow {
   margin: 0;
-  font-size: 0.74rem;
-  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 0.42rem 0.8rem 0.46rem;
+  border: 1px solid rgba(240, 205, 153, 0.34);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(225, 173, 103, 0.22), rgba(185, 122, 45, 0.14)),
+    rgba(7, 11, 18, 0.42);
+  box-shadow:
+    0 12px 26px rgba(146, 92, 27, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  font-size: 0.82rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: rgba(234, 219, 196, 0.76);
+  letter-spacing: 0.15em;
+  color: rgba(255, 232, 198, 0.98);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.28);
   animation: home-hero-copy-enter 620ms 40ms var(--ease-emphasized, ease-out) both;
 }
 
 .home-hero__title {
   margin: 0;
-  max-width: 6.4ch;
+  max-width: 7ch;
   font-family: var(--font-display, serif);
-  font-size: clamp(4rem, 10vw, 8.6rem);
-  line-height: 0.84;
+  font-size: clamp(3.35rem, 8.7vw, 7rem);
+  line-height: 0.86;
   letter-spacing: -0.07em;
   text-wrap: balance;
-  color: rgba(250, 245, 237, 0.98);
+  color: rgba(250, 245, 237, 0.86);
   text-shadow:
-    0 18px 40px rgba(0, 0, 0, 0.36),
+    0 12px 28px rgba(0, 0, 0, 0.3),
     0 0 1px rgba(255, 255, 255, 0.04);
   animation: home-hero-copy-enter 760ms 90ms var(--ease-emphasized, ease-out) both;
 }
@@ -1223,16 +1236,16 @@ body.home-page .site-content-stage::before {
   }
 
   .home-hero__eyebrow {
-    font-size: 0.68rem;
-    letter-spacing: 0.16em;
-    color: rgba(244, 222, 189, 0.84);
+    padding: 0.38rem 0.72rem 0.42rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
   }
 
   .home-hero__title {
     max-width: none;
-    font-size: clamp(2.55rem, 12vw, 3.8rem);
+    font-size: clamp(2.35rem, 11vw, 3.55rem);
     line-height: 0.86;
-    color: rgba(252, 246, 239, 0.99);
+    color: rgba(252, 246, 239, 0.88);
     text-shadow: 0 3px 18px rgba(0, 0, 0, 0.48);
   }
 
