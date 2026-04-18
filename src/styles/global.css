@@ -612,6 +612,11 @@ body[data-header-reveal='hidden'] .site-header::before {
   align-items: start;
 }
 
+.site-header .header-secondary-group--problems .header-secondary-label {
+  align-self: start;
+  padding-top: 0.16rem;
+}
+
 .site-header .header-secondary-group__items {
   display: flex;
   flex-wrap: nowrap;
@@ -631,6 +636,7 @@ body[data-header-reveal='hidden'] .site-header::before {
   gap: 0.52rem;
   min-width: 0;
   overflow: visible;
+  justify-items: start;
 }
 
 /* AI cluster — visual capsule grouping */
@@ -680,6 +686,9 @@ body[data-header-reveal='hidden'] .site-header::before {
   display: grid;
   gap: 0.45rem;
   min-width: 0;
+  justify-self: start;
+  width: fit-content;
+  max-width: 100%;
 }
 
 .site-header .header-link--secondary.header-problem-tree__root {
@@ -694,7 +703,10 @@ body[data-header-reveal='hidden'] .site-header::before {
   position: relative;
   display: grid;
   gap: 0.45rem;
-  padding: 0.58rem 0.62rem 0.58rem 0.88rem;
+  justify-self: start;
+  width: fit-content;
+  max-width: min(38rem, 100%);
+  padding: 0.5rem 0.56rem 0.5rem 0.82rem;
   border: 1px solid color-mix(in srgb, var(--tone-accent) 14%, var(--tone-line));
   border-radius: 1rem;
   background:
@@ -720,8 +732,9 @@ body[data-header-reveal='hidden'] .site-header::before {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.42rem 0.5rem;
+  gap: 0.36rem 0.46rem;
   min-width: 0;
+  width: fit-content;
 }
 
 .site-header .header-link--secondary.header-problem-tree__child {

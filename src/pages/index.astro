@@ -119,50 +119,8 @@ const heroFacts = [
           <div class="home-section-head__stack">
             <p class="home-section-head__kicker">Site index</p>
             <h2 id="home-routes-heading" class="home-section-head__title">
-              Full route rail.
+              Route index.
             </h2>
-          </div>
-          <p class="home-section-head__aside home-read-cue home-read-cue--inline">Every major room is listed as its own card.</p>
-        </div>
-
-        <div class="home-route-model" aria-label="How to read route cards">
-          <p class="home-route-model__label">Card model</p>
-          <div class="home-route-model__grid">
-            <div class="home-route-model__preview" role="img" aria-label="Sample card with labeled parts">
-              <span class="home-route-model__pin home-route-model__pin--meta">A</span>
-              <span class="home-route-model__pin home-route-model__pin--title">B</span>
-              <span class="home-route-model__pin home-route-model__pin--desc">C</span>
-              <span class="home-route-model__pin home-route-model__pin--cta">D</span>
-
-              <div class="home-route-model__meta">
-                <span class="home-route__group">Research & AI</span>
-                <span class="home-route__platform">YouTube</span>
-              </div>
-              <p class="home-route-model__title">AI</p>
-              <p class="home-route-model__desc">
-                Applied AI work, notes, and public experiments.
-              </p>
-              <p class="home-route-model__cta">Open →</p>
-            </div>
-
-            <ul class="home-route-model__keys" role="list">
-              <li>
-                <span class="home-route-model__key-dot">A</span>
-                Tags = room group + platform cue
-              </li>
-              <li>
-                <span class="home-route-model__key-dot">B</span>
-                Title = the room name
-              </li>
-              <li>
-                <span class="home-route-model__key-dot">C</span>
-                Description = what to expect before opening
-              </li>
-              <li>
-                <span class="home-route-model__key-dot">D</span>
-                Open = direct route into that room
-              </li>
-            </ul>
           </div>
         </div>
 
@@ -172,7 +130,6 @@ const heroFacts = [
               <a class="home-route" href={route.href}>
                 <span class="home-route__meta">
                   <span class="home-route__group">{route.group}</span>
-                  {route.cue ? <span class="home-route__platform">{route.cue}</span> : null}
                 </span>
                 <span class="home-route__title">{route.title}</span>
                 <span class="home-route__description home-read-cue">{route.description}</span>
