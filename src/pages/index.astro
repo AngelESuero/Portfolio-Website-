@@ -10,6 +10,30 @@ import {
   timelinePreview,
 } from '../data/homepage';
 
+type HomeRoute = (typeof homeRoutes)[number];
+
+const homeRouteGroups = homeRoutes.reduce<
+  Array<{
+    group: string;
+    routes: HomeRoute[];
+  }>
+>((groups, route) => {
+  const currentGroup = groups[groups.length - 1];
+
+  if (currentGroup?.group === route.group) {
+    currentGroup.routes.push(route);
+  } else {
+    groups.push({
+      group: route.group,
+      routes: [route],
+    });
+  }
+
+  return groups;
+}, []);
+
+const homeRoutePreview = (routes: HomeRoute[]) => routes.slice(0, 3).map((route) => route.title).join(' / ');
+
 const heroFacts = [
   { label: 'Base', value: profile.location },
   { label: 'Practice', value: profile.roles.join(' / ') },
@@ -124,23 +148,52 @@ const heroFacts = [
               Route index.
             </h2>
           </div>
-          <p class="home-section-head__aside">Tap a card to open</p>
+          <p class="home-section-head__aside">Choose a lane</p>
         </div>
 
-        <ul class="home-routes__list" role="list">
-          {homeRoutes.map((route) => (
-            <li class="home-route__item">
-              <a class="home-route" href={route.href}>
-                <span class="home-route__meta">
-                  <span class="home-route__group">{route.group}</span>
-                </span>
-                <span class="home-route__title">{route.title}</span>
-                <span class="home-route__description home-read-cue">{route.description}</span>
-                <span class="home-route__arrow" aria-hidden="true">Open →</span>
-              </a>
-            </li>
+        <div class="home-route-lanes">
+          {homeRouteGroups.map((group, index) => (
+            <details class="home-route-lane" open={index === 0}>
+              <summary class="home-route-lane__summary">
+                <div class="home-route-lane__summaryCopy">
+                  <p class="home-route-lane__kicker">Route lane</p>
+                  <h3 class="home-route-lane__title">{group.group}</h3>
+                  <p class="home-route-lane__lede home-read-cue">{homeRoutePreview(group.routes)}</p>
+                </div>
+
+                <div class="home-route-lane__summaryMeta">
+                  <span class="home-route-lane__count">{group.routes.length} routes</span>
+                  <span class="home-route-lane__summaryAction" aria-hidden="true">
+                    <span class="home-route-lane__summaryActionLabel home-route-lane__summaryActionLabel--open">
+                      Open lane →
+                    </span>
+                    <span class="home-route-lane__summaryActionLabel home-route-lane__summaryActionLabel--close">
+                      Collapse lane ←
+                    </span>
+                  </span>
+                </div>
+              </summary>
+
+              <div class="home-route-lane__body">
+                <ul class="home-routes__list" role="list">
+                  {group.routes.map((route) => (
+                    <li class="home-route__item">
+                      <a class="home-route" href={route.href}>
+                        <span class="home-route__meta">
+                          <span class="home-route__group">{route.group}</span>
+                          {route.cue ? <span class="home-route__platform">{route.cue}</span> : null}
+                        </span>
+                        <span class="home-route__title">{route.title}</span>
+                        <span class="home-route__description home-read-cue">{route.description}</span>
+                        <span class="home-route__arrow" aria-hidden="true">Open →</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </details>
           ))}
-        </ul>
+        </div>
       </section>
 
       <section class="home-pledge" aria-labelledby="home-pledge-heading">
