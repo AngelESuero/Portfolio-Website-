@@ -1,0 +1,887 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const summaryRows = [
+  {
+    label: 'Today',
+    text: 'Yomi-style implant robotics are commercially real, regulated, and dentist-operated.'
+  },
+  {
+    label: 'Soon',
+    text: 'Restorative automation is early, but narrow crown-prep prototypes show where the workflow may go.'
+  },
+  {
+    label: 'Later',
+    text: 'Planning, admin, and workflow automation are likely to arrive before anything like a general robot dentist.'
+  }
+];
+
+const phaseCards = [
+  {
+    label: 'Now',
+    title: 'Implant robotics is the mature lane.',
+    body: 'Human clinicians still drive the case while the robot provides haptic guidance, planning support, and movement guardrails.'
+  },
+  {
+    label: 'Soon',
+    title: 'Crown prep automation is the serious prototype lane.',
+    body: 'Perceptive and DentistRobot point to shorter, more automated restorative workflows, but they remain early.'
+  },
+  {
+    label: 'Later',
+    title: 'General autonomy still needs regulation, liability, and adoption.',
+    body: 'Even if AGI emerges, the first cost reductions likely happen in planning, admin, and workflow before chairside replacement.'
+  }
+];
+
+const milestones = [
+  {
+    date: '2016-12-22',
+    dateLabel: 'Dec. 22, 2016',
+    stage: 'commercial',
+    year: '2016',
+    title: 'Neocis receives the first FDA clearance in the Yomi lineage',
+    summary: 'FDA clears the Neocis Guidance System, the predecessor to the current Yomi platform, for dental implant surgery.',
+    tags: ['Regulatory', 'Commercial'],
+    sourceLabel: 'FDA K161399',
+    sourceHref: 'https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K161399'
+  },
+  {
+    date: '2020-07-28',
+    dateLabel: 'Jul. 28, 2020',
+    stage: 'commercial',
+    year: '2020',
+    title: 'Full-arch implant treatment enters the cleared workflow',
+    summary: "Neocis expands Yomi's cleared use to full-arch implant treatment with a new edentulous splint attachment.",
+    tags: ['Regulatory', 'Implants'],
+    sourceLabel: 'Neocis release',
+    sourceHref: 'https://www.neocis.com/news/neocis-announces-new-fda-510k-clearance-enabling-the-yomi-dental-robotic-system-to-assist-with-full-arch-implant-treatment/'
+  },
+  {
+    date: '2022-11-15',
+    dateLabel: 'Nov. 15, 2022',
+    stage: 'commercial',
+    year: '2022',
+    title: 'Bone reduction is added to the Yomi platform',
+    summary: 'The cleared workflow now includes guided bone reduction or alveoloplasty, extending Yomi beyond implant placement alone.',
+    tags: ['Regulatory', 'Surgery'],
+    sourceLabel: 'Neocis release',
+    sourceHref: 'https://www.neocis.com/news/neocis-yomi-robotic-system-receives-fda-510k-clearance-for-bone-reduction/'
+  },
+  {
+    date: '2024-02-27',
+    dateLabel: 'Feb. 27, 2024',
+    stage: 'research',
+    year: '2024',
+    title: 'Large clinical series shows high implant placement accuracy',
+    summary: 'A prospective series of 108 patients and 273 implants reports mean angular deviation of 1.42 deg and signed depth deviation of 0.14 mm.',
+    tags: ['Clinical', 'Evidence'],
+    sourceLabel: 'PubMed',
+    sourceHref: 'https://pubmed.ncbi.nlm.nih.gov/37939239/'
+  },
+  {
+    date: '2024-08',
+    dateLabel: 'Aug. 2024',
+    stage: 'research',
+    year: '2024',
+    title: 'Perceptive reports the first in-human restorative robot procedure',
+    summary: 'The company describes a first automated restorative case in Barranquilla, Colombia, signaling the start of crown-prep robotics in humans.',
+    tags: ['Prototype', 'Restorative'],
+    sourceLabel: 'Perceptive site',
+    sourceHref: 'https://www.perceptive.io/'
+  },
+  {
+    date: '2025-06-03',
+    dateLabel: 'Jun. 3, 2025',
+    stage: 'research',
+    year: '2025',
+    title: 'First in-human semi-automated crown-prep study lands as a preprint',
+    summary: 'The preprint reports six completed patients, no adverse events, and 39 um RMS deviation from the planned preparation.',
+    tags: ['Feasibility', 'Restorative'],
+    sourceLabel: 'PubMed preprint',
+    sourceHref: 'https://pubmed.ncbi.nlm.nih.gov/40502781/'
+  },
+  {
+    date: '2025-10-28',
+    dateLabel: 'Oct. 28, 2025',
+    stage: 'commercial',
+    year: '2025',
+    title: 'Yomi S receives FDA clearance',
+    summary: 'Neocis clears its second-generation platform with voice commands, touchscreen control, and a more streamlined implant workflow.',
+    tags: ['Regulatory', 'Next-gen'],
+    sourceLabel: 'FDA K252376',
+    sourceHref: 'https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K252376'
+  },
+  {
+    date: '2026-01-07',
+    dateLabel: 'Jan. 7, 2026',
+    stage: 'commercial',
+    year: '2026',
+    title: 'Yomi crosses 100,000 robotic osteotomies',
+    summary: 'Neocis says the platform has surpassed 100,000 osteotomies and that the first real-world Yomi S cases have been completed.',
+    tags: ['Scale', 'Implants'],
+    sourceLabel: 'Neocis milestone',
+    sourceHref: 'https://www.neocis.com/news/neocis-surpasses-100000-robotic-osteotomies-with-the-yomi-platform/'
+  },
+  {
+    date: '2026',
+    dateLabel: '2026+',
+    stage: 'outlook',
+    year: 'Later',
+    title: 'Broad autonomy is still a later-stage possibility',
+    summary: 'The plausible near-term path is better planning, more workflow automation, and narrower restorative autonomy before anything like a general robot dentist.',
+    tags: ['Inference', 'Outlook'],
+    sourceLabel: 'Based on current evidence',
+    sourceHref: '#'
+  }
+];
+---
+
+<BaseLayout
+  title="Mechanized Dentistry Timeline - a_e.s_"
+  description="A staged timeline of mechanized dentistry, from robot-assisted implants to early restorative automation and the AGI-era outlook."
+  theme="archive"
+  bodyClass="mechanized-dentistry-page"
+  forceThemeMode="light"
+  flatSurface={true}
+  ambientEffects={false}
+>
+  <section class="page">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Mechanized Dentistry</p>
+        <h1>Now, Soon, Later.</h1>
+        <p class="intro">
+          Robot-assisted implants are real now. Restorative automation is early. A fully autonomous robot dentist is
+          still later stage and mostly speculative.
+        </p>
+
+        <div class="summary-rail" aria-label="Timeline summary">
+          {summaryRows.map((row, index) => (
+            <div class="summary-row" style={`--delay:${index * 80}ms`}>
+              <strong>{row.label}</strong>
+              <p>{row.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <aside class="hero-panel" aria-label="Timeline phase map">
+        <p class="panel-label">Phase map</p>
+        <div class="phase-stack">
+          {phaseCards.map((phase, index) => (
+            <div class="phase" style={`--delay:${index * 110}ms`}>
+              <span>{phase.label}</span>
+              <div>
+                <h2>{phase.title}</h2>
+                <p>{phase.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="panel-foot" aria-label="Short read">
+          <span>Clinical guidance now</span>
+          <span>Restorative automation next</span>
+          <span>General autonomy later</span>
+        </div>
+      </aside>
+    </header>
+
+    <section class="timeline-section" aria-labelledby="timeline-heading">
+      <div class="section-head">
+        <div>
+          <h3 id="timeline-heading">Chronology</h3>
+          <p>
+            Key milestones that show how robot dentistry actually developed: first the implant platform, then
+            restorative prototypes, then an outlook shaped by costs and regulation.
+          </p>
+        </div>
+      </div>
+
+      <ol class="timeline" id="timeline">
+        {milestones.map((entry, index) => (
+          <li class="milestone" data-stage={entry.stage} id={`milestone-${index}`} style={`--delay:${index * 70}ms`}>
+            <div class="date-col">
+              {entry.year === 'Later' ? (
+                <span class="future-date">{entry.dateLabel}</span>
+              ) : (
+                <time datetime={entry.date}>{entry.dateLabel}</time>
+              )}
+              <span class="stage">{entry.year}</span>
+            </div>
+
+            <div class="body">
+              <h4>{entry.title}</h4>
+              <p>{entry.summary}</p>
+              <div class="tags" aria-label={`${entry.title} tags`}>
+                {entry.tags.map((tag) => (
+                  <span class={`tag ${tag.toLowerCase().replace(/[^a-z]+/g, '-')}`}>{tag}</span>
+                ))}
+              </div>
+              <div class="meta-row">
+                {entry.sourceHref === '#' ? (
+                  <span class="source-link" role="note">{entry.sourceLabel}</span>
+                ) : (
+                  <a class="source-link" href={entry.sourceHref} target="_blank" rel="noopener noreferrer">
+                    {entry.sourceLabel}
+                  </a>
+                )}
+              </div>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <div class="outlook-callout">
+        <strong>Bottom line:</strong> the field is moving from guidance, to narrow automation, to possible partial
+        autonomy. The jump from "robot helps the dentist" to "robot replaces the dentist" is still a long one.
+      </div>
+
+      <p class="footer-note">
+        Sources used to build the timeline: <a href="https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K161399" target="_blank" rel="noreferrer">FDA K161399</a>,
+        <a href="https://www.neocis.com/news/neocis-announces-new-fda-510k-clearance-enabling-the-yomi-dental-robotic-system-to-assist-with-full-arch-implant-treatment/" target="_blank" rel="noreferrer">Neocis full-arch clearance</a>,
+        <a href="https://www.neocis.com/news/neocis-yomi-robotic-system-receives-fda-510k-clearance-for-bone-reduction/" target="_blank" rel="noreferrer">Neocis bone reduction clearance</a>,
+        <a href="https://pubmed.ncbi.nlm.nih.gov/37939239/" target="_blank" rel="noreferrer">PubMed accuracy series</a>,
+        <a href="https://pubmed.ncbi.nlm.nih.gov/40502781/" target="_blank" rel="noreferrer">PubMed crown-prep preprint</a>,
+        <a href="https://www.neocis.com/news/neocis-surpasses-100000-robotic-osteotomies-with-the-yomi-platform/" target="_blank" rel="noreferrer">Neocis 100,000 osteotomies</a>.
+        The outlook row is an inference from current evidence, not a settled fact.
+      </p>
+
+      <p class="footer-note">
+        Back to <a href="/ai">AI hub</a> or keep going to <a href="/post-labor-economics">post-labor economics</a>.
+      </p>
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  :global(html) {
+    scroll-behavior: smooth;
+  }
+
+  :global(body.mechanized-dentistry-page) {
+    color: #171311;
+    background:
+      radial-gradient(circle at top left, rgba(157, 91, 46, 0.14), transparent 34%),
+      radial-gradient(circle at 86% 14%, rgba(30, 102, 98, 0.12), transparent 28%),
+      linear-gradient(180deg, #f4eee4 0%, #ebe0d0 100%);
+    overflow-x: hidden;
+  }
+
+  :global(body.mechanized-dentistry-page)::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.12;
+    background-image:
+      linear-gradient(rgba(23, 19, 17, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(23, 19, 17, 0.08) 1px, transparent 1px);
+    background-size: 120px 120px;
+    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent 85%);
+  }
+
+  .page {
+    width: min(1180px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 28px 0 56px;
+    position: relative;
+    z-index: 1;
+    font-family: Recursive, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+    gap: clamp(24px, 4vw, 56px);
+    align-items: end;
+    min-height: 74vh;
+    padding: clamp(18px, 4vw, 40px) 0 clamp(30px, 5vw, 58px);
+  }
+
+  .hero-copy {
+    animation: rise 780ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .hero-panel {
+    position: relative;
+    min-height: 440px;
+    padding: 24px 24px 90px;
+    border-radius: 32px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 252, 247, 0.52)),
+      radial-gradient(circle at 20% 20%, rgba(157, 91, 46, 0.08), transparent 32%),
+      radial-gradient(circle at 80% 10%, rgba(30, 102, 98, 0.09), transparent 28%);
+    border: 1px solid rgba(103, 90, 75, 0.14);
+    box-shadow: 0 22px 80px rgba(58, 43, 28, 0.12);
+    overflow: hidden;
+    animation: rise 900ms 120ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .hero-panel::before {
+    content: '';
+    position: absolute;
+    inset: 18px 18px auto 18px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(103, 90, 75, 0.36), transparent);
+  }
+
+  .hero-panel::after {
+    content: '';
+    position: absolute;
+    right: -80px;
+    top: -60px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(157, 91, 46, 0.18), rgba(157, 91, 46, 0.04) 58%, transparent 74%);
+    filter: blur(12px);
+    pointer-events: none;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #665a4b;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin: 0 0 20px;
+  }
+
+  .eyebrow::before {
+    content: '';
+    width: 34px;
+    height: 1px;
+    background: #d8c8b2;
+  }
+
+  h1 {
+    margin: 0;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(3.2rem, 8vw, 7.4rem);
+    line-height: 0.9;
+    letter-spacing: -0.06em;
+    max-width: 8.5ch;
+  }
+
+  .intro {
+    margin: 20px 0 0;
+    max-width: 44ch;
+    font-size: clamp(1rem, 1.25vw, 1.15rem);
+    line-height: 1.65;
+    color: #665a4b;
+  }
+
+  .summary-rail {
+    display: grid;
+    gap: 14px;
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(103, 90, 75, 0.16);
+  }
+
+  .summary-row {
+    display: grid;
+    grid-template-columns: 84px 1fr;
+    gap: 14px;
+    align-items: start;
+    animation: rise 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--delay);
+  }
+
+  .summary-row strong {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.52);
+    border: 1px solid rgba(103, 90, 75, 0.14);
+  }
+
+  .summary-row p {
+    margin: 0;
+    color: #171311;
+    line-height: 1.52;
+    max-width: 44ch;
+  }
+
+  .panel-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.72rem;
+    color: #665a4b;
+    font-weight: 800;
+    margin: 0 0 22px;
+  }
+
+  .panel-label::before {
+    content: '';
+    width: 28px;
+    height: 1px;
+    background: #d8c8b2;
+  }
+
+  .phase-stack {
+    display: grid;
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+    padding-top: 10px;
+  }
+
+  .phase {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+    padding: 18px 0;
+    border-top: 1px solid rgba(103, 90, 75, 0.12);
+    animation: rise 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--delay);
+  }
+
+  .phase:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .phase span {
+    display: inline-flex;
+    width: fit-content;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: white;
+    background: #9d5b2e;
+    box-shadow: 0 10px 22px rgba(157, 91, 46, 0.24);
+  }
+
+  .phase:nth-child(2) span {
+    background: #1e6662;
+    box-shadow: 0 10px 22px rgba(30, 102, 98, 0.22);
+  }
+
+  .phase:nth-child(3) span {
+    background: #5f6b77;
+    box-shadow: 0 10px 22px rgba(95, 107, 119, 0.22);
+  }
+
+  .phase h2 {
+    margin: 2px 0 6px;
+    font-size: clamp(1.35rem, 1.8vw, 1.85rem);
+    line-height: 1.06;
+    letter-spacing: -0.04em;
+  }
+
+  .phase p {
+    margin: 0;
+    color: #665a4b;
+    line-height: 1.6;
+  }
+
+  .panel-foot {
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    bottom: 22px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.78rem;
+    color: #665a4b;
+    letter-spacing: 0.03em;
+    border-top: 1px solid rgba(103, 90, 75, 0.12);
+    padding-top: 14px;
+    background: linear-gradient(180deg, transparent, rgba(244, 238, 228, 0.68));
+  }
+
+  .timeline-section {
+    margin-top: clamp(8px, 2vw, 18px);
+  }
+
+  .section-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 18px;
+    align-items: end;
+    margin: 8px 0 18px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(103, 90, 75, 0.16);
+    animation: rise 700ms 160ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .section-head h3 {
+    margin: 0;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #665a4b;
+  }
+
+  .section-head p {
+    margin: 8px 0 0;
+    max-width: 56ch;
+    color: #665a4b;
+    line-height: 1.55;
+  }
+
+  .timeline {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    position: relative;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 166px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(
+      180deg,
+      transparent,
+      rgba(103, 90, 75, 0.22) 8%,
+      rgba(103, 90, 75, 0.22) 92%,
+      transparent
+    );
+  }
+
+  .milestone {
+    display: grid;
+    grid-template-columns: 140px minmax(0, 1fr);
+    gap: 26px;
+    padding: 28px 0;
+    position: relative;
+    border-bottom: 1px solid rgba(103, 90, 75, 0.12);
+    opacity: 1;
+    transform: none;
+    animation: rise 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--delay);
+  }
+
+  .milestone:last-child {
+    border-bottom: 0;
+  }
+
+  .milestone::before {
+    content: '';
+    position: absolute;
+    left: 160px;
+    top: 36px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #f4eee4;
+    border: 2px solid #9d5b2e;
+    box-shadow: 0 0 0 7px rgba(157, 91, 46, 0.08);
+  }
+
+  .milestone[data-stage='research']::before {
+    border-color: #1e6662;
+    box-shadow: 0 0 0 7px rgba(30, 102, 98, 0.08);
+  }
+
+  .milestone[data-stage='outlook']::before {
+    border-color: #5f6b77;
+    box-shadow: 0 0 0 7px rgba(95, 107, 119, 0.08);
+  }
+
+  .date-col {
+    padding-right: 18px;
+    text-align: right;
+    position: relative;
+  }
+
+  .date-col time,
+  .future-date {
+    display: block;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.03rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #171311;
+    margin-bottom: 10px;
+  }
+
+  .future-date {
+    color: #665a4b;
+  }
+
+  .stage {
+    display: inline-flex;
+    width: fit-content;
+    justify-content: flex-end;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.58);
+    border: 1px solid rgba(103, 90, 75, 0.14);
+    color: #665a4b;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.67rem;
+    font-weight: 800;
+  }
+
+  .body {
+    padding-left: 22px;
+    border-left: 1px solid rgba(103, 90, 75, 0.16);
+  }
+
+  .body h4 {
+    margin: 0;
+    font-size: clamp(1.25rem, 1.8vw, 1.65rem);
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+  }
+
+  .body p {
+    margin: 10px 0 0;
+    max-width: 70ch;
+    line-height: 1.65;
+    color: #665a4b;
+  }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .source-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    padding: 8px 12px;
+    border-radius: 999px;
+    color: #171311;
+    background: rgba(255, 255, 255, 0.54);
+    border: 1px solid rgba(103, 90, 75, 0.14);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+  }
+
+  .source-link:hover {
+    transform: translateY(-1px);
+    border-color: rgba(157, 91, 46, 0.32);
+    background: rgba(255, 255, 255, 0.74);
+    color: #171311;
+  }
+
+  .source-link::after {
+    content: '->';
+    font-size: 0.8rem;
+    color: #9d5b2e;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #665a4b;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(103, 90, 75, 0.12);
+  }
+
+  .tag.commercial {
+    color: #9d5b2e;
+  }
+
+  .tag.research {
+    color: #1e6662;
+  }
+
+  .tag.outlook {
+    color: #5f6b77;
+  }
+
+  .outlook-callout {
+    margin-top: 18px;
+    padding: 18px 20px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.56), rgba(255, 251, 245, 0.72));
+    border: 1px solid rgba(103, 90, 75, 0.14);
+    color: #171311;
+  }
+
+  .outlook-callout strong {
+    color: #9d5b2e;
+  }
+
+  .footer-note {
+    margin-top: 28px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(103, 90, 75, 0.16);
+    color: #665a4b;
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+
+  .footer-note a {
+    color: #171311;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  .footer-note a:hover {
+    color: #9d5b2e;
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 18px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @media (max-width: 980px) {
+    .hero {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+
+    .hero-panel {
+      min-height: auto;
+      padding-bottom: 88px;
+    }
+
+    .section-head {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .page {
+      width: min(100% - 20px, 1180px);
+      padding-top: 18px;
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 14vw, 4.8rem);
+    }
+
+    .summary-row,
+    .phase,
+    .milestone {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .summary-row strong,
+    .phase span,
+    .stage {
+      width: fit-content;
+    }
+
+    .date-col {
+      padding-right: 0;
+      text-align: left;
+    }
+
+    .timeline::before,
+    .milestone::before {
+      left: 13px;
+    }
+
+    .milestone {
+      padding-left: 34px;
+    }
+
+    .milestone::before {
+      top: 34px;
+    }
+
+    .body {
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    .panel-foot {
+      left: 18px;
+      right: 18px;
+      bottom: 18px;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .hero-panel {
+      padding: 18px 18px 82px;
+    }
+
+    .panel-foot {
+      font-size: 0.72rem;
+    }
+
+    .timeline::before {
+      left: 10px;
+    }
+
+    .milestone {
+      padding-left: 28px;
+      padding-top: 22px;
+      padding-bottom: 22px;
+    }
+
+    .milestone::before {
+      top: 28px;
+      left: 4px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(html) {
+      scroll-behavior: auto;
+    }
+
+    .hero-copy,
+    .hero-panel,
+    .summary-row,
+    .phase,
+    .section-head,
+    .milestone {
+      animation: none;
+    }
+
+    .source-link {
+      transition: none;
+    }
+  }
+</style>
