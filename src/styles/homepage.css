@@ -146,13 +146,13 @@ body.home-page .site-content-stage::before {
 }
 
 .home-hero__titleMicro {
-  font-size: 0.35em;
+  font-size: 0.28em;
   font-weight: inherit;
   letter-spacing: 0.02em;
   vertical-align: baseline;
   position: relative;
-  bottom: -0.18em;
-  margin-right: 0.06em;
+  bottom: -0.14em;
+  margin-right: 0.04em;
   color: color-mix(in srgb, rgba(250, 245, 237, 0.86) 68%, rgba(233, 219, 197, 0.84) 32%);
   text-shadow: none;
 }
@@ -1485,8 +1485,8 @@ body.home-page .site-content-stage::before {
   }
 
   .home-hero__titleMicro {
-    font-size: 0.38em;
-    bottom: -0.16em;
+    font-size: 0.3em;
+    bottom: -0.12em;
   }
 
   .home-hero__lede {
