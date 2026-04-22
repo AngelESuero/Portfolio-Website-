@@ -1,4 +1,4 @@
-export type NewarkLaneSlug = 'housing' | 'markets' | 'museum';
+export type NewarkLaneSlug = 'housing' | 'markets' | 'museum' | 'solutions';
 
 export interface NewarkLaneNote {
   title: string;
@@ -111,6 +111,37 @@ export const newarkLanes: NewarkLaneConfig[] = [
         body:
           'This lane should eventually break down by district so Downtown, the Ironbound, the South Ward, and the airport / port zone stop getting treated as one generalized market.',
         points: ['Downtown', 'Ironbound', 'South Ward', 'Airport / port zone'],
+      },
+    ],
+  },
+  {
+    slug: 'solutions',
+    tabLabel: 'Solutions',
+    lead: 'The target is livable life stability, not just crossing a poverty threshold once.',
+    summary:
+      'This lane turns the poverty diagnosis into a systems intervention plan. It focuses on the relationship between income, basic costs, stability over time, and access friction, then uses layered interventions to move people from survival pressure toward durable local livability.',
+    notes: [
+      {
+        title: 'The middle zone is the real policy problem',
+        summary: 'Above poverty does not mean stable.',
+        body:
+          'Many people are technically above the poverty line but still one rent increase, schedule cut, or childcare disruption away from collapse. This lane treats that unstable middle as a primary design target.',
+        points: ['Below poverty', 'Above poverty but unstable', 'At or above livable income'],
+        open: true,
+      },
+      {
+        title: 'Intervention has to be layered',
+        summary: 'Income-only policy leaves structural pressure untouched.',
+        body:
+          'The strongest frame combines four layers: income, cost, stability, and access. If any one layer is missing, people can still be trapped by rent burden, benefit cliffs, or paperwork friction.',
+        points: ['Income side', 'Cost side', 'Stability side', 'Access side'],
+      },
+      {
+        title: 'AGI is an accelerator, not the whole fix',
+        summary: 'Computer-bound AGI can reduce information friction before robotics touches physical bottlenecks.',
+        body:
+          'Automation can help applications, matching, recertification, and coordination now. But housing supply, childcare capacity, and wage structures still require policy and institution-level change.',
+        points: ['Before robotics: information + admin relief', 'After robotics: physical bottlenecks may shift'],
       },
     ],
   },

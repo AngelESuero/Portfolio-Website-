@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/pages/agi/livable-income-bounds.css';
+
+const interventionLayers = [
+  {
+    title: 'Income Side',
+    detail: 'Raise take-home stability through wages, predictable hours, and direct cash supports.'
+  },
+  {
+    title: 'Cost Side',
+    detail: 'Lower survival costs such as rent burden, childcare pressure, transportation, and utilities.'
+  },
+  {
+    title: 'Stability Side',
+    detail: 'Reduce month-to-month shocks with predictable scheduling, paid leave, emergency support, and smoother benefit transitions.'
+  },
+  {
+    title: 'Access Side',
+    detail: 'Remove bureaucracy friction through simpler applications, language access, and better case-management flows.'
+  }
+];
+
+const relatedRoutes = [
+  {
+    label: 'Newark Poverty Overview',
+    href: '/newark',
+    note: 'The broader poverty lane with housing, market, and museum pressure tabs.'
+  },
+  {
+    label: 'AGI Monitor',
+    href: '/agi',
+    note: 'Capability timeline and bottleneck view; this map is cross-linked there.'
+  },
+  {
+    label: 'Bread-Pressure Tracker',
+    href: '/agi/from-bread-pressure-to-human-capability',
+    note: 'Tracks whether relief systems are actually forming under automation pressure.'
+  }
+];
+---
+
+<BaseLayout
+  title="Livable Income Bounds - Poverty Lane - a_e.s_"
+  description="A poverty-lane systems map for moving people from poverty toward stable, locally livable income, including barriers, interventions, and AGI timing."
+  theme="archive"
+  bodyClass="livable-income-bounds-page"
+  forceThemeMode="light"
+  flatSurface={true}
+  ambientEffects={false}
+>
+  <main class="lib-shell">
+    <header class="lib-hero">
+      <p class="lib-kicker">Poverty Lane / Systems Map</p>
+      <h1>Find Livable Income Bounds</h1>
+      <p>
+        This map frames poverty as a system, not just a low-income status: income pressure, fixed
+        costs, instability, and access friction combine over time. The target is durable livable
+        life, not a temporary income bump.
+      </p>
+      <div class="lib-chip-row" aria-label="Map anchors">
+        <span>Poverty bounds</span>
+        <span>Five barriers</span>
+        <span>Intervention layers</span>
+        <span>AGI before robotics</span>
+      </div>
+    </header>
+
+    <figure class="lib-map">
+      <img
+        src="/images/agi/livable-income-bounds-system-map.png"
+        alt="A full poverty-system infographic covering poverty bounds, core barriers, intervention layers, AGI fit before and after robotics, and the lag between AGI capability growth and poverty relief."
+        loading="eager"
+        decoding="async"
+      />
+      <figcaption>
+        System map: poverty pressure vs livable life, with a timeline showing that capability gains
+        can come before broad poverty relief.
+      </figcaption>
+    </figure>
+
+    <section class="lib-grid" aria-label="Reading guide">
+      <article class="lib-card">
+        <h2>How to Read This</h2>
+        <p>
+          The center of the map is the unstable middle zone: people can sit above the official
+          poverty line but still remain one shock away from crisis. The intervention model is built
+          to close that gap.
+        </p>
+        <ol>
+          {interventionLayers.map((layer) => (
+            <li>
+              <strong>{layer.title}:</strong> {layer.detail}
+            </li>
+          ))}
+        </ol>
+      </article>
+
+      <article class="lib-card">
+        <h2>Route Placement</h2>
+        <p>
+          This is the poverty-lane home for the map. It still stays linked from AGI because the
+          chart explicitly separates computer-bound AGI effects from later robotics effects.
+        </p>
+        <ul>
+          {relatedRoutes.map((route) => (
+            <li>
+              <a href={route.href}>{route.label}</a> - {route.note}
+            </li>
+          ))}
+        </ul>
+      </article>
+    </section>
+  </main>
+</BaseLayout>

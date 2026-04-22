@@ -30,7 +30,12 @@
 }
 .nwk-kicker { font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--nwk-accent); font-weight: 700; margin: 0 0 0.6rem; }
 .nwk-hero h1 { margin: 0; font-size: clamp(2rem, 4vw, 3.4rem); line-height: 0.98; letter-spacing: -0.04em; }
-.nwk-hero p { margin: 0.9rem 0 0; max-width: 72ch; color: var(--tone-muted); line-height: 1.6; }
+.nwk-hero p {
+  margin: 0.9rem 0 0;
+  max-width: 72ch;
+  color: var(--tone-muted);
+  line-height: 1.68;
+}
 
 /* ── Tabs ─────────────────────────────────── */
 .nwk-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.4rem; flex-wrap: wrap; }
@@ -97,7 +102,7 @@
   margin: 0;
   max-width: 24ch;
   font-size: clamp(1.2rem, 2vw, 1.6rem);
-  line-height: 1.08;
+  line-height: 1.14;
   letter-spacing: -0.04em;
   font-weight: 800;
   color: var(--tone-text);
@@ -106,7 +111,7 @@
   margin: 0;
   max-width: 74ch;
   font-size: 0.98rem;
-  line-height: 1.65;
+  line-height: 1.7;
   color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
 }
 .nwk-lane-shell__body {
@@ -175,7 +180,7 @@
 .nwk-thought__summary-copy {
   display: block;
   font-size: 0.76rem;
-  line-height: 1.45;
+  line-height: 1.58;
   color: var(--tone-muted);
 }
 .nwk-thought__indicator {
@@ -209,7 +214,7 @@
 .nwk-thought__body p {
   margin: 0;
   font-size: 0.82rem;
-  line-height: 1.6;
+  line-height: 1.72;
   color: color-mix(in srgb, var(--tone-text) 84%, var(--tone-muted) 16%);
 }
 .nwk-thought__points {
@@ -219,7 +224,7 @@
   gap: 0.4rem;
   color: color-mix(in srgb, var(--tone-text) 80%, var(--tone-muted) 20%);
   font-size: 0.78rem;
-  line-height: 1.5;
+  line-height: 1.62;
 }
 .nwk-thought__points li::marker {
   color: var(--nwk-accent);
@@ -260,6 +265,27 @@
   font-size: 0.82rem;
   color: var(--tone-muted);
   line-height: 1.55;
+}
+.nwk-inline-link {
+  color: var(--nwk-accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
+}
+.nwk-inline-link:hover,
+.nwk-inline-link:focus-visible {
+  color: color-mix(in srgb, var(--nwk-accent) 70%, var(--tone-sky));
+}
+.nwk-map-link {
+  display: block;
+  margin-top: 0.9rem;
+}
+.nwk-map-preview {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid var(--nwk-line);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.16);
 }
 
 /* ── Stats ────────────────────────────────── */
@@ -369,7 +395,7 @@
   display: block; margin-bottom: 0.5rem; color: var(--nwk-accent);
   letter-spacing: 0.03em; text-transform: uppercase; font-size: 0.72rem;
 }
-.nwk-callout p { margin: 0; font-size: 0.88rem; line-height: 1.6; }
+.nwk-callout p { margin: 0; font-size: 0.88rem; line-height: 1.68; }
 
 /* ── Market signals ───────────────────────── */
 .nwk-signals { display: grid; gap: 0.75rem; }
@@ -395,7 +421,7 @@
   border: 1px solid rgba(140,74,74,0.3);
 }
 .nwk-signal h3 { margin: 0; font-size: 0.95rem; font-weight: 700; letter-spacing: -0.01em; }
-.nwk-signal p { margin: 0.4rem 0 0; font-size: 0.84rem; color: var(--tone-muted); line-height: 1.55; }
+.nwk-signal p { margin: 0.4rem 0 0; font-size: 0.84rem; color: var(--tone-muted); line-height: 1.62; }
 
 .nwk-source-note {
   border-top: 1px solid var(--nwk-line);

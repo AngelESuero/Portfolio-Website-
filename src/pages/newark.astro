@@ -8,6 +8,7 @@ import '../styles/pages/newark.css';
 const housingLane = newarkLaneBySlug.housing;
 const marketLane = newarkLaneBySlug.markets;
 const museumLane = newarkLaneBySlug.museum;
+const solutionsLane = newarkLaneBySlug.solutions;
 ---
 
 <BaseLayout
@@ -201,6 +202,44 @@ const museumLane = newarkLaneBySlug.museum;
     <div class="nwk-tab-panel" id="tab-museum" role="tabpanel" aria-labelledby="btn-museum" hidden>
       <NewarkLaneShell lane={museumLane}>
         <NMOAProposalCircuit client:load />
+      </NewarkLaneShell>
+    </div>
+
+    <!-- ── Tab 4: Solutions ───────────────────── -->
+    <div class="nwk-tab-panel" id="tab-solutions" role="tabpanel" aria-labelledby="btn-solutions" hidden>
+      <NewarkLaneShell lane={solutionsLane}>
+        <article class="nwk-card">
+          <h2>Livable Income Bounds System Map</h2>
+          <p>
+            A single visual model of poverty pressure, the unstable middle zone, the five core
+            barriers, and the four intervention layers needed for durable stability.
+          </p>
+          <p class="nwk-card__note">
+            The full map has its own route for deep reading:
+            <a class="nwk-inline-link" href="/newark/livable-income-bounds">open Livable Income Bounds</a>.
+          </p>
+          <a class="nwk-map-link" href="/newark/livable-income-bounds" aria-label="Open the full livable income bounds map">
+            <img
+              class="nwk-map-preview"
+              src="/images/agi/livable-income-bounds-system-map.png"
+              alt="Livable income bounds systems map showing poverty pressure, barriers, intervention layers, and AGI timing."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+        </article>
+
+        <article class="nwk-card">
+          <h2>Practical Definition</h2>
+          <p>
+            The map treats success as a relationship over time, not one threshold:
+            <strong> enough income + manageable costs + predictable systems + low friction.</strong>
+          </p>
+          <p class="nwk-card__note">
+            Capability growth does not automatically reduce poverty burden. Policy and institution
+            design still decide whether gains become real life stability.
+          </p>
+        </article>
       </NewarkLaneShell>
     </div>
   </div>
